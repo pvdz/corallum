@@ -1,0 +1,15 @@
+{
+  "name": "corallum",
+  "version": "0.0.1",
+  "private": true,
+  "description": "An incremental game about a coral reef climbing four thousand metres to the surface.",
+  "type": "module",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "start": "node src/server/server.ts",
+    "check": "tsc --noEmit -p tsconfig.json",
+    "test": "node --test \"test/sim/**/*.test.ts\"",
+    "e2e": "node test/e2e/smoke.ts",
+    "shots": "node tools/screenshot.ts"
+  }
+}

@@ -1,0 +1,87 @@
+// Static dev/prod server for Corallum.
+// Serves the client page and every `.ts` module under src/ with its types stripped by Node's
+// own stripper, so the browser runs the same TypeScript sources Node does. Nothing is compiled
+// to disk. Stripping replaces types with whitespace, so line/column numbers stay exact.
+
+import { createServer, type Server } from 'node:http';
+import { readFile, stat } from 'node:fs/promises';
+import { stripTypeScriptTypes } from 'node:module';
+import { extname, join, normalize, resolve, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const ROOT = resolve(fileURLToPath(new URL('../..', import.meta.url)));
+const SERVED_DIRS = ['src'];
+
+const MIME: Record<string, string> = {
+  '.html': 'text/html; charset=utf-8',
+  '.ts': 'text/javascript; charset=utf-8',
+  '.js': 'text/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+  '.ico': 'image/x-icon',
+  '.webmanifest': 'application/manifest+json',
+};
+
+type CacheEntry = { mtimeMs: number; body: Buffer };
+const stripCache = new Map<string, CacheEntry>();
+
+async function loadFile(abs: string): Promise<Buffer> {
+  const ext = extname(abs);
+  if (ext !== '.ts') return readFile(abs);
+  const { mtimeMs } = await stat(abs);
+  const hit = stripCache.get(abs);
+  if (hit && hit.mtimeMs === mtimeMs) return hit.body;
+  const source = await readFile(abs, 'utf8');
+  const body = Buffer.from(stripTypeScriptTypes(source, { mode: 'strip' }), 'utf8');
+  stripCache.set(abs, { mtimeMs, body });
+  return body;
+}
+
+/** Map a request path to an absolute file path, or null when it is outside the served dirs. */
+export function resolveRequest(urlPath: string): string | null {
+  let path = decodeURIComponent(urlPath.split('?')[0] ?? '/');
+  if (path === '/' || path === '/index.html') path = '/src/client/index.html';
+  if (path === '/favicon.ico') path = '/src/client/favicon.svg';
+  const abs = normalize(join(ROOT, path));
+  const ok = SERVED_DIRS.some((d) => abs.startsWith(join(ROOT, d) + sep));
+  return ok ? abs : null;
+}
+
+export function startServer(port: number, host = '127.0.0.1'): Promise<Server> {
+  const server = createServer(async (req, res) => {
+    const abs = resolveRequest(req.url ?? '/');
+    if (!abs) {
+      res.writeHead(404).end('not found');
+      return;
+    }
+    try {
+      const body = await loadFile(abs);
+      res.writeHead(200, {
+        'content-type': MIME[extname(abs)] ?? 'application/octet-stream',
+        'cache-control': 'no-cache',
+      });
+      res.end(body);
+    } catch (err) {
+      const code = (err as NodeJS.ErrnoException).code;
+      if (code === 'ENOENT' || code === 'EISDIR') res.writeHead(404).end('not found');
+      else {
+        console.error(err);
+        res.writeHead(500).end(String(err));
+      }
+    }
+  });
+  return new Promise((ok, fail) => {
+    server.once('error', fail);
+    server.listen(port, host, () => ok(server));
+  });
+}
+
+if (import.meta.main) {
+  const arg = process.argv.indexOf('--port');
+  const port = Number(arg > 0 ? process.argv[arg + 1] : process.env.PORT ?? 8080);
+  const host = process.argv.includes('--lan') ? '0.0.0.0' : '127.0.0.1';
+  await startServer(port, host);
+  console.log(`Corallum on http://localhost:${port}/`);
+}
