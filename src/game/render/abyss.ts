@@ -7,6 +7,7 @@ import { createBloom, type Bloom } from './bloom.ts';
 import { glow } from './draw.ts';
 import { createLife, type Stage } from './life.ts';
 import { createReef, type ReefLayout } from './reef.ts';
+import { createShoals } from './shoals.ts';
 import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts';
 
 type Flake = { x: number; y: number; r: number; speed: number; drift: number; phase: number; layer: number };
@@ -29,6 +30,7 @@ export function createAbyssScene(seed: number): Scene {
 
   const reef = createReef(reefSeed);
   const life = createLife(reefSeed ^ 0x9e3779b9);
+  const shoals = createShoals(seed ^ 0x51);
   let bloom: Bloom | null = null;
   const effects = createEffects();
 
@@ -203,6 +205,7 @@ export function createAbyssScene(seed: number): Scene {
       drawRidge(ctx, ridges[2]!);
       life.drawFloor(ctx, st, t);
       const L = layout(v);
+      if (v.shoals > 0) shoals.drawBack(ctx, focus, reef, L, v, t);
       reef.draw(ctx, L, v, t);
       const live = effects.live(t);
       reef.drawEffects(ctx, L, v, live);
@@ -214,6 +217,7 @@ export function createAbyssScene(seed: number): Scene {
         glow(ctx, vent.x, vent.y, (40 + 140 * k) * scale(), '255,150,80', 0.6 * (1 - k));
         ctx.restore();
       }
+      if (v.shoals > 0) shoals.drawFront(ctx, focus, reef, L, v, t);
       life.drawFront(ctx, st, t);
       drawSnow(ctx, t, 2);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);

@@ -356,8 +356,11 @@ export function maxed(s: GameState, id: UpgradeId): boolean {
 }
 
 export function revealed(s: GameState, id: UpgradeId): boolean {
-  const { level, earned, height, band } = upgrade(id).reveal;
+  let { level, earned, height, band } = upgrade(id).reveal;
   if (s.levels[id] > 0) return true;
+  // Lineage traits that change the order things open in.
+  if (id === 'shoal' && trait(s, 'early-shoals')) height = 20;
+  if ((id === 'grounds' || id === 'sandbar') && trait(s, 'rasp-kin')) band = 'eyes';
   if (band !== undefined && !s.bands.includes(band)) return false;
   if (level && s.levels[level[0]] < level[1]) return false;
   if (earned !== undefined && s.earned.calcite < earned) return false;

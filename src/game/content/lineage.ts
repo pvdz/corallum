@@ -10,7 +10,9 @@ export const LINEAGE = {
   endingBonus: 10,
 } as const;
 
-export type TraitId = 'deep-memory' | 'quick-budding' | 'old-bands' | 'remembered-shoals' | 'glimmer' | 'kept-readings' | 'settling';
+export type TraitId =
+  | 'deep-memory' | 'quick-budding' | 'old-bands' | 'remembered-shoals' | 'glimmer' | 'kept-readings' | 'settling'
+  | 'early-shoals' | 'rasp-kin';
 
 export type Trait = {
   id: TraitId;
@@ -57,6 +59,16 @@ export const TRAITS: readonly Trait[] = [
     id: 'settling', name: 'Quick settling', effect: 'the reef rises ×2 as fast after each band',
     flavour: 'They do not wait to be sure before they build.',
     cost: 5, growth: 1, max: 1,
+  },
+  {
+    id: 'early-shoals', name: 'Lamps in the snow', effect: 'shoals come at 20 m, in the Silt Floor',
+    flavour: 'Lanternfish remember the way down to a reef that once called them.',
+    cost: 10, growth: 1, max: 1,
+  },
+  {
+    id: 'rasp-kin', name: 'Rasp kin', effect: 'grazing grounds and sand bars open in the Midnight Water',
+    flavour: 'The Rasp know your children by the taste of their stone, and come early.',
+    cost: 14, growth: 1, max: 1,
   },
 ];
 

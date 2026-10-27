@@ -88,3 +88,17 @@ test('pacing: one lesser spawning at 1000 m finishes the game sooner than none',
   const one = runBot(ended, 14 * 3600, { spawnAt: 1000 }).total;
   assert.ok(one < none, `${one} vs ${none}`);
 });
+
+test('strategy traits open things earlier', async () => {
+  const { revealed } = await import('../../src/game/sim/economy.ts');
+  const s = newGame(1);
+  s.height = 25;
+  s.bands.push('eyes');
+  assert.equal(revealed(s, 'shoal'), false);
+  assert.equal(revealed(s, 'grounds'), false);
+  s.meta.traits['early-shoals'] = 1;
+  s.meta.traits['rasp-kin'] = 1;
+  assert.ok(revealed(s, 'shoal'));
+  assert.ok(revealed(s, 'grounds'));
+  assert.ok(revealed(s, 'sandbar'));
+});
