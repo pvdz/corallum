@@ -188,3 +188,48 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 }
 #yielded a { color: var(--glow); }
 .yielded #yielded { display: block; }
+
+/* ---------- Act II: plankton, murmurs, shoals, readings ---------- */
+:root { --plankton: #e9f59a; --murmurs: #c9b2ff; }
+.stock.plankton .stock-value { color: var(--plankton); text-shadow: 0 0 14px rgba(230, 245, 150, 0.35); }
+.stock.murmurs .stock-value { color: var(--murmurs); text-shadow: 0 0 14px rgba(190, 160, 255, 0.45); }
+
+.shoals { background: rgba(255, 240, 180, 0.03); border: 1px solid rgba(255, 230, 160, 0.18); border-radius: var(--radius); padding: 10px 12px; }
+.shoals[hidden] { display: none; }
+.shoals header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+.shoals h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 17px; color: #fff3cf; }
+.shoals.has-idle .level { color: #ffe08a; }
+.job { display: grid; grid-template-columns: 1fr auto 2.2em auto; align-items: center; gap: 8px; padding: 5px 0; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+.job-label { display: flex; flex-direction: column; min-width: 0; }
+.job-name { font-size: 14px; }
+.job-feed .job-name { color: var(--plankton); }
+.job-light .job-name { color: var(--glowc); }
+.job-scout .job-name { color: var(--murmurs); }
+.job-what { font-size: 11.5px; color: var(--ink-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.job.locked { opacity: 0.45; }
+.job-count { text-align: center; font-family: var(--display); font-size: 18px; font-variant-numeric: tabular-nums; }
+.step {
+  width: 34px; height: 30px; border-radius: 10px; border: 1px solid var(--edge); background: var(--card);
+  color: var(--ink); font-size: 17px; line-height: 1; cursor: pointer;
+}
+.step:not(:disabled):hover { border-color: var(--edge-strong); background: var(--card-hover); }
+.step:disabled { opacity: 0.35; cursor: default; }
+
+.card.reading { border-color: rgba(200, 178, 255, 0.3); background: rgba(160, 130, 255, 0.05); }
+.card.reading.ready { border-color: rgba(200, 178, 255, 0.7); box-shadow: 0 0 22px rgba(170, 140, 255, 0.18) inset; }
+.buy.murmurs { border-color: rgba(201, 178, 255, 0.5); color: var(--murmurs); background: rgba(160, 130, 255, 0.10); }
+.buy.murmurs:not(:disabled):hover { background: rgba(160, 130, 255, 0.2); box-shadow: 0 0 16px rgba(170, 140, 255, 0.35); }
+.band.is-reading .band-depth { color: var(--murmurs); }
+
+/* ---------- Zone title card ---------- */
+#zone-title {
+  position: absolute; left: 0; right: 0; top: 30%; text-align: center; pointer-events: none; opacity: 0;
+  display: flex; flex-direction: column; gap: 6px; align-items: center; font-family: var(--display);
+}
+@media (min-width: 800px) { #zone-title { right: min(400px, 36vw); } }
+@media (max-width: 799px) { #zone-title { top: 18%; } }
+#zone-title span { font-size: 14px; letter-spacing: 0.4em; color: var(--calcite); }
+#zone-title strong { font-weight: 400; font-size: clamp(28px, 5vw, 52px); letter-spacing: 0.12em; text-shadow: 0 0 24px rgba(159, 246, 255, 0.5); }
+#zone-title em { color: var(--ink-dim); font-size: clamp(14px, 1.6vw, 18px); }
+#zone-title.show { animation: zone-title 7s ease both; }
+@keyframes zone-title { 0% { opacity: 0; transform: translateY(8px); } 15%, 70% { opacity: 1; transform: none; } 100% { opacity: 0; } }

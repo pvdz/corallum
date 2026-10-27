@@ -1,0 +1,321 @@
+// The Midnight Water (Act II): black water with lights in it. The reef's upper growth rises
+// out of the bottom of the frame; lanternfish shoals show what job each is doing — feeders
+// circle the reef herding plankton, light-swimmers spiral above the crown, scouts dive into
+// the dark below. A siphonophore passes now and then once the reef has seen one.
+
+import { mulberry32, range } from '../sim/rng.ts';
+import { createBloom, type Bloom } from './bloom.ts';
+import { glow } from './draw.ts';
+import { createReef, type ReefLayout } from './reef.ts';
+import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts';
+
+const FROM = 60;
+const TO = 3000;
+const MAX_DRAWN_SHOALS = 30;
+const FISH_PER_SHOAL = 9;
+
+type Flash = { x: number; y: number; period: number; phase: number; hue: number; r: number };
+type Flake = { x: number; y: number; r: number; speed: number; phase: number };
+type FishSlot = { ox: number; oy: number; ph: number; size: number };
+type Comb = { x: number; y: number; size: number; phase: number; drift: number; tilt: number };
+
+export function createMidnightScene(seed: number): Scene {
+  const rng = mulberry32(seed ^ 0x2f6b1d3);
+  let w = 1, h = 1, dpr = 1;
+  let focus: Focus = { x: 0, y: 0, w: 1, h: 1 };
+  const reef = createReef(Math.floor(rng() * 1e9));
+  const effects = createEffects();
+  let bloom: Bloom | null = null;
+  const flashes: Flash[] = Array.from({ length: 34 }, () => ({
+    x: rng(), y: range(rng, 0.03, 0.8), period: range(rng, 5, 19), phase: rng() * 20,
+    hue: rng() < 0.7 ? range(rng, 180, 215) : range(rng, 120, 150), r: range(rng, 0.6, 1.6),
+  }));
+  let flakes: Flake[] = [];
+  const flakeSeed = Math.floor(rng() * 1e9);
+  const fish: FishSlot[] = Array.from({ length: FISH_PER_SHOAL }, (_, k) => ({
+    ox: Math.cos(k * 2.4) * (0.4 + (k % 3) * 0.3), oy: Math.sin(k * 1.7) * (0.3 + (k % 2) * 0.35),
+    ph: k * 1.3, size: 0.8 + (k % 4) * 0.1,
+  }));
+
+  const combs: Comb[] = Array.from({ length: 3 }, (_, i) => ({
+    x: [-0.32, 0.3, 0.05][i]! + range(rng, -0.03, 0.03), y: [0.2, 0.32, 0.08][i]! + range(rng, -0.03, 0.03),
+    size: [1.7, 1.25, 0.9][i]!, phase: rng() * 10, drift: range(rng, -1, 1), tilt: range(rng, -0.4, 0.4),
+  }));
+
+  const scale = () => Math.min(focus.w, focus.h) / 700;
+
+  /** Comb jellies: glassy ovals whose eight comb rows ripple with travelling rainbow light. */
+  function drawComb(ctx: CanvasRenderingContext2D, c: Comb, t: number): void {
+    const s = scale() * c.size;
+    const x = focus.x + focus.w * (0.5 + c.x + Math.sin(t * 0.03 + c.phase) * 0.04);
+    const y = focus.y + focus.h * (c.y + Math.sin(t * 0.05 + c.phase * 2) * 0.03);
+    const rx = 16 * s, ry = 26 * s;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(c.tilt + Math.sin(t * 0.2 + c.phase) * 0.1);
+    const body = ctx.createRadialGradient(0, -ry * 0.3, 0, 0, 0, ry);
+    body.addColorStop(0, 'rgba(200,220,255,0.10)');
+    body.addColorStop(1, 'rgba(150,180,255,0.03)');
+    ctx.fillStyle = body;
+    ctx.strokeStyle = 'rgba(200,220,255,0.18)';
+    ctx.lineWidth = 0.8 * s;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let row = 0; row < 8; row++) {
+      const ax = Math.sin((row / 8) * Math.PI * 2) * rx * 0.85;
+      const bow = Math.cos((row / 8) * Math.PI * 2);
+      if (bow < -0.3) continue;
+      for (let q = 0; q < 9; q++) {
+        const f = q / 8 - 0.5;
+        const py = f * ry * 1.7;
+        const px = ax * Math.sqrt(Math.max(0, 1 - (py / ry) ** 2));
+        const hue = (t * 120 + q * 40 + row * 25) % 360;
+        const a = (0.25 + 0.35 * Math.max(0, Math.sin(t * 4 - q * 0.8 + row))) * (0.5 + 0.5 * bow);
+        ctx.fillStyle = `hsla(${hue},100%,70%,${a})`;
+        ctx.fillRect(px - 1.1 * s, py - 1.1 * s, 2.2 * s, 2.2 * s);
+      }
+    }
+    ctx.restore();
+  }
+  const cx = () => focus.x + focus.w * 0.5;
+
+  function progress(height: number): number {
+    if (height <= FROM) return 0;
+    return Math.min(1, Math.log(height / FROM) / Math.log(TO / FROM));
+  }
+
+  function layout(v: ReefView): ReefLayout {
+    return {
+      cx: cx(), baseY: focus.y + focus.h * 1.04, unit: focus.h * 0.8, s: scale(), dpr,
+      top: 0.4 + 0.6 * progress(v.height), bandStep: 0,
+      palette: ['#170c1f', '#62344a', 'rgba(255,170,170,0.2)'],
+    };
+  }
+
+  function build(): void {
+    const fr = mulberry32(flakeSeed);
+    const n = Math.round((w * h) / (dpr * dpr) / 5200);
+    flakes = Array.from({ length: n }, () => ({
+      x: fr(), y: fr(), r: range(fr, 0.4, 1.2) * dpr, speed: range(fr, 0.004, 0.012), phase: fr() * 6,
+    }));
+  }
+
+  function drawWater(ctx: CanvasRenderingContext2D, t: number, p: number): void {
+    const g = ctx.createLinearGradient(0, 0, 0, h);
+    // Higher up, the top of the frame starts to hold the faintest blue.
+    g.addColorStop(0, `rgb(${6 + p * 8},${9 + p * 16},${26 + p * 30})`);
+    g.addColorStop(0.45, '#04061a');
+    g.addColorStop(1, '#010106');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    const sg = ctx.createRadialGradient(cx(), -h * 0.2, 0, cx(), -h * 0.2, h * 0.7);
+    sg.addColorStop(0, `rgba(90,120,200,${0.05 + p * 0.10 + 0.02 * Math.sin(t * 0.3)})`);
+    sg.addColorStop(1, 'rgba(40,60,140,0)');
+    ctx.fillStyle = sg;
+    ctx.fillRect(0, 0, w, h);
+    ctx.restore();
+  }
+
+  function drawFlashes(ctx: CanvasRenderingContext2D, t: number): void {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    const s = scale();
+    for (const f of flashes) {
+      const u = ((t + f.phase) % f.period) / f.period;
+      // A quick bright flash, then a long dark.
+      const a = u < 0.08 ? Math.sin((u / 0.08) * Math.PI) : 0;
+      if (a <= 0) continue;
+      glow(ctx, f.x * w, f.y * h, 14 * s * f.r, `${Math.round(f.hue - 120)},${Math.round(f.hue + 20)},255`, 0.6 * a);
+    }
+    ctx.restore();
+  }
+
+  function drawSnow(ctx: CanvasRenderingContext2D, t: number): void {
+    ctx.fillStyle = 'rgba(190,205,240,0.35)';
+    for (const f of flakes) {
+      const y = ((f.y + t * f.speed) % 1) * (h + 10) - 5;
+      const x = (((f.x + Math.sin(t * 0.25 + f.phase) * 0.003) % 1) + 1) % 1 * w;
+      ctx.fillRect(x, y, f.r, f.r);
+    }
+  }
+
+  /** Centre of shoal i doing job at time t. */
+  function shoalCentre(job: 'feed' | 'light' | 'scout', i: number, n: number, t: number, L: ReefLayout): [number, number] {
+    const s = L.s;
+    const reefTopY = L.baseY - Math.min(1, L.top) * L.unit;
+    const midY = (reefTopY + focus.y + focus.h) / 2;
+    if (job === 'feed') {
+      const a = t * 0.22 + (i / Math.max(1, n)) * Math.PI * 2;
+      const rx = focus.w * (0.24 + 0.05 * (i % 3));
+      const ry = focus.h * 0.1;
+      return [cx() + Math.cos(a) * rx, midY + Math.sin(a) * ry + (i % 2 ? 30 : -30) * s];
+    }
+    if (job === 'light') {
+      // The shoal pact: a slow spiral over the crown.
+      const [crx, cry] = reef.crown(L);
+      const a = t * 0.35 + (i / Math.max(1, n)) * Math.PI * 2;
+      const r = (70 + 40 * Math.sin(t * 0.21 + i)) * s;
+      return [crx + Math.cos(a) * r * 1.5, cry - 60 * s + Math.sin(a) * r * 0.55];
+    }
+    // Scouts dive below the frame and come back.
+    const period = 26;
+    const u = ((t + i * 7.3) % period) / period;
+    const dive = u < 0.5 ? u * 2 : 2 - u * 2;
+    const ease = dive * dive * (3 - 2 * dive);
+    const side = i % 2 ? 1 : -1;
+    const x = cx() + side * focus.w * (0.2 + 0.06 * Math.sin(i)) + Math.sin(t * 0.5 + i) * 20 * s;
+    return [x, midY - 40 * s + ease * (focus.h * 0.62)];
+  }
+
+  function drawFishShoal(ctx: CanvasRenderingContext2D, job: 'feed' | 'light' | 'scout', i: number, n: number, t: number, L: ReefLayout): void {
+    const s = L.s;
+    const spread = (job === 'light' ? 22 : 30) * s;
+    const flicker = job === 'light' ? 0.5 + 0.5 * Math.max(0, Math.sin(t * 0.35 * 4 + i)) ** 6 : 0;
+    const lights: [number, number, number][] = [];
+    for (let k = 0; k < fish.length; k++) {
+      const f = fish[k]!;
+      const lag = k * 0.06;
+      const [x0, y0] = shoalCentre(job, i, n, t - lag, L);
+      const [x1, y1] = shoalCentre(job, i, n, t - lag + 0.08, L);
+      const x = x0 + f.ox * spread + Math.sin(t * 1.9 + f.ph) * 3 * s;
+      const y = y0 + f.oy * spread + Math.cos(t * 1.4 + f.ph) * 3 * s;
+      const ang = Math.atan2(y1 - y0, x1 - x0);
+      const len = 9 * s * f.size;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(ang);
+      ctx.fillStyle = '#16233f';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, len, len * 0.3, 0, 0, Math.PI * 2);
+      ctx.fill();
+      const tail = Math.sin(t * 9 + f.ph) * len * 0.25;
+      ctx.beginPath();
+      ctx.moveTo(-len * 0.85, 0);
+      ctx.lineTo(-len * 1.45, -len * 0.35 + tail);
+      ctx.lineTo(-len * 1.45, len * 0.35 + tail);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+      // Photophores along the belly.
+      for (let q = 0; q < 3; q++) {
+        const d = (q - 1) * len * 0.45;
+        lights.push([x + Math.cos(ang) * d - Math.sin(ang) * len * 0.18, y + Math.sin(ang) * d + Math.cos(ang) * len * 0.18, q]);
+      }
+    }
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    const rgb = job === 'light' ? '150,255,240' : job === 'scout' ? '190,170,255' : '120,200,255';
+    const a = job === 'light' ? 0.35 + 0.4 * flicker : 0.4;
+    for (const [lx, ly] of lights) glow(ctx, lx, ly, 3.2 * s * (1 + 0.6 * flicker), rgb, a);
+    ctx.restore();
+  }
+
+  function drawPlankton(ctx: CanvasRenderingContext2D, t: number, v: ReefView, L: ReefLayout): void {
+    const n = Math.round(90 * v.planktonLevel);
+    if (n <= 0) return;
+    const s = L.s;
+    const pr = mulberry32(seed ^ 0x77);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    const reefMidY = L.baseY - Math.min(1, L.top) * L.unit * 0.5;
+    for (let i = 0; i < n; i++) {
+      const side = pr() < 0.5 ? -1 : 1;
+      const period = range(pr, 9, 16);
+      const ph = pr() * period;
+      const yy = range(pr, -0.35, 0.35);
+      const u = ((t + ph) % period) / period;
+      // Drifts in from the side toward the reef, fading as it is eaten.
+      const x = cx() + side * focus.w * (0.5 - 0.42 * u);
+      const y = reefMidY + yy * focus.h * (1 - u * 0.6) + Math.sin(t + i) * 6 * s;
+      glow(ctx, x, y, 3.2 * s, '230,240,150', 0.55 * Math.sin(u * Math.PI));
+    }
+    ctx.restore();
+  }
+
+  function drawSiphonophore(ctx: CanvasRenderingContext2D, t: number): void {
+    const s = scale();
+    const period = 140;
+    const u = (t % period) / period;
+    if (u > 0.55) return;
+    const head = -0.25 + (u / 0.55) * 1.6;
+    const y0 = focus.y + focus.h * 0.22;
+    ctx.save();
+    for (let k = 0; k < 34; k++) {
+      const xu = head - k * 0.018;
+      if (xu < -0.1 || xu > 1.1) continue;
+      const x = focus.x + xu * focus.w;
+      const y = y0 + Math.sin(xu * 7 + t * 0.4) * 18 * s + k * 0.6 * s;
+      const pulse = 0.5 + 0.5 * Math.sin(t * 3 - k * 0.5);
+      const r = (6 + 2 * pulse) * s * (1 - k / 60);
+      ctx.fillStyle = `rgba(170,210,255,${0.10 + 0.08 * pulse})`;
+      ctx.strokeStyle = `rgba(200,230,255,${0.25 + 0.2 * pulse})`;
+      ctx.lineWidth = 0.8 * s;
+      ctx.beginPath();
+      ctx.ellipse(x, y, r * 1.3, r, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      if (k % 3 === 0) {
+        ctx.strokeStyle = 'rgba(200,230,255,0.12)';
+        ctx.beginPath();
+        ctx.moveTo(x, y + r);
+        ctx.quadraticCurveTo(x + Math.sin(t + k) * 8 * s, y + 30 * s, x - 4 * s, y + 55 * s);
+        ctx.stroke();
+      }
+    }
+    ctx.globalCompositeOperation = 'lighter';
+    const hx = focus.x + head * focus.w;
+    glow(ctx, hx, y0 + Math.sin(head * 7 + t * 0.4) * 18 * s, 30 * s, '170,220,255', 0.35);
+    ctx.restore();
+  }
+
+  function vignette(ctx: CanvasRenderingContext2D): void {
+    const c = cx(), cy = focus.y + focus.h * 0.5;
+    const g = ctx.createRadialGradient(c, cy, Math.min(focus.w, focus.h) * 0.3, c, cy, Math.max(w, h) * 0.8);
+    g.addColorStop(0, 'rgba(0,0,0,0)');
+    g.addColorStop(1, 'rgba(0,0,4,0.7)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+  }
+
+  return {
+    bloomStrength: 0.6,
+    effect(kind) {
+      effects.push(kind);
+    },
+    resize(nw, nh, ndpr, nfocus) {
+      w = nw; h = nh; dpr = ndpr; focus = nfocus;
+      build();
+    },
+    draw(ctx, t, v) {
+      const p = progress(v.height);
+      const L = layout(v);
+      drawWater(ctx, t, p);
+      drawFlashes(ctx, t);
+      for (const c of combs) drawComb(ctx, c, t);
+      if (v.bands.includes('siphon')) drawSiphonophore(ctx, t);
+      drawSnow(ctx, t);
+      // Shoals behind the reef: scouts (they dive past it) and half the feeders.
+      const shown = Math.min(MAX_DRAWN_SHOALS, v.shoals);
+      const scale = shown / Math.max(1, v.shoals);
+      const counts = {
+        feed: Math.round(v.jobs.feed * scale),
+        light: Math.round(v.jobs.light * scale),
+        scout: Math.round(v.jobs.scout * scale),
+      };
+      for (let i = 0; i < counts.scout; i++) drawFishShoal(ctx, 'scout', i, counts.scout, t, L);
+      for (let i = 0; i < counts.feed; i += 2) drawFishShoal(ctx, 'feed', i, counts.feed, t, L);
+      drawPlankton(ctx, t, v, L);
+      reef.draw(ctx, L, v, t);
+      reef.drawEffects(ctx, L, v, effects.live(t));
+      for (let i = 1; i < counts.feed; i += 2) drawFishShoal(ctx, 'feed', i, counts.feed, t, L);
+      for (let i = 0; i < counts.light; i++) drawFishShoal(ctx, 'light', i, counts.light, t, L);
+      if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
+      vignette(ctx);
+    },
+  };
+}

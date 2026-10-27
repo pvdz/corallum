@@ -10,10 +10,13 @@
 // With ?t, ?bot or ?fresh nothing is written to storage.
 // Console: corallum.skip(seconds), corallum.state, corallum.speed = x
 
-import { ACT1, type UpgradeId } from '../game/content/act1.ts';
-import { createAbyssScene, type Focus, type ReefView } from '../game/render/abyss.ts';
+import { type UpgradeId } from '../game/content/act1.ts';
+import { act, actAt } from '../game/content/acts.ts';
+import { createAbyssScene } from '../game/render/abyss.ts';
+import { createMidnightScene } from '../game/render/midnight.ts';
+import type { Focus, ReefView, Scene } from '../game/render/scene.ts';
 import { runBot } from '../game/sim/bot.ts';
-import { advance, buy, lure, rates, sweep } from '../game/sim/economy.ts';
+import { advance, assign, buy, feeding, lure, rates, read, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { num } from '../game/ui/format.ts';
@@ -56,13 +59,29 @@ const canvas = document.getElementById('world') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d', { alpha: false })!;
 const ui = document.getElementById('ui')!;
 const title = document.getElementById('title')!;
-const scene = createAbyssScene(state.seed);
+// One scene per zone; the zone follows the reef's height, with a crossfade between them.
+const scenes: Scene[] = [createAbyssScene(state.seed), createMidnightScene(state.seed)];
+const sceneFor = (height: number) => scenes[Math.min(scenes.length, actAt(height)) - 1]!;
+let scene = sceneFor(state.height);
+let fadingFrom: Scene | null = null;
+let fadeStart = 0;
+const FADE = 3;
+const fadeCanvas = document.createElement('canvas');
+const fadeCtx = fadeCanvas.getContext('2d', { alpha: false })!;
+const zoneTitle = document.createElement('div');
+zoneTitle.id = 'zone-title';
 
 const panel = createPanel(ui, {
   buy(id: UpgradeId) {
     if (!buy(state, id)) return;
-    scene.effect(id);
+    scene.effect(id === 'shoal' ? 'shoal' : id);
     save();
+  },
+  assign(job, delta) {
+    if (assign(state, job, delta)) save();
+  },
+  read(id) {
+    if (read(state, id)) save();
   },
   exportSave: () => exportString(state, Date.now()),
   importSave(text) {
@@ -79,7 +98,7 @@ const panel = createPanel(ui, {
     location.reload();
   },
 });
-panel.primeBands(state);
+panel.primeStories(state);
 
 // Another tab (or a pasted save) may write the same storage. Before each write, check the
 // stored save is still the one this page wrote; if not, stop writing so neither tab clobbers
@@ -138,9 +157,9 @@ function resize(): void {
   const focus: Focus = side
     ? { x: 0, y: 0, w: Math.round(r.left * dpr), h }
     : { x: 0, y: 0, w, h: Math.round(r.top * dpr) };
-  canvas.width = w;
-  canvas.height = h;
-  scene.resize(w, h, dpr, focus);
+  canvas.width = fadeCanvas.width = w;
+  canvas.height = fadeCanvas.height = h;
+  for (const sc of scenes) sc.resize(w, h, dpr, focus);
 }
 
 function view(): ReefView {
@@ -149,12 +168,31 @@ function view(): ReefView {
     polyps: state.levels.polyp,
     symbionts: state.levels.symbiont,
     height: state.height,
-    frameMetres: ACT1.goalMetres,
     glowLevel: r.lureMax > 0 ? (lure(r, state.glow) - 1) / r.lureMax : 0,
     sinceSweep: state.t - state.lastSweep,
     vent: state.levels.vent,
+    shoals: state.levels.shoal,
+    jobs: state.jobs,
+    planktonLevel: Math.min(1, (feeding(state.plankton) - 1) / 2),
+    bands: state.bands,
   };
 }
+
+function showZoneTitle(n: number): void {
+  const a = act(n);
+  zoneTitle.innerHTML = '';
+  const num = document.createElement('span');
+  num.textContent = ['I', 'II', 'III', 'IV', 'V'][n - 1] ?? String(n);
+  const name = document.createElement('strong');
+  name.textContent = a.name;
+  const blurb = document.createElement('em');
+  blurb.textContent = a.blurb;
+  zoneTitle.append(num, name, blurb);
+  zoneTitle.classList.remove('show');
+  void zoneTitle.offsetWidth;
+  zoneTitle.classList.add('show');
+}
+ui.append(zoneTitle);
 
 // Tapping the water sweeps the tentacles: a small burst of calcite.
 canvas.addEventListener('pointerdown', (e) => {
@@ -192,7 +230,27 @@ function frame(now: number): void {
     animT += Math.min(dt, 0.1);
     qualityCheck(dt);
   }
-  scene.draw(ctx, frozenT ?? animT, view());
+  const tNow = frozenT ?? animT;
+  const v = view();
+  const want = sceneFor(state.height);
+  if (want !== scene) {
+    fadingFrom = scene;
+    fadeStart = tNow;
+    scene = want;
+    showZoneTitle(actAt(state.height));
+  }
+  scene.draw(ctx, tNow, v);
+  if (fadingFrom) {
+    const k = (tNow - fadeStart) / FADE;
+    if (k >= 1) fadingFrom = null;
+    else {
+      fadingFrom.draw(fadeCtx, tNow, v);
+      ctx.save();
+      ctx.globalAlpha = 1 - k * k * (3 - 2 * k);
+      ctx.drawImage(fadeCanvas, 0, 0);
+      ctx.restore();
+    }
+  }
   panel.update(state);
   title.classList.toggle('faded', state.levels.polyp > 0 || state.t > 25);
   if (now - lastSave > 5000) { save(); lastSave = now; }

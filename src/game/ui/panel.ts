@@ -1,21 +1,29 @@
-// The DOM panel over the canvas: stocks, upgrade cards, the band reader and the away summary.
-// Built once; `update()` only rewrites text and classes, so it is cheap to call every frame.
+// The DOM panel over the canvas: stocks, shoal jobs, upgrade cards, bands and Readings, the
+// reader and the away summary. Built once; `update()` only rewrites text and classes, so it
+// is cheap to call every frame.
 
-import { ACT1, BANDS_ACT1, UPGRADES, effectText, type Band, type UpgradeId } from '../content/act1.ts';
+import { ACT1, UPGRADES, effectText, type Band, type UpgradeId } from '../content/act1.ts';
+import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
+import { act, actAt, SURFACE } from '../content/acts.ts';
 import {
-  calciteHold, calciteNet, calciteRate, canAfford, cost, glowHold, glowNet, maxed, rates, revealed, timeUntil, upgrade,
+  BANDS, bandMetres, calciteHold, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
+  jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
+  revealed, timeUntil, upgrade,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
 
 export type PanelHooks = {
   buy(id: UpgradeId): void;
+  assign(job: Job, delta: 1 | -1): void;
+  read(id: ReadingId): void;
   exportSave(): string;
   importSave(text: string): boolean;
   reset(): void;
 };
 
-type Card = { root: HTMLElement; cost: HTMLElement; level: HTMLElement; eta: HTMLElement; btn: HTMLButtonElement };
+type Card = { root: HTMLElement; cost: HTMLElement; level: HTMLElement; effect: HTMLElement; eta: HTMLElement; btn: HTMLButtonElement };
+type Story = { kicker: string; title: string; text: string };
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls = '', text = ''): HTMLElementTagNameMap[K] {
   const e = document.createElement(tag);
@@ -24,23 +32,38 @@ function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls = '', text = ''):
   return e;
 }
 
+function button(cls: string, text: string, onClick: () => void): HTMLButtonElement {
+  const b = el('button', cls, text);
+  b.type = 'button';
+  b.addEventListener('click', onClick);
+  return b;
+}
+
+function bandStory(b: Band): Story {
+  return { kicker: `Band at ${metres(b.metres)}`, title: b.title, text: b.text };
+}
+function readingStory(r: Reading): Story {
+  return { kicker: 'A Thousandfold band, read', title: r.title, text: r.text };
+}
+
 export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const panel = el('aside', 'panel');
   panel.setAttribute('aria-label', 'Reef');
 
-  // Stocks.
+  // ---------- Stocks ----------
   const stocks = el('div', 'stocks');
   const stock = (name: string, cls: string) => {
     const row = el('div', `stock ${cls}`);
-    const label = el('span', 'stock-name', name);
     const value = el('span', 'stock-value', '0');
     const sub = el('span', 'stock-sub', '');
-    row.append(label, value, sub);
+    row.append(el('span', 'stock-name', name), value, sub);
     stocks.append(row);
     return { row, value, sub };
   };
   const calcite = stock('Calcite', 'calcite');
   const glow = stock('Glow', 'glow');
+  const plankton = stock('Plankton', 'plankton');
+  const murmurs = stock('Murmurs', 'murmurs');
   const heightRow = el('div', 'stock height');
   const heightLabel = el('span', 'stock-name', 'Reef');
   const heightValue = el('span', 'stock-value', '0 m');
@@ -52,76 +75,110 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   heightRow.append(heightLabel, heightValue, heightBar, heightSub);
   stocks.append(heightRow);
 
-  // Tabs.
+  // ---------- Tabs ----------
   const tabs = el('nav', 'tabs');
   const pages = el('div', 'pages');
   const tabButtons = new Map<string, HTMLButtonElement>();
   const tabPages = new Map<string, HTMLElement>();
   for (const [id, label] of [['grow', 'Grow'], ['bands', 'Bands'], ['reef', 'Reef']] as const) {
-    const b = el('button', 'tab', label);
-    b.type = 'button';
-    b.addEventListener('click', () => showTab(id));
-    tabs.append(b);
-    tabButtons.set(id, b);
+    tabs.append(button('tab', label, () => showTab(id)));
+    tabButtons.set(id, tabs.lastElementChild as HTMLButtonElement);
     const page = el('section', `page page-${id}`);
     pages.append(page);
     tabPages.set(id, page);
   }
   const bandsDot = el('span', 'dot');
   tabButtons.get('bands')!.append(bandsDot);
+  let seenStories = 0;
+  let storyCount = 0;
   function showTab(id: string): void {
     for (const [k, b] of tabButtons) b.classList.toggle('on', k === id);
     for (const [k, p] of tabPages) p.hidden = k !== id;
-    if (id === 'bands') seenBands = lastBandCount;
+    if (id === 'bands') seenStories = storyCount;
   }
 
-  // Upgrade cards.
-  const cards = new Map<UpgradeId, Card>();
+  // ---------- Shoals ----------
   const grow = tabPages.get('grow')!;
+  const shoalBox = el('section', 'shoals');
+  shoalBox.hidden = true;
+  const shoalHead = el('header');
+  const shoalTitle = el('h3', '', 'Shoals');
+  const shoalIdle = el('span', 'level');
+  shoalHead.append(shoalTitle, shoalIdle);
+  shoalBox.append(shoalHead);
+  const jobRows = new Map<Job, { row: HTMLElement; count: HTMLElement; what: HTMLElement; minus: HTMLButtonElement; plus: HTMLButtonElement }>();
+  for (const j of JOBS) {
+    const row = el('div', `job job-${j.id}`);
+    const label = el('div', 'job-label');
+    const what = el('span', 'job-what');
+    label.append(el('span', 'job-name', j.name), what);
+    const minus = button('step', '−', () => hooks.assign(j.id, -1));
+    const count = el('span', 'job-count', '0');
+    const plus = button('step', '+', () => hooks.assign(j.id, 1));
+    minus.setAttribute('aria-label', `Fewer shoals ${j.verb}`);
+    plus.setAttribute('aria-label', `More shoals ${j.verb}`);
+    row.append(label, minus, count, plus);
+    shoalBox.append(row);
+    jobRows.set(j.id, { row, count, what, minus, plus });
+  }
+  grow.append(shoalBox);
+
+  // ---------- Upgrade cards ----------
+  const cards = new Map<UpgradeId, Card>();
   for (const u of UPGRADES) {
     const root = el('article', 'card');
     root.hidden = true;
     const head = el('header');
-    const name = el('h3', '', u.name);
     const level = el('span', 'level');
-    head.append(name, level);
+    head.append(el('h3', '', u.name), level);
     const flavour = el('p', 'flavour', u.flavour);
     const effect = el('p', 'effect', effectText(u.id));
     const foot = el('footer');
-    const btn = el('button', `buy ${u.currency}`);
-    btn.type = 'button';
     const costEl = el('span', 'cost');
-    btn.append(costEl);
-    const eta = el('span', 'eta');
-    foot.append(btn, eta);
-    root.append(head, flavour, effect, foot);
-    btn.addEventListener('click', () => {
+    const btn = button(`buy ${u.currency}`, '', () => {
       hooks.buy(u.id);
       root.classList.remove('pop');
       void root.offsetWidth;
       root.classList.add('pop');
     });
+    btn.append(costEl);
+    const eta = el('span', 'eta');
+    foot.append(btn, eta);
+    root.append(head, flavour, effect, foot);
     flavour.addEventListener('click', () => root.classList.toggle('open'));
     grow.append(root);
-    cards.set(u.id, { root, cost: costEl, level, eta, btn });
+    cards.set(u.id, { root, cost: costEl, level, effect, eta, btn });
   }
 
-  // Bands list.
+  // ---------- Bands and Readings ----------
   const bandsPage = tabPages.get('bands')!;
+  const readingCard = el('article', 'card reading');
+  readingCard.hidden = true;
+  const readingHead = el('header');
+  const readingTitle = el('h3');
+  readingHead.append(readingTitle, el('span', 'level', 'Reading'));
+  const readingHint = el('p', 'flavour', 'Scouting shoals listen at buried bands. Enough murmurs, and a band can be read.');
+  const readingEffect = el('p', 'effect');
+  const readingFoot = el('footer');
+  const readingCost = el('span', 'cost');
+  const readingBtn = button('buy murmurs', '', () => {
+    const next = currentReading;
+    if (next) hooks.read(next.id);
+  });
+  readingBtn.append(readingCost);
+  const readingEta = el('span', 'eta');
+  readingFoot.append(readingBtn, readingEta);
+  readingCard.append(readingHead, readingHint, readingEffect, readingFoot);
   const bandsIntro = el('p', 'hint', 'Each band of stone keeps what the reef saw while laying it down.');
   const bandList = el('ol', 'band-list');
-  bandsPage.append(bandsIntro, bandList);
+  bandsPage.append(readingCard, bandsIntro, bandList);
+  let currentReading: Reading | undefined;
   let lastBandCount = 0;
-  let seenBands = 0;
+  let lastReadingCount = 0;
 
-  // Reef (settings).
+  // ---------- Reef (settings) ----------
   const reefPage = tabPages.get('reef')!;
-  const exportBtn = el('button', 'plain', 'Copy save to clipboard');
-  const importBtn = el('button', 'plain', 'Load save from text…');
-  const resetBtn = el('button', 'plain danger', 'Let the reef go (reset)');
-  const note = el('p', 'hint', 'The reef saves itself every few seconds in this browser.');
-  reefPage.append(note, exportBtn, importBtn, resetBtn);
-  exportBtn.addEventListener('click', async () => {
+  const exportBtn = button('plain', 'Copy save to clipboard', async () => {
     const text = hooks.exportSave();
     try {
       await navigator.clipboard.writeText(text);
@@ -131,65 +188,75 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     }
     setTimeout(() => (exportBtn.textContent = 'Copy save to clipboard'), 2000);
   });
-  importBtn.addEventListener('click', () => {
+  const importBtn = button('plain', 'Load save from text…', () => {
     const text = window.prompt('Paste a save:');
     if (text && !hooks.importSave(text)) window.alert('That save could not be read.');
   });
-  resetBtn.addEventListener('click', () => {
+  const resetBtn = button('plain danger', 'Let the reef go (reset)', () => {
     if (window.confirm('Start over from a single polyp? This erases the reef.')) hooks.reset();
   });
+  reefPage.append(el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), exportBtn, importBtn, resetBtn);
 
   panel.append(stocks, tabs, pages);
   host.append(panel);
   showTab('grow');
 
-  // Reader: a story card over everything.
+  // ---------- Reader ----------
   const reader = el('div', 'reader');
   reader.hidden = true;
   const readerCard = el('div', 'reader-card');
-  const readerDepth = el('p', 'reader-depth');
+  const readerKicker = el('p', 'reader-depth');
   const readerTitle = el('h2');
   const readerText = el('p', 'reader-text');
-  const readerClose = el('button', 'plain', 'Continue');
-  readerCard.append(readerDepth, readerTitle, readerText, readerClose);
+  const readerClose = button('plain', 'Continue', () => closeReader());
+  readerCard.append(readerKicker, readerTitle, readerText, readerClose);
   reader.append(readerCard);
   host.append(reader);
-  const queue: Band[] = [];
-  function openBand(b: Band): void {
-    readerDepth.textContent = `Band at ${b.metres} m`;
-    readerTitle.textContent = b.title;
-    readerText.textContent = b.text;
+  const queue: Story[] = [];
+  function openStory(st: Story): void {
+    readerKicker.textContent = st.kicker;
+    readerTitle.textContent = st.title;
+    readerText.textContent = st.text;
     reader.hidden = false;
     readerClose.focus({ preventScroll: true });
+  }
+  function showStory(st: Story): void {
+    if (reader.hidden && away.hidden) openStory(st);
+    else queue.push(st);
   }
   function closeReader(): void {
     reader.hidden = true;
     const next = queue.shift();
-    if (next) openBand(next);
+    if (next) openStory(next);
   }
-  readerClose.addEventListener('click', closeReader);
   reader.addEventListener('click', (e) => { if (e.target === reader) closeReader(); });
 
-  // Away summary.
+  // ---------- Away summary ----------
   const away = el('div', 'reader away');
   away.hidden = true;
   const awayCard = el('div', 'reader-card');
-  const awayTitle = el('h2', '', 'While you drifted');
   const awayText = el('p', 'reader-text');
-  const awayClose = el('button', 'plain', 'Return to the reef');
-  awayCard.append(awayTitle, awayText, awayClose);
+  const awayClose = button('plain', 'Return to the reef', () => {
+    away.hidden = true;
+    const next = queue.shift();
+    if (next) openStory(next);
+  });
+  awayCard.append(el('h2', '', 'While you drifted'), awayText, awayClose);
   away.append(awayCard);
   host.append(away);
-  awayClose.addEventListener('click', () => { away.hidden = true; });
 
-  function bandItem(b: Band): HTMLLIElement {
+  function storyItem(depth: string, title: string, st: Story, cls = ''): HTMLLIElement {
     const li = el('li');
-    const btn = el('button', 'band');
-    btn.type = 'button';
-    btn.append(el('span', 'band-depth', `${b.metres} m`), el('span', 'band-title', b.title));
-    btn.addEventListener('click', () => openBand(b));
-    li.append(btn);
+    const b = button(`band ${cls}`, '', () => openStory(st));
+    b.append(el('span', 'band-depth', depth), el('span', 'band-title', title));
+    li.append(b);
     return li;
+  }
+  function appendBand(b: Band): void {
+    bandList.append(storyItem(metres(b.metres), b.title, bandStory(b)));
+  }
+  function appendReading(r: Reading): void {
+    bandList.append(storyItem('read', r.title, readingStory(r), 'is-reading'));
   }
 
   let primed = false;
@@ -197,23 +264,59 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     update(s: GameState): void {
       const r = rates(s);
       calcite.value.textContent = num(s.calcite);
-      const cNet = calciteNet(s, r);
       calcite.sub.textContent = `${rate(calciteRate(s, r))} · holds ~${num(calciteHold(s, r))}`;
-      calcite.row.classList.toggle('falling', cNet < 0);
-      const showGlow = s.levels.symbiont > 0 || s.glow > 0.05;
-      glow.row.hidden = !showGlow;
+      calcite.row.classList.toggle('falling', calciteNet(s, r) < 0);
+      glow.row.hidden = !(s.levels.symbiont > 0 || s.glow > 0.05);
       glow.value.textContent = num(s.glow);
       glow.sub.textContent = `${rate(glowNet(s, r))} · holds ~${num(glowHold(s, r))}`;
+      plankton.row.hidden = !(s.jobs.feed > 0 || s.plankton > 0.05);
+      plankton.value.textContent = num(s.plankton);
+      plankton.sub.textContent = `${rate(planktonNet(s, r))} · ×${feeding(s.plankton).toFixed(2)} calcite`;
+      murmurs.row.hidden = !(s.jobs.scout > 0 || s.murmurs > 0.05);
+      murmurs.value.textContent = num(s.murmurs);
+      murmurs.sub.textContent = `${rate(murmurNet(s, r))} · holds ~${num(murmurHold(s, r))}`;
 
+      // Height: progress within the current act's zone, with depth.
+      const zone = act(actAt(s.height));
+      heightLabel.textContent = zone.name;
       heightValue.textContent = metres(s.height);
-      const goal = ACT1.goalMetres;
-      heightFill.style.width = `${Math.min(100, (s.height / goal) * 100)}%`;
-      heightTarget.style.width = `${Math.min(100, (r.heightTarget / goal) * 100)}%`;
-      const next = BANDS_ACT1.find((b) => !s.bands.includes(b.id));
+      const span = zone.to - zone.from;
+      const frac = (x: number) => Math.max(0, Math.min(100, ((x - zone.from) / span) * 100));
+      heightFill.style.width = `${frac(s.height)}%`;
+      heightTarget.style.width = `${frac(r.heightTarget)}%`;
+      const depth = `${Math.round(Math.max(0, SURFACE - s.height)).toLocaleString('en-US')} m down`;
+      const next = BANDS.find((b) => !s.bands.includes(b.id));
+      const reachText = s.height > 60 ? ` · reach ×${reach(s.height).toFixed(1)}` : '';
       heightSub.textContent = r.heightTarget > s.height + 0.05
-        ? `rising to ${metres(r.heightTarget)}`
-        : next ? `next band at ${next.metres} m` : 'the silt is below you';
+        ? `${depth} · rising to ${metres(r.heightTarget)}`
+        : next ? `${depth} · next band at ${metres(next.metres)}${reachText}` : `${depth}${reachText}`;
 
+      // Shoals.
+      const shoals = s.levels.shoal;
+      shoalBox.hidden = shoals === 0;
+      if (shoals > 0) {
+        const idle = idleShoals(s);
+        shoalIdle.textContent = idle > 0 ? `${idle} idle of ${shoals}` : `${shoals}`;
+        shoalBox.classList.toggle('has-idle', idle > 0);
+        const perFeed = s.jobs.feed > 0 ? r.planktonP / s.jobs.feed : 0;
+        const perLight = s.jobs.light > 0 ? (r.glowP - ACT1.symbiontGlow * s.levels.symbiont) / s.jobs.light : 0;
+        for (const j of JOBS) {
+          const row = jobRows.get(j.id)!;
+          const open = jobOpen(s, j.id);
+          row.row.classList.toggle('locked', !open);
+          row.count.textContent = String(s.jobs[j.id]);
+          row.minus.disabled = s.jobs[j.id] <= 0;
+          row.plus.disabled = !open || idle <= 0;
+          const perScout = s.jobs.scout > 0 ? r.murmurP / s.jobs.scout : 0;
+          row.row.title = j.verb;
+          row.what.textContent = !open ? 'they do not yet know how to listen'
+            : j.id === 'feed' ? (perFeed ? `${rate(perFeed)} plankton each` : 'herd plankton to the polyps')
+            : j.id === 'light' ? (perLight ? `${rate(perLight)} glow each` : 'swim the glow pattern')
+            : perScout ? `${rate(perScout)} murmurs each` : 'listen at buried bands';
+        }
+      }
+
+      // Upgrade cards.
       for (const u of UPGRADES) {
         const c = cards.get(u.id)!;
         const show = revealed(s, u.id);
@@ -222,8 +325,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         if (!show) continue;
         const lv = s.levels[u.id];
         c.level.textContent = u.maxLevel === Infinity ? (lv ? `×${lv}` : '') : `${lv}/${u.maxLevel}`;
+        if (u.id === 'skeleton') c.effect.textContent = `the reef rises ${metres(bandMetres(lv))}`;
         if (maxed(s, u.id)) {
-          c.cost.textContent = 'Complete';
+          c.cost.textContent = u.id === 'skeleton' ? 'As high as it goes, for now' : 'Complete';
           c.btn.disabled = true;
           c.eta.textContent = '';
           c.root.classList.add('maxed');
@@ -235,27 +339,45 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const ok = canAfford(s, u.id);
         c.btn.disabled = !ok;
         c.root.classList.toggle('ready', ok);
-        if (ok) c.eta.textContent = '';
-        else {
-          const t = timeUntil(s, cur, price);
-          c.eta.textContent = !Number.isFinite(t) ? 'beyond what the reef can hold' : t < 1 ? 'any moment' : `in ${duration(t)}`;
-          c.eta.classList.toggle('never', !Number.isFinite(t));
-        }
+        setEta(c.eta, ok ? 0 : timeUntil(s, cur, price));
       }
 
+      // Readings.
+      currentReading = nextReading(s);
+      readingCard.hidden = !readingsRevealed(s) || !currentReading;
+      if (currentReading && !readingCard.hidden) {
+        readingTitle.textContent = currentReading.title;
+        readingEffect.textContent = currentReading.effect;
+        readingCost.textContent = `${num(currentReading.cost)} murmurs`;
+        const ok = s.murmurs >= currentReading.cost;
+        readingBtn.disabled = !ok;
+        readingCard.classList.toggle('ready', ok);
+        setEta(readingEta, ok ? 0 : timeUntil(s, 'murmurs', currentReading.cost));
+        if (!ok && s.jobs.scout === 0) readingEta.textContent = 'set shoals to scout';
+      }
+
+      // New bands and readings open in the reader and join the list.
       if (s.bands.length !== lastBandCount) {
         for (const id of s.bands.slice(lastBandCount)) {
-          const b = BANDS_ACT1.find((x) => x.id === id);
+          const b = BANDS.find((x) => x.id === id);
           if (!b) continue;
-          bandList.append(bandItem(b));
-          if (lastBandCount > 0 || id === 'wake') {
-            if (reader.hidden && away.hidden) openBand(b);
-            else queue.push(b);
-          }
+          appendBand(b);
+          storyCount++;
+          if (lastBandCount > 0 || id === 'wake') showStory(bandStory(b));
         }
         lastBandCount = s.bands.length;
       }
-      bandsDot.hidden = seenBands >= lastBandCount;
+      if (s.readings.length !== lastReadingCount) {
+        for (const id of s.readings.slice(lastReadingCount)) {
+          const rd = READINGS.find((x) => x.id === id);
+          if (!rd) continue;
+          appendReading(rd);
+          storyCount++;
+          showStory(readingStory(rd));
+        }
+        lastReadingCount = s.readings.length;
+      }
+      bandsDot.hidden = seenStories >= storyCount;
       primed = true;
     },
     /** Show the offline summary; any bands read while away are queued behind it. */
@@ -266,16 +388,27 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       awayText.textContent = parts.join(' ');
       away.hidden = false;
     },
-    /** Skip the reader for bands already read in a loaded save. */
-    primeBands(s: GameState): void {
+    /** List the bands and readings of a loaded save without opening the reader for each. */
+    primeStories(s: GameState): void {
       for (const id of s.bands) {
-        const b = BANDS_ACT1.find((x) => x.id === id);
-        if (b) bandList.append(bandItem(b));
+        const b = BANDS.find((x) => x.id === id);
+        if (b) appendBand(b);
       }
-      lastBandCount = seenBands = s.bands.length;
+      for (const id of s.readings) {
+        const rd = READINGS.find((x) => x.id === id);
+        if (rd) appendReading(rd);
+      }
+      lastBandCount = s.bands.length;
+      lastReadingCount = s.readings.length;
+      storyCount = seenStories = lastBandCount + lastReadingCount;
     },
     element: panel,
   };
+}
+
+function setEta(eta: HTMLElement, t: number): void {
+  eta.textContent = t <= 0 ? '' : !Number.isFinite(t) ? 'beyond what the reef can hold' : t < 1 ? 'any moment' : `in ${duration(t)}`;
+  eta.classList.toggle('never', !Number.isFinite(t));
 }
 
 export type Panel = ReturnType<typeof createPanel>;

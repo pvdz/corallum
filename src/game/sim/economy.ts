@@ -14,7 +14,7 @@
 
 import { ACT1, BANDS_ACT1, UPGRADES, type Band, type Currency, type UpgradeDef, type UpgradeId } from '../content/act1.ts';
 import { ACT2, BANDS_ACT2, READINGS, type Job, type ReadingId } from '../content/act2.ts';
-import { actAt } from '../content/acts.ts';
+import { act, actAt, LAST_PLAYABLE_ACT } from '../content/acts.ts';
 import { equilibrium, relax } from './ode.ts';
 import type { GameState } from './state.ts';
 
@@ -194,7 +194,11 @@ export function cost(s: GameState, id: UpgradeId): number {
   return Math.ceil(u.baseCost * scale * discount);
 }
 
+/** Height the content currently goes up to; bands past it wait for the next act. */
+export const HEIGHT_CAP = act(LAST_PLAYABLE_ACT).to;
+
 export function maxed(s: GameState, id: UpgradeId): boolean {
+  if (id === 'skeleton' && heightForBands(s.levels.skeleton) >= HEIGHT_CAP) return true;
   return s.levels[id] >= upgrade(id).maxLevel;
 }
 

@@ -174,6 +174,13 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] time compression: headless bot (src/game/sim/bot.ts, tools/bot.ts), ?bot/?skip/?speed, corallum.skip()
 - [ ] M1 leftovers: tap-to-sweep feedback on the reef itself (not only floating text); keyboard shortcuts
 
+### M3 Act II (Midnight Water) — landed 2026-10-27
+- [x] sim: shoals + jobs, plankton, murmurs, Readings, reach, band growth; bot plays to 3000 m in ~1h50m
+- [x] UI: shoal job steppers, Readings card, stock rows, zone bar with depth
+- [x] scene: Midnight Water (shoals show their jobs, plankton, flashes, comb jellies, siphonophore); zone crossfade + title card
+- [ ] Act II: the last Reading should gate the Twilight Shelf (Act III design)
+- [ ] glass shrimp (mentioned in design; not yet in)
+
 ### M2 Visual pass I
 - [x] coral growth: branching structure (space colonisation) instead of a pillar; bands visible as growth rings
 - [x] glow post-process (downsampled additive blur) and quality tiers (bloom drops on slow frames)
