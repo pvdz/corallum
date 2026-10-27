@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Act III design (Twilight Shelf: currents, silt drift, the Rasp truce) in docs/DESIGN.md + STORY.md, then sim. Remaining M2 items in PLAN.md are small polish.
+NOW: Act IV design (Sunlit Crown: reef dialects as a branching choice tree, sunlight) — write DESIGN/STORY first, then sim, UI, scene. Then Act V + ending, then the Lesser Spawning prestige.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -27,3 +27,8 @@ date, what landed, what is half-done, what's next.
   now an upstream stock in advance(). Band laying stops at 3000 m until Act III exists.
 - Saves: a page that sees a foreign write to the save stops writing (multi-tab safety).
 - 24 unit tests + 2 browser tests. Screenshots: screenshot/2026-10-27-18-45/.
+- Act III landed: sim + UI + Twilight Shelf scene (render/twilight.ts); shoals moved to
+  render/shoals.ts. Balance notes: silt must not start before the tools against it exist
+  (deadlock at 3000 m); the truce 'a'/'b' paths were within 6 min of each other after giving
+  'b' +2 Rasp. Story gates: Shelf opens on 'inside-the-wall'; its last band waits for the wall choice.
+- Bot full run to 3800 m: ~4h45m (Act I 23m, Act II 1h35m, Act III 2h45m).

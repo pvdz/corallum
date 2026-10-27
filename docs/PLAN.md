@@ -174,11 +174,19 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] time compression: headless bot (src/game/sim/bot.ts, tools/bot.ts), ?bot/?skip/?speed, corallum.skip()
 - [ ] M1 leftovers: tap-to-sweep feedback on the reef itself (not only floating text); keyboard shortcuts
 
+### M3b Act III (Twilight Shelf) — landed 2026-10-27
+- [x] sim: silt (smother), sand, Rasp dial, sand bars, channels, grazing grounds, three truce meetings, story gates
+- [x] per-zone band tables (3 m / growing / 30 m / 6 m / 1 m strides; cost growth per zone)
+- [x] bot plays the dial (best hold) and truce; Act III ≈ 2h45m whatever the truce path
+- [x] UI: silt/sand stocks, Rasp slider, truce card with choices, truce outcomes in the band list
+- [x] scene: Twilight Shelf (light shafts, silted slope, Rasp, sand bars, Ossel's wall → dune or living branch)
+- [ ] the Rasp should react to truce choices in the scene (e.g. closer to the reef after 'bands')
+
 ### M3 Act II (Midnight Water) — landed 2026-10-27
 - [x] sim: shoals + jobs, plankton, murmurs, Readings, reach, band growth; bot plays to 3000 m in ~1h50m
 - [x] UI: shoal job steppers, Readings card, stock rows, zone bar with depth
 - [x] scene: Midnight Water (shoals show their jobs, plankton, flashes, comb jellies, siphonophore); zone crossfade + title card
-- [ ] Act II: the last Reading should gate the Twilight Shelf (Act III design)
+- [x] Act II: the last Reading gates the Twilight Shelf
 - [ ] glass shrimp (mentioned in design; not yet in)
 
 ### M2 Visual pass I

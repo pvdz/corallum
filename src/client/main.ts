@@ -14,9 +14,10 @@ import type { UpgradeId } from '../game/content/types.ts';
 import { act, actAt } from '../game/content/acts.ts';
 import { createAbyssScene } from '../game/render/abyss.ts';
 import { createMidnightScene } from '../game/render/midnight.ts';
+import { createTwilightScene } from '../game/render/twilight.ts';
 import type { Focus, ReefView, Scene } from '../game/render/scene.ts';
 import { runBot } from '../game/sim/bot.ts';
-import { advance, assign, buy, choose, feeding, lure, rates, read, setRasp, sweep } from '../game/sim/economy.ts';
+import { advance, assign, buy, choose, feeding, lure, rates, read, setRasp, smother, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { num } from '../game/ui/format.ts';
@@ -60,7 +61,7 @@ const ctx = canvas.getContext('2d', { alpha: false })!;
 const ui = document.getElementById('ui')!;
 const title = document.getElementById('title')!;
 // One scene per zone; the zone follows the reef's height, with a crossfade between them.
-const scenes: Scene[] = [createAbyssScene(state.seed), createMidnightScene(state.seed)];
+const scenes: Scene[] = [createAbyssScene(state.seed), createMidnightScene(state.seed), createTwilightScene(state.seed)];
 const sceneFor = (height: number) => scenes[Math.min(scenes.length, actAt(height)) - 1]!;
 let scene = sceneFor(state.height);
 let fadingFrom: Scene | null = null;
@@ -185,6 +186,10 @@ function view(): ReefView {
     jobs: state.jobs,
     planktonLevel: Math.min(1, (feeding(state.plankton) - 1) / 2),
     bands: state.bands,
+    siltLevel: 1 - smother(state.silt),
+    sandBars: state.levels.sandbar,
+    rasp: state.rasp,
+    wall: state.truce.wall,
   };
 }
 
