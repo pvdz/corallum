@@ -32,7 +32,7 @@ import { createPanel } from '../game/ui/panel.ts';
 
 declare global {
   interface Window {
-    corallum?: { state: GameState; skip(seconds: number): void; speed: number };
+    corallum?: { state: GameState; skip(seconds: number): void; speed: number; prof: { draw: number; panel: number } };
   }
 }
 
@@ -245,11 +245,14 @@ if (botT === null && frozenT === null) {
 if (params.has('skip')) catchUp(Number(params.get('skip')));
 
 let speed = Number(params.get('speed') ?? 1);
+/** Rolling average milliseconds per frame (read from the console: corallum.prof). */
+const prof = { draw: 0, panel: 0 };
 window.corallum = {
   get state() { return state; },
   skip: (sec: number) => catchUp(sec),
   get speed() { return speed; },
   set speed(x: number) { speed = x; },
+  prof,
 };
 
 // Layout: the panel covers the right side (wide screens) or the bottom (narrow ones);
@@ -369,7 +372,9 @@ function frame(now: number): void {
     scene = want;
     showZoneTitle(actAt(state.height));
   }
+  const p0 = performance.now();
   scene.draw(ctx, tNow, v);
+  const p1 = performance.now();
   if (fadingFrom) {
     const k = (tNow - fadeStart) / FADE;
     if (k >= 1) fadingFrom = null;
@@ -381,8 +386,12 @@ function frame(now: number): void {
       ctx.restore();
     }
   }
+  const p2 = performance.now();
   panel.update(state);
+  const p3 = performance.now();
   finale.update(state);
+  prof.draw += (p1 - p0 - prof.draw) * 0.05;
+  prof.panel += (p3 - p2 - prof.panel) * 0.05;
   audio.setZone(actAt(state.height));
   replay.hidden = !ended(state);
   title.classList.toggle('faded', state.levels.polyp > 0 || state.t > 25);

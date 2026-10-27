@@ -179,7 +179,8 @@ Tick items as they land; keep this list honest. Add items freely.
 - [ ] accessibility: prefers-reduced-motion for canvas animation speed; text scale option; keyboard shortcuts
 - [ ] codex: a "Reef" summary page (choices made, memories, lineage history)
 - [ ] real-speed playtest of the first 10 minutes (pace of first purchases, clarity)
-- [ ] perf: measure frame time on a large desktop canvas and mobile; cap polyps/particles if needed
+- [x] perf: panel countdown probes were 19–25 ms/frame in Acts IV–V → coarse probes, one card per frame (<1 ms); glows use cached sprites; `corallum.prof` shows draw/panel ms
+- [ ] perf on a real phone (unmeasured: headless is software-rendered)
 
 ### M4 Lesser Spawning prestige + Lineage — landed 2026-10-27
 - [x] sim: lineage by height, seven traits, meta kept across runs, seen stories suppressed on reruns

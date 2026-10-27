@@ -259,8 +259,11 @@ function settledAt(x: number, eq: number): boolean {
 
 type Upstream = 'glow' | 'plankton' | 'height' | 'silt' | 'bloom';
 
-/** Advance the world by dt simulated seconds. Mutates and returns s. */
-export function advance(s: GameState, dt: number): GameState {
+/**
+ * Advance the world by dt simulated seconds. Mutates and returns s. `stepFraction` trades
+ * accuracy for speed in look-ahead probes; the game itself always uses the default.
+ */
+export function advance(s: GameState, dt: number, stepFraction = STEP_FRACTION): GameState {
   if (!(dt > 0)) return s;
   const r = rates(s);
   const kH = settleRate(s);
@@ -271,7 +274,7 @@ export function advance(s: GameState, dt: number): GameState {
     { key: 'silt', P: r.siltP, k: r.siltK, eq: equilibrium(r.siltP, r.siltK) },
     { key: 'bloom', P: r.bloomP, k: r.bloomK, eq: equilibrium(r.bloomP, r.bloomK) },
   ];
-  const maxStep = STEP_FRACTION / Math.max(...up.map((u) => u.k));
+  const maxStep = stepFraction / Math.max(...up.map((u) => u.k));
   const at = (x: Record<Upstream, number>) => production(r, x.glow, x.plankton, x.height, x.silt, x.bloom);
   let left = dt;
   while (left > 0) {
@@ -601,7 +604,7 @@ function solveRelax(x0: number, p: number, k: number, target: number): number {
 /** advance() without height, bands or time — for look-ahead probes. */
 function advanceStocks(s: GameState, dt: number): void {
   const { height, t, act } = s;
-  advance(s, dt);
+  advance(s, dt, 0.5);
   s.height = height;
   s.t = t;
   s.act = act;

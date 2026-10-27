@@ -389,9 +389,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   }
 
   let primed = false;
+  let etaTurn = 0;
   return {
     update(s: GameState): void {
       const r = rates(s);
+      // Countdown labels look ahead with the integrator; twice a second is plenty.
+      // One countdown refreshes per frame, in turn, so no frame pays for all of them.
+      etaTurn = (etaTurn + 1) % (UPGRADES.length + 1);
+      let etaSlot = 0;
       calcite.value.textContent = num(s.calcite);
       calcite.sub.textContent = `${rate(calciteRate(s, r))} · holds ~${num(calciteHold(s, r))}`;
       calcite.row.classList.toggle('falling', calciteNet(s, r) < 0);
@@ -535,7 +540,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const ok = canAfford(s, u.id);
         c.btn.disabled = !ok;
         c.root.classList.toggle('ready', ok);
-        setEta(c.eta, ok ? 0 : timeUntil(s, cur, price));
+        const due = etaSlot++ === etaTurn || !c.eta.textContent;
+        if (ok) setEta(c.eta, 0);
+        else if (due) setEta(c.eta, timeUntil(s, cur, price));
       }
 
       // Readings.
@@ -549,7 +556,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const ok = s.murmurs >= rc;
         readingBtn.disabled = !ok;
         readingCard.classList.toggle('ready', ok);
-        setEta(readingEta, ok ? 0 : timeUntil(s, 'murmurs', rc));
+        if (ok) setEta(readingEta, 0);
+        else if (etaTurn === UPGRADES.length || !readingEta.textContent) setEta(readingEta, timeUntil(s, 'murmurs', rc));
         if (!ok && s.jobs.scout === 0) readingEta.textContent = 'set shoals to scout';
       }
 

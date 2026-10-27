@@ -1,14 +1,34 @@
 // Small drawing helpers shared by every scene.
 
+// Glows are drawn from small pre-rendered sprites (one per colour) instead of building a radial
+// gradient per call: hundreds of glows a frame cost almost nothing this way.
+const SPRITE = 64;
+const sprites = new Map<string, HTMLCanvasElement | OffscreenCanvas>();
+
+function sprite(rgb: string): HTMLCanvasElement | OffscreenCanvas {
+  let c = sprites.get(rgb);
+  if (c) return c;
+  c = typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(SPRITE, SPRITE) : document.createElement('canvas');
+  c.width = c.height = SPRITE;
+  const g = c.getContext('2d') as CanvasRenderingContext2D;
+  const r = SPRITE / 2;
+  const grad = g.createRadialGradient(r, r, 0, r, r, r);
+  grad.addColorStop(0, `rgba(${rgb},1)`);
+  grad.addColorStop(0.35, `rgba(${rgb},0.35)`);
+  grad.addColorStop(1, `rgba(${rgb},0)`);
+  g.fillStyle = grad;
+  g.fillRect(0, 0, SPRITE, SPRITE);
+  sprites.set(rgb, c);
+  return c;
+}
+
 /** A soft additive-looking light blob (use with 'lighter' compositing for real glow). */
 export function glow(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, rgb: string, a: number): void {
   if (!(r > 0) || a <= 0.002) return;
-  const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-  g.addColorStop(0, `rgba(${rgb},${a})`);
-  g.addColorStop(0.35, `rgba(${rgb},${a * 0.35})`);
-  g.addColorStop(1, `rgba(${rgb},0)`);
-  ctx.fillStyle = g;
-  ctx.fillRect(x - r, y - r, r * 2, r * 2);
+  const prev = ctx.globalAlpha;
+  ctx.globalAlpha = prev * Math.min(1, a);
+  ctx.drawImage(sprite(rgb), x - r, y - r, r * 2, r * 2);
+  ctx.globalAlpha = prev;
 }
 
 export function ring(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, rgb: string, a: number, lw: number): void {
