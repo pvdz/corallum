@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: M6 polish — audio (procedural WebAudio ambience + purchase sounds, muted by default), accessibility (reduced motion, text scale), codex. Then a full playtest pass in the browser at real speed for feel.
+NOW: M6 polish continues — codex page; Rasp reacting to truce in the Twilight scene; away summary mentioning saturation; Act I lattice trade-off is weak (hold far above costs). See PLAN.md M6.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -42,3 +42,5 @@ date, what landed, what is half-done, what's next.
   Ending text waits 6.5 s after the release so the spawning is seen first.
 - Prestige landed (sim/prestige.ts, content/lineage.ts, Lineage tab). The harness can now seed a
   save into a page: open(vp, query, { save }).
+- M6: audio (audio/audio.ts), perf (panel probes were 25 ms/frame), keyboard + reduced motion,
+  rattail + glass shrimp. Screenshots: screenshot/2026-10-27-19-30/.

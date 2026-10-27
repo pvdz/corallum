@@ -176,9 +176,9 @@ Tick items as they land; keep this list honest. Add items freely.
 
 ### M6 Polish (in progress)
 - [x] procedural audio: zone pad + surf, purchase chimes, sweep bubble, story tone, choice and release cues; toggle top-left, off by default, remembered
-- [ ] accessibility: prefers-reduced-motion for canvas animation speed; text scale option; keyboard shortcuts
+- [x] accessibility: prefers-reduced-motion slows ambient animation; keyboard shortcuts (Space, P, B, G); text scale = browser zoom
 - [ ] codex: a "Reef" summary page (choices made, memories, lineage history)
-- [ ] real-speed playtest of the first 10 minutes (pace of first purchases, clarity)
+- [x] real-speed playtest of the first 3 minutes: a purchase every 4–6 s, a story every 40–60 s
 - [x] perf: panel countdown probes were 19–25 ms/frame in Acts IV–V → coarse probes, one card per frame (<1 ms); glows use cached sprites; `corallum.prof` shows draw/panel ms
 - [ ] perf on a real phone (unmeasured: headless is software-rendered)
 
@@ -214,14 +214,14 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] UI: shoal job steppers, Readings card, stock rows, zone bar with depth
 - [x] scene: Midnight Water (shoals show their jobs, plankton, flashes, comb jellies, siphonophore); zone crossfade + title card
 - [x] Act II: the last Reading gates the Twilight Shelf
-- [ ] glass shrimp (mentioned in design; not yet in)
+- [x] glass shrimp in the Midnight Water
 
 ### M2 Visual pass I
 - [x] coral growth: branching structure (space colonisation) instead of a pillar; bands visible as growth rings
 - [x] glow post-process (downsampled additive blur) and quality tiers (bloom drops on slow frames)
 - [ ] camera framing that climbs as the reef grows; parallax buried-reef silhouettes
 - [x] creatures: drifting jellies, brittle stars; vent chimney with plume when vent bought
-- [ ] deep fish (Act I: a slow rattail near the floor)
+- [x] deep fish (Act I: a slow rattail near the floor)
 - [x] purchase juice: polyp flash ring, band sweep, symbiont sparkles, lure rings, lattice shimmer, vent flare
 - [ ] purchase juice: sound (M6 audio)
 - [x] compact mobile cards (two cards visible at 390×844)

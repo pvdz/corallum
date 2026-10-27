@@ -39,6 +39,47 @@ export function createMidnightScene(seed: number): Scene {
 
   const scale = () => Math.min(focus.w, focus.h) / 700;
 
+  /** Glass shrimp: nearly invisible bodies, a glowing gut, legs paddling in sequence. */
+  function drawShrimp(ctx: CanvasRenderingContext2D, t: number, i: number): void {
+    const s = scale() * (1.1 + (i % 2) * 0.4);
+    const period = 60 + i * 17;
+    const u = ((t + i * 23) % period) / period;
+    const dir = i % 2 ? 1 : -1;
+    const x = focus.x + focus.w * (dir > 0 ? -0.1 + u * 1.2 : 1.1 - u * 1.2);
+    const y = focus.y + focus.h * (0.25 + 0.12 * i) + Math.sin(t * 0.7 + i) * 12 * s;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(dir, 1);
+    ctx.strokeStyle = 'rgba(190,220,255,0.28)';
+    ctx.fillStyle = 'rgba(190,220,255,0.06)';
+    ctx.lineWidth = 0.9 * s;
+    // A curled, segmented body.
+    ctx.beginPath();
+    ctx.moveTo(12 * s, 0);
+    ctx.bezierCurveTo(4 * s, -7 * s, -10 * s, -6 * s, -16 * s, 2 * s);
+    ctx.bezierCurveTo(-12 * s, 5 * s, 2 * s, 5 * s, 12 * s, 0);
+    ctx.fill();
+    ctx.stroke();
+    for (let k = 0; k < 5; k++) {
+      const lx = 6 * s - k * 4 * s;
+      const kick = Math.sin(t * 9 - k * 0.9) * 2 * s;
+      ctx.beginPath();
+      ctx.moveTo(lx, 3 * s);
+      ctx.lineTo(lx - 2 * s + kick, 7 * s);
+      ctx.stroke();
+    }
+    // Antennae.
+    ctx.beginPath();
+    ctx.moveTo(12 * s, -1 * s);
+    ctx.quadraticCurveTo(26 * s, -10 * s, 34 * s, -4 * s + Math.sin(t * 1.3 + i) * 3 * s);
+    ctx.stroke();
+    ctx.restore();
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, x - dir * 2 * s, y - 1 * s, 7 * s, '255,170,90', 0.35 + 0.15 * Math.sin(t * 2 + i));
+    ctx.restore();
+  }
+
   /** Comb jellies: glassy ovals whose eight comb rows ripple with travelling rainbow light. */
   function drawComb(ctx: CanvasRenderingContext2D, c: Comb, t: number): void {
     const s = scale() * c.size;
@@ -199,6 +240,7 @@ export function createMidnightScene(seed: number): Scene {
       drawWater(ctx, t, p);
       drawFlashes(ctx, t);
       for (const c of combs) drawComb(ctx, c, t);
+      for (let i = 0; i < 4; i++) drawShrimp(ctx, t, i);
       if (v.bands.includes('siphon')) drawSiphonophore(ctx, t);
       drawSnow(ctx, t);
       shoals.drawBack(ctx, focus, reef, L, v, t);

@@ -115,6 +115,59 @@ export function createLife(seed: number) {
     ctx.fill();
   }
 
+  /**
+   * A rattail: a big-headed deep fish with a long tapering tail, nosing slowly along the silt
+   * and crossing the frame every couple of minutes.
+   */
+  function drawRattail(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
+    const period = 150;
+    const u = (t % period) / period;
+    if (u > 0.6) return;
+    const s = st.s * 1.2;
+    const x = st.cx - st.w * 0.7 + (u / 0.6) * st.w * 1.4;
+    const y = st.baseY + 2 * s + Math.sin(t * 0.6) * 4 * s;
+    ctx.save();
+    ctx.translate(x, y);
+    // Head down toward the silt, tail trailing up behind.
+    ctx.rotate(0.06);
+    const body = ctx.createLinearGradient(0, -10 * s, 0, 10 * s);
+    body.addColorStop(0, '#3a3550');
+    body.addColorStop(1, '#1d1a2c');
+    ctx.fillStyle = body;
+    ctx.beginPath();
+    ctx.moveTo(26 * s, 0);
+    ctx.quadraticCurveTo(22 * s, -11 * s, 6 * s, -10 * s);
+    for (let i = 0; i <= 10; i++) {
+      const f = i / 10;
+      const tx = 6 * s - f * 70 * s;
+      const ty = -10 * s * (1 - f) + Math.sin(t * 2 + f * 5) * 3 * s * f;
+      ctx.lineTo(tx, ty);
+    }
+    for (let i = 10; i >= 0; i--) {
+      const f = i / 10;
+      ctx.lineTo(6 * s - f * 70 * s, 7 * s * (1 - f) + Math.sin(t * 2 + f * 5) * 3 * s * f);
+    }
+    ctx.quadraticCurveTo(22 * s, 9 * s, 26 * s, 0);
+    ctx.fill();
+    // A big eye that catches the reef's light.
+    ctx.fillStyle = 'rgba(150,200,255,0.55)';
+    ctx.beginPath();
+    ctx.arc(15 * s, -3 * s, 3.2 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#05050c';
+    ctx.beginPath();
+    ctx.arc(15.5 * s, -3 * s, 1.8 * s, 0, Math.PI * 2);
+    ctx.fill();
+    // Chin barbel, feeling the silt.
+    ctx.strokeStyle = 'rgba(150,140,180,0.6)';
+    ctx.lineWidth = 0.8 * s;
+    ctx.beginPath();
+    ctx.moveTo(22 * s, 5 * s);
+    ctx.quadraticCurveTo(24 * s, 10 * s, 21 * s + Math.sin(t * 3) * 2 * s, 13 * s);
+    ctx.stroke();
+    ctx.restore();
+  }
+
   /** The vent chimney: grows a little with each tier, plume shimmers upward. */
   function drawVent(ctx: CanvasRenderingContext2D, st: Stage, tier: number, t: number): { x: number; y: number } {
     const s = st.s;
@@ -182,6 +235,7 @@ export function createLife(seed: number) {
     },
     drawFloor(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
       for (const star of stars) drawStar(ctx, st, star, t);
+      drawRattail(ctx, st, t);
     },
     drawVent,
   };
