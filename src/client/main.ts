@@ -348,6 +348,25 @@ function qualityCheck(dt: number): void {
   if (slowFrames > 90) scene.bloomStrength = 0;
 }
 
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+// Keyboard: Space sweeps; P, B and G buy a polyp, a band and glimmerseed.
+const KEYS: Record<string, UpgradeId> = { p: 'polyp', b: 'skeleton', g: 'symbiont' };
+window.addEventListener('keydown', (e) => {
+  const target = e.target as HTMLElement | null;
+  if (e.ctrlKey || e.metaKey || e.altKey || target?.closest('input, textarea, button, select')) return;
+  if (e.key === ' ') {
+    e.preventDefault();
+    if (sweep(state) > 0) audio.cue('sweep');
+    return;
+  }
+  const id = KEYS[e.key.toLowerCase()];
+  if (id && buy(state, id)) {
+    scene.effect(id);
+    audio.cue('buy');
+  }
+});
+
 let last = performance.now();
 let lastSave = last;
 let animT = 40;
@@ -360,7 +379,7 @@ function frame(now: number): void {
     // A long gap means the tab slept; treat it like being away.
     if (dt > AWAY_NOTICE) catchUp(dt * speed);
     else advance(state, dt * speed);
-    animT += Math.min(dt, 0.1);
+    animT += Math.min(dt, 0.1) * (reducedMotion.matches ? 0.3 : 1);
     qualityCheck(dt);
   }
   const tNow = frozenT ?? animT;

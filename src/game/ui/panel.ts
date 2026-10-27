@@ -323,7 +323,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const resetBtn = button('plain danger', 'Let the reef go (reset)', () => {
     if (window.confirm('Start over from a single polyp? This erases the reef.')) hooks.reset();
   });
-  reefPage.append(el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), exportBtn, importBtn, resetBtn);
+  reefPage.append(
+    el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), exportBtn, importBtn, resetBtn,
+    el('p', 'hint', 'Keys: Space sweeps · P buds a polyp · B lays a band · G hosts glimmerseed.'),
+  );
 
   panel.append(stocks, tabs, pages);
   host.append(panel);
