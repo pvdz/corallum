@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: M6 polish continues — codex page; Rasp reacting to truce in the Twilight scene; away summary mentioning saturation; Act I lattice trade-off is weak (hold far above costs). See PLAN.md M6.
+NOW: Polish backlog in PLAN.md M6. Ideas not yet planned: more lineage content (traits that open strategies, not just multipliers), a title/intro card, music themes per zone, save-slot export reminder, more bands in Act II.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -44,3 +44,5 @@ date, what landed, what is half-done, what's next.
   save into a page: open(vp, query, { save }).
 - M6: audio (audio/audio.ts), perf (panel probes were 25 ms/frame), keyboard + reduced motion,
   rattail + glass shrimp. Screenshots: screenshot/2026-10-27-19-30/.
+- Whispers, codex, Ossel's wall on the Silt Floor, Rasp truce behaviour, landscape layout,
+  foot polyps. Screenshots: screenshot/2026-10-27-19-33/, 2026-10-27-19-35/.
