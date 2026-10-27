@@ -217,11 +217,14 @@ export function createTwilightScene(seed: number): Scene {
   }
 
   /** The Rasp: blunt-beaked grazers with coin scales, nosing along the slope. */
-  function drawRasp(ctx: CanvasRenderingContext2D, t: number, n: number): void {
+  function drawRasp(ctx: CanvasRenderingContext2D, t: number, n: number, trust: boolean, polite: boolean): void {
     const s = scale();
     for (let i = 0; i < Math.min(n, MAX_RASP); i++) {
       const g = grazers[i]!;
-      const u = (((g.phase + t * g.speed) % 1) + 1) % 1;
+      let u = (((g.phase + t * g.speed) % 1) + 1) % 1;
+      // Trusting Rasp graze close around the reef's foot; polite ones keep off its stone.
+      if (trust && i % 3 === 0) u = 0.5 + Math.sin(t * Math.abs(g.speed) * 6 + g.phase * 9) * 0.12;
+      else if (polite && Math.abs(u - 0.5) < 0.1) u = u < 0.5 ? 0.4 - (0.5 - u) : 0.6 + (u - 0.5);
       const x = focus.x - focus.w * 0.1 + u * focus.w * 1.2;
       const peck = Math.max(0, Math.sin(t * 2.2 + i * 1.7)) ** 8;
       const y = slopeY(u) - (14 + g.lane * 50) * s + peck * 8 * s;
@@ -307,7 +310,7 @@ export function createTwilightScene(seed: number): Scene {
       shoals.drawBack(ctx, focus, reef, L, v, t, '#1d3557');
       drawShelf(ctx, v.sandBars, v.siltLevel);
       drawWall(ctx, t, v.wall);
-      drawRasp(ctx, t, v.rasp);
+      drawRasp(ctx, t, v.rasp, v.raspTrust, v.raspPolite);
       reef.draw(ctx, L, v, t);
       reef.drawEffects(ctx, L, v, effects.live(t));
       shoals.drawFront(ctx, focus, reef, L, v, t, '#1d3557');

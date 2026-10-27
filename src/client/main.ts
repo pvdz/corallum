@@ -290,6 +290,8 @@ function view(): ReefView {
     sandBars: state.levels.sandbar,
     rasp: state.rasp,
     wall: state.truce.wall,
+    raspTrust: state.truce.story === 'a',
+    raspPolite: state.truce.terms === 'b',
     form: state.dialects.form,
     moonPhase: moonPhase(state.t),
     moonFull: moonFull(state.t),

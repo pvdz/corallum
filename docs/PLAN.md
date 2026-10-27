@@ -207,7 +207,7 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] bot plays the dial (best hold) and truce; Act III ≈ 2h45m whatever the truce path
 - [x] UI: silt/sand stocks, Rasp slider, truce card with choices, truce outcomes in the band list
 - [x] scene: Twilight Shelf (light shafts, silted slope, Rasp, sand bars, Ossel's wall → dune or living branch)
-- [ ] the Rasp should react to truce choices in the scene (e.g. closer to the reef after 'bands')
+- [x] the Rasp react to the truce: trusting ones graze at the reef foot, polite ones keep off its stone
 
 ### M3 Act II (Midnight Water) — landed 2026-10-27
 - [x] sim: shoals + jobs, plankton, murmurs, Readings, reach, band growth; bot plays to 3000 m in ~1h50m
