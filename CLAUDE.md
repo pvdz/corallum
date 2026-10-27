@@ -22,7 +22,7 @@ These were written by the agent, not the user; fix them when wrong.
 - `tsc --noEmit -p tsconfig.json` — typecheck (global tsc; never `npx`)
 - `node --test "test/sim/**/*.test.ts"` — unit tests
 - `node --no-warnings test/e2e/smoke.ts` — desktop + mobile load, no console errors
-- `node --no-warnings tools/screenshot.ts --tag <name> [--t <sec>] [--query "a=1&b=2"]`
+- `node --no-warnings tools/screenshot.ts [--t <sec>] --shot <tag>=<url params> ...`
   — writes `screenshot/YYYY-MM-DD-HH-MM/{desktop,mobile}-<name>.png`. Look at them.
 
 ## Hard rules

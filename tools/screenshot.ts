@@ -1,5 +1,7 @@
 // Captures a screenshot series into screenshot/YYYY-MM-DD-HH-MM/ (local time).
-// Usage: node tools/screenshot.ts [--t <seconds>] [--query "<extra url params>"] [--tag <name>]
+// Usage: node tools/screenshot.ts [--t <seconds>] [--shot <tag>=<url params>]...
+//   e.g. --shot start=fresh --shot act1-mid=bot=900
+// Without --shot it takes one shot tagged "scene" of a fresh game.
 
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -17,11 +19,17 @@ const dir = join('screenshot', stamp);
 mkdirSync(dir, { recursive: true });
 
 const t = arg('t', '42');
-const extra = arg('query', '');
-const tag = arg('tag', 'scene');
+const shots: [string, string][] = [];
+process.argv.forEach((a, i) => {
+  if (a !== '--shot') return;
+  const spec = process.argv[i + 1] ?? '';
+  const eq = spec.indexOf('=');
+  shots.push(eq < 0 ? [spec, ''] : [spec.slice(0, eq), spec.slice(eq + 1)]);
+});
+if (!shots.length) shots.push(['scene', 'fresh']);
 
 await withGame(async (open) => {
-  for (const vp of VIEWPORTS) {
+  for (const [tag, extra] of shots) for (const vp of VIEWPORTS) {
     const { page, errors } = await open(vp, `?t=${t}${extra ? '&' + extra : ''}`);
     await page.waitForSelector('html[data-ready="1"]', { timeout: 15000 });
     const file = join(dir, `${vp.name}-${tag}.png`);
