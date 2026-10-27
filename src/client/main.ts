@@ -96,7 +96,10 @@ const soundBtn = document.createElement('button');
 soundBtn.id = 'sound';
 soundBtn.type = 'button';
 function renderSound(): void {
-  soundBtn.textContent = audio.enabled ? '♪' : '♪̸';
+  const waves = audio.enabled
+    ? '<path d="M15 9a4 4 0 0 1 0 6M17.5 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>'
+    : '<path d="M15.5 9.5l5 5M20.5 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>';
+  soundBtn.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z" fill="currentColor"/>${waves}</svg>`;
   soundBtn.title = audio.enabled ? 'Sound on (click to mute)' : 'Sound off (click for sound)';
   soundBtn.setAttribute('aria-pressed', String(audio.enabled));
 }
