@@ -2,7 +2,7 @@
 // effects that play on it. Every zone scene owns one (with its own seed) and tells it where
 // the reef stands and how much of it has grown.
 
-import { generateCoral, thickness } from './coral.ts';
+import { generateCoral, thickness, type CoralForm } from './coral.ts';
 import { glow, ring } from './draw.ts';
 import type { EffectKind, ReefView } from './scene.ts';
 
@@ -21,14 +21,20 @@ export type ReefLayout = {
   bandStep: number;
   /** Colours of the stone: shadow, flesh, highlight. */
   palette?: [string, string, string];
+  /** Polyp stalk and tentacle colours. */
+  polyp?: [string, string];
+  /** How strongly polyp tips and symbionts glow (the deep is 1; daylight washes it out). */
+  glowScale?: number;
+  /** Polyp size relative to the scene scale. */
+  polypScale?: number;
 };
 
 const MAX_POLYPS = 90;
 const MAX_SPECKS = 240;
 const DEFAULT_PALETTE: [string, string, string] = ['#1d1026', '#6a3a50', 'rgba(255,170,160,0.22)'];
 
-export function createReef(seed: number) {
-  const coral = generateCoral(seed);
+export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
+  const coral = generateCoral(seed, form);
   const radii = new Float32Array(coral.count);
   let radiiTop = -1;
   let visibleCount = 0;
@@ -36,6 +42,8 @@ export function createReef(seed: number) {
   function refresh(L: ReefLayout): void {
     if (L.top === radiiTop) return;
     thickness(coral, L.top, radii);
+    // Thick trunks read as sausages; cap the pipe model's growth, then apply the form's girth.
+    for (let i = 0; i < radii.length; i++) radii[i] = Math.min(radii[i]!, 0.016) * girth;
     radiiTop = L.top;
     visibleCount = 0;
     for (let i = 0; i < coral.count; i++) if (coral.y[i]! <= L.top) visibleCount++;
@@ -116,20 +124,53 @@ export function createReef(seed: number) {
     }
   }
 
+  /** Plating: each layer of growth is a wide flat table, seen nearly edge-on. */
+  const TABLE_LAYERS = [0.3, 0.52, 0.74, 0.96];
+  function drawTables(ctx: CanvasRenderingContext2D, L: ReefLayout, t: number): void {
+    const [shadow, flesh, light] = L.palette ?? DEFAULT_PALETTE;
+    for (const ly of TABLE_LAYERS) {
+      if (ly > L.top + 0.02) continue;
+      let lo = Infinity, hi = -Infinity;
+      for (let i = 0; i < coral.count; i++) {
+        if (coral.y[i]! > L.top || Math.abs(coral.y[i]! - ly) > 0.05) continue;
+        lo = Math.min(lo, coral.x[i]!);
+        hi = Math.max(hi, coral.x[i]!);
+      }
+      if (!(hi > lo)) continue;
+      // A table grows out from its stem as the layer fills in.
+      const grown = Math.min(1, (L.top - ly + 0.02) / 0.12);
+      const mid = (lo + hi) / 2, half = ((hi - lo) / 2 + 0.03) * grown;
+      const x = L.cx + mid * L.unit, y = L.baseY - ly * L.unit + Math.sin(t * 0.4 + ly * 9) * L.dpr;
+      const rx = half * L.unit, ry = Math.max(3 * L.dpr, rx * 0.09);
+      ctx.fillStyle = shadow;
+      ctx.beginPath();
+      ctx.ellipse(x, y + ry * 0.5, rx * 1.02, ry * 1.1, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = flesh;
+      ctx.beginPath();
+      ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = light;
+      ctx.beginPath();
+      ctx.ellipse(x - rx * 0.1, y - ry * 0.35, rx * 0.8, ry * 0.45, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
   function polypPose(x: number, y: number, s: number, t: number, lean: number, phase: number): [number, number] {
     return [x + Math.sin(t * 0.6 + phase) * 2 * s + lean * 4 * s, y - 24 * s];
   }
 
-  function drawPolyp(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, t: number, lean: number, phase: number, flick: number): void {
+  function drawPolyp(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, t: number, lean: number, phase: number, flick: number, colours: [string, string]): void {
     const [ox, oy] = polypPose(x, y, s, t, lean, phase);
-    ctx.strokeStyle = '#ff9d86';
+    ctx.strokeStyle = colours[0];
     ctx.lineCap = 'round';
     ctx.lineWidth = 7 * s;
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.quadraticCurveTo(x - 4 * s, y - 14 * s, ox, oy);
     ctx.stroke();
-    ctx.strokeStyle = 'rgba(255,190,170,0.9)';
+    ctx.strokeStyle = colours[1];
     ctx.lineWidth = 2.2 * s;
     const open = 1 - flick * 0.6;
     for (let i = 0; i < 8; i++) {
@@ -149,13 +190,16 @@ export function createReef(seed: number) {
     const hp = Math.min(1, L.top) * L.unit;
     const pulse = 0.75 + 0.25 * Math.sin(t * 1.3);
     const lit = 0.35 + 0.65 * v.glowLevel;
+    const gs = L.glowScale ?? 1;
+    const colours = L.polyp ?? ['#ff9d86', 'rgba(255,190,170,0.9)'];
 
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    glow(ctx, L.cx, L.baseY - hp * 0.55 - 30 * s, 230 * s + hp * 0.75, '60,190,255', 0.10 * pulse * (0.6 + lit));
-    glow(ctx, crx, cry - 26 * s, 90 * s, '140,240,255', 0.28 * pulse);
+    glow(ctx, L.cx, L.baseY - hp * 0.55 - 30 * s, 230 * s + hp * 0.75, '60,190,255', 0.10 * pulse * (0.6 + lit) * gs);
+    glow(ctx, crx, cry - 26 * s, 90 * s, '140,240,255', 0.28 * pulse * gs);
     ctx.restore();
 
+    if (form === 'plating') drawTables(ctx, L, t);
     drawBranches(ctx, L, t);
 
     const nodes = polypNodes(L, shownPolyps(L, v));
@@ -165,9 +209,9 @@ export function createReef(seed: number) {
     for (let k = nodes.length - 1; k >= 0; k--) {
       const i = nodes[k]!;
       const [x, y] = nodePx(L, i);
-      const ps = s * (k === 0 ? 1 : 0.42 + 0.25 * ((i * 0.618) % 1));
+      const ps = s * (L.polypScale ?? 1) * (k === 0 ? 1 : 0.42 + 0.25 * ((i * 0.618) % 1));
       const lean = k === 0 ? 0 : leanOf(i);
-      drawPolyp(ctx, x, y, ps, t, lean, i * 0.37, flick);
+      drawPolyp(ctx, x, y, ps, t, lean, i * 0.37, flick, colours);
       const [ox, oy] = polypPose(x, y, ps, t, lean, i * 0.37);
       for (let q = 0; q < 8; q += 2) {
         const a = -Math.PI / 2 + lean * 0.4 + (q - 3.5) * 0.32;
@@ -179,7 +223,7 @@ export function createReef(seed: number) {
     ctx.globalCompositeOperation = 'lighter';
     tips.forEach(([tx, ty], i) => {
       const p = 0.6 + 0.4 * Math.sin(t * 2 + i * 0.8);
-      glow(ctx, tx, ty, 8 * s, '160,250,255', 0.75 * p);
+      glow(ctx, tx, ty, 8 * s, '160,250,255', 0.75 * p * gs);
     });
     // Glimmerseed symbionts speckle the branches.
     const specks = Math.min(MAX_SPECKS, v.symbionts * 6, Math.floor(visibleCount * 0.6));
@@ -189,7 +233,7 @@ export function createReef(seed: number) {
       shown++;
       const [x, y] = nodePx(L, i);
       const tw = 0.5 + 0.5 * Math.sin(t * (1.5 + (i % 7) * 0.2) + i);
-      glow(ctx, x, y, 5 * s * (0.6 + (i % 5) * 0.2), '120,255,210', (0.25 + 0.6 * lit) * tw);
+      glow(ctx, x, y, 5 * s * (0.6 + (i % 5) * 0.2), '120,255,210', (0.25 + 0.6 * lit) * tw * gs);
     }
     ctx.restore();
   }

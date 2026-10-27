@@ -1,6 +1,7 @@
 // The contract between the game loop and a zone scene.
 
 import type { Job } from '../content/act2.ts';
+import type { DialectId } from '../content/act4.ts';
 import type { UpgradeId } from '../content/types.ts';
 
 /** What a scene needs from the game state. */
@@ -26,6 +27,8 @@ export type ReefView = {
   rasp: number;
   /** The truce choice about Ossel's wall. */
   wall: '' | 'a' | 'b';
+  /** The Form dialect, which shapes the sunlit reef. */
+  form: DialectId | '';
 };
 
 /** Purchases (by upgrade id) and story moments a scene may flourish. */

@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Act IV design (Sunlit Crown: reef dialects as a branching choice tree, sunlight) — write DESIGN/STORY first, then sim, UI, scene. Then Act V + ending, then the Lesser Spawning prestige.
+NOW: Act V (The Breach: spawn stock, the Spawning Moon cycle, memory choice, ending, epilogue) — design first in DESIGN/STORY. Then the Lesser Spawning prestige + Lineage.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -32,3 +32,8 @@ date, what landed, what is half-done, what's next.
   (deadlock at 3000 m); the truce 'a'/'b' paths were within 6 min of each other after giving
   'b' +2 Rasp. Story gates: Shelf opens on 'inside-the-wall'; its last band waits for the wall choice.
 - Bot full run to 3800 m: ~4h45m (Act I 23m, Act II 1h35m, Act III 2h45m).
+- Act IV landed: sim + UI + Sunlit Crown scene (render/sunlit.ts). Lessons: canopy bought with
+  bloom that multiplies bloom ran away (Act IV in 20 min); additive glows burn to white on a bright
+  background, so the sunlit scene uses glowScale 0 and no bloom pass. Polyp settling order now
+  keeps a minimum spacing. Coral generator takes a form (fan/branching/massive/plating).
+- Bot full run to 3980 m: ~6h30m–6h55m depending on dialects.

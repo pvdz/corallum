@@ -174,6 +174,12 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] time compression: headless bot (src/game/sim/bot.ts, tools/bot.ts), ?bot/?skip/?speed, corallum.skip()
 - [ ] M1 leftovers: tap-to-sweep feedback on the reef itself (not only floating text); keyboard shortcuts
 
+### M3c Act IV (Sunlit Crown) — landed 2026-10-27
+- [x] sim: sunlight, bloom (photo multiplier + currency), pigments, canopy, 3 tiers × 3 dialects
+- [x] bot speaks dialects; every path 1h48–2h14
+- [x] UI: bloom stock, dialect card; band text variant when Ossel was kept
+- [x] scene: Sunlit Crown (surface glare, caustics, young reefs, reef fish, larvae); coral form follows the Form dialect (fan / branching / massive dome / plating tables)
+
 ### M3b Act III (Twilight Shelf) — landed 2026-10-27
 - [x] sim: silt (smother), sand, Rasp dial, sand bars, channels, grazing grounds, three truce meetings, story gates
 - [x] per-zone band tables (3 m / growing / 30 m / 6 m / 1 m strides; cost growth per zone)

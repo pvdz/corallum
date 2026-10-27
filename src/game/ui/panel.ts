@@ -7,9 +7,10 @@ import type { Band, UpgradeId } from '../content/types.ts';
 import { UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
 import { ACT3, MEETINGS, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
+import { DIALECTS, TIERS, type DialectId } from '../content/act4.ts';
 import { act, actAt, SURFACE } from '../content/acts.ts';
 import {
-  BANDS, bandMetres, calciteHold, nextMeeting, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
+  BANDS, bandMetres, bloomHold, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
   revealed, timeUntil, upgrade,
 } from '../sim/economy.ts';
@@ -22,6 +23,7 @@ export type PanelHooks = {
   read(id: ReadingId): void;
   setRasp(n: number): void;
   choose(id: MeetingId, choice: Choice): void;
+  speak(id: DialectId): void;
   exportSave(): string;
   importSave(text: string): boolean;
   reset(): void;
@@ -44,8 +46,8 @@ function button(cls: string, text: string, onClick: () => void): HTMLButtonEleme
   return b;
 }
 
-function bandStory(b: Band): Story {
-  return { kicker: `Band at ${metres(b.metres)}`, title: b.title, text: b.text };
+function bandStory(b: Band, kept = false): Story {
+  return { kicker: `Band at ${metres(b.metres)}`, title: b.title, text: kept && b.kept ? b.kept : b.text };
 }
 function readingStory(r: Reading): Story {
   return { kicker: 'A Thousandfold band, read', title: r.title, text: r.text };
@@ -75,6 +77,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const murmurs = stock('Murmurs', 'murmurs');
   const silt = stock('Silt', 'silt');
   const sand = stock('Sand', 'sand');
+  const bloom = stock('Bloom', 'bloom');
   const heightRow = el('div', 'stock height');
   const heightLabel = el('span', 'stock-name', 'Reef');
   const heightValue = el('span', 'stock-value', '0 m');
@@ -133,6 +136,24 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   });
   truceBox.append(el('p', 'truce-kicker', 'The Rasp would talk'), truceTitle, truceText, truceWords, truceWordsLabel, truceChoices);
   grow.append(truceBox);
+
+  // ---------- Dialects (a tier waiting for a choice) ----------
+  const dialectBox = el('section', 'dialects');
+  dialectBox.hidden = true;
+  const dialectKicker = el('p', 'truce-kicker');
+  const dialectIntro = el('p', 'truce-text');
+  const dialectCost = el('p', 'truce-words');
+  const dialectChoices = el('div', 'dialect-choices');
+  dialectBox.append(dialectKicker, dialectIntro, dialectCost, dialectChoices);
+  grow.append(dialectBox);
+  const dialectButtons = new Map<DialectId, HTMLButtonElement>();
+  for (const d of DIALECTS) {
+    const b = button(`choice dialect dialect-${d.id}`, '', () => hooks.speak(d.id));
+    b.hidden = true;
+    b.append(el('strong', '', d.name), el('em', '', d.flavour), el('span', '', d.effect));
+    dialectChoices.append(b);
+    dialectButtons.set(d.id, b);
+  }
 
   // ---------- The Rasp dial ----------
   const raspBox = el('section', 'rasp');
@@ -233,6 +254,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let lastBandCount = 0;
   let lastReadingCount = 0;
   const truceSeen = new Set<MeetingId>();
+  const dialectSeen = new Set<DialectId>();
 
   // ---------- Reef (settings) ----------
   const reefPage = tabPages.get('reef')!;
@@ -311,7 +333,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     return li;
   }
   function appendBand(b: Band): void {
-    bandList.append(storyItem(metres(b.metres), b.title, bandStory(b)));
+    bandList.append(storyItem(metres(b.metres), b.title, bandStory(b, lastState?.truce.wall === 'b')));
   }
   function appendReading(r: Reading): void {
     bandList.append(storyItem('read', r.title, readingStory(r), 'is-reading'));
@@ -340,6 +362,26 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       sand.row.hidden = !(r.sandP > 0 || s.sand > 0.5);
       sand.value.textContent = num(s.sand);
       sand.sub.textContent = `${rate(sandNet(s, r))} · holds ~${num(sandHold(s, r))}`;
+      bloom.row.hidden = !(r.bloomP > 0 || s.bloom > 0.5);
+      bloom.value.textContent = num(s.bloom);
+      bloom.sub.textContent = `${rate(bloomNet(s, r))} · ×${photo(s.bloom).toFixed(2)} calcite`;
+
+      // Dialects.
+      const tier = nextTier(s);
+      dialectBox.hidden = !tier;
+      if (tier) {
+        dialectKicker.textContent = `A dialect: ${tier.title}`;
+        dialectIntro.textContent = tier.intro;
+        const ok = s.bloom >= tier.cost;
+        dialectCost.textContent = ok
+          ? `Costs ${num(tier.cost)} bloom. Choosing is permanent.`
+          : `Costs ${num(tier.cost)} bloom · ${num(s.bloom)} gathered`;
+        for (const d of DIALECTS) {
+          const b = dialectButtons.get(d.id)!;
+          b.hidden = d.tier !== tier.tier;
+          b.disabled = !ok;
+        }
+      }
 
       // The truce.
       lastState = s;
@@ -464,7 +506,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           if (!b) continue;
           appendBand(b);
           storyCount++;
-          if (lastBandCount > 0 || id === 'wake') showStory(bandStory(b));
+          if (lastBandCount > 0 || id === 'wake') showStory(bandStory(b, s.truce.wall === 'b'));
         }
         lastBandCount = s.bands.length;
       }
@@ -485,6 +527,16 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         bandList.append(storyItem('truce', mt.title, truceStory(mt, c), 'is-truce'));
         storyCount++;
         if (primed) showStory(truceStory(mt, c));
+      }
+      for (const t of TIERS) {
+        const id = s.dialects[t.tier];
+        if (!id || dialectSeen.has(id)) continue;
+        dialectSeen.add(id);
+        const d = DIALECTS.find((x) => x.id === id)!;
+        const st = { kicker: `A dialect: ${t.title}`, title: d.name, text: `${d.flavour} You will not be the others.` };
+        bandList.append(storyItem('dialect', d.name, st, 'is-dialect'));
+        storyCount++;
+        if (primed) showStory(st);
       }
       bandsDot.hidden = seenStories >= storyCount;
       primed = true;

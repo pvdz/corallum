@@ -20,19 +20,62 @@ const INFLUENCE = 0.13;
 const KILL = 0.035;
 const MAX_NODES = 2600;
 
-/** Half-width of the reef's envelope at height y: a narrow foot opening into a fan. */
+/** Growth forms: the deep reef's fan, and the three sunlit Form dialects. */
+export type CoralForm = 'fan' | 'branching' | 'massive' | 'plating';
+
+type FormSpec = {
+  /** Half-width of the envelope at height y (0..1). */
+  envelope: (y: number) => number;
+  attractors: number;
+  /** Upward pull added to each growth direction. */
+  up: number;
+  /** Attractor height sampler, from a uniform u. */
+  height: (u: number, r: () => number) => number;
+};
+
+const FORMS: Record<CoralForm, FormSpec> = {
+  // A narrow foot opening into a fan.
+  fan: {
+    envelope: (y) => 0.05 + 0.32 * Math.pow(y, 0.85) * (1 - 0.35 * y * y),
+    attractors: 700, up: 0.35, height: (u) => Math.pow(u, 0.8) * 1.02,
+  },
+  // Tall antlers: narrow, sparse, strongly upward.
+  branching: {
+    envelope: (y) => 0.06 + 0.22 * Math.pow(y, 0.6),
+    attractors: 420, up: 0.6, height: (u) => Math.pow(u, 0.7) * 1.02,
+  },
+  // A dome: wide, rounded, dense.
+  massive: {
+    envelope: (y) => 0.42 * Math.sqrt(Math.max(0, 1 - Math.pow(y / 0.75, 2))) + 0.02,
+    attractors: 1100, up: 0.15, height: (u) => u * 0.75,
+  },
+  // Tables: attractors gathered in a few thin horizontal layers.
+  plating: {
+    envelope: (y) => 0.08 + 0.4 * Math.min(1, y * 1.4),
+    attractors: 900, up: 0.05,
+    // Most attractors sit in the table layers; a few between them grow more than one stem.
+    height: (u, r) => {
+      if (u < 0.15) return r() * 0.96;
+      const layer = Math.floor(((u - 0.15) / 0.85) * 4);
+      return 0.3 + layer * 0.22 + (r() - 0.5) * 0.04;
+    },
+  },
+};
+
+/** Half-width of the fan's envelope at height y. */
 export function envelope(y: number): number {
-  return 0.05 + 0.32 * Math.pow(y, 0.85) * (1 - 0.35 * y * y);
+  return FORMS.fan.envelope(y);
 }
 
-export function generateCoral(seed: number): Coral {
+export function generateCoral(seed: number, form: CoralForm = 'fan'): Coral {
   const rng = mulberry32(seed);
-  // Attractors fill the envelope, denser toward the top so the crown branches out.
+  const spec = FORMS[form];
+  // Attractors fill the form's envelope.
   const ax: number[] = [];
   const ay: number[] = [];
-  while (ax.length < 700) {
-    const y = Math.pow(rng(), 0.8) * 1.02;
-    const x = range(rng, -1, 1) * envelope(Math.min(1, y));
+  while (ax.length < spec.attractors) {
+    const y = spec.height(rng(), rng);
+    const x = range(rng, -1, 1) * spec.envelope(Math.max(0, Math.min(1, y)));
     ax.push(x);
     ay.push(y);
   }
@@ -76,7 +119,7 @@ export function generateCoral(seed: number): Coral {
     for (let n = 0; n < n0 && nx.length < MAX_NODES; n++) {
       if (!hits[n]) continue;
       // Upward bias: coral grows toward the light it cannot yet see.
-      let dx = dirX[n]! / hits[n]!, dy = dirY[n]! / hits[n]! + 0.35;
+      let dx = dirX[n]! / hits[n]!, dy = dirY[n]! / hits[n]! + spec.up;
       const len = Math.hypot(dx, dy) || 1;
       dx /= len; dy /= len;
       const x = nx[n]! + dx * STEP + range(rng, -0.002, 0.002);
@@ -102,7 +145,7 @@ export function generateCoral(seed: number): Coral {
     x: Float32Array.from(nx),
     y: Float32Array.from(ny),
     parent: Int32Array.from(np),
-    polypOrder: Int32Array.from(keyed.map((e) => e.i)),
+    polypOrder: spaced(keyed.map((e) => e.i), nx, ny),
   };
 }
 
@@ -120,4 +163,16 @@ export function thickness(c: Coral, visibleTop: number, out: Float32Array): Floa
   }
   for (let i = 0; i < c.count; i++) out[i] = load[i]! > 0 ? 0.0028 * Math.pow(load[i]!, 0.42) : 0;
   return out;
+}
+
+/** Reorder so the first polyps keep a little distance from each other; crowded ones go last. */
+function spaced(order: number[], x: number[], y: number[]): Int32Array {
+  const MIN = 0.03;
+  const first: number[] = [];
+  const later: number[] = [];
+  for (const i of order) {
+    const crowded = first.some((j) => (x[i]! - x[j]!) ** 2 + (y[i]! - y[j]!) ** 2 < MIN * MIN);
+    (crowded ? later : first).push(i);
+  }
+  return Int32Array.from([...first, ...later]);
 }

@@ -3,6 +3,7 @@
 // Debug URL params (used by tools/screenshot.ts and for testing):
 //   ?t=<sec>      freeze the animation clock at <sec> and stop the sim (screenshots)
 //   ?bot=<sec>    start from the state the headless bot reaches after <sec> of sim time
+//                 (&truce=aab and &dialects=massive,mucus,brooding steer its choices)
 //   ?skip=<sec>   advance the loaded state by <sec> as if you had been away
 //   ?speed=<x>    run the sim <x> times faster
 //   ?fresh        ignore the stored save
@@ -14,10 +15,11 @@ import type { UpgradeId } from '../game/content/types.ts';
 import { act, actAt } from '../game/content/acts.ts';
 import { createAbyssScene } from '../game/render/abyss.ts';
 import { createMidnightScene } from '../game/render/midnight.ts';
+import { createSunlitScene } from '../game/render/sunlit.ts';
 import { createTwilightScene } from '../game/render/twilight.ts';
 import type { Focus, ReefView, Scene } from '../game/render/scene.ts';
 import { runBot } from '../game/sim/bot.ts';
-import { advance, assign, buy, choose, feeding, lure, rates, read, setRasp, smother, sweep } from '../game/sim/economy.ts';
+import { advance, assign, buy, choose, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { num } from '../game/ui/format.ts';
@@ -47,7 +49,14 @@ function storageSet(text: string): void {
 
 let state: GameState;
 let savedAt = Date.now();
-if (botT !== null) state = runBot((s) => s.t >= botT, botT).state;
+if (botT !== null) {
+  const tr = params.get('truce');
+  const dl = params.get('dialects')?.split(',');
+  state = runBot((s) => s.t >= botT, botT, {
+    truce: tr ? { terms: tr[0] === 'b' ? 'b' : 'a', story: tr[1] === 'b' ? 'b' : 'a', wall: tr[2] === 'b' ? 'b' : 'a' } : undefined,
+    dialects: dl ? ({ form: dl[0], craft: dl[1], spawn: dl[2] } as never) : undefined,
+  }).state;
+}
 else {
   const loaded = params.has('fresh') ? null : deserialize(storageGet() ?? '');
   state = loaded?.state ?? newGame(seed);
@@ -61,7 +70,7 @@ const ctx = canvas.getContext('2d', { alpha: false })!;
 const ui = document.getElementById('ui')!;
 const title = document.getElementById('title')!;
 // One scene per zone; the zone follows the reef's height, with a crossfade between them.
-const scenes: Scene[] = [createAbyssScene(state.seed), createMidnightScene(state.seed), createTwilightScene(state.seed)];
+const scenes: Scene[] = [createAbyssScene(state.seed), createMidnightScene(state.seed), createTwilightScene(state.seed), createSunlitScene(state.seed)];
 const sceneFor = (height: number) => scenes[Math.min(scenes.length, actAt(height)) - 1]!;
 let scene = sceneFor(state.height);
 let fadingFrom: Scene | null = null;
@@ -88,6 +97,11 @@ const panel = createPanel(ui, {
   },
   setRasp(n) {
     setRasp(state, n);
+  },
+  speak(id) {
+    if (!speak(state, id)) return;
+    scene.effect('truce');
+    save();
   },
   choose(id, choice) {
     if (!choose(state, id, choice)) return;
@@ -190,6 +204,7 @@ function view(): ReefView {
     sandBars: state.levels.sandbar,
     rasp: state.rasp,
     wall: state.truce.wall,
+    form: state.dialects.form,
   };
 }
 

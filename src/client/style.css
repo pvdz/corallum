@@ -289,3 +289,22 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   .stock.height .stock-value { text-align: right; }
   .stock.height .stock-sub { text-align: right; }
 }
+
+/* ---------- Act IV: bloom and dialects ---------- */
+:root { --bloom: #ffb3d1; }
+.stock.bloom .stock-value { color: var(--bloom); text-shadow: 0 0 14px rgba(255, 170, 210, 0.4); }
+.dialects {
+  border-radius: var(--radius); padding: 12px 14px; border: 1px solid rgba(255, 179, 209, 0.45);
+  background: linear-gradient(180deg, rgba(70, 30, 60, 0.45), rgba(20, 18, 34, 0.6));
+  box-shadow: 0 0 24px rgba(255, 170, 210, 0.12) inset; animation: rise-in 0.8s ease both;
+}
+.dialects[hidden] { display: none; }
+.dialects .truce-kicker { color: var(--bloom); }
+.dialects .truce-words { color: var(--bloom); }
+.dialect-choices { display: flex; flex-direction: column; gap: 8px; }
+.choice.dialect { border-color: rgba(255, 179, 209, 0.35); }
+.choice.dialect[hidden] { display: none; }
+.choice.dialect em { font-size: 12.5px; color: #e9d6e0; font-family: var(--display); }
+.choice.dialect span { color: var(--bloom); }
+.choice.dialect:not(:disabled):hover { background: rgba(255, 179, 209, 0.10); box-shadow: 0 0 18px rgba(255, 170, 210, 0.25); }
+.band.is-dialect .band-depth { color: var(--bloom); }

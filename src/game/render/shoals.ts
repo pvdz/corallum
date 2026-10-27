@@ -48,6 +48,7 @@ export function createShoals(seed: number) {
   }
 
   function drawFishShoal(ctx: CanvasRenderingContext2D, F: Focus, reef: Reef, job: Job, i: number, n: number, t: number, L: ReefLayout, body: string): void {
+    const gs = L.glowScale ?? 1;
     const s = L.s;
     const spread = (job === 'light' ? 22 : 30) * s;
     const flicker = job === 'light' ? 0.5 + 0.5 * Math.max(0, Math.sin(t * 0.35 * 4 + i)) ** 6 : 0;
@@ -86,7 +87,7 @@ export function createShoals(seed: number) {
     ctx.globalCompositeOperation = 'lighter';
     const rgb = job === 'light' ? '150,255,240' : job === 'scout' ? '190,170,255' : '120,200,255';
     const a = job === 'light' ? 0.35 + 0.4 * flicker : 0.4;
-    for (const [lx, ly] of lights) glow(ctx, lx, ly, 3.2 * s * (1 + 0.6 * flicker), rgb, a);
+    for (const [lx, ly] of lights) glow(ctx, lx, ly, 3.2 * s * (1 + 0.6 * flicker), rgb, a * gs);
     ctx.restore();
   }
 
@@ -107,7 +108,7 @@ export function createShoals(seed: number) {
       // Drifts in from the side toward the reef, fading as it is eaten.
       const x = (F.x + F.w * 0.5) + side * F.w * (0.5 - 0.42 * u);
       const y = reefMidY + yy * F.h * (1 - u * 0.6) + Math.sin(t + i) * 6 * s;
-      glow(ctx, x, y, 3.2 * s, '230,240,150', 0.55 * Math.sin(u * Math.PI));
+      glow(ctx, x, y, 3.2 * s, '230,240,150', 0.55 * Math.sin(u * Math.PI) * (L.glowScale ?? 1));
     }
     ctx.restore();
   }
