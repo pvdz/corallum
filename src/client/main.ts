@@ -16,7 +16,7 @@ import { createAbyssScene } from '../game/render/abyss.ts';
 import { createMidnightScene } from '../game/render/midnight.ts';
 import type { Focus, ReefView, Scene } from '../game/render/scene.ts';
 import { runBot } from '../game/sim/bot.ts';
-import { advance, assign, buy, feeding, lure, rates, read, sweep } from '../game/sim/economy.ts';
+import { advance, assign, buy, choose, feeding, lure, rates, read, setRasp, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { num } from '../game/ui/format.ts';
@@ -81,7 +81,17 @@ const panel = createPanel(ui, {
     if (assign(state, job, delta)) save();
   },
   read(id) {
-    if (read(state, id)) save();
+    if (!read(state, id)) return;
+    scene.effect('reading');
+    save();
+  },
+  setRasp(n) {
+    setRasp(state, n);
+  },
+  choose(id, choice) {
+    if (!choose(state, id, choice)) return;
+    scene.effect('truce');
+    save();
   },
   exportSave: () => exportString(state, Date.now()),
   importSave(text) {

@@ -6,9 +6,10 @@ import { ACT1 } from '../content/act1.ts';
 import type { Band, UpgradeId } from '../content/types.ts';
 import { UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
+import { ACT3, MEETINGS, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { act, actAt, SURFACE } from '../content/acts.ts';
 import {
-  BANDS, bandMetres, calciteHold, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
+  BANDS, bandMetres, calciteHold, nextMeeting, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
   revealed, timeUntil, upgrade,
 } from '../sim/economy.ts';
@@ -19,6 +20,8 @@ export type PanelHooks = {
   buy(id: UpgradeId): void;
   assign(job: Job, delta: 1 | -1): void;
   read(id: ReadingId): void;
+  setRasp(n: number): void;
+  choose(id: MeetingId, choice: Choice): void;
   exportSave(): string;
   importSave(text: string): boolean;
   reset(): void;
@@ -47,6 +50,10 @@ function bandStory(b: Band): Story {
 function readingStory(r: Reading): Story {
   return { kicker: 'A Thousandfold band, read', title: r.title, text: r.text };
 }
+function truceStory(m: Meeting, c: Choice): Story {
+  const o = m[c];
+  return { kicker: 'The truce', title: `${m.title}: ${o.label}`, text: o.text };
+}
 
 export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const panel = el('aside', 'panel');
@@ -66,6 +73,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const glow = stock('Glow', 'glow');
   const plankton = stock('Plankton', 'plankton');
   const murmurs = stock('Murmurs', 'murmurs');
+  const silt = stock('Silt', 'silt');
+  const sand = stock('Sand', 'sand');
   const heightRow = el('div', 'stock height');
   const heightLabel = el('span', 'stock-name', 'Reef');
   const heightValue = el('span', 'stock-value', '0 m');
@@ -99,8 +108,54 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (id === 'bands') seenStories = storyCount;
   }
 
-  // ---------- Shoals ----------
   const grow = tabPages.get('grow')!;
+
+  // ---------- The truce (a meeting waiting for a choice) ----------
+  const truceBox = el('section', 'truce');
+  truceBox.hidden = true;
+  const truceTitle = el('h3');
+  const truceText = el('p', 'truce-text');
+  const truceWords = el('div', 'bar words');
+  const truceWordsFill = el('div', 'bar-fill');
+  truceWords.append(truceWordsFill);
+  const truceWordsLabel = el('p', 'truce-words');
+  const truceChoices = el('div', 'truce-choices');
+  const choiceButtons = (['a', 'b'] as const).map((c) => {
+    const b = button(`choice choice-${c}`, '', () => {
+      const m = nextMeeting(lastState!);
+      if (m) hooks.choose(m.id, c);
+    });
+    const label = el('strong');
+    const effect = el('span');
+    b.append(label, effect);
+    truceChoices.append(b);
+    return { b, label, effect };
+  });
+  truceBox.append(el('p', 'truce-kicker', 'The Rasp would talk'), truceTitle, truceText, truceWords, truceWordsLabel, truceChoices);
+  grow.append(truceBox);
+
+  // ---------- The Rasp dial ----------
+  const raspBox = el('section', 'rasp');
+  raspBox.hidden = true;
+  const raspHead = el('header');
+  const raspCount = el('span', 'level');
+  raspHead.append(el('h3', '', 'The Rasp'), raspCount);
+  const raspRow = el('div', 'rasp-row');
+  const raspMinus = button('step', '−', () => hooks.setRasp((lastState?.rasp ?? 0) - 1));
+  const raspSlider = el('input', 'rasp-slider');
+  raspSlider.type = 'range';
+  raspSlider.min = '0';
+  raspSlider.step = '1';
+  raspSlider.setAttribute('aria-label', 'Rasp admitted to graze');
+  raspSlider.addEventListener('input', () => hooks.setRasp(Number(raspSlider.value)));
+  const raspPlus = button('step', '+', () => hooks.setRasp((lastState?.rasp ?? 0) + 1));
+  raspRow.append(raspMinus, raspSlider, raspPlus);
+  const raspWhat = el('p', 'rasp-what');
+  raspBox.append(raspHead, raspRow, raspWhat);
+  grow.append(raspBox);
+  let lastState: GameState | null = null;
+
+  // ---------- Shoals ----------
   const shoalBox = el('section', 'shoals');
   shoalBox.hidden = true;
   const shoalHead = el('header');
@@ -177,6 +232,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let currentReading: Reading | undefined;
   let lastBandCount = 0;
   let lastReadingCount = 0;
+  const truceSeen = new Set<MeetingId>();
 
   // ---------- Reef (settings) ----------
   const reefPage = tabPages.get('reef')!;
@@ -277,6 +333,49 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       murmurs.row.hidden = !(s.jobs.scout > 0 || s.murmurs > 0.05);
       murmurs.value.textContent = num(s.murmurs);
       murmurs.sub.textContent = `${rate(murmurNet(s, r))} · holds ~${num(murmurHold(s, r))}`;
+      silt.row.hidden = !(r.siltP > 0 || s.silt > 0.5);
+      silt.value.textContent = num(s.silt);
+      silt.sub.textContent = `${rate(siltNet(s, r))} · polyps ×${smother(s.silt).toFixed(2)}`;
+      silt.row.classList.toggle('falling', smother(s.silt) < 0.5);
+      sand.row.hidden = !(r.sandP > 0 || s.sand > 0.5);
+      sand.value.textContent = num(s.sand);
+      sand.sub.textContent = `${rate(sandNet(s, r))} · holds ~${num(sandHold(s, r))}`;
+
+      // The truce.
+      lastState = s;
+      const m = nextMeeting(s);
+      truceBox.hidden = !m;
+      if (m) {
+        truceTitle.textContent = m.title;
+        truceText.textContent = m.text;
+        const learned = Math.min(1, s.murmurs / m.words);
+        truceWordsFill.style.width = `${learned * 100}%`;
+        const ready = learned >= 1;
+        truceWordsLabel.textContent = ready
+          ? 'Your scouts have learned enough of their words.'
+          : `Words learned: ${num(s.murmurs)} / ${num(m.words)} murmurs${s.jobs.scout ? '' : ' — set shoals to scout'}`;
+        for (const c of ['a', 'b'] as const) {
+          const cb = choiceButtons[c === 'a' ? 0 : 1]!;
+          cb.label.textContent = m[c].label;
+          cb.effect.textContent = m[c].effect;
+          cb.b.disabled = !ready;
+        }
+      }
+
+      // The Rasp dial.
+      const rmax = raspMax(s);
+      raspBox.hidden = rmax === 0 && s.levels.grounds === 0;
+      if (!raspBox.hidden) {
+        raspSlider.max = String(rmax);
+        if (document.activeElement !== raspSlider) raspSlider.value = String(s.rasp);
+        raspCount.textContent = `${s.rasp} of ${rmax} grazing`;
+        raspMinus.disabled = s.rasp <= 0;
+        raspPlus.disabled = s.rasp >= rmax;
+        const eats = s.truce.terms === 'b' ? 0 : ACT3.raspEat * s.rasp * s.calcite;
+        raspWhat.textContent = s.rasp === 0
+          ? 'No Rasp graze. The silt settles where it falls.'
+          : `grinding ${rate(r.sandP)} sand · ${eats > 0 ? `eating ${rate(eats).slice(1)} calcite · ` : ''}calcite holds ~${num(calciteHold(s, r))}`;
+      }
 
       // Height: progress within the current act's zone, with depth.
       const zone = act(actAt(s.height));
@@ -378,6 +477,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           showStory(readingStory(rd));
         }
         lastReadingCount = s.readings.length;
+      }
+      for (const mt of MEETINGS) {
+        const c = s.truce[mt.id];
+        if (!c || truceSeen.has(mt.id)) continue;
+        truceSeen.add(mt.id);
+        bandList.append(storyItem('truce', mt.title, truceStory(mt, c), 'is-truce'));
+        storyCount++;
+        if (primed) showStory(truceStory(mt, c));
       }
       bandsDot.hidden = seenStories >= storyCount;
       primed = true;
