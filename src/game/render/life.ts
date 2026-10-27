@@ -116,6 +116,67 @@ export function createLife(seed: number) {
   }
 
   /**
+   * Ossel's wall: a long-dead reef wall beside the young reef, grey and banded, half buried in
+   * the silt. A faint pale light breathes in it — the voice that talks to you.
+   */
+  function drawOssel(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
+    const s = st.s;
+    const r = mulberry32(seed ^ 0x055e1);
+    const x0 = st.cx - st.w * 0.34, x1 = st.cx - st.w * 0.17;
+    const base = st.baseY + 8 * s;
+    // A ragged, slumped skyline: a high broken crown on the right, falling away to the left.
+    const top = (u: number) =>
+      base - (25 + 95 * Math.pow(Math.sin(u * Math.PI * 0.9 + 0.2), 1.5) * (0.5 + 0.5 * u)) * s - range(r, 0, 26) * s;
+    ctx.fillStyle = '#17172a';
+    ctx.beginPath();
+    ctx.moveTo(x0, base);
+    const n = 22;
+    const tops: [number, number][] = [];
+    let prev: [number, number] = [x0, base];
+    for (let i = 0; i <= n; i++) {
+      const u = i / n;
+      const p: [number, number] = [x0 + (x1 - x0) * u, top(u)];
+      // Knobbly: each step bulges up a little between points.
+      ctx.quadraticCurveTo((prev[0] + p[0]) / 2, Math.min(prev[1], p[1]) - range(r, 2, 9) * s, p[0], p[1]);
+      tops.push(p);
+      prev = p;
+    }
+    ctx.lineTo(x1, base);
+    ctx.closePath();
+    ctx.fill();
+    // Old bands, and silt settled on every ledge.
+    ctx.save();
+    ctx.clip();
+    ctx.strokeStyle = 'rgba(170,170,200,0.10)';
+    ctx.lineWidth = 1 * st.dpr;
+    for (let i = 1; i < 12; i++) {
+      const y = base - i * 9 * s;
+      ctx.beginPath();
+      ctx.moveTo(x0, y + Math.sin(i) * 3 * s);
+      ctx.quadraticCurveTo((x0 + x1) / 2, y - 4 * s, x1, y + Math.cos(i) * 3 * s);
+      ctx.stroke();
+    }
+    ctx.restore();
+    // Silt dusting the crown.
+    ctx.strokeStyle = 'rgba(180,185,210,0.16)';
+    ctx.lineWidth = 2 * s;
+    ctx.beginPath();
+    tops.forEach(([x, y], i) => (i ? ctx.lineTo(x, y + 1.5 * s) : ctx.moveTo(x, y + 1.5 * s)));
+    ctx.stroke();
+    // The voice.
+    const breathe = 0.5 + 0.5 * Math.sin(t * 0.45);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    const cx = (x0 + x1) / 2, cy = base - 55 * s;
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 60 * s);
+    g.addColorStop(0, `rgba(200,210,255,${0.06 + 0.06 * breathe})`);
+    g.addColorStop(1, 'rgba(200,210,255,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(cx - 60 * s, cy - 60 * s, 120 * s, 120 * s);
+    ctx.restore();
+  }
+
+  /**
    * A rattail: a big-headed deep fish with a long tapering tail, nosing slowly along the silt
    * and crossing the frame every couple of minutes.
    */
@@ -234,6 +295,7 @@ export function createLife(seed: number) {
       drawJelly(ctx, st, jellies[1]!, t);
     },
     drawFloor(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
+      drawOssel(ctx, st, t);
       for (const star of stars) drawStar(ctx, st, star, t);
       drawRattail(ctx, st, t);
     },
