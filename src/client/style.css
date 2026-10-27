@@ -48,7 +48,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 }
 @media (min-width: 800px) {
   .panel {
-    left: auto; top: 0; height: auto; width: min(400px, 36vw);
+    left: auto; top: 0; height: auto; width: var(--panel-w);
     border-radius: 0; border: 0; border-left: 1px solid var(--edge);
     padding: 20px 18px 16px; box-shadow: -10px 0 40px rgba(0, 0, 0, 0.45);
   }
@@ -159,7 +159,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 
 /* Screenshot mode: no transitions or animations, so a frozen frame shows the settled UI. */
 .frozen *, .frozen *::before, .frozen *::after { animation: none !important; transition: none !important; }
-@media (min-width: 800px) { #title { right: min(400px, 36vw); } }
+@media (min-width: 800px) { #title { right: var(--panel-w); } }
 
 /* ---------- Narrow screens: compact cards so two or three fit in the sheet ---------- */
 @media (max-width: 799px) {
@@ -226,7 +226,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   position: absolute; left: 0; right: 0; top: 30%; text-align: center; pointer-events: none; opacity: 0;
   display: flex; flex-direction: column; gap: 6px; align-items: center; font-family: var(--display);
 }
-@media (min-width: 800px) { #zone-title { right: min(400px, 36vw); } }
+@media (min-width: 800px) { #zone-title { right: var(--panel-w); } }
 @media (max-width: 799px) { #zone-title { top: 18%; } }
 #zone-title span { font-size: 14px; letter-spacing: 0.4em; color: var(--calcite); }
 #zone-title strong { font-weight: 400; font-size: clamp(28px, 5vw, 52px); letter-spacing: 0.12em; text-shadow: 0 0 24px rgba(159, 246, 255, 0.5); }
@@ -239,7 +239,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   font-family: var(--display); font-style: italic; font-size: 16px; color: var(--ink-dim);
   opacity: 0; transition: opacity 1.2s ease;
 }
-@media (min-width: 800px) { #sweep-hint { right: min(400px, 36vw); bottom: 28%; } }
+@media (min-width: 800px) { #sweep-hint { right: var(--panel-w); bottom: 28%; } }
 #sweep-hint.show { opacity: 0.85; animation: breathe 3.5s ease-in-out infinite; }
 #sweep-hint.done { display: none; }
 @keyframes breathe { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.95; } }
@@ -349,7 +349,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .finale-foot { display: flex; gap: 12px; justify-content: center; align-items: center; flex-wrap: wrap; }
 .picked { color: var(--spawn); font-size: 14px; }
 .finale.ending { align-items: end; background: linear-gradient(180deg, rgba(2, 2, 10, 0) 30%, rgba(2, 2, 12, 0.55) 60%, rgba(2, 2, 12, 0.85)); padding-bottom: 8vh; }
-@media (min-width: 800px) { .finale.ending { right: min(400px, 36vw); } }
+@media (min-width: 800px) { .finale.ending { right: var(--panel-w); } }
 .finale.ending .finale-text { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9); }
 @media (max-width: 799px) {
   .finale.ending { bottom: 47vh; bottom: 47dvh; padding-bottom: 16px; background: linear-gradient(180deg, rgba(2, 2, 10, 0) 20%, rgba(2, 2, 12, 0.7)); }
@@ -376,3 +376,21 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .codex-list { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0; font-size: 12.5px; }
 .codex-list dt { color: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.1em; font-size: 10.5px; padding-top: 2px; }
 .codex-list dd { margin: 0; color: #dbe6f5; }
+
+/* ---------- Panel width, and short landscape screens (phones on their side) ---------- */
+:root { --panel-w: min(400px, 36vw); }
+@media (min-width: 800px) and (max-height: 520px) {
+  :root { --panel-w: 46vw; }
+  .panel { padding: 10px 12px 8px; gap: 6px; }
+  .stocks { grid-template-columns: 1fr 1fr 1fr; gap: 2px 10px; }
+  .stock { grid-template-columns: 1fr; }
+  .stock-name { font-size: 9.5px; letter-spacing: 0.08em; }
+  .stock-value { text-align: left; font-size: 16px; }
+  .stock-sub { text-align: left; font-size: 9.5px; }
+  .stock.height { grid-template-columns: auto 1fr; }
+  .stock.height .stock-value, .stock.height .stock-sub { text-align: right; }
+  .tab { font-size: 11px; letter-spacing: 0.06em; padding: 4px 0 6px; }
+  .card { padding: 8px 10px; }
+  .flavour { display: none; }
+  #title h1 { font-size: 30px; }
+}

@@ -16,6 +16,7 @@ export type Viewport = { name: string; width: number; height: number; scale: num
 export const VIEWPORTS: Viewport[] = [
   { name: 'desktop', width: 1440, height: 900, scale: 1, mobile: false },
   { name: 'mobile', width: 390, height: 844, scale: 3, mobile: true },
+  { name: 'landscape', width: 844, height: 390, scale: 2, mobile: true },
 ];
 
 export type OpenOptions = { save?: string };

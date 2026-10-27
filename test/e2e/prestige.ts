@@ -11,7 +11,7 @@ const save = serialize(state, Date.now());
 
 let failed = false;
 await withGame(async (open) => {
-  for (const vp of VIEWPORTS) {
+  for (const vp of VIEWPORTS.slice(0, 2)) {
     const { page, errors } = await open(vp, '', { save });
     page.on('dialog', (d) => void d.accept());
     for (let i = 0; i < 20 && (await page.locator('.reader:not([hidden])').count()); i++)

@@ -6,7 +6,7 @@ import { VIEWPORTS, withGame } from '../../tools/browser.ts';
 
 let failed = false;
 await withGame(async (open) => {
-  for (const vp of VIEWPORTS) {
+  for (const vp of VIEWPORTS.slice(0, 2)) {
     // The bot reaches the surface a few minutes before the moon is full.
     const { page, errors } = await open(vp, '?bot=29000');
     await page.waitForFunction(() => window.corallum?.state.height === 4000, null, { timeout: 30000 });

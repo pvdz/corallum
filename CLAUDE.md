@@ -28,7 +28,7 @@ These were written by the agent, not the user; fix them when wrong.
 - `node tools/bot.ts [--truce aab] [--dialects form,craft,spawn] [--to <m>]` — headless time-compressed
   playthrough of the whole game; prints milestone times. Browser: `?bot=<sec>&truce=..&dialects=..`
 - `node --no-warnings tools/screenshot.ts [--t <sec>] --shot <tag>=<url params> ...`
-  — writes `screenshot/YYYY-MM-DD-HH-MM/{desktop,mobile}-<name>.png`. Look at them.
+  — writes `screenshot/YYYY-MM-DD-HH-MM/{desktop,mobile,landscape}-<name>.png`. Look at them.
 
 ## Hard rules
 - **TypeScript only, never compiled.** Node strips types; the server strips them for the
