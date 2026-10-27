@@ -15,14 +15,16 @@ import type { UpgradeId } from '../game/content/types.ts';
 import { act, actAt } from '../game/content/acts.ts';
 import { createAbyssScene } from '../game/render/abyss.ts';
 import { createMidnightScene } from '../game/render/midnight.ts';
+import { createBreachScene } from '../game/render/breach.ts';
 import { createSunlitScene } from '../game/render/sunlit.ts';
 import { createTwilightScene } from '../game/render/twilight.ts';
 import type { Focus, ReefView, Scene } from '../game/render/scene.ts';
 import { runBot } from '../game/sim/bot.ts';
-import { advance, assign, buy, choose, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, choose, ended, moonFull, moonPhase, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { num } from '../game/ui/format.ts';
+import { createFinale } from '../game/ui/finale.ts';
 import { createPanel } from '../game/ui/panel.ts';
 
 declare global {
@@ -70,7 +72,8 @@ const ctx = canvas.getContext('2d', { alpha: false })!;
 const ui = document.getElementById('ui')!;
 const title = document.getElementById('title')!;
 // One scene per zone; the zone follows the reef's height, with a crossfade between them.
-const scenes: Scene[] = [createAbyssScene(state.seed), createMidnightScene(state.seed), createTwilightScene(state.seed), createSunlitScene(state.seed)];
+const scenes: Scene[] = [createAbyssScene(state.seed), createMidnightScene(state.seed), createTwilightScene(state.seed), createSunlitScene(state.seed),
+  createBreachScene(state.seed)];
 const sceneFor = (height: number) => scenes[Math.min(scenes.length, actAt(height)) - 1]!;
 let scene = sceneFor(state.height);
 let fadingFrom: Scene | null = null;
@@ -124,6 +127,24 @@ const panel = createPanel(ui, {
   },
 });
 panel.primeStories(state);
+
+const finale = createFinale(ui, panel.growPage, {
+  breach(memories) {
+    if (!breach(state, memories)) return false;
+    scene.effect('breach');
+    save();
+    return true;
+  },
+  done() {
+    document.documentElement.classList.add('ended');
+  },
+});
+if (ended(state)) document.documentElement.classList.add('ended');
+const replay = document.createElement('button');
+replay.className = 'plain';
+replay.textContent = 'Read the ending again';
+replay.addEventListener('click', () => finale.replay());
+panel.reefPage.prepend(replay);
 
 // Another tab (or a pasted save) may write the same storage. Before each write, check the
 // stored save is still the one this page wrote; if not, stop writing so neither tab clobbers
@@ -205,6 +226,10 @@ function view(): ReefView {
     rasp: state.rasp,
     wall: state.truce.wall,
     form: state.dialects.form,
+    moonPhase: moonPhase(state.t),
+    moonFull: moonFull(state.t),
+    spawnLevel: state.spawn / spawnTarget(state),
+    sinceBreach: ended(state) ? state.t - state.breachedAt : -1,
   };
 }
 
@@ -294,6 +319,8 @@ function frame(now: number): void {
     }
   }
   panel.update(state);
+  finale.update(state);
+  replay.hidden = !ended(state);
   title.classList.toggle('faded', state.levels.polyp > 0 || state.t > 25);
   hint.classList.toggle('show', state.earned.calcite < 40 && reader() && state.t > 2);
   if (now - lastSave > 5000) { save(); lastSave = now; }

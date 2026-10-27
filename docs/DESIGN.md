@@ -89,3 +89,12 @@ Entry requires the last Act II Reading (*Inside the wall*): the story turn opens
   - Tier 3 *Spawn*: Broadcast · Brooding · Fragmenting — each shapes Act V's spawning.
 - The Form dialect changes the coral's silhouette in the Sunlit scene (tall branches, a domed
   boulder, or stacked tables): the choice is visible.
+
+## Act V — The Breach (3980–4000 m)
+- **Spawn** (stock): `P = polyps × rate × ripen × (broadcast ×2) × (1 + sun·symbionts/100)`, slow
+  reabsorption. Target 1M (brooding ×0.6). **Ripen the spawn** (calcite) ×1.5 each.
+- **The Spawning Moon**: a 20-minute cycle in sim time, full for ±8% of it. The release is a
+  player action and needs: the surface (4000 m), spawn ≥ target, and a full moon.
+- **What the spawn carries** (the final verb: letting go): choose exactly 3 of the memories the
+  run has earned (12 threads). The ending composes the release, one epilogue paragraph per
+  memory, Ossel's closing (kept or let go), and the last line.

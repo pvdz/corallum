@@ -308,3 +308,50 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .choice.dialect span { color: var(--bloom); }
 .choice.dialect:not(:disabled):hover { background: rgba(255, 179, 209, 0.10); box-shadow: 0 0 18px rgba(255, 170, 210, 0.25); }
 .band.is-dialect .band-depth { color: var(--bloom); }
+
+/* ---------- Act V: spawn, the moon card, the finale ---------- */
+:root { --spawn: #ff9ec7; --moon: #f4f1dc; }
+.stock.spawn .stock-value { color: var(--spawn); text-shadow: 0 0 14px rgba(255, 150, 200, 0.45); }
+.moon-card {
+  border-radius: var(--radius); padding: 12px 14px; border: 1px solid rgba(244, 241, 220, 0.35);
+  background: radial-gradient(ellipse at top left, rgba(244, 241, 220, 0.10), rgba(16, 18, 40, 0.75) 60%);
+}
+.moon-card[hidden] { display: none; }
+.moon-card.full { border-color: rgba(244, 241, 220, 0.8); box-shadow: 0 0 30px rgba(244, 241, 220, 0.2); }
+.moon-head { display: flex; gap: 12px; align-items: center; }
+.moon-icon { display: block; width: 34px; height: 34px; filter: drop-shadow(0 0 8px rgba(244, 241, 220, 0.5)); }
+.moon-card h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 18px; color: var(--moon); }
+.moon-status { margin: 2px 0 0; font-size: 12.5px; color: var(--ink-dim); }
+.moon-need { margin: 10px 0; font-size: 13px; color: #e8e4d4; line-height: 1.45; }
+.release {
+  font: inherit; font-family: var(--display); font-size: 17px; padding: 10px 22px; border-radius: 999px; cursor: pointer;
+  color: #2a1020; background: linear-gradient(180deg, #ffd1e4, #ff9ec7); border: 0;
+  box-shadow: 0 0 24px rgba(255, 158, 199, 0.55);
+}
+.release:disabled { opacity: 0.35; cursor: default; box-shadow: none; }
+.finale {
+  position: absolute; inset: 0; z-index: 30; display: grid; place-items: center; padding: 20px;
+  background: radial-gradient(ellipse at center, rgba(10, 8, 30, 0.72), rgba(2, 2, 10, 0.94)); animation: fade-in 1.2s ease both;
+}
+.finale[hidden] { display: none; }
+.finale-inner { max-width: 760px; width: 100%; max-height: 100%; overflow-y: auto; text-align: center; }
+.finale h2 { font-family: var(--display); font-weight: 400; font-size: clamp(24px, 4vw, 36px); margin: 0 0 10px; text-shadow: 0 0 24px rgba(255, 158, 199, 0.5); }
+.finale-text { font-family: var(--display); font-size: clamp(16px, 2vw, 20px); line-height: 1.7; color: #ece6f2; margin: 0 auto 22px; max-width: 620px; }
+.finale-text.in { animation: rise-in 1.6s ease both; }
+.memory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-bottom: 18px; text-align: left; }
+.memory {
+  display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: 14px; cursor: pointer; font: inherit;
+  color: var(--ink); background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 158, 199, 0.25);
+}
+.memory strong { font-family: var(--display); font-weight: 400; font-size: 16px; }
+.memory span { font-size: 12.5px; color: var(--ink-dim); font-style: italic; }
+.memory.on { border-color: var(--spawn); background: rgba(255, 158, 199, 0.12); box-shadow: 0 0 20px rgba(255, 158, 199, 0.3); }
+.finale-foot { display: flex; gap: 12px; justify-content: center; align-items: center; flex-wrap: wrap; }
+.picked { color: var(--spawn); font-size: 14px; }
+.finale.ending { align-items: end; background: linear-gradient(180deg, rgba(2, 2, 10, 0) 30%, rgba(2, 2, 12, 0.55) 60%, rgba(2, 2, 12, 0.85)); padding-bottom: 8vh; }
+@media (min-width: 800px) { .finale.ending { right: min(400px, 36vw); } }
+.finale.ending .finale-text { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9); }
+@media (max-width: 799px) {
+  .finale.ending { bottom: 47vh; bottom: 47dvh; padding-bottom: 16px; background: linear-gradient(180deg, rgba(2, 2, 10, 0) 20%, rgba(2, 2, 12, 0.7)); }
+  .finale.ending .finale-text { font-size: 15px; line-height: 1.55; margin-bottom: 12px; }
+}

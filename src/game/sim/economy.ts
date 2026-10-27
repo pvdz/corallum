@@ -334,7 +334,10 @@ export function heightCap(s: GameState): number {
 }
 
 export function maxed(s: GameState, id: UpgradeId): boolean {
-  if (id === 'skeleton' && heightForBands(s.levels.skeleton + 1) > heightCap(s)) return true;
+  if (id === 'skeleton') {
+    const next = heightForBands(s.levels.skeleton + 1);
+    if (next > heightCap(s) || next <= heightForBands(s.levels.skeleton)) return true;
+  }
   return s.levels[id] >= upgrade(id).maxLevel;
 }
 

@@ -10,7 +10,7 @@ import { ACT3, MEETINGS, type Choice, type Meeting, type MeetingId } from '../co
 import { DIALECTS, TIERS, type DialectId } from '../content/act4.ts';
 import { act, actAt, SURFACE } from '../content/acts.ts';
 import {
-  BANDS, bandMetres, bloomHold, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
+  BANDS, bandMetres, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
   revealed, timeUntil, upgrade,
 } from '../sim/economy.ts';
@@ -78,6 +78,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const silt = stock('Silt', 'silt');
   const sand = stock('Sand', 'sand');
   const bloom = stock('Bloom', 'bloom');
+  const spawn = stock('Spawn', 'spawn');
   const heightRow = el('div', 'stock height');
   const heightLabel = el('span', 'stock-name', 'Reef');
   const heightValue = el('span', 'stock-value', '0 m');
@@ -365,6 +366,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       bloom.row.hidden = !(r.bloomP > 0 || s.bloom > 0.5);
       bloom.value.textContent = num(s.bloom);
       bloom.sub.textContent = `${rate(bloomNet(s, r))} · ×${photo(s.bloom).toFixed(2)} calcite`;
+      spawn.row.hidden = !(r.spawnP > 0 || s.spawn > 0.5);
+      spawn.value.textContent = num(s.spawn);
+      spawn.sub.textContent = `${rate(spawnNet(s, r))} · of ${num(spawnTarget(s))} · holds ~${num(spawnHold(s, r))}`;
 
       // Dialects.
       const tier = nextTier(s);
@@ -564,6 +568,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       storyCount = seenStories = lastBandCount + lastReadingCount;
     },
     element: panel,
+    growPage: grow,
+    reefPage,
   };
 }
 

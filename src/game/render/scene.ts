@@ -29,10 +29,15 @@ export type ReefView = {
   wall: '' | 'a' | 'b';
   /** The Form dialect, which shapes the sunlit reef. */
   form: DialectId | '';
+  /** Act V: the moon (0..1, full at 0.5), spawn ripeness, seconds since the release (−1 before). */
+  moonPhase: number;
+  moonFull: boolean;
+  spawnLevel: number;
+  sinceBreach: number;
 };
 
 /** Purchases (by upgrade id) and story moments a scene may flourish. */
-export type EffectKind = UpgradeId | 'reading' | 'truce';
+export type EffectKind = UpgradeId | 'reading' | 'truce' | 'breach';
 
 /** The part of the canvas not covered by the panel, in device pixels. */
 export type Focus = { x: number; y: number; w: number; h: number };

@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Act V (The Breach: spawn stock, the Spawning Moon cycle, memory choice, ending, epilogue) — design first in DESIGN/STORY. Then the Lesser Spawning prestige + Lineage.
+NOW: Lesser Spawning prestige + Lineage (design in DESIGN.md first: optional acceleration + lore reward; must keep offline exactness and tests). Then post-ending 'Begin again'.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -37,3 +37,6 @@ date, what landed, what is half-done, what's next.
   background, so the sunlit scene uses glowScale 0 and no bloom pass. Polyp settling order now
   keeps a minimum spacing. Coral generator takes a form (fan/branching/massive/plating).
 - Bot full run to 3980 m: ~6h30m–6h55m depending on dialects.
+- Act V landed: spawn, moon, breach, memory choice, ending, Breach scene (render/breach.ts),
+  finale UI (ui/finale.ts). The whole game is playable start to finish; bot ~8–9 h.
+  Ending text waits 6.5 s after the release so the spawning is seen first.

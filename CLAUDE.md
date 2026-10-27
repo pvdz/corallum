@@ -23,7 +23,9 @@ These were written by the agent, not the user; fix them when wrong.
 - `node --test "test/sim/**/*.test.ts"` — unit tests
 - `node --no-warnings test/e2e/smoke.ts` — desktop + mobile load, no console errors
 - `node --no-warnings test/e2e/play.ts` — clicks through: band reader, sweep, buy, reload, offline summary
-- `node tools/bot.ts` — headless balance run of Act I (time-compressed); prints milestone times
+- `node --no-warnings test/e2e/finale.ts` — full moon, release, three memories, ending (SHOTS=<dir> saves screens)
+- `node tools/bot.ts [--truce aab] [--dialects form,craft,spawn] [--to <m>]` — headless time-compressed
+  playthrough of the whole game; prints milestone times. Browser: `?bot=<sec>&truce=..&dialects=..`
 - `node --no-warnings tools/screenshot.ts [--t <sec>] --shot <tag>=<url params> ...`
   — writes `screenshot/YYYY-MM-DD-HH-MM/{desktop,mobile}-<name>.png`. Look at them.
 

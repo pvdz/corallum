@@ -19,3 +19,25 @@ export function ring(ctx: CanvasRenderingContext2D, x: number, y: number, r: num
   ctx.arc(x, y, r, 0, Math.PI * 2);
   ctx.stroke();
 }
+
+/** The moon at a phase (0 new, 0.5 full): a dark disc with the lit part and its terminator. */
+export function drawMoon(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, phase: number, dark = '#1b2040'): void {
+  const lit = 1 - Math.abs(phase - 0.5) * 2;
+  ctx.fillStyle = dark;
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.clip();
+  ctx.fillStyle = '#f4f1dc';
+  // The lit half, plus a terminator ellipse that grows past the middle or eats into it.
+  const waxing = phase < 0.5;
+  const k = Math.cos(lit * Math.PI) * r;
+  ctx.beginPath();
+  ctx.arc(x, y, r, -Math.PI / 2, Math.PI / 2, !waxing);
+  ctx.ellipse(x, y, Math.abs(k), r, 0, Math.PI / 2, -Math.PI / 2, (k > 0) === waxing);
+  ctx.fill();
+  ctx.restore();
+}
