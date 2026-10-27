@@ -9,6 +9,7 @@ import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../conte
 import { ACT3, MEETINGS, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { DIALECTS, TIERS, type DialectId } from '../content/act4.ts';
 import { TRAITS, type TraitId } from '../content/lineage.ts';
+import { MEMORIES } from '../content/act5.ts';
 import { canSpawnLesser, lineageFor, traitCost, traitMaxed } from '../sim/prestige.ts';
 import { act, actAt, SURFACE } from '../content/acts.ts';
 import {
@@ -256,7 +257,28 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   readingCard.append(readingHead, readingHint, readingEffect, readingFoot);
   const bandsIntro = el('p', 'hint', 'Each band of stone keeps what the reef saw while laying it down.');
   const bandList = el('ol', 'band-list');
-  bandsPage.append(readingCard, bandsIntro, bandList);
+  const codex = el('article', 'card codex');
+  const codexList = el('dl', 'codex-list');
+  codex.append(el('h3', '', 'Your reef'), codexList);
+  bandsPage.append(codex, readingCard, bandsIntro, bandList);
+  let codexKey = '';
+  function codexRow(term: string, value: string): void {
+    codexList.append(el('dt', '', term), el('dd', '', value));
+  }
+  function renderCodex(s: GameState): void {
+    const key = JSON.stringify([Math.floor(s.height), s.truce, s.dialects, s.carried, s.meta.spawnings, s.readings.length]);
+    if (key === codexKey) return;
+    codexKey = key;
+    codexList.innerHTML = '';
+    codexRow('Grown', `${metres(s.height)} up the seamount, ${Math.round(Math.max(0, SURFACE - s.height)).toLocaleString('en-US')} m down`);
+    codexRow('Bands read', `${s.bands.length} of your own, ${s.readings.length} of Thousandfold’s`);
+    const truce = MEETINGS.filter((m) => s.truce[m.id]).map((m) => `${m.title}: ${m[s.truce[m.id] as Choice].label}`);
+    if (truce.length) codexRow('The truce', truce.join(' · '));
+    const spoken = TIERS.filter((t) => s.dialects[t.tier]).map((t) => DIALECTS.find((d) => d.id === s.dialects[t.tier])!.name);
+    if (spoken.length) codexRow('Dialects', spoken.join(' · '));
+    if (s.carried.length) codexRow('Carried', s.carried.map((id) => MEMORIES.find((m) => m.id === id)?.title ?? id).join(' · '));
+    if (s.meta.spawnings) codexRow('Lineage', `${s.meta.spawnings} lesser spawning${s.meta.spawnings === 1 ? '' : 's'}, best reef ${metres(s.meta.best)}`);
+  }
   let currentReading: Reading | undefined;
   let lastBandCount = 0;
   let lastReadingCount = 0;
@@ -629,6 +651,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           c.root.classList.toggle('ready', s.meta.lineage >= price);
         }
       }
+      renderCodex(s);
       bandsDot.hidden = seenStories >= storyCount;
       primed = true;
     },
