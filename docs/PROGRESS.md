@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Lesser Spawning prestige + Lineage (design in DESIGN.md first: optional acceleration + lore reward; must keep offline exactness and tests). Then post-ending 'Begin again'.
+NOW: M6 polish — audio (procedural WebAudio ambience + purchase sounds, muted by default), accessibility (reduced motion, text scale), codex. Then a full playtest pass in the browser at real speed for feel.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -40,3 +40,5 @@ date, what landed, what is half-done, what's next.
 - Act V landed: spawn, moon, breach, memory choice, ending, Breach scene (render/breach.ts),
   finale UI (ui/finale.ts). The whole game is playable start to finish; bot ~8–9 h.
   Ending text waits 6.5 s after the release so the spawning is seen first.
+- Prestige landed (sim/prestige.ts, content/lineage.ts, Lineage tab). The harness can now seed a
+  save into a page: open(vp, query, { save }).

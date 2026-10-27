@@ -9,7 +9,7 @@
     "start": "node src/server/server.ts",
     "check": "tsc --noEmit -p tsconfig.json",
     "test": "node --test \"test/sim/**/*.test.ts\"",
-    "e2e": "node --no-warnings test/e2e/smoke.ts && node --no-warnings test/e2e/play.ts && node --no-warnings test/e2e/finale.ts",
+    "e2e": "node --no-warnings test/e2e/smoke.ts && node --no-warnings test/e2e/play.ts && node --no-warnings test/e2e/finale.ts && node --no-warnings test/e2e/prestige.ts",
     "bot": "node tools/bot.ts",
     "shots": "node tools/screenshot.ts"
   }

@@ -8,9 +8,11 @@ import { UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
 import { ACT3, MEETINGS, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { DIALECTS, TIERS, type DialectId } from '../content/act4.ts';
+import { TRAITS, type TraitId } from '../content/lineage.ts';
+import { canSpawnLesser, lineageFor, traitCost, traitMaxed } from '../sim/prestige.ts';
 import { act, actAt, SURFACE } from '../content/acts.ts';
 import {
-  BANDS, bandMetres, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
+  BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
   revealed, timeUntil, upgrade,
 } from '../sim/economy.ts';
@@ -24,6 +26,8 @@ export type PanelHooks = {
   setRasp(n: number): void;
   choose(id: MeetingId, choice: Choice): void;
   speak(id: DialectId): void;
+  spawnLesser(): void;
+  buyTrait(id: TraitId): void;
   exportSave(): string;
   importSave(text: string): boolean;
   reset(): void;
@@ -95,7 +99,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const pages = el('div', 'pages');
   const tabButtons = new Map<string, HTMLButtonElement>();
   const tabPages = new Map<string, HTMLElement>();
-  for (const [id, label] of [['grow', 'Grow'], ['bands', 'Bands'], ['reef', 'Reef']] as const) {
+  for (const [id, label] of [['grow', 'Grow'], ['bands', 'Bands'], ['lineage', 'Lineage'], ['reef', 'Reef']] as const) {
     tabs.append(button('tab', label, () => showTab(id)));
     tabButtons.set(id, tabs.lastElementChild as HTMLButtonElement);
     const page = el('section', `page page-${id}`);
@@ -239,12 +243,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const readingHint = el('p', 'flavour', 'Scouting shoals listen at buried bands. Enough murmurs, and a band can be read.');
   const readingEffect = el('p', 'effect');
   const readingFoot = el('footer');
-  const readingCost = el('span', 'cost');
+  const readingCostEl = el('span', 'cost');
   const readingBtn = button('buy murmurs', '', () => {
     const next = currentReading;
     if (next) hooks.read(next.id);
   });
-  readingBtn.append(readingCost);
+  readingBtn.append(readingCostEl);
   const readingEta = el('span', 'eta');
   readingFoot.append(readingBtn, readingEta);
   readingCard.append(readingHead, readingHint, readingEffect, readingFoot);
@@ -256,6 +260,47 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let lastReadingCount = 0;
   const truceSeen = new Set<MeetingId>();
   const dialectSeen = new Set<DialectId>();
+
+  // ---------- Lineage ----------
+  const lineagePage = tabPages.get('lineage')!;
+  const lineageHead = el('div', 'lineage-head');
+  const lineageCount = el('span', 'stock-value lineage-count');
+  const lineageSub = el('span', 'stock-sub');
+  lineageHead.append(el('span', 'stock-name', 'Lineage'), lineageCount, lineageSub);
+  const spawnCard = el('article', 'card spawn-lesser');
+  const spawnTitle = el('h3', '', 'Release a lesser spawning');
+  const spawnText = el('p', 'flavour',
+    'Let go early. Your spawn drifts off and settles on a new seamount, and the reef begins again ' +
+    'from a single polyp, carrying its lineage. What you have read stays read.');
+  const spawnFoot = el('footer');
+  const spawnBtn = button('buy lineage', '', () => {
+    const s = lastState;
+    if (!s) return;
+    const msg = ended(s)
+      ? `Begin again on a new seamount, with +${lineageFor(s)} lineage?`
+      : `Release a lesser spawning now for +${lineageFor(s)} lineage? This reef starts over.`;
+    if (window.confirm(msg)) hooks.spawnLesser();
+  });
+  spawnFoot.append(spawnBtn);
+  spawnCard.append(spawnTitle, spawnText, spawnFoot);
+  lineagePage.append(lineageHead, spawnCard);
+  const traitCards = new Map<TraitId, Card>();
+  for (const tr of TRAITS) {
+    const root = el('article', 'card trait');
+    const head = el('header');
+    const level = el('span', 'level');
+    head.append(el('h3', '', tr.name), level);
+    const effect = el('p', 'effect', tr.effect);
+    const foot = el('footer');
+    const costEl = el('span', 'cost');
+    const btn = button('buy lineage', '', () => hooks.buyTrait(tr.id));
+    btn.append(costEl);
+    const eta = el('span', 'eta');
+    foot.append(btn, eta);
+    root.append(head, el('p', 'flavour', tr.flavour), effect, foot);
+    lineagePage.append(root);
+    traitCards.set(tr.id, { root, cost: costEl, level, effect, eta, btn });
+  }
 
   // ---------- Reef (settings) ----------
   const reefPage = tabPages.get('reef')!;
@@ -394,12 +439,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       if (m) {
         truceTitle.textContent = m.title;
         truceText.textContent = m.text;
-        const learned = Math.min(1, s.murmurs / m.words);
+        const words = meetingWords(s, m);
+        const learned = Math.min(1, s.murmurs / words);
         truceWordsFill.style.width = `${learned * 100}%`;
         const ready = learned >= 1;
         truceWordsLabel.textContent = ready
           ? 'Your scouts have learned enough of their words.'
-          : `Words learned: ${num(s.murmurs)} / ${num(m.words)} murmurs${s.jobs.scout ? '' : ' — set shoals to scout'}`;
+          : `Words learned: ${num(s.murmurs)} / ${num(words)} murmurs${s.jobs.scout ? '' : ' — set shoals to scout'}`;
         for (const c of ['a', 'b'] as const) {
           const cb = choiceButtons[c === 'a' ? 0 : 1]!;
           cb.label.textContent = m[c].label;
@@ -495,11 +541,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       if (currentReading && !readingCard.hidden) {
         readingTitle.textContent = currentReading.title;
         readingEffect.textContent = currentReading.effect;
-        readingCost.textContent = `${num(currentReading.cost)} murmurs`;
-        const ok = s.murmurs >= currentReading.cost;
+        const rc = readingCost(s, currentReading);
+        readingCostEl.textContent = `${num(rc)} murmurs`;
+        const ok = s.murmurs >= rc;
         readingBtn.disabled = !ok;
         readingCard.classList.toggle('ready', ok);
-        setEta(readingEta, ok ? 0 : timeUntil(s, 'murmurs', currentReading.cost));
+        setEta(readingEta, ok ? 0 : timeUntil(s, 'murmurs', rc));
         if (!ok && s.jobs.scout === 0) readingEta.textContent = 'set shoals to scout';
       }
 
@@ -510,7 +557,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           if (!b) continue;
           appendBand(b);
           storyCount++;
-          if (lastBandCount > 0 || id === 'wake') showStory(bandStory(b, s.truce.wall === 'b'));
+          if ((lastBandCount > 0 || id === 'wake') && !s.meta.seen.includes(id)) showStory(bandStory(b, s.truce.wall === 'b'));
         }
         lastBandCount = s.bands.length;
       }
@@ -520,7 +567,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           if (!rd) continue;
           appendReading(rd);
           storyCount++;
-          showStory(readingStory(rd));
+          if (!s.meta.seen.includes(id)) showStory(readingStory(rd));
         }
         lastReadingCount = s.readings.length;
       }
@@ -541,6 +588,32 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         bandList.append(storyItem('dialect', d.name, st, 'is-dialect'));
         storyCount++;
         if (primed) showStory(st);
+      }
+      // Lineage.
+      const lineageOpen = canSpawnLesser(s) || s.meta.spawnings > 0 || s.meta.lineage > 0;
+      tabButtons.get('lineage')!.hidden = !lineageOpen;
+      if (lineageOpen) {
+        lineageCount.textContent = String(s.meta.lineage);
+        lineageSub.textContent = `${s.meta.spawnings} spawning${s.meta.spawnings === 1 ? '' : 's'} · best reef ${metres(Math.max(s.meta.best, s.height))}`;
+        const can = canSpawnLesser(s);
+        spawnTitle.textContent = ended(s) ? 'Begin again' : 'Release a lesser spawning';
+        spawnBtn.disabled = !can;
+        spawnBtn.textContent = can ? `+${lineageFor(s)} lineage` : 'Reach the Midnight Water first';
+        for (const tr of TRAITS) {
+          const c = traitCards.get(tr.id)!;
+          const lv = s.meta.traits[tr.id];
+          c.level.textContent = tr.max === Infinity ? (lv ? `×${lv}` : '') : `${lv}/${tr.max}`;
+          if (traitMaxed(s, tr.id)) {
+            c.cost.textContent = 'Complete';
+            c.btn.disabled = true;
+            c.root.classList.add('maxed');
+            continue;
+          }
+          const price = traitCost(s, tr.id);
+          c.cost.textContent = `${price} lineage`;
+          c.btn.disabled = s.meta.lineage < price;
+          c.root.classList.toggle('ready', s.meta.lineage >= price);
+        }
       }
       bandsDot.hidden = seenStories >= storyCount;
       primed = true;
@@ -566,6 +639,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       lastBandCount = s.bands.length;
       lastReadingCount = s.readings.length;
       storyCount = seenStories = lastBandCount + lastReadingCount;
+    },
+    /** Open a story card (or queue it behind the one showing). */
+    story(kicker: string, title: string, text: string): void {
+      showStory({ kicker, title, text });
     },
     element: panel,
     growPage: grow,

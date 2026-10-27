@@ -18,18 +18,31 @@ export const VIEWPORTS: Viewport[] = [
   { name: 'mobile', width: 390, height: 844, scale: 3, mobile: true },
 ];
 
-export async function withGame<T>(fn: (open: (vp: Viewport, query?: string) => Promise<{ page: Page; errors: string[] }>) => Promise<T>): Promise<T> {
+export type OpenOptions = { save?: string };
+
+export async function withGame<T>(
+  fn: (open: (vp: Viewport, query?: string, opts?: OpenOptions) => Promise<{ page: Page; errors: string[] }>) => Promise<T>,
+): Promise<T> {
   const server = await startServer(0);
   const port = (server.address() as AddressInfo).port;
   const browser = await pw.chromium.launch();
   try {
-    return await fn(async (vp, query = '') => {
+    return await fn(async (vp, query = '', opts = {}) => {
       const context = await browser.newContext({
         viewport: { width: vp.width, height: vp.height },
         deviceScaleFactor: vp.scale,
         isMobile: vp.mobile,
         hasTouch: vp.mobile,
       });
+      // A save to start from, written before any page script runs (first load only).
+      if (opts.save) {
+        await context.addInitScript((text: string) => {
+          if (!sessionStorage.getItem('seeded')) {
+            localStorage.setItem('corallum.save', text);
+            sessionStorage.setItem('seeded', '1');
+          }
+        }, opts.save);
+      }
       const page = await context.newPage();
       const errors: string[] = [];
       page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });

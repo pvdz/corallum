@@ -24,6 +24,8 @@ import { advance, assign, breach, buy, choose, ended, moonFull, moonPhase, spawn
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { num } from '../game/ui/format.ts';
+import { LINEAGE_BANDS } from '../game/content/lineage.ts';
+import { buyTrait, spawnLesser } from '../game/sim/prestige.ts';
 import { createFinale } from '../game/ui/finale.ts';
 import { createPanel } from '../game/ui/panel.ts';
 
@@ -101,6 +103,18 @@ const panel = createPanel(ui, {
   setRasp(n) {
     setRasp(state, n);
   },
+  spawnLesser() {
+    const next = spawnLesser(state);
+    if (!next) return;
+    state = next;
+    if (ephemeral) return;
+    savedAt = Date.now();
+    storageSet(serialize(state, savedAt));
+    location.reload();
+  },
+  buyTrait(id) {
+    if (buyTrait(state, id)) save();
+  },
   speak(id) {
     if (!speak(state, id)) return;
     scene.effect('truce');
@@ -140,6 +154,17 @@ const finale = createFinale(ui, panel.growPage, {
   },
 });
 if (ended(state)) document.documentElement.classList.add('ended');
+
+// A new seamount after a spawning: a note from one of the reef's descendants.
+{
+  const n = state.meta.spawnings;
+  const key = `lineage:${n}`;
+  const lb = LINEAGE_BANDS[Math.min(n, LINEAGE_BANDS.length) - 1];
+  if (n > 0 && lb && !state.meta.seen.includes(key)) {
+    state.meta.seen.push(key);
+    panel.story(`Lesser spawning ${n}`, lb.title, lb.text);
+  }
+}
 const replay = document.createElement('button');
 replay.className = 'plain';
 replay.textContent = 'Read the ending again';
@@ -322,7 +347,7 @@ function frame(now: number): void {
   finale.update(state);
   replay.hidden = !ended(state);
   title.classList.toggle('faded', state.levels.polyp > 0 || state.t > 25);
-  hint.classList.toggle('show', state.earned.calcite < 40 && reader() && state.t > 2);
+  hint.classList.toggle('show', state.meta.spawnings === 0 && state.earned.calcite < 40 && reader() && state.t > 2);
   if (now - lastSave > 5000) { save(); lastSave = now; }
   if (frozenT === null) requestAnimationFrame(frame);
   else document.documentElement.dataset.ready = '1';

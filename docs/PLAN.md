@@ -174,12 +174,18 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] time compression: headless bot (src/game/sim/bot.ts, tools/bot.ts), ?bot/?skip/?speed, corallum.skip()
 - [ ] M1 leftovers: tap-to-sweep feedback on the reef itself (not only floating text); keyboard shortcuts
 
+### M4 Lesser Spawning prestige + Lineage — landed 2026-10-27
+- [x] sim: lineage by height, seven traits, meta kept across runs, seen stories suppressed on reruns
+- [x] UI: Lineage tab (release / begin again, trait shop), lineage band note on each new seamount
+- [x] bot can spawn; one spawning at 1000 m finishes the game sooner (6h23 vs 8h08)
+- [x] tests: sim + browser (injected save)
+
 ### M5 Act V (The Breach) + ending — landed 2026-10-27
 - [x] sim: spawn stock, ripen, the Spawning Moon (20 min cycle, full window), breach with 3 of 12 memories
 - [x] UI: spawn stock, moon card, memory choice screen, ending sequence (release, 3 epilogues, Ossel closing, last line), replay in Reef tab
 - [x] scene: The Breach (night sky, moon in phase, glitter path, reef breaking the surface, spawn rising from polyps, surface slick, far reefs spawning)
 - [x] bot plays the whole game: ~8–9 h on every path; browser finale test
-- [ ] after the ending: epilogue garden mode + "Begin again" (ties into prestige)
+- [x] after the ending: "Begin again" (a spawning with +10 lineage) in the Lineage tab; the ended reef keeps living
 
 ### M3c Act IV (Sunlit Crown) — landed 2026-10-27
 - [x] sim: sunlight, bloom (photo multiplier + currency), pigments, canopy, 3 tiers × 3 dialects
