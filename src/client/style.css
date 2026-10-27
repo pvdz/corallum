@@ -233,3 +233,13 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 #zone-title em { color: var(--ink-dim); font-size: clamp(14px, 1.6vw, 18px); }
 #zone-title.show { animation: zone-title 7s ease both; }
 @keyframes zone-title { 0% { opacity: 0; transform: translateY(8px); } 15%, 70% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+
+#sweep-hint {
+  position: absolute; left: 0; right: 0; bottom: 56%; text-align: center; pointer-events: none;
+  font-family: var(--display); font-style: italic; font-size: 16px; color: var(--ink-dim);
+  opacity: 0; transition: opacity 1.2s ease;
+}
+@media (min-width: 800px) { #sweep-hint { right: min(400px, 36vw); bottom: 28%; } }
+#sweep-hint.show { opacity: 0.85; animation: breathe 3.5s ease-in-out infinite; }
+#sweep-hint.done { display: none; }
+@keyframes breathe { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.95; } }

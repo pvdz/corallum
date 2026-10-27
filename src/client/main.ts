@@ -178,6 +178,11 @@ function view(): ReefView {
   };
 }
 
+/** True when no story card is covering the screen. */
+function reader(): boolean {
+  return !document.querySelector('.reader:not([hidden])');
+}
+
 function showZoneTitle(n: number): void {
   const a = act(n);
   zoneTitle.innerHTML = '';
@@ -194,10 +199,17 @@ function showZoneTitle(n: number): void {
 }
 ui.append(zoneTitle);
 
+// Until the first sweep, a quiet hint over the water.
+const hint = document.createElement('div');
+hint.id = 'sweep-hint';
+hint.textContent = 'Tap the water to sweep your tentacles';
+ui.append(hint);
+
 // Tapping the water sweeps the tentacles: a small burst of calcite.
 canvas.addEventListener('pointerdown', (e) => {
   const gain = sweep(state);
   if (gain <= 0) return;
+  hint.classList.add('done');
   const f = document.createElement('div');
   f.className = 'float';
   f.textContent = `+${num(gain)}`;
@@ -253,6 +265,7 @@ function frame(now: number): void {
   }
   panel.update(state);
   title.classList.toggle('faded', state.levels.polyp > 0 || state.t > 25);
+  hint.classList.toggle('show', state.earned.calcite < 40 && reader() && state.t > 2);
   if (now - lastSave > 5000) { save(); lastSave = now; }
   if (frozenT === null) requestAnimationFrame(frame);
   else document.documentElement.dataset.ready = '1';

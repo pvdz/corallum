@@ -21,7 +21,7 @@ await withGame(async (open) => {
     }
     const polyp = page.locator('.card', { hasText: 'Bud a polyp' });
     await polyp.locator('button.buy').click();
-    assert.equal((await polyp.locator('.level').textContent())?.trim(), '×1');
+    await polyp.locator('.level', { hasText: '×1' }).waitFor({ timeout: 3000 });
 
     // Saved, and survives a reload.
     await page.evaluate(() => window.dispatchEvent(new Event('pagehide')));
