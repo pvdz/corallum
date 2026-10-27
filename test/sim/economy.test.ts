@@ -1,16 +1,25 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { act1Done, advance, buy, calciteHold, cost, glowHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
+import { act1Done, advance, assign, buy, calciteHold, cost, glowHold, heightForBands, bandMetres, idleShoals, murmurHold, planktonHold, read, reassign, sweep, timeUntil } from '../../src/game/sim/economy.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { newGame, type GameState } from '../../src/game/sim/state.ts';
 
 const rel = (a: number, b: number) => Math.abs(a - b) / Math.max(1, Math.abs(b));
 const clone = (s: GameState): GameState => structuredClone(s);
 
-/** A mid-act state with every kind of upgrade bought, glow still far from settled. */
+/** A mid-act state with every kind of upgrade bought, upstream stocks far from settled. */
 function midGame(): GameState {
   const { state } = runBot((s) => s.levels.vent >= 1 && s.levels.lure >= 1, 3 * 3600);
   state.glow = 0;
+  return state;
+}
+
+/** An Act II state with shoals on every job, readings bought, everything off equilibrium. */
+function act2Game(): GameState {
+  const { state } = runBot((s) => s.readings.length >= 3 && s.jobs.scout > 0, 6 * 3600);
+  state.glow = 0;
+  state.plankton = 0;
+  state.levels.skeleton += 3; // the reef is mid-rise
   return state;
 }
 
@@ -23,6 +32,63 @@ test('offline (one call) equals online (many 1/60 s frames)', () => {
   assert.ok(rel(a.glow, b.glow) < 1e-9);
   assert.ok(rel(a.height, b.height) < 1e-9);
   assert.ok(rel(a.earned.calcite, b.earned.calcite) < 1e-6);
+});
+
+test('Act II: offline equals online with glow, plankton, murmurs and height all moving', () => {
+  const a = act2Game();
+  const b = clone(a);
+  advance(a, 900);
+  for (let i = 0; i < 900 * 30; i++) advance(b, 1 / 30);
+  for (const k of ['calcite', 'glow', 'plankton', 'murmurs', 'height'] as const)
+    assert.ok(rel(a[k], b[k]) < 1e-6, `${k}: ${a[k]} vs ${b[k]}`);
+});
+
+test('Act II saturates: every stock settles at its hold', () => {
+  const s = act2Game();
+  const week = advance(clone(s), 7 * 86400);
+  const month = advance(clone(s), 30 * 86400);
+  assert.ok(rel(week.plankton, planktonHold(s)) < 1e-9);
+  assert.ok(rel(week.calcite, calciteHold(s)) < 1e-9);
+  assert.ok(rel(month.murmurs, murmurHold(s)) < 1e-9);
+  assert.equal(week.calcite, month.calcite);
+});
+
+test('band heights: closed form matches the sum', () => {
+  let sum = 0;
+  for (let l = 0; l < 70; l++) {
+    sum += bandMetres(l);
+    assert.ok(rel(heightForBands(l + 1), sum) < 1e-12);
+  }
+  assert.equal(heightForBands(20), 60);
+});
+
+test('shoals: new ones join the last job; scouting opens with the murmur band', () => {
+  const s = newGame(1);
+  s.height = 100;
+  s.glow = 1e6;
+  assert.ok(buy(s, 'shoal'));
+  assert.equal(s.jobs.feed, 1);
+  assert.equal(reassign(s, 'feed', 'scout'), false);
+  s.bands.push('murmur');
+  assert.ok(reassign(s, 'feed', 'scout'));
+  assert.ok(buy(s, 'shoal'));
+  assert.equal(s.jobs.scout, 2);
+  assert.ok(assign(s, 'scout', -1));
+  assert.equal(idleShoals(s), 1);
+  assert.ok(assign(s, 'light', 1));
+  assert.equal(idleShoals(s), 0);
+  assert.equal(assign(s, 'light', 1), false);
+});
+
+test('readings: in order, paid in murmurs, only once the murmur band is read', () => {
+  const s = newGame(1);
+  s.murmurs = 1e6;
+  assert.equal(read(s, 'city'), false);
+  s.bands.push('murmur');
+  assert.equal(read(s, 'lattice-songs'), false);
+  assert.ok(read(s, 'city'));
+  assert.equal(read(s, 'city'), false);
+  assert.ok(s.murmurs < 1e6);
 });
 
 test('offline saturates at the hold: a week equals a month', () => {
@@ -81,9 +147,17 @@ test('bands are read in height order and the act completes', () => {
   const { state } = runBot(act1Done, 6 * 3600);
   assert.ok(act1Done(state));
   assert.deepEqual(state.bands, ['wake', 'silt', 'bands', 'moon', 'thousandfold', 'forgetting', 'beaks', 'rise']);
+  assert.equal(state.act, 2);
 });
 
 test('pacing: the bot finishes Act I in 15–45 minutes of sim time', () => {
   const { state } = runBot(act1Done, 6 * 3600);
   assert.ok(state.t > 15 * 60 && state.t < 45 * 60, `took ${state.t}s`);
+});
+
+test('pacing: the bot finishes Act II 1–2.5 h after Act I', () => {
+  const a1 = runBot(act1Done, 6 * 3600).state.t;
+  const { state } = runBot((s) => s.height >= 3000, 12 * 3600);
+  const t = state.t - a1;
+  assert.ok(state.height >= 3000 && t > 3600 && t < 2.5 * 3600, `took ${t}s after Act I`);
 });

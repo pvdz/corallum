@@ -19,4 +19,15 @@
 | V | 1–2 h |
 | Spawnings | 3–4 over the game; each run faster than the last |
 
+## Height
+`heightTarget = Σ bandMetres(l)` over skeleton levels, with `bandMetres(l) = 3 · g^max(0, l − 19)`:
+3 m per band through Act I, then growing geometrically so Act II's 3,000 m is ~40 bands.
+
+## Act II stocks (all dx/dt = P − kx; upstream of calcite)
+- plankton: P = feed shoals × rate, k fast (eaten). Multiplier on calcite: 1 + √plankton/8.
+- glow: + light shoals × rate.
+- murmurs: P = scout shoals × rate, k slow (voices fade back into the stone).
+Calcite's production is f(glow(t), plankton(t)); advance() takes Simpson's mean of f over
+each sub-step while upstream stocks relax, then one exact step once they have settled.
+
 (Tables of costs and rates get filled in as content is written.)

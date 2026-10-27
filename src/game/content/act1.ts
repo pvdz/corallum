@@ -31,7 +31,7 @@ export const ACT1 = {
   sweepCooldown: 0.4,
 } as const;
 
-export type UpgradeId = 'polyp' | 'symbiont' | 'skeleton' | 'lattice' | 'vent' | 'lure';
+export type UpgradeId = 'polyp' | 'symbiont' | 'skeleton' | 'lattice' | 'vent' | 'lure' | 'shoal';
 export type Currency = 'calcite' | 'glow';
 
 export type UpgradeDef = {
@@ -42,6 +42,8 @@ export type UpgradeDef = {
   baseCost: number;
   growth: number;
   maxLevel: number;
+  /** From this level on, cost grows by a gentler factor (later acts' pacing). */
+  growthAfter?: [number, number];
   /** Shown once any of these holds (checked against levels and lifetime calcite). */
   reveal: { level?: [UpgradeId, number]; earned?: number; height?: number };
 };
@@ -55,7 +57,7 @@ export const UPGRADES: readonly UpgradeDef[] = [
   {
     id: 'skeleton', name: 'Lay down a band',
     flavour: 'A ring of stone a few cells thick, and in it everything you saw today.',
-    currency: 'calcite', baseCost: 30, growth: 1.3, maxLevel: Infinity, reveal: { earned: 15 },
+    currency: 'calcite', baseCost: 30, growth: 1.3, growthAfter: [20, 1.2], maxLevel: Infinity, reveal: { earned: 15 },
   },
   {
     id: 'symbiont', name: 'Host the glimmerseed',
@@ -77,16 +79,22 @@ export const UPGRADES: readonly UpgradeDef[] = [
     flavour: 'Warm water rich with stone, and sour enough to eat it again.',
     currency: 'calcite', baseCost: 500, growth: 5, maxLevel: 3, reveal: { height: 12 },
   },
+  {
+    id: 'shoal', name: 'Call a shoal',
+    flavour: 'Pulse the glow slow and wide. Out in the black, a hundred small lamps turn toward you.',
+    currency: 'glow', baseCost: 60, growth: 1.16, maxLevel: Infinity, reveal: { height: 60 },
+  },
 ];
 
 export function effectText(id: UpgradeId): string {
   switch (id) {
     case 'polyp': return `+${ACT1.polypRate} calcite/s`;
-    case 'skeleton': return `reef rises ${ACT1.bandMetres} m`;
+    case 'skeleton': return 'the reef rises';
     case 'symbiont': return `+${ACT1.symbiontGlow} glow/s`;
     case 'lattice': return `calcite dissolves ${Math.round((1 - ACT1.latticeFactor) * 100)}% slower`;
     case 'lure': return `glow can lure up to +${Math.round(ACT1.lureMaxPerPattern * 100)}% more calcite`;
     case 'vent': return `×${ACT1.ventBoost} calcite, but it dissolves ×${ACT1.ventAcid} faster`;
+    case 'shoal': return 'a lanternfish shoal joins the reef';
   }
 }
 

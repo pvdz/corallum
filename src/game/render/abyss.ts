@@ -27,7 +27,7 @@ export type ReefView = {
   vent: number;
 };
 
-export type EffectKind = 'polyp' | 'skeleton' | 'symbiont' | 'lure' | 'lattice' | 'vent';
+export type EffectKind = 'polyp' | 'skeleton' | 'symbiont' | 'lure' | 'lattice' | 'vent' | 'shoal';
 
 /** The part of the canvas not covered by the panel, in device pixels. */
 export type Focus = { x: number; y: number; w: number; h: number };
@@ -452,6 +452,11 @@ export function createAbyssScene(seed: number): Scene {
         case 'lattice': {
           const top = Math.min(1, visibleTop(v));
           glow(ctx, centreX(), baseY() - top * u * 0.5, top * u * 0.7 + 60 * s, '255,230,220', 0.25 * Math.sin(Math.PI * k));
+          break;
+        }
+        case 'shoal': {
+          const [cx, cy] = crownPx(v);
+          ring(ctx, cx, cy - 20 * s, (30 + k * 180) * s, '255,230,150', 0.35 * (1 - k), 1.5 * s);
           break;
         }
         case 'vent': {

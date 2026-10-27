@@ -30,3 +30,31 @@ Prestige: **Lesser Spawning** → new seamount, keep **Lineage** traits and deco
 - DOM panels overlaid: desktop side panel; mobile bottom sheet with tabs.
 - System font stacks only (no network). Display: Iowan/Palatino/Georgia/DejaVu Serif.
 - Reduced-motion and quality tiers.
+
+## Depth and acts
+Reef height is how far the reef has climbed the seamount's flank; depth = 4000 m − height.
+Acts follow the real ocean zones:
+
+| Act | Zone | Reef height | Depth |
+|---|---|---|---|
+| I | The Silt Floor | 0–60 m | 4000–3940 m |
+| II | The Midnight Water | 60–3000 m | 3940–1000 m |
+| III | The Twilight Shelf | 3000–3800 m | 1000–200 m |
+| IV | The Sunlit Crown | 3800–3980 m | 200–20 m |
+| V | The Breach | 3980–4000 m | 20–0 m |
+
+Each act is its own scene (palette, creatures, a fresh coral crown entering from below);
+the previous act's scene is gone below the frame.
+
+## Act II — The Midnight Water
+- **Shoals** of lanternfish come to the light: bought with **glow** (glow becomes a currency
+  as well as the lure).
+- **The verb: allocation.** Each shoal is assigned to one job, changeable any time:
+  - *Feed* — herd plankton to the polyps → **Plankton** stock → calcite multiplier
+    `1 + √plankton / 8` (sublinear, never caps).
+  - *Light* — swim in the reef's glow pattern → more **glow** production.
+  - *Scout* — dive into the silt to listen at buried bands → **Murmurs** stock.
+- **Readings**: one-off purchases with murmurs. Each deciphers a buried Thousandfold band:
+  a piece of lore plus an effect. This is how Act II's story is told.
+- Trade-off: plankton grows the economy, light buys more shoals, scouting buys knowledge and
+  permanent effects. No allocation is right for the whole act.

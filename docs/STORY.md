@@ -27,6 +27,14 @@ silver ripple far above.
 5. *The Breach* — the Spawning Moon. You choose which memories the spawn carries; the
    epilogue follows from that choice. Theme: a reef that keeps everything calcifies and dies.
 
+### Act II beats (Midnight Water)
+- The lanternfish shoals remember the reefs only as old songs; they come because of the glow.
+- Readings from Thousandfold's buried bands: its glory, its walls, the "beaked ones" it shut
+  out, its currents slowing, its last bands thick with fear.
+- Bands start contradicting Ossel. Ossel insists Thousandfold fell to the Rasp.
+- End of Act II: a Reading shows the wall that kept the Rasp out, from the inside. Ossel's
+  voice is in it. Ossel was part of that wall.
+
 (Detailed band texts live in src/game/content/ as they are written.)
 
 ## Originality check
@@ -42,4 +50,7 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Coral colony as protagonist; reefs as calcite memory archives | none known | OK |
 | Long Silt, Thousandfold, the Rasp, Ossel | none known | OK |
 | Lesser Spawnings / Lineage prestige; surface-spawning finale with memory choice | none known | OK |
+| "Murmurs" (Act II currency: voices heard in buried bands) | none known; "Echoes" was rejected (Bloodborne's Blood Echoes) | OK |
+| "Readings" (deciphering a buried band) | none known | OK |
+| Lanternfish shoals, glass shrimp | real animals | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

@@ -1,0 +1,144 @@
+// Act II — The Midnight Water. Shoals, their three jobs, and the Readings of buried bands.
+
+import type { Band } from './act1.ts';
+
+export const ACT2 = {
+  /** Plankton/s per feeding shoal; plankton is eaten fast. */
+  feedRate: 2,
+  planktonEaten: 0.15,
+  /** Calcite multiplier = 1 + sqrt(plankton) / planktonDiv. */
+  planktonDiv: 8,
+  /** Glow/s per shoal swimming the light pattern. */
+  lightGlow: 3,
+  /** Murmurs/s per scouting shoal; murmurs fade slowly back into the stone. */
+  scoutRate: 1,
+  murmurFade: 1 / 3600,
+  /** Reach: calcite × max(1, height / reachFrom) ^ reachPower — a taller reef catches more water. */
+  reachFrom: 60,
+  reachPower: 0.85,
+  /** Band metres grow geometrically after Act I's twenty bands. */
+  bandGrowth: 1.115,
+  bandGrowthFrom: 19,
+} as const;
+
+export type Job = 'feed' | 'light' | 'scout';
+export const JOBS: readonly { id: Job; name: string; verb: string }[] = [
+  { id: 'feed', name: 'Feed', verb: 'herding plankton to the polyps' },
+  { id: 'light', name: 'Light', verb: 'swimming the glow pattern' },
+  { id: 'scout', name: 'Scout', verb: 'listening at buried bands' },
+];
+
+export type ReadingId =
+  | 'city' | 'lattice-songs' | 'shoal-pact' | 'beaked' | 'tidebooks'
+  | 'walls' | 'slow-currents' | 'fear' | 'inside-the-wall';
+
+export type Reading = {
+  id: ReadingId;
+  cost: number;
+  title: string;
+  effect: string;
+  text: string;
+};
+
+export const READINGS: readonly Reading[] = [
+  {
+    id: 'city', cost: 25, title: 'A city of walls',
+    effect: 'polyps gather ×1.5 calcite',
+    text: 'Thousandfold, the band says, and then says it again, louder. Wall upon wall upon wall, ' +
+      'a hundred thousand mouths feeding as one, so wide the fish took days to swim around it. ' +
+      'Every polyp knew how to eat the way the city ate. Now, faintly, so do yours.',
+  },
+  {
+    id: 'lattice-songs', cost: 70, title: 'The lattice songs',
+    effect: 'calcite dissolves ×0.7 as fast',
+    text: 'The old polyps hummed while they laid stone, and the hum set the crystals in rows. ' +
+      'The tune is half lost. What is left is enough to make your bands hold.',
+  },
+  {
+    id: 'shoal-pact', cost: 180, title: 'The shoal pact',
+    effect: 'light shoals make ×2 glow',
+    text: 'Lanternfish swam the city’s glow in exchange for shelter in its walls; the band remembers ' +
+      'the pattern they swam, a slow spiral with a flicker at each turn. The shoals around you ' +
+      'see you remember it, and swim it brighter.',
+  },
+  {
+    id: 'beaked', cost: 450, title: 'The beaked ones',
+    effect: 'scouts hear ×1.5 murmurs',
+    text: 'A band thick with anger. Grazers with beaks of fused teeth came to the outer walls and ' +
+      'ground the dead stone to sand. Thousandfold called them the Rasp and called them thieves, and ' +
+      'it built a wall to keep them out. “There,” says Ossel. “Monsters. I told you.”',
+  },
+  {
+    id: 'tidebooks', cost: 1100, title: 'Tidebooks',
+    effect: 'feeding shoals herd ×2 plankton',
+    text: 'The city kept a record of the currents in its bands, season by season: where the ' +
+      'plankton ran, where it pooled. The record is a map, and the map still mostly holds.',
+  },
+  {
+    id: 'walls', cost: 2800, title: 'Higher walls',
+    effect: 'laying bands costs ×0.75',
+    text: 'Year on year the bands grow thicker and the walls grow higher, and the city grows ' +
+      'proud of its height. You learn the trick of it: a band laid on a band laid on a band.',
+  },
+  {
+    id: 'slow-currents', cost: 7000, title: 'The water slows',
+    effect: 'plankton is eaten ×0.6 as fast',
+    text: 'Here the bands change taste. The water inside the walls barely moves. Silt settles on ' +
+      'the polyps and does not wash away. The city notices, and builds another wall.',
+  },
+  {
+    id: 'fear', cost: 12000, title: 'Fear bands',
+    effect: 'the glow lure can reach +1 higher',
+    text: 'The last bands of Thousandfold are thick and fast-laid and all the same: keep, keep, ' +
+      'keep. The polyps stopped spawning, so as to lose nothing. They burned bright, to keep the ' +
+      'dark out. It did not work, but you learn the burning.',
+  },
+  {
+    id: 'inside-the-wall', cost: 26000, title: 'Inside the wall',
+    effect: 'calcite ×2',
+    text: 'The deepest band of the outer wall, the one that faced the Rasp. You know the voice in ' +
+      'it before it finishes a word. It is Ossel’s. Ossel was the wall. Ossel says nothing for a ' +
+      'very long time, and then: “Keep growing. Please.”',
+  },
+];
+
+export const BANDS_ACT2: readonly Band[] = [
+  {
+    id: 'eyes', metres: 150, title: 'Eyes in the dark',
+    text: 'Lights blink back at your glow: small fish, a constellation of them, each with a row of ' +
+      'lamps along its belly. They circle you, uncertain. Ossel calls them lanternfish. “They used ' +
+      'to sleep in our walls,” it says. “They will come to the light. Feed it to them.”',
+  },
+  {
+    id: 'murmur', metres: 350, title: 'Murmurs',
+    text: 'One of the shoals dives into the silt and comes back strange, slow, as if carrying ' +
+      'something. Through it you hear a buried band: voices, too faint for words. If enough fish ' +
+      'listened, you could read it.',
+  },
+  {
+    id: 'snowline', metres: 700, title: 'Above the snowline',
+    text: 'The Long Silt thins here. Grains still fall, but you can see between them: kilometres ' +
+      'of black water, and in it, here and there, a light that is not a fish.',
+  },
+  {
+    id: 'siphon', metres: 1200, title: 'The long animal',
+    text: 'Something passes that is a single animal and also a colony: a chain of glassy bells ' +
+      'longer than your whole reef, every bell pulsing in turn. It does not notice you. You feel ' +
+      'small, and also, for the first time, part of something.',
+  },
+  {
+    id: 'disagree', metres: 1900, title: 'A disagreement',
+    text: '“Thousandfold was right to keep everything,” Ossel says. You have read the slow-water ' +
+      'bands. You say so. Ossel goes quiet in the way stone goes quiet, which is completely.',
+  },
+  {
+    id: 'pressure', metres: 2500, title: 'Lighter water',
+    text: 'The weight of the sea lifts a little every band. Your polyps open wider. Far above, ' +
+      'the ripple has become a faint grey sheet, and it moves.',
+  },
+  {
+    id: 'twilight', metres: 3000, title: 'The first grey',
+    text: 'The black above you is not black any more. It is the deepest blue there is, and it is ' +
+      'getting lighter. Something is grinding stone, somewhere upslope. Ossel hears it too.',
+  },
+];
