@@ -19,13 +19,14 @@ import { ACT1, BANDS_ACT1 } from '../content/act1.ts';
 import { ACT2, BANDS_ACT2, READINGS, type Job, type ReadingId } from '../content/act2.ts';
 import { ACT3, BANDS_ACT3, MEETINGS, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { ACT4, BANDS_ACT4, DIALECTS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
-import { act, actAt, LAST_PLAYABLE_ACT } from '../content/acts.ts';
+import { ACT5, BANDS_ACT5, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
+import { act, actAt, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import type { Band, Currency, UpgradeDef, UpgradeId } from '../content/types.ts';
 import { UPGRADES } from '../content/upgrades.ts';
 import { equilibrium, relax } from './ode.ts';
 import type { GameState } from './state.ts';
 
-export const BANDS: readonly Band[] = [...BANDS_ACT1, ...BANDS_ACT2, ...BANDS_ACT3, ...BANDS_ACT4];
+export const BANDS: readonly Band[] = [...BANDS_ACT1, ...BANDS_ACT2, ...BANDS_ACT3, ...BANDS_ACT4, ...BANDS_ACT5];
 
 export type Rates = {
   glowP: number;
@@ -40,6 +41,8 @@ export type Rates = {
   sandK: number;
   bloomP: number;
   bloomK: number;
+  spawnP: number;
+  spawnK: number;
   /** Calcite production before the lure, feeding, reach and smother multipliers. */
   calciteBase: number;
   calciteK: number;
@@ -90,6 +93,11 @@ export function rates(s: GameState): Rates {
     sandK: ACT3.sandSettle,
     bloomP: sunlight(s, target) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * (speaks(s, 'fluorescent') ? 1.5 : 1),
     bloomK: ACT4.bloomFade,
+    spawnP: target >= ACT5.from
+      ? lv.polyp * ACT5.spawnRate * ACT5.ripenSpawn ** lv.ripen * (speaks(s, 'broadcast') ? 2 : 1) *
+        (1 + sunlight(s, target) * lv.symbiont / 100)
+      : 0,
+    spawnK: ACT5.spawnFade,
     calciteBase:
       (ACT1.trickle + ACT1.polypRate * lv.polyp * (has(s, 'city') ? 1.5 : 1)) *
       ACT1.ventBoost ** vent *
@@ -116,7 +124,7 @@ export function rates(s: GameState): Rates {
 const MAX_BANDS = 400;
 /** Fixed band stride for each act after the second (index = act number). */
 const STRIDE: Record<number, number> = { 3: 30, 4: 6, 5: 1 };
-const COST_GROWTH: Record<number, number> = { 1: 1.3, 2: 1.2, 3: 1.11, 4: 1.14, 5: 1.11 };
+const COST_GROWTH: Record<number, number> = { 1: 1.3, 2: 1.2, 3: 1.11, 4: 1.14, 5: 1.03 };
 
 const BAND_TOP = new Float64Array(MAX_BANDS + 1);
 const BAND_COST = new Float64Array(MAX_BANDS + 1);
@@ -220,6 +228,12 @@ export function sandHold(s: GameState, r = rates(s)): number {
 export function bloomHold(s: GameState, r = rates(s)): number {
   return equilibrium(r.bloomP, r.bloomK);
 }
+export function spawnHold(s: GameState, r = rates(s)): number {
+  return equilibrium(r.spawnP, r.spawnK);
+}
+export function spawnNet(s: GameState, r = rates(s)): number {
+  return r.spawnP - r.spawnK * s.spawn;
+}
 export function bloomNet(s: GameState, r = rates(s)): number {
   return r.bloomP - r.bloomK * s.bloom;
 }
@@ -275,6 +289,7 @@ export function advance(s: GameState, dt: number): GameState {
   s.earned.murmurs += r.murmurP * dt;
   s.murmurs = relax(s.murmurs, r.murmurP, r.murmurK, dt);
   s.sand = relax(s.sand, r.sandP, r.sandK, dt);
+  s.spawn = relax(s.spawn, r.spawnP, r.spawnK, dt);
   // Snap the last sliver so "reached the goal" is reachable in finite time.
   if (r.heightTarget - s.height < 1e-3) s.height = r.heightTarget;
   s.t += dt;
@@ -464,10 +479,71 @@ export function dialectOf(s: GameState, tier: DialectTier): DialectId | '' {
   return s.dialects[tier];
 }
 
+// ---------- The Spawning Moon and the Breach ----------
+
+/** 0..1 through the lunar cycle; full at 0.5. */
+export function moonPhase(t: number): number {
+  return (((t / ACT5.moonPeriod) % 1) + 1) % 1;
+}
+
+export function moonFull(t: number): boolean {
+  return Math.abs(moonPhase(t) - 0.5) <= ACT5.fullWindow;
+}
+
+/** Seconds until the moon is next full (0 while it is). */
+export function untilFullMoon(t: number): number {
+  if (moonFull(t)) return 0;
+  const p = moonPhase(t);
+  const start = 0.5 - ACT5.fullWindow;
+  return ((start - p + 1) % 1) * ACT5.moonPeriod;
+}
+
+export function spawnTarget(s: GameState): number {
+  return ACT5.target * (speaks(s, 'brooding') ? 0.6 : 1);
+}
+
+export function memoryAvailable(s: GameState, m: Memory): boolean {
+  if (m.needs.band && !s.bands.includes(m.needs.band)) return false;
+  if (m.needs.reading && !s.readings.includes(m.needs.reading as ReadingId)) return false;
+  return true;
+}
+
+export function memoriesAvailable(s: GameState): Memory[] {
+  return MEMORIES.filter((m) => memoryAvailable(s, m));
+}
+
+export function ended(s: GameState): boolean {
+  return s.carried.length > 0;
+}
+
+/** Everything but the moon is ready: at the surface with enough spawn. */
+export function breachReady(s: GameState): boolean {
+  return !ended(s) && s.height >= SURFACE && s.spawn >= spawnTarget(s);
+}
+
+export function canBreach(s: GameState): boolean {
+  return breachReady(s) && moonFull(s.t);
+}
+
+/** The finale: release the spawn under the full moon, carrying exactly three memories. */
+export function breach(s: GameState, memories: MemoryId[]): boolean {
+  if (!canBreach(s)) return false;
+  const unique = [...new Set(memories)];
+  if (unique.length !== ACT5.carry) return false;
+  for (const id of unique) {
+    const m = MEMORIES.find((x) => x.id === id);
+    if (!m || !memoryAvailable(s, m)) return false;
+  }
+  s.spawn = 0;
+  s.carried = unique;
+  s.breachedAt = s.t;
+  return true;
+}
+
 // ---------- Look-ahead ----------
 
 /** Seconds until `amount` of a currency is held if nothing is bought; Infinity if never. */
-export function timeUntil(s: GameState, cur: Currency | 'murmurs', amount: number): number {
+export function timeUntil(s: GameState, cur: Currency | 'murmurs' | 'spawn', amount: number): number {
   const have = s[cur];
   if (have >= amount) return 0;
   const r = rates(s);
@@ -475,6 +551,7 @@ export function timeUntil(s: GameState, cur: Currency | 'murmurs', amount: numbe
   if (cur === 'murmurs') return solveRelax(have, r.murmurP, r.murmurK, amount);
   if (cur === 'sand') return solveRelax(have, r.sandP, r.sandK, amount);
   if (cur === 'bloom') return solveRelax(have, r.bloomP, r.bloomK, amount);
+  if (cur === 'spawn') return solveRelax(have, r.spawnP, r.spawnK, amount);
   if (calciteHold(s, r) <= amount) return Infinity;
   // Calcite's production drifts with glow and plankton; probe forward in growing exact steps.
   const probe: GameState = { ...s, earned: { ...s.earned }, bands: [] };

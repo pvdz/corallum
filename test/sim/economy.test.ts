@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { act1Done, advance, assign, bloomHold, buy, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
+import { act1Done, advance, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { newGame, type GameState } from '../../src/game/sim/state.ts';
 
@@ -127,7 +127,7 @@ test('story gates hold the reef back', () => {
   s.truce.wall = 'b';
   assert.ok(heightCap(s) >= 3800 && heightCap(s) < 3980);
   s.dialects.spawn = 'broadcast';
-  assert.equal(heightCap(s), 3980);
+  assert.equal(heightCap(s), 4000);
   // The band that would cross the cap is not for sale.
   const s2 = newGame(1);
   while (heightForBands(s2.levels.skeleton + 1) <= 3000) s2.levels.skeleton++;
@@ -298,5 +298,45 @@ test('pacing: the Sunlit Crown takes 1–3 h whatever the dialects', () => {
     const { state } = runBot((s) => s.height >= 3980, 16 * 3600, { dialects });
     const t = state.t - start;
     assert.ok(state.height >= 3980 && t > 3600 && t < 3 * 3600, `${JSON.stringify(dialects)} took ${t}s`);
+  }
+});
+
+test('the moon: full for a window each cycle; untilFullMoon lands in it', () => {
+  let fullFrames = 0;
+  for (let t = 0; t < 1200; t += 1) if (moonFull(t)) fullFrames++;
+  assert.ok(fullFrames > 150 && fullFrames < 230, `${fullFrames}`);
+  for (const t of [0, 100, 500, 599, 700, 1100]) {
+    const wait = untilFullMoon(t);
+    assert.ok(moonFull(t + wait + 1e-6), `t=${t} wait=${wait} phase=${moonPhase(t + wait)}`);
+    if (wait > 1) assert.ok(!moonFull(t + wait - 1));
+  }
+});
+
+test('the Breach: needs the surface, the spawn, the full moon and exactly three memories', () => {
+  const s = newGame(1);
+  for (const b of ['wake', 'bands', 'thousandfold', 'grinding', 'colour']) s.bands.push(b);
+  s.height = 4000;
+  s.spawn = spawnTarget(s);
+  s.t = 0;
+  assert.ok(breachReady(s));
+  assert.equal(canBreach(s), false);
+  s.t = untilFullMoon(0) + 1;
+  assert.ok(canBreach(s));
+  assert.equal(breach(s, ['vent', 'ossel']), false);
+  assert.equal(breach(s, ['vent', 'ossel', 'rain']), false, 'rain has not happened');
+  assert.equal(breach(s, ['vent', 'vent', 'ossel']), false);
+  assert.ok(memoriesAvailable(s).length >= 5);
+  assert.ok(breach(s, ['vent', 'ossel', 'rasp']));
+  assert.ok(ended(s));
+  assert.equal(canBreach(s), false);
+});
+
+test('pacing: the whole game takes the bot 6–11 h whatever the path', () => {
+  for (const opts of [
+    {},
+    { truce: { terms: 'b', story: 'b', wall: 'b' }, dialects: { form: 'massive', craft: 'fluorescent', spawn: 'brooding' } },
+  ] as const) {
+    const { state } = runBot(ended, 14 * 3600, opts);
+    assert.ok(ended(state) && state.t > 6 * 3600 && state.t < 11 * 3600, `${JSON.stringify(opts)}: ${state.t}s`);
   }
 });

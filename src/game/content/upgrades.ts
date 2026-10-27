@@ -4,9 +4,10 @@ import { ACT1, UPGRADES_ACT1 } from './act1.ts';
 import { UPGRADES_ACT2 } from './act2.ts';
 import { ACT3, UPGRADES_ACT3 } from './act3.ts';
 import { ACT4, UPGRADES_ACT4 } from './act4.ts';
+import { ACT5, UPGRADES_ACT5 } from './act5.ts';
 import type { UpgradeDef, UpgradeId } from './types.ts';
 
-export const UPGRADES: readonly UpgradeDef[] = [...UPGRADES_ACT1, ...UPGRADES_ACT2, ...UPGRADES_ACT3, ...UPGRADES_ACT4];
+export const UPGRADES: readonly UpgradeDef[] = [...UPGRADES_ACT1, ...UPGRADES_ACT2, ...UPGRADES_ACT3, ...UPGRADES_ACT4, ...UPGRADES_ACT5];
 
 export function effectText(id: UpgradeId): string {
   switch (id) {
@@ -22,5 +23,6 @@ export function effectText(id: UpgradeId): string {
     case 'channel': return `plankton ×${ACT3.channelPlankton}`;
     case 'pigment': return `bloom ×${ACT4.pigmentBloom}`;
     case 'canopy': return `sunlight ×${ACT4.canopySun}`;
+    case 'ripen': return `spawn ×${ACT5.ripenSpawn}`;
   }
 }

@@ -24,4 +24,4 @@ export function act(n: number): ActDef {
 }
 
 /** The furthest act that has content so far; height beyond its end is still allowed. */
-export const LAST_PLAYABLE_ACT = 4;
+export const LAST_PLAYABLE_ACT = 5;

@@ -3,7 +3,7 @@
 
 import { UPGRADES } from '../content/upgrades.ts';
 import type { Job } from '../content/act2.ts';
-import { assign, BANDS, buy, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil } from './economy.ts';
+import { assign, BANDS, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil } from './economy.ts';
 import type { Choice, MeetingId } from '../content/act3.ts';
 import type { DialectId, DialectTier } from '../content/act4.ts';
 import { newGame, type GameState } from './state.ts';
@@ -42,6 +42,10 @@ export function botDecide(
   if (next && read(s, next.id)) bought.push(`read:${next.id}`);
   const m = nextMeeting(s);
   if (m && choose(s, m.id, truce[m.id])) bought.push(`truce:${m.id}=${truce[m.id]}`);
+  if (canBreach(s)) {
+    const carry = memoriesAvailable(s).slice(0, 3).map((m) => m.id);
+    if (breach(s, carry)) bought.push(`breach:${carry.join(',')}`);
+  }
   const tier = nextTier(s);
   if (tier && speak(s, dialects[tier.tier])) bought.push(`dialect:${dialects[tier.tier]}`);
   // Save bloom for a waiting dialect rather than spending it on canopy.
@@ -91,7 +95,7 @@ export function runBot(
   let readingsSeen = 0;
   while (s.t < maxT && !until(s)) {
     const did = botDecide(s, sweeps, split, truce, dialects);
-    for (const d of did) if (d.startsWith('truce:') || d.startsWith('dialect:')) events.push({ t: s.t, what: d });
+    for (const d of did) if (d.startsWith('truce:') || d.startsWith('dialect:') || d.startsWith('breach:')) events.push({ t: s.t, what: d });
     // Coarser ticks later in the game keep long runs fast; the bot still decides often
     // relative to how fast things change.
     advance(s, s.t < 3600 ? tick : tick * 5);
