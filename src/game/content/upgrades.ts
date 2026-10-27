@@ -3,9 +3,10 @@
 import { ACT1, UPGRADES_ACT1 } from './act1.ts';
 import { UPGRADES_ACT2 } from './act2.ts';
 import { ACT3, UPGRADES_ACT3 } from './act3.ts';
+import { ACT4, UPGRADES_ACT4 } from './act4.ts';
 import type { UpgradeDef, UpgradeId } from './types.ts';
 
-export const UPGRADES: readonly UpgradeDef[] = [...UPGRADES_ACT1, ...UPGRADES_ACT2, ...UPGRADES_ACT3];
+export const UPGRADES: readonly UpgradeDef[] = [...UPGRADES_ACT1, ...UPGRADES_ACT2, ...UPGRADES_ACT3, ...UPGRADES_ACT4];
 
 export function effectText(id: UpgradeId): string {
   switch (id) {
@@ -19,5 +20,7 @@ export function effectText(id: UpgradeId): string {
     case 'grounds': return `room for ${ACT3.raspPerGround} more Rasp`;
     case 'sandbar': return `more current: sweeps silt, calcite ×${ACT3.sandbarCalcite}`;
     case 'channel': return `plankton ×${ACT3.channelPlankton}`;
+    case 'pigment': return `bloom ×${ACT4.pigmentBloom}`;
+    case 'canopy': return `sunlight ×${ACT4.canopySun}`;
   }
 }

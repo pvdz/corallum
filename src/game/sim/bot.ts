@@ -3,13 +3,15 @@
 
 import { UPGRADES } from '../content/upgrades.ts';
 import type { Job } from '../content/act2.ts';
-import { assign, BANDS, buy, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil } from './economy.ts';
+import { assign, BANDS, buy, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil } from './economy.ts';
 import type { Choice, MeetingId } from '../content/act3.ts';
+import type { DialectId, DialectTier } from '../content/act4.ts';
 import { newGame, type GameState } from './state.ts';
 
 export type BotOptions = {
   seed?: number; tick?: number; sweeps?: boolean; split?: Record<Job, number>;
   truce?: Record<MeetingId, Choice>;
+  dialects?: Record<DialectTier, DialectId>;
 };
 export type BotEvent = { t: number; what: string };
 
@@ -17,6 +19,7 @@ const DEFAULT_SPLIT: Record<Job, number> = { feed: 0.5, light: 0.3, scout: 0.2 }
 
 /** One decision: read if possible, buy the cheapest affordable upgrades, place idle shoals. */
 const DEFAULT_TRUCE: Record<MeetingId, Choice> = { terms: 'a', story: 'a', wall: 'a' };
+const DEFAULT_DIALECTS: Record<DialectTier, DialectId> = { form: 'branching', craft: 'sweepers', spawn: 'broadcast' };
 
 /** The Rasp dial setting with the best calcite hold (the dial is small, so try them all). */
 export function bestRasp(s: GameState): number {
@@ -31,14 +34,20 @@ export function bestRasp(s: GameState): number {
   return best;
 }
 
-export function botDecide(s: GameState, sweeps: boolean, split = DEFAULT_SPLIT, truce = DEFAULT_TRUCE): string[] {
+export function botDecide(
+  s: GameState, sweeps: boolean, split = DEFAULT_SPLIT, truce = DEFAULT_TRUCE, dialects = DEFAULT_DIALECTS,
+): string[] {
   const bought: string[] = [];
   const next = nextReading(s);
   if (next && read(s, next.id)) bought.push(`read:${next.id}`);
   const m = nextMeeting(s);
   if (m && choose(s, m.id, truce[m.id])) bought.push(`truce:${m.id}=${truce[m.id]}`);
+  const tier = nextTier(s);
+  if (tier && speak(s, dialects[tier.tier])) bought.push(`dialect:${dialects[tier.tier]}`);
+  // Save bloom for a waiting dialect rather than spending it on canopy.
+  const saving = nextTier(s);
   for (;;) {
-    const options = UPGRADES.filter((u) => canAfford(s, u.id)).sort(
+    const options = UPGRADES.filter((u) => canAfford(s, u.id) && !(saving && u.currency === 'bloom')).sort(
       (a, b) => cost(s, a.id) - cost(s, b.id),
     );
     const pick = options[0];
@@ -75,14 +84,14 @@ export function runBot(
   maxT: number,
   opts: BotOptions = {},
 ): { state: GameState; events: BotEvent[] } {
-  const { seed = 1, tick = 1, sweeps = true, split, truce } = opts;
+  const { seed = 1, tick = 1, sweeps = true, split, truce, dialects } = opts;
   const s = newGame(seed);
   const events: BotEvent[] = [];
   let bandsSeen = 0;
   let readingsSeen = 0;
   while (s.t < maxT && !until(s)) {
-    const did = botDecide(s, sweeps, split, truce);
-    for (const d of did) if (d.startsWith('truce:')) events.push({ t: s.t, what: d });
+    const did = botDecide(s, sweeps, split, truce, dialects);
+    for (const d of did) if (d.startsWith('truce:') || d.startsWith('dialect:')) events.push({ t: s.t, what: d });
     // Coarser ticks later in the game keep long runs fast; the bot still decides often
     // relative to how fast things change.
     advance(s, s.t < 3600 ? tick : tick * 5);

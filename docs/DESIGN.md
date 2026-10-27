@@ -74,3 +74,18 @@ Entry requires the last Act II Reading (*Inside the wall*): the story turn opens
   permanent choice between two terms, with economic and story consequences; the third is
   whether to give Ossel's wall to the Rasp. The choices colour the ending.
 - **Grazing grounds** (calcite): raise Rmax.
+
+## Act IV — The Sunlit Crown (3800–3980 m)
+- **Sunlight** reaches the reef: `sun = base × (1 + (target − 3800)/60)` (rises toward the surface).
+- **Bloom** (stock): sugar made by photosynthetic symbionts. `P = sun × symbionts × pigments × dialect`,
+  slow fade. Calcite × `1 + √bloom / 50` (it feeds the polyps) — and bloom is also the currency
+  for dialects and canopy, so spending it dims the reef for a while. Spend or keep.
+- **Pigments** (calcite, max 12): bloom ×1.25 each. **Canopy** (bloom): sunlight ×1.2 each.
+- **The verb: becoming.** Three tiers of **dialects** (what kind of reef you will be), three
+  options each, one per tier, permanent, each unlocked at a band:
+  - Tier 1 *Form*: Branching (bands cost ×0.6) · Massive (calcite dissolves ×0.4) · Plating (sun ×2)
+  - Tier 2 *Craft*: Fluorescent (lure +2, glow ×2) · Sweeper tentacles (plankton ×3) ·
+    Mucus nets (silt swept ×2, Rasp eat nothing)
+  - Tier 3 *Spawn*: Broadcast · Brooding · Fragmenting — each shapes Act V's spawning.
+- The Form dialect changes the coral's silhouette in the Sunlit scene (tall branches, a domed
+  boulder, or stacked tables): the choice is visible.

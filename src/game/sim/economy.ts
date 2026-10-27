@@ -18,13 +18,14 @@
 import { ACT1, BANDS_ACT1 } from '../content/act1.ts';
 import { ACT2, BANDS_ACT2, READINGS, type Job, type ReadingId } from '../content/act2.ts';
 import { ACT3, BANDS_ACT3, MEETINGS, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
+import { ACT4, BANDS_ACT4, DIALECTS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
 import { act, actAt, LAST_PLAYABLE_ACT } from '../content/acts.ts';
 import type { Band, Currency, UpgradeDef, UpgradeId } from '../content/types.ts';
 import { UPGRADES } from '../content/upgrades.ts';
 import { equilibrium, relax } from './ode.ts';
 import type { GameState } from './state.ts';
 
-export const BANDS: readonly Band[] = [...BANDS_ACT1, ...BANDS_ACT2, ...BANDS_ACT3];
+export const BANDS: readonly Band[] = [...BANDS_ACT1, ...BANDS_ACT2, ...BANDS_ACT3, ...BANDS_ACT4];
 
 export type Rates = {
   glowP: number;
@@ -37,6 +38,8 @@ export type Rates = {
   siltK: number;
   sandP: number;
   sandK: number;
+  bloomP: number;
+  bloomK: number;
   /** Calcite production before the lure, feeding, reach and smother multipliers. */
   calciteBase: number;
   calciteK: number;
@@ -47,6 +50,17 @@ export type Rates = {
 
 function has(s: GameState, id: ReadingId): boolean {
   return s.readings.includes(id);
+}
+
+function speaks(s: GameState, id: DialectId): boolean {
+  return s.dialects.form === id || s.dialects.craft === id || s.dialects.spawn === id;
+}
+
+/** Sunlight per symbiont colony; zero below the Sunlit Crown. */
+export function sunlight(s: GameState, target = heightForBands(s.levels.skeleton)): number {
+  if (target < ACT4.from) return 0;
+  return ACT4.sunBase * (1 + (target - ACT4.from) / ACT4.sunGrowthPer) *
+    ACT4.canopySun ** s.levels.canopy * (speaks(s, 'plating') ? 2 : 1);
 }
 
 export function raspMax(s: GameState): number {
@@ -63,27 +77,31 @@ export function rates(s: GameState): Rates {
   return {
     glowP: ACT1.symbiontGlow * lv.symbiont + lightGlow * s.jobs.light,
     glowK: ACT1.glowFade,
-    planktonP: ACT2.feedRate * s.jobs.feed * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel,
+    planktonP: ACT2.feedRate * s.jobs.feed * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
+      (speaks(s, 'sweepers') ? 3 : 1),
     planktonK: ACT2.planktonEaten * (has(s, 'slow-currents') ? 0.6 : 1),
     murmurP: ACT2.scoutRate * s.jobs.scout * (has(s, 'beaked') ? 1.5 : 1),
     murmurK: ACT2.murmurFade,
     siltP: onShelf
       ? ACT3.siltFall * (1 + (target - ACT3.from) / ACT3.siltGrowthPer) * (s.truce.wall === 'a' ? 0.6 : 1)
       : 0,
-    siltK: ACT3.naturalSweep + ACT3.flowSweep * lv.sandbar + ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1),
+    siltK: ACT3.naturalSweep + ACT3.flowSweep * lv.sandbar + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
     sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1),
     sandK: ACT3.sandSettle,
+    bloomP: sunlight(s, target) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * (speaks(s, 'fluorescent') ? 1.5 : 1),
+    bloomK: ACT4.bloomFade,
     calciteBase:
       (ACT1.trickle + ACT1.polypRate * lv.polyp * (has(s, 'city') ? 1.5 : 1)) *
       ACT1.ventBoost ** vent *
       (has(s, 'inside-the-wall') ? 2 : 1) *
       (s.truce.wall === 'b' ? 1.5 : 1) *
-      ACT3.sandbarCalcite ** lv.sandbar,
+      ACT3.sandbarCalcite ** lv.sandbar *
+      (speaks(s, 'massive') ? 1.5 : 1),
     calciteK:
       ACT1.dissolve * ACT1.latticeFactor ** lv.lattice * ACT1.ventAcid ** vent *
-      (has(s, 'lattice-songs') ? 0.7 : 1) +
-      (s.truce.terms === 'b' ? 0 : ACT3.raspEat * rasp),
-    lureMax: ACT1.lureMax + ACT1.lureMaxPerPattern * lv.lure + (has(s, 'fear') ? 1 : 0),
+      (has(s, 'lattice-songs') ? 0.7 : 1) * (speaks(s, 'massive') ? 0.5 : 1) +
+      (s.truce.terms === 'b' || speaks(s, 'mucus') ? 0 : ACT3.raspEat * rasp),
+    lureMax: ACT1.lureMax + ACT1.lureMaxPerPattern * lv.lure + (has(s, 'fear') ? 1 : 0) + (speaks(s, 'fluorescent') ? 2 : 0),
     reachPower: ACT2.reachPower + (s.truce.story === 'b' ? 0.05 : 0),
     heightTarget: target,
   };
@@ -98,7 +116,7 @@ export function rates(s: GameState): Rates {
 const MAX_BANDS = 400;
 /** Fixed band stride for each act after the second (index = act number). */
 const STRIDE: Record<number, number> = { 3: 30, 4: 6, 5: 1 };
-const COST_GROWTH: Record<number, number> = { 1: 1.3, 2: 1.2, 3: 1.11, 4: 1.11, 5: 1.11 };
+const COST_GROWTH: Record<number, number> = { 1: 1.3, 2: 1.2, 3: 1.11, 4: 1.14, 5: 1.11 };
 
 const BAND_TOP = new Float64Array(MAX_BANDS + 1);
 const BAND_COST = new Float64Array(MAX_BANDS + 1);
@@ -139,17 +157,21 @@ export function reach(height: number, power: number = ACT2.reachPower): number {
   return Math.max(1, height / ACT2.reachFrom) ** power;
 }
 
+export function photo(bloom: number): number {
+  return 1 + Math.sqrt(Math.max(0, bloom)) / ACT4.bloomDiv;
+}
+
 export function smother(silt: number): number {
   return 1 / (1 + Math.max(0, silt) / ACT3.smotherHalf);
 }
 
-function production(r: Rates, glow: number, plankton: number, height: number, silt: number): number {
-  return r.calciteBase * lure(r, glow) * feeding(plankton) * reach(height, r.reachPower) * smother(silt);
+function production(r: Rates, glow: number, plankton: number, height: number, silt: number, bloom: number): number {
+  return r.calciteBase * lure(r, glow) * feeding(plankton) * reach(height, r.reachPower) * smother(silt) * photo(bloom);
 }
 
 /** Instantaneous calcite production per second. */
 export function calciteRate(s: GameState, r = rates(s)): number {
-  return production(r, s.glow, s.plankton, s.height, s.silt);
+  return production(r, s.glow, s.plankton, s.height, s.silt, s.bloom);
 }
 
 /** Net change per second right now. */
@@ -176,7 +198,7 @@ export function sandNet(s: GameState, r = rates(s)): number {
 export function calciteHold(s: GameState, r = rates(s)): number {
   const p = production(
     r, equilibrium(r.glowP, r.glowK), equilibrium(r.planktonP, r.planktonK), r.heightTarget,
-    equilibrium(r.siltP, r.siltK),
+    equilibrium(r.siltP, r.siltK), equilibrium(r.bloomP, r.bloomK),
   );
   return equilibrium(p, r.calciteK);
 }
@@ -195,6 +217,12 @@ export function siltHold(s: GameState, r = rates(s)): number {
 export function sandHold(s: GameState, r = rates(s)): number {
   return equilibrium(r.sandP, r.sandK);
 }
+export function bloomHold(s: GameState, r = rates(s)): number {
+  return equilibrium(r.bloomP, r.bloomK);
+}
+export function bloomNet(s: GameState, r = rates(s)): number {
+  return r.bloomP - r.bloomK * s.bloom;
+}
 
 const EQ_EPS = 1e-12;
 /** Sub-step length as a fraction of the fastest upstream time constant. */
@@ -204,7 +232,7 @@ function settledAt(x: number, eq: number): boolean {
   return Math.abs(x - eq) <= EQ_EPS * Math.max(1, eq);
 }
 
-type Upstream = 'glow' | 'plankton' | 'height' | 'silt';
+type Upstream = 'glow' | 'plankton' | 'height' | 'silt' | 'bloom';
 
 /** Advance the world by dt simulated seconds. Mutates and returns s. */
 export function advance(s: GameState, dt: number): GameState {
@@ -216,9 +244,10 @@ export function advance(s: GameState, dt: number): GameState {
     { key: 'plankton', P: r.planktonP, k: r.planktonK, eq: equilibrium(r.planktonP, r.planktonK) },
     { key: 'height', P: kH * r.heightTarget, k: kH, eq: r.heightTarget },
     { key: 'silt', P: r.siltP, k: r.siltK, eq: equilibrium(r.siltP, r.siltK) },
+    { key: 'bloom', P: r.bloomP, k: r.bloomK, eq: equilibrium(r.bloomP, r.bloomK) },
   ];
   const maxStep = STEP_FRACTION / Math.max(...up.map((u) => u.k));
-  const at = (x: Record<Upstream, number>) => production(r, x.glow, x.plankton, x.height, x.silt);
+  const at = (x: Record<Upstream, number>) => production(r, x.glow, x.plankton, x.height, x.silt, x.bloom);
   let left = dt;
   while (left > 0) {
     const settled = up.every((u) => settledAt(s[u.key], u.eq));
@@ -228,7 +257,7 @@ export function advance(s: GameState, dt: number): GameState {
       for (const u of up) s[u.key] = u.eq;
       p = at(s);
     } else {
-      const x0 = { glow: s.glow, plankton: s.plankton, height: s.height, silt: s.silt };
+      const x0 = { glow: s.glow, plankton: s.plankton, height: s.height, silt: s.silt, bloom: s.bloom };
       const xm = { ...x0 }, x1 = { ...x0 };
       for (const u of up) {
         xm[u.key] = relax(x0[u.key], u.P, u.k, h / 2);
@@ -267,7 +296,7 @@ export function cost(s: GameState, id: UpgradeId): number {
   const u = upgrade(id);
   const l = s.levels[id];
   if (id === 'skeleton') {
-    const discount = has(s, 'walls') ? 0.75 : 1;
+    const discount = (has(s, 'walls') ? 0.75 : 1) * (speaks(s, 'branching') ? 0.6 : 1);
     return Math.ceil(u.baseCost * BAND_COST[Math.min(MAX_BANDS, l)]! * discount);
   }
   const discount = 1;
@@ -285,6 +314,7 @@ export function heightCap(s: GameState): number {
   let cap = act(LAST_PLAYABLE_ACT).to;
   if (!has(s, 'inside-the-wall')) cap = Math.min(cap, act(2).to);
   if (!s.truce.wall) cap = Math.min(cap, act(3).to - 1);
+  if (!s.dialects.spawn) cap = Math.min(cap, act(4).to - 1);
   return cap;
 }
 
@@ -405,6 +435,35 @@ export function choose(s: GameState, id: MeetingId, choice: Choice): boolean {
   return true;
 }
 
+// ---------- Dialects ----------
+
+export function dialect(id: DialectId) {
+  return DIALECTS.find((d) => d.id === id)!;
+}
+
+/** The tier waiting for a choice: in order, once its band is read. */
+export function nextTier(s: GameState) {
+  for (const t of TIERS) {
+    if (s.dialects[t.tier]) continue;
+    return s.bands.includes(t.band) ? t : undefined;
+  }
+  return undefined;
+}
+
+/** Choose a dialect for its tier, paid in bloom. Permanent. */
+export function speak(s: GameState, id: DialectId): boolean {
+  const d = dialect(id);
+  const t = nextTier(s);
+  if (!t || t.tier !== d.tier || s.bloom < t.cost) return false;
+  s.bloom -= t.cost;
+  s.dialects[d.tier] = id;
+  return true;
+}
+
+export function dialectOf(s: GameState, tier: DialectTier): DialectId | '' {
+  return s.dialects[tier];
+}
+
 // ---------- Look-ahead ----------
 
 /** Seconds until `amount` of a currency is held if nothing is bought; Infinity if never. */
@@ -415,6 +474,7 @@ export function timeUntil(s: GameState, cur: Currency | 'murmurs', amount: numbe
   if (cur === 'glow') return solveRelax(have, r.glowP, r.glowK, amount);
   if (cur === 'murmurs') return solveRelax(have, r.murmurP, r.murmurK, amount);
   if (cur === 'sand') return solveRelax(have, r.sandP, r.sandK, amount);
+  if (cur === 'bloom') return solveRelax(have, r.bloomP, r.bloomK, amount);
   if (calciteHold(s, r) <= amount) return Infinity;
   // Calcite's production drifts with glow and plankton; probe forward in growing exact steps.
   const probe: GameState = { ...s, earned: { ...s.earned }, bands: [] };

@@ -2,6 +2,7 @@
 
 import type { Job, ReadingId } from '../content/act2.ts';
 import type { MeetingId } from '../content/act3.ts';
+import type { DialectId, DialectTier } from '../content/act4.ts';
 import type { UpgradeId } from '../content/types.ts';
 
 export const SAVE_VERSION = 1;
@@ -20,6 +21,10 @@ export type GameState = {
   sand: number;
   /** Rasp admitted to graze (the Act III dial). */
   rasp: number;
+  /** Photosynthetic sugar (Act IV). */
+  bloom: number;
+  /** Dialects chosen per tier ('' until chosen). */
+  dialects: Record<DialectTier, DialectId | ''>;
   /** Truce choices: '' until made, then 'a' or 'b'. */
   truce: Record<MeetingId, '' | 'a' | 'b'>;
   /** Reef height up the seamount, metres. */
@@ -53,10 +58,12 @@ export function newGame(seed: number): GameState {
     sand: 0,
     rasp: 0,
     truce: { terms: '', story: '', wall: '' },
+    bloom: 0,
+    dialects: { form: '', craft: '', spawn: '' },
     height: 0,
     levels: {
       polyp: 0, symbiont: 0, skeleton: 0, lattice: 0, vent: 0, lure: 0, shoal: 0,
-      grounds: 0, sandbar: 0, channel: 0,
+      grounds: 0, sandbar: 0, channel: 0, pigment: 0, canopy: 0,
     },
     jobs: { feed: 0, light: 0, scout: 0 },
     lastJob: 'feed',

@@ -48,6 +48,14 @@ silver ripple far above.
 - The truth lands: the Long Silt is Thousandfold, ground down. Not by the Rasp's malice — by
   the Rasp's absence. The reef that would not let anything go choked, died, and fell apart.
 
+### Act IV beats (Sunlit Crown)
+- Colour, warmth, other reefs' children drifting past: the sea is not dead, only the deep was.
+- Sunlit reefs speak in dialects — growth forms, crafts, ways of spawning. Choosing one is
+  choosing what to forget: every dialect leaves other ways of being behind.
+- If Ossel was kept, it marvels and is afraid of the light; if it was let go, its sand is
+  in the shallows, glittering, and sometimes you think it is laughing.
+- The surface is close enough to hear: rain, wind, and once, a bird.
+
 (Detailed band texts live in src/game/content/ as they are written.)
 
 ## Originality check
@@ -68,4 +76,6 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Lanternfish shoals, glass shrimp | real animals | OK |
 | The truce with grazers; giving a dead wall to be ground to sand | none known | OK |
 | Silt smothering as a resource pressure | none known in this form | OK |
+| Reef "dialects" (growth form, craft, spawning mode) as a choice tree | none known | OK |
+| Bloom (photosynthetic sugar) as a resource | real biology | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

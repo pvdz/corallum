@@ -3,9 +3,10 @@
 export type UpgradeId =
   | 'polyp' | 'symbiont' | 'skeleton' | 'lattice' | 'vent' | 'lure'
   | 'shoal'
-  | 'grounds' | 'sandbar' | 'channel';
+  | 'grounds' | 'sandbar' | 'channel'
+  | 'pigment' | 'canopy';
 
-export type Currency = 'calcite' | 'glow' | 'sand';
+export type Currency = 'calcite' | 'glow' | 'sand' | 'bloom';
 
 export type UpgradeDef = {
   id: UpgradeId;
@@ -22,4 +23,8 @@ export type UpgradeDef = {
 };
 
 /** Lore bands, read as the reef grows past their height. */
-export type Band = { id: string; metres: number; title: string; text: string };
+export type Band = {
+  id: string; metres: number; title: string; text: string;
+  /** Alternative text when Ossel's wall was kept. */
+  kept?: string;
+};
