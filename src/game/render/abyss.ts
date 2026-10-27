@@ -3,7 +3,9 @@
 // seed, state and time always render the same frame — screenshots rely on that.
 
 import { mulberry32, range, type Rng } from '../sim/rng.ts';
+import { createBloom, type Bloom } from './bloom.ts';
 import { generateCoral, thickness } from './coral.ts';
+import { createLife, type Stage } from './life.ts';
 
 type Flake = { x: number; y: number; r: number; speed: number; drift: number; phase: number; layer: number };
 type Mote = { x: number; y: number; r: number; phase: number; period: number; hue: number };
@@ -21,7 +23,11 @@ export type ReefView = {
   glowLevel: number;
   /** Seconds since the last hand sweep, for the tentacle flick. */
   sinceSweep: number;
+  /** Vent chimney tier, 0 = none. */
+  vent: number;
 };
+
+export type EffectKind = 'polyp' | 'skeleton' | 'symbiont' | 'lure' | 'lattice' | 'vent';
 
 /** The part of the canvas not covered by the panel, in device pixels. */
 export type Focus = { x: number; y: number; w: number; h: number };
@@ -29,6 +35,10 @@ export type Focus = { x: number; y: number; w: number; h: number };
 export type Scene = {
   resize(w: number, h: number, dpr: number, focus: Focus): void;
   draw(ctx: CanvasRenderingContext2D, t: number, view: ReefView): void;
+  /** Play a one-off flourish (a purchase) starting at the next drawn frame. */
+  effect(kind: EffectKind): void;
+  /** 0 disables the bloom pass (quality tier). */
+  bloomStrength: number;
   /** Where the reef's crown is right now, in device pixels (for UI effects). */
   crown(view: ReefView): { x: number; y: number };
 };
@@ -50,6 +60,10 @@ export function createAbyssScene(seed: number): Scene {
   const coral = generateCoral(reefSeed);
   const radii = new Float32Array(coral.count);
   let radiiTop = -1;
+  const life = createLife(reefSeed ^ 0x9e3779b9);
+  let bloom: Bloom | null = null;
+  const effects: { kind: EffectKind; start: number }[] = [];
+  const pending: EffectKind[] = [];
 
   const scale = () => Math.min(focus.w, focus.h) / 700;
   const baseY = () => focus.y + focus.h * 0.84;
@@ -368,21 +382,114 @@ export function createAbyssScene(seed: number): Scene {
     ctx.fillRect(0, 0, w, h);
   }
 
+  function stage(): Stage {
+    return { cx: centreX(), baseY: baseY(), w: focus.w, h: focus.h, s: scale(), dpr };
+  }
+
+  function ring(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, rgb: string, a: number, lw: number): void {
+    ctx.strokeStyle = `rgba(${rgb},${a})`;
+    ctx.lineWidth = lw;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  function drawEffects(ctx: CanvasRenderingContext2D, t: number, v: ReefView, vent: { x: number; y: number } | null): void {
+    while (pending.length) effects.push({ kind: pending.shift()!, start: t });
+    const s = scale();
+    const u = unitPx(v);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let e = effects.length - 1; e >= 0; e--) {
+      const fx = effects[e]!;
+      const age = t - fx.start;
+      if (age < 0 || age > 2.2) { effects.splice(e, 1); continue; }
+      const k = age / 2.2;
+      switch (fx.kind) {
+        case 'polyp': {
+          const nodes = polypNodes(v, Math.min(MAX_POLYPS, 1 + v.polyps));
+          const [x, y] = nodePx(nodes[nodes.length - 1]!, u);
+          glow(ctx, x, y - 10 * s, (20 + 50 * k) * s, '255,200,180', 0.7 * (1 - k));
+          ring(ctx, x, y - 10 * s, (6 + 60 * k) * s, '255,190,170', 0.6 * (1 - k), 2 * s);
+          break;
+        }
+        case 'skeleton': {
+          const top = Math.min(1, visibleTop(v));
+          const yy = baseY() - Math.min(1, age / 1.2) * top * u;
+          const a = 0.45 * (1 - k);
+          const g = ctx.createLinearGradient(0, yy - 14 * s, 0, yy + 14 * s);
+          g.addColorStop(0, 'rgba(255,190,160,0)');
+          g.addColorStop(0.5, `rgba(255,190,160,${a})`);
+          g.addColorStop(1, 'rgba(255,190,160,0)');
+          ctx.fillStyle = g;
+          const half = u * 0.3;
+          ctx.fillRect(centreX() - half, yy - 14 * s, half * 2, 28 * s);
+          break;
+        }
+        case 'symbiont': {
+          const top = visibleTop(v);
+          for (let i = 0; i < 14; i++) {
+            const node = (i * 7919 + Math.floor(fx.start * 13)) % coral.count;
+            if (coral.y[node]! > top) continue;
+            const [tx, ty] = nodePx(node, u);
+            const f = Math.min(1, age / 1.4);
+            const ease = 1 - (1 - f) ** 3;
+            const sx = tx + Math.sin(i * 2.3) * 120 * s * (1 - ease);
+            const sy = ty - 220 * s * (1 - ease);
+            glow(ctx, sx, sy, 7 * s, '120,255,210', 0.9 * (1 - k * 0.7));
+          }
+          break;
+        }
+        case 'lure': {
+          const [cx, cy] = crownPx(v);
+          for (let i = 0; i < 3; i++) {
+            const kk = Math.max(0, k * 1.4 - i * 0.18);
+            if (kk <= 0 || kk >= 1) continue;
+            ring(ctx, cx, cy - 20 * s, (10 + kk * 260) * s, '120,240,255', 0.5 * (1 - kk), 2.5 * s);
+          }
+          break;
+        }
+        case 'lattice': {
+          const top = Math.min(1, visibleTop(v));
+          glow(ctx, centreX(), baseY() - top * u * 0.5, top * u * 0.7 + 60 * s, '255,230,220', 0.25 * Math.sin(Math.PI * k));
+          break;
+        }
+        case 'vent': {
+          if (!vent) break;
+          glow(ctx, vent.x, vent.y, (40 + 140 * k) * s, '255,150,80', 0.6 * (1 - k));
+          break;
+        }
+      }
+    }
+    ctx.restore();
+  }
+
   return {
+    bloomStrength: 0.55,
+    effect(kind) {
+      pending.push(kind);
+    },
     resize(nw, nh, ndpr, nfocus) {
       w = nw; h = nh; dpr = ndpr; focus = nfocus;
       build();
     },
     draw(ctx, t, v) {
+      const st = stage();
       drawWater(ctx, t);
       drawSnow(ctx, t, 0);
       drawRidge(ctx, ridges[0]!);
       drawSnow(ctx, t, 1);
+      life.drawBack(ctx, st, t);
       drawRidge(ctx, ridges[1]!);
       drawMotes(ctx, t, v);
+      const vent = v.vent > 0 ? life.drawVent(ctx, st, v.vent, t) : null;
       drawRidge(ctx, ridges[2]!);
+      life.drawFloor(ctx, st, t);
       drawReef(ctx, t, v);
+      drawEffects(ctx, t, v, vent);
+      life.drawFront(ctx, st, t);
       drawSnow(ctx, t, 2);
+      if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
       vignette(ctx);
     },
     crown(v) {

@@ -60,7 +60,9 @@ const scene = createAbyssScene(state.seed);
 
 const panel = createPanel(ui, {
   buy(id: UpgradeId) {
-    if (buy(state, id)) save();
+    if (!buy(state, id)) return;
+    scene.effect(id);
+    save();
   },
   exportSave: () => exportString(state, Date.now()),
   importSave(text) {
@@ -138,6 +140,7 @@ function view(): ReefView {
     frameMetres: ACT1.goalMetres,
     glowLevel: r.lureMax > 0 ? (lure(r, state.glow) - 1) / r.lureMax : 0,
     sinceSweep: state.t - state.lastSweep,
+    vent: state.levels.vent,
   };
 }
 
@@ -154,6 +157,14 @@ canvas.addEventListener('pointerdown', (e) => {
   setTimeout(() => f.remove(), 1200);
 });
 
+// Quality: if frames run slow for a while, drop the bloom pass.
+let slowFrames = 0;
+function qualityCheck(dt: number): void {
+  if (scene.bloomStrength === 0 || frozenT !== null) return;
+  slowFrames = dt > 1 / 40 && dt < 0.5 ? slowFrames + 1 : Math.max(0, slowFrames - 1);
+  if (slowFrames > 90) scene.bloomStrength = 0;
+}
+
 let last = performance.now();
 let lastSave = last;
 let animT = 40;
@@ -167,6 +178,7 @@ function frame(now: number): void {
     if (dt > AWAY_NOTICE) catchUp(dt * speed);
     else advance(state, dt * speed);
     animT += Math.min(dt, 0.1);
+    qualityCheck(dt);
   }
   scene.draw(ctx, frozenT ?? animT, view());
   panel.update(state);

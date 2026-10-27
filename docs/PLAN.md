@@ -176,8 +176,10 @@ Tick items as they land; keep this list honest. Add items freely.
 
 ### M2 Visual pass I
 - [x] coral growth: branching structure (space colonisation) instead of a pillar; bands visible as growth rings
-- [ ] glow post-process (downsampled additive blur) and quality tiers
+- [x] glow post-process (downsampled additive blur) and quality tiers (bloom drops on slow frames)
 - [ ] camera framing that climbs as the reef grows; parallax buried-reef silhouettes
-- [ ] creatures: drifting jellies, a few deep fish; vent chimney with shimmering plume when vent bought
-- [ ] purchase juice: polyp bud animation, band laying ripple, glow pulse on lure
+- [x] creatures: drifting jellies, brittle stars; vent chimney with plume when vent bought
+- [ ] deep fish (Act I: a slow rattail near the floor)
+- [x] purchase juice: polyp flash ring, band sweep, symbiont sparkles, lure rings, lattice shimmer, vent flare
+- [ ] purchase juice: sound (M6 audio)
 - [x] compact mobile cards (two cards visible at 390×844)
