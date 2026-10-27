@@ -174,6 +174,13 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] time compression: headless bot (src/game/sim/bot.ts, tools/bot.ts), ?bot/?skip/?speed, corallum.skip()
 - [ ] M1 leftovers: tap-to-sweep feedback on the reef itself (not only floating text); keyboard shortcuts
 
+### M6 Polish (in progress)
+- [x] procedural audio: zone pad + surf, purchase chimes, sweep bubble, story tone, choice and release cues; toggle top-left, off by default, remembered
+- [ ] accessibility: prefers-reduced-motion for canvas animation speed; text scale option; keyboard shortcuts
+- [ ] codex: a "Reef" summary page (choices made, memories, lineage history)
+- [ ] real-speed playtest of the first 10 minutes (pace of first purchases, clarity)
+- [ ] perf: measure frame time on a large desktop canvas and mobile; cap polyps/particles if needed
+
 ### M4 Lesser Spawning prestige + Lineage — landed 2026-10-27
 - [x] sim: lineage by height, seven traits, meta kept across runs, seen stories suppressed on reruns
 - [x] UI: Lineage tab (release / begin again, trait shop), lineage band note on each new seamount

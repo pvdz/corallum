@@ -31,6 +31,8 @@ export type PanelHooks = {
   exportSave(): string;
   importSave(text: string): boolean;
   reset(): void;
+  /** A story card opened (for its sound). */
+  storyShown?(): void;
 };
 
 type Card = { root: HTMLElement; cost: HTMLElement; level: HTMLElement; effect: HTMLElement; eta: HTMLElement; btn: HTMLButtonElement };
@@ -340,6 +342,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   host.append(reader);
   const queue: Story[] = [];
   function openStory(st: Story): void {
+    hooks.storyShown?.();
     readerKicker.textContent = st.kicker;
     readerTitle.textContent = st.title;
     readerText.textContent = st.text;

@@ -24,6 +24,7 @@ import { advance, assign, breach, buy, choose, ended, moonFull, moonPhase, spawn
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { num } from '../game/ui/format.ts';
+import { createAudio } from '../game/audio/audio.ts';
 import { LINEAGE_BANDS } from '../game/content/lineage.ts';
 import { buyTrait, spawnLesser } from '../game/sim/prestige.ts';
 import { createFinale } from '../game/ui/finale.ts';
@@ -86,10 +87,39 @@ const fadeCtx = fadeCanvas.getContext('2d', { alpha: false })!;
 const zoneTitle = document.createElement('div');
 zoneTitle.id = 'zone-title';
 
+// Sound: off unless the player turned it on; browsers need a gesture before it can start.
+const audio = createAudio();
+const SOUND_KEY = 'corallum.sound';
+let soundWanted = false;
+try { soundWanted = localStorage.getItem(SOUND_KEY) === 'on'; } catch { /* no storage */ }
+const soundBtn = document.createElement('button');
+soundBtn.id = 'sound';
+soundBtn.type = 'button';
+function renderSound(): void {
+  soundBtn.textContent = audio.enabled ? '♪' : '♪̸';
+  soundBtn.title = audio.enabled ? 'Sound on (click to mute)' : 'Sound off (click for sound)';
+  soundBtn.setAttribute('aria-pressed', String(audio.enabled));
+}
+soundBtn.addEventListener('click', () => {
+  audio.setEnabled(!audio.enabled);
+  try { localStorage.setItem(SOUND_KEY, audio.enabled ? 'on' : 'off'); } catch { /* no storage */ }
+  renderSound();
+});
+renderSound();
+if (soundWanted) {
+  const start = () => { audio.setEnabled(true); renderSound(); };
+  window.addEventListener('pointerdown', start, { once: true });
+  window.addEventListener('keydown', start, { once: true });
+}
+
 const panel = createPanel(ui, {
+  storyShown() {
+    audio.cue('story');
+  },
   buy(id: UpgradeId) {
     if (!buy(state, id)) return;
     scene.effect(id);
+    audio.cue('buy');
     save();
   },
   assign(job, delta) {
@@ -118,11 +148,13 @@ const panel = createPanel(ui, {
   speak(id) {
     if (!speak(state, id)) return;
     scene.effect('truce');
+    audio.cue('choice');
     save();
   },
   choose(id, choice) {
     if (!choose(state, id, choice)) return;
     scene.effect('truce');
+    audio.cue('choice');
     save();
   },
   exportSave: () => exportString(state, Date.now()),
@@ -146,6 +178,7 @@ const finale = createFinale(ui, panel.growPage, {
   breach(memories) {
     if (!breach(state, memories)) return false;
     scene.effect('breach');
+    audio.cue('release');
     save();
     return true;
   },
@@ -278,6 +311,7 @@ function showZoneTitle(n: number): void {
   zoneTitle.classList.add('show');
 }
 ui.append(zoneTitle);
+ui.append(soundBtn);
 
 // Until the first sweep, a quiet hint over the water.
 const hint = document.createElement('div');
@@ -290,6 +324,7 @@ canvas.addEventListener('pointerdown', (e) => {
   const gain = sweep(state);
   if (gain <= 0) return;
   hint.classList.add('done');
+  audio.cue('sweep');
   const f = document.createElement('div');
   f.className = 'float';
   f.textContent = `+${num(gain)}`;
@@ -345,6 +380,7 @@ function frame(now: number): void {
   }
   panel.update(state);
   finale.update(state);
+  audio.setZone(actAt(state.height));
   replay.hidden = !ended(state);
   title.classList.toggle('faded', state.levels.polyp > 0 || state.t > 25);
   hint.classList.toggle('show', state.meta.spawnings === 0 && state.earned.calcite < 40 && reader() && state.t > 2);
