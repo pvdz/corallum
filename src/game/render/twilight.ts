@@ -222,13 +222,22 @@ export function createTwilightScene(seed: number): Scene {
     for (let i = 0; i < Math.min(n, MAX_RASP); i++) {
       const g = grazers[i]!;
       let u = (((g.phase + t * g.speed) % 1) + 1) % 1;
-      // Trusting Rasp graze close around the reef's foot; polite ones keep off its stone.
-      if (trust && i % 3 === 0) u = 0.5 + Math.sin(t * Math.abs(g.speed) * 6 + g.phase * 9) * 0.12;
-      else if (polite && Math.abs(u - 0.5) < 0.1) u = u < 0.5 ? 0.4 - (0.5 - u) : 0.6 + (u - 0.5);
+      let dir = g.speed > 0 ? 1 : -1;
+      // Trusting Rasp graze close around the reef's foot; polite ones keep to their own side of
+      // the slope, turning back before they reach your stone.
+      if (trust && i % 3 === 0) {
+        const a = t * Math.abs(g.speed) * 6 + g.phase * 9;
+        u = 0.5 + Math.sin(a) * 0.12;
+        dir = Math.cos(a) >= 0 ? 1 : -1;
+      } else if (polite) {
+        const tri = u < 0.5 ? u * 2 : 2 - u * 2;
+        const goingOut = u < 0.5;
+        if (i % 2) { u = 0.6 + tri * 0.4; dir = goingOut ? 1 : -1; }
+        else { u = 0.4 - tri * 0.4; dir = goingOut ? -1 : 1; }
+      }
       const x = focus.x - focus.w * 0.1 + u * focus.w * 1.2;
       const peck = Math.max(0, Math.sin(t * 2.2 + i * 1.7)) ** 8;
       const y = slopeY(u) - (14 + g.lane * 50) * s + peck * 8 * s;
-      const dir = g.speed > 0 ? 1 : -1;
       const len = 22 * s * g.size;
       ctx.save();
       ctx.translate(x, y);
