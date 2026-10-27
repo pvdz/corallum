@@ -98,3 +98,17 @@ Entry requires the last Act II Reading (*Inside the wall*): the story turn opens
 - **What the spawn carries** (the final verb: letting go): choose exactly 3 of the memories the
   run has earned (12 threads). The ending composes the release, one epilogue paragraph per
   memory, Ossel's closing (kept or let go), and the last line.
+
+## Prestige — Lesser Spawnings and Lineage
+- Available once the reef has reached 150 m (the Midnight Water, band *Eyes in the dark*) and
+  until the ending. Releasing a lesser spawning starts a new run on a new seamount.
+- **Lineage** gained: `floor(4·√(height/60))` (×1.5 with the Fragmenting dialect): 4 at 60 m,
+  ~28 at 3000 m, 32 at the surface. Diminishing returns reward deeper runs a little.
+- Kept across runs (`state.meta`): lineage, traits, number of spawnings, every story id ever
+  seen (so bands do not re-pop as cards on reruns), best height.
+- Reset: everything else (stocks, upgrades, shoals, readings, truce, dialects, height).
+- **Traits** (lineage): calcite ×1.5/level · polyp cost ×0.85 · start with 5 bands/level ·
+  start with 3 shoals/level · glow ×1.5 · Readings cost ×0.5 · reef settles ×2 faster.
+- **Lineage bands**: each spawning unlocks one short story of your descendants settling.
+- Target: one spawning at ~3000 m finishes the game sooner than none; a bot test checks it.
+- After the ending, **Begin again** is a spawning with a +10 lineage bonus.

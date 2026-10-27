@@ -4,9 +4,34 @@ import type { Job, ReadingId } from '../content/act2.ts';
 import type { MeetingId } from '../content/act3.ts';
 import type { DialectId, DialectTier } from '../content/act4.ts';
 import type { MemoryId } from '../content/act5.ts';
+import type { TraitId } from '../content/lineage.ts';
 import type { UpgradeId } from '../content/types.ts';
 
 export const SAVE_VERSION = 1;
+
+/** What survives a lesser spawning. */
+export type Meta = {
+  lineage: number;
+  traits: Record<TraitId, number>;
+  spawnings: number;
+  /** Story ids (bands, readings, truce and dialect choices) seen in earlier runs. */
+  seen: string[];
+  /** Highest reef ever grown. */
+  best: number;
+};
+
+export function newMeta(): Meta {
+  return {
+    lineage: 0,
+    traits: {
+      'deep-memory': 0, 'quick-budding': 0, 'old-bands': 0, 'remembered-shoals': 0, glimmer: 0,
+      'kept-readings': 0, settling: 0,
+    },
+    spawnings: 0,
+    seen: [],
+    best: 0,
+  };
+}
 
 export type GameState = {
   version: number;
@@ -50,10 +75,11 @@ export type GameState = {
   earned: { calcite: number; glow: number; murmurs: number };
   /** Highest act reached. */
   act: number;
+  meta: Meta;
 };
 
-export function newGame(seed: number): GameState {
-  return {
+export function newGame(seed: number, meta: Meta = newMeta()): GameState {
+  const s: GameState = {
     version: SAVE_VERSION,
     seed,
     t: 0,
@@ -82,5 +108,10 @@ export function newGame(seed: number): GameState {
     lastSweep: -1e9,
     earned: { calcite: 0, glow: 0, murmurs: 0 },
     act: 1,
+    meta,
   };
+  // What a lineage brings to a new seamount.
+  s.levels.skeleton = 5 * meta.traits['old-bands'];
+  s.levels.shoal = s.jobs.feed = 3 * meta.traits['remembered-shoals'];
+  return s;
 }

@@ -58,6 +58,10 @@ silver ripple far above.
 
 (Detailed band texts live in src/game/content/ as they are written.)
 
+### Lineage bands (one per lesser spawning)
+Short notes from descendants: a larva settling on a wreck, one on a whale bone, one in a
+harbour, one on the far side of the sea, one that grew into a reef and felt you, far away.
+
 ## Originality check
 Rule: no specific lore, names or story beats copied from existing games. Every new name or beat
 is checked against games I know and recorded here. Absence of a known match is not a guarantee.
@@ -78,4 +82,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Silt smothering as a resource pressure | none known in this form | OK |
 | Reef "dialects" (growth form, craft, spawning mode) as a choice tree | none known | OK |
 | Bloom (photosynthetic sugar) as a resource | real biology | OK |
+| "Lesser Spawnings", "Lineage" as prestige | generic words; none known as names of this mechanic | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

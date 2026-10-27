@@ -1,0 +1,90 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { advance, calciteRate, cost, ended, heightForBands, rates } from '../../src/game/sim/economy.ts';
+import { runBot } from '../../src/game/sim/bot.ts';
+import { buyTrait, canSpawnLesser, lineageFor, spawnLesser, traitCost } from '../../src/game/sim/prestige.ts';
+import { deserialize, serialize } from '../../src/game/sim/save.ts';
+import { newGame } from '../../src/game/sim/state.ts';
+
+test('lesser spawning opens in the Midnight Water and pays lineage by height', () => {
+  const s = newGame(1);
+  assert.equal(canSpawnLesser(s), false);
+  assert.equal(spawnLesser(s), null);
+  s.bands.push('eyes');
+  s.height = 3000;
+  assert.ok(canSpawnLesser(s));
+  assert.equal(lineageFor(s), Math.floor(4 * Math.sqrt(50)));
+  s.dialects.spawn = 'fragmenting';
+  assert.equal(lineageFor(s), Math.floor(Math.floor(4 * Math.sqrt(50)) * 1.5));
+});
+
+test('a spawning keeps the meta and resets the run', () => {
+  const { state } = runBot((s) => s.height >= 1000, 6 * 3600);
+  const gain = lineageFor(state);
+  const next = spawnLesser(state)!;
+  assert.equal(next.meta.lineage, gain);
+  assert.equal(next.meta.spawnings, 1);
+  assert.equal(next.height, 0);
+  assert.equal(next.calcite, 0);
+  assert.deepEqual(next.bands, []);
+  assert.ok(next.meta.seen.includes('eyes'));
+  assert.notEqual(next.seed, state.seed);
+  // The old state is untouched.
+  assert.equal(state.meta.spawnings, 0);
+});
+
+test('traits: cost lineage, take effect, start bonuses apply to the next run', () => {
+  const s = newGame(1);
+  s.bands.push('eyes');
+  s.height = 4000;
+  let next = spawnLesser(s)!;
+  next.meta.lineage = 1000;
+  next.levels.polyp = 20;
+  const base = calciteRate(next);
+  const polyp = cost(next, 'polyp');
+  assert.ok(buyTrait(next, 'deep-memory'));
+  assert.ok(buyTrait(next, 'quick-budding'));
+  assert.ok(buyTrait(next, 'old-bands'));
+  assert.ok(buyTrait(next, 'remembered-shoals'));
+  assert.ok(Math.abs(calciteRate(next) / base - 1.5) < 1e-9);
+  assert.ok(cost(next, 'polyp') < polyp);
+  assert.ok(next.meta.lineage < 1000);
+  assert.ok(traitCost(next, 'deep-memory') > 3);
+  next.bands.push('eyes');
+  next.levels.polyp = 0;
+  next = spawnLesser(next)!;
+  assert.equal(next.levels.skeleton, 5);
+  assert.equal(rates(next).heightTarget, heightForBands(5));
+  assert.equal(next.levels.shoal, 3);
+  assert.equal(next.jobs.feed, 3);
+  assert.ok(buyTrait(next, 'kept-readings'));
+  assert.equal(buyTrait(next, 'kept-readings'), false, 'max 1');
+});
+
+test('the meta survives a save round trip', () => {
+  const s = newGame(1);
+  s.bands.push('eyes');
+  s.height = 2000;
+  const next = spawnLesser(s)!;
+  buyTrait(next, 'glimmer');
+  const back = deserialize(serialize(next, 5))!.state;
+  assert.deepEqual(back.meta, next.meta);
+});
+
+test('offline stays exact with traits (settling changes the height rate)', () => {
+  const s = newGame(1);
+  s.meta.traits.settling = 1;
+  s.levels.skeleton = 30;
+  s.levels.polyp = 20;
+  const a = advance(structuredClone(s), 300);
+  const b = structuredClone(s);
+  for (let i = 0; i < 300 * 20; i++) advance(b, 1 / 20);
+  assert.ok(Math.abs(a.height - b.height) < 1e-6 * a.height);
+  assert.ok(Math.abs(a.calcite - b.calcite) < 1e-6 * a.calcite);
+});
+
+test('pacing: one lesser spawning at 1000 m finishes the game sooner than none', () => {
+  const none = runBot(ended, 14 * 3600).total;
+  const one = runBot(ended, 14 * 3600, { spawnAt: 1000 }).total;
+  assert.ok(one < none, `${one} vs ${none}`);
+});

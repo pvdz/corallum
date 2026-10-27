@@ -21,6 +21,7 @@ import { ACT3, BANDS_ACT3, MEETINGS, type Choice, type Meeting, type MeetingId }
 import { ACT4, BANDS_ACT4, DIALECTS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
 import { ACT5, BANDS_ACT5, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
 import { act, actAt, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
+import type { TraitId } from '../content/lineage.ts';
 import type { Band, Currency, UpgradeDef, UpgradeId } from '../content/types.ts';
 import { UPGRADES } from '../content/upgrades.ts';
 import { equilibrium, relax } from './ode.ts';
@@ -51,6 +52,15 @@ export type Rates = {
   heightTarget: number;
 };
 
+function trait(s: GameState, id: TraitId): number {
+  return s.meta.traits[id];
+}
+
+/** Reef settling rate (1/s): how fast height follows the laid bands. */
+export function settleRate(s: GameState): number {
+  return ACT1.settleRate * (trait(s, 'settling') ? 2 : 1);
+}
+
 function has(s: GameState, id: ReadingId): boolean {
   return s.readings.includes(id);
 }
@@ -78,7 +88,7 @@ export function rates(s: GameState): Rates {
   const rasp = Math.min(s.rasp, raspMax(s));
   const onShelf = target >= ACT3.from;
   return {
-    glowP: ACT1.symbiontGlow * lv.symbiont + lightGlow * s.jobs.light,
+    glowP: (ACT1.symbiontGlow * lv.symbiont + lightGlow * s.jobs.light) * 1.5 ** trait(s, 'glimmer'),
     glowK: ACT1.glowFade,
     planktonP: ACT2.feedRate * s.jobs.feed * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
       (speaks(s, 'sweepers') ? 3 : 1),
@@ -104,7 +114,8 @@ export function rates(s: GameState): Rates {
       (has(s, 'inside-the-wall') ? 2 : 1) *
       (s.truce.wall === 'b' ? 1.5 : 1) *
       ACT3.sandbarCalcite ** lv.sandbar *
-      (speaks(s, 'massive') ? 1.5 : 1),
+      (speaks(s, 'massive') ? 1.5 : 1) *
+      1.5 ** trait(s, 'deep-memory'),
     calciteK:
       ACT1.dissolve * ACT1.latticeFactor ** lv.lattice * ACT1.ventAcid ** vent *
       (has(s, 'lattice-songs') ? 0.7 : 1) * (speaks(s, 'massive') ? 0.5 : 1) +
@@ -252,7 +263,7 @@ type Upstream = 'glow' | 'plankton' | 'height' | 'silt' | 'bloom';
 export function advance(s: GameState, dt: number): GameState {
   if (!(dt > 0)) return s;
   const r = rates(s);
-  const kH = ACT1.settleRate;
+  const kH = settleRate(s);
   const up: { key: Upstream; P: number; k: number; eq: number }[] = [
     { key: 'glow', P: r.glowP, k: r.glowK, eq: equilibrium(r.glowP, r.glowK) },
     { key: 'plankton', P: r.planktonP, k: r.planktonK, eq: equilibrium(r.planktonP, r.planktonK) },
@@ -314,7 +325,7 @@ export function cost(s: GameState, id: UpgradeId): number {
     const discount = (has(s, 'walls') ? 0.75 : 1) * (speaks(s, 'branching') ? 0.6 : 1);
     return Math.ceil(u.baseCost * BAND_COST[Math.min(MAX_BANDS, l)]! * discount);
   }
-  const discount = 1;
+  const discount = id === 'polyp' ? 0.85 ** trait(s, 'quick-budding') : 1;
   const [from, gentle] = u.growthAfter ?? [Infinity, u.growth];
   const scale = l <= from ? u.growth ** l : u.growth ** from * gentle ** (l - from);
   return Math.ceil(u.baseCost * scale * discount);
@@ -409,14 +420,24 @@ export function nextReading(s: GameState) {
   return READINGS.find((r) => !s.readings.includes(r.id));
 }
 
+/** Murmurs a Reading costs (halved by the Kept readings trait). */
+export function readingCost(s: GameState, r: { cost: number }): number {
+  return r.cost * (trait(s, 'kept-readings') ? 0.5 : 1);
+}
+
+/** Murmurs it takes to learn a meeting's words. */
+export function meetingWords(s: GameState, m: { words: number }): number {
+  return m.words * (trait(s, 'kept-readings') ? 0.5 : 1);
+}
+
 export function readingsRevealed(s: GameState): boolean {
   return s.bands.includes('murmur') || s.readings.length > 0;
 }
 
 export function read(s: GameState, id: ReadingId): boolean {
   const next = nextReading(s);
-  if (!readingsRevealed(s) || !next || next.id !== id || s.murmurs < next.cost) return false;
-  s.murmurs -= next.cost;
+  if (!readingsRevealed(s) || !next || next.id !== id || s.murmurs < readingCost(s, next)) return false;
+  s.murmurs -= readingCost(s, next);
   s.readings.push(id);
   return true;
 }
@@ -444,8 +465,8 @@ export function nextMeeting(s: GameState): Meeting | undefined {
 /** Make a truce choice: pays the murmurs it took to learn the words. */
 export function choose(s: GameState, id: MeetingId, choice: Choice): boolean {
   const m = nextMeeting(s);
-  if (!m || m.id !== id || s.murmurs < m.words) return false;
-  s.murmurs -= m.words;
+  if (!m || m.id !== id || s.murmurs < meetingWords(s, m)) return false;
+  s.murmurs -= meetingWords(s, m);
   s.truce[id] = choice;
   // Ossel's wall, ground down: a flood of warm sand.
   if (id === 'wall' && choice === 'a') s.sand += 50000;

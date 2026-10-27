@@ -1,5 +1,5 @@
 // Balance report: plays headlessly with time compressed and prints when each milestone lands.
-// Usage: node tools/bot.ts [--no-sweep] [--max <seconds>] [--to <metres>] [--split feed,light,scout] [--truce aab]
+// Usage: node tools/bot.ts [--spawn-at <metres>] [--no-sweep] [--max <seconds>] [--to <metres>] [--split feed,light,scout] [--truce aab]
 
 import { calciteHold, ended, rates } from '../src/game/sim/economy.ts';
 import { runBot } from '../src/game/sim/bot.ts';
@@ -17,8 +17,9 @@ const tr = opt('truce');
 const truce = tr ? { terms: tr[0] as 'a' | 'b', story: tr[1] as 'a' | 'b', wall: tr[2] as 'a' | 'b' } : undefined;
 const dl = opt('dialects')?.split(',') as [string, string, string] | undefined;
 const dialects = dl ? { form: dl[0], craft: dl[1], spawn: dl[2] } as never : undefined;
-const { state, events } = runBot((s) => s.height >= to || ended(s), maxT, { sweeps, split, truce, dialects });
+const sa = opt('spawn-at');
+const { state, events, total } = runBot((s) => s.height >= to || ended(s), maxT, { sweeps, split, truce, dialects, spawnAt: sa ? Number(sa) : undefined });
 for (const e of events) console.log(`${fmt(e.t).padStart(10)}  ${e.what}`);
 const r = rates(state);
-console.log(`\nend t=${fmt(state.t)} height=${state.height.toFixed(1)} m calcite=${state.calcite.toExponential(2)} hold=${calciteHold(state, r).toExponential(2)} glow=${state.glow.toFixed(0)} plankton=${state.plankton.toFixed(0)} murmurs=${state.murmurs.toFixed(0)} silt=${state.silt.toFixed(0)} sand=${state.sand.toFixed(0)} rasp=${state.rasp} bloom=${state.bloom.toFixed(0)} spawn=${state.spawn.toFixed(0)}`);
+console.log(`\nend total=${fmt(total)} t=${fmt(state.t)} height=${state.height.toFixed(1)} m calcite=${state.calcite.toExponential(2)} hold=${calciteHold(state, r).toExponential(2)} glow=${state.glow.toFixed(0)} plankton=${state.plankton.toFixed(0)} murmurs=${state.murmurs.toFixed(0)} silt=${state.silt.toFixed(0)} sand=${state.sand.toFixed(0)} rasp=${state.rasp} bloom=${state.bloom.toFixed(0)} spawn=${state.spawn.toFixed(0)}`);
 console.log('levels', JSON.stringify(state.levels), 'jobs', JSON.stringify(state.jobs));

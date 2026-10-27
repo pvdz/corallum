@@ -3,15 +3,19 @@
 
 import { UPGRADES } from '../content/upgrades.ts';
 import type { Job } from '../content/act2.ts';
-import { assign, BANDS, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil } from './economy.ts';
+import { assign, BANDS, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil, readingCost, meetingWords } from './economy.ts';
 import type { Choice, MeetingId } from '../content/act3.ts';
 import type { DialectId, DialectTier } from '../content/act4.ts';
 import { newGame, type GameState } from './state.ts';
+import { buyTrait, spawnLesser, traitCost, traitMaxed } from './prestige.ts';
+import { TRAITS } from '../content/lineage.ts';
 
 export type BotOptions = {
   seed?: number; tick?: number; sweeps?: boolean; split?: Record<Job, number>;
   truce?: Record<MeetingId, Choice>;
   dialects?: Record<DialectTier, DialectId>;
+  /** Release one lesser spawning when the reef first reaches this height. */
+  spawnAt?: number;
 };
 export type BotEvent = { t: number; what: string };
 
@@ -60,7 +64,8 @@ export function botDecide(
   }
   // Keep shoals near the target split; scouts are wasted once the Readings run out.
   const meet = nextMeeting(s);
-  const wantCost = nextReading(s)?.cost ?? meet?.words;
+  const nr = nextReading(s);
+  const wantCost = nr ? readingCost(s, nr) : meet ? meetingWords(s, meet) : undefined;
   const scoutShare = wantCost === undefined || !jobOpen(s, 'scout') ? 0
     : timeUntil(s, 'murmurs', wantCost) > 900 ? Math.max(split.scout, 0.5) : split.scout;
   const rest = (1 - scoutShare) / (split.feed + split.light);
@@ -87,27 +92,40 @@ export function runBot(
   until: (s: GameState) => boolean,
   maxT: number,
   opts: BotOptions = {},
-): { state: GameState; events: BotEvent[] } {
-  const { seed = 1, tick = 1, sweeps = true, split, truce, dialects } = opts;
-  const s = newGame(seed);
+): { state: GameState; events: BotEvent[]; total: number } {
+  const { seed = 1, tick = 1, sweeps = true, split, truce, dialects, spawnAt } = opts;
+  let s = newGame(seed);
+  let t0 = 0;
   const events: BotEvent[] = [];
   let bandsSeen = 0;
   let readingsSeen = 0;
-  while (s.t < maxT && !until(s)) {
+  while (t0 + s.t < maxT && !until(s)) {
+    if (spawnAt !== undefined && s.meta.spawnings === 0 && s.height >= spawnAt) {
+      t0 += s.t;
+      s = spawnLesser(s)!;
+      bandsSeen = readingsSeen = 0;
+      // Spend the lineage, cheapest trait first.
+      for (;;) {
+        const t = TRAITS.filter((x) => !traitMaxed(s, x.id)).sort((a, b) => traitCost(s, a.id) - traitCost(s, b.id))[0];
+        if (!t || !buyTrait(s, t.id)) break;
+      }
+      events.push({ t: t0, what: `lesser spawning → ${JSON.stringify(s.meta.traits)}` });
+    }
     const did = botDecide(s, sweeps, split, truce, dialects);
-    for (const d of did) if (d.startsWith('truce:') || d.startsWith('dialect:') || d.startsWith('breach:')) events.push({ t: s.t, what: d });
+    for (const d of did) if (d.startsWith('truce:') || d.startsWith('dialect:') || d.startsWith('breach:')) events.push({ t: t0 + s.t, what: d });
     // Coarser ticks later in the game keep long runs fast; the bot still decides often
     // relative to how fast things change.
     advance(s, s.t < 3600 ? tick : tick * 5);
+    const T = t0 + s.t;
     while (bandsSeen < s.bands.length) {
       const b = BANDS.find((x) => x.id === s.bands[bandsSeen]);
-      events.push({ t: s.t, what: `band ${b?.metres ?? '?'} m — ${b?.title ?? s.bands[bandsSeen]}` });
+      events.push({ t: T, what: `band ${b?.metres ?? '?'} m — ${b?.title ?? s.bands[bandsSeen]}` });
       bandsSeen++;
     }
     while (readingsSeen < s.readings.length) {
-      events.push({ t: s.t, what: `reading — ${s.readings[readingsSeen]}` });
+      events.push({ t: T, what: `reading — ${s.readings[readingsSeen]}` });
       readingsSeen++;
     }
   }
-  return { state: s, events };
+  return { state: s, events, total: t0 + s.t };
 }
