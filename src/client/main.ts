@@ -81,10 +81,22 @@ const panel = createPanel(ui, {
 });
 panel.primeBands(state);
 
+// Another tab (or a pasted save) may write the same storage. Before each write, check the
+// stored save is still the one this page wrote; if not, stop writing so neither tab clobbers
+// the other, and say so.
+let ownSavedAt: number | null = botT === null && !params.has('fresh') ? savedAt : null;
+let yielded = false;
 function save(): void {
-  if (ephemeral) return;
+  if (ephemeral || yielded) return;
+  const stored = storageGet();
+  if (stored && ownSavedAt !== null && deserialize(stored)?.savedAt !== ownSavedAt) {
+    yielded = true;
+    document.documentElement.classList.add('yielded');
+    return;
+  }
   savedAt = Date.now();
   storageSet(serialize(state, savedAt));
+  ownSavedAt = savedAt;
 }
 
 /** Advance by a long span and tell the player what happened while they were gone. */
