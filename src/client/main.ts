@@ -20,7 +20,7 @@ import { createSunlitScene } from '../game/render/sunlit.ts';
 import { createTwilightScene } from '../game/render/twilight.ts';
 import type { Focus, ReefView, Scene } from '../game/render/scene.ts';
 import { runBot } from '../game/sim/bot.ts';
-import { advance, assign, breach, buy, choose, ended, moonFull, moonPhase, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, calciteHold, choose, ended, moonFull, moonPhase, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { num } from '../game/ui/format.ts';
@@ -233,6 +233,7 @@ function catchUp(seconds: number): void {
     calcite: Math.max(0, state.calcite - before.calcite),
     glow: Math.max(0, state.glow - before.glow),
     metres: state.height - before.height,
+    full: state.calcite >= 0.98 * calciteHold(state),
   });
 }
 

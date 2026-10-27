@@ -14,7 +14,7 @@ export function effectText(id: UpgradeId): string {
     case 'polyp': return `+${ACT1.polypRate} calcite/s`;
     case 'skeleton': return 'the reef rises';
     case 'symbiont': return `+${ACT1.symbiontGlow} glow/s`;
-    case 'lattice': return `calcite dissolves ${Math.round((1 - ACT1.latticeFactor) * 100)}% slower`;
+    case 'lattice': return `calcite dissolves ${Math.round((1 - ACT1.latticeFactor) * 100)}% slower: the reef holds more while you are away`;
     case 'lure': return `glow can lure up to +${Math.round(ACT1.lureMaxPerPattern * 100)}% more calcite`;
     case 'vent': return `×${ACT1.ventBoost} calcite, but it dissolves ×${ACT1.ventAcid} faster`;
     case 'shoal': return 'a lanternfish shoal joins the reef';
