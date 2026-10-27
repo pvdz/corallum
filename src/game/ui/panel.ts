@@ -101,6 +101,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       void root.offsetWidth;
       root.classList.add('pop');
     });
+    flavour.addEventListener('click', () => root.classList.toggle('open'));
     grow.append(root);
     cards.set(u.id, { root, cost: costEl, level, eta, btn });
   }

@@ -180,4 +180,4 @@ Tick items as they land; keep this list honest. Add items freely.
 - [ ] camera framing that climbs as the reef grows; parallax buried-reef silhouettes
 - [ ] creatures: drifting jellies, a few deep fish; vent chimney with shimmering plume when vent bought
 - [ ] purchase juice: polyp bud animation, band laying ripple, glow pulse on lure
-- [ ] compact mobile cards (two cards visible at 390×844), collapsible stocks
+- [x] compact mobile cards (two cards visible at 390×844)
