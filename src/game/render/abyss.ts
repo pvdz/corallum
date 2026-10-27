@@ -3,12 +3,11 @@
 // seed, state and time always render the same frame — screenshots rely on that.
 
 import { mulberry32, range, type Rng } from '../sim/rng.ts';
+import { generateCoral, thickness } from './coral.ts';
 
 type Flake = { x: number; y: number; r: number; speed: number; drift: number; phase: number; layer: number };
 type Mote = { x: number; y: number; r: number; phase: number; period: number; hue: number };
 type Ridge = { points: number[]; color: string };
-type PolypSlot = { hf: number; side: number; lean: number; phase: number; size: number };
-type SymbSlot = { hf: number; side: number; phase: number; r: number };
 
 /** What the renderer needs from the game state. */
 export type ReefView = {
@@ -48,20 +47,12 @@ export function createAbyssScene(seed: number): Scene {
   const flakeSeed = Math.floor(rng() * 1e9);
   const reefSeed = Math.floor(rng() * 1e9);
 
-  // Reef layout slots are fixed per seed so polyps never jump as the reef grows.
-  const rr = mulberry32(reefSeed);
-  const polypSlots: PolypSlot[] = Array.from({ length: MAX_POLYPS }, (_, i) =>
-    i === 0
-      ? { hf: 1, side: 0, lean: 0, phase: 0, size: 1 }
-      : { hf: Math.sqrt(rr()), side: rr() < 0.5 ? -1 : 1, lean: range(rr, 0.2, 1), phase: rr() * 10, size: range(rr, 0.45, 0.75) },
-  );
-  const symbSlots: SymbSlot[] = Array.from({ length: MAX_SPECKS }, () => ({
-    hf: rr(), side: range(rr, -1, 1), phase: rr() * 10, r: range(rr, 0.6, 1.6),
-  }));
-  const edgeNoise = Array.from({ length: 48 }, () => range(rr, -1, 1));
+  const coral = generateCoral(reefSeed);
+  const radii = new Float32Array(coral.count);
+  let radiiTop = -1;
 
   const scale = () => Math.min(focus.w, focus.h) / 700;
-  const baseY = () => focus.y + focus.h * 0.8;
+  const baseY = () => focus.y + focus.h * 0.84;
   const centreX = () => focus.x + focus.w * 0.5;
 
   function build(): void {
@@ -183,59 +174,82 @@ export function createAbyssScene(seed: number): Scene {
     ctx.fillRect(x - r, y - r, r * 2, r * 2);
   }
 
-  // Reef geometry helpers.
-  function reefPx(v: ReefView): number {
-    return (v.height / v.frameMetres) * focus.h * 0.58;
+  // Reef geometry: the coral is in reef units (0..1 tall); one unit is this many pixels.
+  function unitPx(v: ReefView): number {
+    void v;
+    return focus.h * 0.62;
   }
-  /** Half-width of the reef column at fraction hf (0 base, 1 crown) of its height. */
-  function halfWidth(v: ReefView, hf: number): number {
-    const s = scale();
-    const hp = reefPx(v);
-    const base = 10 * s + hp * 0.16;
-    const crown = 7 * s + hp * 0.07;
-    const i = Math.min(edgeNoise.length - 1, Math.floor(hf * (edgeNoise.length - 1)));
-    return (base + (crown - base) * hf) * (1 + edgeNoise[i]! * 0.12);
+  function visibleTop(v: ReefView): number {
+    return Math.min(1.05, v.height / v.frameMetres);
+  }
+  function nodePx(i: number, u: number): [number, number] {
+    return [centreX() + coral.x[i]! * u, baseY() - coral.y[i]! * u];
   }
 
-  function drawColumn(ctx: CanvasRenderingContext2D, v: ReefView): void {
-    const hp = reefPx(v);
-    if (hp < 1) return;
-    const cx = centreX(), by = baseY();
-    const steps = 24;
-    ctx.beginPath();
-    for (let i = 0; i <= steps; i++) {
-      const hf = i / steps;
-      ctx.lineTo(cx - halfWidth(v, hf), by - hf * hp);
+  function drawBranches(ctx: CanvasRenderingContext2D, v: ReefView, t: number): void {
+    const top = visibleTop(v);
+    if (top <= 0) return;
+    if (top !== radiiTop) { thickness(coral, top, radii); radiiTop = top; }
+    const u = unitPx(v);
+    const minW = 1.2 * dpr;
+    ctx.lineCap = 'round';
+    // Three passes: shadow body, flesh, and a top-lit highlight.
+    const passes: [string, number, number][] = [
+      ['#1d1026', 1.3, 0.15],
+      ['#6a3a50', 1.0, 0],
+      ['rgba(255,170,160,0.22)', 0.4, -0.35],
+    ];
+    for (const [color, wMul, shift] of passes) {
+      ctx.strokeStyle = color;
+      for (let i = 0; i < coral.count; i++) {
+        const r = radii[i]!;
+        const p = coral.parent[i]!;
+        if (r <= 0 || p < 0) continue;
+        const sway = Math.sin(t * 0.5 + coral.y[i]! * 6) * coral.y[i]! * 0.002 * u;
+        const [x0, y0] = nodePx(p, u);
+        const [x1, y1] = nodePx(i, u);
+        const lw = Math.max(minW, r * u * 2 * wMul);
+        ctx.lineWidth = lw;
+        ctx.beginPath();
+        ctx.moveTo(x0 + shift * lw * 0.5, y0);
+        ctx.lineTo(x1 + sway + shift * lw * 0.5, y1);
+        ctx.stroke();
+      }
     }
-    // A rounded, slightly lumpy crown.
-    const cw = halfWidth(v, 1);
-    ctx.quadraticCurveTo(cx, by - hp - cw * 0.9, cx + cw, by - hp);
-    for (let i = steps; i >= 0; i--) {
-      const hf = i / steps;
-      ctx.lineTo(cx + halfWidth(v, hf), by - hf * hp);
+    // Growth bands: faint rings where the stone crossed each band line.
+    const bandStep = 3 / v.frameMetres;
+    ctx.fillStyle = 'rgba(255,215,200,0.16)';
+    for (let i = 0; i < coral.count; i++) {
+      const r = radii[i]!;
+      const p = coral.parent[i]!;
+      if (r <= 0 || p < 0) continue;
+      if (Math.floor(coral.y[i]! / bandStep) === Math.floor(coral.y[p]! / bandStep)) continue;
+      const [x, y] = nodePx(i, u);
+      const rw = Math.max(minW, r * u * 1.1);
+      ctx.fillRect(x - rw, y, rw * 2, Math.max(1, dpr * 0.7));
     }
-    ctx.closePath();
-    const g = ctx.createLinearGradient(cx - cw * 2, 0, cx + cw * 2, 0);
-    g.addColorStop(0, '#2a1830');
-    g.addColorStop(0.45, '#5a3247');
-    g.addColorStop(0.6, '#6d3d52');
-    g.addColorStop(1, '#22142a');
-    ctx.fillStyle = g;
-    ctx.fill();
+  }
 
-    // Growth bands: the reef's memory, one line per few metres.
-    ctx.save();
-    ctx.clip();
-    const bandPx = (3 / v.frameMetres) * focus.h * 0.58;
-    ctx.strokeStyle = 'rgba(255,200,190,0.10)';
-    ctx.lineWidth = Math.max(1, dpr * 0.8);
-    for (let y = by - bandPx; y > by - hp; y -= bandPx) {
-      ctx.beginPath();
-      ctx.moveTo(cx - cw * 4, y + 2 * dpr);
-      ctx.quadraticCurveTo(cx, y - 3 * dpr, cx + cw * 4, y + 2 * dpr);
-      ctx.stroke();
+  /** The i-th polyp's node, or -1 when the reef has not grown that far. */
+  function polypNodes(v: ReefView, n: number): number[] {
+    const top = visibleTop(v);
+    const out: number[] = [];
+    // The crown: the highest visible node carries the first polyp.
+    let crown = 0;
+    for (let i = 0; i < coral.count; i++) if (coral.y[i]! <= top && coral.y[i]! > coral.y[crown]!) crown = i;
+    out.push(crown);
+    for (let k = 0; k < coral.count && out.length < n; k++) {
+      const i = coral.polypOrder[k]!;
+      if (coral.y[i]! <= top && i !== crown && coral.parent[i]! >= 0) out.push(i);
     }
-    ctx.restore();
+    return out;
+  }
+
+  function leanOf(i: number): number {
+    const p = coral.parent[i]!;
+    if (p < 0) return 0;
+    const dx = coral.x[i]! - coral.x[p]!, dy = coral.y[i]! - coral.y[p]!;
+    return Math.max(-1, Math.min(1, (dx / (Math.hypot(dx, dy) || 1)) * 1.6));
   }
 
   function drawPolyp(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, t: number, lean: number, phase: number, flick: number): void {
@@ -274,39 +288,39 @@ export function createAbyssScene(seed: number): Scene {
     return tips;
   }
 
-  function polypAt(v: ReefView, slot: PolypSlot): { x: number; y: number; lean: number } {
-    const hp = reefPx(v);
-    const by = baseY(), cx = centreX();
-    if (slot.side === 0) return { x: cx, y: by - hp - (hp > 1 ? halfWidth(v, 1) * 0.45 : 0), lean: 0 };
-    const hw = halfWidth(v, slot.hf);
-    return { x: cx + slot.side * hw * 0.92, y: by - slot.hf * hp, lean: slot.side * slot.lean };
+  function crownPx(v: ReefView): [number, number] {
+    const top = visibleTop(v);
+    if (top <= 0) return [centreX(), baseY()];
+    return nodePx(polypNodes(v, 1)[0]!, unitPx(v));
   }
 
   function drawReef(ctx: CanvasRenderingContext2D, t: number, v: ReefView): void {
     const s = scale();
-    const cx = centreX(), by = baseY();
-    const hp = reefPx(v);
+    const u = unitPx(v);
+    const [crx, cry] = crownPx(v);
+    const hp = Math.min(1, visibleTop(v)) * u;
     const pulse = 0.75 + 0.25 * Math.sin(t * 1.3);
     const lit = 0.35 + 0.65 * v.glowLevel;
 
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    glow(ctx, cx, by - hp * 0.6 - 30 * s, (260 + hp * 0.9) * s * 0.9 + hp * 0.3, '60,190,255', 0.10 * pulse * (0.6 + lit));
-    glow(ctx, cx, by - hp - 26 * s, 90 * s, '140,240,255', 0.28 * pulse);
+    glow(ctx, centreX(), baseY() - hp * 0.55 - 30 * s, 230 * s + hp * 0.75, '60,190,255', 0.10 * pulse * (0.6 + lit));
+    glow(ctx, crx, cry - 26 * s, 90 * s, '140,240,255', 0.28 * pulse);
     ctx.restore();
 
-    drawColumn(ctx, v);
+    drawBranches(ctx, v, t);
 
-    const n = Math.min(MAX_POLYPS, 1 + v.polyps);
+    const nodes = polypNodes(v, Math.min(MAX_POLYPS, 1 + v.polyps));
     const flick = Math.max(0, 1 - v.sinceSweep / 0.35);
     const tips: [number, number][] = [];
     // Side polyps first, crown polyp last so it sits on top.
-    for (let i = n - 1; i >= 0; i--) {
-      const slot = polypSlots[i]!;
-      const p = polypAt(v, slot);
-      const ps = s * slot.size;
-      drawPolyp(ctx, p.x, p.y, ps, t, p.lean, slot.phase, flick);
-      for (const tip of polypTips(p.x, p.y, ps, t, p.lean, slot.phase)) tips.push(tip);
+    for (let k = nodes.length - 1; k >= 0; k--) {
+      const i = nodes[k]!;
+      const [x, y] = nodePx(i, u);
+      const ps = s * (k === 0 ? 1 : 0.42 + 0.25 * ((i * 0.618) % 1));
+      const lean = k === 0 ? 0 : leanOf(i);
+      drawPolyp(ctx, x, y, ps, t, lean, i * 0.37, flick);
+      for (const tip of polypTips(x, y, ps, t, lean, i * 0.37)) tips.push(tip);
     }
 
     ctx.save();
@@ -315,14 +329,16 @@ export function createAbyssScene(seed: number): Scene {
       const p = 0.6 + 0.4 * Math.sin(t * 2 + i * 0.8);
       glow(ctx, tx, ty, 8 * s, '160,250,255', 0.75 * p);
     });
-    // Glimmerseed symbionts speckle the stone.
+    // Glimmerseed symbionts speckle the branches.
     const specks = Math.min(MAX_SPECKS, v.symbionts * 6);
-    for (let i = 0; i < specks; i++) {
-      const sl = symbSlots[i]!;
-      const y = by - sl.hf * hp;
-      const x = cx + sl.side * halfWidth(v, sl.hf) * 0.85;
-      const tw = 0.5 + 0.5 * Math.sin(t * (1.5 + sl.r) + sl.phase);
-      glow(ctx, x, y, 5 * s * sl.r, '120,255,210', (0.25 + 0.6 * lit) * tw);
+    const top = visibleTop(v);
+    for (let k = 0, shown = 0; k < coral.count && shown < specks; k++) {
+      const i = (k * 7919) % coral.count;
+      if (coral.y[i]! > top) continue;
+      shown++;
+      const [x, y] = nodePx(i, u);
+      const tw = 0.5 + 0.5 * Math.sin(t * (1.5 + (i % 7) * 0.2) + i);
+      glow(ctx, x, y, 5 * s * (0.6 + (i % 5) * 0.2), '120,255,210', (0.25 + 0.6 * lit) * tw);
     }
     ctx.restore();
   }
@@ -370,8 +386,8 @@ export function createAbyssScene(seed: number): Scene {
       vignette(ctx);
     },
     crown(v) {
-      const p = polypAt(v, polypSlots[0]!);
-      return { x: p.x, y: p.y - 30 * scale() };
+      const [x, y] = crownPx(v);
+      return { x, y: y - 30 * scale() };
     },
   };
 }

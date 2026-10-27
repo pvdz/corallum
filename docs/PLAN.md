@@ -175,7 +175,7 @@ Tick items as they land; keep this list honest. Add items freely.
 - [ ] M1 leftovers: tap-to-sweep feedback on the reef itself (not only floating text); keyboard shortcuts
 
 ### M2 Visual pass I
-- [ ] coral growth: branching structure (space colonisation) instead of a pillar; bands visible as growth rings
+- [x] coral growth: branching structure (space colonisation) instead of a pillar; bands visible as growth rings
 - [ ] glow post-process (downsampled additive blur) and quality tiers
 - [ ] camera framing that climbs as the reef grows; parallax buried-reef silhouettes
 - [ ] creatures: drifting jellies, a few deep fish; vent chimney with shimmering plume when vent bought
