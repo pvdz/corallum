@@ -1,7 +1,8 @@
 // The whole game state. Plain JSON-able data so saving is a stringify.
 
-import type { UpgradeId } from '../content/act1.ts';
 import type { Job, ReadingId } from '../content/act2.ts';
+import type { MeetingId } from '../content/act3.ts';
+import type { UpgradeId } from '../content/types.ts';
 
 export const SAVE_VERSION = 1;
 
@@ -14,6 +15,13 @@ export type GameState = {
   glow: number;
   plankton: number;
   murmurs: number;
+  /** Silt lying on the reef (Act III); smothers the polyps. */
+  silt: number;
+  sand: number;
+  /** Rasp admitted to graze (the Act III dial). */
+  rasp: number;
+  /** Truce choices: '' until made, then 'a' or 'b'. */
+  truce: Record<MeetingId, '' | 'a' | 'b'>;
   /** Reef height up the seamount, metres. */
   height: number;
   levels: Record<UpgradeId, number>;
@@ -41,8 +49,15 @@ export function newGame(seed: number): GameState {
     glow: 0,
     plankton: 0,
     murmurs: 0,
+    silt: 0,
+    sand: 0,
+    rasp: 0,
+    truce: { terms: '', story: '', wall: '' },
     height: 0,
-    levels: { polyp: 0, symbiont: 0, skeleton: 0, lattice: 0, vent: 0, lure: 0, shoal: 0 },
+    levels: {
+      polyp: 0, symbiont: 0, skeleton: 0, lattice: 0, vent: 0, lure: 0, shoal: 0,
+      grounds: 0, sandbar: 0, channel: 0,
+    },
     jobs: { feed: 0, light: 0, scout: 0 },
     lastJob: 'feed',
     readings: [],

@@ -35,6 +35,19 @@ silver ripple far above.
 - End of Act II: a Reading shows the wall that kept the Rasp out, from the inside. Ossel's
   voice is in it. Ossel was part of that wall.
 
+### Act III beats (Twilight Shelf)
+- The grinding upslope is the Rasp: beaked grazers, wary, funny, hungry. They remember
+  Thousandfold's wall as the place that starved them.
+- Scouts learn the Rasp's words (murmurs). Three meetings, three choices:
+  1. *Terms of grazing* — graze the dead wall (more sand; Ossel protests) or graze only silt
+     (they spare your stone, but grind less).
+  2. *Whose story* — tell them Thousandfold as the bands tell it (they trust you; silt clears
+     faster) or as Ossel tells it (they keep their distance, but you keep Ossel's certainty: reach).
+  3. *Ossel's wall* — give it to the Rasp to grind (Ossel chooses to be let go; a flood of sand;
+     Ossel's voice ends) or keep it (Ossel stays with you to the surface; the Rasp stay wary).
+- The truth lands: the Long Silt is Thousandfold, ground down. Not by the Rasp's malice — by
+  the Rasp's absence. The reef that would not let anything go choked, died, and fell apart.
+
 (Detailed band texts live in src/game/content/ as they are written.)
 
 ## Originality check
@@ -53,4 +66,6 @@ is checked against games I know and recorded here. Absence of a known match is n
 | "Murmurs" (Act II currency: voices heard in buried bands) | none known; "Echoes" was rejected (Bloodborne's Blood Echoes) | OK |
 | "Readings" (deciphering a buried band) | none known | OK |
 | Lanternfish shoals, glass shrimp | real animals | OK |
+| The truce with grazers; giving a dead wall to be ground to sand | none known | OK |
+| Silt smothering as a resource pressure | none known in this form | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

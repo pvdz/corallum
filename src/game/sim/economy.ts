@@ -3,22 +3,28 @@
 // The economy is a DAG of stocks, each obeying dx/dt = P - k*x:
 //   glow     — from symbionts and light shoals; fades.
 //   plankton — herded by feeding shoals; eaten fast.
-//   murmurs  — heard by scouting shoals; fade slowly back into the stone.
-//   calcite  — polyps × lure(glow) × feeding(plankton); dissolves.
 //   height   — relaxes toward the target set by skeleton bands.
+//   silt     — falls on the reef on the Twilight Shelf; swept by current and the Rasp.
+//   murmurs  — heard by scouting shoals; fade slowly back into the stone.
+//   sand     — ground by the Rasp; settles slowly.
+//   calcite  — polyps × lure(glow) × feeding(plankton) × reach(height) × smother(silt);
+//              dissolves (and is eaten by the Rasp).
 // Counts are constant between purchases, so the upstream stocks have exact closed forms and
 // calcite's production is a known function of time. Within each sub-step advance() integrates
-// calcite exactly using Simpson's mean of that production; once glow and plankton have
+// calcite exactly using Simpson's mean of that production; once every upstream stock has
 // settled the production is constant and the rest of any span is a single exact step — so a
 // month offline costs a few hundred iterations and ends exactly where the dynamics settle.
 
-import { ACT1, BANDS_ACT1, UPGRADES, type Band, type Currency, type UpgradeDef, type UpgradeId } from '../content/act1.ts';
+import { ACT1, BANDS_ACT1 } from '../content/act1.ts';
 import { ACT2, BANDS_ACT2, READINGS, type Job, type ReadingId } from '../content/act2.ts';
+import { ACT3, BANDS_ACT3, MEETINGS, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { act, actAt, LAST_PLAYABLE_ACT } from '../content/acts.ts';
+import type { Band, Currency, UpgradeDef, UpgradeId } from '../content/types.ts';
+import { UPGRADES } from '../content/upgrades.ts';
 import { equilibrium, relax } from './ode.ts';
 import type { GameState } from './state.ts';
 
-export const BANDS: readonly Band[] = [...BANDS_ACT1, ...BANDS_ACT2];
+export const BANDS: readonly Band[] = [...BANDS_ACT1, ...BANDS_ACT2, ...BANDS_ACT3];
 
 export type Rates = {
   glowP: number;
@@ -27,10 +33,15 @@ export type Rates = {
   planktonK: number;
   murmurP: number;
   murmurK: number;
-  /** Calcite production before the lure and feeding multipliers. */
+  siltP: number;
+  siltK: number;
+  sandP: number;
+  sandK: number;
+  /** Calcite production before the lure, feeding, reach and smother multipliers. */
   calciteBase: number;
   calciteK: number;
   lureMax: number;
+  reachPower: number;
   heightTarget: number;
 };
 
@@ -38,41 +49,82 @@ function has(s: GameState, id: ReadingId): boolean {
   return s.readings.includes(id);
 }
 
+export function raspMax(s: GameState): number {
+  return s.levels.grounds * ACT3.raspPerGround + (s.truce.terms === 'a' ? 4 : s.truce.terms === 'b' ? 2 : 0);
+}
+
 export function rates(s: GameState): Rates {
   const lv = s.levels;
   const vent = lv.vent;
   const lightGlow = ACT2.lightGlow * (has(s, 'shoal-pact') ? 2 : 1);
+  const target = heightForBands(lv.skeleton);
+  const rasp = Math.min(s.rasp, raspMax(s));
+  const onShelf = target >= ACT3.from;
   return {
     glowP: ACT1.symbiontGlow * lv.symbiont + lightGlow * s.jobs.light,
     glowK: ACT1.glowFade,
-    planktonP: ACT2.feedRate * s.jobs.feed * (has(s, 'tidebooks') ? 2 : 1),
+    planktonP: ACT2.feedRate * s.jobs.feed * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel,
     planktonK: ACT2.planktonEaten * (has(s, 'slow-currents') ? 0.6 : 1),
     murmurP: ACT2.scoutRate * s.jobs.scout * (has(s, 'beaked') ? 1.5 : 1),
     murmurK: ACT2.murmurFade,
+    siltP: onShelf
+      ? ACT3.siltFall * (1 + (target - ACT3.from) / ACT3.siltGrowthPer) * (s.truce.wall === 'a' ? 0.6 : 1)
+      : 0,
+    siltK: ACT3.naturalSweep + ACT3.flowSweep * lv.sandbar + ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1),
+    sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1),
+    sandK: ACT3.sandSettle,
     calciteBase:
       (ACT1.trickle + ACT1.polypRate * lv.polyp * (has(s, 'city') ? 1.5 : 1)) *
       ACT1.ventBoost ** vent *
-      (has(s, 'inside-the-wall') ? 2 : 1),
+      (has(s, 'inside-the-wall') ? 2 : 1) *
+      (s.truce.wall === 'b' ? 1.5 : 1) *
+      ACT3.sandbarCalcite ** lv.sandbar,
     calciteK:
       ACT1.dissolve * ACT1.latticeFactor ** lv.lattice * ACT1.ventAcid ** vent *
-      (has(s, 'lattice-songs') ? 0.7 : 1),
+      (has(s, 'lattice-songs') ? 0.7 : 1) +
+      (s.truce.terms === 'b' ? 0 : ACT3.raspEat * rasp),
     lureMax: ACT1.lureMax + ACT1.lureMaxPerPattern * lv.lure + (has(s, 'fear') ? 1 : 0),
-    heightTarget: heightForBands(lv.skeleton),
+    reachPower: ACT2.reachPower + (s.truce.story === 'b' ? 0.05 : 0),
+    heightTarget: target,
   };
+}
+
+// ---------- Bands ----------
+// Band l adds metres that depend on the zone it is laid in: 3 m on the Silt Floor, a growing
+// stride through the Midnight Water (clipped so the zone ends exactly at its boundary), then a
+// fixed stride per later zone. Costs grow per band by the zone's factor. Both are tabulated
+// once; there are only a few hundred bands in the whole game.
+
+const MAX_BANDS = 400;
+/** Fixed band stride for each act after the second (index = act number). */
+const STRIDE: Record<number, number> = { 3: 30, 4: 6, 5: 1 };
+const COST_GROWTH: Record<number, number> = { 1: 1.3, 2: 1.2, 3: 1.11, 4: 1.11, 5: 1.11 };
+
+const BAND_TOP = new Float64Array(MAX_BANDS + 1);
+const BAND_COST = new Float64Array(MAX_BANDS + 1);
+{
+  BAND_COST[0] = 1;
+  for (let l = 0; l < MAX_BANDS; l++) {
+    const h = BAND_TOP[l]!;
+    const zone = actAt(h);
+    let m: number;
+    if (zone === 1) m = ACT1.bandMetres;
+    else if (zone === 2) m = ACT1.bandMetres * ACT2.bandGrowth ** Math.max(0, l - ACT2.bandGrowthFrom);
+    else m = STRIDE[zone] ?? 1;
+    const end = act(zone).to;
+    BAND_TOP[l + 1] = Math.min(h + m, end);
+    BAND_COST[l + 1] = BAND_COST[l]! * COST_GROWTH[zone]!;
+  }
+}
+
+/** Reef height the first n bands raise the reef to. */
+export function heightForBands(n: number): number {
+  return BAND_TOP[Math.max(0, Math.min(MAX_BANDS, n))]!;
 }
 
 /** Metres the l-th band (0-based) adds. */
 export function bandMetres(l: number): number {
-  return ACT1.bandMetres * ACT2.bandGrowth ** Math.max(0, l - ACT2.bandGrowthFrom);
-}
-
-export function heightForBands(n: number): number {
-  const g = ACT2.bandGrowth;
-  const flat = Math.min(n, ACT2.bandGrowthFrom + 1);
-  const grown = n - flat;
-  // Closed form of the geometric tail: bands 20.. add 3·g^1, 3·g^2, ...
-  const tail = grown > 0 ? (ACT1.bandMetres * g * (g ** grown - 1)) / (g - 1) : 0;
-  return ACT1.bandMetres * flat + tail;
+  return heightForBands(l + 1) - heightForBands(l);
 }
 
 export function lure(r: Rates, glow: number): number {
@@ -83,13 +135,21 @@ export function feeding(plankton: number): number {
   return 1 + Math.sqrt(Math.max(0, plankton)) / ACT2.planktonDiv;
 }
 
-export function reach(height: number): number {
-  return Math.max(1, height / ACT2.reachFrom) ** ACT2.reachPower;
+export function reach(height: number, power: number = ACT2.reachPower): number {
+  return Math.max(1, height / ACT2.reachFrom) ** power;
+}
+
+export function smother(silt: number): number {
+  return 1 / (1 + Math.max(0, silt) / ACT3.smotherHalf);
+}
+
+function production(r: Rates, glow: number, plankton: number, height: number, silt: number): number {
+  return r.calciteBase * lure(r, glow) * feeding(plankton) * reach(height, r.reachPower) * smother(silt);
 }
 
 /** Instantaneous calcite production per second. */
 export function calciteRate(s: GameState, r = rates(s)): number {
-  return r.calciteBase * lure(r, s.glow) * feeding(s.plankton) * reach(s.height);
+  return production(r, s.glow, s.plankton, s.height, s.silt);
 }
 
 /** Net change per second right now. */
@@ -105,12 +165,20 @@ export function planktonNet(s: GameState, r = rates(s)): number {
 export function murmurNet(s: GameState, r = rates(s)): number {
   return r.murmurP - r.murmurK * s.murmurs;
 }
+export function siltNet(s: GameState, r = rates(s)): number {
+  return r.siltP - r.siltK * s.silt;
+}
+export function sandNet(s: GameState, r = rates(s)): number {
+  return r.sandP - r.sandK * s.sand;
+}
 
 /** Where each stock settles if nothing is bought: the reef's natural hold. */
 export function calciteHold(s: GameState, r = rates(s)): number {
-  const g = equilibrium(r.glowP, r.glowK);
-  const p = equilibrium(r.planktonP, r.planktonK);
-  return equilibrium(r.calciteBase * lure(r, g) * feeding(p) * reach(r.heightTarget), r.calciteK);
+  const p = production(
+    r, equilibrium(r.glowP, r.glowK), equilibrium(r.planktonP, r.planktonK), r.heightTarget,
+    equilibrium(r.siltP, r.siltK),
+  );
+  return equilibrium(p, r.calciteK);
 }
 export function glowHold(s: GameState, r = rates(s)): number {
   return equilibrium(r.glowP, r.glowK);
@@ -121,6 +189,12 @@ export function planktonHold(s: GameState, r = rates(s)): number {
 export function murmurHold(s: GameState, r = rates(s)): number {
   return equilibrium(r.murmurP, r.murmurK);
 }
+export function siltHold(s: GameState, r = rates(s)): number {
+  return equilibrium(r.siltP, r.siltK);
+}
+export function sandHold(s: GameState, r = rates(s)): number {
+  return equilibrium(r.sandP, r.sandK);
+}
 
 const EQ_EPS = 1e-12;
 /** Sub-step length as a fraction of the fastest upstream time constant. */
@@ -130,36 +204,39 @@ function settledAt(x: number, eq: number): boolean {
   return Math.abs(x - eq) <= EQ_EPS * Math.max(1, eq);
 }
 
+type Upstream = 'glow' | 'plankton' | 'height' | 'silt';
+
 /** Advance the world by dt simulated seconds. Mutates and returns s. */
 export function advance(s: GameState, dt: number): GameState {
   if (!(dt > 0)) return s;
   const r = rates(s);
   const kH = ACT1.settleRate;
-  const glowEq = equilibrium(r.glowP, r.glowK);
-  const plEq = equilibrium(r.planktonP, r.planktonK);
-  const hEq = r.heightTarget;
-  const maxStep = STEP_FRACTION / Math.max(r.glowK, r.planktonK, kH);
-  const prod = (g: number, p: number, h: number) => r.calciteBase * lure(r, g) * feeding(p) * reach(h);
+  const up: { key: Upstream; P: number; k: number; eq: number }[] = [
+    { key: 'glow', P: r.glowP, k: r.glowK, eq: equilibrium(r.glowP, r.glowK) },
+    { key: 'plankton', P: r.planktonP, k: r.planktonK, eq: equilibrium(r.planktonP, r.planktonK) },
+    { key: 'height', P: kH * r.heightTarget, k: kH, eq: r.heightTarget },
+    { key: 'silt', P: r.siltP, k: r.siltK, eq: equilibrium(r.siltP, r.siltK) },
+  ];
+  const maxStep = STEP_FRACTION / Math.max(...up.map((u) => u.k));
+  const at = (x: Record<Upstream, number>) => production(r, x.glow, x.plankton, x.height, x.silt);
   let left = dt;
   while (left > 0) {
-    const settled = settledAt(s.glow, glowEq) && settledAt(s.plankton, plEq) && settledAt(s.height, hEq);
+    const settled = up.every((u) => settledAt(s[u.key], u.eq));
     const h = settled ? left : Math.min(left, maxStep);
     let p: number;
     if (settled) {
-      s.glow = glowEq;
-      s.plankton = plEq;
-      s.height = hEq;
-      p = prod(glowEq, plEq, hEq);
+      for (const u of up) s[u.key] = u.eq;
+      p = at(s);
     } else {
-      const g0 = s.glow, q0 = s.plankton, h0 = s.height;
-      const half = (x: number, P: number, k: number, t: number) => relax(x, P, k, t);
-      const gm = half(g0, r.glowP, r.glowK, h / 2), qm = half(q0, r.planktonP, r.planktonK, h / 2), hm = half(h0, kH * hEq, kH, h / 2);
-      const g1 = half(g0, r.glowP, r.glowK, h), q1 = half(q0, r.planktonP, r.planktonK, h), h1 = half(h0, kH * hEq, kH, h);
+      const x0 = { glow: s.glow, plankton: s.plankton, height: s.height, silt: s.silt };
+      const xm = { ...x0 }, x1 = { ...x0 };
+      for (const u of up) {
+        xm[u.key] = relax(x0[u.key], u.P, u.k, h / 2);
+        x1[u.key] = relax(x0[u.key], u.P, u.k, h);
+      }
       // Simpson's mean of the production curve over the step.
-      p = (prod(g0, q0, h0) + 4 * prod(gm, qm, hm) + prod(g1, q1, h1)) / 6;
-      s.glow = g1;
-      s.plankton = q1;
-      s.height = h1;
+      p = (at(x0) + 4 * at(xm) + at(x1)) / 6;
+      for (const u of up) s[u.key] = x1[u.key];
     }
     s.calcite = relax(s.calcite, p, r.calciteK, h);
     s.earned.calcite += p * h;
@@ -168,8 +245,9 @@ export function advance(s: GameState, dt: number): GameState {
   s.earned.glow += r.glowP * dt;
   s.earned.murmurs += r.murmurP * dt;
   s.murmurs = relax(s.murmurs, r.murmurP, r.murmurK, dt);
+  s.sand = relax(s.sand, r.sandP, r.sandK, dt);
   // Snap the last sliver so "reached the goal" is reachable in finite time.
-  if (hEq - s.height < 1e-3) s.height = hEq;
+  if (r.heightTarget - s.height < 1e-3) s.height = r.heightTarget;
   s.t += dt;
   s.act = Math.max(s.act, actAt(s.height));
   readBands(s);
@@ -187,24 +265,38 @@ export function upgrade(id: UpgradeId): UpgradeDef {
 
 export function cost(s: GameState, id: UpgradeId): number {
   const u = upgrade(id);
-  const discount = id === 'skeleton' && has(s, 'walls') ? 0.75 : 1;
   const l = s.levels[id];
+  if (id === 'skeleton') {
+    const discount = has(s, 'walls') ? 0.75 : 1;
+    return Math.ceil(u.baseCost * BAND_COST[Math.min(MAX_BANDS, l)]! * discount);
+  }
+  const discount = 1;
   const [from, gentle] = u.growthAfter ?? [Infinity, u.growth];
   const scale = l <= from ? u.growth ** l : u.growth ** from * gentle ** (l - from);
   return Math.ceil(u.baseCost * scale * discount);
 }
 
-/** Height the content currently goes up to; bands past it wait for the next act. */
-export const HEIGHT_CAP = act(LAST_PLAYABLE_ACT).to;
+/**
+ * Height the reef can currently grow to: the top of the last act with content. Story gates
+ * hold it back further: the Twilight Shelf opens once Ossel's wall has been read, and the
+ * shelf's last band waits for the choice about that wall.
+ */
+export function heightCap(s: GameState): number {
+  let cap = act(LAST_PLAYABLE_ACT).to;
+  if (!has(s, 'inside-the-wall')) cap = Math.min(cap, act(2).to);
+  if (!s.truce.wall) cap = Math.min(cap, act(3).to - 1);
+  return cap;
+}
 
 export function maxed(s: GameState, id: UpgradeId): boolean {
-  if (id === 'skeleton' && heightForBands(s.levels.skeleton) >= HEIGHT_CAP) return true;
+  if (id === 'skeleton' && heightForBands(s.levels.skeleton + 1) > heightCap(s)) return true;
   return s.levels[id] >= upgrade(id).maxLevel;
 }
 
 export function revealed(s: GameState, id: UpgradeId): boolean {
-  const { level, earned, height } = upgrade(id).reveal;
+  const { level, earned, height, band } = upgrade(id).reveal;
   if (s.levels[id] > 0) return true;
+  if (band !== undefined && !s.bands.includes(band)) return false;
   if (level && s.levels[level[0]] < level[1]) return false;
   if (earned !== undefined && s.earned.calcite < earned) return false;
   if (height !== undefined && s.height < height) return false;
@@ -281,6 +373,38 @@ export function read(s: GameState, id: ReadingId): boolean {
   return true;
 }
 
+// ---------- The Rasp and the truce ----------
+
+/** Set how many Rasp may graze (clamped to what the grounds allow). */
+export function setRasp(s: GameState, n: number): void {
+  s.rasp = Math.max(0, Math.min(raspMax(s), Math.round(n)));
+}
+
+export function meeting(id: MeetingId): Meeting {
+  return MEETINGS.find((m) => m.id === id)!;
+}
+
+/** The meeting waiting to happen: in order, once its band is read and the last was decided. */
+export function nextMeeting(s: GameState): Meeting | undefined {
+  for (const m of MEETINGS) {
+    if (s.truce[m.id]) continue;
+    return s.bands.includes(m.after) ? m : undefined;
+  }
+  return undefined;
+}
+
+/** Make a truce choice: pays the murmurs it took to learn the words. */
+export function choose(s: GameState, id: MeetingId, choice: Choice): boolean {
+  const m = nextMeeting(s);
+  if (!m || m.id !== id || s.murmurs < m.words) return false;
+  s.murmurs -= m.words;
+  s.truce[id] = choice;
+  // Ossel's wall, ground down: a flood of warm sand.
+  if (id === 'wall' && choice === 'a') s.sand += 50000;
+  setRasp(s, s.rasp);
+  return true;
+}
+
 // ---------- Look-ahead ----------
 
 /** Seconds until `amount` of a currency is held if nothing is bought; Infinity if never. */
@@ -290,6 +414,7 @@ export function timeUntil(s: GameState, cur: Currency | 'murmurs', amount: numbe
   const r = rates(s);
   if (cur === 'glow') return solveRelax(have, r.glowP, r.glowK, amount);
   if (cur === 'murmurs') return solveRelax(have, r.murmurP, r.murmurK, amount);
+  if (cur === 'sand') return solveRelax(have, r.sandP, r.sandK, amount);
   if (calciteHold(s, r) <= amount) return Infinity;
   // Calcite's production drifts with glow and plankton; probe forward in growing exact steps.
   const probe: GameState = { ...s, earned: { ...s.earned }, bands: [] };

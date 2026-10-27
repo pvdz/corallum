@@ -252,7 +252,7 @@ export function createReef(seed: number) {
           ring(ctx, cx, cy - 20 * s, (30 + k * 180) * s, '255,230,150', 0.35 * (1 - k), 1.5 * s);
           break;
         }
-        case 'vent':
+        default:
           break;
       }
     }

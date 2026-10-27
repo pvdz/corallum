@@ -10,7 +10,7 @@
 // With ?t, ?bot or ?fresh nothing is written to storage.
 // Console: corallum.skip(seconds), corallum.state, corallum.speed = x
 
-import { type UpgradeId } from '../game/content/act1.ts';
+import type { UpgradeId } from '../game/content/types.ts';
 import { act, actAt } from '../game/content/acts.ts';
 import { createAbyssScene } from '../game/render/abyss.ts';
 import { createMidnightScene } from '../game/render/midnight.ts';
@@ -74,7 +74,7 @@ zoneTitle.id = 'zone-title';
 const panel = createPanel(ui, {
   buy(id: UpgradeId) {
     if (!buy(state, id)) return;
-    scene.effect(id === 'shoal' ? 'shoal' : id);
+    scene.effect(id);
     save();
   },
   assign(job, delta) {

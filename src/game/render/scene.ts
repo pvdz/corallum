@@ -1,6 +1,7 @@
 // The contract between the game loop and a zone scene.
 
 import type { Job } from '../content/act2.ts';
+import type { UpgradeId } from '../content/types.ts';
 
 /** What a scene needs from the game state. */
 export type ReefView = {
@@ -21,7 +22,8 @@ export type ReefView = {
   bands: readonly string[];
 };
 
-export type EffectKind = 'polyp' | 'skeleton' | 'symbiont' | 'lure' | 'lattice' | 'vent' | 'shoal';
+/** Purchases (by upgrade id) and story moments a scene may flourish. */
+export type EffectKind = UpgradeId | 'reading' | 'truce';
 
 /** The part of the canvas not covered by the panel, in device pixels. */
 export type Focus = { x: number; y: number; w: number; h: number };

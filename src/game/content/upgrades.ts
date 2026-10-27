@@ -1,0 +1,23 @@
+// Every upgrade in the game, in panel order, and their one-line effect texts.
+
+import { ACT1, UPGRADES_ACT1 } from './act1.ts';
+import { UPGRADES_ACT2 } from './act2.ts';
+import { ACT3, UPGRADES_ACT3 } from './act3.ts';
+import type { UpgradeDef, UpgradeId } from './types.ts';
+
+export const UPGRADES: readonly UpgradeDef[] = [...UPGRADES_ACT1, ...UPGRADES_ACT2, ...UPGRADES_ACT3];
+
+export function effectText(id: UpgradeId): string {
+  switch (id) {
+    case 'polyp': return `+${ACT1.polypRate} calcite/s`;
+    case 'skeleton': return 'the reef rises';
+    case 'symbiont': return `+${ACT1.symbiontGlow} glow/s`;
+    case 'lattice': return `calcite dissolves ${Math.round((1 - ACT1.latticeFactor) * 100)}% slower`;
+    case 'lure': return `glow can lure up to +${Math.round(ACT1.lureMaxPerPattern * 100)}% more calcite`;
+    case 'vent': return `×${ACT1.ventBoost} calcite, but it dissolves ×${ACT1.ventAcid} faster`;
+    case 'shoal': return 'a lanternfish shoal joins the reef';
+    case 'grounds': return `room for ${ACT3.raspPerGround} more Rasp`;
+    case 'sandbar': return `more current: sweeps silt, calcite ×${ACT3.sandbarCalcite}`;
+    case 'channel': return `plankton ×${ACT3.channelPlankton}`;
+  }
+}

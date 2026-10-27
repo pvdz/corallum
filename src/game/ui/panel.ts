@@ -2,7 +2,9 @@
 // reader and the away summary. Built once; `update()` only rewrites text and classes, so it
 // is cheap to call every frame.
 
-import { ACT1, UPGRADES, effectText, type Band, type UpgradeId } from '../content/act1.ts';
+import { ACT1 } from '../content/act1.ts';
+import type { Band, UpgradeId } from '../content/types.ts';
+import { UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
 import { act, actAt, SURFACE } from '../content/acts.ts';
 import {

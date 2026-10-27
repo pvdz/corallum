@@ -58,3 +58,19 @@ the previous act's scene is gone below the frame.
   a piece of lore plus an effect. This is how Act II's story is told.
 - Trade-off: plankton grows the economy, light buys more shoals, scouting buys knowledge and
   permanent effects. No allocation is right for the whole act.
+
+## Act III — The Twilight Shelf (3000–3800 m)
+Entry requires the last Act II Reading (*Inside the wall*): the story turn opens the shelf.
+
+- **Silt** (stock on the reef): the shelf collects the Long Silt sliding downslope.
+  `dS/dt = F − (κ_flow·Q + κ_rasp·R)·S`; calcite is multiplied by `1 / (1 + S/S0)` (smothering).
+- **The Rasp dial** (verb 1): the player sets how many Rasp grazers to admit, 0..Rmax.
+  Each clears silt, grinds dead stone into **sand**, and eats calcite (an extra leak ρ·R).
+  Too few: smothered. Too many: they eat the reef's store. The optimum moves as you grow.
+- **Sand** (stock): produced by Rasp, settles slowly. Buys **sand bars** (more flow Q, which
+  sweeps silt) and **feeding channels** (plankton ×).
+- **The truce** (verb 2: choosing): three meetings with the Rasp, each unlocked by learning
+  enough of their words (paid in **murmurs**, so scouting stays useful). Each meeting is a
+  permanent choice between two terms, with economic and story consequences; the third is
+  whether to give Ossel's wall to the Rasp. The choices colour the ending.
+- **Grazing grounds** (calcite): raise Rmax.
