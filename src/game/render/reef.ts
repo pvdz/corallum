@@ -203,6 +203,16 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     drawBranches(ctx, L, t);
 
     const nodes = polypNodes(L, shownPolyps(L, v));
+    // Before the stone has grown, new polyps cluster around its foot on the silt.
+    const footWanted = Math.min(12, 1 + v.polyps) - nodes.length;
+    if (footWanted > 0) {
+      const flickFoot = Math.max(0, 1 - v.sinceSweep / 0.35);
+      for (let k = 0; k < footWanted; k++) {
+        const side = k % 2 ? 1 : -1;
+        const off = (8 + Math.floor(k / 2) * 9 + (k % 3) * 2) * s;
+        drawPolyp(ctx, L.cx + side * off, L.baseY + (2 + (k % 3)) * s, s * (0.5 + 0.08 * (k % 4)), t, side * 0.5, k * 1.7, flickFoot, colours);
+      }
+    }
     const flick = Math.max(0, 1 - v.sinceSweep / 0.35);
     const tips: [number, number][] = [];
     // Side polyps first, crown polyp last so it sits on top.

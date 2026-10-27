@@ -26,6 +26,7 @@ import { newGame, type GameState } from '../game/sim/state.ts';
 import { num } from '../game/ui/format.ts';
 import { createAudio } from '../game/audio/audio.ts';
 import { LINEAGE_BANDS } from '../game/content/lineage.ts';
+import { WHISPERS } from '../game/content/whispers.ts';
 import { buyTrait, spawnLesser } from '../game/sim/prestige.ts';
 import { createFinale } from '../game/ui/finale.ts';
 import { createPanel } from '../game/ui/panel.ts';
@@ -322,6 +323,29 @@ function showZoneTitle(n: number): void {
 ui.append(zoneTitle);
 ui.append(soundBtn);
 
+// Ossel's whispers: one at a time, at most every 80 s, each once per lineage.
+const whisper = document.createElement('div');
+whisper.id = 'whisper';
+ui.append(whisper);
+let lastWhisper = -Infinity;
+function whisperCheck(now: number): void {
+  if (frozenT !== null || now - lastWhisper < 80_000 || !reader()) return;
+  const w = WHISPERS.find((x) => !state.meta.seen.includes(`w:${x.id}`) && x.when(state));
+  if (!w) return;
+  state.meta.seen.push(`w:${w.id}`);
+  lastWhisper = now;
+  const speaker = state.truce.wall === 'a' ? 'the sand' : 'Ossel';
+  whisper.innerHTML = '';
+  const q = document.createElement('q');
+  q.textContent = w.text;
+  const who = document.createElement('span');
+  who.textContent = `— ${speaker}`;
+  whisper.append(q, who);
+  whisper.classList.remove('show');
+  void whisper.offsetWidth;
+  whisper.classList.add('show');
+}
+
 // Until the first sweep, a quiet hint over the water.
 const hint = document.createElement('div');
 hint.id = 'sweep-hint';
@@ -415,6 +439,7 @@ function frame(now: number): void {
   prof.draw += (p1 - p0 - prof.draw) * 0.05;
   prof.panel += (p3 - p2 - prof.panel) * 0.05;
   audio.setZone(actAt(state.height));
+  whisperCheck(now);
   replay.hidden = !ended(state);
   title.classList.toggle('faded', state.levels.polyp > 0 || state.t > 25);
   hint.classList.toggle('show', state.meta.spawnings === 0 && state.earned.calcite < 40 && reader() && state.t > 2);

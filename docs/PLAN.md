@@ -177,7 +177,9 @@ Tick items as they land; keep this list honest. Add items freely.
 ### M6 Polish (in progress)
 - [x] procedural audio: zone pad + surf, purchase chimes, sweep bubble, story tone, choice and release cues; toggle top-left, off by default, remembered
 - [x] accessibility: prefers-reduced-motion slows ambient animation; keyboard shortcuts (Space, P, B, G); text scale = browser zoom
-- [ ] codex: a "Reef" summary page (choices made, memories, lineage history)
+- [x] codex: "Your reef" summary in the Bands tab
+- [x] Ossel's whispers (content/whispers.ts): contextual one-line hints over the water, once per lineage
+- [x] early polyps cluster at the reef foot until the stone can host them
 - [x] real-speed playtest of the first 3 minutes: a purchase every 4–6 s, a story every 40–60 s
 - [x] perf: panel countdown probes were 19–25 ms/frame in Acts IV–V → coarse probes, one card per frame (<1 ms); glows use cached sprites; `corallum.prof` shows draw/panel ms
 - [ ] perf on a real phone (unmeasured: headless is software-rendered)
