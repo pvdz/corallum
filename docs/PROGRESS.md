@@ -141,3 +141,4 @@ date, what landed, what is half-done, what's next.
 - Zone bar: story bands in the current zone are ticks on the height bar (bright once laid, title on hover).
 - Act IV: seagrass meadows, a sand sink (bloom ×1.15 each, up to 12), drawn as seagrass patches spreading on the sunlit sand. Retuned zones 4–5.
 - After the spawning: your children settle — tiny pink reefs appear one by one in the deep below the Breach, dozens within the hour (the epilogue garden).
+- Sound: the sunlit whale calls (two long sliding tones) as it sets off across the Crown.

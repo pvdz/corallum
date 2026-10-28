@@ -546,6 +546,7 @@ let last = performance.now();
 let lastSave = last;
 let lastTitle = 0;
 let lastHabit = 0;
+let lastWhaleLap = -1;
 let animT = 40;
 let needResize = true;
 function frame(now: number): void {
@@ -592,6 +593,10 @@ function frame(now: number): void {
   prof.draw += (p1 - p0 - prof.draw) * 0.05;
   prof.panel += (p3 - p2 - prof.panel) * 0.05;
   audio.setZone(actAt(state.height));
+  // The Sunlit Crown's whale (render/sunlit.ts: every 210 s of scene time) calls as it sets off.
+  const whaleLap = Math.floor(tNow / 210);
+  if (actAt(state.height) === 4 && whaleLap !== lastWhaleLap && tNow % 210 < 5) audio.cue('whale');
+  lastWhaleLap = whaleLap;
   whisperCheck(now);
   if (fpsBox) fpsTick(now, dt);
   // Old habits: the reef's own small purchases, only while the page is open.

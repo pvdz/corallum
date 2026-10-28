@@ -3,7 +3,7 @@
 // gesture before audio can start anyway).
 
 export type Zone = 1 | 2 | 3 | 4 | 5;
-export type Cue = 'buy' | 'sweep' | 'story' | 'choice' | 'release' | 'spawning' | 'whisper' | 'feast';
+export type Cue = 'buy' | 'sweep' | 'story' | 'choice' | 'release' | 'spawning' | 'whisper' | 'feast' | 'whale';
 
 /** Per zone: root frequency of the pad, pad brightness, and how much surf noise. */
 const ZONES: Record<Zone, { root: number; bright: number; surf: number; notes: number[] }> = {
@@ -169,6 +169,30 @@ export function createAudio() {
     }
   }
 
+  /** A long sliding sine with vibrato: whale song, far off. */
+  function glide(from: number, to: number, length: number, delay: number): void {
+    if (!ctx || !master || !enabled) return;
+    const t = ctx.currentTime + delay;
+    const o = ctx.createOscillator();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(from, t);
+    o.frequency.exponentialRampToValueAtTime(to, t + length);
+    const vib = ctx.createOscillator();
+    vib.frequency.value = 5;
+    const vibGain = ctx.createGain();
+    vibGain.gain.value = 4;
+    vib.connect(vibGain).connect(o.frequency);
+    const e = ctx.createGain();
+    e.gain.setValueAtTime(0.0001, t);
+    e.gain.exponentialRampToValueAtTime(0.05, t + length * 0.3);
+    e.gain.exponentialRampToValueAtTime(0.0001, t + length);
+    o.connect(e).connect(master);
+    o.start(t);
+    vib.start(t);
+    o.stop(t + length + 0.1);
+    vib.stop(t + length + 0.1);
+  }
+
   function bubble(): void {
     if (!ctx || !master || !enabled) return;
     const t = ctx.currentTime;
@@ -217,6 +241,11 @@ export function createAudio() {
         case 'story':
           bell(root / 2, 0.08, 4);
           bell((root / 2) * 1.5, 0.04, 4);
+          break;
+        case 'whale':
+          // A far whale: two long sliding calls with a slow wobble, under everything else.
+          glide(190, 120, 3.2, 0);
+          glide(150, 210, 2.6, 3.6);
           break;
         case 'feast':
           // A quick rising run: something good came down.
