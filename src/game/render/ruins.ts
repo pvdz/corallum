@@ -70,7 +70,7 @@ export function createRuins(seed: number) {
   }
 
   function drawTower(ctx: CanvasRenderingContext2D, tw: Tower, d: number, x: number, topY: number, ppm: number, base: number,
-    h: number, style: RuinStyle, t: number): void {
+    h: number, style: RuinStyle): void {
     const L = style.layers[d]!;
     const step = Math.max(6, h / 70);
     const fill = ctx.createLinearGradient(0, 0, 0, h);
@@ -143,19 +143,24 @@ export function createRuins(seed: number) {
         ctx.stroke();
       }
     }
-    if (style.lights && d > 0) {
-      ctx.save();
-      ctx.globalCompositeOperation = 'lighter';
-      for (const l of tw.lights) {
-        const ly = topY + l.m * ppm;
-        if (ly < 0 || ly > h) continue;
-        const u = ((t + l.phase) % l.period) / l.period;
-        const a = 0.25 + 0.75 * Math.max(0, Math.sin(u * Math.PI * 2)) ** 3;
-        glow(ctx, x + l.u * halfWidth(tw, base, l.m), ly, base * 0.5, style.lights, 0.35 * a);
-      }
-      ctx.restore();
+  }
+
+  /** The few lights still burning in the old stone (drawn every frame; they flicker). */
+  function drawLights(ctx: CanvasRenderingContext2D, tw: Tower, x: number, topY: number, ppm: number, base: number, h: number,
+    rgb: string, t: number): void {
+    for (const l of tw.lights) {
+      const ly = topY + l.m * ppm;
+      if (ly < 0 || ly > h) continue;
+      const u = ((t + l.phase) % l.period) / l.period;
+      const a = 0.25 + 0.75 * Math.max(0, Math.sin(u * Math.PI * 2)) ** 3;
+      glow(ctx, x + l.u * halfWidth(tw, base, l.m), ly, base * 0.5, rgb, 0.35 * a);
     }
   }
+
+  // The stone barely moves (a pixel or so a second), so it is drawn into a cache and redrawn only
+  // when it has shifted by a whole pixel; filling these big shapes every frame is costly on phones.
+  let cache: HTMLCanvasElement | OffscreenCanvas | null = null;
+  let cacheKey = '';
 
   return {
     /** Draw the given layers (0 far … 2 near) for a reef that stands `height` metres tall. */
@@ -163,16 +168,40 @@ export function createRuins(seed: number) {
       t: number, which: readonly number[] = [0, 1, 2]): void {
       const horizon = focus.y + focus.h * 0.62;
       const unit = Math.min(focus.w, focus.h);
-      for (const d of which) {
-        const ppm = focus.h / SPAN[d]!;
-        for (const tw of layers[d]!) {
-          const topY = horizon - (tw.top - height) * ppm;
-          if (topY > h) continue;
-          const x = focus.x + (tw.x * 1.3 - 0.15) * focus.w;
-          const base = unit * tw.width;
-          if (x < -base * 4 || x > w + base * 4) continue;
-          drawTower(ctx, tw, d, x, topY, ppm, base, h, style, t);
+      // Snap the height so the nearest layer moves in whole pixels.
+      const near = focus.h / SPAN[2];
+      const hq = Math.round(height * near) / near;
+      const each = (fn: (tw: Tower, d: number, x: number, topY: number, ppm: number, base: number) => void) => {
+        for (const d of which) {
+          const ppm = focus.h / SPAN[d]!;
+          for (const tw of layers[d]!) {
+            const topY = horizon - (tw.top - hq) * ppm;
+            if (topY > h) continue;
+            const x = focus.x + (tw.x * 1.3 - 0.15) * focus.w;
+            const base = unit * tw.width;
+            if (x < -base * 4 || x > w + base * 4) continue;
+            fn(tw, d, x, topY, ppm, base);
+          }
         }
+      };
+      const key = `${w}x${h} ${focus.x},${focus.y},${focus.w},${focus.h} ${which.join()} ${hq}`;
+      if (!cache || cacheKey !== key) {
+        if (!cache || cache.width !== w || cache.height !== h) {
+          cache = typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(w, h) : document.createElement('canvas');
+          cache.width = w;
+          cache.height = h;
+        }
+        const c = cache.getContext('2d') as CanvasRenderingContext2D;
+        c.clearRect(0, 0, w, h);
+        each((tw, d, x, topY, ppm, base) => drawTower(c, tw, d, x, topY, ppm, base, h, style));
+        cacheKey = key;
+      }
+      ctx.drawImage(cache, 0, 0);
+      if (style.lights) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        each((tw, d, x, topY, ppm, base) => { if (d > 0) drawLights(ctx, tw, x, topY, ppm, base, h, style.lights, t); });
+        ctx.restore();
       }
     },
   };

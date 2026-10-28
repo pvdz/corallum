@@ -79,3 +79,6 @@ date, what landed, what is half-done, what's next.
   round to zero print +0.00 (no "−0.00/s"); test/sim/format.test.ts.
 - render/shrimp.ts: glass shrimp shared by the Midnight Water and the Twilight Shelf; with Glass
   gardeners, seven shrimp pick silt along the slope (ReefView.gardeners).
+- Perf: the drowned towers cost ~20 ms/frame (headless, mobile size) in the Silt Floor and Midnight
+  Water; they now render into a cache redrawn only when the near layer moves a whole pixel, lights
+  drawn live on top. Silt Floor 25→3 ms, Midnight 33→11 ms.
