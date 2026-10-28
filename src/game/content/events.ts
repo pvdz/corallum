@@ -2,8 +2,9 @@
 // for a burst of calcite. Only while you watch: offline time has no feasts.
 
 export const FEAST = {
-  /** The band that explains them ("What falls"); none come before it. */
-  band: 'what-falls',
+  /** The band after which they come (the late Silt Floor, where purchases slow down). Ossel's
+   * whisper introduces the first; the "What falls" band tells what they are. */
+  band: 'beaks',
   /** One feast per slot of this many seconds, at a seeded moment inside it. */
   period: 300,
   /** Seconds a feast takes to sink out of reach. */

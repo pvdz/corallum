@@ -137,3 +137,4 @@ date, what landed, what is half-done, what's next.
 - "Your reef" shows time on this reef, calcite gathered and feasts caught (state.feasts).
 - Silt Floor: four sea lilies (stalked crinoids) sway on the floor, feathery arms open to the current.
 - Midnight Water: an anglerfish drifts across the upper water every ~3 min, lure pulsing.
+- Falling feasts start at 42 m (band "A sound in the old band"), to fill the late Silt Floor lull for players who watch; "What falls" (95 m) still tells what they are.
