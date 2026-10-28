@@ -385,10 +385,11 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   :root { --panel-w: 46vw; }
   .panel { padding: 10px 12px 8px; gap: 6px; }
   .stocks { grid-template-columns: 1fr 1fr 1fr; gap: 2px 10px; }
-  .stock { grid-template-columns: 1fr; }
+  /* Name and value share a line, the rate sits under them: two lines per stock instead of three. */
+  .stock { grid-template-columns: auto 1fr; align-items: baseline; column-gap: 6px; }
   .stock-name { font-size: 9.5px; letter-spacing: 0.08em; }
-  .stock-value { text-align: left; font-size: 16px; }
-  .stock-sub { text-align: left; font-size: 9.5px; }
+  .stock-value { text-align: right; font-size: 16px; }
+  .stock-sub { grid-column: 1 / -1; text-align: right; font-size: 9.5px; }
   .stock.height { grid-template-columns: auto 1fr; }
   .stock.height .stock-value, .stock.height .stock-sub { text-align: right; }
   .tab { font-size: 11px; letter-spacing: 0.06em; padding: 4px 0 6px; }

@@ -97,3 +97,4 @@ date, what landed, what is half-done, what's next.
   Tests: test/sim/feast.test.ts, test/e2e/feast.ts (`corallum.feast` gives its screen position).
 - Sunlit Crown: a whale crosses far off in the haze every 3.5 min (80 s crossing, alternating
   direction), drawn behind the larvae and shoals.
+- Phone landscape: each stock is two lines (name and value share one), so the stock grid takes less of the short panel.
