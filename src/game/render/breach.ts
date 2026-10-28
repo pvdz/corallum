@@ -311,6 +311,42 @@ export function createBreachScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * After the release, your children settle: tiny new reefs appear one by one in the deep below,
+   * more as time passes (dozens within the hour), each a few pale branches and a pink glow.
+   */
+  function drawChildren(ctx: CanvasRenderingContext2D, v: ReefView, t: number): void {
+    if (v.sinceBreach < 30) return;
+    const s = scale();
+    const wy = waterY();
+    const n = Math.min(40, Math.floor(6 * Math.log2(1 + (v.sinceBreach - 30) / 30)));
+    const r = mulberry32(seed ^ 0xc41d);
+    for (let i = 0; i < n; i++) {
+      const x = focus.x + focus.w * range(r, 0.03, 0.97);
+      const depth = range(r, 0.55, 1);
+      const y = wy + (h - wy) * depth;
+      const size = (0.5 + depth) * s * range(r, 0.6, 1.1);
+      const born = Math.min(1, (v.sinceBreach - 30 - i * 20) / 20);
+      if (born <= 0) continue;
+      ctx.save();
+      ctx.globalAlpha = 0.35 + 0.4 * depth * born;
+      ctx.strokeStyle = 'rgba(255,190,215,0.8)';
+      ctx.lineCap = 'round';
+      ctx.lineWidth = 1.4 * size;
+      for (let b = 0; b < 4; b++) {
+        const a = -Math.PI / 2 + (b - 1.5) * 0.45;
+        const len = (6 + (b % 2) * 3) * size * born;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + Math.cos(a) * len, y + Math.sin(a) * len);
+        ctx.stroke();
+      }
+      ctx.globalCompositeOperation = 'lighter';
+      glow(ctx, x, y - 5 * size, 10 * size, '255,150,200', 0.25 * born * (0.7 + 0.3 * Math.sin(t + i)));
+      ctx.restore();
+    }
+  }
+
   /** Fragmenting: pieces of branch break away at the release and tumble down to settle elsewhere. */
   function drawFragments(ctx: CanvasRenderingContext2D, v: ReefView, L: ReefLayout, reef: Reef, wy: number): void {
     const s = scale();
@@ -358,6 +394,7 @@ export function createBreachScene(seed: number): Scene {
       const L = layout(v, form);
       drawSky(ctx, t, v.moonPhase, v.greatMoon);
       drawSea(ctx, t, v.moonPhase);
+      drawChildren(ctx, v, t);
       drawTop(ctx, v, reef.crown(L));
       reef.draw(ctx, L, v, t);
       drawCraft(ctx, v.craft, reef, L, t, 0.6);
