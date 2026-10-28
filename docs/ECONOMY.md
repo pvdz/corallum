@@ -53,3 +53,7 @@ contrast), and each light-swimming shoal also amplifies glimmerseed glow by 8%. 
 both pay (one more shoal ≈ +1–3% calcite each, shown on the job rows via `jobGain`). The bot places
 feeders/light-swimmers by marginal settled calcite (`balanceFeedLight`). Band cost growth retuned to
 {1: 1.55, 2: 1.16, 3: 1.2, 4: 1.11, 5: 1.021}; bot 8h08 default, paths 7h07–8h13.
+Tuning note: band costs compound across zones (each zone continues from the last band's cost), so
+changing an early zone's growth moves every later zone too: Act I 1.55→1.45 took the whole game from
+8h08 to 5h08. Late Act I is a slower stretch (2–4 purchases/min for minutes 13–21, two story bands
+in it); accepted for now.
