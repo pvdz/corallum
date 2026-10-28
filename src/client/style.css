@@ -444,3 +444,4 @@ button:focus-visible, input:focus-visible, .tab:focus-visible {
   outline: 2px solid var(--glowc); outline-offset: 2px; border-radius: 10px;
 }
 .trait-group { margin: 14px 2px 0; font-family: var(--display); font-weight: 400; font-size: 13px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--lineage); }
+html.calm * { animation: none !important; transition: none !important; }

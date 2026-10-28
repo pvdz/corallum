@@ -146,12 +146,14 @@ try { habitsOn = localStorage.getItem(HABITS_KEY) !== 'off'; } catch { /* no sto
 const CALM_KEY = 'corallum.calm';
 let calmOn = false;
 try { calmOn = localStorage.getItem(CALM_KEY) === 'on'; } catch { /* no storage */ }
+document.documentElement.classList.toggle('calm', calmOn);
 
 const panel = createPanel(ui, {
   calm: {
     get: () => calmOn,
     set(on) {
       calmOn = on;
+      document.documentElement.classList.toggle('calm', on);
       try { localStorage.setItem(CALM_KEY, on ? 'on' : 'off'); } catch { /* no storage */ }
     },
   },
