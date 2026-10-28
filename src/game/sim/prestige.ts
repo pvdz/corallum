@@ -2,7 +2,7 @@
 
 import { MEETINGS } from '../content/act3.ts';
 import { DIALECTS } from '../content/act4.ts';
-import { HABIT_SHARE, LINEAGE, TRAITS, type Trait, type TraitId } from '../content/lineage.ts';
+import { HABIT_SHARE, LINEAGE, TRAITS, type SeamountId, type Trait, type TraitId } from '../content/lineage.ts';
 import { cost, ended, revealed, spawnTarget } from './economy.ts';
 import { newGame, type GameState, type Meta } from './state.ts';
 
@@ -34,7 +34,7 @@ function storiesOf(s: GameState): string[] {
  * Release a lesser spawning (or, after the ending, begin again): a new run on a new seamount
  * that keeps the lineage. Returns the new state, or null if it is not allowed yet.
  */
-export function spawnLesser(s: GameState): GameState | null {
+export function spawnLesser(s: GameState, where: SeamountId = 'plain'): GameState | null {
   if (!canSpawnLesser(s)) return null;
   const meta: Meta = structuredClone(s.meta);
   meta.lineage += lineageFor(s);
@@ -43,7 +43,9 @@ export function spawnLesser(s: GameState): GameState | null {
   meta.seen = [...new Set([...meta.seen, ...storiesOf(s)])];
   // A new seamount: a new world seed derived from the old one.
   const seed = (Math.imul(s.seed ^ 0x9e3779b9, 2654435761) + meta.spawnings) >>> 0;
-  return newGame(seed, meta);
+  const next = newGame(seed, meta);
+  next.seamount = where;
+  return next;
 }
 
 /**

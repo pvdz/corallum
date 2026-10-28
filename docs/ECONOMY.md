@@ -67,3 +67,13 @@ calcite held). Band growth for zones 4 and 5 retuned to 1.135 / 1.028; bot 8h08,
 Reading costs 40/900/1800/3000/4500/6000/8000/7000/7500 murmurs (were 25…16000 with five under
 1100, so five stories landed within four minutes). Now one every 5–15 min through Act II. Act II
 band growth 1.155. Bot: 7h48 default, paths 7h08–8h28.
+
+## Seamounts and the Rasp dial (2026-10-29)
+A lesser spawning chooses where to settle (content/lineage.ts SEAMOUNTS): plain; warm (each vent
+tier ×1.07 stronger, acid ×1.3: faster while watching, weaker offline); cold (dissolve ×0.5, polyps
+×0.92: slower while watching, holds twice as much offline); crowded (Readings ×0.6, silt ×1.4).
+Bot full game: plain 8h08, warm 7h08, cold 8h48, crowded 8h28.
+Found while balancing them: `bestRasp` maximised what the reef holds, but late on the hold is ~60×
+the next band, so income is what matters; fewer Rasp let silt choke the polyps. It now picks the
+most settled calcite/s among settings whose hold covers the next band twice. That sped the whole
+game ~2 h; band growth for zones 3–5 retuned to 1.24 / 1.16 / 1.035 (bot 8h08 again).

@@ -446,3 +446,9 @@ button:focus-visible, input:focus-visible, .tab:focus-visible {
 }
 .trait-group { margin: 14px 2px 0; font-family: var(--display); font-weight: 400; font-size: 13px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--lineage); }
 html.calm *:not(#zone-title):not(#milestone):not(#whisper) { animation: none !important; transition: none !important; }
+.seamounts { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0; }
+.seamount {
+  font: inherit; font-size: 12px; padding: 5px 10px; border-radius: 999px; cursor: pointer;
+  color: var(--ink-dim); background: rgba(255, 255, 255, 0.04); border: 1px solid var(--edge);
+}
+.seamount.on { color: var(--lineage); border-color: rgba(199, 240, 168, 0.6); background: rgba(199, 240, 168, 0.08); }

@@ -4,7 +4,7 @@ import type { Job, ReadingId } from '../content/act2.ts';
 import type { MeetingId } from '../content/act3.ts';
 import type { DialectId, DialectTier } from '../content/act4.ts';
 import type { MemoryId } from '../content/act5.ts';
-import type { TraitId } from '../content/lineage.ts';
+import type { SeamountId, TraitId } from '../content/lineage.ts';
 import type { UpgradeId } from '../content/types.ts';
 
 export const SAVE_VERSION = 1;
@@ -82,6 +82,8 @@ export type GameState = {
   feasted: number;
   /** Falling feasts caught this run. */
   feasts: number;
+  /** The seamount this run grows on (lesser spawnings choose; the first reef's is plain). */
+  seamount: SeamountId;
   /** Lifetime totals. */
   earned: { calcite: number; glow: number; murmurs: number };
   /** Highest act reached. */
@@ -120,6 +122,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     lastSweep: -1e9,
     feasted: -1,
     feasts: 0,
+    seamount: 'plain',
     earned: { calcite: 0, glow: 0, murmurs: 0 },
     act: 1,
     meta,

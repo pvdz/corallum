@@ -8,7 +8,7 @@ import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
 import { ACT3, MEETINGS, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { DIALECTS, TIERS, type DialectId } from '../content/act4.ts';
-import { TRAIT_GROUPS, TRAITS, type TraitId } from '../content/lineage.ts';
+import { SEAMOUNTS, TRAIT_GROUPS, TRAITS, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { MEMORIES } from '../content/act5.ts';
 import { canSpawnLesser, lineageFor, traitCost, traitMaxed } from '../sim/prestige.ts';
 import { act, actAt, SURFACE } from '../content/acts.ts';
@@ -27,7 +27,7 @@ export type PanelHooks = {
   setRasp(n: number): void;
   choose(id: MeetingId, choice: Choice): void;
   speak(id: DialectId): void;
-  spawnLesser(): void;
+  spawnLesser(where: SeamountId): void;
   buyTrait(id: TraitId): void;
   exportSave(): string;
   importSave(text: string): boolean;
@@ -316,11 +316,26 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const msg = ended(s)
       ? `Begin again on a new seamount, with +${lineageFor(s)} lineage?`
       : `Release a lesser spawning now for +${lineageFor(s)} lineage? This reef starts over.`;
-    if (window.confirm(msg)) hooks.spawnLesser();
+    if (window.confirm(`${msg}\nIt will settle on ${seamountDef(whereNext).name.toLowerCase()}.`)) hooks.spawnLesser(whereNext);
   });
+  // Where the spawn settles: each seamount bends the next run one way.
+  let whereNext: SeamountId = 'plain';
+  const whereBox = el('div', 'seamounts');
+  const whereNote = el('p', 'hint');
+  const whereButtons = SEAMOUNTS.map((m) => {
+    const b = button('seamount', m.name.replace(/^A /, ''), () => {
+      whereNext = m.id;
+      for (const x of whereButtons) x.classList.toggle('on', x === b);
+      whereNote.textContent = `${m.text} ${m.effect === 'as before' ? '' : `(${m.effect})`}`;
+    });
+    b.classList.toggle('on', m.id === whereNext);
+    return b;
+  });
+  whereBox.append(...whereButtons);
+  whereNote.textContent = SEAMOUNTS[0]!.text;
   spawnFoot.append(spawnBtn);
   const spawnBuys = el('p', 'effect');
-  spawnCard.append(spawnTitle, spawnText, spawnBuys, spawnFoot);
+  spawnCard.append(spawnTitle, spawnText, spawnBuys, el('p', 'stock-name', 'Where it settles'), whereBox, whereNote, spawnFoot);
   lineagePage.append(lineageHead, spawnCard);
   const traitCards = new Map<TraitId, Card>();
   const groupHead = (g: keyof typeof TRAIT_GROUPS) =>
@@ -579,9 +594,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         raspPlus.disabled = s.rasp >= rmax;
         const eats = speaks(s, 'mucus') ? 0 : ACT3.raspEat * s.rasp * s.calcite * (s.truce.terms === 'b' ? ACT3.politeEat : 1);
         if (etaTurn === 0 || raspBest < 0) raspBest = bestRasp(s);
-        const bestNote = raspBest === s.rasp ? ' · the most it can hold' : ` · holds most at ${raspBest}`;
+        const bestNote = raspBest === s.rasp ? ' · the best setting now' : ` · best now: ${raspBest}`;
         raspWhat.textContent = s.rasp === 0
-          ? `No Rasp graze. The silt settles where it falls.${raspBest > 0 ? ` Calcite holds most at ${raspBest}.` : ''}`
+          ? `No Rasp graze. The silt settles where it falls.${raspBest > 0 ? ` Best now: ${raspBest}.` : ''}`
           : `grinding ${rate(r.sandP)} sand · ${eats > 0 ? `eating ${rate(eats).slice(1)} calcite · ` : ''}calcite holds ~${num(calciteHold(s, r))}${bestNote}`;
       }
 
@@ -750,7 +765,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       tabButtons.get('lineage')!.hidden = !lineageOpen;
       if (lineageOpen) {
         lineageCount.textContent = String(s.meta.lineage);
-        lineageSub.textContent = `${s.meta.spawnings} spawning${s.meta.spawnings === 1 ? '' : 's'} · best reef ${metres(Math.max(s.meta.best, s.height))}`;
+        lineageSub.textContent = `${s.meta.spawnings} spawning${s.meta.spawnings === 1 ? '' : 's'} · best reef ${metres(Math.max(s.meta.best, s.height))}` +
+          (s.seamount !== 'plain' ? ` · this reef: ${seamountDef(s.seamount).name.toLowerCase()}` : '');
         const can = canSpawnLesser(s);
         spawnTitle.textContent = ended(s) ? 'Begin again' : 'Release a lesser spawning';
         spawnBtn.disabled = !can;
@@ -853,6 +869,10 @@ function repeatWhileHeld(btn: HTMLButtonElement, fn: () => void): { repeated: bo
 }
 
 const GAIN_SHOWN = new Set<UpgradeId>(['lattice', 'lure', 'vent', 'sandbar', 'channel', 'pigment', 'canopy', 'meadow']);
+
+function seamountDef(id: SeamountId) {
+  return SEAMOUNTS.find((m) => m.id === id)!;
+}
 
 /** Names of traits the given lineage would buy, taking the cheapest step each time. */
 function affordableTraits(s: GameState, lineage: number): string[] {

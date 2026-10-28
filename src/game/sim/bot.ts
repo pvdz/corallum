@@ -8,10 +8,12 @@ import type { Choice, MeetingId } from '../content/act3.ts';
 import type { DialectId, DialectTier } from '../content/act4.ts';
 import { newGame, type GameState } from './state.ts';
 import { buyTrait, spawnLesser, traitCost, traitMaxed } from './prestige.ts';
-import { TRAITS } from '../content/lineage.ts';
+import { TRAITS, type SeamountId } from '../content/lineage.ts';
 
 export type BotOptions = {
   seed?: number; tick?: number; sweeps?: boolean; split?: Record<Job, number>;
+  /** The seamount to grow on (for balancing them against each other). */
+  seamount?: SeamountId;
   truce?: Record<MeetingId, Choice>;
   dialects?: Record<DialectTier, DialectId>;
   /** Release one lesser spawning when the reef first reaches this height. */
@@ -114,8 +116,9 @@ export function runBot(
   maxT: number,
   opts: BotOptions = {},
 ): { state: GameState; events: BotEvent[]; total: number } {
-  const { seed = 1, tick = 1, sweeps = true, split, truce, dialects, spawnAt } = opts;
+  const { seed = 1, tick = 1, sweeps = true, split, truce, dialects, spawnAt, seamount = 'plain' } = opts;
   let s = newGame(seed);
+  s.seamount = seamount;
   let t0 = 0;
   const events: BotEvent[] = [];
   let bandsSeen = 0;

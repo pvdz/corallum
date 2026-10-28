@@ -189,8 +189,8 @@ const panel = createPanel(ui, {
   setRasp(n) {
     setRasp(state, n);
   },
-  spawnLesser() {
-    const next = spawnLesser(state);
+  spawnLesser(where) {
+    const next = spawnLesser(state, where);
     if (!next) return;
     state = next;
     if (ephemeral) return;

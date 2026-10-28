@@ -21,7 +21,7 @@ import { ACT3, BANDS_ACT3, MEETINGS, type Choice, type Meeting, type MeetingId }
 import { ACT4, BANDS_ACT4, DIALECTS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
 import { ACT5, BANDS_ACT5, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
 import { act, actAt, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
-import { LINEAGE, type TraitId } from '../content/lineage.ts';
+import { LINEAGE, SEAMOUNTS, type Seamount, type TraitId } from '../content/lineage.ts';
 import { FEAST } from '../content/events.ts';
 import type { Band, Currency, UpgradeDef, UpgradeId } from '../content/types.ts';
 import { UPGRADES } from '../content/upgrades.ts';
@@ -81,17 +81,24 @@ export function jobGain(s: GameState, job: 'feed' | 'light'): number {
   return base > 0 ? more / base - 1 : 0;
 }
 
-/** The Rasp dial setting at which the reef holds the most calcite. */
+/**
+ * The best Rasp dial setting: the most calcite per second once the silt has settled (more Rasp
+ * clear more silt), among the settings whose hold still covers the next band twice over (each Rasp
+ * also eats stone, which lowers what the reef can hold). If none does, the one that holds most.
+ */
 export function bestRasp(s: GameState): number {
   const keep = s.rasp;
-  let best = 0, bestHold = -Infinity;
+  const need = 2 * cost(s, 'skeleton');
+  let best = 0, bestRate = -Infinity, mostHeld = 0, mostHold = -Infinity;
   for (let n = 0; n <= raspMax(s); n++) {
     s.rasp = n;
-    const h = calciteHold(s);
-    if (h > bestHold) { bestHold = h; best = n; }
+    const rate = steadyCalciteRate(s);
+    const hold = rate / rates(s).calciteK;
+    if (hold > mostHold) { mostHold = hold; mostHeld = n; }
+    if (hold >= need && rate > bestRate) { bestRate = rate; best = n; }
   }
   s.rasp = keep;
-  return best;
+  return bestRate > -Infinity ? best : mostHeld;
 }
 
 // ---------- Milestones ----------
@@ -136,8 +143,14 @@ export function raspMax(s: GameState): number {
   return s.levels.grounds * ACT3.raspPerGround + (s.truce.terms === 'a' ? 4 : s.truce.terms === 'b' ? 2 : 0);
 }
 
+/** This run's seamount and how it bends the numbers. */
+export function seamount(s: GameState): Seamount {
+  return SEAMOUNTS.find((m) => m.id === s.seamount) ?? SEAMOUNTS[0]!;
+}
+
 export function rates(s: GameState): Rates {
   const lv = s.levels;
+  const sm = seamount(s);
   const vent = lv.vent;
   const lightGlow = ACT2.lightGlow * (has(s, 'shoal-pact') ? 2 : 1);
   const target = heightForBands(lv.skeleton);
@@ -153,7 +166,7 @@ export function rates(s: GameState): Rates {
     murmurP: ACT2.scoutRate * s.jobs.scout * (has(s, 'beaked') ? 1.5 : 1),
     murmurK: ACT2.murmurFade,
     siltP: onShelf
-      ? ACT3.siltFall * (1 + (target - ACT3.from) / ACT3.siltGrowthPer) * (s.truce.wall === 'a' ? 0.6 : 1)
+      ? ACT3.siltFall * (1 + (target - ACT3.from) / ACT3.siltGrowthPer) * (s.truce.wall === 'a' ? 0.6 : 1) * sm.silt
       : 0,
     siltK: ACT3.naturalSweep + ACT3.flowSweep * lv.sandbar + LINEAGE.glassSweep * trait(s, 'glass-gardeners') + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
     sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1),
@@ -167,15 +180,15 @@ export function rates(s: GameState): Rates {
       : 0,
     spawnK: ACT5.spawnFade,
     calciteBase:
-      (ACT1.trickle + ACT1.polypRate * lv.polyp * milestoneMult('polyp', lv.polyp) * (has(s, 'city') ? 1.5 : 1)) *
-      ACT1.ventBoost ** vent *
+      (ACT1.trickle + ACT1.polypRate * sm.polyp * lv.polyp * milestoneMult('polyp', lv.polyp) * (has(s, 'city') ? 1.5 : 1)) *
+      (ACT1.ventBoost * sm.ventBoost) ** vent *
       (has(s, 'inside-the-wall') ? 2 : 1) *
       (s.truce.wall === 'b' ? 1.25 : 1) *
       ACT3.sandbarCalcite ** lv.sandbar *
       (speaks(s, 'massive') ? 1.5 : 1) *
       1.5 ** trait(s, 'deep-memory'),
     calciteK:
-      ACT1.dissolve * ACT1.latticeFactor ** lv.lattice * ACT1.ventAcid ** vent *
+      ACT1.dissolve * sm.dissolve * ACT1.latticeFactor ** lv.lattice * (ACT1.ventAcid * sm.ventAcid) ** vent *
       (has(s, 'lattice-songs') ? 0.7 : 1) * (speaks(s, 'massive') ? 0.5 : 1) +
       (speaks(s, 'mucus') ? 0 : ACT3.raspEat * rasp * (s.truce.terms === 'b' ? ACT3.politeEat : 1)),
     lureMax: ACT1.lureMax + ACT1.lureMaxPerPattern * lv.lure + (has(s, 'fear') ? 1 : 0) + (speaks(s, 'fluorescent') ? 2 : 0),
@@ -193,7 +206,7 @@ export function rates(s: GameState): Rates {
 const MAX_BANDS = 400;
 /** Fixed band stride for each act after the second (index = act number). */
 const STRIDE: Record<number, number> = { 3: 30, 4: 6, 5: 1 };
-const COST_GROWTH: Record<number, number> = { 1: 1.55, 2: 1.155, 3: 1.2, 4: 1.135, 5: 1.028 };
+const COST_GROWTH: Record<number, number> = { 1: 1.55, 2: 1.155, 3: 1.24, 4: 1.16, 5: 1.035 };
 
 const BAND_TOP = new Float64Array(MAX_BANDS + 1);
 const BAND_COST = new Float64Array(MAX_BANDS + 1);
@@ -501,7 +514,7 @@ export function nextReading(s: GameState) {
 
 /** Murmurs a Reading costs (halved by the Kept readings trait). */
 export function readingCost(s: GameState, r: { cost: number }): number {
-  return r.cost * (trait(s, 'kept-readings') ? 0.5 : 1);
+  return r.cost * (trait(s, 'kept-readings') ? 0.5 : 1) * seamount(s).readings;
 }
 
 /** Murmurs it takes to learn a meeting's words. */

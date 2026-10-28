@@ -157,3 +157,26 @@ test('old habits: buys the cheaper of polyp and glimmerseed only when it is chea
   s.calcite = cost(s, 'polyp') * 5;
   assert.equal(habitPurchase(s), null, 'too dear: more than a tenth of the calcite');
 });
+
+test('seamounts: a spawning settles where it was sent, and the place bends the numbers', async () => {
+  const { spawnLesser } = await import('../../src/game/sim/prestige.ts');
+  const { rates, readingCost } = await import('../../src/game/sim/economy.ts');
+  const { READINGS } = await import('../../src/game/content/act2.ts');
+  const s = newGame(4);
+  s.bands.push('eyes');
+  s.height = 200;
+  const cold = spawnLesser(s, 'cold')!;
+  const plain = spawnLesser(s)!;
+  assert.equal(cold.seamount, 'cold');
+  assert.equal(plain.seamount, 'plain');
+  assert.ok(rates(cold).calciteK < rates(plain).calciteK);
+  const crowded = spawnLesser(s, 'crowded')!;
+  assert.ok(readingCost(crowded, READINGS[3]!) < readingCost(plain, READINGS[3]!));
+  // Offline stays exact on any seamount.
+  const { advance } = await import('../../src/game/sim/economy.ts');
+  const a = structuredClone(cold), b = structuredClone(cold);
+  a.levels.polyp = 20; b.levels.polyp = 20;
+  advance(a, 600);
+  for (let i = 0; i < 600 * 30; i++) advance(b, 1 / 30);
+  assert.ok(Math.abs(a.calcite - b.calcite) / Math.max(1, a.calcite) < 1e-6);
+});

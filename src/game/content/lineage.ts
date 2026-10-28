@@ -32,6 +32,26 @@ export type Trait = {
   kind?: 'way';
 };
 
+/**
+ * Where a lesser spawning settles. Each seamount bends the economy one way; the plain one is the
+ * first reef's. Multipliers are read by sim/economy.ts.
+ */
+export type SeamountId = 'plain' | 'warm' | 'cold' | 'crowded';
+export type Seamount = {
+  id: SeamountId; name: string; text: string; effect: string;
+  ventBoost: number; ventAcid: number; dissolve: number; polyp: number; readings: number; silt: number;
+};
+export const SEAMOUNTS: readonly Seamount[] = [
+  { id: 'plain', name: 'A plain seamount', text: 'Bare rock in the dark, like the first.', effect: 'as before',
+    ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 1, readings: 1, silt: 1 },
+  { id: 'warm', name: 'A warm seamount', text: 'The vent here runs hot and sour.', effect: 'each vent tier ×1.07 stronger, its acid ×1.3 sharper',
+    ventBoost: 1.07, ventAcid: 1.3, dissolve: 1, polyp: 1, readings: 1, silt: 1 },
+  { id: 'cold', name: 'A cold seamount', text: 'Slow, heavy water that hardly takes anything back.', effect: 'calcite dissolves ×0.5, polyps feed ×0.92',
+    ventBoost: 1, ventAcid: 1, dissolve: 0.5, polyp: 0.92, readings: 1, silt: 1 },
+  { id: 'crowded', name: 'A crowded seamount', text: 'Old reefs all around, buried and talking.', effect: 'Readings cost ×0.6, silt falls ×1.4',
+    ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 1, readings: 0.6, silt: 1.4 },
+];
+
 export const TRAIT_GROUPS = {
   gift: { title: 'Gifts', text: 'What your children are born stronger at.' },
   way: { title: 'Ways', text: 'What your children know to do differently.' },
