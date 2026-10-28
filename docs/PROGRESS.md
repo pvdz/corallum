@@ -102,3 +102,4 @@ date, what landed, what is half-done, what's next.
 - Vent redrawn: knobbly sulphide spires (a side spire per tier), rust and sulphur crust flecks, tube worms crowding the foot (more per tier), heat glows at each mouth; plume uses cached glow sprites instead of 46 gradients a frame.
 - Endings remembered across runs: meta.endings and meta.carriedEver; the memory choice marks memories
   "carried before", and "Your reef" shows "Endings: n · k of 12 memories carried so far".
+- Whispers: early hints (two polyps, first band, first glimmerseed) only while still news; none after the spawn is released (one spoke over the spawning).

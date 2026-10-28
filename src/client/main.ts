@@ -363,7 +363,8 @@ whisper.id = 'whisper';
 ui.append(whisper);
 let lastWhisper = -Infinity;
 function whisperCheck(now: number): void {
-  if (frozenT !== null || now - lastWhisper < 80_000 || !reader()) return;
+  // Quiet once the spawn has gone: nothing should talk over the ending.
+  if (frozenT !== null || now - lastWhisper < 80_000 || !reader() || ended(state)) return;
   const w = WHISPERS.find((x) => !state.meta.seen.includes(`w:${x.id}`) && x.when(state));
   if (!w) return;
   state.meta.seen.push(`w:${w.id}`);

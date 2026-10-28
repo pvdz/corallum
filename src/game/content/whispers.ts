@@ -1,5 +1,6 @@
 // Ossel's whispers: short lines that surface over the water when something is worth noticing.
-// Each is said once per lineage. Conditions are pure functions of the state.
+// Each is said once per lineage, and only while it is still news (early hints are bounded to the
+// early game). Conditions are pure functions of the state.
 
 import type { GameState } from '../sim/state.ts';
 import {
@@ -10,15 +11,15 @@ export type Whisper = { id: string; when: (s: GameState) => boolean; text: strin
 
 export const WHISPERS: readonly Whisper[] = [
   {
-    id: 'two', when: (s) => s.levels.polyp >= 1,
+    id: 'two', when: (s) => s.levels.polyp >= 1 && s.levels.polyp <= 3,
     text: 'Good. Now there are two of you eating.',
   },
   {
-    id: 'band', when: (s) => s.levels.skeleton >= 1,
+    id: 'band', when: (s) => s.levels.skeleton >= 1 && s.levels.skeleton <= 3,
     text: 'Feel it harden? That is a day you will not forget.',
   },
   {
-    id: 'lure', when: (s) => s.levels.symbiont >= 1,
+    id: 'lure', when: (s) => s.levels.symbiont >= 1 && s.levels.symbiont <= 4,
     text: 'Light draws food. The brighter you burn, the more drifts in.',
   },
   {
