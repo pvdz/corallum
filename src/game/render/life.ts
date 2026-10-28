@@ -259,57 +259,88 @@ export function createLife(seed: number) {
   }
 
   /** The vent chimney: grows a little with each tier, plume shimmers upward. */
+  /** One mineral spire: a knobbly column of sulphide crust, narrowing to a smoking mouth. */
+  function drawSpire(ctx: CanvasRenderingContext2D, x: number, base: number, hgt: number, wid: number, k: number, s: number): void {
+    const n = 16;
+    const knob = (f: number, side: number) =>
+      wid * (1 - f * 0.62) * (1 + 0.16 * Math.sin(f * 17 + k * 3 + side) + 0.08 * Math.sin(f * 41 + k + side * 2));
+    ctx.beginPath();
+    ctx.moveTo(x - knob(0, 0), base);
+    for (let i = 1; i <= n; i++) {
+      const f = i / n;
+      ctx.lineTo(x - knob(f, 0) + Math.sin(f * 5 + k) * 2 * s, base - f * hgt);
+    }
+    for (let i = n; i >= 0; i--) {
+      const f = i / n;
+      ctx.lineTo(x + knob(f, 1.3) + Math.sin(f * 5 + k) * 2 * s, base - f * hgt);
+    }
+    ctx.closePath();
+    const g = ctx.createLinearGradient(x - wid, 0, x + wid, 0);
+    g.addColorStop(0, '#1a1219');
+    g.addColorStop(0.55, '#3a2a2e');
+    g.addColorStop(1, '#171017');
+    ctx.fillStyle = g;
+    ctx.fill();
+    // Mineral crust: rusty and sulphur-pale flecks clinging to the knobs.
+    const r = mulberry32(seed ^ (0x5eed + k));
+    for (let i = 0; i < 26; i++) {
+      const f = r() * 0.95;
+      const side = r() < 0.5 ? -1 : 1;
+      const px = x + side * knob(f, side > 0 ? 1.3 : 0) * range(r, 0.2, 0.85);
+      const py = base - f * hgt;
+      ctx.fillStyle = r() < 0.7 ? `rgba(200,125,80,${range(r, 0.2, 0.45)})` : `rgba(225,215,150,${range(r, 0.18, 0.35)})`;
+      ctx.beginPath();
+      ctx.ellipse(px, py, range(r, 1.2, 3.2) * s, range(r, 0.8, 2) * s, r() * 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  /** Tube worms crowding the warm water at the vent's foot: white stalks with red plumes. */
+  function drawTubeWorms(ctx: CanvasRenderingContext2D, x: number, base: number, count: number, s: number, t: number): void {
+    for (let i = 0; i < count; i++) {
+      const off = ((i * 0.618) % 1 - 0.5) * 70 * s;
+      const len = (14 + ((i * 7) % 5) * 4) * s;
+      const sway = Math.sin(t * 0.9 + i * 1.7) * 2.5 * s;
+      const bx = x + off, tx = bx + sway + off * 0.08, ty = base - len;
+      ctx.strokeStyle = 'rgba(225,220,205,0.85)';
+      ctx.lineWidth = 2.2 * s;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(bx, base + 2 * s);
+      ctx.quadraticCurveTo(bx + sway * 0.3, base - len * 0.5, tx, ty);
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(220,40,60,0.95)';
+      ctx.beginPath();
+      ctx.ellipse(tx, ty - 2 * s, 2.6 * s, 4.2 * s, sway * 0.05, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
   function drawVent(ctx: CanvasRenderingContext2D, st: Stage, tier: number, t: number): { x: number; y: number } {
     const s = st.s;
     const x = st.cx + st.w * 0.3;
     const base = st.baseY + 6 * s;
     const hgt = (55 + tier * 22) * s;
     const top = base - hgt;
-    const r = mulberry32(seed ^ 0x5eed);
-    ctx.fillStyle = '#120c14';
-    ctx.beginPath();
-    ctx.moveTo(x - 22 * s, base);
-    for (let i = 0; i <= 10; i++) {
-      const f = i / 10;
-      ctx.lineTo(x - (22 - f * 14) * s + range(r, -2, 2) * s, base - f * hgt);
-    }
-    for (let i = 10; i >= 0; i--) {
-      const f = i / 10;
-      ctx.lineTo(x + (22 - f * 15) * s + range(r, -2, 2) * s, base - f * hgt);
-    }
-    ctx.closePath();
-    ctx.fill();
-    // Mineral crust highlights.
-    ctx.strokeStyle = 'rgba(200,150,110,0.18)';
-    ctx.lineWidth = 1.2 * s;
-    for (let i = 1; i < 6; i++) {
-      const yy = base - (i / 6) * hgt;
-      const half = (22 - (i / 6) * 14) * s;
-      ctx.beginPath();
-      ctx.moveTo(x - half, yy + 2 * s);
-      ctx.quadraticCurveTo(x, yy - 3 * s, x + half, yy + 1 * s);
-      ctx.stroke();
-    }
+    // Each tier raises the main spire and grows another beside it.
+    const spires: [number, number, number][] = [[0, hgt, 26 * s]];
+    if (tier >= 2) spires.push([-30 * s, hgt * 0.55, 16 * s]);
+    if (tier >= 3) spires.push([28 * s, hgt * 0.4, 14 * s]);
+    for (let i = spires.length - 1; i >= 0; i--) drawSpire(ctx, x + spires[i]![0], base, spires[i]![1], spires[i]![2], i, s);
+    drawTubeWorms(ctx, x, base, 5 + tier * 3, s, t);
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    const heat = ctx.createRadialGradient(x, top, 0, x, top, 30 * s);
-    heat.addColorStop(0, `rgba(255,140,70,${0.35 + 0.1 * Math.sin(t * 2.3)})`);
-    heat.addColorStop(1, 'rgba(255,90,40,0)');
-    ctx.fillStyle = heat;
-    ctx.fillRect(x - 30 * s, top - 30 * s, 60 * s, 60 * s);
+    for (const [dx, h] of spires) {
+      const flick = 0.35 + 0.1 * Math.sin(t * 2.3 + dx);
+      glow(ctx, x + dx, base - h, (h === hgt ? 30 : 18) * s, '255,140,70', flick);
+    }
     // Plume: rising, spreading, fading motes of warm cloudy water.
     const n = 46;
     for (let i = 0; i < n; i++) {
       const u = (t * 0.07 + i / n) % 1;
       const px = x + Math.sin(t * 0.8 + i * 2.1) * (4 + u * 26) * s + u * 18 * s;
       const py = top - u * st.h * 0.42;
-      const pr = (6 + u * 26) * s;
-      const a = (1 - u) * 0.10;
-      const pg = ctx.createRadialGradient(px, py, 0, px, py, pr);
-      pg.addColorStop(0, `rgba(170,170,200,${a})`);
-      pg.addColorStop(1, 'rgba(170,170,200,0)');
-      ctx.fillStyle = pg;
-      ctx.fillRect(px - pr, py - pr, pr * 2, pr * 2);
+      glow(ctx, px, py, (6 + u * 26) * s, '170,170,200', (1 - u) * 0.16);
     }
     ctx.restore();
     return { x, y: top };

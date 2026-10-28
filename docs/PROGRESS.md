@@ -99,3 +99,4 @@ date, what landed, what is half-done, what's next.
   direction), drawn behind the larvae and shoals.
 - Phone landscape: each stock is two lines (name and value share one), so the stock grid takes less of the short panel.
 - Ossel's wall on the Silt Floor redrawn: a slumped banded mound with smooth swells, broken branch stumps, bands that follow its shape, and Ossel as one pale breathing polyp on it (was a sawtooth block).
+- Vent redrawn: knobbly sulphide spires (a side spire per tier), rust and sulphur crust flecks, tube worms crowding the foot (more per tier), heat glows at each mouth; plume uses cached glow sprites instead of 46 gradients a frame.
