@@ -156,3 +156,4 @@ date, what landed, what is half-done, what's next.
 - Away summary names the bands laid while you were gone (“It laid down a band worth reading: …”).
 - Away summary says when the stores filled ("after about 1h 13m"), so the value of a denser lattice is visible.
 - Twilight Shelf: a manta glides through the light shafts every ~4 min.
+- Reef tab: "Save to a file" downloads corallum-YYYY-MM-DD.txt and "Load save from a file…" reads one back (easier than the clipboard on phones; also clears the backup nudge). New browser test test/e2e/saves.ts.

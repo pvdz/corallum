@@ -357,6 +357,25 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     }
     setTimeout(() => (exportBtn.textContent = 'Copy save to clipboard'), 2000);
   });
+  // A file is easier to keep than a clipboard on a phone.
+  const fileBtn = button('plain', 'Save to a file', () => {
+    const text = hooks.exportSave();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
+    a.download = `corallum-${new Date().toISOString().slice(0, 10)}.txt`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  });
+  const fileInput = el('input') as HTMLInputElement;
+  fileInput.type = 'file';
+  fileInput.accept = '.txt,text/plain';
+  fileInput.hidden = true;
+  fileInput.addEventListener('change', async () => {
+    const f = fileInput.files?.[0];
+    if (f && !hooks.importSave(await f.text())) window.alert('That save could not be read.');
+    fileInput.value = '';
+  });
+  const loadFileBtn = button('plain', 'Load save from a file…', () => fileInput.click());
   const importBtn = button('plain', 'Load save from text…', () => {
     const text = window.prompt('Paste a save:');
     if (text && !hooks.importSave(text)) window.alert('That save could not be read.');
@@ -387,7 +406,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   habitToggle.append(habitBox, el('span', '', 'Old habits: bud polyps and host glimmerseed on their own when they are cheap'));
   habitToggle.hidden = true;
   reefPage.append(
-    el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, importBtn, glowToggle, calmToggle, habitToggle, resetBtn,
+    el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn, glowToggle, calmToggle, habitToggle, resetBtn,
     el('p', 'hint', 'Hold a buy button to keep buying. Keys: Space sweeps · F catches a falling feast · P buds a polyp · B lays a band · G hosts glimmerseed.'),
   );
 

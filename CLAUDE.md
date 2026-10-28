@@ -26,6 +26,7 @@ These were written by the agent, not the user; fix them when wrong.
 - `node --no-warnings test/e2e/prestige.ts` — a lesser spawning from an injected save (harness `open(vp, q, { save })`)
 - `node --no-warnings test/e2e/finale.ts` — full moon, release, three memories, ending (SHOTS=<dir> saves screens)
 - `node --no-warnings test/e2e/feast.ts` — tap a falling feast, catch the next with F (`corallum.feast` gives its position)
+- `node --no-warnings test/e2e/saves.ts` — save to a file / load save from a file
 - `node tools/bot.ts [--truce aab] [--dialects form,craft,spawn] [--to <m>]` — headless time-compressed
   playthrough of the whole game; prints milestone times. Browser: `?bot=<sec>&truce=..&dialects=..`
 - `node --no-warnings tools/screenshot.ts [--t <sec>] --shot <tag>=<url params> ...`
