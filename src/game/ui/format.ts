@@ -13,8 +13,9 @@ export function num(x: number): string {
 }
 
 export function rate(x: number): string {
-  const sign = x < 0 ? '−' : '+';
   const a = Math.abs(x);
+  // Rates that round to zero show as +0.00, never −0.00.
+  const sign = x < 0 && a >= 0.005 ? '−' : '+';
   return `${sign}${a < 1 ? a.toFixed(2) : num(a)}/s`;
 }
 

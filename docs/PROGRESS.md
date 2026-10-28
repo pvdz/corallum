@@ -75,3 +75,5 @@ date, what landed, what is half-done, what's next.
 - Trait "Glass gardeners" (12 lineage): glass shrimp clear silt like six Rasp (siltK +0.18) without
   eating calcite. Opens a no-Rasp route through the Twilight Shelf (hold at 0 Rasp beats the best
   dial without the trait), at the cost of the Rasp's sand. Test in prestige.test.ts.
+- Panel: Murmurs leaves the stock list once every Reading and truce word is paid for; rates that
+  round to zero print +0.00 (no "−0.00/s"); test/sim/format.test.ts.

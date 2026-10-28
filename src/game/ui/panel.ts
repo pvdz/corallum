@@ -445,7 +445,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       plankton.row.hidden = !(s.jobs.feed > 0 || s.plankton > 0.05);
       plankton.value.textContent = num(s.plankton);
       plankton.sub.textContent = `${rate(planktonNet(s, r))} · ×${feeding(s.plankton).toFixed(2)} calcite`;
-      murmurs.row.hidden = !(s.jobs.scout > 0 || s.murmurs > 0.05);
+      // Murmurs pay for Readings and the truce's words; once both are done the stock leaves the panel.
+      const murmursWanted = s.readings.length < READINGS.length || MEETINGS.some((m) => !s.truce[m.id]);
+      murmurs.row.hidden = !(s.jobs.scout > 0 || (s.murmurs > 0.05 && murmursWanted));
       murmurs.value.textContent = num(s.murmurs);
       murmurs.sub.textContent = `${rate(murmurNet(s, r))} · holds ~${num(murmurHold(s, r))}`;
       silt.row.hidden = !(r.siltP > 0 || s.silt > 0.5);
