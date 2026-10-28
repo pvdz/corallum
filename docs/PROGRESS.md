@@ -104,3 +104,4 @@ date, what landed, what is half-done, what's next.
   "carried before", and "Your reef" shows "Endings: n · k of 12 memories carried so far".
 - Whispers: early hints (two polyps, first band, first glimmerseed) only while still news; none after the spawn is released (one spoke over the spawning).
 - Upgrade cards: polyp and glimmerseed show what one more really adds after every multiplier (+327k calcite/s late, not the base +0.3).
+- Hold a buy button to keep buying (after 450 ms, every 110 ms while affordable; the release does not add one). In the play test.

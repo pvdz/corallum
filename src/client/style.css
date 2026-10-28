@@ -99,6 +99,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .effect { margin: 0 0 8px; font-size: 13px; color: #cfe6ff; }
 .card footer { display: flex; align-items: center; gap: 10px; }
 .buy {
+  touch-action: manipulation; -webkit-touch-callout: none; user-select: none;
   font: inherit; font-size: 13px; padding: 7px 14px; border-radius: 999px; cursor: pointer; min-width: 120px;
   border: 1px solid rgba(255, 194, 176, 0.5); color: var(--calcite); background: rgba(255, 143, 122, 0.10);
   transition: background 0.2s, box-shadow 0.2s, transform 0.1s; font-variant-numeric: tabular-nums;

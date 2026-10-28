@@ -1,4 +1,5 @@
-// Interaction test in a real browser: opening band, sweeping, buying, saving, offline catch-up.
+// Interaction test in a real browser: opening band, sweeping, buying (and hold-to-buy), saving,
+// offline catch-up.
 // Run with: node --no-warnings test/e2e/play.ts
 
 import assert from 'node:assert/strict';
@@ -23,10 +24,20 @@ await withGame(async (open) => {
     await polyp.locator('button.buy').click();
     await polyp.locator('.level', { hasText: '×1' }).waitFor({ timeout: 3000 });
 
+    // Press and hold keeps buying; letting go does not buy one more.
+    await page.evaluate(() => { window.corallum!.state.calcite = 1e6; });
+    const btn = (await polyp.locator('button.buy').boundingBox())!;
+    await page.mouse.move(btn.x + 10, btn.y + 10);
+    await page.mouse.down();
+    await page.waitForTimeout(1000);
+    await page.mouse.up();
+    const held = await page.evaluate(() => window.corallum!.state.levels.polyp);
+    assert.ok(held >= 4, `holding bought ${held - 1}`);
+
     // Saved, and survives a reload.
     await page.evaluate(() => window.dispatchEvent(new Event('pagehide')));
     await page.reload();
-    await page.waitForSelector('.card >> text=×1');
+    await page.waitForSelector(`.card >> text=×${held}`);
 
     // An hour away: rewrite savedAt and reload; the away summary appears.
     await page.evaluate(() => {
