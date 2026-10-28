@@ -95,3 +95,5 @@ date, what landed, what is half-done, what's next.
   seeded moment; tap it or press F for 90 s of calcite; motes stream to the crown, a rising chime
   plays, Ossel whispers about the first one. Active only: offline and the bot ignore it.
   Tests: test/sim/feast.test.ts, test/e2e/feast.ts (`corallum.feast` gives its screen position).
+- Sunlit Crown: a whale crosses far off in the haze every 3.5 min (80 s crossing, alternating
+  direction), drawn behind the larvae and shoals.

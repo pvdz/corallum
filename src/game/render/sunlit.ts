@@ -226,6 +226,47 @@ export function createSunlitScene(seed: number): Scene {
     }
   }
 
+  /** Now and then a whale crosses far off in the haze: a long soft shadow, flukes beating slowly. */
+  function drawWhale(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 210, crossing = 80;
+    const u = (t % period) / crossing;
+    if (u >= 1) return;
+    const lap = Math.floor(t / period);
+    const dir = lap % 2 ? -1 : 1;
+    const s = Math.min(focus.w, focus.h) / 700 * 1.6;
+    const x = focus.x + focus.w * (dir > 0 ? -0.25 + u * 1.5 : 1.25 - u * 1.5);
+    const y = focus.y + focus.h * (0.2 + 0.06 * (lap % 3)) + Math.sin(t * 0.15) * 6 * s;
+    const fade = Math.min(1, u * 8, (1 - u) * 8);
+    const beat = Math.sin(t * 0.9);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(dir, 1);
+    ctx.globalAlpha = 0.28 * fade;
+    ctx.fillStyle = '#1f5b7e';
+    // Body: blunt head, long taper to the tail stock.
+    ctx.beginPath();
+    ctx.moveTo(90 * s, 0);
+    ctx.bezierCurveTo(90 * s, -18 * s, 40 * s, -24 * s, -10 * s, -18 * s);
+    ctx.bezierCurveTo(-50 * s, -12 * s, -80 * s, -4 * s, -100 * s, beat * 3 * s);
+    ctx.bezierCurveTo(-80 * s, 8 * s, -40 * s, 18 * s, 0, 20 * s);
+    ctx.bezierCurveTo(50 * s, 22 * s, 90 * s, 14 * s, 90 * s, 0);
+    ctx.fill();
+    // Flukes.
+    ctx.beginPath();
+    ctx.moveTo(-98 * s, beat * 3 * s);
+    ctx.quadraticCurveTo(-112 * s, (-14 + beat * 6) * s, -128 * s, (-16 + beat * 10) * s);
+    ctx.quadraticCurveTo(-116 * s, (beat * 6) * s, -128 * s, (16 + beat * 10) * s);
+    ctx.quadraticCurveTo(-112 * s, (14 + beat * 6) * s, -98 * s, beat * 3 * s);
+    ctx.fill();
+    // Long pectoral fin.
+    ctx.beginPath();
+    ctx.moveTo(40 * s, 12 * s);
+    ctx.quadraticCurveTo(20 * s, 40 * s, -6 * s, (46 + beat * 4) * s);
+    ctx.quadraticCurveTo(14 * s, 30 * s, 24 * s, 14 * s);
+    ctx.fill();
+    ctx.restore();
+  }
+
   function drawLarvae(ctx: CanvasRenderingContext2D, t: number): void {
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
@@ -254,6 +295,7 @@ export function createSunlitScene(seed: number): Scene {
       const reef = reefFor(form);
       const L = layout(v, form);
       drawWater(ctx, t, p);
+      drawWhale(ctx, t);
       drawLarvae(ctx, t);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#5d7d96');
       drawFloor(ctx, t);
