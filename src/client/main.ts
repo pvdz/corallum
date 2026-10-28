@@ -23,7 +23,7 @@ import { createTaps } from '../game/render/taps.ts';
 import { drawFeast, feastPos, feastReach } from '../game/render/feast.ts';
 import type { Focus, ReefView, Scene } from '../game/render/scene.ts';
 import { runBot } from '../game/sim/bot.ts';
-import { advance, assign, breach, buy, currentFeast, feast, greatMoon, calciteHold, choose, ended, moonFull, moonPhase, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, currentFeast, feast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { metres, num } from '../game/ui/format.ts';
@@ -363,7 +363,7 @@ function view(): ReefView {
     spawnMode: state.dialects.spawn,
     moonPhase: moonPhase(state.t),
     moonFull: moonFull(state.t),
-    greatMoon: greatMoon(state.t),
+    greatMoon: greatTide(state),
     spawnLevel: state.spawn / spawnTarget(state),
     sinceBreach: ended(state) ? state.t - state.breachedAt : -1,
   };

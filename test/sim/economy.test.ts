@@ -364,7 +364,11 @@ test('great tide moons: every third full moon carries four memories', async () =
   const { greatMoon, carryAt, untilGreatMoon, moonFull } = await import('../../src/game/sim/economy.ts');
   const P = 1200;
   const fulls = [0, 1, 2, 3, 4, 5].map((k) => k * P + P / 2);
-  assert.deepEqual(fulls.map(carryAt), [3, 3, 4, 3, 3, 4]);
+  const plain = newGame(1);
+  assert.deepEqual(fulls.map((t) => carryAt(plain, t)), [3, 3, 4, 3, 3, 4]);
+  // A Tide-reader lineage rides a great tide every full moon.
+  plain.meta.traits['tide-reader'] = 1;
+  assert.deepEqual(fulls.map((t) => carryAt(plain, t)), [4, 4, 4, 4, 4, 4]);
   for (const t of [0, 700, 1500, 2400, 2950, 3700]) {
     const w = untilGreatMoon(t);
     assert.ok(greatMoon(t + w) && moonFull(t + w), `from ${t}: ${w}`);

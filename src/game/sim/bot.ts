@@ -40,7 +40,7 @@ export function botDecide(
   const m = nextMeeting(s);
   if (m && choose(s, m.id, truce[m.id])) bought.push(`truce:${m.id}=${truce[m.id]}`);
   if (canBreach(s)) {
-    const carry = memoriesAvailable(s).slice(0, carryAt(s.t)).map((m) => m.id);
+    const carry = memoriesAvailable(s).slice(0, carryAt(s)).map((m) => m.id);
     if (breach(s, carry)) bought.push(`breach:${carry.join(',')}`);
   }
   const tier = nextTier(s);

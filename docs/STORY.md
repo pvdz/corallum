@@ -95,4 +95,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Great tide moons (every third full moon lifts the spawn higher: four memories) | real biology (spring tides, lunar spawning); no game known with this beat | OK |
 | Seagrass meadows sown in the Rasp's sand | real ecology (parrotfish sand, seagrass) | OK |
 | Band "Too much light" (polyps closing against noon light) | real biology (photo-stress) | OK |
+| Trait "Tide-reader" | generic phrase | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

@@ -147,3 +147,4 @@ date, what landed, what is half-done, what's next.
 - Readings no longer arrive five at once: costs spread so they come every 5–15 min through Act II. The finale browser test now builds its own surfaced reef with the bot instead of a hard-coded ?bot time.
 - Midnight Water: the seamount's dark flank along the bottom anchors the reef early on, sinking away as it climbs.
 - Lineage tab: traits grouped as Gifts (stronger numbers) and Ways (new routes: Lamps in the snow, Rasp kin, Glass gardeners, Old habits).
+- Way trait "Tide-reader" (16 lineage): every full moon is a great tide, so the spawn always carries four memories (greatTide/carryAt take the state).

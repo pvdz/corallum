@@ -588,9 +588,14 @@ export function greatMoon(t: number): boolean {
   return Math.floor(t / ACT5.moonPeriod) % ACT5.greatEvery === ACT5.greatEvery - 1;
 }
 
+/** Whether a release at time t rides a great tide (always, for a Tide-reader lineage). */
+export function greatTide(s: GameState, t = s.t): boolean {
+  return trait(s, 'tide-reader') > 0 || greatMoon(t);
+}
+
 /** Memories a release at time t may carry. */
-export function carryAt(t: number): number {
-  return greatMoon(t) ? ACT5.greatCarry : ACT5.carry;
+export function carryAt(s: GameState, t = s.t): number {
+  return greatTide(s, t) ? ACT5.greatCarry : ACT5.carry;
 }
 
 /** Seconds until the next full moon that is a great tide (0 while one is full). */
@@ -643,7 +648,7 @@ export function canBreach(s: GameState): boolean {
 export function breach(s: GameState, memories: MemoryId[]): boolean {
   if (!canBreach(s)) return false;
   const unique = [...new Set(memories)];
-  if (unique.length !== carryAt(s.t)) return false;
+  if (unique.length !== carryAt(s)) return false;
   for (const id of unique) {
     const m = MEMORIES.find((x) => x.id === id);
     if (!m || !memoryAvailable(s, m)) return false;

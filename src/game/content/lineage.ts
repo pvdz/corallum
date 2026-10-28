@@ -18,7 +18,7 @@ export const LINEAGE = {
 
 export type TraitId =
   | 'deep-memory' | 'quick-budding' | 'old-bands' | 'remembered-shoals' | 'glimmer' | 'kept-readings' | 'settling'
-  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits';
+  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader';
 
 export type Trait = {
   id: TraitId;
@@ -92,6 +92,11 @@ export const TRAITS: readonly Trait[] = [
     id: 'old-habits', name: 'Old habits', effect: 'while you watch, the reef buds polyps and hosts glimmerseed itself when one costs under a tenth of its calcite',
     flavour: 'Some growing does not need deciding any more.',
     cost: 9, growth: 1, max: 1, kind: 'way',
+  },
+  {
+    id: 'tide-reader', name: 'Tide-reader', effect: 'every full moon is a great tide: the spawn always carries four memories',
+    flavour: 'They know the water will lift them. They do not wait for it.',
+    cost: 16, growth: 1, max: 1, kind: 'way',
   },
 ];
 
