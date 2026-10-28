@@ -190,7 +190,8 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     const hp = Math.min(1, L.top) * L.unit;
     const pulse = 0.75 + 0.25 * Math.sin(t * 1.3);
     const lit = 0.35 + 0.65 * v.glowLevel;
-    const gs = L.glowScale ?? 1;
+    // Each glimmerseed milestone makes the reef's own light a little stronger.
+    const gs = (L.glowScale ?? 1) * (1 + 0.15 * v.glowTier);
     const colours = L.polyp ?? ['#ff9d86', 'rgba(255,190,170,0.9)'];
 
     ctx.save();
@@ -219,7 +220,8 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     for (let k = nodes.length - 1; k >= 0; k--) {
       const i = nodes[k]!;
       const [x, y] = nodePx(L, i);
-      const ps = s * (L.polypScale ?? 1) * (k === 0 ? 1 : 0.42 + 0.25 * ((i * 0.618) % 1));
+      // Each polyp milestone fills the polyps out a little.
+      const ps = s * (L.polypScale ?? 1) * (1 + 0.06 * v.polypTier) * (k === 0 ? 1 : 0.42 + 0.25 * ((i * 0.618) % 1));
       const lean = k === 0 ? 0 : leanOf(i);
       drawPolyp(ctx, x, y, ps, t, lean, i * 0.37, flick, colours);
       const [ox, oy] = polypPose(x, y, ps, t, lean, i * 0.37);

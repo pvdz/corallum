@@ -327,6 +327,8 @@ function view(): ReefView {
   const r = rates(state);
   return {
     polyps: state.levels.polyp,
+    polypTier: MILESTONES.polyp.filter((m) => state.levels.polyp >= m.level).length,
+    glowTier: MILESTONES.symbiont.filter((m) => state.levels.symbiont >= m.level).length,
     symbionts: state.levels.symbiont,
     height: state.height,
     glowLevel: r.lureMax > 0 ? (lure(r, state.glow) - 1) / r.lureMax : 0,

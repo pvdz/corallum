@@ -112,3 +112,4 @@ date, what landed, what is half-done, what's next.
   named ("A thicket", "A beacon"…) with its own announcement over the water and a chime; cards
   show "+3.4 calcite/s · ×2 at 50". Rebalanced band cost curves to keep the bot at 8h28 (see
   ECONOMY.md); polite Rasp terms and Keep Ossel toned down to keep paths within ~1 h.
+- Milestones show on the reef: each polyp milestone fills the polyps out (+6%), each glimmerseed milestone strengthens the reef's light (+15%).

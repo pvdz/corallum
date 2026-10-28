@@ -7,6 +7,9 @@ import type { UpgradeId } from '../content/types.ts';
 /** What a scene needs from the game state. */
 export type ReefView = {
   polyps: number;
+  /** Milestones reached by polyps and by glimmerseed (fuller polyps, a brighter reef). */
+  polypTier: number;
+  glowTier: number;
   symbionts: number;
   /** Metres of reef up the seamount. */
   height: number;
