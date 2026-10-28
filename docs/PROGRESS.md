@@ -142,3 +142,4 @@ date, what landed, what is half-done, what's next.
 - Act IV: seagrass meadows, a sand sink (bloom ×1.15 each, up to 12), drawn as seagrass patches spreading on the sunlit sand. Retuned zones 4–5.
 - After the spawning: your children settle — tiny pink reefs appear one by one in the deep below the Breach, dozens within the hour (the epilogue garden).
 - Sound: the sunlit whale calls (two long sliding tones) as it sets off across the Crown.
+- Band "Too much light" (3815 m) splits the 30 min silence at the start of the Sunlit Crown; longest story gap is now ~29 min (before the surface).

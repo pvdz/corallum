@@ -98,6 +98,12 @@ export const DIALECTS: readonly Dialect[] = [
 
 export const BANDS_ACT4: readonly Band[] = [
   {
+    id: 'sunburn', metres: 3815, title: 'Too much light',
+    text: 'At noon the light is so strong it hurts. Your polyps close against it and open again at ' +
+      'dusk, and the glimmerseed sulks. Every reef up here has learned to live with it. You will ' +
+      'have to learn too: what to grow, and how, and for what.',
+  },
+  {
     id: 'form', metres: 3830, title: 'Shapes in the light',
     text: 'Other reefs are here: young ones, sunlit, every one a different shape. Antlers, domes, ' +
       'tables. They talk to each other in growth and colour. You realise you will have to choose ' +
