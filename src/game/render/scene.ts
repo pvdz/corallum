@@ -27,6 +27,8 @@ export type ReefView = {
   /** 0..1, how smothered the reef is (Act III). */
   siltLevel: number;
   sandBars: number;
+  /** Seagrass meadows sown on the sunlit sand. */
+  meadows: number;
   rasp: number;
   /** The truce choice about Ossel's wall. */
   wall: '' | 'a' | 'b';

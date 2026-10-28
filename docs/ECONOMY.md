@@ -57,3 +57,8 @@ Tuning note: band costs compound across zones (each zone continues from the last
 changing an early zone's growth moves every later zone too: Act I 1.55→1.45 took the whole game from
 8h08 to 5h08. Late Act I is a slower stretch (2–4 purchases/min for minutes 13–21, two story bands
 in it); accepted for now.
+
+## Seagrass meadows (Act IV sand sink)
+`meadow`: paid in sand (8000 × 1.3^n, max 12), bloom ×1.15 each. Sand used to pile up at its hold
+once sand bars outgrew it; now the Rasp dial matters in Act IV too (more grazers, more sand, less
+calcite held). Band growth for zones 4 and 5 retuned to 1.135 / 1.028; bot 8h08, paths 7h13–8h35.

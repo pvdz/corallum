@@ -158,7 +158,8 @@ export function rates(s: GameState): Rates {
     siltK: ACT3.naturalSweep + ACT3.flowSweep * lv.sandbar + LINEAGE.glassSweep * trait(s, 'glass-gardeners') + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
     sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1),
     sandK: ACT3.sandSettle,
-    bloomP: sunlight(s, target) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * (speaks(s, 'fluorescent') ? 1.5 : 1),
+    bloomP: sunlight(s, target) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * ACT4.meadowBloom ** lv.meadow *
+      (speaks(s, 'fluorescent') ? 1.5 : 1),
     bloomK: ACT4.bloomFade,
     spawnP: target >= ACT5.from
       ? lv.polyp * ACT5.spawnRate * ACT5.ripenSpawn ** lv.ripen * (speaks(s, 'broadcast') ? 2 : 1) *
@@ -192,7 +193,7 @@ export function rates(s: GameState): Rates {
 const MAX_BANDS = 400;
 /** Fixed band stride for each act after the second (index = act number). */
 const STRIDE: Record<number, number> = { 3: 30, 4: 6, 5: 1 };
-const COST_GROWTH: Record<number, number> = { 1: 1.55, 2: 1.16, 3: 1.2, 4: 1.11, 5: 1.021 };
+const COST_GROWTH: Record<number, number> = { 1: 1.55, 2: 1.16, 3: 1.2, 4: 1.135, 5: 1.028 };
 
 const BAND_TOP = new Float64Array(MAX_BANDS + 1);
 const BAND_COST = new Float64Array(MAX_BANDS + 1);

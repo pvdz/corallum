@@ -22,6 +22,7 @@ export function effectText(id: UpgradeId): string {
     case 'sandbar': return `more current: sweeps silt, calcite ×${ACT3.sandbarCalcite}`;
     case 'channel': return `plankton ×${ACT3.channelPlankton}`;
     case 'pigment': return `bloom ×${ACT4.pigmentBloom}`;
+    case 'meadow': return `bloom ×${ACT4.meadowBloom}`;
     case 'canopy': return `sunlight ×${ACT4.canopySun}`;
     case 'ripen': return `spawn ×${ACT5.ripenSpawn}`;
   }

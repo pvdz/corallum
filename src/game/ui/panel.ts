@@ -812,7 +812,7 @@ function repeatWhileHeld(btn: HTMLButtonElement, fn: () => void): { repeated: bo
   return state;
 }
 
-const GAIN_SHOWN = new Set<UpgradeId>(['lattice', 'lure', 'vent', 'sandbar', 'channel', 'pigment', 'canopy']);
+const GAIN_SHOWN = new Set<UpgradeId>(['lattice', 'lure', 'vent', 'sandbar', 'channel', 'pigment', 'canopy', 'meadow']);
 
 /** Names of traits the given lineage would buy, taking the cheapest step each time. */
 function affordableTraits(s: GameState, lineage: number): string[] {

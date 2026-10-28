@@ -153,6 +153,32 @@ export function createSunlitScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** Seagrass meadows sown on the sand flats: patches of blades swaying, one patch per meadow. */
+  function drawMeadows(ctx: CanvasRenderingContext2D, t: number, meadows: number): void {
+    if (meadows <= 0) return;
+    const s = scale();
+    const x0 = focus.x - focus.w * 0.1, span = focus.w * 1.2;
+    for (let m = 0; m < meadows; m++) {
+      // Patches alternate left and right of the reef, spreading outward.
+      const side = m % 2 ? 1 : -1;
+      const u = 0.5 + side * (0.17 + Math.floor(m / 2) * 0.055);
+      if (u < 0.02 || u > 0.98) continue;
+      for (let b = 0; b < 16; b++) {
+        const bu = u + ((b * 0.618) % 1 - 0.5) * 0.05;
+        const x = x0 + bu * span, y = floorY(bu) + 2 * s;
+        const len = (18 + ((b * 7) % 5) * 5) * s;
+        const bend = Math.sin(t * 0.8 + b * 0.9 + m) * 6 * s + 4 * s;
+        ctx.strokeStyle = b % 3 ? 'rgba(70,150,90,0.85)' : 'rgba(110,175,95,0.85)';
+        ctx.lineWidth = 2.2 * s;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.quadraticCurveTo(x + bend * 0.3, y - len * 0.6, x + bend, y - len);
+        ctx.stroke();
+      }
+    }
+  }
+
   /** Other young reefs on the sand, each in one of the three Form shapes. */
   function drawClumps(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
@@ -301,6 +327,7 @@ export function createSunlitScene(seed: number): Scene {
       drawLarvae(ctx, t);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#5d7d96');
       drawFloor(ctx, t);
+      drawMeadows(ctx, t, v.meadows);
       drawClumps(ctx, t);
       reef.draw(ctx, L, v, t);
       drawCraft(ctx, v.craft, reef, L, t, 1);

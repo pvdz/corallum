@@ -12,6 +12,8 @@ export const ACT4 = {
   bloomDiv: 150,
   pigmentBloom: 1.25,
   canopySun: 1.2,
+  /** Seagrass meadows on the sand flats: bloom × this per meadow (paid in sand, so the Rasp matter). */
+  meadowBloom: 1.15,
 } as const;
 
 export const UPGRADES_ACT4: readonly UpgradeDef[] = [
@@ -24,6 +26,11 @@ export const UPGRADES_ACT4: readonly UpgradeDef[] = [
     id: 'canopy', name: 'Spread the canopy',
     flavour: 'Lean every branch toward the light, the way the light leans toward you.',
     currency: 'bloom', baseCost: 400, growth: 2.4, maxLevel: Infinity, reveal: { band: 'colour' },
+  },
+  {
+    id: 'meadow', name: 'Sow a seagrass meadow',
+    flavour: 'The Rasp’s sand, spread in the light, and grass that feeds whatever lives in it.',
+    currency: 'sand', baseCost: 8000, growth: 1.3, maxLevel: 12, reveal: { band: 'colour' },
   },
 ];
 
