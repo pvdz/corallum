@@ -621,6 +621,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           c.btn.disabled = true;
           c.eta.textContent = '';
           c.root.classList.add('maxed');
+          // Finished for good (not just held back by a story gate): to the end of the list, one line.
+          if (u.id !== 'skeleton' && !c.root.classList.contains('done')) {
+            c.root.classList.add('done');
+            grow.append(c.root);
+          }
           continue;
         }
         const price = cost(s, u.id);

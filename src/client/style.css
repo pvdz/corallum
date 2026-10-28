@@ -91,6 +91,8 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .card.new { animation: rise-in 0.8s ease both; }
 .card.ready { border-color: var(--edge-strong); box-shadow: 0 0 18px rgba(120, 230, 255, 0.10) inset; }
 .card.maxed { opacity: 0.55; }
+.card.done { padding-top: 6px; padding-bottom: 6px; }
+.card.done .flavour, .card.done .effect, .card.done footer { display: none; }
 .card.pop { animation: pop 0.35s ease; }
 .card header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .card h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 17px; }
