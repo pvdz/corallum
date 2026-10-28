@@ -473,7 +473,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const ok = s.bloom >= tier.cost;
         dialectCost.textContent = ok
           ? `Costs ${num(tier.cost)} bloom. Choosing is permanent.`
-          : `Costs ${num(tier.cost)} bloom · ${num(s.bloom)} gathered`;
+          : `Costs ${num(tier.cost)} bloom · ${num(s.bloom)} gathered · ${etaText(timeUntil(s, 'bloom', tier.cost))}`;
         for (const d of DIALECTS) {
           const b = dialectButtons.get(d.id)!;
           b.hidden = d.tier !== tier.tier;
@@ -494,7 +494,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const ready = learned >= 1;
         truceWordsLabel.textContent = ready
           ? 'Your scouts have learned enough of their words.'
-          : `Words learned: ${num(s.murmurs)} / ${num(words)} murmurs${s.jobs.scout ? '' : ' — set shoals to scout'}`;
+          : `Words learned: ${num(s.murmurs)} / ${num(words)} murmurs${s.jobs.scout ? ` · ${etaText(timeUntil(s, 'murmurs', words))}` : ' — set shoals to scout'}`;
         for (const c of ['a', 'b'] as const) {
           const cb = choiceButtons[c === 'a' ? 0 : 1]!;
           cb.label.textContent = m[c].label;
@@ -713,8 +713,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   };
 }
 
+function etaText(t: number): string {
+  return t <= 0 ? '' : !Number.isFinite(t) ? 'beyond what the reef can hold' : t < 1 ? 'any moment' : `in ${duration(t)}`;
+}
+
 function setEta(eta: HTMLElement, t: number): void {
-  eta.textContent = t <= 0 ? '' : !Number.isFinite(t) ? 'beyond what the reef can hold' : t < 1 ? 'any moment' : `in ${duration(t)}`;
+  eta.textContent = etaText(t);
   eta.classList.toggle('never', !Number.isFinite(t));
 }
 

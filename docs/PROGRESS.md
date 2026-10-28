@@ -82,3 +82,5 @@ date, what landed, what is half-done, what's next.
 - Perf: the drowned towers cost ~20 ms/frame (headless, mobile size) in the Silt Floor and Midnight
   Water; they now render into a cache redrawn only when the near layer moves a whole pixel, lights
   drawn live on top. Silt Floor 25→3 ms, Midnight 33→11 ms.
+- Clarity: the dialect card and the truce's words bar show time-to-afford ("in 3m 2s"), like the
+  upgrade cards.
