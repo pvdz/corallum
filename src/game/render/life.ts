@@ -2,6 +2,7 @@
 // chimney with its plume. Pure functions of time and a seed.
 
 import { mulberry32, range } from '../sim/rng.ts';
+import { glow } from './draw.ts';
 
 export type Stage = { cx: number; baseY: number; w: number; h: number; s: number; dpr: number };
 
@@ -116,63 +117,91 @@ export function createLife(seed: number) {
   }
 
   /**
-   * Ossel's wall: a long-dead reef wall beside the young reef, grey and banded, half buried in
-   * the silt. A faint pale light breathes in it — the voice that talks to you.
+   * Ossel's wall: a long-dead reef mound beside the young reef, slumped and banded, half buried
+   * in the silt, with the broken stumps of its old branches. On it one pale polyp still lives,
+   * breathing: Ossel, the voice that talks to you.
    */
   function drawOssel(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
     const s = st.s;
     const r = mulberry32(seed ^ 0x055e1);
-    const x0 = st.cx - st.w * 0.34, x1 = st.cx - st.w * 0.17;
+    const x0 = st.cx - st.w * 0.36, x1 = st.cx - st.w * 0.15;
     const base = st.baseY + 8 * s;
-    // A ragged, slumped skyline: a high broken crown on the right, falling away to the left.
-    const top = (u: number) =>
-      base - (25 + 95 * Math.pow(Math.sin(u * Math.PI * 0.9 + 0.2), 1.5) * (0.5 + 0.5 * u)) * s - range(r, 0, 26) * s;
-    ctx.fillStyle = '#17172a';
-    ctx.beginPath();
-    ctx.moveTo(x0, base);
-    const n = 22;
-    const tops: [number, number][] = [];
-    let prev: [number, number] = [x0, base];
+    const ph = [r() * 6.28, r() * 6.28, r() * 6.28] as const;
+    // A slumped skyline: smooth swells, highest right of centre, tapering into the silt at both ends.
+    const height = (u: number) => {
+      const env = Math.pow(Math.sin(Math.PI * u), 0.35) * (0.6 + 0.4 * u);
+      const swell = 1 + 0.18 * Math.sin(u * 9 + ph[0]) + 0.08 * Math.sin(u * 23 + ph[1]) + 0.03 * Math.sin(u * 61 + ph[2]);
+      return 95 * s * env * swell;
+    };
+    const n = 48;
+    const pts: [number, number][] = [];
     for (let i = 0; i <= n; i++) {
       const u = i / n;
-      const p: [number, number] = [x0 + (x1 - x0) * u, top(u)];
-      // Knobbly: each step bulges up a little between points.
-      ctx.quadraticCurveTo((prev[0] + p[0]) / 2, Math.min(prev[1], p[1]) - range(r, 2, 9) * s, p[0], p[1]);
-      tops.push(p);
-      prev = p;
+      pts.push([x0 + (x1 - x0) * u, base - height(u)]);
     }
+    const fill = ctx.createLinearGradient(0, base - 130 * s, 0, base);
+    fill.addColorStop(0, '#2a2a40');
+    fill.addColorStop(1, '#14141f');
+    ctx.fillStyle = fill;
+    ctx.beginPath();
+    ctx.moveTo(x0, base);
+    for (const [x, y] of pts) ctx.lineTo(x, y);
     ctx.lineTo(x1, base);
     ctx.closePath();
     ctx.fill();
-    // Old bands, and silt settled on every ledge.
+    // Old bands follow the shape of the stone, each a little lower than the last.
     ctx.save();
     ctx.clip();
-    ctx.strokeStyle = 'rgba(170,170,200,0.10)';
+    ctx.strokeStyle = 'rgba(170,170,205,0.10)';
     ctx.lineWidth = 1 * st.dpr;
-    for (let i = 1; i < 12; i++) {
-      const y = base - i * 9 * s;
+    for (let k = 1; k < 14; k++) {
+      const drop = k * 8.5 * s;
       ctx.beginPath();
-      ctx.moveTo(x0, y + Math.sin(i) * 3 * s);
-      ctx.quadraticCurveTo((x0 + x1) / 2, y - 4 * s, x1, y + Math.cos(i) * 3 * s);
+      pts.forEach(([x, y], i) => {
+        const yy = Math.min(base, y + drop + Math.sin(i * 0.7 + k) * 1.2 * s);
+        if (i) ctx.lineTo(x, yy);
+        else ctx.moveTo(x, yy);
+      });
       ctx.stroke();
     }
     ctx.restore();
-    // Silt dusting the crown.
-    ctx.strokeStyle = 'rgba(180,185,210,0.16)';
+    // Broken stumps of the old branches, thick and blunt.
+    ctx.strokeStyle = '#25253a';
+    ctx.lineCap = 'round';
+    for (const [u, lean, len, wid] of [[0.55, -0.25, 34, 9], [0.72, 0.2, 48, 11], [0.86, 0.45, 26, 8], [0.38, -0.4, 20, 7]] as const) {
+      const i = Math.round(u * n);
+      const [x, y] = pts[i]!;
+      ctx.lineWidth = wid * s;
+      ctx.beginPath();
+      ctx.moveTo(x, y + 6 * s);
+      ctx.quadraticCurveTo(x + lean * len * 0.3 * s, y - len * 0.5 * s, x + lean * len * s, y - len * s);
+      ctx.stroke();
+    }
+    // Silt dusting every upward face.
+    ctx.strokeStyle = 'rgba(185,190,215,0.18)';
     ctx.lineWidth = 2 * s;
     ctx.beginPath();
-    tops.forEach(([x, y], i) => (i ? ctx.lineTo(x, y + 1.5 * s) : ctx.moveTo(x, y + 1.5 * s)));
+    pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y + 1.2 * s) : ctx.moveTo(x, y + 1.2 * s)));
     ctx.stroke();
-    // The voice.
+    // Ossel: the one living polyp on the dead stone, pale, its tentacles opening and closing slowly.
     const breathe = 0.5 + 0.5 * Math.sin(t * 0.45);
+    const oi = Math.round(0.62 * n);
+    const [ox, oyTop] = pts[oi]!;
+    const oy = oyTop + 14 * s;
+    ctx.strokeStyle = `rgba(215,220,245,${0.45 + 0.25 * breathe})`;
+    ctx.lineWidth = 1.1 * s;
+    for (let k = 0; k < 7; k++) {
+      const a = -Math.PI / 2 + (k - 3) * (0.22 + 0.1 * breathe);
+      const len = (6 + 3 * breathe) * s;
+      ctx.beginPath();
+      ctx.moveTo(ox, oy);
+      ctx.quadraticCurveTo(ox + Math.cos(a) * len * 0.6, oy + Math.sin(a) * len * 0.5, ox + Math.cos(a) * len, oy + Math.sin(a) * len);
+      ctx.stroke();
+    }
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    const cx = (x0 + x1) / 2, cy = base - 55 * s;
-    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 60 * s);
-    g.addColorStop(0, `rgba(200,210,255,${0.06 + 0.06 * breathe})`);
-    g.addColorStop(1, 'rgba(200,210,255,0)');
-    ctx.fillStyle = g;
-    ctx.fillRect(cx - 60 * s, cy - 60 * s, 120 * s, 120 * s);
+    glow(ctx, ox, oy - 3 * s, 40 * s, '200,210,255', 0.10 + 0.10 * breathe);
+    glow(ctx, ox, oy - 2 * s, 7 * s, '225,230,255', 0.45 + 0.3 * breathe);
     ctx.restore();
   }
 

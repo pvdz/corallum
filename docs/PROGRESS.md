@@ -98,3 +98,4 @@ date, what landed, what is half-done, what's next.
 - Sunlit Crown: a whale crosses far off in the haze every 3.5 min (80 s crossing, alternating
   direction), drawn behind the larvae and shoals.
 - Phone landscape: each stock is two lines (name and value share one), so the stock grid takes less of the short panel.
+- Ossel's wall on the Silt Floor redrawn: a slumped banded mound with smooth swells, broken branch stumps, bands that follow its shape, and Ossel as one pale breathing polyp on it (was a sawtooth block).
