@@ -113,3 +113,18 @@ test('glass gardeners: a reef with no Rasp at all beats the best Rasp dial witho
   s.rasp = 0;
   assert.ok(calciteHold(s) > best, `${calciteHold(s)} vs ${best}`);
 });
+
+test('endings and carried memories survive beginning again', async () => {
+  const { spawnLesser } = await import('../../src/game/sim/prestige.ts');
+  const s = newGame(5);
+  s.bands.push('eyes');
+  s.height = 4000;
+  s.carried = ['vent', 'ossel', 'rasp'];
+  s.meta.carriedEver = ['vent', 'ossel', 'rasp'];
+  s.meta.endings = 1;
+  const next = spawnLesser(s);
+  assert.ok(next);
+  assert.equal(next.meta.endings, 1);
+  assert.deepEqual(next.meta.carriedEver, ['vent', 'ossel', 'rasp']);
+  assert.deepEqual(next.carried, []);
+});

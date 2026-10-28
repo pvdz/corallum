@@ -71,6 +71,8 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
       const b = el('button', 'memory');
       b.type = 'button';
       b.append(el('strong', '', m.title), el('span', '', m.hint));
+      // Earlier endings: what a spawn has carried before, so a new choice can be a new story.
+      if (state.meta.carriedEver.includes(m.id)) b.append(el('em', 'carried-before', 'carried before'));
       b.addEventListener('click', () => {
         if (chosen.has(m.id)) chosen.delete(m.id);
         else if (chosen.size < ACT5.carry) chosen.add(m.id);

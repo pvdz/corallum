@@ -329,6 +329,9 @@ test('the Breach: needs the surface, the spawn, the full moon and exactly three 
   assert.ok(breach(s, ['vent', 'ossel', 'rasp']));
   assert.ok(ended(s));
   assert.equal(canBreach(s), false);
+  // The lineage remembers the ending and what was carried, across runs.
+  assert.equal(s.meta.endings, 1);
+  assert.deepEqual([...s.meta.carriedEver].sort(), ['ossel', 'rasp', 'vent']);
 });
 
 test('pacing: the whole game takes the bot 6–11 h whatever the path', () => {

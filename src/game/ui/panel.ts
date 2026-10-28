@@ -269,7 +269,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     codexList.append(el('dt', '', term), el('dd', '', value));
   }
   function renderCodex(s: GameState): void {
-    const key = JSON.stringify([Math.floor(s.height), s.truce, s.dialects, s.carried, s.meta.spawnings, s.readings.length]);
+    const key = JSON.stringify([Math.floor(s.height), s.truce, s.dialects, s.carried, s.meta.spawnings, s.meta.endings, s.readings.length]);
     if (key === codexKey) return;
     codexKey = key;
     codexList.innerHTML = '';
@@ -279,6 +279,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (truce.length) codexRow('The truce', truce.join(' · '));
     const spoken = TIERS.filter((t) => s.dialects[t.tier]).map((t) => DIALECTS.find((d) => d.id === s.dialects[t.tier])!.name);
     if (spoken.length) codexRow('Dialects', spoken.join(' · '));
+    if (s.meta.endings > 0) codexRow('Endings', `${s.meta.endings} · ${s.meta.carriedEver.length} of ${MEMORIES.length} memories carried so far`);
     if (s.carried.length) codexRow('Carried', s.carried.map((id) => MEMORIES.find((m) => m.id === id)?.title ?? id).join(' · '));
     if (s.meta.spawnings) codexRow('Lineage', `${s.meta.spawnings} lesser spawning${s.meta.spawnings === 1 ? '' : 's'}, best reef ${metres(s.meta.best)}`);
   }

@@ -569,6 +569,8 @@ export function breach(s: GameState, memories: MemoryId[]): boolean {
   s.spawn = 0;
   s.carried = unique;
   s.breachedAt = s.t;
+  s.meta.carriedEver = [...new Set([...s.meta.carriedEver, ...unique])];
+  s.meta.endings++;
   return true;
 }
 
