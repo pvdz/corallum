@@ -8,7 +8,7 @@ import { UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
 import { ACT3, MEETINGS, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { DIALECTS, TIERS, type DialectId } from '../content/act4.ts';
-import { TRAITS, type TraitId } from '../content/lineage.ts';
+import { TRAIT_GROUPS, TRAITS, type TraitId } from '../content/lineage.ts';
 import { MEMORIES } from '../content/act5.ts';
 import { canSpawnLesser, lineageFor, traitCost, traitMaxed } from '../sim/prestige.ts';
 import { act, actAt, SURFACE } from '../content/acts.ts';
@@ -321,7 +321,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   spawnCard.append(spawnTitle, spawnText, spawnBuys, spawnFoot);
   lineagePage.append(lineageHead, spawnCard);
   const traitCards = new Map<TraitId, Card>();
-  for (const tr of TRAITS) {
+  const groupHead = (g: keyof typeof TRAIT_GROUPS) =>
+    lineagePage.append(el('h4', 'trait-group', TRAIT_GROUPS[g].title), el('p', 'hint', TRAIT_GROUPS[g].text));
+  const ordered = [...TRAITS.filter((t) => t.kind !== 'way'), ...TRAITS.filter((t) => t.kind === 'way')];
+  for (const tr of ordered) {
+    if (tr === ordered[0]) groupHead('gift');
+    if (tr.kind === 'way' && ordered[ordered.indexOf(tr) - 1]?.kind !== 'way') groupHead('way');
     const root = el('article', 'card trait');
     const head = el('header');
     const level = el('span', 'level');

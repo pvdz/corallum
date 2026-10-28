@@ -28,7 +28,14 @@ export type Trait = {
   cost: number;
   growth: number;
   max: number;
+  /** 'way' traits change how a run plays (new routes); the rest are gifts (stronger numbers). */
+  kind?: 'way';
 };
+
+export const TRAIT_GROUPS = {
+  gift: { title: 'Gifts', text: 'What your children are born stronger at.' },
+  way: { title: 'Ways', text: 'What your children know to do differently.' },
+} as const;
 
 export const TRAITS: readonly Trait[] = [
   {
@@ -69,22 +76,22 @@ export const TRAITS: readonly Trait[] = [
   {
     id: 'early-shoals', name: 'Lamps in the snow', effect: 'shoals come at 20 m, in the Silt Floor',
     flavour: 'Lanternfish remember the way down to a reef that once called them.',
-    cost: 10, growth: 1, max: 1,
+    cost: 10, growth: 1, max: 1, kind: 'way',
   },
   {
     id: 'rasp-kin', name: 'Rasp kin', effect: 'grazing grounds and sand bars open in the Midnight Water',
     flavour: 'The Rasp know your children by the taste of their stone, and come early.',
-    cost: 14, growth: 1, max: 1,
+    cost: 14, growth: 1, max: 1, kind: 'way',
   },
   {
     id: 'glass-gardeners', name: 'Glass gardeners', effect: 'glass shrimp clear silt like six Rasp, eating none of your stone',
     flavour: 'They followed the spawn up from the old reef and keep its children clean.',
-    cost: 12, growth: 1, max: 1,
+    cost: 12, growth: 1, max: 1, kind: 'way',
   },
   {
     id: 'old-habits', name: 'Old habits', effect: 'while you watch, the reef buds polyps and hosts glimmerseed itself when one costs under a tenth of its calcite',
     flavour: 'Some growing does not need deciding any more.',
-    cost: 9, growth: 1, max: 1,
+    cost: 9, growth: 1, max: 1, kind: 'way',
   },
 ];
 

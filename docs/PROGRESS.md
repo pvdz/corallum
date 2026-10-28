@@ -146,3 +146,4 @@ date, what landed, what is half-done, what's next.
 - Perf: water/light-shaft backgrounds of four scenes paint into a half-resolution cache 5×/s (render/layer.ts, time snapped so ?t frames stay exact). Headless phone size: Silt Floor 12→4.7 ms, Midnight 14→9.6, Twilight 23→15. Found by skipping layers one at a time: the water was ~16 ms of the Twilight frame.
 - Readings no longer arrive five at once: costs spread so they come every 5–15 min through Act II. The finale browser test now builds its own surfaced reef with the bot instead of a hard-coded ?bot time.
 - Midnight Water: the seamount's dark flank along the bottom anchors the reef early on, sinking away as it climbs.
+- Lineage tab: traits grouped as Gifts (stronger numbers) and Ways (new routes: Lamps in the snow, Rasp kin, Glass gardeners, Old habits).
