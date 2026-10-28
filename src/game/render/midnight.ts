@@ -121,6 +121,37 @@ export function createMidnightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * The seamount's flank below the reef: a dark shoulder of rock along the bottom of the frame,
+   * sinking away as the reef climbs (it is fully in view only early in the Midnight Water).
+   */
+  function drawFlank(ctx: CanvasRenderingContext2D, p: number): void {
+    const sink = p * focus.h * 0.25;
+    const base = focus.y + focus.h * 0.9 + sink;
+    if (base > h + 20) return;
+    const r = mulberry32(seed ^ 0xf1a);
+    ctx.beginPath();
+    ctx.moveTo(0, h);
+    const n = 30;
+    for (let i = 0; i <= n; i++) {
+      const u = i / n;
+      // A shoulder that peaks under the reef and falls away to both sides, with rough rock.
+      const peak = Math.exp(-((u - 0.5) ** 2) / 0.08);
+      const y = base - peak * focus.h * 0.08 + range(r, -1, 1) * focus.h * 0.008;
+      ctx.lineTo(focus.x + u * focus.w * 1.05, y);
+    }
+    ctx.lineTo(w, h);
+    ctx.closePath();
+    const g = ctx.createLinearGradient(0, base - focus.h * 0.1, 0, h);
+    g.addColorStop(0, '#0a0c1e');
+    g.addColorStop(1, '#020208');
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(110,130,210,0.18)';
+    ctx.lineWidth = 1.2 * dpr;
+    ctx.stroke();
+  }
+
   /** Comb jellies: glassy ovals whose eight comb rows ripple with travelling rainbow light. */
   function drawComb(ctx: CanvasRenderingContext2D, c: Comb, t: number): void {
     const s = scale() * c.size;
@@ -289,6 +320,7 @@ export function createMidnightScene(seed: number): Scene {
       if (v.bands.includes('siphon')) drawSiphonophore(ctx, t);
       drawSnow(ctx, t);
       shoals.drawBack(ctx, focus, reef, L, v, t);
+      drawFlank(ctx, p);
       reef.draw(ctx, L, v, t);
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
