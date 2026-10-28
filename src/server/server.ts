@@ -8,6 +8,7 @@ import { readFile, stat } from 'node:fs/promises';
 import { stripTypeScriptTypes } from 'node:module';
 import { extname, join, normalize, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { networkInterfaces } from 'node:os';
 
 const ROOT = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 const SERVED_DIRS = ['src'];
@@ -84,4 +85,10 @@ if (import.meta.main) {
   const host = process.argv.includes('--lan') ? '0.0.0.0' : '127.0.0.1';
   await startServer(port, host);
   console.log(`Corallum on http://localhost:${port}/`);
+  if (host === '0.0.0.0') {
+    // Addresses a phone on the same network can open.
+    for (const list of Object.values(networkInterfaces())) {
+      for (const a of list ?? []) if (a.family === 'IPv4' && !a.internal) console.log(`  on your network: http://${a.address}:${port}/`);
+    }
+  }
 }

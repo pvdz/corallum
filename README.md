@@ -20,6 +20,12 @@ decide which three memories your children carry into a new sea.
 - Lesser spawnings start over on a new seamount with Lineage traits.
 - Desktop, phone portrait and phone landscape. Sound is procedural and off by default.
 
+## Trying it on a phone
+Run `node src/server/server.ts --lan`; it prints an address on your network to open on the
+phone. Add `?fps` to the URL for a frame-rate and draw-time readout, and `?bot=12000` to jump
+into a later zone (the Twilight Shelf) without playing up to it (`?bot` games are not saved).
+If frames run slow for a few seconds the glow pass switches itself off ("bloom off" in the readout).
+
 ## Development
 See `CLAUDE.md` for commands (tests, browser tests, the balance bot, screenshots) and `docs/`
 for the plan, design, story (with its originality check) and economy.

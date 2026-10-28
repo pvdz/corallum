@@ -86,3 +86,5 @@ date, what landed, what is half-done, what's next.
   upgrade cards.
 - Midnight Water: the drowned towers' lights burn brighter the more shoals scout (listening at the
   old stone), dim when none do.
+- Phone testing: `?fps` overlay (fps, draw/panel ms, bloom state, canvas size); `--lan` prints the
+  network addresses; README section "Trying it on a phone". Whisper sound cue.

@@ -8,6 +8,7 @@
 //   ?speed=<x>    run the sim <x> times faster
 //   ?fresh        ignore the stored save
 //   ?seed=<n>     world seed for a new game
+//   ?fps          show frame rate and draw time (for trying it on a phone)
 // With ?t, ?bot or ?fresh nothing is written to storage.
 // Console: corallum.skip(seconds), corallum.state, corallum.speed = x
 
@@ -421,6 +422,20 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
+// ?fps: a small readout of frame rate and draw time, for checking real devices.
+const fpsBox = params.has('fps') ? document.createElement('div') : null;
+if (fpsBox) { fpsBox.id = 'fps'; ui.append(fpsBox); }
+let fpsFrames = 0, fpsSince = 0;
+function fpsTick(now: number, dt: number): void {
+  fpsFrames++;
+  fpsSince += dt;
+  if (fpsSince < 0.5) return;
+  fpsBox!.textContent = `${Math.round(fpsFrames / fpsSince)} fps · draw ${prof.draw.toFixed(1)} ms · panel ${prof.panel.toFixed(1)} ms` +
+    `${scene.bloomStrength > 0 ? '' : ' · bloom off'} · ${canvas.width}×${canvas.height}`;
+  fpsFrames = 0;
+  fpsSince = 0;
+}
+
 let last = performance.now();
 let lastSave = last;
 let animT = 40;
@@ -468,6 +483,7 @@ function frame(now: number): void {
   prof.panel += (p3 - p2 - prof.panel) * 0.05;
   audio.setZone(actAt(state.height));
   whisperCheck(now);
+  if (fpsBox) fpsTick(now, dt);
   replay.hidden = !ended(state);
   title.classList.toggle('faded', state.levels.polyp > 0 || state.t > 25);
   hint.classList.toggle('show', state.meta.spawnings === 0 && state.earned.calcite < 40 && reader() && state.t > 2);
