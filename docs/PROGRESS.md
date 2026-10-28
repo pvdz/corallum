@@ -105,3 +105,4 @@ date, what landed, what is half-done, what's next.
 - Whispers: early hints (two polyps, first band, first glimmerseed) only while still news; none after the spawn is released (one spoke over the spawning).
 - Upgrade cards: polyp and glimmerseed show what one more really adds after every multiplier (+327k calcite/s late, not the base +0.3).
 - Hold a buy button to keep buying (after 450 ms, every 110 ms while affordable; the release does not add one). In the play test.
+- Tab title shows the reef's height ("641 m · Corallum"), "spawned" after the ending.

@@ -26,7 +26,7 @@ import { runBot } from '../game/sim/bot.ts';
 import { advance, assign, breach, buy, currentFeast, feast, calciteHold, choose, ended, moonFull, moonPhase, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
-import { num } from '../game/ui/format.ts';
+import { metres, num } from '../game/ui/format.ts';
 import { createAudio } from '../game/audio/audio.ts';
 import { LINEAGE_BANDS } from '../game/content/lineage.ts';
 import { WHISPERS } from '../game/content/whispers.ts';
@@ -481,6 +481,7 @@ function fpsTick(now: number, dt: number): void {
 
 let last = performance.now();
 let lastSave = last;
+let lastTitle = 0;
 let animT = 40;
 let needResize = true;
 function frame(now: number): void {
@@ -533,6 +534,12 @@ function frame(now: number): void {
   title.classList.toggle('faded', state.levels.polyp > 0 || state.t > 25);
   hint.classList.toggle('show', state.meta.spawnings === 0 && state.earned.calcite < 40 && reader() && state.t > 2);
   if (now - lastSave > 5000) { save(); lastSave = now; }
+  // The tab title carries the reef's height, so a background tab still shows progress.
+  if (now - lastTitle > 1000) {
+    lastTitle = now;
+    const t = ended(state) ? 'Corallum · spawned' : state.height < 1 ? 'Corallum' : `${metres(state.height)} · Corallum`;
+    if (document.title !== t) document.title = t;
+  }
   if (frozenT === null) requestAnimationFrame(frame);
   else document.documentElement.dataset.ready = '1';
 }
