@@ -420,3 +420,5 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   font: 11px/1.3 ui-monospace, monospace; color: #9ff6ff; background: rgba(0, 0, 0, 0.45); padding: 3px 6px; border-radius: 6px;
 }
 .memory .carried-before { font-size: 11px; font-style: normal; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255, 158, 199, 0.7); }
+.toggle { display: flex; align-items: center; gap: 10px; margin: 10px 2px 4px; font-size: 13px; color: var(--ink-dim); cursor: pointer; }
+.toggle input { width: 18px; height: 18px; accent-color: #8ffff0; }

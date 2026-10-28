@@ -106,3 +106,4 @@ date, what landed, what is half-done, what's next.
 - Upgrade cards: polyp and glimmerseed show what one more really adds after every multiplier (+327k calcite/s late, not the base +0.3).
 - Hold a buy button to keep buying (after 450 ms, every 110 ms while affordable; the release does not add one). In the play test.
 - Tab title shows the reef's height ("641 m · Corallum"), "spawned" after the ending.
+- Reef tab: "Soft glow" checkbox turns the bloom pass off for slow phones (remembered as corallum.glow); Midnight draw 11→4 ms headless with it off.

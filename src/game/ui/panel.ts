@@ -32,6 +32,8 @@ export type PanelHooks = {
   exportSave(): string;
   importSave(text: string): boolean;
   reset(): void;
+  /** The soft glow (bloom) pass: read and set; off helps slow phones. */
+  glow: { get(): boolean; set(on: boolean): void };
   /** A story card opened (for its sound). */
   storyShown?(): void;
 };
@@ -354,8 +356,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const backupNote = el('p', 'backup-note',
     'This reef lives only in this browser: clearing site data would wash it away. Copy a save and keep it somewhere safe.');
   backupNote.hidden = true;
+  const glowToggle = el('label', 'toggle');
+  const glowBox = el('input') as HTMLInputElement;
+  glowBox.type = 'checkbox';
+  glowBox.checked = hooks.glow.get();
+  glowBox.addEventListener('change', () => hooks.glow.set(glowBox.checked));
+  glowToggle.append(glowBox, el('span', '', 'Soft glow (turn off if a phone runs slow or warm)'));
   reefPage.append(
-    el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, importBtn, resetBtn,
+    el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, importBtn, glowToggle, resetBtn,
     el('p', 'hint', 'Hold a buy button to keep buying. Keys: Space sweeps · F catches a falling feast · P buds a polyp · B lays a band · G hosts glimmerseed.'),
   );
 

@@ -126,7 +126,25 @@ if (soundWanted) {
   window.addEventListener('keydown', start, { once: true });
 }
 
+// Soft glow (the bloom pass): on unless the player turned it off; remembered per browser.
+const GLOW_KEY = 'corallum.glow';
+const bloomDefaults = scenes.map((sc) => sc.bloomStrength);
+let glowOn = true;
+try { glowOn = localStorage.getItem(GLOW_KEY) !== 'off'; } catch { /* no storage */ }
+function applyGlow(): void {
+  scenes.forEach((sc, i) => { sc.bloomStrength = glowOn ? bloomDefaults[i]! : 0; });
+}
+applyGlow();
+
 const panel = createPanel(ui, {
+  glow: {
+    get: () => glowOn,
+    set(on) {
+      glowOn = on;
+      try { localStorage.setItem(GLOW_KEY, on ? 'on' : 'off'); } catch { /* no storage */ }
+      applyGlow();
+    },
+  },
   storyShown() {
     audio.cue('story');
   },
