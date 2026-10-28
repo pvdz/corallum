@@ -2,8 +2,8 @@
 
 import { MEETINGS } from '../content/act3.ts';
 import { DIALECTS } from '../content/act4.ts';
-import { LINEAGE, TRAITS, type Trait, type TraitId } from '../content/lineage.ts';
-import { ended, spawnTarget } from './economy.ts';
+import { HABIT_SHARE, LINEAGE, TRAITS, type Trait, type TraitId } from '../content/lineage.ts';
+import { cost, ended, revealed, spawnTarget } from './economy.ts';
 import { newGame, type GameState, type Meta } from './state.ts';
 
 /** Lineage a spawning released now would bring. */
@@ -44,6 +44,18 @@ export function spawnLesser(s: GameState): GameState | null {
   // A new seamount: a new world seed derived from the old one.
   const seed = (Math.imul(s.seed ^ 0x9e3779b9, 2654435761) + meta.spawnings) >>> 0;
   return newGame(seed, meta);
+}
+
+/**
+ * Old habits: what the reef would buy on its own right now (a polyp or glimmerseed costing under
+ * HABIT_SHARE of the calcite held), or null. Only called while the player watches: never offline.
+ */
+export function habitPurchase(s: GameState): 'polyp' | 'symbiont' | null {
+  if (!s.meta.traits['old-habits']) return null;
+  const cheap = (id: 'polyp' | 'symbiont') => revealed(s, id) && cost(s, id) < HABIT_SHARE * s.calcite;
+  const p = cheap('polyp'), g = cheap('symbiont');
+  if (p && g) return cost(s, 'polyp') <= cost(s, 'symbiont') ? 'polyp' : 'symbiont';
+  return p ? 'polyp' : g ? 'symbiont' : null;
 }
 
 export function traitDef(id: TraitId): Trait {

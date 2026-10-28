@@ -123,3 +123,4 @@ date, what landed, what is half-done, what's next.
   shown on the moon card. Tried making "wait a moon" a decision: the spawn's 1 h time constant means
   it is already near its hold at the surface, so a wait adds ~+1; the card only mentions the next
   moon when it would add 2+. A real Act V decision still needs a different lever.
+- Trait "Old habits" (9 lineage): while the page is open the reef buds polyps / hosts glimmerseed itself when one costs under 10% of its calcite (habitPurchase, ≤4/s); never offline. Reef-tab switch once owned.

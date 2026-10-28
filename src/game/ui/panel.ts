@@ -34,6 +34,8 @@ export type PanelHooks = {
   reset(): void;
   /** The soft glow (bloom) pass: read and set; off helps slow phones. */
   glow: { get(): boolean; set(on: boolean): void };
+  /** Old habits (a lineage trait): whether the reef buys cheap polyps and glimmerseed itself. */
+  habits: { get(): boolean; set(on: boolean): void };
   /** A story card opened (for its sound). */
   storyShown?(): void;
 };
@@ -362,8 +364,15 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   glowBox.checked = hooks.glow.get();
   glowBox.addEventListener('change', () => hooks.glow.set(glowBox.checked));
   glowToggle.append(glowBox, el('span', '', 'Soft glow (turn off if a phone runs slow or warm)'));
+  const habitToggle = el('label', 'toggle');
+  const habitBox = el('input') as HTMLInputElement;
+  habitBox.type = 'checkbox';
+  habitBox.checked = hooks.habits.get();
+  habitBox.addEventListener('change', () => hooks.habits.set(habitBox.checked));
+  habitToggle.append(habitBox, el('span', '', 'Old habits: bud polyps and host glimmerseed on their own when they are cheap'));
+  habitToggle.hidden = true;
   reefPage.append(
-    el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, importBtn, glowToggle, resetBtn,
+    el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, importBtn, glowToggle, habitToggle, resetBtn,
     el('p', 'hint', 'Hold a buy button to keep buying. Keys: Space sweeps · F catches a falling feast · P buds a polyp · B lays a band · G hosts glimmerseed.'),
   );
 
@@ -707,6 +716,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         }
       }
       renderCodex(s);
+      habitToggle.hidden = !s.meta.traits['old-habits'];
       bandsDot.hidden = seenStories >= storyCount;
       primed = true;
     },

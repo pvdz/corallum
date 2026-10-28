@@ -31,7 +31,7 @@ import { createAudio } from '../game/audio/audio.ts';
 import { LINEAGE_BANDS } from '../game/content/lineage.ts';
 import { ACT1, MILESTONES, type Milestone } from '../game/content/act1.ts';
 import { WHISPERS } from '../game/content/whispers.ts';
-import { buyTrait, spawnLesser } from '../game/sim/prestige.ts';
+import { buyTrait, habitPurchase, spawnLesser } from '../game/sim/prestige.ts';
 import { createFinale } from '../game/ui/finale.ts';
 import { createPanel } from '../game/ui/panel.ts';
 
@@ -137,7 +137,19 @@ function applyGlow(): void {
 }
 applyGlow();
 
+// Old habits (a lineage trait): on unless switched off; remembered per browser.
+const HABITS_KEY = 'corallum.habits';
+let habitsOn = true;
+try { habitsOn = localStorage.getItem(HABITS_KEY) !== 'off'; } catch { /* no storage */ }
+
 const panel = createPanel(ui, {
+  habits: {
+    get: () => habitsOn,
+    set(on) {
+      habitsOn = on;
+      try { localStorage.setItem(HABITS_KEY, on ? 'on' : 'off'); } catch { /* no storage */ }
+    },
+  },
   glow: {
     get: () => glowOn,
     set(on) {
@@ -529,6 +541,7 @@ function fpsTick(now: number, dt: number): void {
 let last = performance.now();
 let lastSave = last;
 let lastTitle = 0;
+let lastHabit = 0;
 let animT = 40;
 let needResize = true;
 function frame(now: number): void {
@@ -577,6 +590,12 @@ function frame(now: number): void {
   audio.setZone(actAt(state.height));
   whisperCheck(now);
   if (fpsBox) fpsTick(now, dt);
+  // Old habits: the reef's own small purchases, only while the page is open.
+  if (habitsOn && frozenT === null && now - lastHabit > 250) {
+    lastHabit = now;
+    const id = habitPurchase(state);
+    if (id) purchase(id);
+  }
   replay.hidden = !ended(state);
   title.classList.toggle('faded', state.levels.polyp > 0 || state.t > 25);
   hint.classList.toggle('show', state.meta.spawnings === 0 && state.earned.calcite < 40 && reader() && state.t > 2);

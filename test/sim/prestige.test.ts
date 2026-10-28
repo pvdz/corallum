@@ -144,3 +144,16 @@ test('a bigger release sends more lineage into the next run', async () => {
   s.released = 4 * target;
   assert.equal(lineageFor(s) - small, 8);
 });
+
+test('old habits: buys the cheaper of polyp and glimmerseed only when it is cheap', async () => {
+  const { habitPurchase } = await import('../../src/game/sim/prestige.ts');
+  const { cost } = await import('../../src/game/sim/economy.ts');
+  const s = newGame(2);
+  s.levels.polyp = 6;
+  s.calcite = cost(s, 'polyp') * 20;
+  assert.equal(habitPurchase(s), null, 'not without the trait');
+  s.meta.traits['old-habits'] = 1;
+  assert.equal(habitPurchase(s), 'polyp');
+  s.calcite = cost(s, 'polyp') * 5;
+  assert.equal(habitPurchase(s), null, 'too dear: more than a tenth of the calcite');
+});

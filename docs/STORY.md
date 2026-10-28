@@ -91,4 +91,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Trait "Glass gardeners" (shrimp that keep a reef clean) | real biology (cleaner shrimp) | OK |
 | Falling feasts (carcasses sinking past the reef, tapped for food) | real biology (whale/fish falls); the tap-a-passing-bonus mechanic is a genre convention, nothing story-specific copied | OK |
 | Milestone names (A clump, A thicket, A colony, A grove, A city of mouths, A reef; A constellation, Lanterns, A beacon, A second moon) | plain descriptive words; count-milestone doublings are a genre convention | OK |
+| Trait "Old habits" (automatic buying) | generic phrase; auto-buyers are a genre convention | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

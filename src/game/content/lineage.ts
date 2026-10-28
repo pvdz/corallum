@@ -18,7 +18,7 @@ export const LINEAGE = {
 
 export type TraitId =
   | 'deep-memory' | 'quick-budding' | 'old-bands' | 'remembered-shoals' | 'glimmer' | 'kept-readings' | 'settling'
-  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners';
+  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits';
 
 export type Trait = {
   id: TraitId;
@@ -81,7 +81,15 @@ export const TRAITS: readonly Trait[] = [
     flavour: 'They followed the spawn up from the old reef and keep its children clean.',
     cost: 12, growth: 1, max: 1,
   },
+  {
+    id: 'old-habits', name: 'Old habits', effect: 'while you watch, the reef buds polyps and hosts glimmerseed itself when one costs under a tenth of its calcite',
+    flavour: 'Some growing does not need deciding any more.',
+    cost: 9, growth: 1, max: 1,
+  },
 ];
+
+/** Old habits buys an upgrade on its own when it costs less than this share of the calcite held. */
+export const HABIT_SHARE = 0.1;
 
 export const LINEAGE_BANDS: readonly { title: string; text: string }[] = [
   {
