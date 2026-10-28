@@ -295,9 +295,10 @@ function backupDue(): boolean {
 
 /** Advance by a long span and tell the player what happened while they were gone. */
 function catchUp(seconds: number): void {
-  const before = { calcite: state.calcite, glow: state.glow, height: state.height };
+  const before = { calcite: state.calcite, glow: state.glow, height: state.height, bands: state.bands.length };
   advance(state, seconds);
   panel.showAway(seconds, {
+    bands: state.bands.slice(before.bands),
     calcite: Math.max(0, state.calcite - before.calcite),
     glow: Math.max(0, state.glow - before.glow),
     metres: state.height - before.height,

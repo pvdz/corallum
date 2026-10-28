@@ -153,3 +153,4 @@ date, what landed, what is half-done, what's next.
 - A band card held by a story gate says which: "Held · until your scouts read “Inside the wall”" / the wall decision / the spawning dialect (capReason in the sim, GATE_TEXT in content).
 - Reef tab: "Calmer motion" switch (ambient animation ×0.3, like the system reduced-motion setting).
 - Fix: with reduced motion (system or Calmer motion) the zone title, milestone and whisper cards never appeared (their fade was disabled with all animation); they now keep their fade.
+- Away summary names the bands laid while you were gone (“It laid down a band worth reading: …”).
