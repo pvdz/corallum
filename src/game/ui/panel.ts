@@ -762,7 +762,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       primed = true;
     },
     /** Show the offline summary; any bands read while away are queued behind it. */
-    showAway(seconds: number, gained: { calcite: number; glow: number; metres: number; full: boolean; bands: string[] }): void {
+    showAway(seconds: number, gained: { calcite: number; glow: number; metres: number; full: boolean; bands: string[]; fullAfter: number | null }): void {
       const parts = [`You were gone ${duration(seconds)}. The reef kept growing.`];
       parts.push(`+${num(gained.calcite)} calcite gathered${gained.glow > 0.5 ? `, +${num(gained.glow)} glow` : ''}.`);
       if (gained.metres > 0.05) parts.push(`It rose ${metres(gained.metres)}.`);
@@ -772,7 +772,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           ? `It laid down a band worth reading: “${titles[0]}”.`
           : `It laid down ${titles.length} bands worth reading: ${titles.map((t) => `“${t}”`).join(', ')}.`);
       }
-      if (gained.full) parts.push('Its stores filled to what the reef can hold, and the rest dissolved back into the sea. A denser lattice holds more.');
+      if (gained.full) parts.push(`Its stores filled to what the reef can hold${gained.fullAfter !== null && gained.fullAfter > 60 ? ` after about ${duration(gained.fullAfter)}` : ''}, and the rest dissolved back into the sea. A denser lattice holds more.`);
       awayText.textContent = parts.join(' ');
       away.hidden = false;
     },

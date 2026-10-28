@@ -23,7 +23,7 @@ import { createTaps } from '../game/render/taps.ts';
 import { drawFeast, feastPos, feastReach } from '../game/render/feast.ts';
 import type { Focus, ReefView, Scene } from '../game/render/scene.ts';
 import { runBot } from '../game/sim/bot.ts';
-import { advance, assign, breach, buy, currentFeast, feast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { metres, num } from '../game/ui/format.ts';
@@ -296,6 +296,9 @@ function backupDue(): boolean {
 /** Advance by a long span and tell the player what happened while they were gone. */
 function catchUp(seconds: number): void {
   const before = { calcite: state.calcite, glow: state.glow, height: state.height, bands: state.bands.length };
+  // When the stores would have filled, from the state as it was left.
+  const start = structuredClone(state);
+  const fullAfter = timeUntil(start, 'calcite', 0.98 * calciteHold(start));
   advance(state, seconds);
   panel.showAway(seconds, {
     bands: state.bands.slice(before.bands),
@@ -303,6 +306,7 @@ function catchUp(seconds: number): void {
     glow: Math.max(0, state.glow - before.glow),
     metres: state.height - before.height,
     full: state.calcite >= 0.98 * calciteHold(state),
+    fullAfter: fullAfter < seconds ? fullAfter : null,
   });
 }
 

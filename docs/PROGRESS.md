@@ -154,3 +154,4 @@ date, what landed, what is half-done, what's next.
 - Reef tab: "Calmer motion" switch (ambient animation ×0.3, like the system reduced-motion setting).
 - Fix: with reduced motion (system or Calmer motion) the zone title, milestone and whisper cards never appeared (their fade was disabled with all animation); they now keep their fade.
 - Away summary names the bands laid while you were gone (“It laid down a band worth reading: …”).
+- Away summary says when the stores filled ("after about 1h 13m"), so the value of a denser lattice is visible.
