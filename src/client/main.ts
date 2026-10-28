@@ -185,6 +185,8 @@ const panel = createPanel(ui, {
   },
 });
 panel.primeStories(state);
+// A brand-new reef: let the title and the dark water show before the first band's story.
+if (state.bands.length === 0 && state.meta.spawnings === 0 && frozenT === null) panel.holdStories(3500);
 
 const finale = createFinale(ui, panel.growPage, {
   breach(memories) {

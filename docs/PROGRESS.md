@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Polish backlog in PLAN.md M6. Ideas not yet planned: more lineage content, a title/intro card, Thousandfold towers in the Sunlit Crown.
+NOW: Polish backlog in PLAN.md M6. Ideas not yet planned: more lineage traits that open strategies (not multipliers).
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -68,3 +68,7 @@ date, what landed, what is half-done, what's next.
 - Later bands to break 30–46 min silences: "How the Rasp end" (3725 m), "Storm" (3965 m),
   "Describe it" (3985 m), "The waiting fish" (3995 m). After the wall choice Ossel only speaks in
   `kept` variants. Act V now has a band every ~20–25 min for the bot.
+- Opening: on a brand-new reef the first story waits 3.5 s (panel.holdStories) so the title over
+  the dark water is the first thing seen; the opening band's kicker reads "A seamount, 4,000 m down".
+  This covers the "title/intro card" idea. Thousandfold towers in the Sunlit Crown: dropped (that
+  scene is bright and busy enough).

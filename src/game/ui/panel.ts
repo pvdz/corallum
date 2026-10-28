@@ -54,7 +54,7 @@ function button(cls: string, text: string, onClick: () => void): HTMLButtonEleme
 }
 
 function bandStory(b: Band, kept = false): Story {
-  return { kicker: `Band at ${metres(b.metres)}`, title: b.title, text: kept && b.kept ? b.kept : b.text };
+  return { kicker: b.metres === 0 ? 'A seamount, 4,000 m down' : `Band at ${metres(b.metres)}`, title: b.title, text: kept && b.kept ? b.kept : b.text };
 }
 function readingStory(r: Reading): Story {
   return { kicker: 'A Thousandfold band, read', title: r.title, text: r.text };
@@ -378,6 +378,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   reader.append(readerCard);
   host.append(reader);
   const queue: Story[] = [];
+  let held = false;
   function openStory(st: Story): void {
     hooks.storyShown?.();
     readerKicker.textContent = st.kicker;
@@ -387,7 +388,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     readerClose.focus({ preventScroll: true });
   }
   function showStory(st: Story): void {
-    if (reader.hidden && away.hidden) openStory(st);
+    if (reader.hidden && away.hidden && !held) openStory(st);
     else queue.push(st);
   }
   function closeReader(): void {
@@ -690,6 +691,15 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       lastBandCount = s.bands.length;
       lastReadingCount = s.readings.length;
       storyCount = seenStories = lastBandCount + lastReadingCount;
+    },
+    /** Keep stories queued for a while (a new reef shows the open water before the first one). */
+    holdStories(ms: number): void {
+      held = true;
+      setTimeout(() => {
+        held = false;
+        const next = reader.hidden && away.hidden ? queue.shift() : undefined;
+        if (next) openStory(next);
+      }, ms);
     },
     /** Open a story card (or queue it behind the one showing). */
     story(kicker: string, title: string, text: string): void {
