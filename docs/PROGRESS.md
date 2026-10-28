@@ -138,3 +138,4 @@ date, what landed, what is half-done, what's next.
 - Silt Floor: four sea lilies (stalked crinoids) sway on the floor, feathery arms open to the current.
 - Midnight Water: an anglerfish drifts across the upper water every ~3 min, lure pulsing.
 - Falling feasts start at 42 m (band "A sound in the old band"), to fill the late Silt Floor lull for players who watch; "What falls" (95 m) still tells what they are.
+- Zone bar: story bands in the current zone are ticks on the height bar (bright once laid, title on hover).

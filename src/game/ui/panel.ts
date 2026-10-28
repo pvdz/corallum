@@ -460,6 +460,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let etaTurn = 0;
   let jobGains: { feed: number; light: number } | null = null;
   let raspBest = -1;
+  let tickZone = -1;
   return {
     setBackupDue,
     update(s: GameState): void {
@@ -559,6 +560,20 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       const span = zone.to - zone.from;
       const frac = (x: number) => Math.max(0, Math.min(100, ((x - zone.from) / span) * 100));
       heightFill.style.width = `${frac(s.height)}%`;
+      // Story bands in this zone, as ticks on the bar: bright once laid.
+      if (tickZone !== zone.from) {
+        tickZone = zone.from;
+        for (const tk of heightBar.querySelectorAll('.tick')) tk.remove();
+        for (const b of BANDS) {
+          if (b.metres <= zone.from || b.metres > zone.to) continue;
+          const tk = el('i', 'tick');
+          tk.style.left = `${frac(b.metres)}%`;
+          tk.dataset.band = b.id;
+          tk.title = `${metres(b.metres)}: ${b.title}`;
+          heightBar.append(tk);
+        }
+      }
+      for (const tk of heightBar.querySelectorAll<HTMLElement>('.tick')) tk.classList.toggle('passed', s.bands.includes(tk.dataset.band!));
       heightTarget.style.width = `${frac(r.heightTarget)}%`;
       const depth = `${Math.round(Math.max(0, SURFACE - s.height)).toLocaleString('en-US')} m down`;
       const next = BANDS.find((b) => !s.bands.includes(b.id));

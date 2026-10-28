@@ -436,3 +436,5 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 #milestone span { font-size: 13px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--calcite); }
 #milestone em { color: var(--ink-dim); font-size: clamp(14px, 1.5vw, 17px); }
 #milestone.show { animation: zone-title 5s ease both; }
+.bar .tick { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: rgba(255, 255, 255, 0.35); z-index: 1; }
+.bar .tick.passed { background: rgba(255, 245, 235, 0.85); }
