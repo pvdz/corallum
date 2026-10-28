@@ -237,6 +237,17 @@ export function createAbyssScene(seed: number): Scene {
       if (v.shoals > 0) shoals.drawFront(ctx, focus, reef, L, v, t);
       life.drawFront(ctx, st, t);
       drawSnow(ctx, t, 2);
+      // A warm seamount reddens the water near the floor; a cold one leaves a faint ice-blue.
+      if (v.seamount === 'warm' || v.seamount === 'cold') {
+        const g = ctx.createLinearGradient(0, h * 0.45, 0, h);
+        g.addColorStop(0, 'rgba(0,0,0,0)');
+        g.addColorStop(1, v.seamount === 'warm' ? 'rgba(255,90,40,0.10)' : 'rgba(150,210,255,0.09)');
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, h);
+        ctx.restore();
+      }
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
       vignette(ctx);
     },

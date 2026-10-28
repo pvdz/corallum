@@ -158,3 +158,4 @@ date, what landed, what is half-done, what's next.
 - Twilight Shelf: a manta glides through the light shafts every ~4 min.
 - Reef tab: "Save to a file" downloads corallum-YYYY-MM-DD.txt and "Load save from a file…" reads one back (easier than the clipboard on phones; also clears the backup nudge). New browser test test/e2e/saves.ts.
 - Prestige: a lesser spawning chooses where to settle (plain / warm / cold / crowded seamount), each bending the next run (active vs idle-friendly, story speed vs silt). The Rasp dial's best setting is now judged by settled calcite/s within a safe hold (it was max hold, which choked reefs with silt late on); Rasp card says "best now: N". Retuned zones 3–5.
+- Warm and cold seamounts tint the deep water of the Silt Floor (red / ice-blue near the floor).

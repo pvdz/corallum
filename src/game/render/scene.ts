@@ -29,6 +29,8 @@ export type ReefView = {
   sandBars: number;
   /** Seagrass meadows sown on the sunlit sand. */
   meadows: number;
+  /** Which seamount this run grows on (warm and cold tint the deep). */
+  seamount: string;
   rasp: number;
   /** The truce choice about Ossel's wall. */
   wall: '' | 'a' | 'b';

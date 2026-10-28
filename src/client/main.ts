@@ -372,6 +372,7 @@ function view(): ReefView {
     siltLevel: 1 - smother(state.silt),
     sandBars: state.levels.sandbar,
     meadows: state.levels.meadow,
+    seamount: state.seamount,
     rasp: state.rasp,
     wall: state.truce.wall,
     raspTrust: state.truce.story === 'a',
