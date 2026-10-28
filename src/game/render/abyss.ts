@@ -196,6 +196,7 @@ export function createAbyssScene(seed: number): Scene {
 
   return {
     bloomStrength: 0.55,
+    crownAt: [0, 0] as [number, number],
     effect(kind) {
       effects.push(kind);
     },
@@ -219,6 +220,7 @@ export function createAbyssScene(seed: number): Scene {
       const L = layout(v);
       if (v.shoals > 0) shoals.drawBack(ctx, focus, reef, L, v, t);
       reef.draw(ctx, L, v, t);
+      this.crownAt = reef.crown(L);
       const live = effects.live(t);
       reef.drawEffects(ctx, L, v, live);
       const flare = live.find((e) => e.kind === 'vent');

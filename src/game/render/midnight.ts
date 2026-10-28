@@ -239,6 +239,7 @@ export function createMidnightScene(seed: number): Scene {
 
   return {
     bloomStrength: 0.6,
+    crownAt: [0, 0] as [number, number],
     effect(kind) {
       effects.push(kind);
     },
@@ -258,6 +259,7 @@ export function createMidnightScene(seed: number): Scene {
       drawSnow(ctx, t);
       shoals.drawBack(ctx, focus, reef, L, v, t);
       reef.draw(ctx, L, v, t);
+      this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
       shoals.drawFront(ctx, focus, reef, L, v, t);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);

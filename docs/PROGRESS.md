@@ -54,3 +54,5 @@ date, what landed, what is half-done, what's next.
   a few lights still burning in the Midnight stone. Same seed in every scene so towers line up across fades.
 - In near-black water nearer stone is drawn lighter (lit), in blue water darker; outlines dropped (they
   read as stray squiggles under the vignette).
+- render/taps.ts: a sweep shows a ripple where you tapped and six food motes curving into the reef's
+  crown (scenes expose `crownAt`), which flares as they land. Space-bar sweeps start beside the crown.

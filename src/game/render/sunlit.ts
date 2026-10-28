@@ -240,6 +240,7 @@ export function createSunlitScene(seed: number): Scene {
 
   return {
     bloomStrength: 0,
+    crownAt: [0, 0] as [number, number],
     effect(kind) {
       effects.push(kind);
     },
@@ -258,6 +259,7 @@ export function createSunlitScene(seed: number): Scene {
       drawFloor(ctx, t);
       drawClumps(ctx, t);
       reef.draw(ctx, L, v, t);
+      this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
       drawFish(ctx, t);
       shoals.drawFront(ctx, focus, reef, L, v, t, '#5d7d96');

@@ -172,7 +172,7 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] basic DOM panel: resources with rates, upgrade cards with time-to-afford
 - [x] first lore band
 - [x] time compression: headless bot (src/game/sim/bot.ts, tools/bot.ts), ?bot/?skip/?speed, corallum.skip()
-- [ ] M1 leftovers: tap-to-sweep feedback on the reef itself (not only floating text); keyboard shortcuts
+- [x] M1 leftovers: tap-to-sweep feedback on the reef itself (render/taps.ts: ripple, food motes drawn into the crown, crown flare); keyboard shortcuts
 
 ### M6 Polish (in progress)
 - [x] procedural audio: zone pad + surf, purchase chimes, sweep bubble, story tone, choice and release cues; toggle top-left, off by default, remembered

@@ -52,6 +52,8 @@ export type Scene = {
   effect(kind: EffectKind): void;
   /** 0 disables the bloom pass (quality tier). */
   bloomStrength: number;
+  /** Where the reef's crown polyp was last drawn, in device pixels. */
+  crownAt: [number, number];
 };
 
 /** Queue of running effects, stamped with scene time when first drawn. */

@@ -18,6 +18,7 @@ import { createMidnightScene } from '../game/render/midnight.ts';
 import { createBreachScene } from '../game/render/breach.ts';
 import { createSunlitScene } from '../game/render/sunlit.ts';
 import { createTwilightScene } from '../game/render/twilight.ts';
+import { createTaps } from '../game/render/taps.ts';
 import type { Focus, ReefView, Scene } from '../game/render/scene.ts';
 import { runBot } from '../game/sim/bot.ts';
 import { advance, assign, breach, buy, calciteHold, choose, ended, moonFull, moonPhase, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
@@ -352,12 +353,14 @@ hint.id = 'sweep-hint';
 hint.textContent = 'Tap the water to sweep your tentacles';
 ui.append(hint);
 
+const taps = createTaps();
 // Tapping the water sweeps the tentacles: a small burst of calcite.
 canvas.addEventListener('pointerdown', (e) => {
   const gain = sweep(state);
   if (gain <= 0) return;
   hint.classList.add('done');
   audio.cue('sweep');
+  taps.push(e.clientX * dpr, e.clientY * dpr, animT);
   const f = document.createElement('div');
   f.className = 'float';
   f.textContent = `+${num(gain)}`;
@@ -384,7 +387,11 @@ window.addEventListener('keydown', (e) => {
   if (e.ctrlKey || e.metaKey || e.altKey || target?.closest('input, textarea, button, select')) return;
   if (e.key === ' ') {
     e.preventDefault();
-    if (sweep(state) > 0) audio.cue('sweep');
+    if (sweep(state) > 0) {
+      audio.cue('sweep');
+      const [x, y] = scene.crownAt;
+      taps.push(x + (Math.sin(animT * 7) > 0 ? 1 : -1) * 160 * dpr, y - 60 * dpr, animT);
+    }
     return;
   }
   const id = KEYS[e.key.toLowerCase()];
@@ -432,6 +439,7 @@ function frame(now: number): void {
       ctx.restore();
     }
   }
+  taps.draw(ctx, tNow, scene.crownAt, dpr);
   const p2 = performance.now();
   panel.update(state);
   const p3 = performance.now();

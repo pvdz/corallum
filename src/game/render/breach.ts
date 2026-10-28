@@ -205,6 +205,7 @@ export function createBreachScene(seed: number): Scene {
 
   return {
     bloomStrength: 0.5,
+    crownAt: [0, 0] as [number, number],
     effect(kind) {
       effects.push(kind);
     },
@@ -218,6 +219,7 @@ export function createBreachScene(seed: number): Scene {
       drawSky(ctx, t, v.moonPhase);
       drawSea(ctx, t, v.moonPhase);
       reef.draw(ctx, L, v, t);
+      this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
       drawWaves(ctx, t);
       drawSpawn(ctx, t, v, L, reef);
