@@ -180,3 +180,12 @@ test('seamounts: a spawning settles where it was sent, and the place bends the n
   for (let i = 0; i < 600 * 30; i++) advance(b, 1 / 30);
   assert.ok(Math.abs(a.calcite - b.calcite) / Math.max(1, a.calcite) < 1e-6);
 });
+
+test('pacing: every seamount finishes the game in 6–11 h', async () => {
+  const { runBot } = await import('../../src/game/sim/bot.ts');
+  const { ended } = await import('../../src/game/sim/economy.ts');
+  for (const seamount of ['plain', 'warm', 'cold', 'crowded'] as const) {
+    const { state } = runBot(ended, 14 * 3600, { seamount });
+    assert.ok(ended(state) && state.t > 6 * 3600 && state.t < 11 * 3600, `${seamount}: ${state.t}s`);
+  }
+});
