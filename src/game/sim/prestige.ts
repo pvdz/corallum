@@ -3,14 +3,19 @@
 import { MEETINGS } from '../content/act3.ts';
 import { DIALECTS } from '../content/act4.ts';
 import { LINEAGE, TRAITS, type Trait, type TraitId } from '../content/lineage.ts';
-import { ended } from './economy.ts';
+import { ended, spawnTarget } from './economy.ts';
 import { newGame, type GameState, type Meta } from './state.ts';
 
 /** Lineage a spawning released now would bring. */
 export function lineageFor(s: GameState): number {
   const base = Math.floor(LINEAGE.perRoot * Math.sqrt(Math.max(0, s.height) / 60));
   const frag = s.dialects.spawn === 'fragmenting' ? LINEAGE.fragmentingBonus : 1;
-  return Math.floor(base * frag) + (ended(s) ? LINEAGE.endingBonus : 0);
+  return Math.floor(base * frag) + (ended(s) ? endingLineage(s, s.released) : 0);
+}
+
+/** The ending's lineage for a release of this much spawn. */
+export function endingLineage(s: GameState, released: number): number {
+  return LINEAGE.endingBonus + Math.floor(LINEAGE.releaseBonus * Math.log2(Math.max(1, released / spawnTarget(s))));
 }
 
 export function canSpawnLesser(s: GameState): boolean {

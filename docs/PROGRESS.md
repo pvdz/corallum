@@ -119,3 +119,7 @@ date, what landed, what is half-done, what's next.
   marginal gain. Retuned band costs (ECONOMY.md).
 - Multiplier cards (lattice, lure, vent, sand bars, channels, pigments, canopy) show what the next level is worth now, settled: "· now +13% calcite" (lattice: "+39% held").
 - Rasp dial says where calcite holds most ("holds most at 14" / "the most it can hold"); bestRasp moved into the sim; the eating figure counts polite Rasp correctly.
+- Ending lineage scales with the spawn released (10 + 4 per doubling over target; `state.released`),
+  shown on the moon card. Tried making "wait a moon" a decision: the spawn's 1 h time constant means
+  it is already near its hold at the surface, so a wait adds ~+1; the card only mentions the next
+  moon when it would add 2+. A real Act V decision still needs a different lever.

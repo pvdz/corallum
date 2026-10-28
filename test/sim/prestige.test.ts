@@ -128,3 +128,19 @@ test('endings and carried memories survive beginning again', async () => {
   assert.deepEqual(next.meta.carriedEver, ['vent', 'ossel', 'rasp']);
   assert.deepEqual(next.carried, []);
 });
+
+test('a bigger release sends more lineage into the next run', async () => {
+  const { lineageFor, endingLineage } = await import('../../src/game/sim/prestige.ts');
+  const { spawnTarget } = await import('../../src/game/sim/economy.ts');
+  const s = newGame(9);
+  s.height = 4000;
+  s.carried = ['vent', 'ossel', 'rasp'];
+  const target = spawnTarget(s);
+  assert.equal(endingLineage(s, target), 10);
+  assert.equal(endingLineage(s, 4 * target), 18);
+  assert.equal(endingLineage(s, 0), 10, 'old saves without a recorded release keep the old bonus');
+  s.released = target;
+  const small = lineageFor(s);
+  s.released = 4 * target;
+  assert.equal(lineageFor(s) - small, 8);
+});

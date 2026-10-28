@@ -6,8 +6,12 @@ export const LINEAGE = {
   /** Lineage = floor(perRoot · sqrt(height / 60)). */
   perRoot: 4,
   fragmentingBonus: 1.5,
-  /** Extra lineage when beginning again after the ending. */
+  /**
+   * Extra lineage when beginning again after the ending: endingBonus, plus releaseBonus for every
+   * doubling of the spawn released over its target (a bigger release sends more of you out).
+   */
   endingBonus: 10,
+  releaseBonus: 4,
   /** Glass gardeners: silt the shrimp clear (1/s), as much as six grazing Rasp without their appetite. */
   glassSweep: 0.18,
 } as const;

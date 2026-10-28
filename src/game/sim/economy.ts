@@ -626,6 +626,7 @@ export function breach(s: GameState, memories: MemoryId[]): boolean {
     const m = MEMORIES.find((x) => x.id === id);
     if (!m || !memoryAvailable(s, m)) return false;
   }
+  s.released = s.spawn;
   s.spawn = 0;
   s.carried = unique;
   s.breachedAt = s.t;

@@ -9,6 +9,8 @@ import {
 import { drawMoon } from '../render/draw.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, num, rate } from './format.ts';
+import { relax } from '../sim/ode.ts';
+import { endingLineage } from '../sim/prestige.ts';
 
 export type FinaleHooks = {
   breach(memories: MemoryId[]): boolean;
@@ -165,7 +167,16 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
         const hold = spawnHold(s, r);
         parts.push(`Spawn ${num(s.spawn)} / ${num(target)} (${rate(spawnNet(s, r))}${hold < target ? ' — ripen it more: it will not hold enough' : ''}).`);
       }
-      if (!parts.length) parts.push(full ? 'Everything is ready.' : 'Everything is ready. Wait for the moon.');
+      if (!parts.length) {
+        parts.push(full ? 'Everything is ready.' : 'Everything is ready. Wait for the moon.');
+        // Wait-or-release: a bigger spawn sends more of you out (lineage for beginning again).
+        const nextIn = full ? ACT5.moonPeriod : wait;
+        const later = relax(s.spawn, r.spawnP, r.spawnK, nextIn);
+        const now = endingLineage(s, s.spawn), then = endingLineage(s, later);
+        // The next moon is mentioned only when waiting would really be worth it.
+        if (full) parts.push(`Released now: +${now} lineage for the next reef${then - now >= 2 ? `; at the next full moon about +${then}` : ''}.`);
+        else parts.push(`Released at this moon: about +${then} lineage for the next reef.`);
+      }
       need.textContent = parts.join(' ');
       release.disabled = !canBreach(s);
       card.classList.toggle('ready', breachReady(s));
