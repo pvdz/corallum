@@ -577,6 +577,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const lv = s.levels[u.id];
         c.level.textContent = u.maxLevel === Infinity ? (lv ? `×${lv}` : '') : `${lv}/${u.maxLevel}`;
         if (u.id === 'skeleton') c.effect.textContent = `the reef rises ${metres(bandMetres(lv))}`;
+        // What one more would really add, after every multiplier (refreshed on the card's turn).
+        if ((u.id === 'polyp' || u.id === 'symbiont') && (etaSlot === etaTurn || !c.effect.dataset.live)) {
+          c.effect.textContent = marginalText(s, u.id);
+          c.effect.dataset.live = '1';
+        }
         if (maxed(s, u.id)) {
           c.cost.textContent = u.id === 'skeleton' ? 'As high as it goes, for now' : 'Complete';
           c.btn.disabled = true;
@@ -721,6 +726,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     growPage: grow,
     reefPage,
   };
+}
+
+/** The gain from one more polyp or glimmerseed, with everything that multiplies it. */
+function marginalText(s: GameState, id: 'polyp' | 'symbiont'): string {
+  const next: GameState = { ...s, levels: { ...s.levels, [id]: s.levels[id] + 1 } };
+  if (id === 'polyp') return `+${num(calciteRate(next) - calciteRate(s))} calcite/s`;
+  return `+${num(rates(next).glowP - rates(s).glowP)} glow/s`;
 }
 
 function etaText(t: number): string {
