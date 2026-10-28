@@ -9,6 +9,7 @@ import { createReef, type ReefLayout } from './reef.ts';
 import { createRuins, type RuinStyle } from './ruins.ts';
 import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts';
 import { createShoals } from './shoals.ts';
+import { drawShrimp } from './shrimp.ts';
 
 const FROM = 3000;
 const TO = 3800;
@@ -228,6 +229,29 @@ export function createTwilightScene(seed: number): Scene {
     }
   }
 
+  /** Glass gardeners: shrimp working along the slope near the reef's foot, picking at the silt. */
+  function drawGardeners(ctx: CanvasRenderingContext2D, t: number): void {
+    const s = scale() * 1.8;
+    for (let i = 0; i < 7; i++) {
+      // Each wanders a short stretch of slope, pausing to pick.
+      const a = t * (0.05 + (i % 3) * 0.015) + i * 2.1;
+      // Spread along the slope either side of the trunk.
+      const u = 0.5 + (i < 4 ? -1 : 1) * (0.1 + (i % 4) * 0.07) + Math.sin(a) * 0.03;
+      const dir = Math.cos(a) >= 0 ? 1 : -1;
+      const pick = Math.max(0, Math.sin(t * 3 + i * 1.3)) ** 6;
+      const x = focus.x - focus.w * 0.1 + u * focus.w * 1.2;
+      const y = slopeY(u) - 6 * s + pick * 3 * s;
+      drawShrimp(ctx, x, y, s * (0.8 + (i % 2) * 0.3), dir, t, i, '225,240,255');
+      if (pick > 0.5) {
+        // A puff of silt lifted and eaten.
+        ctx.fillStyle = `rgba(200,195,180,${0.35 * pick})`;
+        ctx.beginPath();
+        ctx.arc(x + dir * 14 * s, y + 4 * s, 3 * s * pick, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+
   /** The Rasp: blunt-beaked grazers with coin scales, nosing along the slope. */
   function drawRasp(ctx: CanvasRenderingContext2D, t: number, n: number, trust: boolean, polite: boolean): void {
     const s = scale();
@@ -334,6 +358,7 @@ export function createTwilightScene(seed: number): Scene {
       drawShelf(ctx, v.sandBars, v.siltLevel);
       drawWall(ctx, t, v.wall);
       drawRasp(ctx, t, v.rasp, v.raspTrust, v.raspPolite);
+      if (v.gardeners) drawGardeners(ctx, t);
       reef.draw(ctx, L, v, t);
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));

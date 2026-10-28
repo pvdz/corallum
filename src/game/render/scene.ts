@@ -30,6 +30,8 @@ export type ReefView = {
   /** How the Rasp behave: trusting (story told as the bands tell it), polite (silt-only terms). */
   raspTrust: boolean;
   raspPolite: boolean;
+  /** Glass gardeners (a lineage trait): shrimp graze the silt on the Twilight Shelf. */
+  gardeners: boolean;
   /** The Form dialect, which shapes the sunlit reef. */
   form: DialectId | '';
   /** Act V: the moon (0..1, full at 0.5), spawn ripeness, seconds since the release (−1 before). */

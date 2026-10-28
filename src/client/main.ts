@@ -311,6 +311,7 @@ function view(): ReefView {
     rasp: state.rasp,
     wall: state.truce.wall,
     raspTrust: state.truce.story === 'a',
+    gardeners: state.meta.traits['glass-gardeners'] > 0,
     raspPolite: state.truce.terms === 'b',
     form: state.dialects.form,
     moonPhase: moonPhase(state.t),
