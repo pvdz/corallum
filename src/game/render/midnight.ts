@@ -63,6 +63,62 @@ export function createMidnightScene(seed: number): Scene {
     drawShrimp(ctx, x, y, s, dir, t, i);
   }
 
+  /**
+   * An anglerfish drifting through the dark every few minutes: a black body you can barely see,
+   * a mouth of needle teeth, and the lure on its head pulsing like the reef's own light.
+   */
+  function drawAngler(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 170, crossing = 70;
+    const u = (t % period) / crossing;
+    if (u >= 1) return;
+    const lap = Math.floor(t / period);
+    const dir = lap % 2 ? 1 : -1;
+    const s = scale() * 1.5;
+    const x = focus.x + focus.w * (dir > 0 ? -0.1 + u * 1.2 : 1.1 - u * 1.2);
+    const y = focus.y + focus.h * (0.2 + 0.06 * Math.sin(lap * 1.7)) + Math.sin(t * 0.4) * 8 * s;
+    const pulse = 0.6 + 0.4 * Math.sin(t * 2.4);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(dir, 1);
+    // Body: a dark lumpy oval, lit faintly from its own lure.
+    const body = ctx.createRadialGradient(18 * s, -10 * s, 0, 0, 0, 34 * s);
+    body.addColorStop(0, 'rgba(85,95,140,0.7)');
+    body.addColorStop(1, 'rgba(14,16,36,0.92)');
+    ctx.fillStyle = body;
+    ctx.beginPath();
+    ctx.moveTo(26 * s, -4 * s);
+    ctx.bezierCurveTo(24 * s, -22 * s, -14 * s, -24 * s, -24 * s, -6 * s);
+    ctx.lineTo(-38 * s, -14 * s + Math.sin(t * 3) * 3 * s);
+    ctx.lineTo(-36 * s, 10 * s + Math.sin(t * 3) * 3 * s);
+    ctx.lineTo(-22 * s, 8 * s);
+    ctx.bezierCurveTo(-10 * s, 22 * s, 20 * s, 20 * s, 28 * s, 8 * s);
+    ctx.closePath();
+    ctx.fill();
+    // Teeth along the open jaw.
+    ctx.strokeStyle = 'rgba(220,225,240,0.6)';
+    ctx.lineWidth = 0.8 * s;
+    for (let k = 0; k < 6; k++) {
+      const tx = 26 * s - k * 3.2 * s;
+      ctx.beginPath();
+      ctx.moveTo(tx, -1 * s);
+      ctx.lineTo(tx - 1 * s, 4 * s);
+      ctx.moveTo(tx - 1.5 * s, 9 * s);
+      ctx.lineTo(tx - 2 * s, 4.5 * s);
+      ctx.stroke();
+    }
+    // The rod and its bulb.
+    ctx.strokeStyle = 'rgba(80,90,130,0.7)';
+    ctx.lineWidth = 1.2 * s;
+    ctx.beginPath();
+    ctx.moveTo(10 * s, -19 * s);
+    ctx.quadraticCurveTo(26 * s, -42 * s, 40 * s, -30 * s);
+    ctx.stroke();
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, 40 * s, -30 * s, 18 * s, '150,240,255', 0.55 * pulse);
+    glow(ctx, 40 * s, -30 * s, 4 * s, '230,255,255', 0.9);
+    ctx.restore();
+  }
+
   /** Comb jellies: glassy ovals whose eight comb rows ripple with travelling rainbow light. */
   function drawComb(ctx: CanvasRenderingContext2D, c: Comb, t: number): void {
     const s = scale() * c.size;
@@ -225,6 +281,7 @@ export function createMidnightScene(seed: number): Scene {
       drawFlashes(ctx, t);
       // The old stone's lights answer the scouts listening at it.
       ruins.draw(ctx, w, h, focus, v.height, RUINS, t, [0, 1, 2], Math.min(1, v.jobs.scout / 8));
+      drawAngler(ctx, t);
       for (const c of combs) drawComb(ctx, c, t);
       if (v.bands.includes('glass')) for (let i = 0; i < 4; i++) swimShrimp(ctx, t, i);
       if (v.bands.includes('siphon')) drawSiphonophore(ctx, t);
