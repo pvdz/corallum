@@ -1,4 +1,5 @@
 // Loads the game at desktop and mobile sizes and fails on any console error or blank canvas.
+// Also turns the sound on (over the opening story) and lets the zone music play a few notes.
 // Run with: node test/e2e/smoke.ts
 
 import { VIEWPORTS, withGame } from '../../tools/browser.ts';
@@ -15,8 +16,11 @@ await withGame(async (open) => {
       for (let i = 0; i < d.length; i += 4 * 97) sum += d[i]! + d[i + 1]! + d[i + 2]!;
       return sum;
     });
-    const ok = errors.length === 0 && lit > 0;
-    console.log(`${ok ? 'ok  ' : 'FAIL'} ${vp.name}${errors.length ? ': ' + errors.join(' | ') : ''}${lit > 0 ? '' : ' (blank canvas)'}`);
+    await page.locator('#sound').click();
+    await page.waitForTimeout(3000);
+    const sound = await page.locator('#sound').getAttribute('aria-pressed');
+    const ok = errors.length === 0 && lit > 0 && sound === 'true';
+    console.log(`${ok ? 'ok  ' : 'FAIL'} ${vp.name}${errors.length ? ': ' + errors.join(' | ') : ''}${lit > 0 ? '' : ' (blank canvas)'}${sound === 'true' ? '' : ' (sound did not turn on)'}`);
     failed ||= !ok;
   }
 });

@@ -16,6 +16,19 @@ const ZONES: Record<Zone, { root: number; bright: number; surf: number; notes: n
 
 const PENTATONIC = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21];
 
+/**
+ * Per zone, a slow melody over the pad: a scale (semitones over the root), the octave it sits
+ * in, seconds between notes, and how often a beat is left silent. Deep zones are sparse and
+ * low; the sunlit ones brighter and closer together.
+ */
+const THEMES: Record<Zone, { scale: number[]; octave: number; beat: number; rest: number; length: number }> = {
+  1: { scale: [0, 3, 7, 10, 12, 15], octave: 4, beat: 3.2, rest: 0.55, length: 5 },
+  2: { scale: [0, 2, 3, 7, 10, 12, 14], octave: 4, beat: 2.6, rest: 0.45, length: 4.5 },
+  3: { scale: [0, 2, 5, 7, 9, 12, 14], octave: 4, beat: 2.2, rest: 0.4, length: 4 },
+  4: { scale: [0, 2, 4, 7, 9, 11, 12, 16], octave: 8, beat: 1.8, rest: 0.35, length: 3.5 },
+  5: { scale: [0, 4, 7, 9, 12, 16, 19], octave: 4, beat: 2.4, rest: 0.4, length: 5 },
+};
+
 export function createAudio() {
   let ctx: AudioContext | null = null;
   let master: GainNode | null = null;
@@ -24,6 +37,9 @@ export function createAudio() {
   let zone: Zone = 1;
   let enabled = false;
   let noteIndex = 0;
+  // The melody: a wandering walk over the zone's scale, scheduled a little ahead of time.
+  let nextBeat = 0;
+  let step = 2;
 
   function ensure(): AudioContext {
     if (ctx) return ctx;
@@ -118,10 +134,28 @@ export function createAudio() {
     surf.filter.frequency.setTargetAtTime(300 + z.surf * 4000, t, ramp / 3);
   }
 
+  function scheduleMelody(): void {
+    if (!ctx || !enabled) return;
+    const th = THEMES[zone];
+    if (nextBeat < ctx.currentTime) nextBeat = ctx.currentTime + 0.5;
+    while (nextBeat < ctx.currentTime + 1.5) {
+      if (Math.random() > th.rest) {
+        // Mostly small steps, now and then a leap; phrases drift back toward the root.
+        const move = Math.random() < 0.8 ? (Math.random() < 0.5 ? -1 : 1) : (Math.random() < 0.5 ? -3 : 3);
+        step = Math.max(0, Math.min(th.scale.length - 1, step + move));
+        if (Math.random() < 0.15) step = 0;
+        const f = ZONES[zone].root * th.octave * 2 ** (th.scale[step]! / 12);
+        bell(f, 0.035, th.length, nextBeat);
+      }
+      nextBeat += th.beat * (Math.random() < 0.2 ? 1.5 : 1);
+    }
+  }
+  setInterval(scheduleMelody, 500);
+
   /** A soft bell: a sine and its octave with a quick attack and long tail. */
-  function bell(freq: number, gain: number, length = 1.6): void {
+  function bell(freq: number, gain: number, length = 1.6, at = 0): void {
     if (!ctx || !master || !enabled) return;
-    const t = ctx.currentTime;
+    const t = Math.max(at, ctx.currentTime);
     for (const [mult, g] of [[1, 1], [2, 0.3], [3.01, 0.12]] as const) {
       const o = ctx.createOscillator();
       o.frequency.value = freq * mult;

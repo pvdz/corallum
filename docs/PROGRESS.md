@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Polish backlog in PLAN.md M6. Ideas not yet planned: more lineage content, a title/intro card, music themes per zone, more bands in Act II, Thousandfold towers in the Sunlit Crown.
+NOW: Polish backlog in PLAN.md M6. Ideas not yet planned: more lineage content, a title/intro card, more bands in Act II, Thousandfold towers in the Sunlit Crown.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -59,3 +59,7 @@ date, what landed, what is half-done, what's next.
 - Save-export nudge: once a reef is an hour old (or has spawned) and no save was copied in 3 days
   (wall clock in localStorage `corallum.exported`), the Reef tab gets a dot and a note. Copying clears it.
   Covered in test/e2e/prestige.ts.
+- Zone music (audio.ts THEMES): a slow generative bell melody over each zone's pad (its own scale,
+  register, tempo and rests: sparse minor in the Silt Floor, brighter major in the Sunlit Crown).
+  Scheduled ahead on the AudioContext clock. The sound button now sits above the story reader, so
+  sound can be turned on during the opening story; smoke test turns sound on at every viewport.
