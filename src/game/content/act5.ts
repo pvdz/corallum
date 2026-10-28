@@ -27,9 +27,24 @@ export const UPGRADES_ACT5: readonly UpgradeDef[] = [
 
 export const BANDS_ACT5: readonly Band[] = [
   {
+    id: 'describe', metres: 3985, title: 'Describe it',
+    text: 'At night you can see the moon itself now, not its ripple: a white stone with no reef on ' +
+      'it. You find yourself describing it out loud, to no one. Far below, in the sand bars, a few ' +
+      'grains that were once a wall are perhaps listening.',
+    kept: 'At night you can see the moon itself now, not its ripple. “Describe it,” Ossel says. You ' +
+      'try. Halfway through, Ossel says, “Yes. Yes, that is how I remember it,” and you both know ' +
+      'it has never seen it.',
+  },
+  {
     id: 'air', metres: 3990, title: 'Air',
     text: 'At low tide your crown stands in the air, and it hurts, and you hold on. Birds walk on ' +
       'you. The sky is a second sea, upside down, with its own lights in it.',
+  },
+  {
+    id: 'waiting-fish', metres: 3995, title: 'The waiting fish',
+    text: 'At dawn, bright reef fish you have no names for crowd your crown, patient, watching. ' +
+      'They know what a reef this close to the moon means. Spawn is food; many of your children ' +
+      'will be eaten before they lay a single band. You decide that is not a reason to hold on.',
   },
   {
     id: 'surface', metres: 4000, title: 'The surface',

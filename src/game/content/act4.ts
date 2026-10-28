@@ -120,6 +120,15 @@ export const BANDS_ACT4: readonly Band[] = [
       'of them waiting for the same moon. Each will spawn the way its dialect remembers. So will you.',
   },
   {
+    id: 'storm', metres: 3965, title: 'Storm',
+    text: 'A storm passes over. For a day the light shakes and the water above is torn white, and ' +
+      'whole branches of your crown snap and tumble down the slope. By evening you are growing ' +
+      'again, though not where they were.',
+    kept: 'A storm passes over. For a day the light shakes and the water above is torn white, and ' +
+      'whole branches of your crown snap and tumble down the slope. “Let them,” Ossel says. “The ' +
+      'bands you lose are the ones you could spare.” By evening you are growing again.',
+  },
+  {
     id: 'breach', metres: 3980, title: 'The breach',
     text: 'Your crown touches air. It is cold and thin and terrible and the light is everywhere. ' +
       'Above, pale in the evening, a moon is rising, not yet full.',

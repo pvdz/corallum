@@ -65,3 +65,6 @@ date, what landed, what is half-done, what's next.
   sound can be turned on during the opening story; smoke test turns sound on at every viewport.
 - Act II bands: "What falls" (95 m), "Glass" (240 m), "Ossel dreams" (500 m) fill the 14–18 min
   silences between bands; glass shrimp now appear in the Midnight scene once "Glass" is laid.
+- Later bands to break 30–46 min silences: "How the Rasp end" (3725 m), "Storm" (3965 m),
+  "Describe it" (3985 m), "The waiting fish" (3995 m). After the wall choice Ossel only speaks in
+  `kept` variants. Act V now has a band every ~20–25 min for the bot.

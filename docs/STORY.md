@@ -87,4 +87,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Bloom (photosynthetic sugar) as a resource | real biology | OK |
 | "Lesser Spawnings", "Lineage" as prestige | generic words; none known as names of this mechanic | OK |
 | Act II bands "What falls" (marine snow from a carcass), "Glass" (see-through shrimp grazers), "Ossel dreams" (the narrator's memory slipping) | real biology; unreliable narrator is a general device, no specific beat copied | OK |
+| Later bands "How the Rasp end" (grazers grinding their dead into sand), "Storm", "Describe it" (Ossel "remembering" a moon it never saw), "The waiting fish" (spawn predators) | real biology; none known as story beats | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

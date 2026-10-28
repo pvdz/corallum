@@ -145,6 +145,12 @@ export const BANDS_ACT3: readonly Band[] = [
       'far overhead has become a ceiling of light. Ossel has been silent for three bands.',
   },
   {
+    id: 'old-rasp', metres: 3725, title: 'How the Rasp end',
+    text: 'A Rasp, very old, its beak worn down to a stub, lies on the slope by your foot and does ' +
+      'not get up. By morning the others have ground it into the sand bars, the way they grind ' +
+      'everything. Nobody mourns. “Or that is the mourning,” Ossel says, very quietly.',
+  },
+  {
     id: 'colour', metres: 3800, title: 'Colour',
     text: 'A shaft of light reaches your crown and your polyps are not grey. They are rose, and ' +
       'gold, and a green you had no word for. The sun. You have never seen the sun.',
