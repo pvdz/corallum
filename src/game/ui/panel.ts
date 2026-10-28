@@ -316,7 +316,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (window.confirm(msg)) hooks.spawnLesser();
   });
   spawnFoot.append(spawnBtn);
-  spawnCard.append(spawnTitle, spawnText, spawnFoot);
+  const spawnBuys = el('p', 'effect');
+  spawnCard.append(spawnTitle, spawnText, spawnBuys, spawnFoot);
   lineagePage.append(lineageHead, spawnCard);
   const traitCards = new Map<TraitId, Card>();
   for (const tr of TRAITS) {
@@ -704,6 +705,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         spawnTitle.textContent = ended(s) ? 'Begin again' : 'Release a lesser spawning';
         spawnBtn.disabled = !can;
         spawnBtn.textContent = can ? `+${lineageFor(s)} lineage` : 'Reach the Midnight Water first';
+        // What that lineage would buy in the next run, cheapest first.
+        const buys = can ? affordableTraits(s, s.meta.lineage + lineageFor(s)) : [];
+        spawnBuys.textContent = buys.length ? `Enough for: ${buys.join(', ')}` : '';
+        spawnBuys.hidden = !buys.length;
         for (const tr of TRAITS) {
           const c = traitCards.get(tr.id)!;
           const lv = s.meta.traits[tr.id];
@@ -792,6 +797,26 @@ function repeatWhileHeld(btn: HTMLButtonElement, fn: () => void): { repeated: bo
 }
 
 const GAIN_SHOWN = new Set<UpgradeId>(['lattice', 'lure', 'vent', 'sandbar', 'channel', 'pigment', 'canopy']);
+
+/** Names of traits the given lineage would buy, taking the cheapest step each time. */
+function affordableTraits(s: GameState, lineage: number): string[] {
+  const levels = { ...s.meta.traits };
+  const bought = new Map<string, number>();
+  for (let guard = 0; guard < 50; guard++) {
+    let pick: (typeof TRAITS)[number] | null = null;
+    let price = Infinity;
+    for (const tr of TRAITS) {
+      if (levels[tr.id] >= tr.max) continue;
+      const c = traitCost({ ...s, meta: { ...s.meta, traits: levels } }, tr.id);
+      if (c < price) { price = c; pick = tr; }
+    }
+    if (!pick || price > lineage) break;
+    lineage -= price;
+    levels[pick.id]++;
+    bought.set(pick.name, (bought.get(pick.name) ?? 0) + 1);
+  }
+  return [...bought].map(([name, n]) => (n > 1 ? `${name} ×${n}` : name));
+}
 
 /** The gain from one more polyp or glimmerseed, with everything that multiplies it. */
 function marginalText(s: GameState, id: 'polyp' | 'symbiont'): string {

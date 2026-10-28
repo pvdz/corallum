@@ -133,3 +133,4 @@ date, what landed, what is half-done, what's next.
 - Spawn dialects show at the release: brooding lets go fewer, bigger, warmer larvae that wobble up; fragmenting also breaks branch pieces off that tumble down; broadcast as before. The bird's stone hump is drawn behind the reef; the night dome (massive) darker and the glimmerseed-milestone glow boost halved (+8%/tier) so the Breach is not overexposed.
 - Grow tab: upgrades finished for good (lattice, lure, vent…) move to the end of the list as one-line cards, so live choices stay near the top on phones.
 - Perf: at most 18 shoals drawn (was 30; the rebalance gives ~29 by Act II), Midnight 19→13–15 ms headless; tower lights smaller. Breach release is ~1500 sprite draws/frame (bundles, specks, tips) — cheap on a GPU, left as is.
+- Lineage tab: the spawning card lists what its lineage would buy ("Enough for: Deep memory ×2, Quick budding, …"), cheapest first.
