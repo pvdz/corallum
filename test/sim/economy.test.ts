@@ -359,3 +359,23 @@ test('upgradeGain: multipliers report their settled worth; the lattice reports h
   const next = { ...state, levels: { ...state.levels, lattice: state.levels.lattice + 1 } };
   assert.ok(Math.abs(upgradeGain(state, 'lattice') - (calciteHold(next) / calciteHold(state) - 1)) < 1e-12);
 });
+
+test('great tide moons: every third full moon carries four memories', async () => {
+  const { greatMoon, carryAt, untilGreatMoon, moonFull } = await import('../../src/game/sim/economy.ts');
+  const P = 1200;
+  const fulls = [0, 1, 2, 3, 4, 5].map((k) => k * P + P / 2);
+  assert.deepEqual(fulls.map(carryAt), [3, 3, 4, 3, 3, 4]);
+  for (const t of [0, 700, 1500, 2400, 2950, 3700]) {
+    const w = untilGreatMoon(t);
+    assert.ok(greatMoon(t + w) && moonFull(t + w), `from ${t}: ${w}`);
+    assert.ok(w <= 3 * P);
+  }
+  // Under a great moon the Breach wants four.
+  const s = newGame(1);
+  for (const b of ['wake', 'bands', 'thousandfold', 'grinding', 'colour']) s.bands.push(b);
+  s.height = 4000;
+  s.spawn = spawnTarget(s);
+  s.t = 2 * P + P / 2;
+  assert.equal(breach(s, ['vent', 'ossel', 'rasp']), false);
+  assert.ok(breach(s, ['vent', 'ossel', 'rasp', 'thousandfold']));
+});

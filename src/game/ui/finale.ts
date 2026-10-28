@@ -4,7 +4,7 @@ import { ACT5, ENDING, MEMORIES, type MemoryId } from '../content/act5.ts';
 import { SURFACE } from '../content/acts.ts';
 import {
   breachReady, canBreach, ended, memoriesAvailable, moonFull, moonPhase, rates, spawnHold, spawnNet, spawnTarget,
-  untilFullMoon,
+  untilFullMoon, carryAt, greatMoon, untilGreatMoon,
 } from '../sim/economy.ts';
 import { drawMoon } from '../render/draw.ts';
 import type { GameState } from '../sim/state.ts';
@@ -69,6 +69,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
     if (!state || !canBreach(state)) return;
     chosen.clear();
     memoryGrid.innerHTML = '';
+    choiceText.textContent = greatMoon(state.t) ? ENDING.chooseGreat : ENDING.choose;
     for (const m of memoriesAvailable(state)) {
       const b = el('button', 'memory');
       b.type = 'button';
@@ -77,7 +78,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
       if (state.meta.carriedEver.includes(m.id)) b.append(el('em', 'carried-before', 'carried before'));
       b.addEventListener('click', () => {
         if (chosen.has(m.id)) chosen.delete(m.id);
-        else if (chosen.size < ACT5.carry) chosen.add(m.id);
+        else if (state && chosen.size < carryAt(state.t)) chosen.add(m.id);
         b.classList.toggle('on', chosen.has(m.id));
         refreshChoice();
       });
@@ -87,8 +88,9 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
     choice.hidden = false;
   }
   function refreshChoice(): void {
-    picked.textContent = `${chosen.size} of ${ACT5.carry}`;
-    letGo.disabled = chosen.size !== ACT5.carry || !state || !moonFull(state.t);
+    const n = state ? carryAt(state.t) : ACT5.carry;
+    picked.textContent = `${chosen.size} of ${n}`;
+    letGo.disabled = chosen.size !== n || !state || !moonFull(state.t);
   }
   back.addEventListener('click', () => { choice.hidden = true; });
   letGo.addEventListener('click', () => {
@@ -158,7 +160,10 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
       }
       const full = moonFull(s.t);
       const wait = untilFullMoon(s.t);
-      status.textContent = full ? 'The moon is full.' : `${phase < 0.5 ? 'Waxing' : 'Waning'} · full in ${duration(wait)}`;
+      const great = greatMoon(s.t + wait);
+      status.textContent = full
+        ? (great ? 'Full, and a great tide: four memories' : 'The moon is full.')
+        : `${phase < 0.5 ? 'Waxing' : 'Waning'} · full in ${duration(wait)}${great ? ' · a great tide' : ''}`;
       const r = rates(s);
       const target = spawnTarget(s);
       const parts: string[] = [];
@@ -176,6 +181,8 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
         // The next moon is mentioned only when waiting would really be worth it.
         if (full) parts.push(`Released now: +${now} lineage for the next reef${then - now >= 2 ? `; at the next full moon about +${then}` : ''}.`);
         else parts.push(`Released at this moon: about +${then} lineage for the next reef.`);
+        // The wait-or-go choice: a great tide carries one more memory into the ending.
+        if (!great) parts.push(`The next great tide, carrying four memories, is in ${duration(untilGreatMoon(s.t))}.`);
       }
       need.textContent = parts.join(' ');
       release.disabled = !canBreach(s);

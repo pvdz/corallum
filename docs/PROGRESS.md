@@ -124,3 +124,8 @@ date, what landed, what is half-done, what's next.
   it is already near its hold at the surface, so a wait adds ~+1; the card only mentions the next
   moon when it would add 2+. A real Act V decision still needs a different lever.
 - Trait "Old habits" (9 lineage): while the page is open the reef buds polyps / hosts glimmerseed itself when one costs under 10% of its calcite (habitPurchase, ≤4/s); never offline. Reef-tab switch once owned.
+- Act V decision: great tide moons. Every third full moon (cycle % 3 == 2) is a great tide; a
+  release under it carries four memories (one more epilogue page) instead of three. The moon card
+  names it and counts down to the next one, so the choice is "release now with three, or wait up to
+  40 min for four". Drawn larger and warmer in the sky. Tests: sim + finale e2e (desktop releases
+  under a great tide, 7 pages).

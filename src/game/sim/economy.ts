@@ -582,6 +582,27 @@ export function moonFull(t: number): boolean {
   return Math.abs(moonPhase(t) - 0.5) <= ACT5.fullWindow;
 }
 
+/** Every few cycles the full moon brings a great tide: the spawn can carry one more memory. */
+export function greatMoon(t: number): boolean {
+  return Math.floor(t / ACT5.moonPeriod) % ACT5.greatEvery === ACT5.greatEvery - 1;
+}
+
+/** Memories a release at time t may carry. */
+export function carryAt(t: number): number {
+  return greatMoon(t) ? ACT5.greatCarry : ACT5.carry;
+}
+
+/** Seconds until the next full moon that is a great tide (0 while one is full). */
+export function untilGreatMoon(t: number): number {
+  // Walk from one full moon to the next until one is great.
+  let at = moonFull(t) ? t : t + untilFullMoon(t) + 1e-6;
+  for (let k = 0; k <= ACT5.greatEvery; k++) {
+    if (greatMoon(at)) return at - t;
+    at = (Math.floor(at / ACT5.moonPeriod) + 1 + 0.5 - ACT5.fullWindow) * ACT5.moonPeriod + 1e-6;
+  }
+  return Infinity;
+}
+
 /** Seconds until the moon is next full (0 while it is). */
 export function untilFullMoon(t: number): number {
   if (moonFull(t)) return 0;
@@ -617,11 +638,11 @@ export function canBreach(s: GameState): boolean {
   return breachReady(s) && moonFull(s.t);
 }
 
-/** The finale: release the spawn under the full moon, carrying exactly three memories. */
+/** The finale: release the spawn under the full moon, carrying exactly as many memories as it allows. */
 export function breach(s: GameState, memories: MemoryId[]): boolean {
   if (!canBreach(s)) return false;
   const unique = [...new Set(memories)];
-  if (unique.length !== ACT5.carry) return false;
+  if (unique.length !== carryAt(s.t)) return false;
   for (const id of unique) {
     const m = MEMORIES.find((x) => x.id === id);
     if (!m || !memoryAvailable(s, m)) return false;

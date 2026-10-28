@@ -3,7 +3,7 @@
 
 import { UPGRADES } from '../content/upgrades.ts';
 import type { Job } from '../content/act2.ts';
-import { assign, BANDS, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil, readingCost, meetingWords, jobGain, steadyCalciteRate, bestRasp } from './economy.ts';
+import { assign, BANDS, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil, readingCost, meetingWords, jobGain, steadyCalciteRate, bestRasp, carryAt } from './economy.ts';
 import type { Choice, MeetingId } from '../content/act3.ts';
 import type { DialectId, DialectTier } from '../content/act4.ts';
 import { newGame, type GameState } from './state.ts';
@@ -40,7 +40,7 @@ export function botDecide(
   const m = nextMeeting(s);
   if (m && choose(s, m.id, truce[m.id])) bought.push(`truce:${m.id}=${truce[m.id]}`);
   if (canBreach(s)) {
-    const carry = memoriesAvailable(s).slice(0, 3).map((m) => m.id);
+    const carry = memoriesAvailable(s).slice(0, carryAt(s.t)).map((m) => m.id);
     if (breach(s, carry)) bought.push(`breach:${carry.join(',')}`);
   }
   const tier = nextTier(s);

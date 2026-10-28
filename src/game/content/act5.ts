@@ -13,8 +13,10 @@ export const ACT5 = {
   /** The moon: a cycle of `moonPeriod` sim seconds, full within ±fullWindow of phase 0.5. */
   moonPeriod: 1200,
   fullWindow: 0.08,
-  /** Memories the spawn can carry. */
+  /** Memories the spawn can carry; under a great tide moon (every `greatEvery`-th cycle), more. */
   carry: 3,
+  greatCarry: 4,
+  greatEvery: 3,
 } as const;
 
 export const UPGRADES_ACT5: readonly UpgradeDef[] = [
@@ -150,6 +152,8 @@ export const ENDING = {
     'break and spread and drift. You cannot keep everything. You never could.',
   choose: 'A reef that keeps everything calcifies and dies. Your spawn can carry three memories. ' +
     'The rest stay here, in your stone, for the Rasp and the sea.',
+  chooseGreat: 'A reef that keeps everything calcifies and dies. Tonight is a great tide, and the ' +
+    'water will lift more than usual: your spawn can carry four memories. The rest stay here.',
   closingKept: 'Ossel goes with you to the end of the night, and then, at dawn, says it is tired, ' +
     'and asks you to let the Rasp have it after all. You do. It is the last thing you learn.',
   closingLetGo: 'At dawn the sand that was Ossel washes over your crown in the surf, warm, and for ' +

@@ -70,7 +70,7 @@ export function createBreachScene(seed: number): Scene {
     return [focus.x + focus.w * 0.72, focus.y + focus.h * 0.11];
   }
 
-  function drawSky(ctx: CanvasRenderingContext2D, t: number, phase: number): void {
+  function drawSky(ctx: CanvasRenderingContext2D, t: number, phase: number, great: boolean): void {
     const wy = waterY();
     const g = ctx.createLinearGradient(0, 0, 0, wy);
     g.addColorStop(0, '#05061a');
@@ -84,11 +84,13 @@ export function createBreachScene(seed: number): Scene {
     }
     // The moon, lit to its phase.
     const [mx, my] = moonPos();
-    const r = 26 * scale();
+    // A great tide moon rides lower and larger, with a warm ring around it.
+    const r = 26 * scale() * (great ? 1.3 : 1);
     const lit = 1 - Math.abs(phase - 0.5) * 2;
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    glow(ctx, mx, my, r * 5, '230,230,200', 0.15 * lit + 0.03);
+    glow(ctx, mx, my, r * 5, great ? '255,215,160' : '230,230,200', (great ? 0.22 : 0.15) * lit + 0.03);
+    if (great) glow(ctx, mx, my, r * 2.2, '255,200,150', 0.18 * lit);
     ctx.restore();
     drawMoon(ctx, mx, my, r, phase);
   }
@@ -307,7 +309,7 @@ export function createBreachScene(seed: number): Scene {
       const form = formOf(v.form);
       const reef = reefFor(form);
       const L = layout(v, form);
-      drawSky(ctx, t, v.moonPhase);
+      drawSky(ctx, t, v.moonPhase, v.greatMoon);
       drawSea(ctx, t, v.moonPhase);
       reef.draw(ctx, L, v, t);
       this.crownAt = reef.crown(L);

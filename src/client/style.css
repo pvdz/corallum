@@ -207,7 +207,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .job-feed .job-name { color: var(--plankton); }
 .job-light .job-name { color: var(--glowc); }
 .job-scout .job-name { color: var(--murmurs); }
-.job-what { font-size: 11.5px; color: var(--ink-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.job-what { font-size: 11.5px; color: var(--ink-dim); line-height: 1.35; }
 .job.locked { opacity: 0.45; }
 .job-count { text-align: center; font-family: var(--display); font-size: 18px; font-variant-numeric: tabular-nums; }
 .step {
