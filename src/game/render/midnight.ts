@@ -7,11 +7,22 @@ import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow } from './draw.ts';
 import { createReef, type ReefLayout } from './reef.ts';
+import { createRuins, type RuinStyle } from './ruins.ts';
 import { createShoals } from './shoals.ts';
 import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts';
 
 const FROM = 60;
 const TO = 3000;
+
+const RUINS: RuinStyle = {
+  layers: [
+    { top: 'rgb(10,14,38)', bottom: 'rgb(3,4,13)', rim: 'rgba(110,140,220,0.14)' },
+    { top: 'rgb(15,19,48)', bottom: 'rgb(5,6,18)', rim: 'rgba(120,150,230,0.2)' },
+    { top: 'rgb(20,24,58)', bottom: 'rgb(7,8,24)', rim: 'rgba(130,160,240,0.26)' },
+  ],
+  bands: 'rgba(120,150,230,0.05)',
+  lights: '120,200,255',
+};
 
 type Flash = { x: number; y: number; period: number; phase: number; hue: number; r: number };
 type Flake = { x: number; y: number; r: number; speed: number; phase: number };
@@ -31,6 +42,7 @@ export function createMidnightScene(seed: number): Scene {
   let flakes: Flake[] = [];
   const flakeSeed = Math.floor(rng() * 1e9);
   const shoals = createShoals(seed);
+  const ruins = createRuins(seed);
 
   const combs: Comb[] = Array.from({ length: 3 }, (_, i) => ({
     x: [-0.32, 0.3, 0.05][i]! + range(rng, -0.03, 0.03), y: [0.2, 0.32, 0.08][i]! + range(rng, -0.03, 0.03),
@@ -239,6 +251,7 @@ export function createMidnightScene(seed: number): Scene {
       const L = layout(v);
       drawWater(ctx, t, p);
       drawFlashes(ctx, t);
+      ruins.draw(ctx, w, h, focus, v.height, RUINS, t);
       for (const c of combs) drawComb(ctx, c, t);
       for (let i = 0; i < 4; i++) drawShrimp(ctx, t, i);
       if (v.bands.includes('siphon')) drawSiphonophore(ctx, t);

@@ -6,12 +6,23 @@ import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow } from './draw.ts';
 import { createReef, type ReefLayout } from './reef.ts';
+import { createRuins, type RuinStyle } from './ruins.ts';
 import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts';
 import { createShoals } from './shoals.ts';
 
 const FROM = 3000;
 const TO = 3800;
 const MAX_RASP = 24;
+
+const RUINS: RuinStyle = {
+  layers: [
+    { top: 'rgb(26,58,108)', bottom: 'rgb(9,26,58)', rim: 'rgba(170,215,255,0.25)' },
+    { top: 'rgb(16,40,82)', bottom: 'rgb(6,17,42)', rim: 'rgba(180,220,255,0.32)' },
+    { top: 'rgb(9,25,58)', bottom: 'rgb(3,11,28)', rim: 'rgba(190,225,255,0.4)' },
+  ],
+  bands: 'rgba(170,210,255,0.07)',
+  lights: '',
+};
 
 type Mote = { x: number; y: number; r: number; speed: number; phase: number; drift: number };
 type Grazer = { lane: number; speed: number; phase: number; size: number; hue: number };
@@ -22,6 +33,7 @@ export function createTwilightScene(seed: number): Scene {
   let focus: Focus = { x: 0, y: 0, w: 1, h: 1 };
   const reef = createReef(Math.floor(rng() * 1e9));
   const shoals = createShoals(seed ^ 0x3c);
+  const ruins = createRuins(seed);
   const effects = createEffects();
   let bloom: Bloom | null = null;
   let motes: Mote[] = [];
@@ -315,6 +327,7 @@ export function createTwilightScene(seed: number): Scene {
       const p = progress(v.height);
       const L = layout(v);
       drawWater(ctx, t, p);
+      ruins.draw(ctx, w, h, focus, v.height, RUINS, t);
       drawMotes(ctx, t, v.siltLevel);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#1d3557');
       drawShelf(ctx, v.sandBars, v.siltLevel);

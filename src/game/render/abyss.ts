@@ -7,6 +7,7 @@ import { createBloom, type Bloom } from './bloom.ts';
 import { glow } from './draw.ts';
 import { createLife, type Stage } from './life.ts';
 import { createReef, type ReefLayout } from './reef.ts';
+import { createRuins, type RuinStyle } from './ruins.ts';
 import { createShoals } from './shoals.ts';
 import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts';
 
@@ -16,6 +17,15 @@ type Ridge = { points: number[]; color: string };
 
 /** The reef's height when the Silt Floor scene is fully grown (end of Act I). */
 const FRAME_METRES = 60;
+
+const RUINS: RuinStyle = {
+  layers: [
+    { top: 'rgb(15,24,54)', bottom: 'rgb(8,11,32)', rim: 'rgba(150,175,240,0.12)' },
+    { top: 'rgb(20,30,66)', bottom: 'rgb(10,13,36)', rim: 'rgba(150,175,240,0.16)' },
+  ],
+  bands: '',
+  lights: '',
+};
 
 export function createAbyssScene(seed: number): Scene {
   const rng = mulberry32(seed);
@@ -27,6 +37,7 @@ export function createAbyssScene(seed: number): Scene {
   const ridgeSeed = Math.floor(rng() * 1e9);
   const flakeSeed = Math.floor(rng() * 1e9);
   const reefSeed = Math.floor(rng() * 1e9);
+  const ruins = createRuins(seed);
 
   const reef = createReef(reefSeed);
   const life = createLife(reefSeed ^ 0x9e3779b9);
@@ -195,6 +206,7 @@ export function createAbyssScene(seed: number): Scene {
     draw(ctx, t, v) {
       const st = stage();
       drawWater(ctx, t);
+      ruins.draw(ctx, w, h, focus, v.height, RUINS, t, [0, 1]);
       drawSnow(ctx, t, 0);
       drawRidge(ctx, ridges[0]!);
       drawSnow(ctx, t, 1);

@@ -46,3 +46,11 @@ date, what landed, what is half-done, what's next.
   rattail + glass shrimp. Screenshots: screenshot/2026-10-27-19-30/.
 - Whispers, codex, Ossel's wall on the Silt Floor, Rasp truce behaviour, landscape layout,
   foot polyps. Screenshots: screenshot/2026-10-27-19-33/, 2026-10-27-19-35/.
+
+## 2026-10-28 — drowned towers
+- render/ruins.ts: Thousandfold's dead towers at three parallax depths behind the Silt Floor (far two),
+  Midnight Water and Twilight Shelf. Tops sit at fixed metres, so they sink through the frame as the
+  reef climbs: the first sense of the camera rising. Broken crowns lit from above, stubs, growth bands,
+  a few lights still burning in the Midnight stone. Same seed in every scene so towers line up across fades.
+- In near-black water nearer stone is drawn lighter (lit), in blue water darker; outlines dropped (they
+  read as stray squiggles under the vignette).
