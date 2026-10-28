@@ -34,6 +34,7 @@ test('feasts: none before their band, then one per window, eaten once', () => {
     assert.ok(found, `window ${k} had a feast`);
   }
   assert.equal(seen, 10);
+  assert.equal(s.feasts, 10, 'each caught feast is counted');
 });
 
 test('feasts are deterministic and do not touch offline advance', () => {

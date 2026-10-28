@@ -742,6 +742,7 @@ export function feast(s: GameState): number {
   s.calcite += gain;
   s.earned.calcite += gain;
   s.feasted = f.k;
+  s.feasts++;
   return gain;
 }
 

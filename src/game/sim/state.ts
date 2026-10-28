@@ -80,6 +80,8 @@ export type GameState = {
   lastSweep: number;
   /** Index of the last feast slot eaten (see content/events.ts). */
   feasted: number;
+  /** Falling feasts caught this run. */
+  feasts: number;
   /** Lifetime totals. */
   earned: { calcite: number; glow: number; murmurs: number };
   /** Highest act reached. */
@@ -117,6 +119,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     bands: [],
     lastSweep: -1e9,
     feasted: -1,
+    feasts: 0,
     earned: { calcite: 0, glow: 0, murmurs: 0 },
     act: 1,
     meta,

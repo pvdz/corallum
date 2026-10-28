@@ -134,3 +134,4 @@ date, what landed, what is half-done, what's next.
 - Grow tab: upgrades finished for good (lattice, lure, vent…) move to the end of the list as one-line cards, so live choices stay near the top on phones.
 - Perf: at most 18 shoals drawn (was 30; the rebalance gives ~29 by Act II), Midnight 19→13–15 ms headless; tower lights smaller. Breach release is ~1500 sprite draws/frame (bundles, specks, tips) — cheap on a GPU, left as is.
 - Lineage tab: the spawning card lists what its lineage would buy ("Enough for: Deep memory ×2, Quick budding, …"), cheapest first.
+- "Your reef" shows time on this reef, calcite gathered and feasts caught (state.feasts).
