@@ -112,16 +112,34 @@ export const READINGS: readonly Reading[] = [
 
 export const BANDS_ACT2: readonly Band[] = [
   {
+    id: 'what-falls', metres: 95, title: 'What falls',
+    text: 'For a whole day something sinks past you, slowly: a cloud of scales and oil, and small ' +
+      'bright bodies following it down to eat. Ossel is quiet until it has gone. “Everything up ' +
+      'there ends down here,” it says. “That is most of what the silt is. Remember it, when you are up there.”',
+  },
+  {
     id: 'eyes', metres: 150, title: 'Eyes in the dark',
     text: 'Lights blink back at your glow: small fish, a constellation of them, each with a row of ' +
       'lamps along its belly. They circle you, uncertain. Ossel calls them lanternfish. “They used ' +
       'to sleep in our walls,” it says. “They will come to the light. Feed it to them.”',
   },
   {
+    id: 'glass', metres: 240, title: 'Glass',
+    text: 'Animals with no colour at all come to graze the slime off your stone: shrimp you can see ' +
+      'straight through, their guts glowing like coals. “Too many mouths,” Ossel says. “Thousandfold ' +
+      'kept them out.” But your stone is cleaner where they have been. You let them stay.',
+  },
+  {
     id: 'murmur', metres: 350, title: 'Murmurs',
     text: 'One of the shoals dives into the silt and comes back strange, slow, as if carrying ' +
       'something. Through it you hear a buried band: voices, too faint for words. If enough fish ' +
       'listened, you could read it.',
+  },
+  {
+    id: 'dreaming', metres: 500, title: 'Ossel dreams',
+    text: 'For three days Ossel does not answer. When it does, it is in the middle of a sentence, ' +
+      'talking to someone who is not there, about a gate in a wall you have never seen. Then it ' +
+      'stops. “I was dreaming,” it says. Stone does not dream. You do not say so.',
   },
   {
     id: 'snowline', metres: 700, title: 'Above the snowline',

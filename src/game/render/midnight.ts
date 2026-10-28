@@ -1,7 +1,7 @@
 // The Midnight Water (Act II): black water with lights in it. The reef's upper growth rises
 // out of the bottom of the frame; lanternfish shoals show what job each is doing — feeders
 // circle the reef herding plankton, light-swimmers spiral above the crown, scouts dive into
-// the dark below. A siphonophore passes now and then once the reef has seen one.
+// the dark below. Glass shrimp and a passing siphonophore appear once their bands are laid.
 
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
@@ -254,7 +254,7 @@ export function createMidnightScene(seed: number): Scene {
       drawFlashes(ctx, t);
       ruins.draw(ctx, w, h, focus, v.height, RUINS, t);
       for (const c of combs) drawComb(ctx, c, t);
-      for (let i = 0; i < 4; i++) drawShrimp(ctx, t, i);
+      if (v.bands.includes('glass')) for (let i = 0; i < 4; i++) drawShrimp(ctx, t, i);
       if (v.bands.includes('siphon')) drawSiphonophore(ctx, t);
       drawSnow(ctx, t);
       shoals.drawBack(ctx, focus, reef, L, v, t);

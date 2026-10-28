@@ -32,6 +32,9 @@ silver ripple far above.
 - Readings from Thousandfold's buried bands: its glory, its walls, the "beaked ones" it shut
   out, its currents slowing, its last bands thick with fear.
 - Bands start contradicting Ossel. Ossel insists Thousandfold fell to the Rasp.
+- Small beats between: carrion snow falling past ("everything up there ends down here"), glass
+  shrimp grazing the stone (the first grazers you let stay, against Ossel's advice), and Ossel
+  "dreaming" of a gate in a wall: the first sign its memory is slipping (foreshadows the wall).
 - End of Act II: a Reading shows the wall that kept the Rasp out, from the inside. Ossel's
   voice is in it. Ossel was part of that wall.
 
@@ -83,4 +86,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Reef "dialects" (growth form, craft, spawning mode) as a choice tree | none known | OK |
 | Bloom (photosynthetic sugar) as a resource | real biology | OK |
 | "Lesser Spawnings", "Lineage" as prestige | generic words; none known as names of this mechanic | OK |
+| Act II bands "What falls" (marine snow from a carcass), "Glass" (see-through shrimp grazers), "Ossel dreams" (the narrator's memory slipping) | real biology; unreliable narrator is a general device, no specific beat copied | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

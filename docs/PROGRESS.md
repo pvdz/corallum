@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Polish backlog in PLAN.md M6. Ideas not yet planned: more lineage content, a title/intro card, more bands in Act II, Thousandfold towers in the Sunlit Crown.
+NOW: Polish backlog in PLAN.md M6. Ideas not yet planned: more lineage content, a title/intro card, Thousandfold towers in the Sunlit Crown.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -63,3 +63,5 @@ date, what landed, what is half-done, what's next.
   register, tempo and rests: sparse minor in the Silt Floor, brighter major in the Sunlit Crown).
   Scheduled ahead on the AudioContext clock. The sound button now sits above the story reader, so
   sound can be turned on during the opening story; smoke test turns sound on at every viewport.
+- Act II bands: "What falls" (95 m), "Glass" (240 m), "Ossel dreams" (500 m) fill the 14–18 min
+  silences between bands; glass shrimp now appear in the Midnight scene once "Glass" is laid.
