@@ -17,6 +17,8 @@ export const ACT3 = {
   raspSweep: 0.03,
   raspSand: 2,
   raspEat: 1e-5,
+  /** Polite Rasp (silt-only terms) take this share of what the others eat. */
+  politeEat: 0.9,
   /** Sand settles back into the shelf slowly. */
   sandSettle: 1 / 1200,
   /** Rasp admitted per grazing ground cleared. */
@@ -71,7 +73,7 @@ export const MEETINGS: readonly Meeting[] = [
         'quietly, “That is me,” and then nothing else for a long time.',
     },
     b: {
-      label: 'Only the silt', effect: '+2 Rasp can graze · they eat no calcite · clear silt ×1.5',
+      label: 'Only the silt', effect: '+2 Rasp can graze · they eat less calcite · clear silt ×1.5',
       text: 'You offer them the silt and nothing else. The big Rasp considers this, then shrugs ' +
         'with its whole body. “Thin food. But polite.” They graze around your stone like guests.',
     },
@@ -106,7 +108,7 @@ export const MEETINGS: readonly Meeting[] = [
         'everywhere, and in it, faint, the shape of a voice that is not afraid any more.',
     },
     b: {
-      label: 'Keep Ossel', effect: 'calcite ×1.5',
+      label: 'Keep Ossel', effect: 'calcite ×1.25',
       text: '“No,” you say. “Come with me.” You grow a branch around the old wall and carry it up ' +
         'with you, stone in stone. The Rasp clack, disappointed, and graze elsewhere. Ossel does not ' +
         'say thank you. It does not need to.',

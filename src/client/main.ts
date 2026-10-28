@@ -29,6 +29,7 @@ import { newGame, type GameState } from '../game/sim/state.ts';
 import { metres, num } from '../game/ui/format.ts';
 import { createAudio } from '../game/audio/audio.ts';
 import { LINEAGE_BANDS } from '../game/content/lineage.ts';
+import { ACT1, MILESTONES, type Milestone } from '../game/content/act1.ts';
 import { WHISPERS } from '../game/content/whispers.ts';
 import { buyTrait, spawnLesser } from '../game/sim/prestige.ts';
 import { createFinale } from '../game/ui/finale.ts';
@@ -149,10 +150,7 @@ const panel = createPanel(ui, {
     audio.cue('story');
   },
   buy(id: UpgradeId) {
-    if (!buy(state, id)) return;
-    scene.effect(id);
-    audio.cue('buy');
-    save();
+    if (purchase(id)) save();
   },
   assign(job, delta) {
     if (assign(state, job, delta)) save();
@@ -358,6 +356,38 @@ function reader(): boolean {
   return !document.querySelector('.reader:not([hidden])');
 }
 
+/** Buy one, with its flourish; a milestone reached gets its own moment. */
+function purchase(id: UpgradeId): boolean {
+  const before = state.levels[id];
+  if (!buy(state, id)) return false;
+  scene.effect(id);
+  audio.cue('buy');
+  if (id === 'polyp' || id === 'symbiont') {
+    const ms = MILESTONES[id].find((m) => before < m.level && state.levels[id] >= m.level);
+    if (ms) showMilestone(ms, id === 'polyp' ? 'polyps' : 'glimmerseed');
+  }
+  return true;
+}
+
+const milestoneBox = document.createElement('div');
+milestoneBox.id = 'milestone';
+ui.append(milestoneBox);
+function showMilestone(ms: Milestone, what: string): void {
+  milestoneBox.innerHTML = '';
+  const name = document.createElement('strong');
+  name.textContent = ms.name;
+  const gain = document.createElement('span');
+  gain.textContent = `${what} ×${ACT1.milestoneFactor}`;
+  const text = document.createElement('em');
+  text.textContent = ms.text;
+  milestoneBox.append(name, gain, text);
+  milestoneBox.classList.remove('show');
+  void milestoneBox.offsetWidth;
+  milestoneBox.classList.add('show');
+  audio.cue('choice');
+  scene.effect('reading');
+}
+
 function showZoneTitle(n: number): void {
   const a = act(n);
   zoneTitle.innerHTML = '';
@@ -477,10 +507,7 @@ window.addEventListener('keydown', (e) => {
     return;
   }
   const id = KEYS[e.key.toLowerCase()];
-  if (id && buy(state, id)) {
-    scene.effect(id);
-    audio.cue('buy');
-  }
+  if (id) purchase(id);
 });
 
 // ?fps: a small readout of frame rate and draw time, for checking real devices.

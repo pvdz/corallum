@@ -15,7 +15,7 @@
 // settled the production is constant and the rest of any span is a single exact step — so a
 // month offline costs a few hundred iterations and ends exactly where the dynamics settle.
 
-import { ACT1, BANDS_ACT1 } from '../content/act1.ts';
+import { ACT1, BANDS_ACT1, MILESTONES, type Milestone } from '../content/act1.ts';
 import { ACT2, BANDS_ACT2, READINGS, type Job, type ReadingId } from '../content/act2.ts';
 import { ACT3, BANDS_ACT3, MEETINGS, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { ACT4, BANDS_ACT4, DIALECTS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
@@ -54,6 +54,20 @@ export type Rates = {
   heightTarget: number;
 };
 
+// ---------- Milestones ----------
+
+/** The multiplier from every milestone reached at this level. */
+export function milestoneMult(id: 'polyp' | 'symbiont', level: number): number {
+  let m = 1;
+  for (const ms of MILESTONES[id]) if (level >= ms.level) m *= ACT1.milestoneFactor;
+  return m;
+}
+
+/** The next milestone above this level, if any. */
+export function nextMilestone(id: 'polyp' | 'symbiont', level: number): Milestone | undefined {
+  return MILESTONES[id].find((ms) => ms.level > level);
+}
+
 function trait(s: GameState, id: TraitId): number {
   return s.meta.traits[id];
 }
@@ -90,7 +104,7 @@ export function rates(s: GameState): Rates {
   const rasp = Math.min(s.rasp, raspMax(s));
   const onShelf = target >= ACT3.from;
   return {
-    glowP: (ACT1.symbiontGlow * lv.symbiont + lightGlow * s.jobs.light) * 1.5 ** trait(s, 'glimmer'),
+    glowP: (ACT1.symbiontGlow * lv.symbiont * milestoneMult('symbiont', lv.symbiont) + lightGlow * s.jobs.light) * 1.5 ** trait(s, 'glimmer'),
     glowK: ACT1.glowFade,
     planktonP: ACT2.feedRate * s.jobs.feed * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
       (speaks(s, 'sweepers') ? 3 : 1),
@@ -111,17 +125,17 @@ export function rates(s: GameState): Rates {
       : 0,
     spawnK: ACT5.spawnFade,
     calciteBase:
-      (ACT1.trickle + ACT1.polypRate * lv.polyp * (has(s, 'city') ? 1.5 : 1)) *
+      (ACT1.trickle + ACT1.polypRate * lv.polyp * milestoneMult('polyp', lv.polyp) * (has(s, 'city') ? 1.5 : 1)) *
       ACT1.ventBoost ** vent *
       (has(s, 'inside-the-wall') ? 2 : 1) *
-      (s.truce.wall === 'b' ? 1.5 : 1) *
+      (s.truce.wall === 'b' ? 1.25 : 1) *
       ACT3.sandbarCalcite ** lv.sandbar *
       (speaks(s, 'massive') ? 1.5 : 1) *
       1.5 ** trait(s, 'deep-memory'),
     calciteK:
       ACT1.dissolve * ACT1.latticeFactor ** lv.lattice * ACT1.ventAcid ** vent *
       (has(s, 'lattice-songs') ? 0.7 : 1) * (speaks(s, 'massive') ? 0.5 : 1) +
-      (s.truce.terms === 'b' || speaks(s, 'mucus') ? 0 : ACT3.raspEat * rasp),
+      (speaks(s, 'mucus') ? 0 : ACT3.raspEat * rasp * (s.truce.terms === 'b' ? ACT3.politeEat : 1)),
     lureMax: ACT1.lureMax + ACT1.lureMaxPerPattern * lv.lure + (has(s, 'fear') ? 1 : 0) + (speaks(s, 'fluorescent') ? 2 : 0),
     reachPower: ACT2.reachPower + (s.truce.story === 'b' ? 0.05 : 0),
     heightTarget: target,
@@ -137,7 +151,7 @@ export function rates(s: GameState): Rates {
 const MAX_BANDS = 400;
 /** Fixed band stride for each act after the second (index = act number). */
 const STRIDE: Record<number, number> = { 3: 30, 4: 6, 5: 1 };
-const COST_GROWTH: Record<number, number> = { 1: 1.3, 2: 1.2, 3: 1.11, 4: 1.14, 5: 1.03 };
+const COST_GROWTH: Record<number, number> = { 1: 1.55, 2: 1.165, 3: 1.22, 4: 1.11, 5: 1.022 };
 
 const BAND_TOP = new Float64Array(MAX_BANDS + 1);
 const BAND_COST = new Float64Array(MAX_BANDS + 1);
@@ -253,7 +267,7 @@ export function bloomNet(s: GameState, r = rates(s)): number {
 
 const EQ_EPS = 1e-12;
 /** Sub-step length as a fraction of the fastest upstream time constant. */
-const STEP_FRACTION = 0.05;
+const STEP_FRACTION = 0.03;
 
 function settledAt(x: number, eq: number): boolean {
   return Math.abs(x - eq) <= EQ_EPS * Math.max(1, eq);

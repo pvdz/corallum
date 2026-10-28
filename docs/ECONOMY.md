@@ -37,3 +37,12 @@ After the band "What falls" (95 m), each 300 s slot holds one feast at a seeded 
 (`mulberry32(seed, k)`), visible for 45 s. Eating it adds 90 s of calcite production (`feast()`), once
 per window (`state.feasted`). Offline catch-up never eats feasts, and the bot ignores them, so the
 pacing targets and the offline cap are untouched; a watching player gets roughly +30% calcite.
+
+## Milestones (polyps and glimmerseed)
+Each milestone doubles everything its kind makes (`ACT1.milestoneFactor`, `MILESTONES` in content/act1.ts):
+polyps at 10, 25, 50, 100, 150, 200; glimmerseed at 10, 25, 50, 100. To keep the pacing, band cost
+growth per zone became {1: 1.55, 2: 1.165, 3: 1.22, 4: 1.11, 5: 1.022} (was 1.3/1.2/1.11/1.14/1.03),
+polyp cost growth 1.2 (was 1.17), glimmerseed 1.18. Bot: Act I 22 min, Act II to 2h00, Act III to
+4h26, end 8h28 (default path); every truce/dialect path ends 7h24–8h40. The polite-Rasp terms now eat
+90% of the calcite the others do (it was none: with milestones that path finished 2 h early), and
+keeping Ossel is calcite ×1.25 (was ×1.5). `STEP_FRACTION` 0.03 keeps offline == online within 1e-6.

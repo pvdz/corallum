@@ -31,13 +31,37 @@ export const ACT1 = {
   sweepFlat: 1,
   sweepSeconds: 0.25,
   sweepCooldown: 0.4,
+  /** What each milestone multiplies its kind's output by. */
+  milestoneFactor: 2,
 } as const;
+
+/**
+ * Milestones: when the count of polyps (or glimmerseed colonies) reaches each level, everything
+ * that kind makes doubles. Short goals inside the long climb, and a reason to lean one way.
+ */
+export type Milestone = { level: number; name: string; text: string };
+export const MILESTONES: { polyp: readonly Milestone[]; symbiont: readonly Milestone[] } = {
+  polyp: [
+    { level: 10, name: 'A clump', text: 'Ten mouths, feeding as one.' },
+    { level: 25, name: 'A thicket', text: 'Your polyps pass food between them now.' },
+    { level: 50, name: 'A colony', text: 'Fifty mouths, one hunger, one rhythm.' },
+    { level: 100, name: 'A grove', text: 'A hundred polyps open and close in waves along the stone.' },
+    { level: 150, name: 'A city of mouths', text: 'The water around you is thick with things being eaten.' },
+    { level: 200, name: 'A reef', text: 'Not a colony any more. A place.' },
+  ],
+  symbiont: [
+    { level: 10, name: 'A constellation', text: 'The glimmerseed has begun to pulse together.' },
+    { level: 25, name: 'Lanterns', text: 'Your branches light the water a body-length out.' },
+    { level: 50, name: 'A beacon', text: 'Things far off in the dark turn to look.' },
+    { level: 100, name: 'A second moon', text: 'You are the brightest thing for a kilometre.' },
+  ],
+};
 
 export const UPGRADES_ACT1: readonly UpgradeDef[] = [
   {
     id: 'polyp', name: 'Bud a polyp',
     flavour: 'Split yourself, mouth and tentacles and all. The new one remembers being you.',
-    currency: 'calcite', baseCost: 6, growth: 1.17, maxLevel: Infinity, reveal: {},
+    currency: 'calcite', baseCost: 6, growth: 1.2, maxLevel: Infinity, reveal: {},
   },
   {
     id: 'skeleton', name: 'Lay down a band',
@@ -47,7 +71,7 @@ export const UPGRADES_ACT1: readonly UpgradeDef[] = [
   {
     id: 'symbiont', name: 'Host the glimmerseed',
     flavour: 'Tiny lights drift down with the silt. Some of them want a home.',
-    currency: 'calcite', baseCost: 40, growth: 1.17, maxLevel: Infinity, reveal: { level: ['polyp', 4] },
+    currency: 'calcite', baseCost: 40, growth: 1.18, maxLevel: Infinity, reveal: { level: ['polyp', 4] },
   },
   {
     id: 'lattice', name: 'Aragonite lattice',

@@ -108,3 +108,7 @@ date, what landed, what is half-done, what's next.
 - Tab title shows the reef's height ("641 m · Corallum"), "spawned" after the ending.
 - Reef tab: "Soft glow" checkbox turns the bloom pass off for slow phones (remembered as corallum.glow); Midnight draw 11→4 ms headless with it off.
 - The Breach: after the "Air" band the reef's top shows as a dark hump at the waterline (growing over the last metres) with a shore bird standing on it, pecking; it flies off when the spawn is released. Drawn after the glow pass.
+- Core loop: milestones. Polyps double at 10/25/50/100/150/200, glimmerseed at 10/25/50/100, each
+  named ("A thicket", "A beacon"…) with its own announcement over the water and a chime; cards
+  show "+3.4 calcite/s · ×2 at 50". Rebalanced band cost curves to keep the bot at 8h28 (see
+  ECONOMY.md); polite Rasp terms and Keep Ossel toned down to keep paths within ~1 h.

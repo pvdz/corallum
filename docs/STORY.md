@@ -90,4 +90,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Later bands "How the Rasp end" (grazers grinding their dead into sand), "Storm", "Describe it" (Ossel "remembering" a moon it never saw), "The waiting fish" (spawn predators) | real biology; none known as story beats | OK |
 | Trait "Glass gardeners" (shrimp that keep a reef clean) | real biology (cleaner shrimp) | OK |
 | Falling feasts (carcasses sinking past the reef, tapped for food) | real biology (whale/fish falls); the tap-a-passing-bonus mechanic is a genre convention, nothing story-specific copied | OK |
+| Milestone names (A clump, A thicket, A colony, A grove, A city of mouths, A reef; A constellation, Lanterns, A beacon, A second moon) | plain descriptive words; count-milestone doublings are a genre convention | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

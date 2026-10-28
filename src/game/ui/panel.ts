@@ -15,7 +15,7 @@ import { act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade,
+  revealed, timeUntil, upgrade, nextMilestone,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -764,8 +764,11 @@ function repeatWhileHeld(btn: HTMLButtonElement, fn: () => void): { repeated: bo
 /** The gain from one more polyp or glimmerseed, with everything that multiplies it. */
 function marginalText(s: GameState, id: 'polyp' | 'symbiont'): string {
   const next: GameState = { ...s, levels: { ...s.levels, [id]: s.levels[id] + 1 } };
-  if (id === 'polyp') return `+${num(calciteRate(next) - calciteRate(s))} calcite/s`;
-  return `+${num(rates(next).glowP - rates(s).glowP)} glow/s`;
+  const gain = id === 'polyp'
+    ? `+${num(calciteRate(next) - calciteRate(s))} calcite/s`
+    : `+${num(rates(next).glowP - rates(s).glowP)} glow/s`;
+  const ms = nextMilestone(id, s.levels[id]);
+  return ms ? `${gain} · ×${ACT1.milestoneFactor} at ${ms.level}` : gain;
 }
 
 function etaText(t: number): string {
