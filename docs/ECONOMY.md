@@ -46,3 +46,10 @@ polyp cost growth 1.2 (was 1.17), glimmerseed 1.18. Bot: Act I 22 min, Act II to
 4h26, end 8h28 (default path); every truce/dialect path ends 7h24–8h40. The polite-Rasp terms now eat
 90% of the calcite the others do (it was none: with milestones that path finished 2 h early), and
 keeping Ossel is calcite ×1.25 (was ×1.5). `STEP_FRACTION` 0.03 keeps offline == online within 1e-6.
+
+## Glow stays worth having (shoal jobs)
+The lure's half-saturation glow grows with height: `lureHalf × (1 + h/60)^1.6` (brighter water, less
+contrast), and each light-swimming shoal also amplifies glimmerseed glow by 8%. Feeding and light now
+both pay (one more shoal ≈ +1–3% calcite each, shown on the job rows via `jobGain`). The bot places
+feeders/light-swimmers by marginal settled calcite (`balanceFeedLight`). Band cost growth retuned to
+{1: 1.55, 2: 1.16, 3: 1.2, 4: 1.11, 5: 1.021}; bot 8h08 default, paths 7h07–8h13.

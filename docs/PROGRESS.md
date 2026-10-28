@@ -113,3 +113,7 @@ date, what landed, what is half-done, what's next.
   show "+3.4 calcite/s · ×2 at 50". Rebalanced band cost curves to keep the bot at 8h28 (see
   ECONOMY.md); polite Rasp terms and Keep Ossel toned down to keep paths within ~1 h.
 - Milestones show on the reef: each polyp milestone fills the polyps out (+6%), each glimmerseed milestone strengthens the reef's light (+15%).
+- Core loop: shoal jobs are a real allocation. Job rows show what one more feeder / light-swimmer is
+  worth in settled calcite ("one more: +2.1% calcite"). Light was a trap (the lure saturated); now the
+  lure needs more glow higher up and light-swimmers amplify glimmerseed glow. The bot allocates by
+  marginal gain. Retuned band costs (ECONOMY.md).

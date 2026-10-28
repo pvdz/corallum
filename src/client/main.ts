@@ -331,7 +331,7 @@ function view(): ReefView {
     glowTier: MILESTONES.symbiont.filter((m) => state.levels.symbiont >= m.level).length,
     symbionts: state.levels.symbiont,
     height: state.height,
-    glowLevel: r.lureMax > 0 ? (lure(r, state.glow) - 1) / r.lureMax : 0,
+    glowLevel: r.lureMax > 0 ? (lure(r, state.glow, state.height) - 1) / r.lureMax : 0,
     sinceSweep: state.t - state.lastSweep,
     vent: state.levels.vent,
     shoals: state.levels.shoal,

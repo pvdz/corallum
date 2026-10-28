@@ -54,6 +54,22 @@ export type Rates = {
   heightTarget: number;
 };
 
+/**
+ * Calcite/s once plankton and glow have settled at what the reef can hold: the honest way to
+ * compare shoal jobs, whose effect arrives through those stocks.
+ */
+export function steadyCalciteRate(s: GameState): number {
+  const r = rates(s);
+  return calciteRate({ ...s, plankton: planktonHold(s, r), glow: glowHold(s, r) });
+}
+
+/** How much more calcite (as a fraction) one more shoal on this job would bring, once settled. */
+export function jobGain(s: GameState, job: 'feed' | 'light'): number {
+  const base = steadyCalciteRate(s);
+  const more = steadyCalciteRate({ ...s, jobs: { ...s.jobs, [job]: s.jobs[job] + 1 } });
+  return base > 0 ? more / base - 1 : 0;
+}
+
 // ---------- Milestones ----------
 
 /** The multiplier from every milestone reached at this level. */
@@ -104,7 +120,8 @@ export function rates(s: GameState): Rates {
   const rasp = Math.min(s.rasp, raspMax(s));
   const onShelf = target >= ACT3.from;
   return {
-    glowP: (ACT1.symbiontGlow * lv.symbiont * milestoneMult('symbiont', lv.symbiont) + lightGlow * s.jobs.light) * 1.5 ** trait(s, 'glimmer'),
+    glowP: (ACT1.symbiontGlow * lv.symbiont * milestoneMult('symbiont', lv.symbiont) * (1 + ACT2.lightAmplify * s.jobs.light) +
+      lightGlow * s.jobs.light) * 1.5 ** trait(s, 'glimmer'),
     glowK: ACT1.glowFade,
     planktonP: ACT2.feedRate * s.jobs.feed * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
       (speaks(s, 'sweepers') ? 3 : 1),
@@ -151,7 +168,7 @@ export function rates(s: GameState): Rates {
 const MAX_BANDS = 400;
 /** Fixed band stride for each act after the second (index = act number). */
 const STRIDE: Record<number, number> = { 3: 30, 4: 6, 5: 1 };
-const COST_GROWTH: Record<number, number> = { 1: 1.55, 2: 1.165, 3: 1.22, 4: 1.11, 5: 1.022 };
+const COST_GROWTH: Record<number, number> = { 1: 1.55, 2: 1.16, 3: 1.2, 4: 1.11, 5: 1.021 };
 
 const BAND_TOP = new Float64Array(MAX_BANDS + 1);
 const BAND_COST = new Float64Array(MAX_BANDS + 1);
@@ -180,8 +197,13 @@ export function bandMetres(l: number): number {
   return heightForBands(l + 1) - heightForBands(l);
 }
 
-export function lure(r: Rates, glow: number): number {
-  return 1 + (r.lureMax * glow) / (glow + ACT1.lureHalf);
+/**
+ * The glow lure. Higher up the water is brighter and a reef's light stands out less, so the glow
+ * it takes to lure half the food grows with height: glow stays worth having all the way up.
+ */
+export function lure(r: Rates, glow: number, height = 0): number {
+  const half = ACT1.lureHalf * (1 + Math.max(0, height) / 60) ** ACT2.lureHalfPower;
+  return 1 + (r.lureMax * glow) / (glow + half);
 }
 
 export function feeding(plankton: number): number {
@@ -201,7 +223,7 @@ export function smother(silt: number): number {
 }
 
 function production(r: Rates, glow: number, plankton: number, height: number, silt: number, bloom: number): number {
-  return r.calciteBase * lure(r, glow) * feeding(plankton) * reach(height, r.reachPower) * smother(silt) * photo(bloom);
+  return r.calciteBase * lure(r, glow, height) * feeding(plankton) * reach(height, r.reachPower) * smother(silt) * photo(bloom);
 }
 
 /** Instantaneous calcite production per second. */

@@ -15,7 +15,7 @@ import { act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextMilestone,
+  revealed, timeUntil, upgrade, nextMilestone, milestoneMult, jobGain,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -447,6 +447,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
 
   let primed = false;
   let etaTurn = 0;
+  let jobGains: { feed: number; light: number } | null = null;
   return {
     setBackupDue,
     update(s: GameState): void {
@@ -560,7 +561,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         shoalIdle.textContent = idle > 0 ? `${idle} idle of ${shoals}` : `${shoals}`;
         shoalBox.classList.toggle('has-idle', idle > 0);
         const perFeed = s.jobs.feed > 0 ? r.planktonP / s.jobs.feed : 0;
-        const perLight = s.jobs.light > 0 ? (r.glowP - ACT1.symbiontGlow * s.levels.symbiont) / s.jobs.light : 0;
+        const perLight = s.jobs.light > 0
+          ? (r.glowP - ACT1.symbiontGlow * s.levels.symbiont * milestoneMult('symbiont', s.levels.symbiont)) / s.jobs.light : 0;
+        // What one more feeder or light-swimmer is worth in calcite, refreshed a few times a second.
+        if (etaTurn === 0 || !jobGains) jobGains = { feed: jobGain(s, 'feed'), light: jobGain(s, 'light') };
+        const gainText = (g: number) => g >= 0.0005 ? ` · one more: +${(g * 100).toFixed(g < 0.1 ? 1 : 0)}% calcite` : ' · one more: no gain now';
         for (const j of JOBS) {
           const row = jobRows.get(j.id)!;
           const open = jobOpen(s, j.id);
@@ -571,8 +576,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           const perScout = s.jobs.scout > 0 ? r.murmurP / s.jobs.scout : 0;
           row.row.title = j.verb;
           row.what.textContent = !open ? 'they do not yet know how to listen'
-            : j.id === 'feed' ? (perFeed ? `${rate(perFeed)} plankton each` : 'herd plankton to the polyps')
-            : j.id === 'light' ? (perLight ? `${rate(perLight)} glow each` : 'swim the glow pattern')
+            : j.id === 'feed' ? (perFeed ? `${rate(perFeed)} plankton each` : 'herd plankton to the polyps') + gainText(jobGains.feed)
+            : j.id === 'light' ? (perLight ? `${rate(perLight)} glow each` : 'swim the glow pattern') + gainText(jobGains.light)
             : perScout ? `${rate(perScout)} murmurs each` : 'listen at buried bands';
         }
       }

@@ -343,3 +343,10 @@ test('pacing: the whole game takes the bot 6–11 h whatever the path', () => {
     assert.ok(ended(state) && state.t > 6 * 3600 && state.t < 11 * 3600, `${JSON.stringify(opts)}: ${state.t}s`);
   }
 });
+
+test('shoal jobs: light-swimmers still matter high up (the lure does not saturate)', async () => {
+  const { jobGain } = await import('../../src/game/sim/economy.ts');
+  const { state } = runBot((x) => x.height >= 3400, 8 * 3600);
+  assert.ok(jobGain(state, 'light') > 0.005, `light: ${jobGain(state, 'light')}`);
+  assert.ok(jobGain(state, 'feed') > 0.005, `feed: ${jobGain(state, 'feed')}`);
+});

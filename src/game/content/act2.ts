@@ -10,6 +10,10 @@ export const ACT2 = {
   planktonDiv: 8,
   /** Glow/s per shoal swimming the light pattern. */
   lightGlow: 3,
+  /** Each light-swimming shoal also strengthens the glimmerseed's own glow by this fraction. */
+  lightAmplify: 0.08,
+  /** Lure: the glow for half effect grows as (1 + height/60)^this (brighter water, less contrast). */
+  lureHalfPower: 1.6,
   /** Murmurs/s per scouting shoal; murmurs fade slowly back into the stone. */
   scoutRate: 1,
   murmurFade: 1 / 3600,
