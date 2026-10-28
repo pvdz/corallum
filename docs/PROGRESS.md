@@ -84,3 +84,5 @@ date, what landed, what is half-done, what's next.
   drawn live on top. Silt Floor 25→3 ms, Midnight 33→11 ms.
 - Clarity: the dialect card and the truce's words bar show time-to-afford ("in 3m 2s"), like the
   upgrade cards.
+- Midnight Water: the drowned towers' lights burn brighter the more shoals scout (listening at the
+  old stone), dim when none do.

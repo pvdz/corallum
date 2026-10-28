@@ -223,7 +223,8 @@ export function createMidnightScene(seed: number): Scene {
       const L = layout(v);
       drawWater(ctx, t, p);
       drawFlashes(ctx, t);
-      ruins.draw(ctx, w, h, focus, v.height, RUINS, t);
+      // The old stone's lights answer the scouts listening at it.
+      ruins.draw(ctx, w, h, focus, v.height, RUINS, t, [0, 1, 2], Math.min(1, v.jobs.scout / 8));
       for (const c of combs) drawComb(ctx, c, t);
       if (v.bands.includes('glass')) for (let i = 0; i < 4; i++) swimShrimp(ctx, t, i);
       if (v.bands.includes('siphon')) drawSiphonophore(ctx, t);

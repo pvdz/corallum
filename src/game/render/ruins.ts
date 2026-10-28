@@ -45,7 +45,7 @@ export function createRuins(seed: number) {
       stubs: Array.from({ length: 2 + Math.floor(rng() * 4) }, () => ({
         m: range(rng, 30, 600), side: rng() < 0.5 ? -1 : 1, len: range(rng, 0.6, 1.6), lift: range(rng, 0.3, 1.2),
       })),
-      lights: Array.from({ length: 3 }, () => ({
+      lights: Array.from({ length: 6 }, () => ({
         m: range(rng, 10, 900), u: range(rng, -0.7, 0.7), period: range(rng, 6, 15), phase: rng() * 15,
       })),
     } satisfies Tower;
@@ -147,13 +147,13 @@ export function createRuins(seed: number) {
 
   /** The few lights still burning in the old stone (drawn every frame; they flicker). */
   function drawLights(ctx: CanvasRenderingContext2D, tw: Tower, x: number, topY: number, ppm: number, base: number, h: number,
-    rgb: string, t: number): void {
+    rgb: string, t: number, level: number): void {
     for (const l of tw.lights) {
       const ly = topY + l.m * ppm;
       if (ly < 0 || ly > h) continue;
       const u = ((t + l.phase) % l.period) / l.period;
       const a = 0.25 + 0.75 * Math.max(0, Math.sin(u * Math.PI * 2)) ** 3;
-      glow(ctx, x + l.u * halfWidth(tw, base, l.m), ly, base * 0.5, rgb, 0.35 * a);
+      glow(ctx, x + l.u * halfWidth(tw, base, l.m), ly, base * (0.45 + 0.35 * level), rgb, (0.15 + 0.85 * level) * a);
     }
   }
 
@@ -163,9 +163,12 @@ export function createRuins(seed: number) {
   let cacheKey = '';
 
   return {
-    /** Draw the given layers (0 far … 2 near) for a reef that stands `height` metres tall. */
+    /**
+     * Draw the given layers (0 far … 2 near) for a reef that stands `height` metres tall.
+     * `lights` (0..1) is how brightly the old stone's lights burn.
+     */
     draw(ctx: CanvasRenderingContext2D, w: number, h: number, focus: Focus, height: number, style: RuinStyle,
-      t: number, which: readonly number[] = [0, 1, 2]): void {
+      t: number, which: readonly number[] = [0, 1, 2], lights = 0.5): void {
       const horizon = focus.y + focus.h * 0.62;
       const unit = Math.min(focus.w, focus.h);
       // Snap the height so the nearest layer moves in whole pixels.
@@ -200,7 +203,7 @@ export function createRuins(seed: number) {
       if (style.lights) {
         ctx.save();
         ctx.globalCompositeOperation = 'lighter';
-        each((tw, d, x, topY, ppm, base) => { if (d > 0) drawLights(ctx, tw, x, topY, ppm, base, h, style.lights, t); });
+        each((tw, d, x, topY, ppm, base) => { if (d > 0) drawLights(ctx, tw, x, topY, ppm, base, h, style.lights, t, lights); });
         ctx.restore();
       }
     },
