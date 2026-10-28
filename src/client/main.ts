@@ -142,7 +142,19 @@ const HABITS_KEY = 'corallum.habits';
 let habitsOn = true;
 try { habitsOn = localStorage.getItem(HABITS_KEY) !== 'off'; } catch { /* no storage */ }
 
+// Calmer motion: the system setting, or this switch (remembered per browser).
+const CALM_KEY = 'corallum.calm';
+let calmOn = false;
+try { calmOn = localStorage.getItem(CALM_KEY) === 'on'; } catch { /* no storage */ }
+
 const panel = createPanel(ui, {
+  calm: {
+    get: () => calmOn,
+    set(on) {
+      calmOn = on;
+      try { localStorage.setItem(CALM_KEY, on ? 'on' : 'off'); } catch { /* no storage */ }
+    },
+  },
   habits: {
     get: () => habitsOn,
     set(on) {
@@ -557,7 +569,7 @@ function frame(now: number): void {
     // A long gap means the tab slept; treat it like being away.
     if (dt > AWAY_NOTICE) catchUp(dt * speed);
     else advance(state, dt * speed);
-    animT += Math.min(dt, 0.1) * (reducedMotion.matches ? 0.3 : 1);
+    animT += Math.min(dt, 0.1) * (reducedMotion.matches || calmOn ? 0.3 : 1);
     qualityCheck(dt);
   }
   const tNow = frozenT ?? animT;

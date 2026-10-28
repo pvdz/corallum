@@ -34,6 +34,8 @@ export type PanelHooks = {
   reset(): void;
   /** The soft glow (bloom) pass: read and set; off helps slow phones. */
   glow: { get(): boolean; set(on: boolean): void };
+  /** Calmer motion: the world's ambient animation runs slower. */
+  calm: { get(): boolean; set(on: boolean): void };
   /** Old habits (a lineage trait): whether the reef buys cheap polyps and glimmerseed itself. */
   habits: { get(): boolean; set(on: boolean): void };
   /** A story card opened (for its sound). */
@@ -371,6 +373,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   glowBox.checked = hooks.glow.get();
   glowBox.addEventListener('change', () => hooks.glow.set(glowBox.checked));
   glowToggle.append(glowBox, el('span', '', 'Soft glow (turn off if a phone runs slow or warm)'));
+  const calmToggle = el('label', 'toggle');
+  const calmBox = el('input') as HTMLInputElement;
+  calmBox.type = 'checkbox';
+  calmBox.checked = hooks.calm.get();
+  calmBox.addEventListener('change', () => hooks.calm.set(calmBox.checked));
+  calmToggle.append(calmBox, el('span', '', 'Calmer motion (everything in the water moves slower)'));
   const habitToggle = el('label', 'toggle');
   const habitBox = el('input') as HTMLInputElement;
   habitBox.type = 'checkbox';
@@ -379,7 +387,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   habitToggle.append(habitBox, el('span', '', 'Old habits: bud polyps and host glimmerseed on their own when they are cheap'));
   habitToggle.hidden = true;
   reefPage.append(
-    el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, importBtn, glowToggle, habitToggle, resetBtn,
+    el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, importBtn, glowToggle, calmToggle, habitToggle, resetBtn,
     el('p', 'hint', 'Hold a buy button to keep buying. Keys: Space sweeps · F catches a falling feast · P buds a polyp · B lays a band · G hosts glimmerseed.'),
   );
 

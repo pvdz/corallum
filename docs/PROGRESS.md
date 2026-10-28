@@ -151,3 +151,4 @@ date, what landed, what is half-done, what's next.
 - Tried batching reef branch strokes by width (1200 → ~40 stroke calls): no gain headless (raster-bound, not call-bound); reverted.
 - The last Reading (the gate into the Twilight Shelf) no longer leaves the reef capped at 3000 m for 22 min: last costs 7000/7500, wait ~5 min.
 - A band card held by a story gate says which: "Held · until your scouts read “Inside the wall”" / the wall decision / the spawning dialect (capReason in the sim, GATE_TEXT in content).
+- Reef tab: "Calmer motion" switch (ambient animation ×0.3, like the system reduced-motion setting).
