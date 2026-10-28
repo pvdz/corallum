@@ -118,3 +118,4 @@ date, what landed, what is half-done, what's next.
   lure needs more glow higher up and light-swimmers amplify glimmerseed glow. The bot allocates by
   marginal gain. Retuned band costs (ECONOMY.md).
 - Multiplier cards (lattice, lure, vent, sand bars, channels, pigments, canopy) show what the next level is worth now, settled: "· now +13% calcite" (lattice: "+39% held").
+- Rasp dial says where calcite holds most ("holds most at 14" / "the most it can hold"); bestRasp moved into the sim; the eating figure counts polite Rasp correctly.

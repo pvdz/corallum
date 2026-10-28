@@ -15,7 +15,7 @@ import { act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextMilestone, milestoneMult, jobGain, upgradeGain,
+  revealed, timeUntil, upgrade, nextMilestone, milestoneMult, jobGain, upgradeGain, bestRasp, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -448,6 +448,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let primed = false;
   let etaTurn = 0;
   let jobGains: { feed: number; light: number } | null = null;
+  let raspBest = -1;
   return {
     setBackupDue,
     update(s: GameState): void {
@@ -532,10 +533,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         raspCount.textContent = `${s.rasp} of ${rmax} grazing`;
         raspMinus.disabled = s.rasp <= 0;
         raspPlus.disabled = s.rasp >= rmax;
-        const eats = s.truce.terms === 'b' ? 0 : ACT3.raspEat * s.rasp * s.calcite;
+        const eats = speaks(s, 'mucus') ? 0 : ACT3.raspEat * s.rasp * s.calcite * (s.truce.terms === 'b' ? ACT3.politeEat : 1);
+        if (etaTurn === 0 || raspBest < 0) raspBest = bestRasp(s);
+        const bestNote = raspBest === s.rasp ? ' · the most it can hold' : ` · holds most at ${raspBest}`;
         raspWhat.textContent = s.rasp === 0
-          ? 'No Rasp graze. The silt settles where it falls.'
-          : `grinding ${rate(r.sandP)} sand · ${eats > 0 ? `eating ${rate(eats).slice(1)} calcite · ` : ''}calcite holds ~${num(calciteHold(s, r))}`;
+          ? `No Rasp graze. The silt settles where it falls.${raspBest > 0 ? ` Calcite holds most at ${raspBest}.` : ''}`
+          : `grinding ${rate(r.sandP)} sand · ${eats > 0 ? `eating ${rate(eats).slice(1)} calcite · ` : ''}calcite holds ~${num(calciteHold(s, r))}${bestNote}`;
       }
 
       // Height: progress within the current act's zone, with depth.

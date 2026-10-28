@@ -3,7 +3,7 @@
 
 import { UPGRADES } from '../content/upgrades.ts';
 import type { Job } from '../content/act2.ts';
-import { assign, BANDS, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil, readingCost, meetingWords, jobGain, steadyCalciteRate } from './economy.ts';
+import { assign, BANDS, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil, readingCost, meetingWords, jobGain, steadyCalciteRate, bestRasp } from './economy.ts';
 import type { Choice, MeetingId } from '../content/act3.ts';
 import type { DialectId, DialectTier } from '../content/act4.ts';
 import { newGame, type GameState } from './state.ts';
@@ -26,17 +26,7 @@ const DEFAULT_TRUCE: Record<MeetingId, Choice> = { terms: 'a', story: 'a', wall:
 const DEFAULT_DIALECTS: Record<DialectTier, DialectId> = { form: 'branching', craft: 'sweepers', spawn: 'broadcast' };
 
 /** The Rasp dial setting with the best calcite hold (the dial is small, so try them all). */
-export function bestRasp(s: GameState): number {
-  const keep = s.rasp;
-  let best = 0, bestHold = -Infinity;
-  for (let n = 0; n <= raspMax(s); n++) {
-    s.rasp = n;
-    const h = calciteHold(s);
-    if (h > bestHold) { bestHold = h; best = n; }
-  }
-  s.rasp = keep;
-  return best;
-}
+export { bestRasp };
 
 export function botDecide(
   s: GameState, sweeps: boolean, fixed?: Record<Job, number>, truce = DEFAULT_TRUCE, dialects = DEFAULT_DIALECTS,

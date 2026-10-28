@@ -81,6 +81,19 @@ export function jobGain(s: GameState, job: 'feed' | 'light'): number {
   return base > 0 ? more / base - 1 : 0;
 }
 
+/** The Rasp dial setting at which the reef holds the most calcite. */
+export function bestRasp(s: GameState): number {
+  const keep = s.rasp;
+  let best = 0, bestHold = -Infinity;
+  for (let n = 0; n <= raspMax(s); n++) {
+    s.rasp = n;
+    const h = calciteHold(s);
+    if (h > bestHold) { bestHold = h; best = n; }
+  }
+  s.rasp = keep;
+  return best;
+}
+
 // ---------- Milestones ----------
 
 /** The multiplier from every milestone reached at this level. */
@@ -108,7 +121,7 @@ function has(s: GameState, id: ReadingId): boolean {
   return s.readings.includes(id);
 }
 
-function speaks(s: GameState, id: DialectId): boolean {
+export function speaks(s: GameState, id: DialectId): boolean {
   return s.dialects.form === id || s.dialects.craft === id || s.dialects.spawn === id;
 }
 
