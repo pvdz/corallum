@@ -6,6 +6,7 @@ import { mulberry32, range, type Rng } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow } from './draw.ts';
 import { createLife, type Stage } from './life.ts';
+import { createLayerCache } from './layer.ts';
 import { createReef, type ReefLayout } from './reef.ts';
 import { createRuins, type RuinStyle } from './ruins.ts';
 import { createShoals } from './shoals.ts';
@@ -38,6 +39,7 @@ export function createAbyssScene(seed: number): Scene {
   const flakeSeed = Math.floor(rng() * 1e9);
   const reefSeed = Math.floor(rng() * 1e9);
   const ruins = createRuins(seed);
+  const water = createLayerCache(0.5);
 
   const reef = createReef(reefSeed);
   const life = createLife(reefSeed ^ 0x9e3779b9);
@@ -206,7 +208,8 @@ export function createAbyssScene(seed: number): Scene {
     },
     draw(ctx, t, v) {
       const st = stage();
-      drawWater(ctx, t);
+      // Water, the far ripple and the faint shafts change slowly: a half-resolution cache.
+      water.draw(ctx, w, h, t, 0.2, `${w}x${h}`, (c, tq) => drawWater(c, tq));
       ruins.draw(ctx, w, h, focus, v.height, RUINS, t, [0, 1]);
       drawSnow(ctx, t, 0);
       drawRidge(ctx, ridges[0]!);

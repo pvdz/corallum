@@ -6,6 +6,7 @@
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow } from './draw.ts';
+import { createLayerCache } from './layer.ts';
 import { createReef, type ReefLayout } from './reef.ts';
 import { createRuins, type RuinStyle } from './ruins.ts';
 import { createShoals } from './shoals.ts';
@@ -44,6 +45,7 @@ export function createMidnightScene(seed: number): Scene {
   const flakeSeed = Math.floor(rng() * 1e9);
   const shoals = createShoals(seed);
   const ruins = createRuins(seed);
+  const water = createLayerCache(0.5);
 
   const combs: Comb[] = Array.from({ length: 3 }, (_, i) => ({
     x: [-0.32, 0.3, 0.05][i]! + range(rng, -0.03, 0.03), y: [0.2, 0.32, 0.08][i]! + range(rng, -0.03, 0.03),
@@ -277,7 +279,7 @@ export function createMidnightScene(seed: number): Scene {
     draw(ctx, t, v) {
       const p = progress(v.height);
       const L = layout(v);
-      drawWater(ctx, t, p);
+      water.draw(ctx, w, h, t, 0.2, `${w}x${h} ${p.toFixed(3)}`, (c, tq) => drawWater(c, tq, p));
       drawFlashes(ctx, t);
       // The old stone's lights answer the scouts listening at it.
       ruins.draw(ctx, w, h, focus, v.height, RUINS, t, [0, 1, 2], Math.min(1, v.jobs.scout / 8));

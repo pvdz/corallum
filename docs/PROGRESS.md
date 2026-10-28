@@ -143,3 +143,4 @@ date, what landed, what is half-done, what's next.
 - After the spawning: your children settle — tiny pink reefs appear one by one in the deep below the Breach, dozens within the hour (the epilogue garden).
 - Sound: the sunlit whale calls (two long sliding tones) as it sets off across the Crown.
 - Band "Too much light" (3815 m) splits the 30 min silence at the start of the Sunlit Crown; longest story gap is now ~29 min (before the surface).
+- Perf: water/light-shaft backgrounds of four scenes paint into a half-resolution cache 5×/s (render/layer.ts, time snapped so ?t frames stay exact). Headless phone size: Silt Floor 12→4.7 ms, Midnight 14→9.6, Twilight 23→15. Found by skipping layers one at a time: the water was ~16 ms of the Twilight frame.

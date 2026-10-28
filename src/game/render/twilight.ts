@@ -5,6 +5,7 @@
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow } from './draw.ts';
+import { createLayerCache } from './layer.ts';
 import { createReef, type ReefLayout } from './reef.ts';
 import { createRuins, type RuinStyle } from './ruins.ts';
 import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts';
@@ -34,6 +35,7 @@ export function createTwilightScene(seed: number): Scene {
   let focus: Focus = { x: 0, y: 0, w: 1, h: 1 };
   const reef = createReef(Math.floor(rng() * 1e9));
   const shoals = createShoals(seed ^ 0x3c);
+  const water = createLayerCache(0.5);
   const ruins = createRuins(seed);
   const effects = createEffects();
   let bloom: Bloom | null = null;
@@ -351,7 +353,8 @@ export function createTwilightScene(seed: number): Scene {
     draw(ctx, t, v) {
       const p = progress(v.height);
       const L = layout(v);
-      drawWater(ctx, t, p);
+      // Water and light shafts change slowly: painted at half resolution five times a second.
+      water.draw(ctx, w, h, t, 0.2, `${w}x${h} ${p.toFixed(3)}`, (c, tq) => drawWater(c, tq, p));
       ruins.draw(ctx, w, h, focus, v.height, RUINS, t);
       drawMotes(ctx, t, v.siltLevel);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#1d3557');

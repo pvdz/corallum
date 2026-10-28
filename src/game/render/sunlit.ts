@@ -8,6 +8,7 @@ import { createBloom, type Bloom } from './bloom.ts';
 import type { CoralForm } from './coral.ts';
 import { glow } from './draw.ts';
 import { drawCraft, FLUORESCENT_POLYP } from './craft.ts';
+import { createLayerCache } from './layer.ts';
 import { createReef, type Reef, type ReefLayout } from './reef.ts';
 import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts';
 import { createShoals } from './shoals.ts';
@@ -43,6 +44,7 @@ export function createSunlitScene(seed: number): Scene {
     return r;
   };
   const shoals = createShoals(seed ^ 0x77);
+  const water = createLayerCache(0.5);
   const effects = createEffects();
   let bloom: Bloom | null = null;
   const fish: Fish[] = Array.from({ length: 14 }, () => ({
@@ -322,7 +324,7 @@ export function createSunlitScene(seed: number): Scene {
       const form = formOf(v.form);
       const reef = reefFor(form);
       const L = layout(v, form);
-      drawWater(ctx, t, p);
+      water.draw(ctx, w, h, t, 0.2, `${w}x${h} ${p.toFixed(3)}`, (c, tq) => drawWater(c, tq, p));
       drawWhale(ctx, t);
       drawLarvae(ctx, t);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#5d7d96');
