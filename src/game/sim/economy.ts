@@ -87,6 +87,11 @@ export function jobGain(s: GameState, job: 'feed' | 'light'): number {
  * also eats stone, which lowers what the reef can hold). If none does, the one that holds most.
  */
 export function bestRasp(s: GameState): number {
+  return raspSettings(s).forIncome;
+}
+
+/** The dial's two good settings: most calcite per second now, and most calcite held (for being away). */
+export function raspSettings(s: GameState): { forIncome: number; forHold: number } {
   const keep = s.rasp;
   const need = 2 * cost(s, 'skeleton');
   let best = 0, bestRate = -Infinity, mostHeld = 0, mostHold = -Infinity;
@@ -98,7 +103,7 @@ export function bestRasp(s: GameState): number {
     if (hold >= need && rate > bestRate) { bestRate = rate; best = n; }
   }
   s.rasp = keep;
-  return bestRate > -Infinity ? best : mostHeld;
+  return { forIncome: bestRate > -Infinity ? best : mostHeld, forHold: mostHeld };
 }
 
 // ---------- Milestones ----------

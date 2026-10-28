@@ -15,7 +15,7 @@ import { act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, capReason, nextMilestone, milestoneMult, jobGain, upgradeGain, bestRasp, speaks,
+  revealed, timeUntil, upgrade, capReason, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -507,6 +507,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let etaTurn = 0;
   let jobGains: { feed: number; light: number } | null = null;
   let raspBest = -1;
+  let raspHold = -1;
   let tickZone = -1;
   return {
     setBackupDue,
@@ -593,8 +594,15 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         raspMinus.disabled = s.rasp <= 0;
         raspPlus.disabled = s.rasp >= rmax;
         const eats = speaks(s, 'mucus') ? 0 : ACT3.raspEat * s.rasp * s.calcite * (s.truce.terms === 'b' ? ACT3.politeEat : 1);
-        if (etaTurn === 0 || raspBest < 0) raspBest = bestRasp(s);
-        const bestNote = raspBest === s.rasp ? ' · the best setting now' : ` · best now: ${raspBest}`;
+        if (etaTurn === 0 || raspBest < 0) {
+          const best = raspSettings(s);
+          raspBest = best.forIncome;
+          raspHold = best.forHold;
+        }
+        // Two good settings: most income while you watch, most held for while you are away.
+        const bestNote = raspBest === raspHold
+          ? (raspBest === s.rasp ? ' · the best setting' : ` · best: ${raspBest}`)
+          : ` · most calcite/s at ${raspBest}${raspBest === s.rasp ? ' (now)' : ''}, most held (for being away) at ${raspHold}${raspHold === s.rasp ? ' (now)' : ''}`;
         raspWhat.textContent = s.rasp === 0
           ? `No Rasp graze. The silt settles where it falls.${raspBest > 0 ? ` Best now: ${raspBest}.` : ''}`
           : `grinding ${rate(r.sandP)} sand · ${eats > 0 ? `eating ${rate(eats).slice(1)} calcite · ` : ''}calcite holds ~${num(calciteHold(s, r))}${bestNote}`;
