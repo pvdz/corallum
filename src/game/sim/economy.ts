@@ -21,7 +21,7 @@ import { ACT3, BANDS_ACT3, MEETINGS, type Choice, type Meeting, type MeetingId }
 import { ACT4, BANDS_ACT4, DIALECTS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
 import { ACT5, BANDS_ACT5, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
 import { act, actAt, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
-import type { TraitId } from '../content/lineage.ts';
+import { LINEAGE, type TraitId } from '../content/lineage.ts';
 import type { Band, Currency, UpgradeDef, UpgradeId } from '../content/types.ts';
 import { UPGRADES } from '../content/upgrades.ts';
 import { equilibrium, relax } from './ode.ts';
@@ -98,7 +98,7 @@ export function rates(s: GameState): Rates {
     siltP: onShelf
       ? ACT3.siltFall * (1 + (target - ACT3.from) / ACT3.siltGrowthPer) * (s.truce.wall === 'a' ? 0.6 : 1)
       : 0,
-    siltK: ACT3.naturalSweep + ACT3.flowSweep * lv.sandbar + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
+    siltK: ACT3.naturalSweep + ACT3.flowSweep * lv.sandbar + LINEAGE.glassSweep * trait(s, 'glass-gardeners') + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
     sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1),
     sandK: ACT3.sandSettle,
     bloomP: sunlight(s, target) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * (speaks(s, 'fluorescent') ? 1.5 : 1),

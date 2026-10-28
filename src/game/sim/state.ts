@@ -25,7 +25,7 @@ export function newMeta(): Meta {
     lineage: 0,
     traits: {
       'deep-memory': 0, 'quick-budding': 0, 'old-bands': 0, 'remembered-shoals': 0, glimmer: 0,
-      'kept-readings': 0, settling: 0, 'early-shoals': 0, 'rasp-kin': 0,
+      'kept-readings': 0, settling: 0, 'early-shoals': 0, 'rasp-kin': 0, 'glass-gardeners': 0,
     },
     spawnings: 0,
     seen: [],

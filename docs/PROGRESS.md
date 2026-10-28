@@ -72,3 +72,6 @@ date, what landed, what is half-done, what's next.
   the dark water is the first thing seen; the opening band's kicker reads "A seamount, 4,000 m down".
   This covers the "title/intro card" idea. Thousandfold towers in the Sunlit Crown: dropped (that
   scene is bright and busy enough).
+- Trait "Glass gardeners" (12 lineage): glass shrimp clear silt like six Rasp (siltK +0.18) without
+  eating calcite. Opens a no-Rasp route through the Twilight Shelf (hold at 0 Rasp beats the best
+  dial without the trait), at the cost of the Rasp's sand. Test in prestige.test.ts.

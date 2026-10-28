@@ -8,11 +8,13 @@ export const LINEAGE = {
   fragmentingBonus: 1.5,
   /** Extra lineage when beginning again after the ending. */
   endingBonus: 10,
+  /** Glass gardeners: silt the shrimp clear (1/s), as much as six grazing Rasp without their appetite. */
+  glassSweep: 0.18,
 } as const;
 
 export type TraitId =
   | 'deep-memory' | 'quick-budding' | 'old-bands' | 'remembered-shoals' | 'glimmer' | 'kept-readings' | 'settling'
-  | 'early-shoals' | 'rasp-kin';
+  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners';
 
 export type Trait = {
   id: TraitId;
@@ -69,6 +71,11 @@ export const TRAITS: readonly Trait[] = [
     id: 'rasp-kin', name: 'Rasp kin', effect: 'grazing grounds and sand bars open in the Midnight Water',
     flavour: 'The Rasp know your children by the taste of their stone, and come early.',
     cost: 14, growth: 1, max: 1,
+  },
+  {
+    id: 'glass-gardeners', name: 'Glass gardeners', effect: 'glass shrimp clear silt like six Rasp, eating none of your stone',
+    flavour: 'They followed the spawn up from the old reef and keep its children clean.',
+    cost: 12, growth: 1, max: 1,
   },
 ];
 
