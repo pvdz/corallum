@@ -153,7 +153,7 @@ export function createRuins(seed: number) {
       if (ly < 0 || ly > h) continue;
       const u = ((t + l.phase) % l.period) / l.period;
       const a = 0.25 + 0.75 * Math.max(0, Math.sin(u * Math.PI * 2)) ** 3;
-      glow(ctx, x + l.u * halfWidth(tw, base, l.m), ly, base * (0.45 + 0.35 * level), rgb, (0.15 + 0.85 * level) * a);
+      glow(ctx, x + l.u * halfWidth(tw, base, l.m), ly, base * (0.25 + 0.2 * level), rgb, (0.2 + 0.7 * level) * a);
     }
   }
 

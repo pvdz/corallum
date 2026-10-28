@@ -8,7 +8,8 @@ import { glow } from './draw.ts';
 import type { Reef, ReefLayout } from './reef.ts';
 import type { Focus, ReefView } from './scene.ts';
 
-const MAX_DRAWN_SHOALS = 30;
+// Beyond this many the water already looks full; jobs keep their proportions in what is drawn.
+const MAX_DRAWN_SHOALS = 18;
 const FISH_PER_SHOAL = 9;
 
 type FishSlot = { ox: number; oy: number; ph: number; size: number };
