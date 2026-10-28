@@ -438,3 +438,8 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 #milestone.show { animation: zone-title 5s ease both; }
 .bar .tick { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: rgba(255, 255, 255, 0.35); z-index: 1; }
 .bar .tick.passed { background: rgba(255, 245, 235, 0.85); }
+
+/* Keyboard focus: a clear ring on whatever Tab has reached (mouse and touch do not show it). */
+button:focus-visible, input:focus-visible, .tab:focus-visible {
+  outline: 2px solid var(--glowc); outline-offset: 2px; border-radius: 10px;
+}
