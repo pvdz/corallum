@@ -20,7 +20,8 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   text-shadow: 0 0 18px rgba(159, 246, 255, 0.55), 0 0 60px rgba(120, 200, 255, 0.25);
 }
 #title p { margin: 0.6em 0 0; font-family: var(--display); font-style: italic; color: var(--ink-dim); font-size: clamp(13px, 1.6vw, 18px); letter-spacing: 0.08em; }
-@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+/* Reduced motion: no movement; the title cards keep their fade, without which they never appear. */
+@media (prefers-reduced-motion: reduce) { *:not(#zone-title):not(#milestone):not(#whisper) { animation: none !important; transition: none !important; } }
 
 /* ---------- Title ---------- */
 #title { transition: opacity 2.5s ease, transform 2.5s ease; }
@@ -444,4 +445,4 @@ button:focus-visible, input:focus-visible, .tab:focus-visible {
   outline: 2px solid var(--glowc); outline-offset: 2px; border-radius: 10px;
 }
 .trait-group { margin: 14px 2px 0; font-family: var(--display); font-weight: 400; font-size: 13px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--lineage); }
-html.calm * { animation: none !important; transition: none !important; }
+html.calm *:not(#zone-title):not(#milestone):not(#whisper) { animation: none !important; transition: none !important; }
