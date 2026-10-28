@@ -358,6 +358,7 @@ function view(): ReefView {
     gardeners: state.meta.traits['glass-gardeners'] > 0,
     raspPolite: state.truce.terms === 'b',
     form: state.dialects.form,
+    craft: state.dialects.craft,
     moonPhase: moonPhase(state.t),
     moonFull: moonFull(state.t),
     greatMoon: greatMoon(state.t),

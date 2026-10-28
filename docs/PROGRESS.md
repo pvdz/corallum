@@ -129,3 +129,4 @@ date, what landed, what is half-done, what's next.
   names it and counts down to the next one, so the choice is "release now with three, or wait up to
   40 min for four". Drawn larger and warmer in the sky. Tests: sim + finale e2e (desktop releases
   under a great tide, 7 pages).
+- Craft dialects are visible (render/craft.ts): fluorescent polyps (vivid green/magenta, a little glow even in daylight), mucus nets (glistening threads with caught motes streaming downcurrent), sweeper tentacles (long stinging arms from the outer lower branches). Sunlit Crown and the Breach.

@@ -7,6 +7,7 @@ import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import type { CoralForm } from './coral.ts';
 import { glow } from './draw.ts';
+import { drawCraft, FLUORESCENT_POLYP } from './craft.ts';
 import { createReef, type Reef, type ReefLayout } from './reef.ts';
 import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts';
 import { createShoals } from './shoals.ts';
@@ -67,7 +68,8 @@ export function createSunlitScene(seed: number): Scene {
     return {
       cx: cx(), baseY: focus.y + focus.h * 0.97, unit: focus.h * tall, s: scale(), dpr,
       top: 0.35 + 0.65 * progress(v.height), bandStep: 0, palette: FORM_LOOK[form].palette,
-      polyp: FORM_LOOK[form].polyp, glowScale: 0, polypScale: 1.2,
+      polyp: v.craft === 'fluorescent' ? FLUORESCENT_POLYP : FORM_LOOK[form].polyp,
+      glowScale: v.craft === 'fluorescent' ? 0.25 : 0, polypScale: 1.2,
     };
   }
 
@@ -301,6 +303,7 @@ export function createSunlitScene(seed: number): Scene {
       drawFloor(ctx, t);
       drawClumps(ctx, t);
       reef.draw(ctx, L, v, t);
+      drawCraft(ctx, v.craft, reef, L, t, 1);
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
       drawFish(ctx, t);

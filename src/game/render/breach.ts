@@ -7,6 +7,7 @@ import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import type { CoralForm } from './coral.ts';
 import { drawMoon, glow } from './draw.ts';
+import { drawCraft, FLUORESCENT_POLYP } from './craft.ts';
 import { createReef, type Reef, type ReefLayout } from './reef.ts';
 import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts';
 
@@ -62,7 +63,8 @@ export function createBreachScene(seed: number): Scene {
     const crownY = waterY() + focus.h * (0.12 - 0.16 * progress(v.height));
     return {
       cx: cx(), baseY: crownY + unit, unit, s: scale(), dpr, top: 1, bandStep: 0,
-      palette: NIGHT_LOOK[form].palette, polyp: NIGHT_LOOK[form].polyp, glowScale: 0.6, polypScale: 1.1,
+      palette: NIGHT_LOOK[form].palette, polyp: v.craft === 'fluorescent' ? FLUORESCENT_POLYP : NIGHT_LOOK[form].polyp,
+      glowScale: v.craft === 'fluorescent' ? 0.9 : 0.6, polypScale: 1.1,
     };
   }
 
@@ -312,6 +314,7 @@ export function createBreachScene(seed: number): Scene {
       drawSky(ctx, t, v.moonPhase, v.greatMoon);
       drawSea(ctx, t, v.moonPhase);
       reef.draw(ctx, L, v, t);
+      drawCraft(ctx, v.craft, reef, L, t, 0.6);
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
       drawWaves(ctx, t);
