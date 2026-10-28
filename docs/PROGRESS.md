@@ -88,3 +88,5 @@ date, what landed, what is half-done, what's next.
   old stone), dim when none do.
 - Phone testing: `?fps` overlay (fps, draw/panel ms, bloom state, canvas size); `--lan` prints the
   network addresses; README section "Trying it on a phone". Whisper sound cue.
+- Bands tab: newest first; on load, truce and dialect choices sit just above the band that opened
+  them. The "Your reef" summary no longer squeezes into the compact mobile card grid.

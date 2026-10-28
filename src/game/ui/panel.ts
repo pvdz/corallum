@@ -258,7 +258,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const readingEta = el('span', 'eta');
   readingFoot.append(readingBtn, readingEta);
   readingCard.append(readingHead, readingHint, readingEffect, readingFoot);
-  const bandsIntro = el('p', 'hint', 'Each band of stone keeps what the reef saw while laying it down.');
+  const bandsIntro = el('p', 'hint', 'Each band of stone keeps what the reef saw while laying it down. Newest first.');
   const bandList = el('ol', 'band-list');
   const codex = el('article', 'card codex');
   const codexList = el('dl', 'codex-list');
@@ -420,10 +420,18 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     return li;
   }
   function appendBand(b: Band): void {
-    bandList.append(storyItem(metres(b.metres), b.title, bandStory(b, lastState?.truce.wall === 'b')));
+    const li = storyItem(metres(b.metres), b.title, bandStory(b, lastState?.truce.wall === 'b'));
+    li.dataset.band = b.id;
+    bandList.prepend(li);
+  }
+  /** A choice made live goes on top; one from a loaded save sits just above the band that opened it. */
+  function addChoice(li: HTMLLIElement, afterBand: string): void {
+    const anchor = primed ? null : bandList.querySelector(`li[data-band="${afterBand}"]`);
+    if (anchor) anchor.before(li);
+    else bandList.prepend(li);
   }
   function appendReading(r: Reading): void {
-    bandList.append(storyItem('read', r.title, readingStory(r), 'is-reading'));
+    bandList.prepend(storyItem('read', r.title, readingStory(r), 'is-reading'));
   }
 
   let primed = false;
@@ -627,7 +635,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const c = s.truce[mt.id];
         if (!c || truceSeen.has(mt.id)) continue;
         truceSeen.add(mt.id);
-        bandList.append(storyItem('truce', mt.title, truceStory(mt, c), 'is-truce'));
+        addChoice(storyItem('truce', mt.title, truceStory(mt, c), 'is-truce'), mt.after);
         storyCount++;
         if (primed) showStory(truceStory(mt, c));
       }
@@ -637,7 +645,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         dialectSeen.add(id);
         const d = DIALECTS.find((x) => x.id === id)!;
         const st = { kicker: `A dialect: ${t.title}`, title: d.name, text: `${d.flavour} You will not be the others.` };
-        bandList.append(storyItem('dialect', d.name, st, 'is-dialect'));
+        addChoice(storyItem('dialect', d.name, st, 'is-dialect'), t.band);
         storyCount++;
         if (primed) showStory(st);
       }
@@ -682,13 +690,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     },
     /** List the bands and readings of a loaded save without opening the reader for each. */
     primeStories(s: GameState): void {
-      for (const id of s.bands) {
-        const b = BANDS.find((x) => x.id === id);
-        if (b) appendBand(b);
-      }
+      // Newest first: readings (mostly older) go in before the bands so the bands land on top.
       for (const id of s.readings) {
         const rd = READINGS.find((x) => x.id === id);
         if (rd) appendReading(rd);
+      }
+      for (const id of s.bands) {
+        const b = BANDS.find((x) => x.id === id);
+        if (b) appendBand(b);
       }
       lastBandCount = s.bands.length;
       lastReadingCount = s.readings.length;
