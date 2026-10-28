@@ -8,9 +8,16 @@ export type Stage = { cx: number; baseY: number; w: number; h: number; s: number
 
 type Jelly = { x: number; y: number; size: number; period: number; phase: number; hue: number; drift: number };
 type Star = { x: number; size: number; phase: number; rot: number };
+type Lily = { x: number; size: number; phase: number; hue: string };
 
 export function createLife(seed: number) {
   const rng = mulberry32(seed);
+  const lilies: Lily[] = [
+    { x: -0.42, size: 1.0, phase: 0, hue: '230,200,215' },
+    { x: -0.06, size: 0.75, phase: 2.1, hue: '215,215,240' },
+    { x: 0.2, size: 0.9, phase: 4.2, hue: '240,210,190' },
+    { x: 0.4, size: 0.65, phase: 1.3, hue: '220,205,235' },
+  ];
   const jellies: Jelly[] = Array.from({ length: 3 }, (_, i) => ({
     x: [-0.36, 0.33, -0.2][i]! + range(rng, -0.04, 0.04),
     y: [-0.62, -0.45, -0.78][i]! + range(rng, -0.04, 0.04),
@@ -206,6 +213,53 @@ export function createLife(seed: number) {
   }
 
   /**
+   * Sea lilies: stalked crinoids rooted in the silt, their feathery arms held open into the
+   * current and swaying slowly with it. Half-lit, pale, very old.
+   */
+  function drawLily(ctx: CanvasRenderingContext2D, st: Stage, c: Lily, t: number): void {
+    const s = st.s * c.size;
+    const x0 = st.cx + st.w * c.x, y0 = st.baseY + 4 * st.s;
+    const sway = Math.sin(t * 0.35 + c.phase) * 0.12;
+    const len = 46 * s;
+    const tx = x0 + Math.sin(sway) * len, ty = y0 - Math.cos(sway) * len;
+    ctx.save();
+    ctx.lineCap = 'round';
+    // The stalk, jointed, bending with the current.
+    ctx.strokeStyle = 'rgba(190,175,200,0.55)';
+    ctx.lineWidth = 1.6 * s;
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.quadraticCurveTo(x0 + Math.sin(sway) * len * 0.2, y0 - len * 0.55, tx, ty);
+    ctx.stroke();
+    // The crown: ten feathery arms opening like a hand, pinnules along each.
+    for (let a = 0; a < 10; a++) {
+      const ang = -Math.PI / 2 + sway * 1.5 + (a - 4.5) * 0.19;
+      const arm = (16 + (a % 3) * 3) * s;
+      const curl = Math.sin(t * 0.6 + a + c.phase) * 0.12;
+      const ex = tx + Math.cos(ang + curl) * arm, ey = ty + Math.sin(ang + curl) * arm;
+      ctx.strokeStyle = `rgba(${c.hue},0.6)`;
+      ctx.lineWidth = 1 * s;
+      ctx.beginPath();
+      ctx.moveTo(tx, ty);
+      ctx.quadraticCurveTo(tx + Math.cos(ang) * arm * 0.5, ty + Math.sin(ang) * arm * 0.6, ex, ey);
+      ctx.stroke();
+      ctx.lineWidth = 0.6 * s;
+      for (let p = 1; p < 6; p++) {
+        const u = p / 6;
+        const px = tx + (ex - tx) * u, py = ty + (ey - ty) * u;
+        const n = 3 * s * (1 - u * 0.5);
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(px + Math.cos(ang + 1.3) * n, py + Math.sin(ang + 1.3) * n);
+        ctx.moveTo(px, py);
+        ctx.lineTo(px + Math.cos(ang - 1.3) * n, py + Math.sin(ang - 1.3) * n);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  /**
    * A rattail: a big-headed deep fish with a long tapering tail, nosing slowly along the silt
    * and crossing the frame every couple of minutes.
    */
@@ -355,6 +409,7 @@ export function createLife(seed: number) {
       drawJelly(ctx, st, jellies[1]!, t);
     },
     drawFloor(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
+      for (const c of lilies) drawLily(ctx, st, c, t);
       drawOssel(ctx, st, t);
       for (const star of stars) drawStar(ctx, st, star, t);
       drawRattail(ctx, st, t);
