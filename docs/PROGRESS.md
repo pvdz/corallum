@@ -149,3 +149,4 @@ date, what landed, what is half-done, what's next.
 - Lineage tab: traits grouped as Gifts (stronger numbers) and Ways (new routes: Lamps in the snow, Rasp kin, Glass gardeners, Old habits).
 - Way trait "Tide-reader" (16 lineage): every full moon is a great tide, so the spawn always carries four memories (greatTide/carryAt take the state).
 - Tried batching reef branch strokes by width (1200 → ~40 stroke calls): no gain headless (raster-bound, not call-bound); reverted.
+- The last Reading (the gate into the Twilight Shelf) no longer leaves the reef capped at 3000 m for 22 min: last costs 7000/7500, wait ~5 min.

@@ -99,14 +99,14 @@ export const READINGS: readonly Reading[] = [
       'the polyps and does not wash away. The city notices, and builds another wall.',
   },
   {
-    id: 'fear', cost: 10000, title: 'Fear bands',
+    id: 'fear', cost: 7000, title: 'Fear bands',
     effect: 'the glow lure can reach +1 higher',
     text: 'The last bands of Thousandfold are thick and fast-laid and all the same: keep, keep, ' +
       'keep. The polyps stopped spawning, so as to lose nothing. They burned bright, to keep the ' +
       'dark out. It did not work, but you learn the burning.',
   },
   {
-    id: 'inside-the-wall', cost: 16000, title: 'Inside the wall',
+    id: 'inside-the-wall', cost: 7500, title: 'Inside the wall',
     effect: 'calcite ×2',
     text: 'The deepest band of the outer wall, the one that faced the Rasp. You know the voice in ' +
       'it before it finishes a word. It is Ossel’s. Ossel was the wall. Ossel says nothing for a ' +

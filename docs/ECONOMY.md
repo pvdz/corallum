@@ -64,6 +64,6 @@ once sand bars outgrew it; now the Rasp dial matters in Act IV too (more grazers
 calcite held). Band growth for zones 4 and 5 retuned to 1.135 / 1.028; bot 8h08, paths 7h13–8h35.
 
 ## Readings spread out
-Reading costs 40/900/1800/3000/4500/6000/8000/10000/16000 murmurs (were 25…16000 with five under
+Reading costs 40/900/1800/3000/4500/6000/8000/7000/7500 murmurs (were 25…16000 with five under
 1100, so five stories landed within four minutes). Now one every 5–15 min through Act II. Act II
 band growth 1.155. Bot: 7h48 default, paths 7h08–8h28.
