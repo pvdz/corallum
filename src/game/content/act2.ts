@@ -54,52 +54,52 @@ export type Reading = {
 
 export const READINGS: readonly Reading[] = [
   {
-    id: 'city', cost: 25, title: 'A city of walls',
+    id: 'city', cost: 40, title: 'A city of walls',
     effect: 'polyps gather ×1.5 calcite',
     text: 'Thousandfold, the band says, and then says it again, louder. Wall upon wall upon wall, ' +
       'a hundred thousand mouths feeding as one, so wide the fish took days to swim around it. ' +
       'Every polyp knew how to eat the way the city ate. Now, faintly, so do yours.',
   },
   {
-    id: 'lattice-songs', cost: 70, title: 'The lattice songs',
+    id: 'lattice-songs', cost: 900, title: 'The lattice songs',
     effect: 'calcite dissolves ×0.7 as fast',
     text: 'The old polyps hummed while they laid stone, and the hum set the crystals in rows. ' +
       'The tune is half lost. What is left is enough to make your bands hold.',
   },
   {
-    id: 'shoal-pact', cost: 180, title: 'The shoal pact',
+    id: 'shoal-pact', cost: 1800, title: 'The shoal pact',
     effect: 'light shoals make ×2 glow',
     text: 'Lanternfish swam the city’s glow in exchange for shelter in its walls; the band remembers ' +
       'the pattern they swam, a slow spiral with a flicker at each turn. The shoals around you ' +
       'see you remember it, and swim it brighter.',
   },
   {
-    id: 'beaked', cost: 450, title: 'The beaked ones',
+    id: 'beaked', cost: 3000, title: 'The beaked ones',
     effect: 'scouts hear ×1.5 murmurs',
     text: 'A band thick with anger. Grazers with beaks of fused teeth came to the outer walls and ' +
       'ground the dead stone to sand. Thousandfold called them the Rasp and called them thieves, and ' +
       'it built a wall to keep them out. “There,” says Ossel. “Monsters. I told you.”',
   },
   {
-    id: 'tidebooks', cost: 1100, title: 'Tidebooks',
+    id: 'tidebooks', cost: 4500, title: 'Tidebooks',
     effect: 'feeding shoals herd ×2 plankton',
     text: 'The city kept a record of the currents in its bands, season by season: where the ' +
       'plankton ran, where it pooled. The record is a map, and the map still mostly holds.',
   },
   {
-    id: 'walls', cost: 2800, title: 'Higher walls',
+    id: 'walls', cost: 6000, title: 'Higher walls',
     effect: 'laying bands costs ×0.75',
     text: 'Year on year the bands grow thicker and the walls grow higher, and the city grows ' +
       'proud of its height. You learn the trick of it: a band laid on a band laid on a band.',
   },
   {
-    id: 'slow-currents', cost: 7000, title: 'The water slows',
+    id: 'slow-currents', cost: 8000, title: 'The water slows',
     effect: 'plankton is eaten ×0.6 as fast',
     text: 'Here the bands change taste. The water inside the walls barely moves. Silt settles on ' +
       'the polyps and does not wash away. The city notices, and builds another wall.',
   },
   {
-    id: 'fear', cost: 8000, title: 'Fear bands',
+    id: 'fear', cost: 10000, title: 'Fear bands',
     effect: 'the glow lure can reach +1 higher',
     text: 'The last bands of Thousandfold are thick and fast-laid and all the same: keep, keep, ' +
       'keep. The polyps stopped spawning, so as to lose nothing. They burned bright, to keep the ' +

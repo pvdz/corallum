@@ -2,13 +2,18 @@
 // (or, under a great tide, four) memories, read the ending through. Run with: node --no-warnings test/e2e/finale.ts
 // With SHOTS=<dir> it also saves the choice screen and the first ending page there.
 
+import { runBot } from '../../src/game/sim/bot.ts';
+import { serialize } from '../../src/game/sim/save.ts';
 import { VIEWPORTS, withGame } from '../../tools/browser.ts';
+
+// A reef that has just reached the surface (independent of how the balance moves the timing).
+const { state } = runBot((s) => s.height >= 4000, 12 * 3600);
+const save = serialize(state, Date.now());
 
 let failed = false;
 await withGame(async (open) => {
   for (const vp of VIEWPORTS.slice(0, 2)) {
-    // The bot reaches the surface a few minutes before the moon is full.
-    const { page, errors } = await open(vp, '?bot=29200');
+    const { page, errors } = await open(vp, '', { save });
     await page.waitForFunction(() => window.corallum?.state.height === 4000, null, { timeout: 30000 });
     // Close any story cards that opened on load.
     for (let i = 0; i < 10 && (await page.locator('.reader:not([hidden])').count()); i++)
