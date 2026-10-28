@@ -10,7 +10,7 @@
 //   ?seed=<n>     world seed for a new game
 //   ?fps          show frame rate and draw time (for trying it on a phone)
 // With ?t, ?bot or ?fresh nothing is written to storage.
-// Console: corallum.skip(seconds), corallum.state, corallum.speed = x
+// Console: corallum.skip(seconds), corallum.state, corallum.speed = x, corallum.feast
 
 import type { UpgradeId } from '../game/content/types.ts';
 import { act, actAt } from '../game/content/acts.ts';
@@ -20,9 +20,10 @@ import { createBreachScene } from '../game/render/breach.ts';
 import { createSunlitScene } from '../game/render/sunlit.ts';
 import { createTwilightScene } from '../game/render/twilight.ts';
 import { createTaps } from '../game/render/taps.ts';
+import { drawFeast, feastPos, feastReach } from '../game/render/feast.ts';
 import type { Focus, ReefView, Scene } from '../game/render/scene.ts';
 import { runBot } from '../game/sim/bot.ts';
-import { advance, assign, breach, buy, calciteHold, choose, ended, moonFull, moonPhase, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, currentFeast, feast, calciteHold, choose, ended, moonFull, moonPhase, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { num } from '../game/ui/format.ts';
@@ -35,7 +36,11 @@ import { createPanel } from '../game/ui/panel.ts';
 
 declare global {
   interface Window {
-    corallum?: { state: GameState; skip(seconds: number): void; speed: number; prof: { draw: number; panel: number } };
+    corallum?: {
+      state: GameState; skip(seconds: number): void; speed: number; prof: { draw: number; panel: number };
+      /** Where the falling feast is, in CSS pixels (null when there is none). */
+      readonly feast: { x: number; y: number } | null;
+    };
   }
 }
 
@@ -275,11 +280,18 @@ window.corallum = {
   get speed() { return speed; },
   set speed(x: number) { speed = x; },
   prof,
+  get feast() {
+    const f = currentFeast(state);
+    if (!f) return null;
+    const [x, y] = feastPos(f, state.t - f.start, focusNow);
+    return { x: x / dpr, y: y / dpr };
+  },
 };
 
 // Layout: the panel covers the right side (wide screens) or the bottom (narrow ones);
 // the scene frames the reef in what is left.
 let dpr = 1;
+let focusNow: Focus = { x: 0, y: 0, w: 1, h: 1 };
 function resize(): void {
   dpr = Math.min(window.devicePixelRatio || 1, 2);
   const w = Math.round(window.innerWidth * dpr);
@@ -292,6 +304,7 @@ function resize(): void {
   canvas.width = fadeCanvas.width = w;
   canvas.height = fadeCanvas.height = h;
   for (const sc of scenes) sc.resize(w, h, dpr, focus);
+  focusNow = focus;
 }
 
 function view(): ReefView {
@@ -375,20 +388,45 @@ hint.textContent = 'Tap the water to sweep your tentacles';
 ui.append(hint);
 
 const taps = createTaps();
-// Tapping the water sweeps the tentacles: a small burst of calcite.
+
+/** A float of text over the water, e.g. "+12". */
+function floatText(x: number, y: number, text: string, cls = ''): void {
+  const f = document.createElement('div');
+  f.className = `float ${cls}`;
+  f.textContent = text;
+  f.style.left = `${x}px`;
+  f.style.top = `${y}px`;
+  ui.append(f);
+  setTimeout(() => f.remove(), cls ? 2200 : 1200);
+}
+
+/** Eat the falling feast, if there is one; motes stream from it into the crown. */
+function eatFeast(): boolean {
+  const f = currentFeast(state);
+  if (!f) return false;
+  const [x, y] = feastPos(f, state.t - f.start, focusNow);
+  const gain = feast(state);
+  if (gain <= 0) return false;
+  taps.push(x, y, animT, 16);
+  audio.cue('feast');
+  floatText(x / dpr, y / dpr, `+${num(gain)} · a feast`, 'feast-float');
+  save();
+  return true;
+}
+
+// Tapping the water sweeps the tentacles: a small burst of calcite. Tapping a falling feast eats it.
 canvas.addEventListener('pointerdown', (e) => {
+  const f = currentFeast(state);
+  if (f) {
+    const [fx, fy] = feastPos(f, state.t - f.start, focusNow);
+    if (Math.hypot(e.clientX * dpr - fx, e.clientY * dpr - fy) < feastReach(focusNow, dpr) && eatFeast()) return;
+  }
   const gain = sweep(state);
   if (gain <= 0) return;
   hint.classList.add('done');
   audio.cue('sweep');
   taps.push(e.clientX * dpr, e.clientY * dpr, animT);
-  const f = document.createElement('div');
-  f.className = 'float';
-  f.textContent = `+${num(gain)}`;
-  f.style.left = `${e.clientX}px`;
-  f.style.top = `${e.clientY}px`;
-  ui.append(f);
-  setTimeout(() => f.remove(), 1200);
+  floatText(e.clientX, e.clientY, `+${num(gain)}`);
 });
 
 // Quality: if frames run slow for a while, drop the bloom pass.
@@ -401,7 +439,7 @@ function qualityCheck(dt: number): void {
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-// Keyboard: Space sweeps; P, B and G buy a polyp, a band and glimmerseed.
+// Keyboard: Space sweeps; F eats a falling feast; P, B and G buy a polyp, a band and glimmerseed.
 const KEYS: Record<string, UpgradeId> = { p: 'polyp', b: 'skeleton', g: 'symbiont' };
 window.addEventListener('keydown', (e) => {
   const target = e.target as HTMLElement | null;
@@ -413,6 +451,10 @@ window.addEventListener('keydown', (e) => {
       const [x, y] = scene.crownAt;
       taps.push(x + (Math.sin(animT * 7) > 0 ? 1 : -1) * 160 * dpr, y - 60 * dpr, animT);
     }
+    return;
+  }
+  if (e.key.toLowerCase() === 'f') {
+    eatFeast();
     return;
   }
   const id = KEYS[e.key.toLowerCase()];
@@ -474,6 +516,8 @@ function frame(now: number): void {
       ctx.restore();
     }
   }
+  const fe = currentFeast(state);
+  if (fe) drawFeast(ctx, fe, state.t - fe.start, tNow, focusNow, dpr);
   taps.draw(ctx, tNow, scene.crownAt, dpr);
   const p2 = performance.now();
   panel.update(state);

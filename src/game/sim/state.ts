@@ -71,6 +71,8 @@ export type GameState = {
   bands: string[];
   /** Sim time of the last hand sweep. */
   lastSweep: number;
+  /** Index of the last feast slot eaten (see content/events.ts). */
+  feasted: number;
   /** Lifetime totals. */
   earned: { calcite: number; glow: number; murmurs: number };
   /** Highest act reached. */
@@ -106,6 +108,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     readings: [],
     bands: [],
     lastSweep: -1e9,
+    feasted: -1,
     earned: { calcite: 0, glow: 0, murmurs: 0 },
     act: 1,
     meta,

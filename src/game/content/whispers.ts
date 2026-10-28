@@ -3,7 +3,7 @@
 
 import type { GameState } from '../sim/state.ts';
 import {
-  calciteHold, cost, idleShoals, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
+  calciteHold, cost, currentFeast, idleShoals, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
 } from '../sim/economy.ts';
 
 export type Whisper = { id: string; when: (s: GameState) => boolean; text: string };
@@ -29,6 +29,10 @@ export const WHISPERS: readonly Whisper[] = [
     id: 'out-of-reach',
     when: (s) => s.levels.skeleton > 3 && cost(s, 'skeleton') > calciteHold(s) && s.height < 3000,
     text: 'That band is more than you can hold at once. Hold more, or eat faster.',
+  },
+  {
+    id: 'feast', when: (s) => currentFeast(s) !== null,
+    text: 'Something is falling past us. Catch it before it sinks into the dark.',
   },
   {
     id: 'idle', when: (s) => idleShoals(s) > 0,

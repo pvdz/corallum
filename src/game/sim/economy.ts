@@ -22,9 +22,11 @@ import { ACT4, BANDS_ACT4, DIALECTS, TIERS, type DialectId, type DialectTier } f
 import { ACT5, BANDS_ACT5, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
 import { act, actAt, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { LINEAGE, type TraitId } from '../content/lineage.ts';
+import { FEAST } from '../content/events.ts';
 import type { Band, Currency, UpgradeDef, UpgradeId } from '../content/types.ts';
 import { UPGRADES } from '../content/upgrades.ts';
 import { equilibrium, relax } from './ode.ts';
+import { mulberry32 } from './rng.ts';
 import type { GameState } from './state.ts';
 
 export const BANDS: readonly Band[] = [...BANDS_ACT1, ...BANDS_ACT2, ...BANDS_ACT3, ...BANDS_ACT4, ...BANDS_ACT5];
@@ -626,6 +628,36 @@ export function sweep(s: GameState): number {
   s.calcite += gain;
   s.earned.calcite += gain;
   s.lastSweep = s.t;
+  return gain;
+}
+
+// ---------- Falling feasts ----------
+
+export type Feast = { k: number; start: number; x: number; kind: number };
+
+/** Feast slot k: when in it the feast starts, where it falls (0..1 across) and what it is. */
+function feastAt(seed: number, k: number): Feast {
+  const r = mulberry32((seed ^ 0x6fea57) + Math.imul(k, 0x9e3779b1));
+  return { k, start: k * FEAST.period + r() * (FEAST.period - FEAST.life), x: 0.15 + r() * 0.7, kind: Math.floor(r() * 3) };
+}
+
+/** The feast sinking past right now, if there is one still uneaten. */
+export function currentFeast(s: GameState): Feast | null {
+  if (!s.bands.includes(FEAST.band)) return null;
+  const k = Math.floor(s.t / FEAST.period);
+  if (k <= s.feasted) return null;
+  const f = feastAt(s.seed, k);
+  return s.t >= f.start && s.t < f.start + FEAST.life ? f : null;
+}
+
+/** Eat the current feast: a burst of calcite. Returns the amount (0 if there is none). */
+export function feast(s: GameState): number {
+  const f = currentFeast(s);
+  if (!f) return 0;
+  const gain = calciteRate(s) * FEAST.seconds;
+  s.calcite += gain;
+  s.earned.calcite += gain;
+  s.feasted = f.k;
   return gain;
 }
 

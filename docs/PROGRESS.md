@@ -90,3 +90,8 @@ date, what landed, what is half-done, what's next.
   network addresses; README section "Trying it on a phone". Whisper sound cue.
 - Bands tab: newest first; on load, truce and dialect choices sit just above the band that opened
   them. The "Your reef" summary no longer squeezes into the compact mobile card grid.
+- Falling feasts (content/events.ts, sim currentFeast/feast, render/feast.ts): from "What falls"
+  (95 m) a carcass (fish, squid or krill cloud) sinks past the reef once per 5 min slot at a
+  seeded moment; tap it or press F for 90 s of calcite; motes stream to the crown, a rising chime
+  plays, Ossel whispers about the first one. Active only: offline and the bot ignore it.
+  Tests: test/sim/feast.test.ts, test/e2e/feast.ts (`corallum.feast` gives its screen position).

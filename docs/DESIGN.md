@@ -59,6 +59,10 @@ the previous act's scene is gone below the frame.
 - Trade-off: plankton grows the economy, light buys more shoals, scouting buys knowledge and
   permanent effects. No allocation is right for the whole act.
 
+Falling feasts (from 95 m): something dead sinks past the reef every few minutes; tap it (or F)
+for 90 s of calcite. A reward for watching (principle 6: never needed, never lost offline), and the
+"What falls" band made playable.
+
 ## Act III — The Twilight Shelf (3000–3800 m)
 Entry requires the last Act II Reading (*Inside the wall*): the story turn opens the shelf.
 

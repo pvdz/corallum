@@ -31,3 +31,9 @@ Calcite's production is f(glow(t), plankton(t)); advance() takes Simpson's mean 
 each sub-step while upstream stocks relax, then one exact step once they have settled.
 
 (Tables of costs and rates get filled in as content is written.)
+
+## Falling feasts (active play only)
+After the band "What falls" (95 m), each 300 s slot holds one feast at a seeded moment
+(`mulberry32(seed, k)`), visible for 45 s. Eating it adds 90 s of calcite production (`feast()`), once
+per window (`state.feasted`). Offline catch-up never eats feasts, and the bot ignores them, so the
+pacing targets and the offline cap are untouched; a watching player gets roughly +30% calcite.

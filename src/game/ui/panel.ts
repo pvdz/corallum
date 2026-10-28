@@ -353,7 +353,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   backupNote.hidden = true;
   reefPage.append(
     el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, importBtn, resetBtn,
-    el('p', 'hint', 'Keys: Space sweeps · P buds a polyp · B lays a band · G hosts glimmerseed.'),
+    el('p', 'hint', 'Keys: Space sweeps · F catches a falling feast · P buds a polyp · B lays a band · G hosts glimmerseed.'),
   );
 
   /** Nudge toward copying a save when the reef is worth keeping and no copy is recent. */

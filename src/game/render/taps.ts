@@ -17,8 +17,8 @@ export function createTaps() {
 
   return {
     /** A sweep at device pixel (x, y). */
-    push(x: number, y: number, t: number): void {
-      taps.push({ x, y, start: t, seed: 0x7a95 + count++ * 7919, motes: 6 });
+    push(x: number, y: number, t: number, motes = 6): void {
+      taps.push({ x, y, start: t, seed: 0x7a95 + count++ * 7919, motes });
       if (taps.length > 12) taps.shift();
     },
     draw(ctx: CanvasRenderingContext2D, t: number, crown: readonly [number, number], s: number): void {
