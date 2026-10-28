@@ -4,7 +4,7 @@
 
 import type { GameState } from '../sim/state.ts';
 import {
-  calciteHold, cost, currentFeast, idleShoals, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
+  calciteHold, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
 } from '../sim/economy.ts';
 
 export type Whisper = { id: string; when: (s: GameState) => boolean; text: string };
@@ -46,6 +46,13 @@ export const WHISPERS: readonly Whisper[] = [
   {
     id: 'smother', when: (s) => s.silt > 0 && smother(s.silt) < 0.4,
     text: 'The silt is choking your polyps. Let the Rasp graze, or turn the current with sand.',
+  },
+  {
+    id: 'rasp-away', when: (s) => s.rasp > 0 && s.height > 3100 && (() => {
+      const b = raspSettings(s);
+      return Math.abs(b.forIncome - b.forHold) >= 4;
+    })(),
+    text: 'Before you leave me for long, send some of the Rasp away. Fewer mouths, and the stone keeps.',
   },
   {
     id: 'bloom', when: (s) => s.bloom > 1000,

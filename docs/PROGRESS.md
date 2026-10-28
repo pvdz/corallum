@@ -160,3 +160,4 @@ date, what landed, what is half-done, what's next.
 - Prestige: a lesser spawning chooses where to settle (plain / warm / cold / crowded seamount), each bending the next run (active vs idle-friendly, story speed vs silt). The Rasp dial's best setting is now judged by settled calcite/s within a safe hold (it was max hold, which choked reefs with silt late on); Rasp card says "best now: N". Retuned zones 3–5.
 - Warm and cold seamounts tint the deep water of the Silt Floor (red / ice-blue near the floor).
 - Rasp card shows both good settings when they differ: most calcite/s (while watching) and most held (before going away).
+- Whisper teaching the dial's trade-off before going away; whisper conditions checked at most once a second (some are costly).

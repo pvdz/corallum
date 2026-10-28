@@ -448,9 +448,11 @@ const whisper = document.createElement('div');
 whisper.id = 'whisper';
 ui.append(whisper);
 let lastWhisper = -Infinity;
+let lastWhisperCheck = 0;
 function whisperCheck(now: number): void {
   // Quiet once the spawn has gone: nothing should talk over the ending.
-  if (frozenT !== null || now - lastWhisper < 80_000 || !reader() || ended(state)) return;
+  if (frozenT !== null || now - lastWhisper < 80_000 || now - lastWhisperCheck < 1000 || !reader() || ended(state)) return;
+  lastWhisperCheck = now;
   const w = WHISPERS.find((x) => !state.meta.seen.includes(`w:${x.id}`) && x.when(state));
   if (!w) return;
   state.meta.seen.push(`w:${w.id}`);
