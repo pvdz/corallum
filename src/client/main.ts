@@ -364,6 +364,7 @@ function whisperCheck(now: number): void {
   whisper.classList.remove('show');
   void whisper.offsetWidth;
   whisper.classList.add('show');
+  audio.cue('whisper');
 }
 
 // Until the first sweep, a quiet hint over the water.
