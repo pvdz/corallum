@@ -18,6 +18,10 @@ decide which three memories your children carry into a new sea.
 - Offline progress is exact and capped by the reef itself: every store fills toward what the
   reef can hold, so a week away equals a month away.
 - Lesser spawnings start over on a new seamount with Lineage traits.
+- Milestones double polyps and glimmerseed at set counts; every card shows what its next level is
+  worth to your reef right now, and shoal jobs show what one more feeder or light-swimmer adds.
+- Falling feasts sink past now and then for those who watch; under a great tide moon the spawn
+  carries four memories instead of three.
 - Desktop, phone portrait and phone landscape. Sound is procedural and off by default.
 
 ## Trying it on a phone
