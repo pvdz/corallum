@@ -107,6 +107,14 @@ Great tides: every third full moon carries four memories instead of three. Relea
 first full moon or waiting (up to 40 min) for a great tide is Act V's wait-or-go choice; the size of
 the release also sets the lineage for beginning again.
 
+## Systems added in M6 (core loop)
+- **Milestones**: polyps (10/25/50/100/150/200) and glimmerseed (10/25/50/100) double their kind;
+  named, announced, shown on the reef. Cards show the next one.
+- **Honest numbers**: cards show what one more level is worth now (settled), job rows what one more
+  shoal is worth, the Rasp dial its two good settings (income vs hold for being away).
+- **Falling feasts** (active only), **seagrass meadows** (Act IV sand sink), **great tides**
+  (Act V wait-or-go: four memories every third moon).
+
 ## Prestige — Lesser Spawnings and Lineage
 - Available once the reef has reached 150 m (the Midnight Water, band *Eyes in the dark*) and
   until the ending. Releasing a lesser spawning starts a new run on a new seamount.
@@ -115,8 +123,15 @@ the release also sets the lineage for beginning again.
 - Kept across runs (`state.meta`): lineage, traits, number of spawnings, every story id ever
   seen (so bands do not re-pop as cards on reruns), best height.
 - Reset: everything else (stocks, upgrades, shoals, readings, truce, dialects, height).
-- **Traits** (lineage): calcite ×1.5/level · polyp cost ×0.85 · start with 5 bands/level ·
-  start with 3 shoals/level · glow ×1.5 · Readings cost ×0.5 · reef settles ×2 faster.
+- **Traits** (lineage), shown in two groups:
+  - *Gifts* (numbers): calcite ×1.5/level · polyp cost ×0.85 · start with 5 bands/level ·
+    start with 3 shoals/level · glow ×1.5 · Readings cost ×0.5 · reef settles ×2 faster.
+  - *Ways* (routes): Lamps in the snow (shoals in Act I) · Rasp kin (sand economy in Act II) ·
+    Glass gardeners (a no-Rasp route) · Old habits (auto-buys cheap polyps/glimmerseed while
+    watching) · Tide-reader (every full moon a great tide).
+- **Seamounts**: each spawning chooses where to settle: plain, warm (active-friendly), cold
+  (idle-friendly), crowded (fast story, more silt). See ECONOMY.md for numbers.
 - **Lineage bands**: each spawning unlocks one short story of your descendants settling.
 - Target: one spawning at ~3000 m finishes the game sooner than none; a bot test checks it.
-- After the ending, **Begin again** is a spawning with a +10 lineage bonus.
+- After the ending, **Begin again** is a spawning with a lineage bonus of 10 + 4 per doubling of
+  spawn released over its target. Endings and memories carried are remembered across runs.
