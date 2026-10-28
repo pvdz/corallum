@@ -39,6 +39,8 @@ export type ReefView = {
   form: DialectId | '';
   /** The Craft dialect: fluorescent polyps, mucus nets or sweeper tentacles. */
   craft: DialectId | '';
+  /** The Spawn dialect: broadcast clouds, brooded larvae or breaking fragments. */
+  spawnMode: DialectId | '';
   /** Act V: the moon (0..1, full at 0.5), spawn ripeness, seconds since the release (−1 before). */
   moonPhase: number;
   moonFull: boolean;

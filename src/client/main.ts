@@ -359,6 +359,7 @@ function view(): ReefView {
     raspPolite: state.truce.terms === 'b',
     form: state.dialects.form,
     craft: state.dialects.craft,
+    spawnMode: state.dialects.spawn,
     moonPhase: moonPhase(state.t),
     moonFull: moonFull(state.t),
     greatMoon: greatMoon(state.t),

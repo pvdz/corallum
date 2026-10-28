@@ -17,7 +17,7 @@ const TO = 4000;
 const NIGHT_LOOK: Record<CoralForm, { girth: number; palette: [string, string, string]; polyp: [string, string] }> = {
   fan: { girth: 1, palette: ['#1a0f22', '#7a3c58', 'rgba(255,210,230,0.25)'], polyp: ['#ffb3c9', 'rgba(255,220,235,0.9)'] },
   branching: { girth: 0.9, palette: ['#21180f', '#8a6238', 'rgba(255,230,200,0.25)'], polyp: ['#ffb3c9', 'rgba(255,230,200,0.9)'] },
-  massive: { girth: 3.2, palette: ['#171f14', '#5a7240', 'rgba(230,255,200,0.22)'], polyp: ['#ffb3c9', 'rgba(255,230,160,0.9)'] },
+  massive: { girth: 3.2, palette: ['#0f140c', '#3a4a2a', 'rgba(230,255,200,0.1)'], polyp: ['#ffb3c9', 'rgba(255,230,160,0.9)'] },
   plating: { girth: 1.6, palette: ['#1d1430', '#634890', 'rgba(230,215,255,0.25)'], polyp: ['#ffb3c9', 'rgba(200,255,240,0.9)'] },
 };
 
@@ -64,7 +64,8 @@ export function createBreachScene(seed: number): Scene {
     return {
       cx: cx(), baseY: crownY + unit, unit, s: scale(), dpr, top: 1, bandStep: 0,
       palette: NIGHT_LOOK[form].palette, polyp: v.craft === 'fluorescent' ? FLUORESCENT_POLYP : NIGHT_LOOK[form].polyp,
-      glowScale: v.craft === 'fluorescent' ? 0.9 : 0.6, polypScale: 1.1,
+      // The dome's many lit nodes add up: it glows at a lower scale so the night stays a night.
+      glowScale: (form === 'massive' ? 0.3 : 0.6) * (v.craft === 'fluorescent' ? 1.5 : 1), polypScale: 1.1,
     };
   }
 
@@ -168,8 +169,11 @@ export function createBreachScene(seed: number): Scene {
     if (v.sinceBreach >= 0) {
       // The release: everything rises at once, then a slow trickle forever after.
       const burst = Math.max(0, 1 - v.sinceBreach / 150);
-      const n = Math.round(bundles.length * (0.12 + 0.88 * burst));
+      // Brooders release fewer, bigger larvae that swim; broadcasters cloud the water.
+      const brooding = v.spawnMode === 'brooding';
+      const n = Math.round(bundles.length * (0.12 + 0.88 * burst) * (brooding ? 0.35 : 1));
       const coral = reef.coral;
+      if (v.spawnMode === 'fragmenting') drawFragments(ctx, v, L, reef, wy);
       for (let i = 0; i < n; i++) {
         const b = bundles[i]!;
         // Each bundle leaves a polyp on the reef and rises straight for the light.
@@ -180,11 +184,13 @@ export function createBreachScene(seed: number): Scene {
         const age = v.sinceBreach - b.delay * 0.4;
         if (age < 0) continue;
         const u = (age * b.speed * 1.4) % 1;
-        const x = x0 + b.drift * u * u * focus.w * 0.12 + Math.sin(t * 1.5 + b.delay) * 5 * s * u;
+        const wobble = brooding ? Math.sin(t * 4 + b.delay * 3) * 9 * s * u : 0;
+        const x = x0 + b.drift * u * u * focus.w * 0.12 + Math.sin(t * 1.5 + b.delay) * 5 * s * u + wobble;
         const y = y0 - u * (y0 - wy);
         const a = Math.min(1, u * 8) * (1 - u * 0.6);
-        glow(ctx, x, y, 13 * s * b.size, '255,150,200', 0.85 * a);
-        glow(ctx, x, y, 2.5 * s * b.size, '255,235,245', 0.9 * a);
+        const size = b.size * (brooding ? 1.9 : 1);
+        glow(ctx, x, y, 13 * s * size, brooding ? '255,175,150' : '255,150,200', 0.85 * a);
+        glow(ctx, x, y, 2.5 * s * size, '255,235,245', 0.9 * a);
       }
       // The slick spreading on the surface.
       const spread = Math.min(1, v.sinceBreach / 60);
@@ -211,15 +217,17 @@ export function createBreachScene(seed: number): Scene {
    * A shore bird standing on the crown where it breaks the air ("Birds walk on you"), pecking now
    * and then. When the spawn is released it lifts off and flies away over the water.
    */
-  function drawBird(ctx: CanvasRenderingContext2D, t: number, v: ReefView, crown: readonly [number, number]): void {
+  /** Where the reef's top stands in the air: a low hump at the waterline that grows over the last metres. */
+  function topOf(v: ReefView, crown: readonly [number, number]) {
     const s = scale() * 1.8;
-    const [cx, cy] = crown;
-    if (!v.bands.includes('air')) return;
-    // The reef's top stands in the air at low tide: a low dark hump at the waterline, growing as
-    // the reef climbs the last metres. The bird stands on it.
-    const wy = waterY();
     const rise = Math.min(1, Math.max(0.3, (v.height - 3990) / 10));
-    const hx = cx - 6 * s, hw = 22 * s, hh = 7 * s * rise;
+    return { s, wy: waterY(), hx: crown[0] - 6 * s, hw: 22 * s, hh: 7 * s * rise };
+  }
+
+  /** The reef's top in the air at low tide (drawn behind the reef so wide forms cover it). */
+  function drawTop(ctx: CanvasRenderingContext2D, v: ReefView, crown: readonly [number, number]): void {
+    if (!v.bands.includes('air')) return;
+    const { s, wy, hx, hw, hh } = topOf(v, crown);
     ctx.fillStyle = '#1b1426';
     ctx.beginPath();
     ctx.moveTo(hx - hw, wy + 2 * s);
@@ -231,6 +239,11 @@ export function createBreachScene(seed: number): Scene {
     ctx.moveTo(hx - hw * 0.7, wy - hh * 0.55);
     ctx.bezierCurveTo(hx - hw * 0.4, wy - hh * 0.95, hx + hw * 0.2, wy - hh * 1.05, hx + hw * 0.45, wy - hh * 0.8);
     ctx.stroke();
+  }
+
+  function drawBird(ctx: CanvasRenderingContext2D, t: number, v: ReefView, crown: readonly [number, number]): void {
+    if (!v.bands.includes('air')) return;
+    const { s, wy, hx, hw, hh } = topOf(v, crown);
     const flying = v.sinceBreach >= 0;
     const k = flying ? Math.min(1, v.sinceBreach / 12) : 0;
     if (k >= 1) return;
@@ -298,6 +311,38 @@ export function createBreachScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** Fragmenting: pieces of branch break away at the release and tumble down to settle elsewhere. */
+  function drawFragments(ctx: CanvasRenderingContext2D, v: ReefView, L: ReefLayout, reef: Reef, wy: number): void {
+    const s = scale();
+    const coral = reef.coral;
+    ctx.save();
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.lineCap = 'round';
+    for (let k = 0; k < 10; k++) {
+      const node = (k * 4099 + 17) % coral.count;
+      const [x0, y0] = reef.nodePx(L, node);
+      if (y0 < wy) continue;
+      const age = v.sinceBreach - k * 1.3;
+      if (age < 0) continue;
+      const fall = Math.min(1, age / 40);
+      const x = x0 + (k % 2 ? 1 : -1) * fall * focus.w * (0.08 + 0.03 * (k % 3));
+      const y = y0 + fall * fall * (h - y0) * 0.9;
+      const spin = age * (0.6 + 0.2 * (k % 3)) * (k % 2 ? 1 : -1);
+      const len = (12 + (k % 4) * 4) * s;
+      ctx.strokeStyle = 'rgba(230,170,120,0.85)';
+      ctx.lineWidth = 3.2 * s;
+      ctx.beginPath();
+      ctx.moveTo(x - Math.cos(spin) * len / 2, y - Math.sin(spin) * len / 2);
+      ctx.lineTo(x + Math.cos(spin) * len / 2, y + Math.sin(spin) * len / 2);
+      ctx.stroke();
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      glow(ctx, x + Math.cos(spin) * len / 2, y + Math.sin(spin) * len / 2, 5 * s, '255,200,220', 0.6);
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+
   return {
     bloomStrength: 0.5,
     crownAt: [0, 0] as [number, number],
@@ -313,6 +358,7 @@ export function createBreachScene(seed: number): Scene {
       const L = layout(v, form);
       drawSky(ctx, t, v.moonPhase, v.greatMoon);
       drawSea(ctx, t, v.moonPhase);
+      drawTop(ctx, v, reef.crown(L));
       reef.draw(ctx, L, v, t);
       drawCraft(ctx, v.craft, reef, L, t, 0.6);
       this.crownAt = reef.crown(L);

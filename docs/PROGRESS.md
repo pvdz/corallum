@@ -130,3 +130,4 @@ date, what landed, what is half-done, what's next.
   40 min for four". Drawn larger and warmer in the sky. Tests: sim + finale e2e (desktop releases
   under a great tide, 7 pages).
 - Craft dialects are visible (render/craft.ts): fluorescent polyps (vivid green/magenta, a little glow even in daylight), mucus nets (glistening threads with caught motes streaming downcurrent), sweeper tentacles (long stinging arms from the outer lower branches). Sunlit Crown and the Breach.
+- Spawn dialects show at the release: brooding lets go fewer, bigger, warmer larvae that wobble up; fragmenting also breaks branch pieces off that tumble down; broadcast as before. The bird's stone hump is drawn behind the reef; the night dome (massive) darker and the glimmerseed-milestone glow boost halved (+8%/tier) so the Breach is not overexposed.

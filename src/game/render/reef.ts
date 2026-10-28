@@ -191,7 +191,7 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     const pulse = 0.75 + 0.25 * Math.sin(t * 1.3);
     const lit = 0.35 + 0.65 * v.glowLevel;
     // Each glimmerseed milestone makes the reef's own light a little stronger.
-    const gs = (L.glowScale ?? 1) * (1 + 0.15 * v.glowTier);
+    const gs = (L.glowScale ?? 1) * (1 + 0.08 * v.glowTier);
     const colours = L.polyp ?? ['#ff9d86', 'rgba(255,190,170,0.9)'];
 
     ctx.save();
