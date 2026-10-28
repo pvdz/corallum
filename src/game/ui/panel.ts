@@ -4,7 +4,7 @@
 
 import { ACT1 } from '../content/act1.ts';
 import type { Band, UpgradeId } from '../content/types.ts';
-import { UPGRADES, effectText } from '../content/upgrades.ts';
+import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
 import { ACT3, MEETINGS, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { DIALECTS, TIERS, type DialectId } from '../content/act4.ts';
@@ -15,7 +15,7 @@ import { act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextMilestone, milestoneMult, jobGain, upgradeGain, bestRasp, speaks,
+  revealed, timeUntil, upgrade, capReason, nextMilestone, milestoneMult, jobGain, upgradeGain, bestRasp, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -639,9 +639,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           c.effect.dataset.live = '1';
         }
         if (maxed(s, u.id)) {
-          c.cost.textContent = u.id === 'skeleton' ? 'As high as it goes, for now' : 'Complete';
+          // A band held by a story gate says which one, beside a short button.
+          const gate = u.id === 'skeleton' ? capReason(s) : null;
+          c.cost.textContent = gate === null ? 'Complete' : gate === 'surface' ? GATE_TEXT.surface : 'Held';
           c.btn.disabled = true;
-          c.eta.textContent = '';
+          c.eta.textContent = gate && gate !== 'surface' ? GATE_TEXT[gate] : '';
           c.root.classList.add('maxed');
           // Finished for good (not just held back by a story gate): to the end of the list, one line.
           if (u.id !== 'skeleton' && !c.root.classList.contains('done')) {

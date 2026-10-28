@@ -410,6 +410,16 @@ export function heightCap(s: GameState): number {
   return cap;
 }
 
+export type CapReason = 'reading' | 'wall' | 'spawn-dialect' | 'surface';
+
+/** What holds the reef where it is (the lowest story gate), or 'surface' at the top. */
+export function capReason(s: GameState): CapReason {
+  if (!has(s, 'inside-the-wall')) return 'reading';
+  if (!s.truce.wall) return 'wall';
+  if (!s.dialects.spawn) return 'spawn-dialect';
+  return 'surface';
+}
+
 export function maxed(s: GameState, id: UpgradeId): boolean {
   if (id === 'skeleton') {
     const next = heightForBands(s.levels.skeleton + 1);

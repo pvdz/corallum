@@ -9,6 +9,14 @@ import type { UpgradeDef, UpgradeId } from './types.ts';
 
 export const UPGRADES: readonly UpgradeDef[] = [...UPGRADES_ACT1, ...UPGRADES_ACT2, ...UPGRADES_ACT3, ...UPGRADES_ACT4, ...UPGRADES_ACT5];
 
+/** The band card's note when a story gate holds the reef (sim/economy.ts capReason). */
+export const GATE_TEXT = {
+  reading: 'until your scouts read “Inside the wall”',
+  wall: 'until you and the Rasp decide about Ossel’s wall',
+  'spawn-dialect': 'until you choose a way of spawning',
+  surface: 'As high as it goes',
+} as const;
+
 export function effectText(id: UpgradeId): string {
   switch (id) {
     case 'polyp': return `+${ACT1.polypRate} calcite/s`;
