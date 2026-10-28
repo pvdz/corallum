@@ -384,7 +384,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (window.confirm('Start over from a single polyp? This erases the reef.')) hooks.reset();
   });
   const backupNote = el('p', 'backup-note',
-    'This reef lives only in this browser: clearing site data would wash it away. Copy a save and keep it somewhere safe.');
+    'This reef lives only in this browser: clearing site data would wash it away. Save it to a file (or copy it) and keep it somewhere safe.');
   backupNote.hidden = true;
   const glowToggle = el('label', 'toggle');
   const glowBox = el('input') as HTMLInputElement;
