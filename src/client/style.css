@@ -404,3 +404,9 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 #whisper span { font-size: 12px; letter-spacing: 0.14em; color: var(--ink-dim); text-transform: uppercase; }
 #whisper.show { animation: whisper 11s ease both; }
 @keyframes whisper { 0% { opacity: 0; transform: translateY(6px); } 12%, 75% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+
+.backup-note {
+  margin: 4px 0 8px; padding: 8px 10px; border-radius: 10px; font-size: 12.5px; line-height: 1.45;
+  color: var(--ink); background: rgba(143, 255, 240, 0.06); border: 1px solid rgba(143, 255, 240, 0.25);
+}
+.backup-note[hidden] { display: none; }

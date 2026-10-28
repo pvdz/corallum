@@ -40,6 +40,9 @@ declare global {
 
 const SAVE_KEY = 'corallum.save';
 const AWAY_NOTICE = 60;
+/** When the last save was copied out (wall clock), and how often to suggest another copy. */
+const EXPORTED_KEY = 'corallum.exported';
+const BACKUP_EVERY = 3 * 86400e3;
 
 const params = new URLSearchParams(location.search);
 const frozenT = params.has('t') ? Number(params.get('t')) : null;
@@ -162,7 +165,11 @@ const panel = createPanel(ui, {
     audio.cue('choice');
     save();
   },
-  exportSave: () => exportString(state, Date.now()),
+  exportSave() {
+    try { localStorage.setItem(EXPORTED_KEY, String(Date.now())); } catch { /* no storage */ }
+    panel.setBackupDue(false);
+    return exportString(state, Date.now());
+  },
   importSave(text) {
     const f = importString(text);
     if (!f) return false;
@@ -225,6 +232,15 @@ function save(): void {
   savedAt = Date.now();
   storageSet(serialize(state, savedAt));
   ownSavedAt = savedAt;
+  panel.setBackupDue(backupDue());
+}
+
+/** Suggest copying a save once the reef is an hour old (or has spawned) and no copy is recent. */
+function backupDue(): boolean {
+  if (state.t < 3600 && state.meta.spawnings === 0) return false;
+  let last = 0;
+  try { last = Number(localStorage.getItem(EXPORTED_KEY)) || 0; } catch { return false; }
+  return Date.now() - last > BACKUP_EVERY;
 }
 
 /** Advance by a long span and tell the player what happened while they were gone. */

@@ -1,5 +1,5 @@
 // A lesser spawning in a real browser: start from a saved reef at 1000 m, release, reload into
-// a new seamount, read the lineage note, buy a trait. Run: node --no-warnings test/e2e/prestige.ts
+// a new seamount, read the lineage note, buy a trait. Also: the copy-your-save nudge. Run: node --no-warnings test/e2e/prestige.ts
 // With SHOTS=<dir> it saves the Lineage tab there.
 
 import { runBot } from '../../src/game/sim/bot.ts';
@@ -16,6 +16,12 @@ await withGame(async (open) => {
     page.on('dialog', (d) => void d.accept());
     for (let i = 0; i < 20 && (await page.locator('.reader:not([hidden])').count()); i++)
       await page.locator('.reader:not([hidden]) button').first().click();
+    // An hours-old reef with no copied save gets a nudge on the Reef tab, gone once copied.
+    await page.locator('.tab', { hasText: 'Reef' }).locator('.dot:not([hidden])').waitFor({ timeout: 10000 });
+    await page.locator('.tab', { hasText: 'Reef' }).click();
+    await page.locator('.backup-note:not([hidden])').waitFor({ timeout: 3000 });
+    await page.locator('button', { hasText: 'Copy save' }).click();
+    await page.locator('.backup-note').waitFor({ state: 'hidden', timeout: 3000 });
     await page.locator('.tab', { hasText: 'Lineage' }).click();
     await page.locator('.spawn-lesser button').click();
     await page.waitForLoadState('load');

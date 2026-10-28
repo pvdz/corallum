@@ -111,6 +111,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   }
   const bandsDot = el('span', 'dot');
   tabButtons.get('bands')!.append(bandsDot);
+  const reefDot = el('span', 'dot');
+  reefDot.hidden = true;
+  tabButtons.get('reef')!.append(reefDot);
   let seenStories = 0;
   let storyCount = 0;
   function showTab(id: string): void {
@@ -345,10 +348,19 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const resetBtn = button('plain danger', 'Let the reef go (reset)', () => {
     if (window.confirm('Start over from a single polyp? This erases the reef.')) hooks.reset();
   });
+  const backupNote = el('p', 'backup-note',
+    'This reef lives only in this browser: clearing site data would wash it away. Copy a save and keep it somewhere safe.');
+  backupNote.hidden = true;
   reefPage.append(
-    el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), exportBtn, importBtn, resetBtn,
+    el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, importBtn, resetBtn,
     el('p', 'hint', 'Keys: Space sweeps · P buds a polyp · B lays a band · G hosts glimmerseed.'),
   );
+
+  /** Nudge toward copying a save when the reef is worth keeping and no copy is recent. */
+  function setBackupDue(due: boolean): void {
+    reefDot.hidden = !due;
+    backupNote.hidden = !due;
+  }
 
   panel.append(stocks, tabs, pages);
   host.append(panel);
@@ -416,6 +428,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let primed = false;
   let etaTurn = 0;
   return {
+    setBackupDue,
     update(s: GameState): void {
       const r = rates(s);
       // Countdown labels look ahead with the integrator; twice a second is plenty.

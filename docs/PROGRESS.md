@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Polish backlog in PLAN.md M6. Ideas not yet planned: more lineage content (traits that open strategies, not just multipliers), a title/intro card, music themes per zone, save-slot export reminder, more bands in Act II.
+NOW: Polish backlog in PLAN.md M6. Ideas not yet planned: more lineage content, a title/intro card, music themes per zone, more bands in Act II, Thousandfold towers in the Sunlit Crown.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -56,3 +56,6 @@ date, what landed, what is half-done, what's next.
   read as stray squiggles under the vignette).
 - render/taps.ts: a sweep shows a ripple where you tapped and six food motes curving into the reef's
   crown (scenes expose `crownAt`), which flares as they land. Space-bar sweeps start beside the crown.
+- Save-export nudge: once a reef is an hour old (or has spawned) and no save was copied in 3 days
+  (wall clock in localStorage `corallum.exported`), the Reef tab gets a dot and a note. Copying clears it.
+  Covered in test/e2e/prestige.ts.
