@@ -203,6 +203,97 @@ export function createBreachScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * A shore bird standing on the crown where it breaks the air ("Birds walk on you"), pecking now
+   * and then. When the spawn is released it lifts off and flies away over the water.
+   */
+  function drawBird(ctx: CanvasRenderingContext2D, t: number, v: ReefView, crown: readonly [number, number]): void {
+    const s = scale() * 1.8;
+    const [cx, cy] = crown;
+    if (!v.bands.includes('air')) return;
+    // The reef's top stands in the air at low tide: a low dark hump at the waterline, growing as
+    // the reef climbs the last metres. The bird stands on it.
+    const wy = waterY();
+    const rise = Math.min(1, Math.max(0.3, (v.height - 3990) / 10));
+    const hx = cx - 6 * s, hw = 22 * s, hh = 7 * s * rise;
+    ctx.fillStyle = '#1b1426';
+    ctx.beginPath();
+    ctx.moveTo(hx - hw, wy + 2 * s);
+    ctx.bezierCurveTo(hx - hw * 0.6, wy - hh, hx + hw * 0.5, wy - hh * 1.2, hx + hw, wy + 2 * s);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(220,225,255,0.25)';
+    ctx.lineWidth = 1 * s;
+    ctx.beginPath();
+    ctx.moveTo(hx - hw * 0.7, wy - hh * 0.55);
+    ctx.bezierCurveTo(hx - hw * 0.4, wy - hh * 0.95, hx + hw * 0.2, wy - hh * 1.05, hx + hw * 0.45, wy - hh * 0.8);
+    ctx.stroke();
+    const flying = v.sinceBreach >= 0;
+    const k = flying ? Math.min(1, v.sinceBreach / 12) : 0;
+    if (k >= 1) return;
+    const x = hx - hw * 0.35 - k * focus.w * 0.6;
+    const y = wy - hh * 0.9 - 13 * s - k * k * focus.h * 0.35;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.fillStyle = '#0b0b1c';
+    ctx.strokeStyle = '#0b0b1c';
+    ctx.lineCap = 'round';
+    if (!flying) {
+      const peck = Math.max(0, Math.sin(t * 0.7)) ** 12;
+      // Legs.
+      ctx.lineWidth = 0.9 * s;
+      ctx.beginPath();
+      ctx.moveTo(-1 * s, 3 * s);
+      ctx.lineTo(-2 * s, 13 * s);
+      ctx.moveTo(1.5 * s, 3 * s);
+      ctx.lineTo(2 * s, 13 * s);
+      ctx.stroke();
+      // Body and tail.
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 7 * s, 4 * s, -0.15, 0, Math.PI * 2);
+      ctx.moveTo(-6 * s, -1 * s);
+      ctx.lineTo(-11 * s, 1 * s);
+      ctx.lineTo(-6 * s, 2 * s);
+      ctx.fill();
+      // Neck, head and a long bill dipping when it pecks.
+      ctx.save();
+      ctx.translate(5 * s, -2 * s);
+      ctx.rotate(0.9 * peck);
+      ctx.lineWidth = 2 * s;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(2 * s, -5 * s);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(2.5 * s, -6 * s, 2.2 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.lineWidth = 0.9 * s;
+      ctx.beginPath();
+      ctx.moveTo(4 * s, -6 * s);
+      ctx.lineTo(10 * s, -4.5 * s);
+      ctx.stroke();
+      ctx.restore();
+      // Moonlight on its back.
+      ctx.strokeStyle = 'rgba(220,225,255,0.35)';
+      ctx.lineWidth = 0.8 * s;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 7 * s, 4 * s, -0.15, Math.PI * 1.1, Math.PI * 1.75);
+      ctx.stroke();
+    } else {
+      // Wings beating as it climbs away.
+      const flap = Math.sin(t * 9);
+      ctx.lineWidth = 1.4 * s;
+      ctx.beginPath();
+      ctx.moveTo(-12 * s, -flap * 7 * s);
+      ctx.quadraticCurveTo(-5 * s, -3 * s, 0, 0);
+      ctx.quadraticCurveTo(5 * s, -3 * s, 12 * s, -flap * 7 * s);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(0, 0.5 * s, 4 * s, 1.8 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
   return {
     bloomStrength: 0.5,
     crownAt: [0, 0] as [number, number],
@@ -224,6 +315,8 @@ export function createBreachScene(seed: number): Scene {
       drawWaves(ctx, t);
       drawSpawn(ctx, t, v, L, reef);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
+      // After the glow pass, so the crown's light does not swallow its silhouette.
+      drawBird(ctx, t, v, this.crownAt);
     },
   };
 }

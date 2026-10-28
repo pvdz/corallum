@@ -107,3 +107,4 @@ date, what landed, what is half-done, what's next.
 - Hold a buy button to keep buying (after 450 ms, every 110 ms while affordable; the release does not add one). In the play test.
 - Tab title shows the reef's height ("641 m · Corallum"), "spawned" after the ending.
 - Reef tab: "Soft glow" checkbox turns the bloom pass off for slow phones (remembered as corallum.glow); Midnight draw 11→4 ms headless with it off.
+- The Breach: after the "Air" band the reef's top shows as a dark hump at the waterline (growing over the last metres) with a shore bird standing on it, pecking; it flies off when the spawn is released. Drawn after the glow pass.
