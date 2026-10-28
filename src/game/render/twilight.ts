@@ -231,6 +231,44 @@ export function createTwilightScene(seed: number): Scene {
     }
   }
 
+  /** A manta gliding through the light shafts every few minutes, wings rising and falling slowly. */
+  function drawManta(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 230, crossing = 75;
+    const u = (t % period) / crossing;
+    if (u >= 1) return;
+    const lap = Math.floor(t / period);
+    const dir = lap % 2 ? -1 : 1;
+    const s = scale() * 1.4;
+    const x = focus.x + focus.w * (dir > 0 ? -0.15 + u * 1.3 : 1.15 - u * 1.3);
+    const y = focus.y + focus.h * (0.22 + 0.05 * Math.sin(lap)) + Math.sin(t * 0.3) * 10 * s;
+    const flap = Math.sin(t * 1.1);
+    ctx.save();
+    ctx.translate(x, y);
+    // Seen at a low angle: the wing span flattened, so it reads as a wide ray gliding past.
+    ctx.scale(dir, 0.38);
+    ctx.fillStyle = 'rgba(12,30,62,0.75)';
+    // From a little below: a diamond of wings that bend at the tips, a whip of a tail.
+    ctx.beginPath();
+    ctx.moveTo(30 * s, 0);
+    ctx.quadraticCurveTo(10 * s, -8 * s - flap * 6 * s, -6 * s, -46 * s - flap * 14 * s);
+    ctx.quadraticCurveTo(-12 * s, -14 * s, -26 * s, 0);
+    ctx.quadraticCurveTo(-12 * s, 14 * s, -6 * s, 46 * s + flap * 14 * s);
+    ctx.quadraticCurveTo(10 * s, 8 * s + flap * 6 * s, 30 * s, 0);
+    ctx.fill();
+    // Cephalic fins at the front.
+    ctx.beginPath();
+    ctx.ellipse(31 * s, -5 * s, 6 * s, 2 * s, 0.3, 0, Math.PI * 2);
+    ctx.ellipse(31 * s, 5 * s, 6 * s, 2 * s, -0.3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(12,30,62,0.6)';
+    ctx.lineWidth = 1.2 * s;
+    ctx.beginPath();
+    ctx.moveTo(-24 * s, 0);
+    ctx.quadraticCurveTo(-44 * s, Math.sin(t * 2) * 4 * s, -64 * s, Math.sin(t * 2 + 1) * 6 * s);
+    ctx.stroke();
+    ctx.restore();
+  }
+
   /** Glass gardeners: shrimp working along the slope near the reef's foot, picking at the silt. */
   function drawGardeners(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale() * 1.8;
@@ -356,6 +394,7 @@ export function createTwilightScene(seed: number): Scene {
       // Water and light shafts change slowly: painted at half resolution five times a second.
       water.draw(ctx, w, h, t, 0.2, `${w}x${h} ${p.toFixed(3)}`, (c, tq) => drawWater(c, tq, p));
       ruins.draw(ctx, w, h, focus, v.height, RUINS, t);
+      drawManta(ctx, t);
       drawMotes(ctx, t, v.siltLevel);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#1d3557');
       drawShelf(ctx, v.sandBars, v.siltLevel);
