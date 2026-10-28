@@ -60,7 +60,18 @@ export type Rates = {
  */
 export function steadyCalciteRate(s: GameState): number {
   const r = rates(s);
-  return calciteRate({ ...s, plankton: planktonHold(s, r), glow: glowHold(s, r) });
+  return calciteRate({ ...s, plankton: planktonHold(s, r), glow: glowHold(s, r), silt: siltHold(s, r), bloom: bloomHold(s, r) });
+}
+
+/**
+ * What one more level of an upgrade does for calcite once things settle, as a fraction (+0.12 =
+ * 12% more). For the lattice it is the change in what the reef can hold instead.
+ */
+export function upgradeGain(s: GameState, id: UpgradeId): number {
+  const next: GameState = { ...s, levels: { ...s.levels, [id]: s.levels[id] + 1 } };
+  if (id === 'lattice') return calciteHold(next) / calciteHold(s) - 1;
+  const base = steadyCalciteRate(s);
+  return base > 0 ? steadyCalciteRate(next) / base - 1 : 0;
 }
 
 /** How much more calcite (as a fraction) one more shoal on this job would bring, once settled. */

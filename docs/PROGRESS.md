@@ -117,3 +117,4 @@ date, what landed, what is half-done, what's next.
   worth in settled calcite ("one more: +2.1% calcite"). Light was a trap (the lure saturated); now the
   lure needs more glow higher up and light-swimmers amplify glimmerseed glow. The bot allocates by
   marginal gain. Retuned band costs (ECONOMY.md).
+- Multiplier cards (lattice, lure, vent, sand bars, channels, pigments, canopy) show what the next level is worth now, settled: "· now +13% calcite" (lattice: "+39% held").

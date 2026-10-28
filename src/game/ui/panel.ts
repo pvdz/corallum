@@ -15,7 +15,7 @@ import { act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextMilestone, milestoneMult, jobGain,
+  revealed, timeUntil, upgrade, nextMilestone, milestoneMult, jobGain, upgradeGain,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -597,6 +597,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           c.effect.textContent = marginalText(s, u.id);
           c.effect.dataset.live = '1';
         }
+        // For multipliers: what the next level is worth to this reef now, once things settle.
+        if (GAIN_SHOWN.has(u.id) && (etaSlot === etaTurn || !c.effect.dataset.live) && !maxed(s, u.id)) {
+          const g = upgradeGain(s, u.id);
+          const pct = g >= 0.0005 ? `+${(g * 100).toFixed(g < 0.1 ? 1 : 0)}%` : 'no gain';
+          c.effect.textContent = `${effectText(u.id)} · now ${pct}${u.id === 'lattice' ? ' held' : g >= 0.0005 ? ' calcite' : ''}`;
+          c.effect.dataset.live = '1';
+        }
         if (maxed(s, u.id)) {
           c.cost.textContent = u.id === 'skeleton' ? 'As high as it goes, for now' : 'Complete';
           c.btn.disabled = true;
@@ -765,6 +772,8 @@ function repeatWhileHeld(btn: HTMLButtonElement, fn: () => void): { repeated: bo
   for (const ev of ['pointerup', 'pointerleave', 'pointercancel'] as const) btn.addEventListener(ev, stop);
   return state;
 }
+
+const GAIN_SHOWN = new Set<UpgradeId>(['lattice', 'lure', 'vent', 'sandbar', 'channel', 'pigment', 'canopy']);
 
 /** The gain from one more polyp or glimmerseed, with everything that multiplies it. */
 function marginalText(s: GameState, id: 'polyp' | 'symbiont'): string {

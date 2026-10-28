@@ -350,3 +350,12 @@ test('shoal jobs: light-swimmers still matter high up (the lure does not saturat
   assert.ok(jobGain(state, 'light') > 0.005, `light: ${jobGain(state, 'light')}`);
   assert.ok(jobGain(state, 'feed') > 0.005, `feed: ${jobGain(state, 'feed')}`);
 });
+
+test('upgradeGain: multipliers report their settled worth; the lattice reports hold', async () => {
+  const { upgradeGain, calciteHold } = await import('../../src/game/sim/economy.ts');
+  const { state } = runBot((x) => x.height >= 3400, 8 * 3600);
+  const g = upgradeGain(state, 'sandbar');
+  assert.ok(g > 0.05 && g < 0.5, `sandbar ${g}`);
+  const next = { ...state, levels: { ...state.levels, lattice: state.levels.lattice + 1 } };
+  assert.ok(Math.abs(upgradeGain(state, 'lattice') - (calciteHold(next) / calciteHold(state) - 1)) < 1e-12);
+});
