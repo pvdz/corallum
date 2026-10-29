@@ -544,3 +544,4 @@ date, what landed, what is half-done, what's next.
 - Again (ossel.ts AGAIN): on a new reef after an ending, Ossel says one of five lines (by endings reached), once each (meta.seen 'again:n').
 - README brought up to date with the zone rhythms, run-long choices, Ossel's questions, the sky, the day's sea, dreams, notifications and keys.
 - Upgrade 'sweeten' (Breach, bloom): spawn ×1.1 each, max 6; the bot buys 4; bot 7h48.
+- Whispers for the upwelling, swells, the first grain, the unnamed stars and a kept dream.

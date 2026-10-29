@@ -6,7 +6,7 @@ import type { GameState } from '../sim/state.ts';
 import { actAt } from './acts.ts';
 import { OSSEL_MISTAKES } from './ossel.ts';
 import {
-  calciteHold, canSend, inFlurry, inHeat, inRising, waterAt, homes, workOpen, sisterAt, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
+  calciteHold, canSend, inFlurry, inHeat, inRising, currentUpwelling, currentSwell, grainsWaiting, skyOpen, waterAt, homes, workOpen, sisterAt, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
 } from '../sim/economy.ts';
 
 export type Whisper = { id: string; when: (s: GameState) => boolean; text: string };
@@ -80,6 +80,26 @@ export const WHISPERS: readonly Whisper[] = [
   {
     id: 'rising', when: (s) => inRising(s) && s.levels.shoal > 0 && s.rose < 0,
     text: 'Look down. The whole deep is coming up to eat. Put the shoals on feeding and send them in with it.',
+  },
+  {
+    id: 'upwell', when: (s) => !!currentUpwelling(s) && s.upwelled < 0,
+    text: 'Cold water, coming up from the deep on one side. Turn the current to meet it; it brings things with it.',
+  },
+  {
+    id: 'swell', when: (s) => !!currentSwell(s) && s.swell.k < 0,
+    text: 'Big water coming. Rise with each wave as it crests over us: tap the crown just as it peaks.',
+  },
+  {
+    id: 'grain', when: (s) => grainsWaiting(s) > 0 && s.grains.length === 0,
+    text: 'This band is still soft. How it sets is up to you, and it will stay that way in the stone.',
+  },
+  {
+    id: 'sky', when: (s) => skyOpen(s) && s.height >= 3990 && !Object.values(s.sky).some(Boolean),
+    text: 'Look up. Those lights have no names. Nobody down here ever saw them. Give them some.',
+  },
+  {
+    id: 'dream', when: (s) => s.meta.dreams > 0 && s.t > 600,
+    text: 'You have a dream kept. I dream all the time. A quarter of an hour, gone, and everything grown.',
   },
   {
     id: 'heat', when: (s) => inHeat(s) && !s.closed && s.bloom > 1,
