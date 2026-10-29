@@ -5,7 +5,7 @@
 
 export const SHARD = {
   /** Chance an action turns up a shard not yet found, by what was done. */
-  chance: { sweep: 0.05, feast: 0.3, touch: 0.04, expedition: 1, roam: 0.35 },
+  chance: { sweep: 0.05, feast: 0.3, touch: 0.04, expedition: 1, roam: 0.35, prune: 0.12 },
   /** Calcite per shard the line holds, and once more for the whole tablet. */
   each: 0.01,
   whole: 0.1,

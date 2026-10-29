@@ -670,3 +670,4 @@ date, what landed, what is half-done, what's next.
 - Vibration only after a real touch on the page (Chrome refused and logged an error when a key or a mouse click triggered it first; the feast test caught it on mobile).
 - Drift: in view mode, after 25 s without input, the camera wanders slowly round the reef, zooming in and out (zoom.ts lookAt; off under calmer motion).
 - The almanac strip waits until the water has started turning and two things are coming, so a new reef's first cards stay near the top.
+- Letting old stone go can turn up a shard of the tablet (chance 0.12).

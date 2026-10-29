@@ -2181,6 +2181,7 @@ export function prune(s: GameState, slot: number): number {
   s.old -= 1;
   s.pruned = { t: s.t, slot };
   s.tally.pruned++;
+  dig(s, 'prune');
   return burst(s, OLD.seconds * (1 + 0.3 * trait(s, 'light-boned')) * (chose(s, 'heavy-crown', 'a') ? 1.5 : 1) * (passed(s, 'heavy') ? 2 : 1) * (boon(s, 'brittle-tips') ? 2 : 1) * (has(s, 'kept-stone') ? 1.5 : 1) * (chose(s, 'bowed', 'b') ? 1.5 : 1));
 }
 

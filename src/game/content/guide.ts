@@ -10,7 +10,7 @@ export const GUIDE: readonly [string, string][] = [
   ['Ossel asks', 'One small thing at a time. Do it while you watch, and the reef gets a burst of what it lives by.'],
   ['Moments', 'Now and then something happens to the reef, and you choose how to meet it. Each choice lasts for this reef.'],
   ['Expeditions', 'From the Midnight Water, shoals can go to Thousandfold’s ruins. They stop their work while away and come back with a relic; when no ruin is in reach, they can roam.'],
-  ['Shards', 'Sweeping, catching what falls, touching neighbours and the shoals’ journeys sometimes turn up a shard of an old tablet. The whole line keeps them.'],
+  ['Shards', 'Sweeping, catching what falls, touching neighbours, letting old stone go and the shoals’ journeys sometimes turn up a shard of an old tablet. The whole line keeps them.'],
   ['Residents', 'From the Twilight Shelf, small animals ask for a home in your branches. Homes are few: choose who suits the water you are in.'],
   ['Great works', 'One large thing to build in each middle zone, in stages, each paid in two kinds at once.'],
   ['Tangles', 'Now and then a small fish gets caught in a jelly’s threads near the reef (on the floor, a brittle star under a stone; at the Breach, a fish stranded on your crown). Tap it free for a burst.'],
