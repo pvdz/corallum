@@ -623,3 +623,4 @@ date, what landed, what is half-done, what's next.
 - A second Midnight great work, the listening dome (from 1500 m; calcite+glow; scouts hear ×1.25 per stage); works.ts drawDome (ring of stones, shell by stages, murmur rings). Bot 7h08.
 - A wish shows as one bright star falling into the crown, which flares (effect 'wish'); a run of bells when a shower begins.
 - Each ending the line has reached stands far off in the Sunlit Crown: up to five pale distant colonies (sunlit.ts, drawColony).
+- Moment visuals: the slope that gave way leaves a pale rubble fan (scoured: a channel); the young Rasp fed sleeps by the reef's foot; the big-eyed fish lit up stays by the crown (dark seamount).

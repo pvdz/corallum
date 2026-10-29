@@ -1055,6 +1055,38 @@ export function createMidnightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** The fish with very large eyes (a moment on the dark seamount), staying by the reef's light. */
+  function drawBigeye(ctx: CanvasRenderingContext2D, t: number, x0: number, y0: number): void {
+    const s = scale() * 1.4;
+    const x = x0 + Math.sin(t * 0.3) * 14 * s, y = y0 + Math.sin(t * 0.5) * 6 * s;
+    const dir = Math.cos(t * 0.3) >= 0 ? 1 : -1;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(dir, 1);
+    ctx.fillStyle = '#5a1e2a';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 18 * s, 9 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(-16 * s, 0);
+    ctx.lineTo(-26 * s, -7 * s);
+    ctx.lineTo(-26 * s, 7 * s);
+    ctx.closePath();
+    ctx.fill();
+    // The eye: huge, catching the reef's light.
+    ctx.fillStyle = '#d8e8ff';
+    ctx.beginPath();
+    ctx.arc(9 * s, -1 * s, 6 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#081018';
+    ctx.beginPath();
+    ctx.arc(10 * s, -1 * s, 4 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, 10 * s, -1 * s, 12 * s, '140,220,255', 0.35);
+    ctx.restore();
+  }
+
   /** A milky sea: the whole water glows a soft blue-white, flickering here and there with tiny lights. */
   function drawMilky(ctx: CanvasRenderingContext2D, t: number): void {
     const s = Math.min(focus.w, focus.h) / 700;
@@ -1122,6 +1154,10 @@ export function createMidnightScene(seed: number): Scene {
       if (v.milky) drawMilky(ctx, t);
       drawGulper(ctx, t);
       reef.draw(ctx, L, v, t);
+      if (v.moments.eyes === 'a') {
+        const [crx, cry] = reef.crown(L);
+        drawBigeye(ctx, t, crx - 90 * scale(), cry + 40 * scale());
+      }
       drawRelics(ctx, reef, L, v.relics, t, v.moments['old-lamp'] === 'a');
       if (v.nets > 0) drawNets(ctx, reef, L, v.nets, t);
       if (v.moments.angler === 'b') {

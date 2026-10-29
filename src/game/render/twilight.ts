@@ -118,6 +118,81 @@ export function createTwilightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** The slope that gave way (a moment): a pale fan of fallen rubble down the right; scoured, a clean channel through it. */
+  function drawSlump(ctx: CanvasRenderingContext2D, channel: boolean): void {
+    const s = scale();
+    const x = (u: number) => focus.x - focus.w * 0.1 + u * focus.w * 1.2;
+    const r = mulberry32(seed ^ 0x51a);
+    ctx.save();
+    ctx.fillStyle = 'rgba(170,175,190,0.22)';
+    ctx.beginPath();
+    ctx.moveTo(x(0.97), slopeY(0.97) - 4 * s);
+    ctx.lineTo(x(0.72), slopeY(0.72) + 2 * s);
+    ctx.lineTo(x(0.86), slopeY(0.86) + 10 * s);
+    ctx.closePath();
+    ctx.fill();
+    for (let i = 0; i < 26; i++) {
+      const u = 0.74 + r() * 0.22;
+      ctx.fillStyle = `rgba(${150 + Math.floor(r() * 40)},${150 + Math.floor(r() * 40)},${165 + Math.floor(r() * 40)},0.7)`;
+      ctx.beginPath();
+      ctx.ellipse(x(u), slopeY(u) - r() * 6 * s, (2 + r() * 4) * s, (1.5 + r() * 2.5) * s, r() * 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    if (channel) {
+      ctx.strokeStyle = 'rgba(40,50,80,0.5)';
+      ctx.lineWidth = 3 * s;
+      ctx.beginPath();
+      for (let i = 0; i <= 12; i++) {
+        const u = 0.95 - i * 0.02;
+        if (i) ctx.lineTo(x(u), slopeY(u) + 3 * s);
+        else ctx.moveTo(x(u), slopeY(u) + 3 * s);
+      }
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  /** The young Rasp the reef fed (a moment): small and pale, asleep on a dead branch low on the reef. */
+  function drawYoungRasp(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, t: number): void {
+    const s = scale();
+    const x = L.cx - L.unit * 0.12, y = L.baseY - L.unit * 0.12;
+    if (y > focus.y + focus.h) return;
+    const len = 12 * s;
+    const breath = 1 + 0.04 * Math.sin(t * 0.9);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(-0.15);
+    ctx.fillStyle = 'hsl(165,30%,62%)';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, len * breath, len * 0.45 * breath, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(-len * 0.9, 0);
+    ctx.lineTo(-len * 1.4, -len * 0.4);
+    ctx.lineTo(-len * 1.4, len * 0.4);
+    ctx.closePath();
+    ctx.fill();
+    // A soft pale beak, and a closed eye.
+    ctx.fillStyle = 'hsl(50,40%,85%)';
+    ctx.beginPath();
+    ctx.ellipse(len * 0.95, len * 0.05, len * 0.22, len * 0.16, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(30,40,40,0.8)';
+    ctx.lineWidth = 0.8 * s;
+    ctx.beginPath();
+    ctx.arc(len * 0.55, -len * 0.08, len * 0.1, 0.2, Math.PI - 0.2);
+    ctx.stroke();
+    ctx.restore();
+    // A small stream of sleeping bubbles.
+    ctx.fillStyle = 'rgba(220,235,255,0.6)';
+    for (let i = 0; i < 3; i++) {
+      const u = (t * 0.3 + i / 3) % 1;
+      ctx.beginPath();
+      ctx.arc(x + len + Math.sin(u * 6) * 2 * s, y - 6 * s - u * 30 * s, (1 + u * 1.5) * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
   function slopeY(u: number): number {
     const r = mulberry32(slopeSeed);
     const a = r() * 6, b = r() * 6;
@@ -1646,6 +1721,7 @@ export function createTwilightScene(seed: number): Scene {
       if (v.elder) drawElder(ctx, t);
       if (v.gardeners) drawGardeners(ctx, t);
       drawSiltSlide(ctx, t, v.siltLevel);
+      if (v.moments.slope) drawSlump(ctx, v.moments.slope === 'b');
       drawGhosts(ctx, focus, v.ancestors, v.height, t, scale(), 'rgba(190,210,240,1)');
       drawSisterFar(ctx, focus, v.sister - v.gauge, t, scale(), true, v.sisterLit);
       drawBreakwater(ctx, focus, v.works.breakwater, scale(), slopeY);
@@ -1654,6 +1730,7 @@ export function createTwilightScene(seed: number): Scene {
       drawRelics(ctx, reef, L, v.relics, t, v.moments['old-lamp'] === 'a');
       if (v.moments.cleaners === 'a') drawLedge(ctx, reef, L, t);
       if (v.moments.eggs === 'a') drawNursery(ctx, t);
+      if (v.moments['young-rasp'] === 'a') drawYoungRasp(ctx, reef, L, t);
       if (v.thorn?.kind === 'thorn-star') drawThorn(ctx, reef, L, v.thorn.u, v.thorn.side, t);
       slugs.draw(ctx, reef, L, t);
       drawResidents(ctx, reef, L, v.residents, t, seed,
