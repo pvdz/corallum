@@ -3,7 +3,7 @@
 // effect for this reef (applied in sim/economy.ts by `chose()`). Told in Ossel's voice.
 
 export type MomentId = 'brittle' | 'vent-crack' | 'snow' | 'lost-shoal' | 'hunters' | 'angler' | 'squid' | 'whale-fall' | 'old-lamp' | 'cleaners'
-  | 'young-rasp' | 'eggs' | 'storm' | 'turtle' | 'first-light' | 'last-night' | 'bird';
+  | 'young-rasp' | 'slope' | 'eggs' | 'storm' | 'turtle' | 'first-light' | 'last-night' | 'bird';
 
 export type MomentOption = { label: string; effect: string; text: string };
 export type Moment = { id: MomentId; metres: number; title: string; text: string; a: MomentOption; b: MomentOption };
@@ -98,6 +98,14 @@ export const MOMENTS: readonly Moment[] = [
       text: 'You open a dead branch to it. It eats, and sleeps, and later the others come for it and are gentler with you.' },
     b: { label: 'Send it to its kind', effect: 'sand ×1.15',
       text: 'You close against it until it gives up and swims downslope, where the others are grinding. They grind harder with it back.' },
+  },
+  {
+    id: 'slope', metres: 3500, title: 'The slope gives way',
+    text: 'With a long low rumble the shelf above you slumps. A river of silt and old stone pours past your flank.',
+    a: { label: 'Root deeper', effect: 'calcite ×1.05',
+      text: 'You grip the rock with everything you have. When it is over you are still there, and holding harder than before.' },
+    b: { label: 'Let it scour you', effect: 'silt swept +0.03/s',
+      text: 'You let it pour over you. It strips the dead silt from your branches, and the channel it cut stays open.' },
   },
   {
     id: 'eggs', metres: 3600, title: 'Eggs in the dead stone',

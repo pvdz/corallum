@@ -75,7 +75,7 @@ sand bar, grow a pigment, ripen), picked from the seed among the kinds that make
 a little more each time. Kept, it pays 120 s of the zone's currency (as a feast does) and the next
 comes. Short goals inside the long ones (principle 4); never needed. Feat: 20 in one reef.
 
-**Moments**: seventeen small happenings on the way up (25 m to 3990 m, at least one per zone), each a choice between two
+**Moments**: eighteen small happenings on the way up (25 m to 3990 m, at least one per zone), each a choice between two
 ways of meeting it, waiting in the Grow tab until answered and never blocking. Most pit active
 play against being away or one route against another (e.g. the squid: dim your glow, glow
 fades ×0.8, or hold it, glow ×1.2; the storm: let the branch go for +2 lineage, or bind it for
