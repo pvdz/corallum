@@ -232,3 +232,4 @@ date, what landed, what is half-done, what's next.
 - Phones vibrate a tick per purchase, a pulse for milestones and feats (navigator.vibrate; on by default on touch devices, Reef-tab switch, hidden where unsupported). Unverified on hardware.
 - Journal and Feats cards fold to their heading (tap/Enter to open). Fix: both cards rendered empty until the first creature/feat, because their change-check started equal to the empty state.
 - Reef tab grouped: Saves, Sound, Display, Start over.
+- Twilight Shelf: a turbidity current every 3.5 min, a silt cloud rolling down the slope over everything on it (thicker when the reef is silted).

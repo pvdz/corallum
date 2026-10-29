@@ -467,6 +467,32 @@ export function createTwilightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * A turbidity current: every few minutes a cloud of silt breaks loose high on the slope and
+   * rolls down it, billowing, thinning out as it goes. Thicker when the reef is choked with silt.
+   */
+  function drawSiltSlide(ctx: CanvasRenderingContext2D, t: number, siltLevel: number): void {
+    const period = 210, length = 40;
+    const u = ((t + 90) % period) / length;
+    if (u >= 1) return;
+    const s = scale();
+    const a = Math.min(1, u * 5, (1 - u) * 3) * (0.35 + 0.4 * siltLevel);
+    for (let k = 0; k < 14; k++) {
+      const lag = k * 0.025;
+      const p = u * 0.55 - lag;
+      if (p < 0) continue;
+      const su = 0.98 - p;
+      const x = focus.x - focus.w * 0.1 + su * focus.w * 1.2;
+      const y = slopeY(su) - (10 + (k % 3) * 9) * s;
+      const r = (24 + k * 3 + u * 30) * s;
+      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, `rgba(175,160,130,${0.75 * a})`);
+      g.addColorStop(1, 'rgba(175,160,130,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(x - r, y - r, r * 2, r * 2);
+    }
+  }
+
   /** A manta gliding through the light shafts every few minutes, wings rising and falling slowly. */
   function drawManta(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 230, crossing = 75;
@@ -645,6 +671,7 @@ export function createTwilightScene(seed: number): Scene {
       drawWall(ctx, t, v.wall);
       drawRasp(ctx, t, v.rasp, v.raspTrust, v.raspPolite);
       if (v.gardeners) drawGardeners(ctx, t);
+      drawSiltSlide(ctx, t, v.siltLevel);
       reef.draw(ctx, L, v, t);
       slugs.draw(ctx, reef, L, t);
       this.crownAt = reef.crown(L);
