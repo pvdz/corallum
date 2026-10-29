@@ -19,7 +19,7 @@ import { ACT1, BANDS_ACT1, FLARE, FLURRY, OLD, GRAIN, GRAINS, SPORT, SPORTS, typ
 import { ACT2, MILKY, RISING, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
 import { FAN, GUARD, UPWELL, ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDLE, RIDDLES, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { FIGURES, SKY, type FigureId, WISH, type WishId } from '../content/sky.ts';
-import { QUESTIONS, type Question, type QuestionId } from '../content/ossel.ts';
+import { QUESTIONS, type Question, type QuestionId, OSSEL_PAST } from '../content/ossel.ts';
 import { ACT4, HEAT, BANDS_ACT4, DIALECTS, OTHERS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
 import { ACT5, BANDS_ACT5, GARDEN, MEMORIES, type Memory, type MemoryId, type GardenKind } from '../content/act5.ts';
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
@@ -1982,6 +1982,7 @@ function keepRequest(s: GameState): number {
       q.done++;
       q.streak++;
       if (q.done % 5 === 0) remember(s, 'request', String(q.done));
+      if (q.done % OSSEL_PAST.every === 0) s.meta.lineage += OSSEL_PAST.lineage;
     }
     q.kind = '';
   }

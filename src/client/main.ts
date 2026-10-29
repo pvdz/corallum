@@ -48,7 +48,7 @@ import { drawMoon, glow as glowAt } from '../game/render/draw.ts';
 import { GAUGE_MOON } from '../game/content/act5.ts';
 import { creatureAt, endFrameSpots, hover, poke, spoke, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { HEAT } from '../game/content/act4.ts';
-import { AGAIN, QUESTION, QUESTIONS } from '../game/content/ossel.ts';
+import { AGAIN, QUESTION, QUESTIONS, OSSEL_PAST } from '../game/content/ossel.ts';
 import { MILKY, RISING } from '../game/content/act2.ts';
 import { UPWELL } from '../game/content/act3.ts';
 import { FIGURES, SKY, WISH, type FigureId, type WishId } from '../game/content/sky.ts';
@@ -1817,6 +1817,11 @@ function frame(now: number): void {
       floatText(cx / dpr, cy / dpr - 30, `+${num(state.request.paid)} ${feastPay(state)} ${REQUEST.float}`, 'feast-float');
       audio.cue('feast');
       buzz(30);
+      // Every tenth: Ossel remembers something of its own.
+      if (state.request.done % OSSEL_PAST.every === 0) {
+        const past = OSSEL_PAST.lines[(state.request.done / OSSEL_PAST.every - 1) % OSSEL_PAST.lines.length]!;
+        panel.story(OSSEL_PAST.kicker, past.title, `${past.text} ${OSSEL_PAST.gain}`);
+      }
     }
     requestsSeen = state.request.done;
     if (state.relics.length > relicsSeen) {

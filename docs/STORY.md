@@ -223,4 +223,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Great work: the lagoon rim (Sunlit) | this game's own world | OK |
 | A march of brittle stars (Silt Floor) | real behaviour | OK |
 | Trait Long rhythm | this game's own systems | OK |
+| Ossel's own memories, one every tenth request kept | this game's own characters | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

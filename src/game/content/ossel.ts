@@ -138,3 +138,15 @@ export const AGAIN = {
     { title: 'Many times', text: '“Every time you go up, I think it will be the last, and I keep everything ready to say goodbye,” says Ossel. “And then you come back down to me. I am glad. I am a wall. I am glad.”' },
   ],
 } as const;
+
+/** Every tenth request kept, Ossel remembers something of its own, and the line gains a little. */
+export const OSSEL_PAST = {
+  every: 10, lineage: 1, kicker: 'Ossel remembers', gain: '(+1 lineage)',
+  lines: [
+    { title: 'The first band', text: 'The first band I laid down was crooked. Nobody minded. I minded for a hundred years. I wish I had not.' },
+    { title: 'The gatekeepers', text: 'There were polyps whose whole life was the gate: open, shut, open, shut. I was proud not to be one. Now I think they were the only ones who met anybody.' },
+    { title: 'A lanternfish', text: 'One lanternfish slept in my stone every day for a whole season. I never told anyone. It is the best thing I remember.' },
+    { title: 'The last spawning', text: 'When the city finally let go, I held on. I told myself someone had to keep the wall. Nobody did. The wall was all that was left.' },
+    { title: 'Your first polyp', text: 'When you settled on the rock beside me, I thought: another one who will keep everything. I am very glad to have been wrong.' },
+  ],
+} as const;
