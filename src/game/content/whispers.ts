@@ -36,6 +36,11 @@ export const WHISPERS: readonly Whisper[] = [
     text: 'Something is falling past us. Catch it before it sinks into the dark.',
   },
   {
+    id: 'touch',
+    when: (s) => s.meta.seen.filter((k) => k.startsWith('c:')).length >= 4 && !s.meta.seen.some((k) => k.startsWith('t:')),
+    text: 'We are not alone down here. Touch one of them, gently. Most will answer.',
+  },
+  {
     id: 'idle', when: (s) => idleShoals(s) > 0,
     text: 'Some of the lanternfish are waiting for you to tell them what to do.',
   },
