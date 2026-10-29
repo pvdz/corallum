@@ -419,7 +419,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .backup-note[hidden] { display: none; }
 
 #fps {
-  position: absolute; left: 60px; top: max(18px, env(safe-area-inset-top)); z-index: 11; pointer-events: none;
+  position: absolute; left: 104px; top: max(18px, env(safe-area-inset-top)); z-index: 11; pointer-events: none;
   font: 11px/1.3 ui-monospace, monospace; color: #9ff6ff; background: rgba(0, 0, 0, 0.45); padding: 3px 6px; border-radius: 6px;
 }
 .memory .carried-before { font-size: 11px; font-style: normal; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255, 158, 199, 0.7); }
@@ -455,7 +455,7 @@ html.calm *:not(#zone-title):not(#milestone):not(#whisper):not(#journal-note) { 
 
 /* ---------- Journal: a creature seen for the first time ---------- */
 #journal-note {
-  position: absolute; left: max(64px, env(safe-area-inset-left)); top: max(18px, env(safe-area-inset-top));
+  position: absolute; left: calc(max(12px, env(safe-area-inset-left)) + 100px); top: max(18px, env(safe-area-inset-top));
   pointer-events: none; opacity: 0; display: flex; flex-direction: column; gap: 1px; font-family: var(--display);
 }
 #journal-note span { font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--glowc); }
@@ -469,3 +469,13 @@ html.calm *:not(#zone-title):not(#milestone):not(#whisper):not(#journal-note) { 
   color: var(--ink); background: rgba(255, 255, 255, 0.05); border: 1px solid var(--edge);
 }
 #title .reef-name { margin-top: 0.3em; font-style: normal; letter-spacing: 0.3em; text-transform: uppercase; font-size: 13px; color: var(--calcite); }
+
+/* ---------- View mode: the panel hidden, the reef on the whole screen ---------- */
+#view-mode {
+  position: absolute; left: calc(max(12px, env(safe-area-inset-left)) + 46px); top: max(12px, env(safe-area-inset-top)); z-index: 11;
+  width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--edge); background: rgba(10, 14, 34, 0.55);
+  color: var(--ink-dim); display: grid; place-items: center; padding: 0; cursor: pointer; backdrop-filter: blur(6px);
+}
+#view-mode[aria-pressed="true"] { color: var(--glowc); border-color: var(--edge-strong); }
+html.view-mode .panel, html.view-mode #title { display: none; }
+html.view-mode #zone-title, html.view-mode #whisper, html.view-mode #milestone { right: 0; }

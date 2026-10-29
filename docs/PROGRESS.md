@@ -171,3 +171,4 @@ date, what landed, what is half-done, what's next.
 - Nudibranchs (render/slugs.ts): seven bright sea slugs creep along the reef's own branch paths (tip toward trunk and back) in the Twilight Shelf and Sunlit Crown; one tip per reef column so they spread out. Journal: 20 creatures.
 - Name your reef (Reef tab): shown under the title, in the tab title and in "Your reef"; kept across spawnings with a generation numeral (Mara, Mara II, …).
 - Reef: encrusting life on the older stone (sponges, breathing tunicate cups, crusts), sparse in the Midnight Water, colourful and thick in the Sunlit Crown.
+- View mode (eye button top-left, or H): hides the panel; the scene reframes to the whole screen (a full-height portrait of the reef on phones). Frozen ?t pages redraw on layout changes.

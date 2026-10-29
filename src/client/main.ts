@@ -360,7 +360,8 @@ function resize(): void {
   const h = Math.round(window.innerHeight * dpr);
   const r = panel.element.getBoundingClientRect();
   const side = r.left > window.innerWidth * 0.3;
-  const focus: Focus = side
+  // With the panel hidden (view mode) the scene frames the whole screen.
+  const focus: Focus = viewMode ? { x: 0, y: 0, w, h } : side
     ? { x: 0, y: 0, w: Math.round(r.left * dpr), h }
     : { x: 0, y: 0, w, h: Math.round(r.top * dpr) };
   canvas.width = fadeCanvas.width = w;
@@ -570,6 +571,23 @@ function qualityCheck(dt: number): void {
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+// View mode: hide the panel and let the reef have the whole screen (button top-left, or H).
+let viewMode = false;
+const viewBtn = document.createElement('button');
+viewBtn.id = 'view-mode';
+viewBtn.type = 'button';
+viewBtn.title = 'Hide the panel (H)';
+viewBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>';
+function setViewMode(on: boolean): void {
+  viewMode = on;
+  document.documentElement.classList.toggle('view-mode', on);
+  viewBtn.setAttribute('aria-pressed', String(on));
+  viewBtn.title = on ? 'Show the panel (H)' : 'Hide the panel (H)';
+  relayout();
+}
+viewBtn.addEventListener('click', () => setViewMode(!viewMode));
+ui.append(viewBtn);
+
 // Keyboard: Space sweeps; F eats a falling feast; P, B and G buy a polyp, a band and glimmerseed.
 const KEYS: Record<string, UpgradeId> = { p: 'polyp', b: 'skeleton', g: 'symbiont' };
 window.addEventListener('keydown', (e) => {
@@ -582,6 +600,10 @@ window.addEventListener('keydown', (e) => {
       const [x, y] = scene.crownAt;
       taps.push(x + (Math.sin(animT * 7) > 0 ? 1 : -1) * 160 * dpr, y - 60 * dpr, animT);
     }
+    return;
+  }
+  if (e.key.toLowerCase() === 'h') {
+    setViewMode(!viewMode);
     return;
   }
   if (e.key.toLowerCase() === 'f') {
@@ -696,8 +718,13 @@ function frame(now: number): void {
   else document.documentElement.dataset.ready = '1';
 }
 
-window.addEventListener('resize', () => { needResize = true; });
-new ResizeObserver(() => { needResize = true; }).observe(panel.element);
+/** Layout changed: resize on the next frame (a frozen ?t page draws just that one frame). */
+function relayout(): void {
+  needResize = true;
+  if (frozenT !== null) requestAnimationFrame(frame);
+}
+window.addEventListener('resize', relayout);
+new ResizeObserver(relayout).observe(panel.element);
 document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
 window.addEventListener('pagehide', save);
 requestAnimationFrame(frame);
