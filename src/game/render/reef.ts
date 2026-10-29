@@ -416,8 +416,8 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
           // A choice made: two slow rose-gold rings spreading from the reef's heart.
           const top = Math.min(1, L.top);
           const cy = L.baseY - top * u * 0.45;
-          ring(ctx, L.cx, cy, (40 + k * 320) * s, '255,200,170', 0.5 * (1 - k), 2 * s);
-          if (k > 0.2) ring(ctx, L.cx, cy, (40 + (k - 0.2) * 320) * s, '255,200,170', 0.35 * (1 - k), 1.2 * s);
+          ring(ctx, L.cx, cy, (40 + k * 320) * s, '255,165,140', 0.5 * (1 - k), 2 * s);
+          if (k > 0.2) ring(ctx, L.cx, cy, (40 + (k - 0.2) * 320) * s, '255,165,140', 0.35 * (1 - k), 1.2 * s);
           glow(ctx, L.cx, cy, top * u * 0.5 + 40 * s, '255,210,180', 0.2 * Math.sin(Math.PI * k));
           break;
         }
