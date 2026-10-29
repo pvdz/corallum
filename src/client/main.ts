@@ -262,6 +262,15 @@ const panel = createPanel(ui, {
 });
 panel.primeStories(state);
 showReefName();
+// Feats already earned when a reef loads (older saves, or long absences) are granted together.
+if (frozenT === null && botT === null) {
+  const already = newFeats(state);
+  if (already.length > 1) {
+    for (const f of already) state.meta.seen.push(`f:${f.id}`);
+    state.meta.lineage += already.length;
+    setTimeout(() => showJournalNote(`Feats · +${already.length} lineage`, `${already.length} feats already earned`), 1500);
+  }
+}
 // A brand-new reef: let the title and the dark water show before the first band's story.
 if (state.bands.length === 0 && state.meta.spawnings === 0 && frozenT === null) panel.holdStories(3500);
 

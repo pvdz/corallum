@@ -200,3 +200,4 @@ date, what landed, what is half-done, what's next.
 - Lineage tab "Your line": each earlier reef (name and generation, height let go at or spawned, seamount, Form dialect), kept in meta.ancestors.
 - Taps in the dark zones (Silt Floor, Midnight Water) also set off a burst of blue plankton sparks.
 - Finale: the memory choice centres in the scene area on desktop (it overlapped the panel); at the Breach only the moon whisper may speak (others talked over the spawning).
+- Feats already earned when a reef loads (older saves) are granted together with one note instead of a long queue of toasts.
