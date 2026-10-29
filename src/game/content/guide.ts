@@ -61,15 +61,15 @@ export const ZONE_GUIDE: Record<number, { title: string; text: string }> = {
   2: { title: 'New in the Midnight Water',
     text: 'Shoals of lanternfish come when you pulse your glow: set them to feed, to light, or to scout the buried bands. ' +
       'Send them to Thousandfold’s ruins for relics. Every half hour the deep rises past you: put shoals on feeding and send them in. ' +
-      'Answer their light signals, and watch for what hunts them.' },
+      'Answer their light signals, and watch for what hunts them. Now and then the sea turns milky (sweep through it), a lost shoal’s lights flicker far off (call it home), and a small fish gets caught in a jelly’s threads (free it).' },
   3: { title: 'New on the Twilight Shelf',
     text: 'Silt falls here and smothers the polyps. Let the Rasp graze (they grind silt and stone to sand), turn the current, ' +
       'set shoals to fan. Meet the Rasp and make terms; their elder asks riddles. Turn the current toward an upwelling when one comes. ' +
-      'Small animals ask to live in your branches, and your glimmerseed throw a sport.' },
+      'Small animals ask to live in your branches, and your glimmerseed throw a sport. Pieces of other reefs tumble past on the current: catch them, and they grow at your foot.' },
   4: { title: 'New in the Sunlit Crown',
     text: 'Sunlight feeds your symbionts: bloom, a new wealth, buys pigments, canopy and dialects, the shape your reef will be. ' +
-      'Every half hour the water runs warm: stay open for more sun, or close up before you bleach. Shells wash up on the sand.' },
+      'Every half hour the water runs warm: stay open for more sun, or close up before you bleach. Shells wash up on the sand, and shoals can stand guard against what comes to eat.' },
   5: { title: 'New at the Breach',
     text: 'Air. Ripen the spawn and wait for the full moon; a great tide carries four memories. Ride the swells as they crest, ' +
-      'name the stars, and when the moon is full, let go.' },
+      'name the stars, wish when they fall, and when the moon is full, let go.' },
 };
