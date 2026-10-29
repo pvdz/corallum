@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Polish backlog in PLAN.md M6. Ideas not yet planned: more lineage traits that open strategies (not multipliers).
+NOW: Open-ended polish (features, UI, graphics). Recent: neighbours (every creature tappable, most react), photo journal, floor detail, Shared table trait, moon. Ideas: more reactions (turtle, mola, whale shark, giant squid), Breach draw cost (~9 ms headless), portraits for transient creatures.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
