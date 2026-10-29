@@ -655,3 +655,4 @@ date, what landed, what is half-done, what's next.
 - Rare on the Silt Floor: a ghost shark (chimaera) gliding low over the silt every 12 min. Almanac rows measure labels where they really sit; a label with no room keeps only its dot.
 - Two more trip encounters: a lamp still burning (carry it home: a minute of glow) and a cloud of eggs (feed: a minute of plankton).
 - A second Twilight great work, the grazing lawn (from 3400 m; calcite+sand; sand ×1.15 per stage); works.ts drawLawn. Bot 6h48.
+- Palettes Oath (feat Every vow kept) and Silver (feat A week of visitors).
