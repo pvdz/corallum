@@ -193,3 +193,4 @@ date, what landed, what is half-done, what's next.
 - Grow tab ends with "Coming up: <next hidden upgrade> — <what opens it>".
 - Midnight Water: a whale fall (spine, ribs, skull, small pink lights living on it) on the seamount's flank early in the zone (journal: 25).
 - The Breach: six moon jellies drift under the surface either side of the reef (journal: 26).
+- Perf: reef branches cached in the reef's bounding box once the reef has held still for 30 frames (drawn directly while it settles); branch sway (~1 px) dropped. Headless phone size: Midnight 10.8→6.1 ms, Twilight 17.9→11.8; Silt Floor and Breach unchanged (their reefs move or are small, where a cache costs more than it saves — measured by A/B in one session).

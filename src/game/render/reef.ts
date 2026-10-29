@@ -58,6 +58,59 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     return Math.min(MAX_POLYPS, 1 + v.polyps, 1 + Math.floor(visibleCount * 0.3));
   }
 
+  // The branches are the reef's biggest drawing cost and barely move, so they are drawn into a
+  // cache and redrawn only when the reef or its framing changes (no sway: it was about a pixel).
+  let branchCache: HTMLCanvasElement | OffscreenCanvas | null = null;
+  let branchKey = '';
+  let cachedKey = '';
+  let box = { x: 0, y: 0, w: 1, h: 1 };
+  let steady = 0;
+  function drawBranchesCached(ctx: CanvasRenderingContext2D, L: ReefLayout): void {
+    const w = ctx.canvas.width, h = ctx.canvas.height;
+    const key = `${w}x${h} ${L.cx} ${L.baseY} ${L.unit} ${L.top.toFixed(3)} ${L.bandStep} ${(L.palette ?? DEFAULT_PALETTE).join()}`;
+    // While the reef is still moving (settling after a band) the cache would be redrawn every
+    // frame at extra cost: draw straight to the screen until it has held still for 30 frames.
+    if (key !== branchKey) {
+      branchKey = key;
+      steady = 0;
+    }
+    if (cachedKey !== key && ++steady < 30) {
+      drawBranches(ctx, L, 0);
+      return;
+    }
+    if (cachedKey !== key) {
+      // The cache covers only the reef's own box (a full-screen copy costs more than a small reef).
+      refresh(L);
+      let x0 = Infinity, x1 = -Infinity, y0 = Infinity;
+      for (let i = 0; i < coral.count; i++) {
+        if (coral.y[i]! > L.top) continue;
+        const [x, y] = nodePx(L, i);
+        if (x < x0) x0 = x;
+        if (x > x1) x1 = x;
+        if (y < y0) y0 = y;
+      }
+      const pad = 0.04 * L.unit + 4;
+      box = {
+        x: Math.max(0, Math.floor(x0 - pad)), y: Math.max(0, Math.floor(y0 - pad)),
+        w: 0, h: 0,
+      };
+      box.w = Math.max(1, Math.min(w, Math.ceil(x1 + pad)) - box.x);
+      box.h = Math.max(1, Math.min(h, Math.ceil(L.baseY + pad)) - box.y);
+      if (!branchCache || branchCache.width !== box.w || branchCache.height !== box.h) {
+        branchCache = typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(box.w, box.h) : document.createElement('canvas');
+        branchCache.width = box.w;
+        branchCache.height = box.h;
+      }
+      const c = branchCache.getContext('2d') as CanvasRenderingContext2D;
+      c.setTransform(1, 0, 0, 1, 0, 0);
+      c.clearRect(0, 0, box.w, box.h);
+      c.translate(-box.x, -box.y);
+      drawBranches(c, L, 0);
+      cachedKey = key;
+    }
+    ctx.drawImage(branchCache!, box.x, box.y);
+  }
+
   function nodePx(L: ReefLayout, i: number): [number, number] {
     return [L.cx + coral.x[i]! * L.unit, L.baseY - coral.y[i]! * L.unit];
   }
@@ -101,14 +154,13 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
         const r = radii[i]!;
         const p = coral.parent[i]!;
         if (r <= 0 || p < 0) continue;
-        const sway = Math.sin(t * 0.5 + coral.y[i]! * 6) * coral.y[i]! * 0.002 * u;
         const [x0, y0] = nodePx(L, p);
         const [x1, y1] = nodePx(L, i);
         const lw = Math.max(minW, r * u * 2 * wMul);
         ctx.lineWidth = lw;
         ctx.beginPath();
         ctx.moveTo(x0 + shift * lw * 0.5, y0);
-        ctx.lineTo(x1 + sway + shift * lw * 0.5, y1);
+        ctx.lineTo(x1 + shift * lw * 0.5, y1);
         ctx.stroke();
       }
     }
@@ -252,7 +304,7 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     ctx.restore();
 
     if (form === 'plating') drawTables(ctx, L, t);
-    drawBranches(ctx, L, t);
+    drawBranchesCached(ctx, L);
     if (L.encrust && L.encrust > 0) drawEncrusting(ctx, L, t);
 
     const nodes = polypNodes(L, shownPolyps(L, v));
