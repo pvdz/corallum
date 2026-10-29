@@ -402,3 +402,4 @@ date, what landed, what is half-done, what's next.
 - Requests can also ask to roam, raise a work stage, drive off an intruder or read a band (tally.intruders).
 - The ending names the neighbours the line knows well (familiar or more), come to watch.
 - The tab title gets a '●' when something waits (a feast, an intruder, a moment, the full-moon choice, a boon).
+- Seasoned shoals: each trip (relic or roam) makes feeding and light-swimming 2% stronger, up to +40%; shown in the Shoals header.

@@ -23,6 +23,10 @@ export type Site = {
 };
 
 export const EXPEDITION = {
+  /** Shoals come back seasoned: feeding and light ×(1 + this × trips), at most `seasonedMax` trips. */
+  seasoned: 0.02,
+  seasonedMax: 20,
+  seasonedWord: 'seasoned',
   /** Murmurs per shoal-second on the way (half what scouting at home hears). */
   heard: 0.5,
   label: 'Expeditions',

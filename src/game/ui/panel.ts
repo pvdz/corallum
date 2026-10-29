@@ -31,7 +31,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, othersSpawning, othersCap, boonsOffered, untilFeast, untilThorn, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, othersSpawning, othersCap, boonsOffered, untilFeast, untilThorn, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -1293,7 +1293,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       if (shoals > 0) {
         const idle = idleShoals(s);
         const gone = awayShoals(s);
-        shoalIdle.textContent = (idle > 0 ? `${idle} idle · ` : '') + (gone > 0 ? `${gone} away · ` : '') + (idle > 0 || gone > 0 ? `of ${shoals}` : `${shoals}`);
+        const sea = seasoned(s);
+        shoalIdle.textContent = (sea > 1 ? `${EXPEDITION.seasonedWord} ×${sea.toFixed(2)} · ` : '') + (idle > 0 ? `${idle} idle · ` : '') + (gone > 0 ? `${gone} away · ` : '') + (idle > 0 || gone > 0 ? `of ${shoals}` : `${shoals}`);
         shoalBox.classList.toggle('has-idle', idle > 0);
         const perFeed = s.jobs.feed > 0 ? r.planktonP / s.jobs.feed : 0;
         const perLight = s.jobs.light > 0
