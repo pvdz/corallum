@@ -1521,6 +1521,7 @@ export function sweep(s: GameState): number {
   s.calcite += gain;
   s.earned.calcite += gain;
   const lit = milkyGlow(s);
+  if (lit > 0) s.tally.milky++;
   s.glow += lit;
   s.earned.glow += lit;
   s.lastSweep = s.t;

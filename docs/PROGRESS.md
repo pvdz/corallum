@@ -585,3 +585,4 @@ date, what landed, what is half-done, what's next.
 - A milky sea in the Midnight Water (act2.ts MILKY; economy inMilky/untilMilky/milkyGlow): a minute in every 25, the water glows and each sweep gathers 4 s of glow. Soon line, whisper, shimmer cue, midnight.ts drawMilky wash and sparkles; sim test.
 - The near foreground also in the Silt Floor and Midnight Water, near-black with small lights on the fan that blur into soft bokeh.
 - The near foreground at the Breach too (under the surface, dark blue).
+- Feat Wading in light: 40 sweeps through a milky sea (tally.milky).
