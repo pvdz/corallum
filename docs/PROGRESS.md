@@ -473,3 +473,4 @@ date, what landed, what is half-done, what's next.
 - Rare: a squadron of eagle rays in the Sunlit Crown by day (every 25 min).
 - Sea sparkle at the Breach before dawn: blue glints where waves break.
 - Three more riddles (after the Rasp's own band, the midden, the sun gate): six in all.
+- Refactor: the choice cards (strain, boon, riddle, fork, signal, full moon) moved to ui/choices.ts; el/button to ui/dom.ts; panel.ts 2163 → 1993 lines.

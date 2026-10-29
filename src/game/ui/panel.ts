@@ -2,20 +2,22 @@
 // reader and the away summary. Built once; `update()` only rewrites text and classes, so it
 // is cheap to call every frame.
 
-import { ACT1, MILESTONES, STRAIN, STRAINS, type StrainId } from '../content/act1.ts';
+import { ACT1, MILESTONES, type StrainId } from '../content/act1.ts';
 import type { Band, Currency, UpgradeId } from '../content/types.ts';
 import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
-import { ACT3, CURRENT, FAVOURS, FAVOUR_TEXT, MEETINGS, RIDDLE, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
-import { DIALECTS, OTHERS, TIERS, type DialectId } from '../content/act4.ts';
-import { BOONS, BOON_TEXT, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId } from '../content/lineage.ts';
+import { ACT3, CURRENT, FAVOURS, FAVOUR_TEXT, MEETINGS, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
+import { DIALECTS, TIERS, type DialectId } from '../content/act4.ts';
+import { BOONS, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { GARDEN, LINE_TITLES, MEMORIES, type MemoryId } from '../content/act5.ts';
 import { COMPANION, CREATURES, TRUST, trustLevel } from '../content/creatures.ts';
 import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
 import { upgradeIcon } from './icons.ts';
+import { button, el } from './dom.ts';
+import { createChoices } from './choices.ts';
 import { drawCity, drawTablet } from './drawings.ts';
 import { FEATS } from '../content/feats.ts';
-import { AWAY_PREP, SIGNAL, WELCOME, intruderOf } from '../content/events.ts';
+import { AWAY_PREP, WELCOME, intruderOf } from '../content/events.ts';
 import { WATER } from '../content/waters.ts';
 import { REQUEST } from '../content/requests.ts';
 import { WORKS, WORK_TEXT, type WorkId } from '../content/works.ts';
@@ -32,7 +34,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, othersSpawning, othersCap, boonsOffered, strainOpen, forkOpen, currentRiddle, currentSignal, plantCost, untilFeast, untilThorn, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilThorn, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -119,20 +121,6 @@ export type PanelHooks = {
 
 type Card = { root: HTMLElement; cost: HTMLElement; level: HTMLElement; effect: HTMLElement; eta: HTMLElement; btn: HTMLButtonElement; max: HTMLButtonElement | null };
 type Story = { kicker: string; title: string; text: string };
-
-function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls = '', text = ''): HTMLElementTagNameMap[K] {
-  const e = document.createElement(tag);
-  if (cls) e.className = cls;
-  if (text) e.textContent = text;
-  return e;
-}
-
-function button(cls: string, text: string, onClick: () => void): HTMLButtonElement {
-  const b = el('button', cls, text);
-  b.type = 'button';
-  b.addEventListener('click', onClick);
-  return b;
-}
 
 function bandStory(b: Band, kept = false): Story {
   return { kicker: b.metres === 0 ? 'A seamount, 4,000 m down' : `Band at ${metres(b.metres)}`, title: b.title, text: kept && b.kept ? b.kept : b.text };
@@ -263,105 +251,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   momentBox.append(el('p', 'truce-kicker', MOMENT.kicker), momentTitle, momentText, momentChoices);
   grow.prepend(momentBox);
 
-  // ---------- The glimmerseed strain (once, at 15 m) ----------
-  const strainBox = el('section', 'truce moment strain');
-  strainBox.hidden = true;
-  const strainChoices = el('div', 'boon-choices');
-  for (const st of STRAINS) {
-    const b = button('choice', '', () => hooks.chooseStrain(st.id));
-    b.style.borderColor = `rgba(${st.rgb},0.5)`;
-    b.append(el('strong', '', st.name), el('em', '', st.flavour), el('span', '', st.effect));
-    strainChoices.append(b);
-  }
-  strainBox.append(el('p', 'truce-kicker', STRAIN.kicker), el('p', 'truce-text', STRAIN.text), strainChoices);
-  grow.prepend(strainBox);
-
-  // ---------- A boon for a new seamount ----------
-  const boonBox = el('section', 'truce moment boon');
-  boonBox.hidden = true;
-  const boonChoices = el('div', 'boon-choices');
-  const boonKicker = el('p', 'truce-kicker', BOON_TEXT.kicker), boonHead = el('p', 'truce-text', BOON_TEXT.head);
-  boonBox.append(boonKicker, boonHead, boonChoices);
-  grow.prepend(boonBox);
-  let boonKey = '';
-
-  // ---------- The Rasp elder's riddle ----------
-  const riddleBox = el('section', 'truce moment riddle');
-  riddleBox.hidden = true;
-  const riddleAsk = el('p', 'truce-text');
-  const riddleChoices = el('div', 'boon-choices');
-  const riddleResult = el('p', 'truce-words');
-  riddleBox.append(el('p', 'truce-kicker', RIDDLE.kicker), riddleAsk, riddleChoices, riddleResult);
-  grow.prepend(riddleBox);
-  let riddleShown = '', riddleLinger = 0;
-
-  // ---------- The fork on a trip ----------
-  const forkBox = el('section', 'truce moment fork');
-  forkBox.hidden = true;
-  const forkChoices = el('div', 'truce-choices');
-  for (const how of ['press', 'home'] as const) {
-    const b = button('choice', '', () => hooks.takeFork(how));
-    b.append(el('strong', '', EXPEDITION[how].label), el('span', '', EXPEDITION[how].effect));
-    forkChoices.append(b);
-  }
-  forkBox.append(el('p', 'truce-kicker', EXPEDITION.forkKicker), el('p', 'truce-text', EXPEDITION.forkText), forkChoices);
-  grow.prepend(forkBox);
-
-  // ---------- The shoals' signal (a little memory game) ----------
-  const signalBox = el('section', 'truce moment signal');
-  signalBox.hidden = true;
-  const signalState = el('p', 'truce-words');
-  const signalLamps = el('div', 'signal-lamps');
-  let sigK = -1, sigDone = -1, sigLinger = 0, sigPattern: number[] = [], sigAnswer: number[] = [], sigPlaying = false;
-  const lampButtons = SIGNAL.lamps.map((rgb, i) => {
-    const b = button('signal-lamp', '', () => {
-      if (sigPlaying || sigK < 0) return;
-      flash(i);
-      sigAnswer.push(i);
-      const wrong = sigAnswer.some((a, j) => a !== sigPattern[j]);
-      if (wrong || sigAnswer.length === sigPattern.length) {
-        const pay = hooks.answerSignal(sigAnswer);
-        signalState.textContent = pay > 0 ? `${SIGNAL.right} · +${num(pay)}` : SIGNAL.wrong;
-        sigDone = sigK;
-        sigK = -1;
-        sigLinger = performance.now() + 4000;
-      }
-    });
-    b.style.setProperty('--lamp', `rgb(${rgb})`);
-    signalLamps.append(b);
-    return b;
-  });
-  function flash(i: number): void {
-    hooks.lamp?.(i);
-    const b = lampButtons[i]!;
-    b.classList.remove('lit');
-    void b.offsetWidth;
-    b.classList.add('lit');
-  }
-  function playPattern(): void {
-    sigPlaying = true;
-    signalState.textContent = SIGNAL.watch;
-    sigPattern.forEach((i, n) => setTimeout(() => flash(i), 400 + n * 650));
-    setTimeout(() => { sigPlaying = false; signalState.textContent = SIGNAL.answer; }, 400 + sigPattern.length * 650 + 300);
-  }
-  signalBox.append(el('p', 'truce-kicker', SIGNAL.kicker), el('p', 'truce-text', SIGNAL.text), signalLamps, signalState);
-  grow.prepend(signalBox);
-
-  // ---------- Other reefs spawning (Sunlit full moon) ----------
-  const othersBox = el('section', 'truce moment others');
-  othersBox.hidden = true;
-  const othersKicker = el('p', 'truce-kicker');
-  const othersText = el('p', 'truce-text');
-  const othersChoices = el('div', 'truce-choices');
-  const othersButtons = (['feed', 'join'] as const).map((how) => {
-    const b = button('choice', '', () => hooks.meetOthers(how));
-    const label = el('strong'), effect = el('span');
-    b.append(label, effect);
-    othersChoices.append(b);
-    return { how, b, label, effect };
-  });
-  othersBox.append(othersKicker, othersText, othersChoices);
-  grow.prepend(othersBox);
+  // ---------- Choice cards: strain, boon, riddle, fork, signal, full moon (ui/choices.ts) ----------
+  const choices = createChoices(grow, hooks, setShown);
 
   // ---------- Dialects (a tier waiting for a choice) ----------
   const dialectBox = el('section', 'dialects');
@@ -1369,9 +1260,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     setBackupDue,
     /** Press signal lamp i (keys 7–0), when the signal card is up. */
     pressLamp(i: number): boolean {
-      if (signalBox.hidden || sigK < 0) return false;
-      lampButtons[i]?.click();
-      return true;
+      return choices.pressLamp(i);
     },
     update(s: GameState): void {
       const r = rates(s);
@@ -1587,66 +1476,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         askSkip.disabled = !canSkipRequest(s);
       }
 
-      setShown(strainBox, strainOpen(s));
-      setShown(forkBox, forkOpen(s));
-      const rd = currentRiddle(s);
-      if (rd && rd.id !== riddleShown) {
-        riddleShown = rd.id;
-        riddleAsk.textContent = rd.ask;
-        riddleResult.textContent = '';
-        riddleChoices.innerHTML = '';
-        rd.options.forEach((o, i) => {
-          const b = button('choice', '', () => {
-            const ok = hooks.answerRiddle(rd.id, i);
-            riddleResult.textContent = ok ? `${RIDDLE.right} +${RIDDLE.lineage} lineage` : RIDDLE.wrong;
-            for (const x of riddleChoices.children) (x as HTMLButtonElement).disabled = true;
-            riddleLinger = performance.now() + 4000;
-          });
-          b.append(el('strong', '', o));
-          riddleChoices.append(b);
-        });
-      }
-      setShown(riddleBox, !!rd || performance.now() < riddleLinger);
-
-      // A boon for this seamount, while one is still to be chosen.
-      const offered = boonsOffered(s);
-      setShown(boonBox, offered.length > 0);
-      const bk = offered.map((b) => b.id).join();
-      if (bk !== boonKey) {
-        boonKey = bk;
-        const earned = s.meta.spawnings === 0;
-        boonKicker.textContent = earned ? BOON_TEXT.earnedKicker : BOON_TEXT.kicker;
-        boonHead.textContent = earned ? BOON_TEXT.earnedHead : BOON_TEXT.head;
-        boonChoices.innerHTML = '';
-        for (const b of offered) {
-          const btn = button('choice', '', () => hooks.chooseBoon(b.id));
-          btn.append(el('strong', '', b.name), el('span', '', b.effect));
-          boonChoices.append(btn);
-        }
-      }
-
-      // The shoals' signal: a new one plays its pattern when it appears; the card stays a moment after an answer.
-      const sig = currentSignal(s);
-      if (sig && sig.k !== sigK && sig.k !== sigDone) {
-        sigK = sig.k;
-        sigPattern = sig.pattern;
-        sigAnswer = [];
-        playPattern();
-      }
-      setShown(signalBox, (!!sig && sig.k !== sigDone) || performance.now() < sigLinger);
-
-      // Other reefs spawning: this moon's choice.
-      setShown(othersBox, othersSpawning(s));
-      if (!othersBox.hidden) {
-        const z = OTHERS.zones[actAt(s.height)]!;
-        othersKicker.textContent = z.kicker;
-        othersText.textContent = z.text;
-        for (const x of othersButtons) {
-          x.label.textContent = z[x.how].label;
-          x.effect.textContent = z[x.how].effect.replace('{n}', String(Math.max(0, othersCap(s) - s.others.joined)));
-          x.b.disabled = x.how === 'join' && s.others.joined >= othersCap(s);
-        }
-      }
+      choices.update(s);
 
       // A moment waiting for an answer, and answers given.
       const mo = nextMoment(s);
