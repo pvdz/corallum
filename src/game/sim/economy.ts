@@ -1614,7 +1614,7 @@ export function lucky(s: GameState, id: string): boolean {
   let h = 2166136261;
   for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 16777619);
   const win = Math.floor(s.t / LUCKY.span);
-  return s.luckySpan !== win && mulberry32((h ^ s.seed ^ Math.imul(win, 0x9e3779b1)) >>> 0)() < LUCKY.chance * (trait(s, 'lucky-line') ? 2 : 1) * (seamount(s).lucky ?? 1) * (passed(s, 'gleaming') ? 1.5 : 1) * (lives(s, 'decorator-crab') ? 1.5 : 1);
+  return s.luckySpan !== win && mulberry32((h ^ s.seed ^ Math.imul(win, 0x9e3779b1)) >>> 0)() < LUCKY.chance * (trait(s, 'lucky-line') ? 2 : 1) * (seamount(s).lucky ?? 1) * (passed(s, 'gleaming') ? 1.5 : 1) * (lives(s, 'decorator-crab') ? 1.5 : 1) * today(s, 'lucky-day', 2);
 }
 
 /**
@@ -2144,7 +2144,7 @@ export function freeTangle(s: GameState): number {
   if (!tg) return 0;
   s.untangled = tg.k;
   s.tally.freed++;
-  return burst(s, TANGLE.seconds * (trait(s, 'gentle') ? 2 : 1));
+  return burst(s, TANGLE.seconds * (trait(s, 'gentle') ? 2 : 1) * today(s, 'kind-day', 2));
 }
 
 /** Helping habit: the reef frees a creature left in trouble twenty seconds, for half. Only called while watching. */
