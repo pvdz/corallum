@@ -3,7 +3,7 @@
 // circle the reef herding plankton, light-swimmers spiral above the crown, scouts dive into
 // the dark below. Glass shrimp and a passing siphonophore appear once their bands are laid.
 
-import { sight, spot } from './sightings.ts';
+import { sight, spot, startled } from './sightings.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow } from './draw.ts';
@@ -201,7 +201,12 @@ export function createMidnightScene(seed: number): Scene {
     const dir = lap % 2 ? 1 : -1;
     const x = focus.x + focus.w * (dir > 0 ? -0.08 + u * 1.16 : 1.08 - u * 1.16);
     const y = focus.y + focus.h * (0.34 + 0.06 * Math.sin(lap * 2.1)) + Math.sin(t * 0.7) * 10 * s;
-    const open = 0.5 + 0.5 * Math.sin(t * 1.4);
+    // Touched, it throws out a cloud of glowing blue mucus where it was and pulls its cape wide.
+    const touch = startled('vampire-squid', t);
+    const age = touch ? touch.age : Infinity;
+    if (age < 8) drawMucus(ctx, touch!.x, touch!.y, age, s);
+    const startle = age < 3 ? 1 - age / 3 : 0;
+    const open = (0.5 + 0.5 * Math.sin(t * 1.4)) * (1 - startle) + startle * 1.3;
     spot('vampire-squid', x, y, 30 * s);
     ctx.save();
     ctx.translate(x, y);
@@ -249,6 +254,20 @@ export function createMidnightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** A vampire squid's defence: sticky glowing mucus, a cloud of blue sparks drifting and fading. */
+  function drawMucus(ctx: CanvasRenderingContext2D, x: number, y: number, age: number, s: number): void {
+    const spread = 1 - Math.exp(-age * 1.5);
+    const fade = Math.max(0, 1 - age / 8);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < 40; i++) {
+      const a = i * 2.399, r = Math.sqrt((i + 0.5) / 40) * 26 * s * spread;
+      const tw = 0.6 + 0.4 * Math.sin(age * 6 + i * 1.7);
+      glow(ctx, x + Math.cos(a) * r, y + Math.sin(a) * r * 0.8 + age * 2 * s, 3.2 * s, '110,190,255', 0.8 * fade * tw);
+    }
+    ctx.restore();
+  }
+
   /**
    * A pyrosome: a glowing tube colony drifting slowly, its light rippling along its length in
    * waves, each little animal in it flashing in turn.
@@ -272,12 +291,17 @@ export function createMidnightScene(seed: number): Scene {
     ctx.fill();
     ctx.stroke();
     ctx.globalCompositeOperation = 'lighter';
+    // Touched, a bright wave runs the length of the colony and on into the water: each animal
+    // flashes when its neighbour does.
+    const touch = startled('pyrosome', t);
+    const age = touch ? touch.age : Infinity;
     for (let k = 0; k < 26; k++) {
       const f = k / 25;
       const px = (f - 0.5) * len * 0.92;
       const py = Math.sin(k * 2.3) * rad * 0.6;
       const wave = Math.max(0, Math.sin(t * 2 - f * 8));
-      glow(ctx, px, py, 5 * s, '120,170,255', 0.15 + 0.7 * wave * wave);
+      const run = age < 3 ? Math.exp(-((f - age / 1.2) ** 2) / 0.01) * (1 - age / 3) : 0;
+      glow(ctx, px, py, (5 + 4 * run) * s, run > 0.2 ? '170,215,255' : '120,170,255', Math.min(1, 0.15 + 0.7 * wave * wave + run));
     }
     ctx.restore();
   }

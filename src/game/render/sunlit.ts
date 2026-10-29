@@ -3,7 +3,7 @@
 // follows its Form dialect: a fan until it chooses, then antlers, a dome, or stacked tables.
 
 import { createSlugs } from './slugs.ts';
-import { sight, spot } from './sightings.ts';
+import { sight, spot, startled } from './sightings.ts';
 import type { DialectId } from '../content/act4.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
@@ -310,15 +310,20 @@ export function createSunlitScene(seed: number): Scene {
       ctx.arc(x + Math.cos(a + sway) * len, y - 4 * s + Math.sin(a + sway) * len, 1.6 * s, 0, Math.PI * 2);
       ctx.fill();
     }
+    // Touched, they dive deep into the tentacles and come out again a little later.
+    const touch = startled('clownfish', t);
+    const age = touch ? touch.age : Infinity;
+    const hide = age < 0.3 ? age / 0.3 : age < 3.5 ? 1 : Math.max(0, 1 - (age - 3.5) / 2);
     // The clownfish: orange with white bands, circling close.
     for (let k = 0; k < 2; k++) {
-      const a = t * (0.9 + k * 0.3) + k * 2.5;
-      const fx = x + Math.cos(a) * (16 + k * 6) * s;
-      const fy = y - 20 * s + Math.sin(a * 1.7) * 8 * s;
+      const a = t * (0.9 + k * 0.3) * (1 + hide) + k * 2.5;
+      const fx = x + Math.cos(a) * (16 + k * 6) * s * (1 - 0.8 * hide);
+      const fy = y - (20 - 12 * hide) * s + Math.sin(a * 1.7) * 8 * s * (1 - 0.8 * hide);
       const dir = -Math.sin(a) >= 0 ? 1 : -1;
       ctx.save();
       ctx.translate(fx, fy);
-      ctx.scale(dir, 1);
+      ctx.scale(dir * (1 - 0.35 * hide), 1 - 0.35 * hide);
+      ctx.globalAlpha = 1 - 0.6 * hide;
       ctx.fillStyle = '#ff7a1a';
       ctx.beginPath();
       ctx.ellipse(0, 0, 6 * s, 3.4 * s, 0, 0, Math.PI * 2);
@@ -441,7 +446,11 @@ export function createSunlitScene(seed: number): Scene {
     const s = scale();
     const form = Math.min(1, u * 5, (1 - u) * 5);
     const cx = focus.x + focus.w * 0.78, cy = focus.y + focus.h * 0.3;
-    const R = 66 * s;
+    // Touched, the ball bursts open in a silver flash and pulls itself together again.
+    const touch = startled('bait-ball', t);
+    const age = touch ? touch.age : Infinity;
+    const burst = age < 0.25 ? age / 0.25 : Math.max(0, 1 - (age - 0.25) / 3.5) ** 2;
+    const R = 66 * s * (1 + 1.4 * burst);
     spot('bait-ball', cx, cy, R * 1.3);
     // The ball: fish on rings, swimming round it, the whole thing breathing as the hunters pass.
     const squeeze = 1 - 0.18 * Math.max(0, Math.sin(t * 2.2));
