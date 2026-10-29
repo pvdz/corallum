@@ -2,6 +2,7 @@
 // chimney with its plume. Pure functions of time and a seed.
 
 import { sight, spot, startled } from './sightings.ts';
+import type { CreatureId } from '../content/creatures.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { glow } from './draw.ts';
 
@@ -40,6 +41,14 @@ export function createLife(seed: number) {
     phase: rng() * 10,
     rot: rng() * Math.PI * 2,
   }));
+
+  /** How far a touch near (x, y) has a creature drawn in: 0..1, quick in and a slow `back` out. */
+  function shrink(id: CreatureId, x: number, y: number, reach: number, t: number, back = 4): number {
+    const touch = startled(id, t);
+    if (!touch || Math.hypot(touch.x - x, touch.y - y) > reach) return 0;
+    const a = touch.age;
+    return a < 0.2 ? a / 0.2 : Math.max(0, 1 - (a - 1.5) / back);
+  }
 
   function drawJelly(ctx: CanvasRenderingContext2D, st: Stage, j: Jelly, t: number): void {
     sight('jelly');
@@ -116,6 +125,9 @@ export function createLife(seed: number) {
     const s = st.s * star.size;
     const x = st.cx + star.x * st.w;
     const y = st.baseY + 10 * s;
+    spot('brittle-star', x, y, Math.max(22 * s, 24 * st.dpr));
+    // Touched, it curls its arms in over itself.
+    const curlIn = shrink('brittle-star', x, y, 40 * s, t);
     ctx.strokeStyle = 'rgba(170,120,150,0.55)';
     ctx.fillStyle = 'rgba(190,140,170,0.7)';
     ctx.lineCap = 'round';
@@ -126,9 +138,9 @@ export function createLife(seed: number) {
       ctx.moveTo(x, y);
       let ax = x, ay = y, a = a0;
       for (let q = 0; q < 6; q++) {
-        a += Math.sin(t * 0.4 + star.phase + k * 1.3 + q * 0.6) * 0.18;
-        ax += Math.cos(a) * 4 * s;
-        ay += Math.sin(a) * 4 * s * 0.45;
+        a += Math.sin(t * 0.4 + star.phase + k * 1.3 + q * 0.6) * 0.18 + curlIn * 0.55;
+        ax += Math.cos(a) * 4 * s * (1 - 0.45 * curlIn);
+        ay += Math.sin(a) * 4 * s * 0.45 * (1 - 0.45 * curlIn);
         ctx.lineTo(ax, ay);
         ctx.lineWidth = (2 - q * 0.28) * s;
       }
@@ -281,6 +293,7 @@ export function createLife(seed: number) {
     const u = (t % period) / crossing;
     if (u >= 1) return;
     sight('sea-pig');
+    spot('sea-pig', st.cx + st.w * (0.75 - u * 1.5) + 50 * st.s, st.baseY - 4 * st.s, 70 * st.s);
     for (let k = 0; k < 4; k++) {
       const s = st.s * (1.4 + (k % 2) * 0.35);
       const x = st.cx + st.w * (0.75 - u * 1.5) + k * 34 * st.s - (k % 2) * 10 * st.s;
@@ -331,6 +344,7 @@ export function createLife(seed: number) {
     const s = st.s * g.size;
     const x = st.cx + st.w * g.x, base = st.baseY + 5 * st.s;
     const hgt = 70 * s, wid = 12 * s;
+    spot('glass-sponge', x, base - hgt * 0.5, Math.max(hgt * 0.5, 24 * st.dpr));
     const edge = (u: number) => wid * (0.55 + 0.45 * Math.sin(Math.PI * Math.min(1, u * 1.15)) + 0.12 * u);
     ctx.save();
     // The vase outline, filled faintly.
@@ -384,6 +398,9 @@ export function createLife(seed: number) {
     const sway = Math.sin(t * 0.35 + c.phase) * 0.12;
     const len = 46 * s;
     const tx = x0 + Math.sin(sway) * len, ty = y0 - Math.cos(sway) * len;
+    spot('sea-lily', tx, ty, Math.max(20 * s, 24 * st.dpr));
+    // Touched, it folds its arms up into a closed fist, and opens them again slowly.
+    const fold = shrink('sea-lily', tx, ty, 40 * s, t, 5);
     ctx.save();
     ctx.lineCap = 'round';
     // The stalk, jointed, bending with the current.
@@ -395,8 +412,8 @@ export function createLife(seed: number) {
     ctx.stroke();
     // The crown: ten feathery arms opening like a hand, pinnules along each.
     for (let a = 0; a < 10; a++) {
-      const ang = -Math.PI / 2 + sway * 1.5 + (a - 4.5) * 0.19;
-      const arm = (16 + (a % 3) * 3) * s;
+      const ang = -Math.PI / 2 + sway * 1.5 + (a - 4.5) * 0.19 * (1 - 0.8 * fold);
+      const arm = (16 + (a % 3) * 3) * s * (1 - 0.35 * fold);
       const curl = Math.sin(t * 0.6 + a + c.phase) * 0.12;
       const ex = tx + Math.cos(ang + curl) * arm, ey = ty + Math.sin(ang + curl) * arm;
       ctx.strokeStyle = `rgba(${c.hue},0.6)`;
@@ -433,6 +450,7 @@ export function createLife(seed: number) {
     const s = st.s * 1.2;
     const x = st.cx - st.w * 0.7 + (u / 0.6) * st.w * 1.4;
     const y = st.baseY + 2 * s + Math.sin(t * 0.6) * 4 * s;
+    spot('rattail', x, y, 30 * s);
     ctx.save();
     ctx.translate(x, y);
     // Head down toward the silt, tail trailing up behind.
@@ -515,9 +533,17 @@ export function createLife(seed: number) {
   /** Tube worms crowding the warm water at the vent's foot: white stalks with red plumes. */
   function drawTubeWorms(ctx: CanvasRenderingContext2D, x: number, base: number, count: number, s: number, t: number): void {
     sight('tube-worm');
+    spot('tube-worm', x, base - 12 * s, 40 * s);
+    // Touched, the plumes snap back into their tubes, the nearest first, and creep out again.
+    const touch = startled('tube-worm', t);
     for (let i = 0; i < count; i++) {
       const off = ((i * 0.618) % 1 - 0.5) * 70 * s;
-      const len = (14 + ((i * 7) % 5) * 4) * s;
+      let hide = 0;
+      if (touch && touch.age < 10) {
+        const a = touch.age - Math.abs(touch.x - (x + off)) / (300 * s);
+        hide = a < 0 ? 0 : a < 0.12 ? a / 0.12 : Math.max(0, 1 - (a - 2 - (i % 3)) / 3);
+      }
+      const len = (14 + ((i * 7) % 5) * 4) * s * (1 - 0.7 * hide);
       const sway = Math.sin(t * 0.9 + i * 1.7) * 2.5 * s;
       const bx = x + off, tx = bx + sway + off * 0.08, ty = base - len;
       ctx.strokeStyle = 'rgba(225,220,205,0.85)';
@@ -527,9 +553,10 @@ export function createLife(seed: number) {
       ctx.moveTo(bx, base + 2 * s);
       ctx.quadraticCurveTo(bx + sway * 0.3, base - len * 0.5, tx, ty);
       ctx.stroke();
+      if (hide > 0.9) continue;
       ctx.fillStyle = 'rgba(220,40,60,0.95)';
       ctx.beginPath();
-      ctx.ellipse(tx, ty - 2 * s, 2.6 * s, 4.2 * s, sway * 0.05, 0, Math.PI * 2);
+      ctx.ellipse(tx, ty - 2 * s * (1 - hide), 2.6 * s * (1 - 0.6 * hide), 4.2 * s * (1 - hide), sway * 0.05, 0, Math.PI * 2);
       ctx.fill();
     }
   }
@@ -537,6 +564,7 @@ export function createLife(seed: number) {
   /** Squat lobsters crowding the vent's warm foot: pale little crabs waving long claws. */
   function drawSquatLobsters(ctx: CanvasRenderingContext2D, x: number, base: number, count: number, s: number, t: number): void {
     sight('squat-lobster');
+    spot('squat-lobster', x, base - (14 + count * 4.5) * s, Math.max(24 * s, count * 5 * s));
     for (let i = 0; i < count; i++) {
       const side = i % 2 ? 1 : -1;
       // Clinging to the chimney's sides, at different heights up it.
