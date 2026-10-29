@@ -504,3 +504,4 @@ date, what landed, what is half-done, what's next.
 - The line remembers moment answers (meta.seen 'm:<id>:<a|b>'): the moment card marks a way chosen before; feat 'Both ways' (every moment both ways, across the line).
 - Trip encounters (expeditions.ts ENCOUNTERS, ForkId; economy currentEncounter/takeFork; homecoming reads the way): passage, squid, lights, sponges. The fork card fills from the encounter.
 - Setting 'notify' (off by default; asks permission when turned on, turns itself off if refused): main.ts notifyWaiting checks once a second and notifies only while the tab is hidden, each thing once as it begins.
+- Four more riddles (rule, ripple, end, children): ten in all, each about a band already read.

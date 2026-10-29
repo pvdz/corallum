@@ -161,13 +161,17 @@ export const BANDS_ACT3: readonly Band[] = [
 
 // The elder's riddles: once the truce has begun, the Rasp elder asks about what the bands told.
 // A right answer: lineage. Each asked once per reef, after the band, Reading or relic that holds its answer.
-export type RiddleId = 'silt' | 'wall' | 'walls' | 'song' | 'beaks' | 'shallows';
+export type RiddleId = 'silt' | 'wall' | 'walls' | 'song' | 'beaks' | 'shallows' | 'rule' | 'ripple' | 'end' | 'children';
 export const RIDDLES: readonly { id: RiddleId; after: string; ask: string; options: readonly string[]; right: number }[] = [
   { id: 'silt', after: 'truth', ask: 'You have read the falling grey. What is it?', options: ['Snow from the sky', 'Thousandfold, ground fine', 'Our dung'], right: 1 },
   { id: 'wall', after: 'form', ask: 'The voice in your oldest stone. What was it, once?', options: ['A Rasp', 'A wall of the city', 'The moon'], right: 1 },
   { id: 'walls', after: 'storm', ask: 'Why did the city die?', options: ['We killed it', 'It kept everything, and choked', 'The sun burned it'], right: 1 },
   { id: 'song', after: 'rasp-song', ask: 'What did we keep in our own band?', options: ['Nothing: Rasp do not remember', 'The sound of grinding, kept with care', 'The city’s songs, stolen'], right: 1 },
   { id: 'beaks', after: 'midden', ask: 'The beaks behind the outer wall. Whose were they?', options: ['Ours, the ones who died at the walls', 'Fish the city ate', 'Birds from above'], right: 0 },
+  { id: 'rule', after: 'forgetting', ask: 'Your old wall lived by one rule. What was it?', options: ['Keep everything', 'Forget everything', 'Keep only the songs'], right: 0 },
+  { id: 'ripple', after: 'shelf-edge', ask: 'From the floor you saw a ripple of silver, far above. What was it?', options: ['Another reef', 'The surface, under the moon', 'A shoal of us, swimming'], right: 1 },
+  { id: 'end', after: 'old-rasp', ask: 'When one of us is too old to grind, what becomes of it?', options: ['It is buried in the silt', 'The others grind it into the sand bars', 'It swims up into the light'], right: 1 },
+  { id: 'children', after: 'other-children', ask: 'While the silt fell, was the whole sea dead?', options: ['All of it, everywhere', 'Only the deep, and only for a while', 'None of it: the silt was alive'], right: 1 },
   { id: 'shallows', after: 'sun-gate', ask: 'Where did the city first grow?', options: ['In the dark, as it ended', 'In the shallows, open to the sun', 'On a beach, in the air'], right: 1 },
 ];
 export const RIDDLE = { kicker: 'The Rasp elder asks', lineage: 2, right: 'The elder grinds its beak, pleased.', wrong: 'The elder turns away. Not this time.' } as const;
