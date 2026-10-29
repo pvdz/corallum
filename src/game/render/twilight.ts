@@ -43,6 +43,8 @@ type Grazer = { lane: number; speed: number; phase: number; size: number; hue: n
 export function createTwilightScene(seed: number): Scene {
   const rng = mulberry32(seed ^ 0x51ab7e);
   let w = 1, h = 1, dpr = 1;
+  /** Scene time of the last frame (the layout reads the night from it). */
+  let lastT = 0;
   let focus: Focus = { x: 0, y: 0, w: 1, h: 1 };
   const reef = createReef(Math.floor(rng() * 1e9));
   const shoals = createShoals(seed ^ 0x3c);
@@ -85,8 +87,38 @@ export function createTwilightScene(seed: number): Scene {
     return focus.y + focus.h * (0.92 - 0.14 * u + 0.015 * Math.sin(u * 9 + a) + 0.008 * Math.sin(u * 23 + b));
   }
 
+  /**
+   * Night on the shelf: the light from above fails for a while in every ten minutes of scene time
+   * (the same day as the Sunlit Crown above). 0 day … 1 night; the shelf never goes fully dark.
+   */
+  function nightAt(t: number): number {
+    const u = (t % 600) / 600;
+    const ramp = (a: number, b: number) => Math.min(1, Math.max(0, (u - a) / (b - a)));
+    const x = u < 0.75 ? ramp(0.55, 0.68) : 1 - ramp(0.88, 0.98);
+    return x * x * (3 - 2 * x);
+  }
+
+  /** The night's veil (strong behind the reef, light in front) and, in front, plankton sparking blue. */
+  function drawNight(ctx: CanvasRenderingContext2D, t: number, night: number, veil: number): void {
+    ctx.save();
+    ctx.fillStyle = `rgba(3,8,30,${veil * night})`;
+    ctx.fillRect(0, 0, w, h);
+    if (veil < 0.3) {
+      ctx.globalCompositeOperation = 'lighter';
+      const r = mulberry32(moteSeed ^ 0x71f);
+      for (let i = 0; i < 60; i++) {
+        const x = focus.x + r() * focus.w, y = focus.y + focus.h * (0.1 + 0.85 * r());
+        const flash = Math.max(0, Math.sin(t * (0.5 + r()) + r() * 40)) ** 14;
+        if (flash > 0.02) glow(ctx, x, y, 6 * scale(), '110,220,255', 0.7 * flash * night);
+      }
+    }
+    ctx.restore();
+  }
+
   function layout(v: ReefView): ReefLayout {
     return {
+      // By night the polyps open wide and their own light shows.
+      glowScale: 1 + 0.6 * nightAt(lastT), polypScale: 1 + 0.3 * nightAt(lastT),
       cx: cx(), baseY: focus.y + focus.h * 1.02, unit: focus.h * 0.78, s: scale(), dpr,
       top: 0.45 + 0.55 * progress(v.height), bandStep: 0,
       encrust: 0.4 + 0.3 * progress(v.height), encrustColours: ['#d0703c', '#8a4fb8', '#e0c050', '#3fa38c'],
@@ -1211,6 +1243,8 @@ export function createTwilightScene(seed: number): Scene {
     },
     draw(ctx, t, v) {
       const p = progress(v.height);
+      lastT = t;
+      const night = nightAt(t);
       const L = layout(v);
       // Water and light shafts change slowly: painted at half resolution five times a second.
       water.draw(ctx, w, h, t, 0.2, `${w}x${h} ${p.toFixed(3)}`, (c, tq) => drawWater(c, tq, p));
@@ -1241,6 +1275,7 @@ export function createTwilightScene(seed: number): Scene {
       drawGhosts(ctx, focus, v.ancestors, v.height, t, scale(), 'rgba(190,210,240,1)');
       drawSisterFar(ctx, focus, v.sister - v.gauge, t, scale(), true);
       drawBreakwater(ctx, focus, v.works.breakwater, scale(), slopeY);
+      if (night > 0) drawNight(ctx, t, night, 0.5);
       reef.draw(ctx, L, v, t);
       drawRelics(ctx, reef, L, v.relics, t, v.moments['old-lamp'] === 'a');
       if (v.thorn?.kind === 'thorn-star') drawThorn(ctx, reef, L, v.thorn.u, v.thorn.side, t);
@@ -1250,6 +1285,7 @@ export function createTwilightScene(seed: number): Scene {
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
       shoals.drawFront(ctx, focus, reef, L, v, t, '#1d3557');
+      if (night > 0) drawNight(ctx, t, night, 0.2);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
       vignette(ctx);
     },
