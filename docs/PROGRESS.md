@@ -702,3 +702,4 @@ date, what landed, what is half-done, what's next.
 - The thermocline on the Twilight Shelf: a faint wavering band where warm water rides over cold (twilight.ts drawThermocline).
 - A giant sea spider picks its way across the Silt Floor (touched, it freezes, legs folded).
 - Resident: a hermit crab (3800 m): shells wash up twice as often; drawn on the Sunlit sand in a borrowed spiral shell (pulls in when touched).
+- Reading The scattered city (36000, after first-words): fragments ×1.05 each instead of ×1.03.

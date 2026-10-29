@@ -217,4 +217,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Fireworms spawning after the full moon (Twilight) | real behaviour | OK |
 | Giant sea spider (Silt Floor) | real animal | OK |
 | Hermit crab resident | real animal | OK |
+| Reading The scattered city (Thousandfold's fragments took hold elsewhere) | this game's own lore | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

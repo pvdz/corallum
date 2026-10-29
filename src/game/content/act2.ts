@@ -89,7 +89,7 @@ export const JOBS: readonly { id: Job; name: string; verb: string }[] = [
 export type ReadingId =
   | 'city' | 'lattice-songs' | 'shoal-pact' | 'beaked' | 'tidebooks'
   | 'walls' | 'slow-currents' | 'fear' | 'inside-the-wall'
-  | 'rasp-song' | 'light-walls' | 'last-spawning' | 'burning-sea' | 'kept-stone' | 'quick-one';
+  | 'rasp-song' | 'light-walls' | 'last-spawning' | 'burning-sea' | 'kept-stone' | 'quick-one' | 'scattered';
 
 export type Reading = {
   id: ReadingId;
@@ -182,6 +182,13 @@ export const READINGS: readonly Reading[] = [
     text: 'Grey on every tip of the old city, layer over layer, the tips so heavy the branches bowed to ' +
       'the floor. Thousandfold let nothing go: not a grain, not a day. “It was so heavy,” Ossel says, ' +
       'very quietly, “and I thought that was what it meant to be strong.”',
+  },
+  {
+    id: 'scattered', cost: 36000, title: 'The scattered city', after: 'first-words',
+    effect: 'fragments taken in: calcite ×1.05 each, not ×1.03',
+    text: 'As the city choked, its outer branches broke off in the storms and drifted, and a few of them took hold ' +
+      'somewhere else. Thousandfold never knew. Some of the pieces tumbling past you may be its great-grandchildren, ' +
+      'come back. Ossel would like to think so.',
   },
   {
     id: 'quick-one', cost: 32000, title: 'The quick one', after: 'first-words',

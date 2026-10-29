@@ -232,7 +232,7 @@ export function rates(s: GameState): Rates {
       (speaks(s, 'massive') ? 1.5 : 1) * (speaks(s, 'pillar') ? 1.25 : 1) *
       1.5 ** trait(s, 'deep-memory') *
       knownBonus(s) * shardBonus(s) *
-      (lives(s, 'goby') ? 1.15 : 1) * FRAGMENT.each ** s.fragments * (chose(s, 'whale-fall', 'a') ? 1.1 : 1) * (chose(s, 'snow', 'a') ? 1.05 : 1) * (chose(s, 'slope', 'a') ? 1.05 : 1) * (chose(s, 'krill', 'a') ? 1.1 : 1) * (chose(s, 'heatwave', 'b') ? 1.1 : 1) * (chose(s, 'outbreak', 'a') ? 1.1 : 1) * 1.05 ** s.works.garden *
+      (lives(s, 'goby') ? 1.15 : 1) * (has(s, 'scattered') ? 1.05 : FRAGMENT.each) ** s.fragments * (chose(s, 'whale-fall', 'a') ? 1.1 : 1) * (chose(s, 'snow', 'a') ? 1.05 : 1) * (chose(s, 'slope', 'a') ? 1.05 : 1) * (chose(s, 'krill', 'a') ? 1.1 : 1) * (chose(s, 'heatwave', 'b') ? 1.1 : 1) * (chose(s, 'outbreak', 'a') ? 1.1 : 1) * 1.05 ** s.works.garden *
       (boon(s, 'currents') ? 1.15 : 1) * today(s, 'calm', 1.1),
     calciteK:
       ACT1.dissolve * sm.dissolve * ACT1.latticeFactor ** lv.lattice * (ACT1.ventAcid * sm.ventAcid) ** vent * (vent > 0 && chose(s, 'vent-crack', 'a') ? 0.8 : 1) *
