@@ -271,7 +271,7 @@ export function rates(s: GameState): Rates {
 const MAX_BANDS = 400;
 /** Fixed band stride for each act after the second (index = act number). */
 const STRIDE: Record<number, number> = { 3: 30, 4: 6, 5: 1 };
-const COST_GROWTH: Record<number, number> = { 1: 1.55, 2: 1.18, 3: 1.28, 4: 1.2, 5: 1.035 };
+const COST_GROWTH: Record<number, number> = { 1: 1.55, 2: 1.19, 3: 1.28, 4: 1.2, 5: 1.035 };
 
 const BAND_TOP = new Float64Array(MAX_BANDS + 1);
 const BAND_COST = new Float64Array(MAX_BANDS + 1);
