@@ -628,3 +628,4 @@ date, what landed, what is half-done, what's next.
 - The king tide leaves a wrack line of dried weed and salt across the crown above the water (breach.ts drawWrack).
 - Trait Lucky line (way, 8): lucky neighbours twice as often.
 - Time-lapse (T, or the Reef tab): the reef regrows from the start of its zone to now in 8 s (main.ts lapseHeight overrides the view height).
+- The dark beyond the reef's light (draw.ts drawDarkness): in the Silt Floor and Midnight Water the water dims away from the crown; the lit circle widens with the glow lure.

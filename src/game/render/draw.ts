@@ -134,3 +134,18 @@ const MARIA: readonly [number, number, number][] = [
   [0.12, 0.22, 0.1], [-0.35, -0.08, 0.12],
 ];
 const CRATERS: readonly [number, number, number][] = [[0.42, 0.48, 0.07], [-0.62, 0.28, 0.05], [0.58, -0.12, 0.045], [0.2, -0.66, 0.04], [-0.4, 0.62, 0.035]];
+
+/**
+ * The dark beyond the reef's light: everything outside a circle round (cx, cy) dims toward `dark`,
+ * smoothly; the circle's radius is the reef's reach of light.
+ */
+export function drawDarkness(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, dark: number): void {
+  const { width: w, height: h } = ctx.canvas;
+  const g = ctx.createRadialGradient(cx, cy, r * 0.35, cx, cy, r * 1.6);
+  g.addColorStop(0, 'rgba(0,2,10,0)');
+  g.addColorStop(1, `rgba(0,2,10,${dark})`);
+  ctx.save();
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+  ctx.restore();
+}

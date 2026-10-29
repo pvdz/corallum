@@ -12,7 +12,7 @@ import { drawDome, drawSpire } from './works.ts';
 import { drawRelics } from './relics.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
-import { glow, speck } from './draw.ts';
+import { drawDarkness, glow, speck } from './draw.ts';
 import { createLayerCache } from './layer.ts';
 import { createForeground } from './foreground.ts';
 import { createReef, type Reef, type ReefLayout } from './reef.ts';
@@ -1176,6 +1176,11 @@ export function createMidnightScene(seed: number): Scene {
       drawMilkySea(ctx, t);
       if (v.thorn?.kind === 'dragonfish') drawDragonfish(ctx, focus, v.thorn.u, v.thorn.side, t, scale());
       drawNearSnow(ctx, t);
+      // The reef's light holds back the dark: the more glow, the wider the lit water round it.
+      {
+        const [dcx, dcy] = reef.crown(L);
+        drawDarkness(ctx, dcx, dcy - L.unit * 0.1, Math.max(focus.w, focus.h) * (0.32 + 0.3 * v.glowLevel), 0.42);
+      }
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
       fore.draw(ctx, focus, t, '3,8,22', 0.9, '140,220,255');
       vignette(ctx);

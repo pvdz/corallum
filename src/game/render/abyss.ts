@@ -7,7 +7,7 @@ import { drawThorn } from './thorn.ts';
 import { drawGarden } from './works.ts';
 import { mulberry32, range, type Rng } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
-import { glow, speck } from './draw.ts';
+import { drawDarkness, glow, speck } from './draw.ts';
 import { createLife, type Stage } from './life.ts';
 import { createGround } from './ground.ts';
 import { createLayerCache } from './layer.ts';
@@ -525,6 +525,11 @@ export function createAbyssScene(seed: number): Scene {
         ctx.fillStyle = g;
         ctx.fillRect(0, 0, w, h);
         ctx.restore();
+      }
+      // The reef's light holds back the dark: the more glow, the wider the lit water round it.
+      {
+        const [dcx, dcy] = reef.crown(L);
+        drawDarkness(ctx, dcx, dcy - L.unit * 0.1, Math.max(focus.w, focus.h) * (0.32 + 0.3 * v.glowLevel), 0.42);
       }
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
       fore.draw(ctx, focus, t, '4,6,18', 0.9, '170,140,255');
