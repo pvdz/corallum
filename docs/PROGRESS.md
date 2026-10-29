@@ -233,3 +233,4 @@ date, what landed, what is half-done, what's next.
 - Journal and Feats cards fold to their heading (tap/Enter to open). Fix: both cards rendered empty until the first creature/feat, because their change-check started equal to the empty state.
 - Reef tab grouped: Saves, Sound, Display, Start over.
 - Twilight Shelf: a turbidity current every 3.5 min, a silt cloud rolling down the slope over everything on it (thicker when the reef is silted).
+- Midnight Water: the migration, every 8 min for 40 s hundreds of small lights rise past the reef (+~5 ms/frame while it lasts); in the journal (36).

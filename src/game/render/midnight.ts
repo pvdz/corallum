@@ -332,6 +332,33 @@ export function createMidnightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * The migration: every eight minutes, for forty seconds, the deep rises. Hundreds of tiny
+   * lights (krill, fish, shrimp) stream up past the reef from below, the largest journey any
+   * animals make, made every night.
+   */
+  function drawMigration(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 480, length = 40;
+    const u = ((t + 150) % period) / length;
+    if (u >= 1) return;
+    sight('migration');
+    const s = scale();
+    const swell = Math.min(1, u * 4, (1 - u) * 4);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    const n = Math.round(260 * swell);
+    for (let i = 0; i < n; i++) {
+      const fx = (i * 0.618) % 1, speed = 0.25 + ((i * 0.37) % 1) * 0.35;
+      const y = h - (((u * length * speed * 0.05 + (i * 0.173) % 1) % 1.1) * h * 1.05);
+      const x = focus.x + focus.w * fx + Math.sin(t * 0.8 + i) * 6 * s;
+      const hue = i % 5 === 0 ? '255,190,140' : i % 3 === 0 ? '170,255,220' : '140,200,255';
+      glow(ctx, x, y, (4 + (i % 3) * 1.5) * s, hue, 0.85 * swell);
+      glow(ctx, x, y + 9 * s, 3 * s, hue, 0.35 * swell);
+      glow(ctx, x, y + 17 * s, 2 * s, hue, 0.15 * swell);
+    }
+    ctx.restore();
+  }
+
   /** Comb jellies: glassy ovals whose eight comb rows ripple with travelling rainbow light. */
   function drawComb(ctx: CanvasRenderingContext2D, c: Comb, t: number): void {
     sight('comb-jelly');
@@ -515,6 +542,7 @@ export function createMidnightScene(seed: number): Scene {
       for (const c of combs) drawComb(ctx, c, t);
       drawVampireSquid(ctx, t);
       drawPyrosome(ctx, t);
+      drawMigration(ctx, t);
       if (v.bands.includes('glass')) for (let i = 0; i < 4; i++) swimShrimp(ctx, t, i);
       if (v.bands.includes('siphon')) drawSiphonophore(ctx, t);
       drawSnow(ctx, t);
