@@ -269,13 +269,13 @@ test('the Breach: needs the surface, the spawn, the full moon and exactly three 
   assert.deepEqual([...s.meta.carriedEver].sort(), ['ossel', 'rasp', 'vent']);
 });
 
-test('pacing: the whole game takes the bot 4–11 h whatever the path', () => {
+test('pacing: the whole game takes the bot 6–11 h whatever the path', () => {
   for (const opts of [
     {},
     { truce: { terms: 'b', story: 'b', wall: 'b' }, dialects: { form: 'massive', craft: 'fluorescent', spawn: 'brooding' } },
   ] as const) {
     const { state } = runBot(ended, 14 * 3600, opts);
-    assert.ok(ended(state) && state.t > 4 * 3600 && state.t < 11 * 3600, `${JSON.stringify(opts)}: ${state.t}s`);
+    assert.ok(ended(state) && state.t > 6 * 3600 && state.t < 11 * 3600, `${JSON.stringify(opts)}: ${state.t}s`);
   }
 });
 
