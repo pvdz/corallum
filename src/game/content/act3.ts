@@ -187,11 +187,12 @@ export const RIDDLE = { kicker: 'The Rasp elder asks', lineage: 2, right: 'The e
 
 // Favours: once the first meeting is settled, the Rasp can be asked for things, paid in sand.
 // Each is dearer every time it is asked (cost × growth^times).
-export type FavourId = 'clear' | 'path' | 'carry';
+export type FavourId = 'clear' | 'path' | 'carry' | 'hollow';
 export const FAVOURS: readonly { id: FavourId; name: string; effect: string; cost: number; growth: number; max: number }[] = [
   { id: 'clear', name: 'Turn the silt aside', effect: 'silt swept +0.02/s, for good', cost: 3000, growth: 1.6, max: 10 },
   { id: 'path', name: 'Grind a path', effect: '+2 shoals', cost: 8000, growth: 2, max: 5 },
   { id: 'carry', name: 'Carry stone up', effect: '3 minutes of calcite now', cost: 5000, growth: 1.5, max: Infinity },
+  { id: 'hollow', name: 'Grind a hollow', effect: '+1 home for a resident', cost: 20000, growth: 1, max: 1 },
 ];
 export const FAVOUR_TEXT = { head: 'Ask the Rasp', done: 'done' } as const;
 

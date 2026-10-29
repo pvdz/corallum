@@ -839,7 +839,7 @@ function homecoming(s: GameState): void {
 export function homes(s: GameState): number {
   if (s.vows.includes('alone')) return 0;
   const n = homesAt(s.height);
-  return n > 0 ? n + (chose(s, 'cleaners', 'a') ? 1 : 0) + trait(s, 'open-house') + s.levels.grotto : 0;
+  return n > 0 ? n + (chose(s, 'cleaners', 'a') ? 1 : 0) + trait(s, 'open-house') + s.levels.grotto + s.favours.hollow : 0;
 }
 export function residentsAsking(s: GameState) {
   return homes(s) > 0 ? RESIDENTS.filter((r) => s.height >= r.metres) : [];
