@@ -140,7 +140,7 @@ corals from crown-of-thorns starfish).
 On the Silt Floor (from 20 m) a drill snail bores into the coral; at the Breach a gull goes for the ripening spawn. In the Midnight Water the intruder is a dragonfish stalking the feeding shoals; a finished lantern
 spire's lamps dazzle it away at the last moment, for half.
 
-**The shoals' signal** (Midnight Water and Twilight Shelf, while watching): every six minutes, for 75 s,
+**The shoals' signal** (Midnight Water to the Sunlit Crown, while watching): every six minutes, for 75 s,
 the lanternfish flash a pattern on four lamps; repeat it for 20 s of production per light. Patterns
 grow from 3 to 8 lights as you answer right. One try per slot. A small memory game, never needed.
 

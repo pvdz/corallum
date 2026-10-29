@@ -55,7 +55,7 @@ export function intruderOf(zone: number): Intruder | null {
 
 /** The shoals' signal: now and then the lanternfish flash a pattern; repeat it for a burst. Watching only. */
 export const SIGNAL = {
-  period: 360, life: 75, zones: [2, 3], minShoals: 5,
+  period: 360, life: 75, zones: [2, 3, 4], minShoals: 5,
   /** Lamps (colours) and pattern length (grows with signals answered, capped). */
   lamps: ['120,200,255', '150,255,200', '255,210,140', '220,150,255'],
   length: (answered: number) => Math.min(8, 3 + Math.floor(answered / 2)),
