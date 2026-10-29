@@ -455,6 +455,7 @@ function view(): ReefView {
     jobs: state.jobs,
     planktonLevel: Math.min(1, (feeding(state.plankton) - 1) / 2),
     bands: state.bands,
+    readings: state.readings.length,
     siltLevel: 1 - smother(state.silt),
     sandBars: state.levels.sandbar,
     meadows: state.levels.meadow,

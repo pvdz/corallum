@@ -24,6 +24,8 @@ export type ReefView = {
   /** 0..1 of plankton's effect, for how thick the plankton motes are. */
   planktonLevel: number;
   bands: readonly string[];
+  /** Thousandfold's bands read so far (0..9). */
+  readings: number;
   /** 0..1, how smothered the reef is (Act III). */
   siltLevel: number;
   sandBars: number;

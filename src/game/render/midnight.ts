@@ -537,7 +537,8 @@ export function createMidnightScene(seed: number): Scene {
       drawFlashes(ctx, t);
       drawGiantSquid(ctx, t);
       // The old stone's lights answer the scouts listening at it.
-      ruins.draw(ctx, w, h, focus, v.height, RUINS, t, [0, 1, 2], Math.min(1, v.jobs.scout / 8));
+      // Each Reading of Thousandfold's bands wakes more of the lights in its drowned towers.
+      ruins.draw(ctx, w, h, focus, v.height, RUINS, t, [0, 1, 2], Math.min(1, v.jobs.scout / 8), (1 + v.readings) / 10);
       drawAngler(ctx, t);
       for (const c of combs) drawComb(ctx, c, t);
       drawVampireSquid(ctx, t);
