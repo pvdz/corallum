@@ -550,3 +550,4 @@ date, what landed, what is half-done, what's next.
 - Ossel's fifth question at 3990 m ('remember': what will you tell them about me).
 - Christmas tree worms on the Sunlit reef (sunlit.ts drawTreeWorms, after the slugs so nothing covers them): touched, all vanish and come back one by one. Full browser suite green before this.
 - Rare meteor shower over the Breach (breach.ts drawMeteors: 40 s every 20 min, streaks from the moon's side; touched, a fireball).
+- Sweep combos (ACT1.comboGap/Step/Max; state.combo): the float shows the multiplier.

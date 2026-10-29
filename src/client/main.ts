@@ -1241,7 +1241,7 @@ canvas.addEventListener('pointerdown', (e) => {
   hint.classList.add('done');
   audio.cue('sweep');
   taps.push(wx, wy, animT);
-  floatText(e.clientX, e.clientY, `+${num(gain)}`);
+  floatText(e.clientX, e.clientY, state.combo > 1 ? `+${num(gain)} ×${(1 + ACT1.comboStep * (state.combo - 1)).toFixed(1)}` : `+${num(gain)}`);
 });
 
 // Quality: if frames run slow for a while, drop the bloom pass.

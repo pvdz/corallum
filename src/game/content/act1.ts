@@ -84,6 +84,8 @@ export const ACT1 = {
   sweepFlat: 1,
   sweepSeconds: 0.25,
   sweepCooldown: 0.4,
+  /** Sweeps within this many seconds of the last build a combo: +10% each, up to ×2. */
+  comboGap: 1.2, comboStep: 0.1, comboMax: 11,
   /** What each milestone multiplies its kind's output by. */
   milestoneFactor: 2,
 } as const;

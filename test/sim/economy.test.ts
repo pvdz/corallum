@@ -382,6 +382,20 @@ test('fanning shoals: only on the shelf, they sweep silt, and a trip takes them 
   assert.equal(idle + s.jobs.feed + s.jobs.light + s.jobs.scout + s.jobs.fan, total);
 });
 
+test('sweep combos: quick sweeps pay more, up to double; a pause resets', () => {
+  const s = midGame();
+  s.t += 100;
+  const one = sweep(s);
+  s.t += 0.5;
+  const two = sweep(s);
+  assert.ok(rel(two, one * 1.1) < 0.01, `${one} ${two}`);
+  for (let i = 0; i < 20; i++) { s.t += 0.5; sweep(s); }
+  assert.equal(s.combo, 11);
+  s.t += 5;
+  sweep(s);
+  assert.equal(s.combo, 1);
+});
+
 test('dialects: one per tier, in order, after their band, paid in bloom', () => {
   const s = newGame(1);
   s.bloom = 1e9;

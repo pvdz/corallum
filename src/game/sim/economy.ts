@@ -1453,7 +1453,9 @@ export function untilFlurry(s: GameState): number {
 
 export function sweep(s: GameState): number {
   if (!canSweep(s)) return 0;
-  const gain = (ACT1.sweepFlat + calciteRate(s) * ACT1.sweepSeconds) * (inFlurry(s) ? FLURRY.sweep : 1);
+  // Quick sweeps one after another build a combo.
+  s.combo = s.t - s.lastSweep <= ACT1.comboGap ? Math.min(ACT1.comboMax, s.combo + 1) : 1;
+  const gain = (ACT1.sweepFlat + calciteRate(s) * ACT1.sweepSeconds) * (inFlurry(s) ? FLURRY.sweep : 1) * (1 + ACT1.comboStep * (s.combo - 1));
   s.calcite += gain;
   s.earned.calcite += gain;
   s.lastSweep = s.t;
