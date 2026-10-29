@@ -188,6 +188,10 @@ export const ENDING = {
     'a moment you are sure it is laughing.',
   /** The creatures that know you, come to see the spawn off ({names}). */
   friends: 'They came to watch, the ones who knew you: {names}. They stay until the last bundle is out of sight.',
+  /** Once every mistake of Ossel's has been found and the tablet is whole. */
+  remembered: 'Before dawn Ossel speaks once more, and for the first time without being sure. “We fought them. We shut ' +
+    'the gate. We were afraid every day, and we kept everything, and it was too much to carry. That is what we were.” ' +
+    'It sounds lighter for saying it. “Tell them that. Tell them all of it, and then let them forget it gently.”',
   /** The sister reef, by who reached the surface first. */
   sisterAhead: 'On the next seamount the sister reef is still climbing, a few metres under the light. ' +
     'Some of your spawn drifts over it on the way out. It will be there next moon. It will not be alone.',

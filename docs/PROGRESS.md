@@ -447,3 +447,4 @@ date, what landed, what is half-done, what's next.
 - The fork on a ruin trip: press on (×1.5 time, a sure shard) or come home; forkOpen/takeFork, expedition.fork; test.
 - Each memory the line has ever carried: +1% calcite on every reef (knownBonus), listed in What shapes this reef.
 - New creature: a dugong grazing the Sunlit meadows (four or more); touched it rises to breathe.
+- Secret ending page 'remembered' (all Ossel's mistakes found + whole tablet) and a hidden feat.

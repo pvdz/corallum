@@ -47,6 +47,8 @@ export const FEATS: readonly Feat[] = [
   { id: 'great-tide', name: 'Four memories', text: 'Release under a great tide.', when: (s) => s.carried.length >= 4 },
   { id: 'lesser', name: 'Children', text: 'Release a lesser spawning.', when: (s) => s.meta.spawnings >= 1 },
   { id: 'everything', name: 'Nothing lost, nothing kept', text: 'Across your endings, carry every memory there is.', when: (s) => s.meta.carriedEver.length >= MEMORIES.length },
+  { id: 'remembered', name: 'Remembered truly', text: 'Reach the ending knowing all of Ossel’s mistakes and the whole tablet.', hidden: true,
+    when: (s) => s.carried.length > 0 && ['fought', 'sky', 'gate', 'killed', 'afraid'].every((m) => s.meta.seen.includes(`o:${m}`)) && s.meta.shards.length >= 12 },
   { id: 'endings', name: 'Many endings', text: 'Reach the ending three times.', when: (s) => s.meta.endings >= 3, progress: (s) => [s.meta.endings, 3] },
   { id: 'seamounts', name: 'Far settled', text: 'Grow a reef on a cold or a warm seamount.', when: (s) => s.seamount === 'cold' || s.seamount === 'warm' },
   { id: 'every-seamount', name: 'Every kind of stone', text: 'Grow reefs on warm, cold and crowded seamounts.',

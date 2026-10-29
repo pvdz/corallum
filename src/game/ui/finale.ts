@@ -2,6 +2,8 @@
 
 import { ACT5, ENDING, MEMORIES, type MemoryId } from '../content/act5.ts';
 import { CREATURES, trustLevel } from '../content/creatures.ts';
+import { OSSEL_MISTAKES } from '../content/ossel.ts';
+import { SHARD_LINES } from '../content/shards.ts';
 import { SURFACE } from '../content/acts.ts';
 import {
   breachReady, canBreach, ended, memoriesAvailable, moonFull, moonPhase, rates, spawnHold, spawnNet, spawnTarget,
@@ -131,6 +133,8 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
     }
     // The sister reef: ahead of it at the surface, or behind.
     if (s.race.decided >= 5) out.push(s.diary.some((d) => d.includes('|ahead|the surface')) ? ENDING.sisterAhead : ENDING.sisterBehind);
+    // The secret page: every mistake of Ossel's found, and the tablet whole.
+    if (OSSEL_MISTAKES.every((m) => s.meta.seen.includes(`o:${m.id}`)) && s.meta.shards.length >= SHARD_LINES.length) out.push(ENDING.remembered);
     out.push(s.truce.wall === 'b' ? ENDING.closingKept : ENDING.closingLetGo);
     // The line has carried every memory there is, across its endings.
     if (MEMORIES.every((m) => s.meta.carriedEver.includes(m.id))) out.push(ENDING.everything);
