@@ -93,6 +93,7 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Milestone names (A clump, A thicket, A colony, A grove, A city of mouths, A reef; A constellation, Lanterns, A beacon, A second moon) | plain descriptive words; count-milestone doublings are a genre convention | OK |
 | Trait "Old habits" (automatic buying) | generic phrase; auto-buyers are a genre convention | OK |
 | Trait "Shared table" (scavengers eat missed feasts for you) | everyday phrase; no game I know uses it for this | OK |
+| Creature "Sea fireflies" (strings of pearls at night) | real common name and behaviour of Caribbean ostracods, not from a game | OK |
 | Great tide moons (every third full moon lifts the spawn higher: four memories) | real biology (spring tides, lunar spawning); no game known with this beat | OK |
 | Seagrass meadows sown in the Rasp's sand | real ecology (parrotfish sand, seagrass) | OK |
 | Band "Too much light" (polyps closing against noon light) | real biology (photo-stress) | OK |

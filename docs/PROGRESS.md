@@ -293,3 +293,4 @@ date, what landed, what is half-done, what's next.
 - corallum.zoom (debug); pinch verified by CDP two-point touch events on the mobile viewport (spread ×3 → zoom 3).
 - Marine snow specks (draw.ts speck) are squares at 1× and round when zoomed.
 - Zoomed in, the floor detail paints directly (its 1× cache would be soft). Zoomed draw is ~26 ms headless at 3× (caches bypassed); 1× unchanged.
+- Sunlit night: sea fireflies (ostracods) lay rising strings of blue pearls over the reef; a new journal creature (39), tappable: touched, every string flares.

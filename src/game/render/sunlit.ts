@@ -255,6 +255,40 @@ export function createSunlitScene(seed: number): Scene {
   }
 
   /**
+   * Strings of pearls: after dark, tiny crustaceans court by laying trails of blue light dots
+   * as they swim up, each dot glowing for a few seconds; the trails rise in short slanting
+   * strings over the reef, one after another.
+   */
+  function drawPearls(ctx: CanvasRenderingContext2D, t: number, night: number): void {
+    if (night < 0.3) return;
+    sight('sea-firefly');
+    const s = scale();
+    // Touched, every string flares at once.
+    const touch = startled('sea-firefly', t);
+    const flare = touch && touch.age < 1.5 ? 1 - touch.age / 1.5 : 0;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let k = 0; k < 7; k++) {
+      const period = 9 + k * 1.7;
+      const lap = Math.floor((t + k * 3.1) / period);
+      const age = (t + k * 3.1) % period;
+      const r = mulberry32(larvaSeed + lap * 131 + k);
+      const x0 = focus.x + focus.w * range(r, 0.2, 0.8), y0 = focus.y + focus.h * range(r, 0.45, 0.8);
+      const slant = range(r, -0.5, 0.5);
+      // One dot every 0.18 s for 2.5 s, each glowing then fading over 3 s.
+      for (let d = 0; d < 14; d++) {
+        const born = d * 0.18;
+        const a = age - born;
+        if (a < 0 || a > 3) continue;
+        const fade = (a < 0.2 ? a / 0.2 : 1 - (a - 0.2) / 2.8) * night;
+        glow(ctx, x0 + slant * d * 6 * s, y0 - d * 9 * s, 4 * s * (1 + flare), '90,190,255', Math.min(1, 0.8 * fade + flare * night));
+      }
+      if (age < 2.5) spot('sea-firefly', x0 + slant * 40 * s, y0 - 60 * s, 50 * s);
+    }
+    ctx.restore();
+  }
+
+  /**
    * Sleeping Rasp: by night the grazers rest among the clumps at the reef's foot, each in a
    * bubble of mucus it blows around itself (real parrotfish do this), faintly catching the light.
    */
@@ -824,6 +858,7 @@ export function createSunlitScene(seed: number): Scene {
       ctx.restore();
       shoals.drawFront(ctx, focus, reef, L, v, t, '#5d7d96');
       if (night > 0) drawNight(ctx, t, night, 0.3);
+      drawPearls(ctx, t, night);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
     },
   };
