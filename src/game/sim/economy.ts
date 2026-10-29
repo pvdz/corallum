@@ -32,7 +32,7 @@ import { SHARD, SHARD_LINES, type ShardSource } from '../content/shards.ts';
 import { REQUEST, REQUESTS, type RequestKind } from '../content/requests.ts';
 import { MOMENTS, type MomentId } from '../content/moments.ts';
 import { WATER, WATERS, type Water } from '../content/waters.ts';
-import { EXPEDITION, ROAM, SITES, type Site, type SiteId } from '../content/expeditions.ts';
+import { EXPEDITION, ROAM, SITES, VISIT, type Site, type SiteId } from '../content/expeditions.ts';
 import type { Band, Currency, UpgradeDef, UpgradeId } from '../content/types.ts';
 import { UPGRADES } from '../content/upgrades.ts';
 import { equilibrium, relax } from './ode.ts';
@@ -688,6 +688,7 @@ export function tripSite(s: GameState): Site | undefined {
   const ex = s.expedition;
   if (!ex.site) return undefined;
   if (ex.site === 'roam') return { ...roamSite(s), shoals: ex.n };
+  if (ex.site === 'visit') return { ...roamSite(s), id: 'visit' as SiteId, name: VISIT.name, hint: VISIT.hint, effect: VISIT.effect, seconds: VISIT.seconds, shoals: ex.n };
   return SITES.find((v) => v.id === ex.site);
 }
 
@@ -698,6 +699,10 @@ export function tripSite(s: GameState): Site | undefined {
 export function nextSite(s: GameState): Site | undefined {
   const x = SITES.find((v) => !found(s, v.id));
   if (x && s.height >= x.metres && s.levels.shoal > 0) return x;
+  // The sister reef near your depth: a visit, once per zone.
+  if (s.levels.shoal >= ROAM.minShoals * 2 && Math.abs(sisterAt(s.t) - gaugeAt(s.height)) < VISIT.near && !s.visits.includes(actAt(s.height))) {
+    return { ...roamSite(s), id: 'visit' as SiteId, name: VISIT.name, hint: VISIT.hint, effect: VISIT.effect, seconds: VISIT.seconds };
+  }
   return s.height >= ROAM.from && s.levels.shoal >= ROAM.minShoals * 2 ? roamSite(s) : undefined;
 }
 
@@ -720,6 +725,7 @@ export function send(s: GameState): boolean {
     need -= n;
   }
   s.expedition = { site: x.id, back: s.t + tripSeconds(s, x), ...took, n: x.shoals };
+  if ((x.id as string) === 'visit') s.visits.push(actAt(s.height));
   return true;
 }
 
@@ -727,8 +733,8 @@ export function send(s: GameState): boolean {
 function homecoming(s: GameState): void {
   const ex = s.expedition;
   const x = SITES.find((v) => v.id === ex.site);
-  const roam = ex.site === 'roam';
-  const seconds = (roam ? ROAM.seconds : x?.seconds ?? 0) * (trait(s, 'old-maps') ? 0.5 : 1) * (boon(s, 'near-ruins') ? 0.5 : 1);
+  const roam = ex.site === 'roam', visit = ex.site === 'visit';
+  const seconds = (roam ? ROAM.seconds : visit ? VISIT.seconds : x?.seconds ?? 0) * (trait(s, 'old-maps') ? 0.5 : 1) * (boon(s, 'near-ruins') ? 0.5 : 1);
   const heard = EXPEDITION.heard * ex.n * seconds;
   s.jobs.feed += ex.feed;
   s.jobs.light += ex.light;
@@ -739,6 +745,11 @@ function homecoming(s: GameState): void {
   if (roam) {
     s.tally.roams++;
     dig(s, 'roam');
+    return;
+  }
+  if (visit) {
+    s.meta.lineage += VISIT.lineage;
+    remember(s, 'visit');
     return;
   }
   if (!x) return;

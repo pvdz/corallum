@@ -48,6 +48,7 @@ test('the gate’s relic makes bands cheaper, and the next ruin waits for its he
 test('a roam when no ruin is in reach: a quarter of the shoals, home at the same moment offline or not', () => {
   const a = atGate();
   a.relics = ['gate', 'terraces', 'lamp-hall', 'wells', 'midden'];
+  a.visits = [1, 2, 3, 4, 5]; // no sister visit on offer: this is about roaming
   const jobs = { ...a.jobs };
   const idle = idleShoals(a);
   assert.equal(nextSite(a)?.id, 'roam');

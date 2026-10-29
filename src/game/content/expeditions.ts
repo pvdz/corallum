@@ -5,7 +5,7 @@
 
 export type SiteId = 'gate' | 'terraces' | 'lamp-hall' | 'wells' | 'midden';
 /** A ruin, or a roam through the dark (repeatable, no relic). */
-export type TripId = SiteId | 'roam';
+export type TripId = SiteId | 'roam' | 'visit';
 
 export type Site = {
   id: SiteId;
@@ -87,6 +87,13 @@ export const SITES: readonly Site[] = [
 ];
 
 /** Roaming: when no ruin is in reach, a quarter of the shoals can wander for a while. */
+/** Visiting the sister reef: when it is near your depth, once per zone, a short trip for lineage. */
+export const VISIT = {
+  near: 0.06, seconds: 8 * 60, lineage: 1,
+  name: 'Visit the sister reef', hint: 'The sister reef is near your depth, on the next seamount. The shoals could swim over.',
+  effect: '+1 lineage when they come home',
+} as const;
+
 export const ROAM = {
   from: 150, minShoals: 4, share: 0.25, seconds: 10 * 60,
   name: 'Roam the dark', hint: 'No ruin in reach. The shoals could wander, and listen, and see what turns up.',

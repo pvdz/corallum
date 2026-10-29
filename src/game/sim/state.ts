@@ -137,6 +137,8 @@ export type GameState = {
   moments: Record<MomentId, '' | 'a' | 'b'>;
   /** Animals living in the reef's homes (content/residents.ts). */
   residents: ResidentId[];
+  /** Zones in which the shoals have visited the sister reef. */
+  visits: number[];
   /** Ruins searched this run (content/expeditions.ts), in order. */
   relics: SiteId[];
   /** Sim time each creature last gave a gift when touched (content/creatures.ts GIFT). */
@@ -187,6 +189,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     history: [],
     expedition: { site: '', back: 0, feed: 0, light: 0, scout: 0, n: 0 },
     relics: [],
+    visits: [],
     residents: [],
     diary: [],
     others: { last: -1, joined: 0 },

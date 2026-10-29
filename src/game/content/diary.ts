@@ -15,6 +15,7 @@ export const DIARY: Record<string, string> = {
   trial: 'This hard place taught your line something: {a}.',
   request: 'You had kept {a} of Ossel’s requests.',
   reading: 'Your scouts read “{a}”.',
+  visit: 'Your shoals visited the sister reef, and came home with its colours in their lights.',
 };
 
 export const DIARY_TEXT = { label: 'Your own bands', intro: 'What this reef laid down in its stone, newest first.', max: 200 } as const;
