@@ -227,21 +227,46 @@ export function createSunlitScene(seed: number): Scene {
     g.addColorStop(1, '#b49a6a');
     ctx.fillStyle = g;
     ctx.fill();
-    // Caustics: a shifting net of light on the sand.
+    const top = focus.y + focus.h * 0.86;
     ctx.save();
     ctx.clip();
-    ctx.globalCompositeOperation = 'lighter';
-    ctx.strokeStyle = 'rgba(255,255,240,0.22)';
-    ctx.lineWidth = 1.5 * dpr;
-    const top = focus.y + focus.h * 0.86;
-    for (let k = 0; k < 14; k++) {
+    // Sand ripples: low crests laid by the swell, closer together far off, each with a shaded lee.
+    ctx.lineWidth = 1.2 * dpr;
+    for (let k = 0; k < 18; k++) {
+      const v = (k + 0.5) / 18;
+      const y0 = top + (h - top) * v * v;
+      const amp = (1.5 + v * 4) * dpr, wl = (40 + v * 60) * dpr;
+      ctx.strokeStyle = `rgba(140,112,70,${(0.18 + v * 0.22).toFixed(3)})`;
       ctx.beginPath();
-      for (let x = 0; x <= w; x += 10 * dpr) {
-        const y = top + (k / 14) * (h - top) + Math.sin(x / (30 * dpr) + t * 0.9 + k * 1.7) * 5 * dpr
-          + Math.sin(x / (13 * dpr) - t * 1.3 + k) * 2.5 * dpr;
+      for (let x = 0; x <= w; x += 8 * dpr) {
+        const y = y0 + Math.sin(x / wl + k * 2.3) * amp + Math.sin(x / (wl * 0.37) + k) * amp * 0.3;
         if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
       }
       ctx.stroke();
+    }
+    // Caustics: a shifting net of light on the sand, two crossing families of wavering lines laid
+    // flat (squashed toward the far edge) so the cells read as lying on the floor.
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.translate(0, top);
+    ctx.scale(1, 0.34);
+    const depth = (h - top) / 0.34;
+    const gap = 46 * dpr;
+    // Three families (slanting both ways and nearly straight on), lines unevenly spaced and
+    // wavering strongly, so the cells come out irregular like real caustics.
+    for (const d of [-1, 0.35, 1]) {
+      for (let k = -Math.ceil(depth / gap); k < Math.ceil(w / gap) + 2; k++) {
+        const off = (((k * 0.618 + d) % 1) + 1) % 1 * gap * 0.7;
+        const bright = 0.09 + 0.1 * Math.max(0, Math.sin(t * 0.7 + k * 1.9 + d * 3));
+        ctx.strokeStyle = `rgba(255,255,235,${bright.toFixed(3)})`;
+        ctx.lineWidth = (1.4 + Math.max(0, Math.sin(t * 0.9 + k * 2.7)) * 1.8) * dpr;
+        ctx.beginPath();
+        for (let v = 0; v <= depth; v += 10 * dpr) {
+          const wl = (18 + ((k * 7) % 5) * 5) * dpr;
+          const x = (d > 0 ? k * gap + off + v * d : w - k * gap - off + v * d) + Math.sin(v / wl + t * 0.8 + k * 1.3) * 16 * dpr + Math.sin(v / (wl * 2.7) - t * 0.5 + k) * 10 * dpr + Math.sin(t * 0.3 + k) * 12 * dpr;
+          if (v === 0) ctx.moveTo(x, v); else ctx.lineTo(x, v);
+        }
+        ctx.stroke();
+      }
     }
     ctx.restore();
   }
