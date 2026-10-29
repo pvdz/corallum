@@ -13,7 +13,7 @@ import { ACT3, CURRENT, FAVOURS, FAVOUR_TEXT, MEETINGS, type RiddleId, type Favo
 import { DIALECTS, HEAT, TIERS, type DialectId } from '../content/act4.ts';
 import { BOONS, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId, FORGET } from '../content/lineage.ts';
 import { GARDEN, LINE_TITLES, MEMORIES, type MemoryId } from '../content/act5.ts';
-import { COMPANION, CREATURES, TRUST, trustLevel } from '../content/creatures.ts';
+import { COMPANION, CREATURES, TRUST, trustLevel, LUCKY } from '../content/creatures.ts';
 import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
 import { upgradeIcon } from './icons.ts';
 import { SHELL, SHELLS } from '../content/shells.ts';
@@ -652,7 +652,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   function renderJournal(s: GameState): void {
     const seen = CREATURES.filter((c) => s.meta.seen.includes(`c:${c.id}`));
     const touched = s.meta.seen.filter((k) => k.startsWith('t:')).length;
-    const key = seen.map((c) => c.id).join() + `|${hooks.portraits ?? 0}|${touched}|${s.meta.companion}|` + Object.values(s.meta.trust).map(trustLevel).join('');
+    const luckyKey = s.meta.seen.filter((k) => k.startsWith('g:')).length;
+    const key = seen.map((c) => c.id).join() + `|${hooks.portraits ?? 0}|${touched}|${luckyKey}|${s.meta.companion}|` + Object.values(s.meta.trust).map(trustLevel).join('');
     if (key === journalKey) return;
     journalKey = key;
     journalHead.textContent = `Creatures seen · ${seen.length} of ${CREATURES.length}${touched ? ` · ${touched} touched` : ''} · calcite +${Math.round((knownBonus(s) - 1) * 100)}%`;
@@ -691,6 +692,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const name = el('strong', '', known ? c.name : 'Not yet seen');
         const tl = trustLevel(s.meta.trust[c.id] ?? 0);
         if (known && tl > 0) name.append(el('em', `touched trust-${tl}`, ` · ${TRUST.names[tl]}`));
+        if (s.meta.seen.includes(`g:${c.id}`)) {
+          const mark = el('em', 'lucky-mark', ' ✦');
+          mark.title = LUCKY.seen;
+          name.append(mark);
+        }
         // A touched creature can be kept close as the line's companion.
         if (known && s.meta.seen.includes(`t:${c.id}`)) {
           const mine = s.meta.companion === c.id;

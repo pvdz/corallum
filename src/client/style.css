@@ -339,6 +339,7 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 .card.work { border-color: rgba(255, 210, 160, 0.25); }
 .touched.trust-2 { color: #a8dcff; }
 .touched.trust-3 { color: #ffd9a8; }
+.lucky-mark { color: #ffd278; font-style: normal; }
 .diary[hidden] { display: none; }
 .diary-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 5px; max-height: 320px; overflow-y: auto; }
 .diary-list li { display: grid; grid-template-columns: auto 1fr; gap: 8px; font-size: 12.5px; line-height: 1.4; }

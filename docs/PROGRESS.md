@@ -602,3 +602,4 @@ date, what landed, what is half-done, what's next.
 - Readings The night the sea burned (5200: milky sweeps ×2 glow) and The kept stone (26000 after first-words: old stone ×1.5), with Ossel's line about weight. Bot 7h08.
 - Rare creatures: a gulper eel crossing the Midnight Water (11 min; touched, its mouth balloons) and a sixgill shark gliding low along the Twilight slope (13 min; touched, it turns down).
 - Lucky neighbours (creatures.ts LUCKY; economy lucky): in each 2-minute span a creature may be lucky (seeded by reef, creature, span; 2.5%), drawn with golden sparks (main.ts drawLucky, one per kind). Touched, its gift comes at once ×5 (once per span), the codex keeps g:<id>; feat Touched by luck (five). Away summary mentions the old stone knobs waiting. Full e2e suite green before this.
+- The journal marks creatures touched while lucky with a golden ✦.
