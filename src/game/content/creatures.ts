@@ -2,7 +2,7 @@
 // actually seen on screen (kept across lesser spawnings, in meta.seen as 'c:<id>').
 
 export type CreatureId =
-  | 'jelly' | 'tripod-fish' | 'brittle-star' | 'rattail' | 'sea-pig' | 'brine-pool' | 'smokers' | 'dumbo' | 'squat-lobster' | 'sea-lily' | 'glass-sponge' | 'tube-worm'
+  | 'jelly' | 'tripod-fish' | 'isopod' | 'brittle-star' | 'rattail' | 'sea-pig' | 'brine-pool' | 'smokers' | 'dumbo' | 'squat-lobster' | 'sea-lily' | 'glass-sponge' | 'tube-worm'
   | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration'
   | 'rasp' | 'moray' | 'nautilus' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark'
   | 'cuttlefish' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly'
@@ -13,6 +13,7 @@ export type Creature = { id: CreatureId; name: string; zone: string; note: strin
 
 export const CREATURES: readonly Creature[] = [
   { id: 'jelly', name: 'Deep jellies', zone: 'The Silt Floor', note: 'Bells of violet light, pulsing without hurry.' },
+  { id: 'isopod', name: 'Giant isopod', zone: 'The Silt Floor', note: 'A woodlouse as long as your hand, armoured, patient. It can go years between meals.' },
   { id: 'tripod-fish', name: 'Tripod fish', zone: 'The Silt Floor', note: 'It stands on three long fins, facing the current, and waits for food to walk into its mouth.' },
   { id: 'brittle-star', name: 'Brittle stars', zone: 'The Silt Floor', note: 'Five thin arms, combing the silt for crumbs.' },
   { id: 'rattail', name: 'Rattail', zone: 'The Silt Floor', note: 'A big head and a long tail, nosing along the bottom.' },

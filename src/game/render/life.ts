@@ -494,6 +494,73 @@ export function createLife(seed: number) {
     ctx.restore();
   }
 
+  /**
+   * A giant isopod trundling across the silt on many legs, armour plates catching the light.
+   * Touched, it rolls up into a ball, then unrolls and goes on.
+   */
+  function drawIsopod(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
+    const period = 200;
+    const u = (t % period) / period;
+    if (u > 0.7) return;
+    sight('isopod');
+    const s = st.s * 2.2;
+    const touch = startled('isopod', t);
+    const ball = touch && touch.age < 7 ? Math.min(1, touch.age * 3, (7 - touch.age) / 1.5) : 0;
+    const walk = ball > 0 ? 0 : 1;
+    const x = st.cx - st.w * 0.12 - (u / 0.7) * st.w * 0.6;
+    const y = st.baseY + 2 * s;
+    spot('isopod', x, y - 5 * s, 16 * s);
+    ctx.save();
+    ctx.translate(x, y);
+    if (ball > 0.5) {
+      // Rolled up: a segmented ball.
+      const r = 7 * s;
+      ctx.fillStyle = '#b8a8a0';
+      ctx.beginPath();
+      ctx.arc(0, -r, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(80,60,60,0.6)';
+      ctx.lineWidth = 0.8 * s;
+      for (let k = -2; k <= 2; k++) {
+        ctx.beginPath();
+        ctx.ellipse(k * 2.4 * s, -r, 0.8 * s, r * 0.95, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    } else {
+      // Legs, scuttling in waves.
+      ctx.strokeStyle = 'rgba(200,180,170,0.8)';
+      ctx.lineWidth = 0.8 * s;
+      for (let k = 0; k < 7; k++) {
+        const lx = -8 * s + k * 2.6 * s, ph = Math.sin(t * 8 * walk + k);
+        ctx.beginPath();
+        ctx.moveTo(lx, -2 * s);
+        ctx.lineTo(lx + ph * 1.5 * s, 0);
+        ctx.stroke();
+      }
+      // The armoured back: overlapping plates.
+      for (let k = 0; k < 7; k++) {
+        const px = -9 * s + k * 3 * s;
+        ctx.fillStyle = k % 2 ? '#c4b4ac' : '#b2a29a';
+        ctx.beginPath();
+        ctx.ellipse(px, -4 * s, 2.4 * s, 4 * s - Math.abs(k - 3) * 0.35 * s, 0, Math.PI, 0);
+        ctx.fill();
+      }
+      // Head with antennae, leading the way (to the left).
+      ctx.fillStyle = '#a89890';
+      ctx.beginPath();
+      ctx.ellipse(-11 * s, -2.5 * s, 2.6 * s, 2 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(200,180,170,0.7)';
+      ctx.beginPath();
+      ctx.moveTo(-13 * s, -3 * s);
+      ctx.quadraticCurveTo(-17 * s, -7 * s, -20 * s, -6 * s + Math.sin(t * 2) * s);
+      ctx.moveTo(-13 * s, -2 * s);
+      ctx.quadraticCurveTo(-17 * s, -2 * s, -19 * s, 0);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
   function drawRattail(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
     const period = 150;
     const u = (t % period) / period;
@@ -699,6 +766,7 @@ export function createLife(seed: number) {
       for (const star of stars) drawStar(ctx, st, star, t);
       drawRattail(ctx, st, t);
       drawTripod(ctx, st, t);
+      drawIsopod(ctx, st, t);
     },
     drawVent,
   };
