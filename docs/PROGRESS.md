@@ -166,3 +166,4 @@ date, what landed, what is half-done, what's next.
 - Graphics: glass sponges (Silt Floor), garden eel colony ducking in waves (Twilight slope), a green turtle grazing the seagrass meadows (Sunlit Crown), shooting stars over the Breach.
 - Creature journal: scenes report each creature they draw (render/sightings.ts); the first sighting shows "Seen for the first time: …" top-left and is kept across spawnings (meta.seen 'c:<id>'). Bands tab card "Creatures seen · n of 18" lists notes, unseen ones by zone.
 - Sunlit Crown: a 10-minute day — dusk, a blue night (veil behind and over the reef, plankton sparks, moonlit surface, the reef's own glow returns, reef fish shelter), dawn.
+- Twilight Shelf: an octopus rests sand-coloured on the slope, then crawls a short way flushing red (journal: 19 creatures).

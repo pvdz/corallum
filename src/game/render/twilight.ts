@@ -266,6 +266,55 @@ export function createTwilightScene(seed: number): Scene {
     }
   }
 
+  /**
+   * An octopus on the slope: still and sand-coloured most of the time, then it crawls a short way,
+   * flushing red, and settles again somewhere else.
+   */
+  function drawOctopus(ctx: CanvasRenderingContext2D, t: number): void {
+    const s = scale() * 2.2;
+    const period = 50;
+    const leg = Math.floor(t / period);
+    const u = (t % period) / period;
+    // Crawls during the first fifth of each period, from one resting place to the next.
+    const crawl = Math.min(1, u / 0.2);
+    const ease = crawl * crawl * (3 - 2 * crawl);
+    const spot = (k: number) => 0.2 + ((k * 0.37) % 1) * 0.16;
+    const pu = spot(leg) + (spot(leg + 1) - spot(leg)) * ease;
+    const moving = crawl < 1 ? Math.sin(Math.PI * crawl) : 0;
+    const x = focus.x - focus.w * 0.1 + pu * focus.w * 1.2;
+    const y = slopeY(pu) - 8 * s - moving * 6 * s;
+    sight('octopus');
+    // Colour: sandy camouflage at rest, red while it moves.
+    const rC = Math.round(150 + 90 * moving), gC = Math.round(130 - 70 * moving), bC = Math.round(105 - 50 * moving);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.strokeStyle = `rgb(${rC},${gC},${bC})`;
+    ctx.fillStyle = `rgb(${rC},${gC},${bC})`;
+    ctx.lineCap = 'round';
+    for (let a = 0; a < 8; a++) {
+      const side = a < 4 ? -1 : 1;
+      const k = a % 4;
+      const reach = (12 + k * 3) * s * (1 + 0.3 * moving);
+      const wave = Math.sin(t * (moving ? 6 : 0.8) + a * 1.3) * 3 * s;
+      ctx.lineWidth = 2.2 * s;
+      ctx.beginPath();
+      ctx.moveTo(side * 2 * s, 2 * s);
+      ctx.quadraticCurveTo(side * reach * 0.5, 6 * s + wave, side * reach, 8 * s - k * 1.5 * s + wave);
+      ctx.stroke();
+    }
+    // Mantle and eye.
+    ctx.beginPath();
+    ctx.ellipse(0, -4 * s, 7 * s, 9 * s * (1 + 0.1 * moving), -0.3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(250,240,200,0.9)';
+    ctx.beginPath();
+    ctx.arc(4 * s, -1 * s, 1.6 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#111';
+    ctx.fillRect(3 * s, -1.4 * s, 2 * s, 0.8 * s);
+    ctx.restore();
+  }
+
   /** A manta gliding through the light shafts every few minutes, wings rising and falling slowly. */
   function drawManta(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 230, crossing = 75;
@@ -436,6 +485,7 @@ export function createTwilightScene(seed: number): Scene {
       shoals.drawBack(ctx, focus, reef, L, v, t, '#1d3557');
       drawShelf(ctx, v.sandBars, v.siltLevel);
       drawGardenEels(ctx, t);
+      drawOctopus(ctx, t);
       drawWall(ctx, t, v.wall);
       drawRasp(ctx, t, v.rasp, v.raspTrust, v.raspPolite);
       if (v.gardeners) drawGardeners(ctx, t);

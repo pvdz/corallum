@@ -4,7 +4,7 @@
 export type CreatureId =
   | 'jelly' | 'brittle-star' | 'rattail' | 'sea-lily' | 'glass-sponge' | 'tube-worm'
   | 'lanternfish' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish'
-  | 'rasp' | 'manta' | 'garden-eel'
+  | 'rasp' | 'manta' | 'garden-eel' | 'octopus'
   | 'reef-fish' | 'whale' | 'turtle'
   | 'shore-bird';
 
@@ -25,6 +25,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'rasp', name: 'The Rasp', zone: 'The Twilight Shelf', note: 'Blunt beaks that grind dead stone into sand.' },
   { id: 'manta', name: 'Manta', zone: 'The Twilight Shelf', note: 'Wings as wide as the reef is tall, gliding through the light.' },
   { id: 'garden-eel', name: 'Garden eels', zone: 'The Twilight Shelf', note: 'A colony standing out of the sand, ducking all at once.' },
+  { id: 'octopus', name: 'Octopus', zone: 'The Twilight Shelf', note: 'The colour of sand until it moves, and then of fire.' },
   { id: 'reef-fish', name: 'Reef fish', zone: 'The Sunlit Crown', note: 'Colours you had no words for, darting between the branches.' },
   { id: 'whale', name: 'Whale', zone: 'The Sunlit Crown', note: 'A long shadow in the haze, calling as it passes.' },
   { id: 'turtle', name: 'Green turtle', zone: 'The Sunlit Crown', note: 'It comes for the seagrass and stays for the meadows.' },
