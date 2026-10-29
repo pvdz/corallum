@@ -2,7 +2,7 @@
 // Each shoal's path shows its job: feeders circle the reef, light-swimmers spiral above the
 // crown, scouts dive into the dark below the frame and come back.
 
-import { sight } from './sightings.ts';
+import { sight, spot } from './sightings.ts';
 import type { Job } from '../content/act2.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { glow } from './draw.ts';
@@ -55,6 +55,10 @@ export function createShoals(seed: number) {
     const spread = (job === 'light' ? 22 : 30) * s;
     const flicker = job === 'light' ? 0.5 + 0.5 * Math.max(0, Math.sin(t * 0.35 * 4 + i)) ** 6 : 0;
     const lights: [number, number, number][] = [];
+    if (i === 0) {
+      const [sx, sy] = shoalCentre(F, reef, job, i, n, t, L);
+      spot('lanternfish', sx, sy, spread * 1.3);
+    }
     for (let k = 0; k < fish.length; k++) {
       const f = fish[k]!;
       const lag = k * 0.06;

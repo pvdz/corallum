@@ -597,6 +597,7 @@ export function createSunlitScene(seed: number): Scene {
       const y = focus.y + focus.h * (0.25 + f.lane * 0.55) + Math.sin(t * 0.8 + f.phase * 10) * 10 * s;
       const dir = f.speed > 0 ? 1 : -1;
       const len = 12 * s * f.size;
+      spot('reef-fish', x, y, Math.max(len * 1.5, 22 * dpr));
       ctx.save();
       ctx.translate(x, y);
       ctx.scale(dir, 1);

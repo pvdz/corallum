@@ -2,7 +2,7 @@
 // Everything is generated from a seed; `draw` is a pure function of (view, t) so a given
 // seed, state and time always render the same frame — screenshots rely on that.
 
-import { sight } from './sightings.ts';
+import { sight, spot } from './sightings.ts';
 import { mulberry32, range, type Rng } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow } from './draw.ts';
@@ -196,6 +196,7 @@ export function createAbyssScene(seed: number): Scene {
   function drawSmokers(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
     sight('smokers');
+    spot('smokers', focus.x + focus.w * 0.66, baseY() - 20 * s, 50 * s);
     for (const [k, u] of [0.06, 0.12, 0.62, 0.7, 0.94].entries()) {
       const x = focus.x + focus.w * u, base = baseY() + 6 * s;
       const hgt = (34 + (k % 3) * 12) * s, wid = (7 + (k % 2) * 3) * s;
@@ -230,6 +231,7 @@ export function createAbyssScene(seed: number): Scene {
     const x = focus.x + focus.w * 0.41, y = baseY() + 12 * s;
     const rx = 48 * s, ry = 7 * s;
     sight('brine-pool');
+    spot('brine-pool', x, y, rx);
     const g = ctx.createLinearGradient(0, y - ry, 0, y + ry);
     g.addColorStop(0, 'rgba(150,180,230,0.55)');
     g.addColorStop(1, 'rgba(40,60,110,0.75)');
