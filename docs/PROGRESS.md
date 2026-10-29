@@ -541,3 +541,4 @@ date, what landed, what is half-done, what's next.
 - Trip encounters: six now (+ a fast current: ride ×0.7; a field of larvae: feed ×1.2, a shard chance).
 - Lantern shark in the Midnight Water (every ~4 min, low across; belly lights; touched, lights out and it slips away).
 - The sea heals: siltP × 0.95^min(6, endings); abyss snow loses a tenth of its flakes per ending; a 'The sea' row in Your reef.
+- Again (ossel.ts AGAIN): on a new reef after an ending, Ossel says one of five lines (by endings reached), once each (meta.seen 'again:n').

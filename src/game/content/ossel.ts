@@ -92,3 +92,15 @@ export const QUESTIONS: readonly Question[] = [
     ],
   },
 ];
+
+/** A new reef after the line has reached an ending: Ossel remembers having done this before (one per ending, once). */
+export const AGAIN = {
+  kicker: 'Again',
+  lines: [
+    { title: 'Again', text: '“We have done this before,” Ossel says, very quietly, as the first polyp opens. “I remember the surface. I remember the moon. Let us go and see if it is still there.”' },
+    { title: 'Twice now', text: '“The second time is easier,” says Ossel. “That is what I would have told you. It is not true. It is only more familiar.”' },
+    { title: 'Three times', text: 'Ossel is quiet a long while before it speaks. “Somewhere up there, three of our spawnings are growing. Do you think they know about us?”' },
+    { title: 'Four', text: '“I have stopped counting the falling grey,” Ossel says. “There is less of it. I am almost sure there is less of it.”' },
+    { title: 'Many times', text: '“Every time you go up, I think it will be the last, and I keep everything ready to say goodbye,” says Ossel. “And then you come back down to me. I am glad. I am a wall. I am glad.”' },
+  ],
+} as const;

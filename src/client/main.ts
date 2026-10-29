@@ -47,7 +47,7 @@ import { drawMoon, glow as glowAt } from '../game/render/draw.ts';
 import { GAUGE_MOON } from '../game/content/act5.ts';
 import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { HEAT } from '../game/content/act4.ts';
-import { QUESTION, QUESTIONS } from '../game/content/ossel.ts';
+import { AGAIN, QUESTION, QUESTIONS } from '../game/content/ossel.ts';
 import { RISING } from '../game/content/act2.ts';
 import { UPWELL } from '../game/content/act3.ts';
 import { FIGURES, SKY, type FigureId } from '../game/content/sky.ts';
@@ -464,6 +464,14 @@ if (!state.meta.seen.includes(NEWS.id) && (state.t > 600 || state.meta.spawnings
   state.meta.seen.push(NEWS.id);
   panel.story(NEWS.kicker, NEWS.title, NEWS.text);
 } else if (!state.meta.seen.includes(NEWS.id) && state.t <= 600) state.meta.seen.push(NEWS.id);
+// A new reef after an ending: Ossel remembers (once per number of endings, the last line for five or more).
+if (state.meta.endings > 0 && state.t < 120 && frozenT === null && botT === null) {
+  const n = Math.min(AGAIN.lines.length, state.meta.endings);
+  if (!state.meta.seen.includes(`again:${n}`)) {
+    state.meta.seen.push(`again:${n}`);
+    panel.story(AGAIN.kicker, AGAIN.lines[n - 1]!.title, AGAIN.lines[n - 1]!.text);
+  }
+}
 for (const m of OSSEL_MISTAKES) if (state.meta.seen.includes(`o:${m.id}`)) panel.keepStory('Ossel', OSSEL_MISTAKE.kicker, m.title, m.correction, false);
 showReefName();
 // Feats already earned when a reef loads (older saves, or long absences) are granted together.
