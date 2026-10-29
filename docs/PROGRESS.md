@@ -453,3 +453,4 @@ date, what landed, what is half-done, what's next.
 - Your reef card: this reef's feasts, intruders, signals, trips and requests.
 - Breach upgrade 'Raise a sand cay' (sand, max 6, spawn ×1.1 each), drawn as low islands by the reef.
 - The chronicle (Lineage tab): one line per ending (seamount, hours, memories); meta.chronicle written in breach().
+- New creatures: frogfish (Twilight slope, gulps when touched), banded sea snake (Sunlit, rising to breathe).

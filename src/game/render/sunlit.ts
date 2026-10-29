@@ -731,6 +731,43 @@ export function createSunlitScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** A banded sea snake winding up toward the surface to breathe and back down; touched, it turns away. */
+  function drawSeaSnake(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 70;
+    const u = (t % period) / period;
+    if (u > 0.5) return;
+    sight('sea-snake');
+    const s = scale() * 1.5;
+    const touch = startled('sea-snake', t);
+    const away = touch && touch.age < 6 ? Math.sin(Math.min(1, touch.age / 6) * Math.PI) : 0;
+    const k = u / 0.5;
+    const x0 = focus.x + focus.w * (0.78 + away * 0.15);
+    const y0 = focus.y + focus.h * (0.85 - 0.75 * Math.sin(k * Math.PI));
+    spot('sea-snake', x0, y0, 20 * s);
+    ctx.save();
+    ctx.lineCap = 'round';
+    // Bands along a wavy body, drawn as short segments.
+    for (let i = 0; i < 26; i++) {
+      const px = x0 + Math.sin(t * 3 - i * 0.45) * 6 * s;
+      const py = y0 + i * 2.6 * s * (k < 0.5 ? 1 : -1);
+      const nx = x0 + Math.sin(t * 3 - (i + 1) * 0.45) * 6 * s;
+      const ny = y0 + (i + 1) * 2.6 * s * (k < 0.5 ? 1 : -1);
+      ctx.strokeStyle = i % 4 < 2 ? '#1c2230' : '#c8d0dc';
+      ctx.lineWidth = (3.4 - i * 0.07) * s;
+      ctx.beginPath();
+      ctx.moveTo(px, py);
+      ctx.lineTo(nx, ny);
+      ctx.stroke();
+    }
+    // The head, a little wider, leading.
+    const hx = x0 + Math.sin(t * 3) * 6 * s;
+    ctx.fillStyle = '#1c2230';
+    ctx.beginPath();
+    ctx.ellipse(hx, y0 - (k < 0.5 ? 2 : -2) * s, 2.6 * s, 3.6 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
   /** A dugong grazing the meadows (four or more): nose down in the grass; touched, it rises to breathe and sinks back. */
   function drawDugong(ctx: CanvasRenderingContext2D, t: number, meadows: number): void {
     if (meadows < 4) return;
@@ -1104,6 +1141,7 @@ export function createSunlitScene(seed: number): Scene {
       if (night < 0.5) drawCuttlefish(ctx, t);
       if (night < 0.5) drawReefShark(ctx, t);
       drawDugong(ctx, t, v.meadows);
+      if (night < 0.5) drawSeaSnake(ctx, t);
       drawClumps(ctx, t);
       drawDaughters(ctx, v.polyps, (u) => [focus.x - focus.w * 0.1 + u * focus.w * 1.2, floorY(u) + 2 * scale()], scale() * 1.2, t,
         { branch: '#c0703e', tip: '#e8a060', polyp: 'rgba(255,240,190,0.95)',

@@ -4,8 +4,8 @@
 export type CreatureId =
   | 'jelly' | 'tripod-fish' | 'isopod' | 'brittle-star' | 'rattail' | 'sea-pig' | 'brine-pool' | 'smokers' | 'dumbo' | 'squat-lobster' | 'sea-lily' | 'glass-sponge' | 'tube-worm'
   | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration'
-  | 'rasp' | 'moray' | 'nautilus' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark'
-  | 'cuttlefish' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly'
+  | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark'
+  | 'cuttlefish' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly'
   | 'shore-bird' | 'hatchlings' | 'flying-fish' | 'dolphin' | 'moon-jelly'
   | 'thorn-star' | 'dragonfish' | 'drill-snail' | 'gull' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish';
 
@@ -38,6 +38,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'giant-squid', name: 'Giant squid', zone: 'The Midnight Water', note: 'Rare. A shape longer than the reef, an eye like a plate, and gone.' },
   { id: 'migration', name: 'The migration', zone: 'The Midnight Water', note: 'Every night the deep rises to feed: the biggest journey any animals make.' },
   { id: 'rasp', name: 'The Rasp', zone: 'The Twilight Shelf', note: 'Blunt beaks that grind dead stone into sand.' },
+  { id: 'frogfish', name: 'Frogfish', zone: 'The Twilight Shelf', note: 'It looks exactly like a sponge, until something swims too close to its little lure.' },
   { id: 'nautilus', name: 'Nautilus', zone: 'The Twilight Shelf', note: 'A shell of chambers it fills and empties to rise and sink. It has done this for a very long time.' },
   { id: 'moray', name: 'Moray eel', zone: 'The Twilight Shelf', note: 'It gapes all day, not to threaten: it breathes through its mouth. It is shy.' },
   { id: 'manta', name: 'Manta', zone: 'The Twilight Shelf', note: 'Wings as wide as the reef is tall, gliding through the light.' },
@@ -55,6 +56,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'seahorse', name: 'Seahorses', zone: 'The Sunlit Crown', note: 'They hold on to the seagrass by their tails and let the water do the rest.' },
   { id: 'mola', name: 'Ocean sunfish', zone: 'The Sunlit Crown', note: 'Rare. A silver disc as tall as the reef, sculling along with two fins.' },
   { id: 'reef-shark', name: 'Blacktip shark', zone: 'The Sunlit Crown', note: 'It patrols the edge of the reef on the same loop every day. Everything small watches it go.' },
+  { id: 'sea-snake', name: 'Banded sea snake', zone: 'The Sunlit Crown', note: 'It hunts in the reef’s cracks and rises to breathe. Leave it be, and it will leave you.' },
   { id: 'dugong', name: 'Dugong', zone: 'The Sunlit Crown', note: 'Only where meadows grow. It ploughs the seagrass slowly with its lip, all day.' },
   { id: 'cuttlefish', name: 'Cuttlefish', zone: 'The Sunlit Crown', note: 'Waves of colour run down its skin like thoughts. Startle it and it goes white.' },
   { id: 'bait-ball', name: 'A bait ball', zone: 'The Sunlit Crown', note: 'Small fish pressed into one turning shape, and hunters going through it.' },

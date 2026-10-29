@@ -539,6 +539,54 @@ export function createTwilightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** A frogfish on the slope, lumpy as a sponge, waving a small lure; touched, it gulps. */
+  function drawFrogfish(ctx: CanvasRenderingContext2D, t: number): void {
+    sight('frogfish');
+    const s = scale() * 1.6;
+    const u = 0.4;
+    const x = focus.x - focus.w * 0.1 + u * focus.w * 1.2, y = slopeY(u) - 8 * s;
+    const touch = startled('frogfish', t);
+    const gulp = touch && touch.age < 0.6 ? Math.sin((touch.age / 0.6) * Math.PI) : 0;
+    spot('frogfish', x, y, 16 * s);
+    ctx.save();
+    ctx.translate(x, y);
+    // The lumpy body: overlapping blobs in sponge orange, with pale warts.
+    ctx.fillStyle = '#a8602a';
+    for (const [bx, by, br] of [[0, 0, 9], [-6, 2, 6], [6, 3, 6], [-3, -5, 5], [4, -5, 5]] as const) {
+      ctx.beginPath();
+      ctx.arc(bx * s, by * s, br * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.fillStyle = 'rgba(230,190,140,0.45)';
+    for (let k = 0; k < 9; k++) {
+      ctx.beginPath();
+      ctx.arc(Math.cos(k * 2.1) * 7 * s, Math.sin(k * 1.7) * 6 * s, 0.9 * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // The upturned mouth, gaping on a gulp; one eye.
+    ctx.fillStyle = '#3a1a10';
+    ctx.beginPath();
+    ctx.ellipse(-8 * s, -1 * s, (2 + 4 * gulp) * s, (1 + 4 * gulp) * s, 0.3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#20140c';
+    ctx.beginPath();
+    ctx.arc(-4 * s, -6 * s, 1.2 * s, 0, Math.PI * 2);
+    ctx.fill();
+    // The lure on its rod, flicking.
+    const lx = -10 * s + Math.sin(t * 3) * 2 * s, ly = -14 * s + Math.cos(t * 3) * 1.5 * s;
+    ctx.strokeStyle = 'rgba(220,170,120,0.8)';
+    ctx.lineWidth = 0.7 * s;
+    ctx.beginPath();
+    ctx.moveTo(-5 * s, -9 * s);
+    ctx.lineTo(lx, ly);
+    ctx.stroke();
+    ctx.fillStyle = '#f2e0b0';
+    ctx.beginPath();
+    ctx.arc(lx, ly, 1.3 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
   function drawSeaFans(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
     for (const [k, f] of fans.entries()) {
@@ -1098,6 +1146,7 @@ export function createTwilightScene(seed: number): Scene {
       drawMoray(ctx, t);
       drawCurrent(ctx, t, v.current);
       drawNautilus(ctx, t);
+      drawFrogfish(ctx, t);
       drawOctopus(ctx, t);
       drawCleaningStation(ctx, t);
       drawWall(ctx, t, v.wall);
