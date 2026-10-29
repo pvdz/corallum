@@ -353,6 +353,62 @@ export function createSunlitScene(seed: number): Scene {
    * Rain (after the band "Rain"): a shower for one minute in every five. Seen from below, drops
    * make little expanding rings on the surface and the light dims a little.
    */
+  /**
+   * A storm (after the band "Storm"): for fifty seconds in every twelve minutes the surface is
+   * torn white, the light shakes, the surge stirs the sand, and broken branches tumble past.
+   */
+  function drawStorm(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 720, length = 50;
+    const u = ((t + 400) % period) / length;
+    if (u >= 1) return;
+    const k = Math.min(1, u * 4, (1 - u) * 4);
+    const s = scale();
+    const surge = Math.sin(t * 1.7) * 0.6 + Math.sin(t * 0.9) * 0.4;
+    ctx.save();
+    // The light shakes: the water greys and flickers.
+    ctx.fillStyle = `rgba(40,55,70,${(0.16 + 0.05 * Math.sin(t * 13) * Math.sin(t * 7.3)) * k})`;
+    ctx.fillRect(0, 0, w, h);
+    // Torn white water at the surface.
+    const top = focus.y + focus.h * 0.02;
+    for (let i = 0; i < 90; i++) {
+      const r = mulberry32(i * 613 + Math.floor(t * 3 + i) * 7);
+      const x = ((r() + t * 0.15 + surge * 0.02) % 1) * w;
+      const y = top + r() * focus.h * 0.07;
+      ctx.fillStyle = `rgba(240,248,255,${0.35 * k * r()})`;
+      ctx.beginPath();
+      ctx.ellipse(x, y, (6 + r() * 18) * s, (2 + r() * 4) * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // Sand stirred into the water, swinging with the surge.
+    ctx.fillStyle = `rgba(215,200,165,${0.45 * k})`;
+    for (let i = 0; i < 140; i++) {
+      const fx = (i * 0.618) % 1, fy = (i * 0.37) % 1;
+      const x = ((fx + surge * 0.05 + t * 0.01) % 1 + 1) % 1 * w;
+      const y = focus.y + focus.h * (0.45 + fy * 0.5) + Math.sin(t * 2 + i) * 6 * s;
+      ctx.fillRect(x, y, 1.6 * s, 1.6 * s);
+    }
+    // Broken branches tumbling down from the crown and away.
+    for (let b = 0; b < 3; b++) {
+      const q = (u * 1.4 - b * 0.25);
+      if (q < 0 || q > 1) continue;
+      const x = focus.x + focus.w * (0.55 + q * 0.45 + b * 0.05), y = focus.y + focus.h * (0.25 + q * 0.65);
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(q * 9 + b);
+      ctx.strokeStyle = `rgba(200,140,110,${0.9 * k})`;
+      ctx.lineCap = 'round';
+      ctx.lineWidth = 4 * s;
+      ctx.beginPath();
+      ctx.moveTo(-14 * s, 0);
+      ctx.lineTo(14 * s, 0);
+      ctx.moveTo(4 * s, 0);
+      ctx.lineTo(10 * s, -9 * s);
+      ctx.stroke();
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+
   function drawRain(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 300, length = 60;
     const u = (t % period) / length;
@@ -863,6 +919,7 @@ export function createSunlitScene(seed: number): Scene {
       drawFish(ctx, t);
       ctx.restore();
       shoals.drawFront(ctx, focus, reef, L, v, t, '#5d7d96');
+      if (v.bands.includes('storm')) drawStorm(ctx, t);
       if (night > 0) drawNight(ctx, t, night, 0.3);
       drawPearls(ctx, t, night);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
