@@ -285,3 +285,4 @@ date, what landed, what is half-done, what's next.
 - The vertical migration is tappable while it passes.
 - Mobile: the lesser-spawning card stacks its parts (title, text, seamounts, button below) instead of squeezing them into the upgrade-card grid.
 - Touching pays a little: +1% calcite per creature touched (knownBonus), on top of +2% per creature seen; Ossel does not count. ECONOMY.md: journal and Shared table.
+- Journal heading counts creatures touched.

@@ -366,7 +366,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const key = seen.map((c) => c.id).join() + `|${hooks.portraits ?? 0}|${touched}`;
     if (key === journalKey) return;
     journalKey = key;
-    journalHead.textContent = `Creatures seen · ${seen.length} of ${CREATURES.length} · calcite +${Math.round((knownBonus(s) - 1) * 100)}%`;
+    journalHead.textContent = `Creatures seen · ${seen.length} of ${CREATURES.length}${touched ? ` · ${touched} touched` : ''} · calcite +${Math.round((knownBonus(s) - 1) * 100)}%`;
     journalList.innerHTML = '';
     // Grouped by zone, with how many of each zone's creatures have been seen.
     const zones = [...new Set(CREATURES.map((c) => c.zone))];
