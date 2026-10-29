@@ -11,7 +11,7 @@ import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId, RISING } from '../content/act2.ts';
 import { ACT3, CURRENT, FAVOURS, FAVOUR_TEXT, MEETINGS, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId, UPWELL } from '../content/act3.ts';
 import { DIALECTS, HEAT, TIERS, type DialectId } from '../content/act4.ts';
-import { BOONS, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId } from '../content/lineage.ts';
+import { BOONS, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId, FORGET } from '../content/lineage.ts';
 import { GARDEN, LINE_TITLES, MEMORIES, type MemoryId } from '../content/act5.ts';
 import { COMPANION, CREATURES, TRUST, trustLevel } from '../content/creatures.ts';
 import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
@@ -33,7 +33,7 @@ import { SHARD, SHARD_LINES } from '../content/shards.ts';
 import { MOMENT, MOMENTS, type Moment, type MomentId } from '../content/moments.ts';
 import { PAIRS, RESIDENT, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { CITY_MAP, EXPEDITION, site, type Site } from '../content/expeditions.ts';
-import { canSpawnLesser, lineageFor, traitCost, traitMaxed } from '../sim/prestige.ts';
+import { canSpawnLesser, lineageFor, traitCost, traitMaxed, forgetRefund } from '../sim/prestige.ts';
 import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
@@ -102,6 +102,7 @@ export type PanelHooks = {
   speak(id: DialectId): void;
   spawnLesser(where: SeamountId, heirloom: string): void;
   buyTrait(id: TraitId): void;
+  forgetTrait(id: TraitId): void;
   exportSave(): string;
   importSave(text: string): boolean;
   reset(): void;
@@ -936,6 +937,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   }
   lineagePage.append(lineageHead, spawnCard, chronicle);
   const traitCards = new Map<TraitId, Card>();
+  const forgetButtons = new Map<TraitId, HTMLButtonElement>();
   const groupHead = (g: keyof typeof TRAIT_GROUPS) =>
     lineagePage.append(el('h4', 'trait-group', TRAIT_GROUPS[g].title), el('p', 'hint', TRAIT_GROUPS[g].text));
   const groupOf = (t: (typeof TRAITS)[number]) => t.kind ?? 'gift';
@@ -953,10 +955,21 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const btn = button('buy lineage', '', () => hooks.buyTrait(tr.id));
     btn.append(costEl);
     const eta = el('span', 'eta');
-    foot.append(btn, eta);
+    // Forget: asks once (the label changes), forgets on the second press.
+    let sure = 0;
+    const forget = button('plain forget', '', () => {
+      if (Date.now() - sure < 4000) { sure = 0; hooks.forgetTrait(tr.id); return; }
+      sure = Date.now();
+      forget.textContent = `${FORGET.sure} (+${forgetRefund(lastState!, tr.id)})`;
+      setTimeout(() => { if (Date.now() - sure >= 4000) forget.textContent = FORGET.label; }, 4100);
+    });
+    forget.textContent = FORGET.label;
+    forget.title = FORGET.title;
+    foot.append(btn, eta, forget);
     root.append(head, el('p', 'flavour', tr.flavour), effect, foot);
     lineagePage.append(root);
     traitCards.set(tr.id, { root, cost: costEl, level, effect, eta, btn, max: null });
+    forgetButtons.set(tr.id, forget);
   }
   lineagePage.append(featCard);
   // Your line: every earlier reef, oldest first.
@@ -1863,6 +1876,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         for (const tr of TRAITS) {
           const c = traitCards.get(tr.id)!;
           const lv = s.meta.traits[tr.id];
+          forgetButtons.get(tr.id)!.hidden = lv === 0;
+          c.root.classList.toggle('maxed', traitMaxed(s, tr.id));
           c.level.textContent = tr.max === Infinity ? (lv ? `×${lv}` : '') : `${lv}/${tr.max}`;
           if (traitMaxed(s, tr.id)) {
             c.cost.textContent = 'Complete';

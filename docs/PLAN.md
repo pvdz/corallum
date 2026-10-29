@@ -200,6 +200,7 @@ Tick items as they land; keep this list honest. Add items freely.
   - [x] Sun-shy trait: an open reef closes itself in warm water
   - [x] the rising in the Midnight Water and Twilight Shelf: send the feeders in for a haul
   - [x] Breach creatures: sailors, storm petrels, sea sparkle
+  - [x] forget a trait (80% of its last level back); resident pair Clean water; moments pups and king tide
   - [x] upwellings on the Twilight Shelf: turn the current toward them
   - [x] feats: every crest, six in a row, Ossel heard it all
   - [x] lamp-nets (Midnight glow sink: feeding ×1.05 each, max 6); band cost growth retuned (2: 1.195, 3: 1.315, 4: 1.225 → bot 7h28)

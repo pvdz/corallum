@@ -171,3 +171,15 @@ test('an heirloom relic carries its effect to the next reef, which still has the
   // Only a relic actually found can go along.
   assert.equal(spawnLesser(s, 'plain', 'midden')!.heirloom, '');
 });
+
+test('forgetting a trait gives back most of its last level, and only what was bought', async () => {
+  const { buyTrait, forgetTrait, traitCost } = await import('../../src/game/sim/prestige.ts');
+  const s = newGame(1);
+  s.meta.lineage = 1000;
+  const c = traitCost(s, 'deep-memory');
+  assert.ok(buyTrait(s, 'deep-memory'));
+  assert.equal(forgetTrait(s, 'deep-memory'), Math.floor(0.8 * c));
+  assert.equal(s.meta.traits['deep-memory'], 0);
+  assert.equal(s.meta.lineage, 1000 - c + Math.floor(0.8 * c));
+  assert.equal(forgetTrait(s, 'deep-memory'), 0);
+});

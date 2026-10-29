@@ -525,3 +525,4 @@ date, what landed, what is half-done, what's next.
 - Moments pups (3880: thorn stars driven off for half / bloom ×1.1) and king-tide (3995: spawn ×1.1 / spawn fade ×0.85).
 - The sheltered shark pups (moment 'a') circle the reef in the Sunlit scene.
 - Resident pair 'Clean water' (cleaner wrasse + feather dusters): plankton ×1.15.
+- Forget a trait (prestige.ts forgetTrait/forgetRefund, FORGET_SHARE 0.8): a Forget button on each bought trait, asks once ('Forget it? (+N)') then forgets on the second press within 4 s.

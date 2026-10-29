@@ -86,6 +86,9 @@ export const SEAMOUNTS: readonly Seamount[] = [
     trial: { goal: 3950, reward: 'Sun-hardened: open polyps bleach half as fast on every reef after' } },
 ];
 
+/** Forgetting a trait (Lineage tab). */
+export const FORGET = { label: 'Forget', sure: 'Forget it?', title: 'Forget the last level of this trait: most of its lineage comes back' } as const;
+
 export const TRAIT_GROUPS = {
   gift: { title: 'Gifts', text: 'What your children are born stronger at.' },
   way: { title: 'Ways', text: 'What your children know to do differently.' },

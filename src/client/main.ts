@@ -55,7 +55,7 @@ import { ACT1, GRAINS, MILESTONES, SPORTS, STRAINS, type Milestone } from '../ga
 import { OSSEL_LINES, OSSEL_LINES_TRUE, OSSEL_NOW, WHISPERS } from '../game/content/whispers.ts';
 import { NEWS } from '../game/content/guide.ts';
 import { OSSEL_MISTAKE, OSSEL_MISTAKES } from '../game/content/ossel.ts';
-import { buyTrait, grainSense, habitPurchase, raspSense, shoalSense, spawnLesser } from '../game/sim/prestige.ts';
+import { buyTrait, forgetTrait, grainSense, habitPurchase, raspSense, shoalSense, spawnLesser } from '../game/sim/prestige.ts';
 import { createFinale } from '../game/ui/finale.ts';
 import { createPanel, reefName } from '../game/ui/panel.ts';
 import { setting } from './settings.ts';
@@ -409,6 +409,9 @@ const panel = createPanel(ui, {
     ui.append(send);
     audio.cue('release');
     setTimeout(() => location.reload(), reducedMotion.matches ? 600 : 3400);
+  },
+  forgetTrait(id) {
+    if (forgetTrait(state, id) > 0) { audio.cue('whisper'); save(); }
   },
   buyTrait(id) {
     if (buyTrait(state, id)) save();

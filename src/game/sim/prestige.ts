@@ -111,6 +111,24 @@ export function traitMaxed(s: GameState, id: TraitId): boolean {
   return s.meta.traits[id] >= traitDef(id).max;
 }
 
+/** Lineage given back for forgetting a trait's last level (a share of what it cost). */
+export const FORGET_SHARE = 0.8;
+export function forgetRefund(s: GameState, id: TraitId): number {
+  const lv = s.meta.traits[id];
+  if (lv <= 0) return 0;
+  const t = traitDef(id);
+  return Math.floor(FORGET_SHARE * Math.ceil(t.cost * t.growth ** (lv - 1)));
+}
+
+/** Forget a trait's last level: most of its lineage comes back, so the line can change its ways. */
+export function forgetTrait(s: GameState, id: TraitId): number {
+  const back = forgetRefund(s, id);
+  if (s.meta.traits[id] <= 0) return 0;
+  s.meta.traits[id] -= 1;
+  s.meta.lineage += back;
+  return back;
+}
+
 export function buyTrait(s: GameState, id: TraitId): boolean {
   if (traitMaxed(s, id)) return false;
   const c = traitCost(s, id);
