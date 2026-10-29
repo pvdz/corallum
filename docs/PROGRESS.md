@@ -466,3 +466,4 @@ date, what landed, what is half-done, what's next.
 - A sixth ruin: the sun gate (3850 m, 28 shoals, 30 min; relic: bloom ×1.2), on the city map and drawn as a doorway; Act IV offline test fixture without ventures.
 - Seventh resident: a host anemone with its clownfish (from 3980 m, spawn ×1.15), drawn high on the reef.
 - Moment 'The slope gives way' (3500 m).
+- Feats: A garden at dawn, The elder's respect, Fluent, Kept close.
