@@ -477,3 +477,4 @@ date, what landed, what is half-done, what's next.
 - Shells: content/shells.ts (8), economy currentShell/pickShell, meta.shells, knownBonus; drawn on the Sunlit sand with a glint, tap to keep (spot id 'shell'); shelf card in Bands; corallum.shell(); test.
 - Seamount tints carried into the Midnight Water and the Twilight Shelf (faint screen-space overlay per seamount).
 - Ambient calls: fish grunts on the Twilight Shelf, a vent rumble on the Silt Floor (audio zoneCall).
+- Ways: Shell-finder, Signal-wise.

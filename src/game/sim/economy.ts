@@ -1546,7 +1546,7 @@ export function currentSignal(s: GameState): { k: number; pattern: number[] } | 
   const r = mulberry32((s.seed ^ 0x5191) + Math.imul(k, 0x9e3779b1));
   const start = k * SIGNAL.period + r() * (SIGNAL.period - SIGNAL.life);
   if (s.t < start || s.t >= start + SIGNAL.life) return null;
-  const pattern = Array.from({ length: SIGNAL.length(s.signal.answered) }, () => Math.floor(r() * SIGNAL.lamps.length));
+  const pattern = Array.from({ length: Math.max(2, SIGNAL.length(s.signal.answered) - trait(s, 'signal-wise')) }, () => Math.floor(r() * SIGNAL.lamps.length));
   return { k, pattern };
 }
 
@@ -1568,8 +1568,9 @@ export function currentShell(s: GameState): { k: number; x: number; id: string }
   const k = Math.floor(s.t / SHELL.period);
   if (k <= s.shelled) return null;
   const r = mulberry32((s.seed ^ 0x5e11) + Math.imul(k, 0x9e3779b1));
-  const start = k * SHELL.period + r() * (SHELL.period - SHELL.life);
-  if (s.t < start || s.t >= start + SHELL.life) return null;
+  const start = k * SHELL.period + r() * (SHELL.period - SHELL.life * 2);
+  const life = SHELL.life * (trait(s, 'shell-finder') ? 2 : 1);
+  if (s.t < start || s.t >= start + life) return null;
   // New kinds first, then any.
   const left = SHELLS.filter((x) => !s.meta.shells.includes(x.id));
   const pool = left.length ? left : SHELLS;
