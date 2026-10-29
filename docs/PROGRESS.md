@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended goal (user): add features and gameplay, repeat. 2026-10-29 landed (see log): water moods + Soon line, requests (swap, more kinds), 12 moments, 5 hard seamounts, boons, heirlooms, Rasp favours, expeditions + roams (tales) + sister visits + city map + seasoned shoals, works in every zone, nurseries, sister race + records, trust, intruders (thorn star, dragonfish), full-moon choice, residents + pairings, shards, palettes (some earned), own-bands diary, Before you go, welcome back, max buy, 5 new creatures. Bot ~7 h. Next ideas: more graphic detail, Ossel story beats, real-phone perf.
+NOW: Open-ended goal (user): add features and gameplay, repeat. Since 2026-10-29 morning: dozens of systems (see log) incl. the current dial, heirlooms, the quick cousin, Ossel's mistakes, call-home, roam tales, sister visits, request streaks, 10 new creatures. Bot ~8h. Next ideas: graphics per zone, more moments/creatures, code split of economy.ts (1500 lines), real-phone perf.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
