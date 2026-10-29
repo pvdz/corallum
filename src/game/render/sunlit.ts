@@ -10,6 +10,7 @@ import { createBloom, type Bloom } from './bloom.ts';
 import type { CoralForm } from './coral.ts';
 import { glow } from './draw.ts';
 import { drawCraft, FLUORESCENT_POLYP } from './craft.ts';
+import { drawDaughters } from './daughters.ts';
 import { createLayerCache } from './layer.ts';
 import { createReef, type Reef, type ReefLayout } from './reef.ts';
 import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts';
@@ -805,6 +806,9 @@ export function createSunlitScene(seed: number): Scene {
       drawTurtle(ctx, t, v.meadows);
       drawAnemone(ctx, t);
       drawClumps(ctx, t);
+      drawDaughters(ctx, v.polyps, (u) => [focus.x - focus.w * 0.1 + u * focus.w * 1.2, floorY(u) + 2 * scale()], scale() * 1.2, t,
+        { branch: '#c0703e', tip: '#e8a060', polyp: 'rgba(255,240,190,0.95)',
+          alt: { branch: '#8a5bb0', tip: '#b88ad8', polyp: 'rgba(240,220,255,0.95)' } }, larvaSeed);
       if (night > 0) drawNight(ctx, t, night, 0.6);
       drawSleepers(ctx, t, v.rasp, night);
       reef.draw(ctx, L, v, t);

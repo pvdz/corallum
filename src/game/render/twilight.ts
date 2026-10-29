@@ -7,6 +7,7 @@ import { sight, spot, startled } from './sightings.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow } from './draw.ts';
+import { drawDaughters } from './daughters.ts';
 import { createGround } from './ground.ts';
 import { createLayerCache } from './layer.ts';
 import { createReef, type ReefLayout } from './reef.ts';
@@ -883,6 +884,8 @@ export function createTwilightScene(seed: number): Scene {
       drawMotes(ctx, t, v.siltLevel);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#1d3557');
       drawShelf(ctx, v.sandBars, v.siltLevel);
+      drawDaughters(ctx, v.polyps, (u) => [focus.x - focus.w * 0.1 + u * focus.w * 1.2, slopeY(u) + 3 * scale()], scale(), t,
+        { branch: '#9a5a6c', tip: '#c98292', polyp: 'rgba(255,225,235,0.9)' }, slopeSeed);
       drawSeaFans(ctx, t);
       drawGardenEels(ctx, t);
       drawOctopus(ctx, t);
