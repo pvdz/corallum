@@ -127,6 +127,8 @@ export type GameState = {
   race: { decided: number; won: number };
   /** Favours asked of the Rasp, by kind (content/act3.ts FAVOURS). */
   favours: Record<FavourId, number>;
+  /** Other reefs' spawnings met (moon cycle index of the last, and how many times the reef joined). */
+  others: { last: number; joined: number };
   /** Your own bands: "t|height|key|arg" for each thing remembered (content/diary.ts). */
   diary: string[];
   /** Moments answered ('' until then): content/moments.ts. */
@@ -182,6 +184,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     relics: [],
     residents: [],
     diary: [],
+    others: { last: -1, joined: 0 },
     favours: { clear: 0, path: 0, carry: 0 },
     race: { decided: 0, won: 0 },
     works: { garden: 0, spire: 0, breakwater: 0, terrace: 0, pool: 0 },

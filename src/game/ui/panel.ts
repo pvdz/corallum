@@ -7,7 +7,7 @@ import type { Band, Currency, UpgradeId } from '../content/types.ts';
 import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
 import { ACT3, FAVOURS, FAVOUR_TEXT, MEETINGS, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
-import { DIALECTS, TIERS, type DialectId } from '../content/act4.ts';
+import { DIALECTS, OTHERS, TIERS, type DialectId } from '../content/act4.ts';
 import { SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { MEMORIES } from '../content/act5.ts';
 import { CREATURES, TRUST, trustLevel } from '../content/creatures.ts';
@@ -30,7 +30,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, othersSpawning, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -41,6 +41,8 @@ export type PanelHooks = {
   read(id: ReadingId): void;
   /** Send shoals to the next ruin. */
   send(): void;
+  /** Meet the other reefs' spawning. */
+  meetOthers(how: 'feed' | 'join'): void;
   /** Ask Ossel for a different request. */
   skipRequest(): void;
   /** Build the next stage of a great work. */
@@ -232,6 +234,19 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   });
   momentBox.append(el('p', 'truce-kicker', MOMENT.kicker), momentTitle, momentText, momentChoices);
   grow.prepend(momentBox);
+
+  // ---------- Other reefs spawning (Sunlit full moon) ----------
+  const othersBox = el('section', 'truce moment others');
+  othersBox.hidden = true;
+  const othersChoices = el('div', 'truce-choices');
+  const othersButtons = (['feed', 'join'] as const).map((how) => {
+    const b = button('choice', '', () => hooks.meetOthers(how));
+    b.append(el('strong', '', OTHERS[how].label), el('span', '', OTHERS[how].effect));
+    othersChoices.append(b);
+    return { how, b };
+  });
+  othersBox.append(el('p', 'truce-kicker', OTHERS.kicker), el('p', 'truce-text', OTHERS.text), othersChoices);
+  grow.prepend(othersBox);
 
   // ---------- Dialects (a tier waiting for a choice) ----------
   const dialectBox = el('section', 'dialects');
@@ -1283,6 +1298,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         askCount.textContent = `${rq.got}/${rq.n}`;
         askSkip.disabled = !canSkipRequest(s);
       }
+
+      // Other reefs spawning: this moon's choice.
+      setShown(othersBox, othersSpawning(s));
+      for (const x of othersButtons) x.b.disabled = x.how === 'join' && s.others.joined >= OTHERS.maxJoins;
 
       // A moment waiting for an answer, and answers given.
       const mo = nextMoment(s);

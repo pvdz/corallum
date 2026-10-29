@@ -112,6 +112,7 @@ is checked against games I know and recorded here. Absence of a known match is n
 | The sister reef (another reef of Ossel's wall racing to the surface) | racing a pacer is a general device; no specific beat copied | OK |
 | Late Readings (the Rasp's own band, Light in the old walls, Thousandfold's spawning) | our own beats | OK |
 | Traits 'Old maps', 'Open house', 'Water-wise' | plain phrases | OK |
+| Other reefs spawning at the full moon (mass coral spawning) | real biology | OK |
 | Hard seamounts (hungry, silent, lonely, buried) as challenge runs with a lasting reward | challenge runs are a genre convention (incremental 'challenges'); names are plain descriptions | OK |
 | Moments (a dying brittle star, a lost shoal, the giant squid's eye, a whale fall, cleaners asking for a ledge, a storm breaking a branch, a sleeping turtle, a shore bird at low tide) | real reef and deep-sea events; small choice events are a genre convention; beats written for Ossel | OK |
 | Moments: a vent cracking, an anglerfish's lure beside yours, a young Rasp alone, first light | our own beats | OK |

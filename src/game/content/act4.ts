@@ -2,6 +2,16 @@
 
 import type { Band, UpgradeDef } from './types.ts';
 
+/** Other reefs spawn: at each full moon in the Sunlit Crown, while you watch, a choice. */
+export const OTHERS = {
+  kicker: 'Other reefs are spawning',
+  text: 'All around you, in the moonlight, the other reefs let go. Pink bundles rise past your crown from every side.',
+  feed: { label: 'Feed on their spawn', effect: '5 minutes of bloom now' },
+  join: { label: 'Add your own', effect: '+1 lineage (at most 3 for this reef)' },
+  seconds: 300,
+  maxJoins: 3,
+} as const;
+
 export const ACT4 = {
   from: 3800,
   /** Sunlight per symbiont colony at the bottom of the zone; grows toward the surface. */

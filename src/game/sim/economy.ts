@@ -18,7 +18,7 @@
 import { ACT1, BANDS_ACT1, MILESTONES, type Milestone } from '../content/act1.ts';
 import { ACT2, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
 import { ACT3, BANDS_ACT3, FAVOURS, MEETINGS, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
-import { ACT4, BANDS_ACT4, DIALECTS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
+import { ACT4, BANDS_ACT4, DIALECTS, OTHERS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
 import { ACT5, BANDS_ACT5, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
@@ -1225,6 +1225,26 @@ export function dig(s: GameState, source: ShardSource): number {
 export function shardBonus(s: GameState): number {
   const n = s.meta.shards.length;
   return 1 + SHARD.each * n + (n >= SHARD_LINES.length ? SHARD.whole : 0);
+}
+
+// ---------- Other reefs spawning ----------
+
+/** Whether the other reefs are spawning now and this moon's choice is still open (Sunlit Crown, full moon). */
+export function othersSpawning(s: GameState): boolean {
+  return actAt(s.height) === 4 && moonFull(s.t) && Math.floor(s.t / ACT5.moonPeriod) !== s.others.last;
+}
+
+/** Meet the other reefs' spawning: feed on it (bloom) or add your own (lineage). */
+export function meetOthers(s: GameState, how: 'feed' | 'join'): boolean {
+  if (!othersSpawning(s)) return false;
+  if (how === 'join' && s.others.joined >= OTHERS.maxJoins) return false;
+  s.others.last = Math.floor(s.t / ACT5.moonPeriod);
+  if (how === 'feed') s.bloom += rates(s).bloomP * OTHERS.seconds;
+  else {
+    s.others.joined++;
+    s.meta.lineage += 1;
+  }
+  return true;
 }
 
 // ---------- Welcome back ----------

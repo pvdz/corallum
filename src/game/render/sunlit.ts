@@ -655,6 +655,23 @@ export function createSunlitScene(seed: number): Scene {
    * A green turtle comes to graze once there are meadows: it paddles slowly over the seagrass,
    * dips to crop it, and drifts on.
    */
+  /** The other reefs spawning at full moon: pink bundles rising everywhere from the floor. */
+  function drawOthersSpawn(ctx: CanvasRenderingContext2D, t: number): void {
+    const s = scale();
+    ctx.save();
+    for (let i = 0; i < 140; i++) {
+      const px = (i * 0.618034) % 1, ph = (i * 0.37) % 1;
+      const rise = (t * (0.02 + (i % 5) * 0.004) + ph) % 1;
+      const x = focus.x + px * focus.w + Math.sin(t * 0.7 + i) * 6 * s;
+      const y = focus.y + focus.h * (0.95 - rise * 0.95);
+      ctx.fillStyle = `rgba(255,${150 + (i % 4) * 20},${190 + (i % 3) * 15},${0.75 * Math.sin(rise * Math.PI)})`;
+      ctx.beginPath();
+      ctx.arc(x, y, (1.6 + (i % 3) * 0.7) * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
   /**
    * The green turtle swims along the meadows; one let sleep in the branches (the moment) rests there
    * at night instead (`rest`: where, drawn after the reef).
@@ -904,6 +921,7 @@ export function createSunlitScene(seed: number): Scene {
         { branch: '#c0703e', tip: '#e8a060', polyp: 'rgba(255,240,190,0.95)',
           alt: { branch: '#8a5bb0', tip: '#b88ad8', polyp: 'rgba(240,220,255,0.95)' } }, larvaSeed, v.nurseries);
       if (night > 0) drawNight(ctx, t, night, 0.6);
+      if (v.othersSpawn) drawOthersSpawn(ctx, t);
       drawSleepers(ctx, t, v.rasp, night);
       drawTerrace(ctx, L.cx, L.unit, v.works.terrace, scale(), (x) => floorY(Math.min(1, Math.max(0, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2)))));
       reef.draw(ctx, L, v, t);

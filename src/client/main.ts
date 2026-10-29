@@ -30,7 +30,7 @@ import { SISTER } from '../game/content/sister.ts';
 import { REQUEST } from '../game/content/requests.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, skipRequest, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -204,6 +204,13 @@ const panel = createPanel(ui, {
   },
   setRasp(n) {
     setRasp(state, n);
+  },
+  meetOthers(how) {
+    if (!meetOthers(state, how)) return;
+    scene.effect('ripen');
+    audio.cue(how === 'join' ? 'release' : 'feast');
+    buzz(25);
+    save();
   },
   skipRequest() {
     if (skipRequest(state)) save();
@@ -514,6 +521,7 @@ function view(): ReefView {
     works: state.works,
     sister: sisterAt(state.t),
     moments: state.moments,
+    othersSpawn: actAt(state.height) === 4 && moonFull(state.t),
     planktonLevel: Math.min(1, (feeding(state.plankton) - 1) / 2),
     bands: state.bands,
     readings: state.readings.length,
