@@ -6,7 +6,7 @@ import { drawResidents } from './residents.ts';
 import { drawGull } from './thorn.ts';
 import { drawColony } from './daughters.ts';
 import { drawSong } from './song.ts';
-import { drawPool } from './works.ts';
+import { drawBeacon, drawPool } from './works.ts';
 import { palette } from '../content/palettes.ts';
 import { GARDEN } from '../content/act5.ts';
 import { drawRelics } from './relics.ts';
@@ -1479,6 +1479,7 @@ export function createBreachScene(seed: number): Scene {
       if (v.thorn?.kind === 'gull') drawGull(ctx, this.crownAt[0], waterY(), v.thorn.u, v.thorn.side, t, scale());
       if (v.bands.includes('rain')) { drawLightning(ctx, t, v.calm); drawRain(ctx, t); drawMoonbow(ctx, t, v.moonPhase, lastDawn); }
       drawPool(ctx, L.cx, waterY(), v.works.pool, scale(), t);
+      drawBeacon(ctx, L.cx + L.unit * 0.32, waterY(), v.works.beacon, scale() * 1.4, t);
       {
         // Ossel's sand in the shallows beside the crown: tap to hear it.
         const ox = L.cx - 170 * scale(), oy = waterY() + 120 * scale();

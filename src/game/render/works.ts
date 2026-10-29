@@ -312,3 +312,25 @@ export function drawRim(ctx: CanvasRenderingContext2D, F: Focus, stage: number, 
   }
   ctx.restore();
 }
+
+/** The beacon: a slim stone spire above the water beside the crown, its tip lit at the last stage. */
+export function drawBeacon(ctx: CanvasRenderingContext2D, x: number, waterY: number, stage: number, s: number, t: number): void {
+  if (stage <= 0) return;
+  const hgt = [0, 18, 45, 70][stage]! * s;
+  ctx.save();
+  ctx.fillStyle = '#2a2c3e';
+  ctx.beginPath();
+  ctx.moveTo(x - 7 * s, waterY + 4 * s);
+  ctx.lineTo(x - 2.5 * s, waterY - hgt);
+  ctx.lineTo(x + 2.5 * s, waterY - hgt);
+  ctx.lineTo(x + 7 * s, waterY + 4 * s);
+  ctx.closePath();
+  ctx.fill();
+  if (stage >= 3) {
+    ctx.globalCompositeOperation = 'lighter';
+    const pulse = 0.7 + 0.3 * Math.sin(t * 1.4);
+    glow(ctx, x, waterY - hgt - 2 * s, 30 * s, '170,255,230', 0.4 * pulse);
+    glow(ctx, x, waterY - hgt - 2 * s, 5 * s, '230,255,245', 0.9 * pulse);
+  }
+  ctx.restore();
+}

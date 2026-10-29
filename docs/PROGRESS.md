@@ -715,3 +715,4 @@ date, what landed, what is half-done, what's next.
 - Mobile: with six or more stocks showing, the stock grid tightens (smaller values and notes) so the cards keep their room.
 - Vow Quiet (+3): no requests from Ossel on that reef.
 - Moonlit sweeps: at the Breach under a full moon, each sweep also gathers two seconds of spawn (economy moonlitSpawn); a whisper says so.
+- A second Breach great work, the beacon (from 3985 m; calcite+bloom; spawn fades ×0.9 per stage): a stone spire above the water beside the crown, lit at the last stage. Every zone above the floor now has two great works. Bot 7h28.

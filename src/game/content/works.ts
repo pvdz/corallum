@@ -3,7 +3,7 @@
 
 import type { Currency } from './types.ts';
 
-export type WorkId = 'garden' | 'spire' | 'dome' | 'breakwater' | 'lawn' | 'terrace' | 'rim' | 'pool';
+export type WorkId = 'garden' | 'spire' | 'dome' | 'breakwater' | 'lawn' | 'terrace' | 'rim' | 'pool' | 'beacon';
 
 export type Work = {
   id: WorkId;
@@ -78,5 +78,12 @@ export const WORKS: readonly Work[] = [
     effect: 'spawn ×1.15 per stage',
     stages: [{ calcite: 1e12, bloom: 1e7 }, { calcite: 1e13, bloom: 3e7 }, { calcite: 1e14, bloom: 1e8 }],
     stageNames: ['A rim', 'A basin', 'The pool'],
+  },
+  {
+    id: 'beacon', name: 'The beacon', zone: 5, from: 3985,
+    flavour: 'A slim spire of stone above the water, its tip crusted with glimmerseed, so the spawn knows where home was.',
+    effect: 'spawn fades ×0.9 per stage',
+    stages: [{ calcite: 3e12, bloom: 3e7 }, { calcite: 3e13, bloom: 6e7 }, { calcite: 3e14, bloom: 1.2e8 }],
+    stageNames: ['A footing in the air', 'A spire', 'The light'],
   },
 ];

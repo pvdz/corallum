@@ -222,7 +222,7 @@ export function rates(s: GameState): Rates {
       ? lv.polyp * ACT5.spawnRate * ACT5.ripenSpawn ** lv.ripen * (speaks(s, 'broadcast') ? 2 : 1) *
         (1 + sunlight(s, target) * lv.symbiont / 100) * (chose(s, 'bird', 'b') ? 1.1 : 1) * (chose(s, 'last-night', 'b') ? 1.05 : 1) * (has(s, 'last-spawning') ? 1.25 : 1) * (seamount(s).tides ? 0.85 : 1) * (chose(s, 'two-seas', 'a') ? 1.1 : 1) * 1.1 ** s.works.rim * 1.15 ** s.works.pool * 1.1 ** lv.cay * 1.1 ** lv.sweeten * (lives(s, 'host-anemone') ? 1.15 : 1) * SKY.spawnEach ** named(s) * today(s, 'long-swell', 1.1) * (relic(s, 'harbour') ? 1.15 : 1) * (chose(s, 'king-tide', 'a') ? 1.1 : 1)
       : 0,
-    spawnK: ACT5.spawnFade * (chose(s, 'two-seas', 'b') ? 0.85 : 1) * (chose(s, 'king-tide', 'b') ? 0.85 : 1) * (chose(s, 'bird', 'a') ? 0.8 : 1) * (chose(s, 'first-light', 'b') ? 0.85 : 1),
+    spawnK: ACT5.spawnFade * 0.9 ** s.works.beacon * (chose(s, 'two-seas', 'b') ? 0.85 : 1) * (chose(s, 'king-tide', 'b') ? 0.85 : 1) * (chose(s, 'bird', 'a') ? 0.8 : 1) * (chose(s, 'first-light', 'b') ? 0.85 : 1),
     calciteBase:
       (ACT1.trickle + ACT1.polypRate * sm.polyp * (passed(s, 'hungry') ? 1.1 : 1) * (s.strain === 'gold' ? 1.15 : 1) * (s.sport === 'amber' ? 1.12 : 1) * lv.polyp * milestoneMult('polyp', lv.polyp) * (has(s, 'city') ? 1.5 : 1)) *
       (ACT1.ventBoost * sm.ventBoost) ** vent *
