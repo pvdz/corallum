@@ -71,13 +71,13 @@ export const BANDS_ACT5: readonly Band[] = [
 export type MemoryId =
   | 'vent' | 'ossel' | 'thousandfold' | 'slow-water' | 'lanternfish' | 'rasp'
   | 'long-animal' | 'colour' | 'rain' | 'fear' | 'silt-truth' | 'dialect'
-  | 'gate' | 'midden' | 'tablet' | 'eye' | 'turtle' | 'harbour' | 'weight';
+  | 'gate' | 'midden' | 'tablet' | 'eye' | 'turtle' | 'harbour' | 'weight' | 'small-ones';
 
 export type Memory = {
   id: MemoryId;
   title: string;
   /** What has to have happened for this memory to exist. */
-  needs: { band?: string; reading?: string; relic?: string; moment?: string; momentChoice?: 'a' | 'b'; shards?: number };
+  needs: { band?: string; reading?: string; relic?: string; moment?: string; momentChoice?: 'a' | 'b'; shards?: number; freed?: number };
   /** One line in the choosing screen. */
   hint: string;
   /** The epilogue paragraph if carried. */
@@ -102,6 +102,12 @@ export const MEMORIES: readonly Memory[] = [
     hint: 'A city of walls, the greatest reef that ever lived.',
     epilogue: 'They dream of a city of walls, wall upon wall, so wide the fish take days to swim ' +
       'around it. Some of them will try to build it. You hope the other memories are enough to stop them.',
+  },
+  {
+    id: 'small-ones', title: 'The small ones', needs: { freed: 5 },
+    hint: 'A fish in a jelly’s threads, a star under a stone, and how they swam off.',
+    epilogue: 'Wherever they settle, small things in trouble find your children’s branches first. Nobody has to tell ' +
+      'them where to go. It is simply known, in that sea, that there is help there.',
   },
   {
     id: 'weight', title: 'The weight let go', needs: { reading: 'kept-stone' },
@@ -263,7 +269,7 @@ export type GardenKind = 'q' | 'b' | 'd';
 
 /** The line's title, from the memory its endings carried most often. */
 export const LINE_TITLES: Partial<Record<MemoryId, string>> = {
-  vent: 'the line of the warm vent', weight: 'the line that let go', ossel: 'the line of the old wall', thousandfold: 'the line of the city',
+  vent: 'the line of the warm vent', weight: 'the line that let go', 'small-ones': 'the line of small kindnesses', ossel: 'the line of the old wall', thousandfold: 'the line of the city',
   'slow-water': 'the line of open currents', lanternfish: 'the line of lamps', rasp: 'the friends of the Rasp',
   'long-animal': 'the line of the long animal', colour: 'the bright line', rain: 'the line of rain', fear: 'the brave line',
   'silt-truth': 'the line of the grey', dialect: 'the line of many shapes', gate: 'the line of open gates',

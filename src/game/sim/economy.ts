@@ -1245,6 +1245,7 @@ export function memoryAvailable(s: GameState, m: Memory): boolean {
     if (!c || (m.needs.momentChoice && c !== m.needs.momentChoice)) return false;
   }
   if (m.needs.shards && s.meta.shards.length < m.needs.shards) return false;
+  if (m.needs.freed && s.tally.freed < m.needs.freed) return false;
   return true;
 }
 
