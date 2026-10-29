@@ -6,7 +6,7 @@
 import { sight, spot, startled } from './sightings.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
-import { glow } from './draw.ts';
+import { glow, speck } from './draw.ts';
 import { createLayerCache } from './layer.ts';
 import { createReef, type ReefLayout } from './reef.ts';
 import { createRuins, type RuinStyle } from './ruins.ts';
@@ -563,7 +563,7 @@ export function createMidnightScene(seed: number): Scene {
     for (const f of flakes) {
       const y = ((f.y + t * f.speed) % 1) * (h + 10) - 5;
       const x = (((f.x + Math.sin(t * 0.25 + f.phase) * 0.003) % 1) + 1) % 1 * w;
-      ctx.fillRect(x, y, f.r, f.r);
+      speck(ctx, x, y, f.r);
     }
   }
 

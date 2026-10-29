@@ -6,7 +6,7 @@ import { createSlugs } from './slugs.ts';
 import { sight, spot, startled } from './sightings.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
-import { glow } from './draw.ts';
+import { glow, speck } from './draw.ts';
 import { drawDaughters } from './daughters.ts';
 import { createGround } from './ground.ts';
 import { createLayerCache } from './layer.ts';
@@ -139,7 +139,7 @@ export function createTwilightScene(seed: number): Scene {
       const y = ((m.y + t * m.speed) % 1) * (h + 10) - 5;
       // The silt slides downslope: leftward as it falls.
       const x = ((((m.x - t * m.speed * m.drift * 0.6 + Math.sin(t * 0.3 + m.phase) * 0.004) % 1) + 1) % 1) * w;
-      ctx.fillRect(x, y, m.r, m.r);
+      speck(ctx, x, y, m.r);
     }
   }
 

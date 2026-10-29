@@ -1,5 +1,7 @@
 // Small drawing helpers shared by every scene.
 
+import { zoom } from './scene.ts';
+
 // Glows are drawn from small pre-rendered sprites (one per colour) instead of building a radial
 // gradient per call: hundreds of glows a frame cost almost nothing this way.
 const SPRITE = 64;
@@ -29,6 +31,17 @@ export function glow(ctx: CanvasRenderingContext2D, x: number, y: number, r: num
   ctx.globalAlpha = prev * Math.min(1, a);
   ctx.drawImage(sprite(rgb), x - r, y - r, r * 2, r * 2);
   ctx.globalAlpha = prev;
+}
+
+/** A speck of marine snow: a square is enough at 1×; zoomed in, it is round. */
+export function speck(ctx: CanvasRenderingContext2D, x: number, y: number, d: number): void {
+  if (zoom.k === 1) {
+    ctx.fillRect(x, y, d, d);
+    return;
+  }
+  ctx.beginPath();
+  ctx.arc(x + d / 2, y + d / 2, d / 2, 0, Math.PI * 2);
+  ctx.fill();
 }
 
 export function ring(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, rgb: string, a: number, lw: number): void {

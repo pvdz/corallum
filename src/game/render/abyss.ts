@@ -5,7 +5,7 @@
 import { sight, spot, startled } from './sightings.ts';
 import { mulberry32, range, type Rng } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
-import { glow } from './draw.ts';
+import { glow, speck } from './draw.ts';
 import { createLife, type Stage } from './life.ts';
 import { createGround } from './ground.ts';
 import { createLayerCache } from './layer.ts';
@@ -334,7 +334,7 @@ export function createAbyssScene(seed: number): Scene {
     for (const f of flakes) {
       const y = ((f.y + 0.5 + t * f.speed * 2.6) % 1) * (h + 20) - 10;
       const x = ((((f.x + 0.37 + t * 0.012) % 1) + 1) % 1) * w;
-      ctx.fillRect(x, y, f.r * 1.4, f.r * 1.4);
+      speck(ctx, x, y, f.r * 1.4);
     }
     ctx.restore();
   }
