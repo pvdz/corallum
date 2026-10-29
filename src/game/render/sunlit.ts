@@ -14,7 +14,7 @@ import { createBloom, type Bloom } from './bloom.ts';
 import type { CoralForm } from './coral.ts';
 import { glow } from './draw.ts';
 import { drawCraft, FLUORESCENT_POLYP } from './craft.ts';
-import { drawDaughters } from './daughters.ts';
+import { drawColony, drawDaughters } from './daughters.ts';
 import { createLayerCache } from './layer.ts';
 import { createReef, type Reef, type ReefLayout } from './reef.ts';
 import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts';
@@ -655,20 +655,25 @@ export function createSunlitScene(seed: number): Scene {
    * A green turtle comes to graze once there are meadows: it paddles slowly over the seagrass,
    * dips to crop it, and drifts on.
    */
-  function drawTurtle(ctx: CanvasRenderingContext2D, t: number, meadows: number): void {
-    if (meadows < 2) return;
+  /**
+   * The green turtle swims along the meadows; one let sleep in the branches (the moment) rests there
+   * at night instead (`rest`: where, drawn after the reef).
+   */
+  function drawTurtle(ctx: CanvasRenderingContext2D, t: number, meadows: number, rest: readonly [number, number] | null = null): void {
+    if (meadows < 2 && !rest) return;
     sight('turtle');
     const s = scale() * 1.4;
     const period = 140;
     const u = (t % period) / period;
-    const dir = Math.floor(t / period) % 2 ? 1 : -1;
-    const x = focus.x + focus.w * (dir > 0 ? -0.1 + u * 1.2 : 1.1 - u * 1.2);
+    const dir = rest ? 1 : Math.floor(t / period) % 2 ? 1 : -1;
+    const x = rest ? rest[0] : focus.x + focus.w * (dir > 0 ? -0.1 + u * 1.2 : 1.1 - u * 1.2);
     // Touched, it ducks its head and dives a little way, then comes back up.
     const touch = startled('turtle', t);
     const duck = touch && touch.age < 4 ? Math.sin(Math.min(1, touch.age / 4) * Math.PI) : 0;
     const dip = Math.max(Math.max(0, Math.sin(t * 0.5)) ** 4, duck);
-    const y = focus.y + focus.h * 0.8 + dip * 14 * s + duck * 30 * s + Math.sin(t * 0.8) * 3 * s;
-    const stroke = Math.sin(t * 1.6);
+    const y = rest ? rest[1] + Math.sin(t * 0.4) * 1.2 * s : focus.y + focus.h * 0.8 + dip * 14 * s + duck * 30 * s + Math.sin(t * 0.8) * 3 * s;
+    // Asleep, the flippers barely move.
+    const stroke = rest ? 0.15 * Math.sin(t * 0.3) : Math.sin(t * 1.6);
     spot('turtle', x, y, 30 * s);
     ctx.save();
     ctx.translate(x, y);
@@ -884,7 +889,15 @@ export function createSunlitScene(seed: number): Scene {
       drawFloor(ctx, t);
       drawMeadows(ctx, t, v.meadows);
       drawSeahorses(ctx, t, v.meadows);
-      drawTurtle(ctx, t, v.meadows);
+      // The turtle let sleep in the branches (a moment) spends the night there instead.
+      const turtleRests = v.moments.turtle === 'a' && night > 0.5;
+      if (!turtleRests) drawTurtle(ctx, t, v.meadows);
+      // The storm's branch, let go, grows on far off on the sand.
+      if (v.moments.storm === 'a') {
+        const fx = focus.x + focus.w * 0.93;
+        drawColony(ctx, fx, floorY(Math.min(1, (fx - focus.x + focus.w * 0.1) / (focus.w * 1.2))) + 2 * scale(), scale() * 1.5, t,
+          { branch: '#c0703e', tip: '#e8a060', polyp: 'rgba(255,240,190,0.95)' }, seed ^ 0x570f);
+      }
       drawAnemone(ctx, t);
       drawClumps(ctx, t);
       drawDaughters(ctx, v.polyps, (u) => [focus.x - focus.w * 0.1 + u * focus.w * 1.2, floorY(u) + 2 * scale()], scale() * 1.2, t,
@@ -895,6 +908,10 @@ export function createSunlitScene(seed: number): Scene {
       drawTerrace(ctx, L.cx, L.unit, v.works.terrace, scale(), (x) => floorY(Math.min(1, Math.max(0, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2)))));
       reef.draw(ctx, L, v, t);
       drawRelics(ctx, reef, L, v.relics, t);
+      if (turtleRests) {
+        const [tx, ty] = reef.crown(L);
+        drawTurtle(ctx, t, v.meadows, [L.cx + (tx - L.cx) * 0.4, ty + (L.baseY - ty) * 0.35]);
+      }
       drawCraft(ctx, v.craft, reef, L, t, 1);
       drawResidents(ctx, reef, L, v.residents, t, seed,
         (x) => floorY(Math.min(1, Math.max(0, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2)))));

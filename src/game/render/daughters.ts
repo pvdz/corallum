@@ -41,6 +41,14 @@ export function drawDaughters(ctx: CanvasRenderingContext2D, polyps: number, flo
   ctx.restore();
 }
 
+/** One small colony at (x, y): the storm's fragment, grown on far off. */
+export function drawColony(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, t: number, style: DaughterStyle, seed: number): void {
+  ctx.save();
+  ctx.lineCap = 'round';
+  branch(ctx, mulberry32(seed), x, y, -Math.PI / 2, 22 * size, 0, size, t, style);
+  ctx.restore();
+}
+
 function branch(ctx: CanvasRenderingContext2D, r: () => number, x: number, y: number, a: number, len: number, depth: number,
   s: number, t: number, style: DaughterStyle): void {
   const sway = Math.sin(t * 0.7 + depth) * 0.04;

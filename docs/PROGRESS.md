@@ -357,3 +357,4 @@ date, what landed, what is half-done, what's next.
 - Sections appearing during play (shoals, expedition, residents, works, a moment) rise in with a brief glow (panel setShown, CSS .fresh).
 - Every memory carried across the line's endings adds a closing page to the ending (ENDING.everything) and the feat 'Nothing lost, nothing kept'.
 - Whispers for great works, residents, the sister reef ahead, the first shard and growing trust.
+- Moments shown in the Sunlit Crown: the turtle let sleep rests in the branches at night; the storm's branch let go grows as a colony far off on the sand (daughters.ts drawColony; ReefView.moments).

@@ -4,6 +4,7 @@ import type { Job } from '../content/act2.ts';
 import type { DialectId } from '../content/act4.ts';
 import type { SiteId } from '../content/expeditions.ts';
 import type { WorkId } from '../content/works.ts';
+import type { MomentId } from '../content/moments.ts';
 import type { ResidentId } from '../content/residents.ts';
 import type { UpgradeId } from '../content/types.ts';
 
@@ -25,6 +26,8 @@ export type ReefView = {
   shoals: number;
   jobs: Record<Job, number>;
   /** Shoals away at a ruin: how many, sim seconds since they left and until they are back, which side they went. */
+  /** How each moment was met. */
+  moments: Readonly<Record<MomentId, '' | 'a' | 'b'>>;
   /** The sister reef's place, 0 (seamount) … 1 (surface). */
   sister: number;
   /** Stages built of each great work. */
