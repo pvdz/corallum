@@ -714,6 +714,8 @@ canvas.addEventListener('pointerdown', (e) => {
     // Now and then a neighbour gives a little of what it lives by.
     const g = frozenT === null && who.id !== 'ossel' ? gift(state, who.id) : null;
     if (g) floatText(e.clientX, e.clientY - 26, `+${num(g.amount)} ${GIFT_TEXT[g.stock]}`, 'feast-float');
+    // A light tick on phones; a double one when it brought a gift.
+    if (who.id !== 'ossel') buzz(g ? [8, 40, 8] : 8);
     if (who.id !== 'ossel') {
       const [lx, ly] = toScreen(who.x, who.y);
       showCreatureLabel(who.id, lx / dpr, ly / dpr, (who.r * zoom.k) / dpr);
