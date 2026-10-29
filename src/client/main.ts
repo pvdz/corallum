@@ -249,6 +249,7 @@ const panel = createPanel(ui, {
     const got = makeWish(state, id);
     if (!got) return;
     audio.cue('shimmer');
+    scene.effect('wish');
     if (got >= 1000) showJournalNote(SHARD.found, SHARD_LINES[got - 1000] ?? '', true);
     else if (id === 'line') showJournalNote(WISH.kicker, WISH.lineGot, true);
     else floatText(innerWidth / 2, innerHeight / 3, `+${num(got)} ${feastPay(state)} ${WISH.float}`, 'feast-float');

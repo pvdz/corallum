@@ -658,6 +658,31 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
           ring(ctx, cx, cy - 20 * s, (30 + k * 180) * s, '255,230,150', 0.35 * (1 - k), 1.5 * s);
           break;
         }
+        case 'wish': {
+          // A wish: one bright star falls out of the sky into the crown, and the crown flares.
+          const [cx, cy] = crown(L);
+          const fall = Math.min(1, fx.age / 0.9);
+          const sx = cx + 420 * s * (1 - fall), sy = cy - 520 * s * (1 - fall);
+          if (fall < 1) {
+            const g = ctx.createLinearGradient(sx + 80 * s, sy - 100 * s, sx, sy);
+            g.addColorStop(0, 'rgba(255,230,160,0)');
+            g.addColorStop(1, 'rgba(255,240,200,0.95)');
+            ctx.strokeStyle = g;
+            ctx.lineWidth = 3 * s;
+            ctx.beginPath();
+            ctx.moveTo(sx + 80 * s, sy - 100 * s);
+            ctx.lineTo(sx, sy);
+            ctx.stroke();
+            glow(ctx, sx, sy, 16 * s, '255,235,180', 0.9);
+          } else {
+            const f = (fx.age - 0.9) / 1.3;
+            if (f < 1) {
+              glow(ctx, cx, cy - 10 * s, (40 + 140 * f) * s, '255,220,140', 0.6 * (1 - f));
+              ring(ctx, cx, cy - 10 * s, (20 + 160 * f) * s, '255,230,170', 0.5 * (1 - f), 2 * s);
+            }
+          }
+          break;
+        }
         case 'truce': {
           // A choice made: two slow rose-gold rings spreading from the reef's heart.
           const top = Math.min(1, L.top);
