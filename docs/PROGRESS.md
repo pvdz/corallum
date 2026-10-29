@@ -342,3 +342,4 @@ date, what landed, what is half-done, what's next.
 - Five new memories for the finale, earned by the new systems: The fallen gate and The beak midden (relics), Forget us gently (the whole tablet), The eye in the dark (the squid moment), The sleeping turtle (letting it sleep). Memory needs gained relic/moment/shards.
 - Reef colours: content/palettes.ts (Reef, Lagoon, Violet, Ember, Pale moon), meta.palette kept by the line; recolours Sunlit pigments and polyps and the Breach's crust and polyps; swatches in the Reef tab from the first pigment.
 - Nurseries: upgrade 'daughter' (act2.ts; daughterCount moved there), +1 lineage each in lineageFor; held, not complete, while it waits for the next daughter (cards drop 'maxed' when buyable again; lonely seamount shoals use the same 'held' text). Tended daughters drawn larger with a glow.
+- Setting 'Larger text' (html.big: the panel, reader, whispers and notes at zoom 1.15; relayout on change). No overflow at 390 px.

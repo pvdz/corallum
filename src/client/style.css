@@ -285,6 +285,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .swatch span { position: absolute; left: 0; right: 0; bottom: -16px; font-size: 9.5px; color: var(--ink-dim); white-space: nowrap; text-align: center; }
 .palette-row { padding-bottom: 14px; }
 .swatch.on { border-color: #fff; box-shadow: 0 0 12px rgba(255, 255, 255, 0.35); }
+html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-note { zoom: 1.15; }
 .residents { background: rgba(255, 140, 120, 0.03); border: 1px solid rgba(255, 150, 130, 0.2); border-radius: var(--radius); padding: 10px 12px; }
 .residents[hidden], .resident[hidden] { display: none; }
 .residents header { display: flex; justify-content: space-between; align-items: baseline; }

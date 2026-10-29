@@ -167,6 +167,8 @@ const glow = setting('glow', true, (on) => scenes.forEach((sc, i) => { sc.bloomS
 const habits = setting('habits', true);
 /** Calmer motion: as the system's reduced-motion setting, by choice. */
 const calm = setting('calm', false, (on) => document.documentElement.classList.toggle('calm', on));
+/** Larger text: the panel, the reader and Ossel's words a size up. */
+const big = setting('big', false, (on, initial) => { document.documentElement.classList.toggle('big', on); if (!initial) relayout(); });
 const sci = setting('sci', false, (on) => setScientific(on));
 const volume = setting('volume', 0.9, (v) => audio.setVolume(v));
 /** Full resolution: off renders at 1× (a quarter of the pixels on a 2× screen) for slow phones. */
@@ -179,7 +181,7 @@ function buzz(ms: number | number[]): void {
 
 const portraits = createPortraits(!ephemeral);
 const panel = createPanel(ui, {
-  sharp, buzz: buzzing, volume, sci, calm, habits, glow,
+  sharp, buzz: buzzing, volume, sci, calm, big, habits, glow,
   rename(name) {
     state.meta.name = name;
     showReefName();
