@@ -89,7 +89,7 @@ export const JOBS: readonly { id: Job; name: string; verb: string }[] = [
 export type ReadingId =
   | 'city' | 'lattice-songs' | 'shoal-pact' | 'beaked' | 'tidebooks'
   | 'walls' | 'slow-currents' | 'fear' | 'inside-the-wall'
-  | 'rasp-song' | 'light-walls' | 'last-spawning';
+  | 'rasp-song' | 'light-walls' | 'last-spawning' | 'burning-sea' | 'kept-stone';
 
 export type Reading = {
   id: ReadingId;
@@ -136,6 +136,13 @@ export const READINGS: readonly Reading[] = [
       'plankton ran, where it pooled. The record is a map, and the map still mostly holds.',
   },
   {
+    id: 'burning-sea', cost: 5200, title: 'The night the sea burned',
+    effect: 'in a milky sea, sweeps gather ×2 glow',
+    text: 'One night in the city’s youth the whole sea lit, pale from edge to edge, and every polyp ' +
+      'opened at once to drink the light. The band is bright all through. The city called it an omen ' +
+      'and argued for a hundred years about what of. You only learn how to drink.',
+  },
+  {
     id: 'walls', cost: 6000, title: 'Higher walls',
     effect: 'laying bands costs ×0.75',
     text: 'Year on year the bands grow thicker and the walls grow higher, and the city grows ' +
@@ -168,6 +175,13 @@ export const READINGS: readonly Reading[] = [
       'the Rasp laid down themselves: grit and patience, the sound of grinding kept as carefully as the ' +
       'city kept its glory. They remembered too. They remembered different things. Your Rasp hear you ' +
       'hearing it, and grind with a will.',
+  },
+  {
+    id: 'kept-stone', cost: 26000, title: 'The kept stone', after: 'first-words',
+    effect: 'old stone pays ×1.5 when let go',
+    text: 'Grey on every tip of the old city, layer over layer, the tips so heavy the branches bowed to ' +
+      'the floor. Thousandfold let nothing go: not a grain, not a day. “It was so heavy,” Ossel says, ' +
+      'very quietly, “and I thought that was what it meant to be strong.”',
   },
   {
     id: 'light-walls', cost: 40000, title: 'Light in the old walls', after: 'form',

@@ -1522,7 +1522,7 @@ export function untilMilky(s: GameState): number {
 
 /** Glow a sweep gathers in a milky sea. */
 export function milkyGlow(s: GameState): number {
-  return inMilky(s) ? rates(s).glowP * MILKY.glowSeconds : 0;
+  return inMilky(s) ? rates(s).glowP * MILKY.glowSeconds * (has(s, 'burning-sea') ? 2 : 1) : 0;
 }
 
 export function sweep(s: GameState): number {
@@ -2049,7 +2049,7 @@ export function prune(s: GameState, slot: number): number {
   s.old -= 1;
   s.pruned = { t: s.t, slot };
   s.tally.pruned++;
-  return burst(s, OLD.seconds * (1 + 0.3 * trait(s, 'light-boned')) * (chose(s, 'heavy-crown', 'a') ? 1.5 : 1) * (passed(s, 'heavy') ? 2 : 1) * (boon(s, 'brittle-tips') ? 2 : 1) * (chose(s, 'bowed', 'b') ? 1.5 : 1));
+  return burst(s, OLD.seconds * (1 + 0.3 * trait(s, 'light-boned')) * (chose(s, 'heavy-crown', 'a') ? 1.5 : 1) * (passed(s, 'heavy') ? 2 : 1) * (boon(s, 'brittle-tips') ? 2 : 1) * (has(s, 'kept-stone') ? 1.5 : 1) * (chose(s, 'bowed', 'b') ? 1.5 : 1));
 }
 
 // ---------- Thorn stars ----------

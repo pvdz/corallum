@@ -599,3 +599,4 @@ date, what landed, what is half-done, what's next.
 - A fifth shoal job, guard (Sunlit Crown on, act3.ts GUARD): with 4 on guard any intruder is driven off in its last second, for half (economy guarding). Guard shoals ring the crown (shoals.ts); expeditions take guards too; sim test.
 - Whisper 'guard': in the light, with an intruder at the reef and no guard set, Ossel suggests four shoals on guard.
 - Palettes Milky sea (feat Wading in light) and Light stone (feat Light stone).
+- Readings The night the sea burned (5200: milky sweeps ×2 glow) and The kept stone (26000 after first-words: old stone ×1.5), with Ossel's line about weight. Bot 7h08.
