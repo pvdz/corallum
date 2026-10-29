@@ -108,6 +108,8 @@ const fadeCanvas = document.createElement('canvas');
 const fadeCtx = fadeCanvas.getContext('2d', { alpha: false })!;
 const zoneTitle = document.createElement('div');
 zoneTitle.id = 'zone-title';
+zoneTitle.setAttribute('role', 'status');
+zoneTitle.setAttribute('aria-live', 'polite');
 
 // Sound: off unless the player turned it on; browsers need a gesture before it can start.
 const audio = createAudio();
@@ -458,6 +460,8 @@ function purchase(id: UpgradeId): boolean {
 
 const milestoneBox = document.createElement('div');
 milestoneBox.id = 'milestone';
+milestoneBox.setAttribute('role', 'status');
+milestoneBox.setAttribute('aria-live', 'polite');
 ui.append(milestoneBox);
 function showMilestone(ms: Milestone, what: string): void {
   milestoneBox.innerHTML = '';
@@ -477,6 +481,8 @@ function showMilestone(ms: Milestone, what: string): void {
 
 const journalNote = document.createElement('div');
 journalNote.id = 'journal-note';
+journalNote.setAttribute('role', 'status');
+journalNote.setAttribute('aria-live', 'polite');
 ui.append(journalNote);
 let journalQueue: [string, string][] = [];
 let journalBusy = false;
@@ -522,6 +528,8 @@ ui.append(soundBtn);
 // Ossel's whispers: one at a time, at most every 80 s, each once per lineage.
 const whisper = document.createElement('div');
 whisper.id = 'whisper';
+whisper.setAttribute('role', 'status');
+whisper.setAttribute('aria-live', 'polite');
 ui.append(whisper);
 let lastWhisper = -Infinity;
 let lastWhisperCheck = 0;
@@ -568,6 +576,8 @@ const taps = createTaps();
 
 const creatureLabel = document.createElement('div');
 creatureLabel.id = 'creature-label';
+creatureLabel.setAttribute('role', 'status');
+creatureLabel.setAttribute('aria-live', 'polite');
 ui.append(creatureLabel);
 let labelTimer = 0;
 /** A small label beside a tapped creature: its name and the journal's note. */

@@ -206,3 +206,4 @@ date, what landed, what is half-done, what's next.
 - Warm seamount: a field of five black smokers on the Silt Floor, smoking, hot at the mouth; in the journal (28).
 - Reef tab: volume slider (remembered as corallum.volume).
 - Midnight Water: a near layer of marine snow in front of the reef (bigger, softer, faster) for depth.
+- Accessibility: zone titles, milestones, journal/feat notes, whispers and creature labels are polite live regions; the story reader is a labelled modal dialog.

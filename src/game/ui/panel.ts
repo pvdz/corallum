@@ -567,7 +567,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const readerCard = el('div', 'reader-card');
   const readerKicker = el('p', 'reader-depth');
   const readerTitle = el('h2');
+  readerTitle.id = 'reader-title';
   const readerText = el('p', 'reader-text');
+  reader.setAttribute('role', 'dialog');
+  reader.setAttribute('aria-modal', 'true');
+  reader.setAttribute('aria-labelledby', 'reader-title');
   const readerClose = button('plain', 'Continue', () => closeReader());
   readerCard.append(readerKicker, readerTitle, readerText, readerClose);
   reader.append(readerCard);
