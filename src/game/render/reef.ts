@@ -415,6 +415,19 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
 
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
+    // Feeding: with plankton in the water, motes drift in to the tentacle tips and vanish there.
+    if (v.planktonLevel > 0.05 && tips.length) {
+      const n = Math.round(60 * v.planktonLevel);
+      for (let k = 0; k < n; k++) {
+        const [tx, ty] = tips[(k * 7) % tips.length]!;
+        const u = (t * 0.45 + k * 0.371) % 1;
+        const a = k * 2.399;
+        const d = (1 - u) * 34 * s;
+        const mx = tx + Math.cos(a) * d, my = ty + Math.sin(a) * d * 0.7 - (1 - u) * 6 * s;
+        glow(ctx, mx, my, 11 * s, '170,255,150', 0.45 * Math.sin(u * Math.PI));
+        glow(ctx, mx, my, 3.5 * s, '235,255,220', 0.95 * Math.sin(u * Math.PI));
+      }
+    }
     tips.forEach(([tx, ty], i) => {
       const p = 0.6 + 0.4 * Math.sin(t * 2 + i * 0.8);
       glow(ctx, tx, ty, 8 * s, '160,250,255', 0.75 * p * gs);

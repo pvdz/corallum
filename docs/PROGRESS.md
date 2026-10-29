@@ -677,3 +677,4 @@ date, what landed, what is half-done, what's next.
 - The jelly bloom, once met, leaves small pale bells pulsing through the Midnight Water. Request 'visitor' (touch today's visitor).
 - The epilogue garden matures: each child grows to twice its size over the two hours after the release.
 - Ossel remembers answers in later whispers (asked-silt at 2000 m, asked-keep at 3600 m, asked-sister once her way is lit).
+- Feeding: with plankton in the water, pale motes drift in to the polyps' tentacle tips and vanish there (reef.ts).
