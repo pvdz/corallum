@@ -203,4 +203,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Trait Gentle | this game's own systems | OK |
 | Rasp herd (Twilight), barracuda tornado (Sunlit) | real behaviours (parrotfish schools, barracuda spirals) | OK |
 | Firefly squid swarm (Midnight) | real animal | OK |
+| Moments: a bloom of jellies (1700 m), the last of the dark (2900 m) | real phenomena; this game's own beats | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

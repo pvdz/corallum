@@ -202,12 +202,12 @@ export function rates(s: GameState): Rates {
   const onShelf = target >= ACT3.from;
   return {
     glowP: (ACT1.symbiontGlow * lv.symbiont * milestoneMult('symbiont', lv.symbiont) * (1 + ACT2.lightAmplify * s.jobs.light) +
-      lightGlow * s.jobs.light * seasoned(s) * (chose(s, 'hunters', 'b') ? 1.2 : 1)) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1) * (chose(s, 'vent-crack', 'b') ? 1.15 : 1) * (sm.glow ?? 1) * (passed(s, 'dark') ? 1.25 : 1) * (s.strain === 'blue' ? 1.3 : 1) * (boon(s, 'warm-heart') ? 1.3 : 1) * (chose(s, 'old-lamp', 'a') ? 1.1 : 1) * (chose(s, 'echo', 'b') ? 1.15 : 1) * grainMult(s, 'bright') * today(s, 'bright', 1.2) * (s.sport === 'ice' ? 1.25 : 1) * (chose(s, 'fire-body', 'a') ? 1.15 : 1) * 1.04 ** nursed(s, 'b') * (chose(s, 'mirror', 'a') ? 1.15 : 1),
+      lightGlow * s.jobs.light * seasoned(s) * (chose(s, 'hunters', 'b') ? 1.2 : 1)) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1) * (chose(s, 'vent-crack', 'b') ? 1.15 : 1) * (sm.glow ?? 1) * (passed(s, 'dark') ? 1.25 : 1) * (s.strain === 'blue' ? 1.3 : 1) * (boon(s, 'warm-heart') ? 1.3 : 1) * (chose(s, 'old-lamp', 'a') ? 1.1 : 1) * (chose(s, 'echo', 'b') ? 1.15 : 1) * grainMult(s, 'bright') * today(s, 'bright', 1.2) * (s.sport === 'ice' ? 1.25 : 1) * (chose(s, 'fire-body', 'a') ? 1.15 : 1) * 1.04 ** nursed(s, 'b') * (chose(s, 'mirror', 'a') ? 1.15 : 1) * (chose(s, 'jelly-bloom', 'b') ? 1.1 : 1),
     glowK: ACT1.glowFade * (chose(s, 'squid', 'a') ? 0.8 : 1) * (chose(s, 'eyes', 'b') ? 0.8 : 1) * (chose(s, 'rising-stop', 'b') ? 0.85 : 1),
-    planktonP: today(s, 'rich', 1.2) * (onShelf ? 1 - CURRENT.planktonPerStep * s.current : 1) * (chose(s, 'krill', 'b') ? 1.2 : 1) * (chose(s, 'seep', 'a') ? 1.15 : 1) * (paired(s, 'cleaner-wrasse', 'feather-duster') ? 1.15 : 1) * seasoned(s) * ACT2.feedRate * s.jobs.feed * ACT2.netPlankton ** lv.net * (chose(s, 'far-light', 'a') ? 1.15 : 1) * (chose(s, 'dust', 'b') ? 1.15 : 1) * (speaks(s, 'pillar') ? 1.5 : 1) * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
+    planktonP: today(s, 'rich', 1.2) * (onShelf ? 1 - CURRENT.planktonPerStep * s.current : 1) * (chose(s, 'krill', 'b') ? 1.2 : 1) * (chose(s, 'seep', 'a') ? 1.15 : 1) * (paired(s, 'cleaner-wrasse', 'feather-duster') ? 1.15 : 1) * seasoned(s) * ACT2.feedRate * s.jobs.feed * ACT2.netPlankton ** lv.net * (chose(s, 'far-light', 'a') ? 1.15 : 1) * (chose(s, 'dust', 'b') ? 1.15 : 1) * (chose(s, 'jelly-bloom', 'a') ? 1.1 : 1) * (speaks(s, 'pillar') ? 1.5 : 1) * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
       (speaks(s, 'sweepers') ? 3 : 1) * (lives(s, 'feather-duster') ? 1.3 : 1),
     planktonK: ACT2.planktonEaten * (has(s, 'slow-currents') ? 0.6 : 1) * (relic(s, 'terraces') ? 0.75 : 1) * (chose(s, 'angler', 'b') ? 0.85 : 1),
-    murmurP: ACT2.scoutRate * s.jobs.scout * 1.25 ** s.works.dome * (has(s, 'beaked') ? 1.5 : 1) * (relic(s, 'wells') ? 1.25 : 1) * (chose(s, 'lost-shoal', 'b') ? 1.2 : 1) * (passed(s, 'silent') ? 1.3 : 1) * (s.strain === 'violet' ? 1.4 : 1) * (s.sport === 'ultraviolet' ? 1.3 : 1) * (chose(s, 'fire-body', 'b') ? 1.15 : 1),
+    murmurP: ACT2.scoutRate * s.jobs.scout * 1.25 ** s.works.dome * (chose(s, 'last-dark', 'a') ? 1.2 : 1) * (has(s, 'beaked') ? 1.5 : 1) * (relic(s, 'wells') ? 1.25 : 1) * (chose(s, 'lost-shoal', 'b') ? 1.2 : 1) * (passed(s, 'silent') ? 1.3 : 1) * (s.strain === 'violet' ? 1.4 : 1) * (s.sport === 'ultraviolet' ? 1.3 : 1) * (chose(s, 'fire-body', 'b') ? 1.15 : 1),
     murmurK: ACT2.murmurFade * (relic(s, 'wells') ? 0.5 : 1) * (chose(s, 'echo', 'a') ? 0.5 : 1),
     siltP: onShelf
       ? ACT3.siltFall * 0.95 ** Math.min(6, s.meta.endings) * (1 + (target - ACT3.from) / ACT3.siltGrowthPer) * (s.truce.wall === 'a' ? 0.6 : 1) * sm.silt * (passed(s, 'buried') ? 0.8 : 1) * 0.85 ** s.works.breakwater
@@ -254,7 +254,7 @@ export function rates(s: GameState): Rates {
 const MAX_BANDS = 400;
 /** Fixed band stride for each act after the second (index = act number). */
 const STRIDE: Record<number, number> = { 3: 30, 4: 6, 5: 1 };
-const COST_GROWTH: Record<number, number> = { 1: 1.55, 2: 1.195, 3: 1.315, 4: 1.225, 5: 1.035 };
+const COST_GROWTH: Record<number, number> = { 1: 1.55, 2: 1.2, 3: 1.315, 4: 1.225, 5: 1.035 };
 
 const BAND_TOP = new Float64Array(MAX_BANDS + 1);
 const BAND_COST = new Float64Array(MAX_BANDS + 1);
@@ -526,7 +526,7 @@ export function cost(s: GameState, id: UpgradeId): number {
   const u = upgrade(id);
   const l = s.levels[id];
   if (id === 'skeleton') {
-    const discount = 0.97 ** nursed(s, 'q') * (has(s, 'walls') ? 0.75 : 1) * (speaks(s, 'branching') ? 0.6 : 1) * (relic(s, 'gate') ? 0.85 : 1);
+    const discount = 0.97 ** nursed(s, 'q') * (chose(s, 'last-dark', 'b') ? 0.95 : 1) * (has(s, 'walls') ? 0.75 : 1) * (speaks(s, 'branching') ? 0.6 : 1) * (relic(s, 'gate') ? 0.85 : 1);
     return Math.ceil(u.baseCost * BAND_COST[Math.min(MAX_BANDS, l)]! * discount * waterFactor(s, id) * (boon(s, 'quick-stone') ? 0.9 : 1));
   }
   const discount = (id === 'polyp' ? 0.85 ** trait(s, 'quick-budding') : 1) * (id === 'shoal' && passed(s, 'lonely') ? 0.8 : 1) *

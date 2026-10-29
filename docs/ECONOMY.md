@@ -90,7 +90,7 @@ band growth 1.155. Bot: 7h48 default, paths 7h08–8h28.
 
 ## Lamp-nets (Midnight Water)
 Upgrade `net` (glow, 20 000 × 3^level, max 6): planktonP × 1.05^level. Plankton feeds calcite strongly, so
-the nets are dear; with them the band cost growth sits at {2: 1.195, 3: 1.315, 4: 1.225} (bot 7h28).
+the nets are dear; with them the band cost growth sits at {2: 1.2, 3: 1.315, 4: 1.225} (bot 7h28 after the later bonuses).
 
 ## Warm water (Sunlit Crown)
 HEAT: period 1800 s, warm for the first 240 s, from the purchased height ≥ 3800 m. bloomP × (closed ? 0.5 :

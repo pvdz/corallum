@@ -5,7 +5,7 @@
 export type MomentId = 'brittle' | 'vent-crack' | 'snow' | 'lost-shoal' | 'hunters' | 'angler' | 'squid' | 'whale-fall' | 'old-lamp' | 'cleaners'
   | 'young-rasp' | 'slope' | 'eggs' | 'storm' | 'turtle' | 'first-light' | 'last-night' | 'bird'
   | 'fire-body' | 'seep' | 'rising-stop' | 'split-shoal' | 'heatwave' | 'pups' | 'king-tide' | 'outbreak'
-  | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes' | 'heavy-crown' | 'cold-slide' | 'dust' | 'bowed' | 'mirror';
+  | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes' | 'heavy-crown' | 'cold-slide' | 'dust' | 'bowed' | 'mirror' | 'jelly-bloom' | 'last-dark';
 
 export type MomentOption = { label: string; effect: string; text: string };
 export type Moment = { id: MomentId; metres: number; title: string; text: string; a: MomentOption; b: MomentOption;
@@ -84,6 +84,14 @@ export const MOMENTS: readonly Moment[] = [
     b: { label: 'Build your foot over it', effect: 'calcite dissolves ×0.95', text: 'The seep turns the water around your foot hard and chalky. Your oldest stone stops wearing away.' },
   },
   {
+    id: 'jelly-bloom', metres: 1700, title: 'A bloom of jellies',
+    text: 'For days the water is thick with small pale bells, more of them than there are grains of silt, all pulsing the same slow beat.',
+    a: { label: 'Let the shoals feed', effect: 'plankton ×1.1',
+      text: 'The lanternfish gorge on them and grow fat and bright, and bring the reef more than ever.' },
+    b: { label: 'Take their light', effect: 'glow ×1.1',
+      text: 'You open your glimmerseed to the jellies’ faint shine and learn the trick of it, a little.' },
+  },
+  {
     id: 'squid', metres: 1800, title: 'Something enormous',
     text: 'A shape longer than your whole reef slides past in the dark. One eye, the size of a polyp colony, turns toward your light.',
     a: { label: 'Dim your glow', effect: 'glow fades ×0.8',
@@ -118,6 +126,14 @@ export const MOMENTS: readonly Moment[] = [
     text: 'A great shoal that has travelled a long way is coming apart at the edges. The stragglers flicker toward your glow.',
     a: { label: 'Take in the stragglers', effect: '+2 shoals now', text: 'They are tired and grateful, and their lamps match yours within a day.' },
     b: { label: 'Light their way on', effect: '+1 lineage at the next spawning', text: 'You show them the way the rest went. Somewhere far off, a reef you will never see is told about you.' },
+  },
+  {
+    id: 'last-dark', metres: 2900, title: 'The last of the dark',
+    text: 'Above you the black is turning blue. Soon there will be no more true dark over you, ever again.',
+    a: { label: 'Listen to it once more', effect: 'scouts hear ×1.2',
+      text: 'You hold still a whole band and let the dark talk. The buried reefs have never been so clear.' },
+    b: { label: 'Hurry into the light', effect: 'bands cost ×0.95',
+      text: 'You do not look back. Every band comes a little quicker after that.' },
   },
   {
     id: 'cleaners', metres: 3200, title: 'The cleaners ask for room',
