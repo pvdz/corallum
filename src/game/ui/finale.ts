@@ -43,7 +43,9 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
   const release = el('button', 'release', 'Release the spawn');
   release.type = 'button';
   release.addEventListener('click', () => openChoice());
-  card.append(head, need, release);
+  // The next few full moons, great tides marked: the wait-or-go choice at a glance.
+  const calendar = el('div', 'moon-calendar');
+  card.append(head, need, calendar, release);
   panelPage.prepend(card);
 
   // ---------- The memory choice ----------
@@ -147,6 +149,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
     }
   });
 
+  let calendarKey = -1;
   return {
     update(s: GameState): void {
       state = s;
@@ -186,6 +189,20 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
         if (!great) parts.push(`The next great tide, carrying four memories, is in ${duration(untilGreatMoon(s.t))}.`);
       }
       need.textContent = parts.join(' ');
+      const key = Math.floor(s.t / 30);
+      if (key !== calendarKey) {
+        calendarKey = key;
+        calendar.innerHTML = '';
+        let at = s.t + untilFullMoon(s.t);
+        for (let i = 0; i < 4; i++) {
+          const great = greatTide(s, at);
+          const wait = at - s.t;
+          const item = el('span', great ? 'moon-day great' : 'moon-day', wait < 1 ? 'now' : duration(wait));
+          item.title = great ? 'A great tide: four memories' : 'Three memories';
+          calendar.append(item);
+          at = (Math.floor(at / ACT5.moonPeriod) + 1 + 0.5 - ACT5.fullWindow) * ACT5.moonPeriod + 1e-6;
+        }
+      }
       release.disabled = !canBreach(s);
       card.classList.toggle('ready', breachReady(s));
       card.classList.toggle('full', full);

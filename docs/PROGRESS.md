@@ -247,3 +247,4 @@ date, what landed, what is half-done, what's next.
 - Polyp and glimmerseed cards show a thin bar toward the next milestone.
 - Reef tab 'Full resolution' switch: off renders at 1× device pixels. Headless phone size: 21.8 ms → 2.7 ms draw (glow had also auto-switched off).
 - Automatic quality: slow frames are counted in seconds (3 s triggers a step): first the glow pass goes, then rendering drops to 1× for the session ('auto 1×' in ?fps). Under 6× CPU throttling: 4 → 12 fps within ~7 s.
+- Moon card: the next four full moons as a strip, great tides marked in gold.
