@@ -211,6 +211,7 @@ export const OSSEL_NOW: readonly { when: (s: GameState) => boolean; text: string
   { when: (s) => inMilky(s), text: 'The sea is burning cold and white. Sweep. Sweep!' },
   { when: (s) => s.vows.includes('still'), text: 'You promised not to reach for anything. It is hard. I never managed it.' },
   { when: (s) => s.vows.length > 0 && !s.vows.includes('still'), text: 'Vows. Thousandfold made vows too, but only ever to keep things.' },
+  { when: (s) => s.readings.includes('quick-one') && s.race.decided < 5, text: 'My sister is over there, growing. She always was the quick one. Tell her I said so, if the shoals go.' },
   { when: (s) => !!s.expedition.site, text: 'The shoals are out there somewhere. I can feel the water they push.' },
   { when: (s) => s.race.decided > 0 && s.race.decided < 5 && sisterNow(s, s.t) > gaugeAt(s.height), text: 'Your sister is ahead. I knew its wall too. It was always the quick one.' },
   { when: (s) => s.race.decided > 0 && s.race.decided < 5 && sisterNow(s, s.t) <= gaugeAt(s.height), text: 'You are ahead of your sister. Do not gloat. Well. A little.' },
