@@ -38,7 +38,7 @@ export type Trait = {
  * Where a lesser spawning settles. Each seamount bends the economy one way; the plain one is the
  * first reef's. Multipliers are read by sim/economy.ts.
  */
-export type SeamountId = 'plain' | 'warm' | 'cold' | 'crowded' | 'hungry' | 'silent' | 'lonely' | 'buried' | 'dark' | 'shallow';
+export type SeamountId = 'plain' | 'warm' | 'cold' | 'crowded' | 'hungry' | 'silent' | 'lonely' | 'buried' | 'dark' | 'shallow' | 'thorny';
 export type Seamount = {
   id: SeamountId; name: string; text: string; effect: string;
   ventBoost: number; ventAcid: number; dissolve: number; polyp: number; readings: number; silt: number;
@@ -52,6 +52,8 @@ export type Seamount = {
   glow?: number;
   /** Warm spells last this many times as long (shallow). */
   heat?: number;
+  /** Intruders come this many times as far apart (thorny: 0.5, twice as often). */
+  thorns?: number;
 };
 
 /** Hard seamounts are offered once the line has spawned this many times. */
@@ -84,6 +86,9 @@ export const SEAMOUNTS: readonly Seamount[] = [
   { id: 'shallow', name: 'A shallow seamount', text: 'Its top lies close under the sun, where the water warms early and stays warm.', effect: 'warm spells last twice as long',
     ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 1, readings: 1, silt: 1, heat: 2,
     trial: { goal: 3950, reward: 'Sun-hardened: open polyps bleach half as fast on every reef after' } },
+  { id: 'thorny', name: 'A thorny seamount', text: 'Everything here that eats coral has heard there is coral to eat.', effect: 'intruders come twice as often',
+    ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 1, readings: 1, silt: 1, thorns: 0.5,
+    trial: { goal: 3700, reward: 'Spine-born: driving off an intruder pays ×1.5 on every reef after' } },
 ];
 
 /** Forgetting a trait (Lineage tab). */

@@ -232,7 +232,7 @@ export function rates(s: GameState): Rates {
       (speaks(s, 'massive') ? 1.5 : 1) *
       1.5 ** trait(s, 'deep-memory') *
       knownBonus(s) * shardBonus(s) *
-      (lives(s, 'goby') ? 1.15 : 1) * (chose(s, 'whale-fall', 'a') ? 1.1 : 1) * (chose(s, 'snow', 'a') ? 1.05 : 1) * (chose(s, 'slope', 'a') ? 1.05 : 1) * (chose(s, 'krill', 'a') ? 1.1 : 1) * (chose(s, 'heatwave', 'b') ? 1.1 : 1) * 1.05 ** s.works.garden *
+      (lives(s, 'goby') ? 1.15 : 1) * (chose(s, 'whale-fall', 'a') ? 1.1 : 1) * (chose(s, 'snow', 'a') ? 1.05 : 1) * (chose(s, 'slope', 'a') ? 1.05 : 1) * (chose(s, 'krill', 'a') ? 1.1 : 1) * (chose(s, 'heatwave', 'b') ? 1.1 : 1) * (chose(s, 'outbreak', 'a') ? 1.1 : 1) * 1.05 ** s.works.garden *
       (boon(s, 'currents') ? 1.15 : 1) * today(s, 'calm', 1.1),
     calciteK:
       ACT1.dissolve * sm.dissolve * ACT1.latticeFactor ** lv.lattice * (ACT1.ventAcid * sm.ventAcid) ** vent * (vent > 0 && chose(s, 'vent-crack', 'a') ? 0.8 : 1) *
@@ -1940,13 +1940,18 @@ export function pickShell(s: GameState): string {
 export type Thorn = { k: number; start: number; side: number; kind: Intruder };
 
 /** The intruder now, if any: a thorn star on the shelf and in the light, a dragonfish in the Midnight Water. */
+/** Seconds between intruders here (a thorny seamount's come twice as often). */
+function thornPeriod(s: GameState): number {
+  return THORN.period * (seamount(s).thorns ?? 1);
+}
+
 export function currentThorn(s: GameState): Thorn | null {
   const kind = intruderOf(actAt(s.height));
   if (!kind || (kind === 'dragonfish' && s.levels.shoal === 0) || (kind === 'drill-snail' && s.height < THORN.snailFrom) || (kind === 'gull' && ended(s))) return null;
-  const k = Math.floor(s.t / THORN.period);
+  const k = Math.floor(s.t / thornPeriod(s));
   if (k <= s.thorned) return null;
   const r = mulberry32((s.seed ^ 0x7a0e) + Math.imul(k, 0x9e3779b1));
-  const start = k * THORN.period + r() * (THORN.period - THORN.life);
+  const start = k * thornPeriod(s) + r() * (thornPeriod(s) - THORN.life);
   return s.t >= start && s.t < start + THORN.life ? { k, start, side: r() < 0.5 ? -1 : 1, kind } : null;
 }
 
@@ -1955,10 +1960,10 @@ export function untilThorn(s: GameState): number {
   const kind = intruderOf(actAt(s.height));
   if (!kind || (kind === 'dragonfish' && s.levels.shoal === 0) || (kind === 'drill-snail' && s.height < THORN.snailFrom) || (kind === 'gull' && ended(s))) return Infinity;
   if (currentThorn(s)) return 0;
-  for (let k = Math.floor(s.t / THORN.period); k < Math.floor(s.t / THORN.period) + 3; k++) {
+  for (let k = Math.floor(s.t / thornPeriod(s)); k < Math.floor(s.t / thornPeriod(s)) + 3; k++) {
     if (k <= s.thorned) continue;
     const r = mulberry32((s.seed ^ 0x7a0e) + Math.imul(k, 0x9e3779b1));
-    const start = k * THORN.period + r() * (THORN.period - THORN.life);
+    const start = k * thornPeriod(s) + r() * (thornPeriod(s) - THORN.life);
     if (start > s.t) return start - s.t;
   }
   return Infinity;
@@ -1967,7 +1972,7 @@ export function untilThorn(s: GameState): number {
 /** Guard crabs (thorn stars) or a finished lantern spire (dragonfish) drive it off in its last second. */
 export function crabThorn(s: GameState): Thorn | null {
   const th = currentThorn(s);
-  const guarded = th && (trait(s, 'thorn-wise') > 0 || (th.kind === 'thorn-star' ? lives(s, 'guard-crab') || chose(s, 'pups', 'a') : th.kind === 'dragonfish' ? s.works.spire >= 3 : false));
+  const guarded = th && (trait(s, 'thorn-wise') > 0 || (th.kind === 'thorn-star' ? lives(s, 'guard-crab') || chose(s, 'pups', 'a') || chose(s, 'outbreak', 'b') : th.kind === 'dragonfish' ? s.works.spire >= 3 : false));
   return th && guarded && s.t >= th.start + THORN.life - 1 ? th : null;
 }
 
@@ -1977,7 +1982,7 @@ export function pryThorn(s: GameState, share = 1): number {
   if (!th) return 0;
   s.thorned = th.k;
   s.tally.intruders++;
-  return burst(s, THORN.seconds * share);
+  return burst(s, THORN.seconds * share * (passed(s, 'thorny') ? 1.5 : 1));
 }
 
 // ---------- Falling feasts ----------

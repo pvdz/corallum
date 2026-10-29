@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { dayOf, catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
+import { currentThorn, dayOf, catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { newGame, type GameState } from '../../src/game/sim/state.ts';
 import { GIFT } from '../../src/game/content/creatures.ts';
@@ -349,6 +349,23 @@ test("the day's sea: the same for everyone on a day, and it changes the rates", 
   const base = rates(s).glowP;
   s.meta.today = 'bright';
   assert.ok(rel(rates(s).glowP, base * 1.2) < 1e-12);
+});
+
+test('a thorny seamount: intruders twice as often', () => {
+  const count = (sm: 'plain' | 'thorny') => {
+    const s = act3Game();
+    s.seamount = sm;
+    s.thorned = -1;
+    let n = 0, last = -1;
+    for (let i = 0; i < 4 * 3600; i += 5) {
+      s.t += 5;
+      const th = currentThorn(s);
+      if (th && th.k !== last) { n++; last = th.k; }
+    }
+    return n;
+  };
+  const plain = count('plain'), thorny = count('thorny');
+  assert.ok(thorny >= plain * 1.8 && thorny <= plain * 2.2, `${plain} vs ${thorny}`);
 });
 
 test('dialects: one per tier, in order, after their band, paid in bloom', () => {

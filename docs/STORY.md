@@ -160,4 +160,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | The harbour (seventh ruin: where the city once let its spawn go; a mooring ring) | this game's own city and theme | OK |
 | Mantis shrimp (Twilight burrow) | real animal | OK |
 | Vent shrimp (Silt Floor vent) | real animal (Rimicaris) | OK |
+| A thorny seamount (intruders twice as often; Spine-born); its moment: an outbreak | real crown-of-thorns outbreaks; plain names | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

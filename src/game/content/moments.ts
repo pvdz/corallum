@@ -4,7 +4,7 @@
 
 export type MomentId = 'brittle' | 'vent-crack' | 'snow' | 'lost-shoal' | 'hunters' | 'angler' | 'squid' | 'whale-fall' | 'old-lamp' | 'cleaners'
   | 'young-rasp' | 'slope' | 'eggs' | 'storm' | 'turtle' | 'first-light' | 'last-night' | 'bird'
-  | 'fire-body' | 'seep' | 'rising-stop' | 'split-shoal' | 'heatwave' | 'pups' | 'king-tide'
+  | 'fire-body' | 'seep' | 'rising-stop' | 'split-shoal' | 'heatwave' | 'pups' | 'king-tide' | 'outbreak'
   | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes';
 
 export type MomentOption = { label: string; effect: string; text: string };
@@ -224,6 +224,12 @@ export const MOMENTS: readonly Moment[] = [
     text: 'Days now, and the shallows have not cooled even at night. Your crown is pale at the tips.',
     a: { label: 'Grow tougher symbionts', effect: 'bloom fades ×0.85', text: 'You let the weak ones go and keep the ones that can stand it. Fewer, but they stay.' },
     b: { label: 'Reach down for cool water', effect: 'calcite ×1.1', text: 'You put your strength into the deep stone instead, where the water is cold and patient.' },
+  },
+  {
+    id: 'outbreak', metres: 3150, seamount: 'thorny', title: 'An outbreak',
+    text: 'Thorn stars in their hundreds, climbing the shelf from every side at once, more than any crab could hold back.',
+    a: { label: 'Grow faster than they eat', effect: 'calcite ×1.1', text: 'You pour everything into the stone. They eat, and you grow, and you grow more.' },
+    b: { label: 'Call every crab on the shelf', effect: 'thorn stars driven off for half, crabs or not', text: 'Crabs come from every reef on the shelf, and the starfish learn your branches are not safe.' },
   },
   {
     id: 'eyes', metres: 700, seamount: 'dark', title: 'Eyes in the dark',
