@@ -1,6 +1,7 @@
 // Act V's UI: the moon card in the panel, the memory choice, and the ending sequence.
 
 import { QUESTIONS } from '../content/ossel.ts';
+import { VOWS } from '../content/lineage.ts';
 import { UI } from '../content/ui.ts';
 import { FIGURES, SKY } from '../content/sky.ts';
 import { ACT5, ENDING, MEMORIES, type MemoryId } from '../content/act5.ts';
@@ -10,7 +11,7 @@ import { SHARD_LINES } from '../content/shards.ts';
 import { SURFACE } from '../content/acts.ts';
 import {
   breachReady, canBreach, ended, memoriesAvailable, moonFull, moonPhase, rates, spawnHold, spawnNet, spawnTarget,
-  untilFullMoon, carryAt, greatTide, untilGreatMoon,
+  untilFullMoon, carryAt, greatTide, untilGreatMoon, vowKept,
 } from '../sim/economy.ts';
 import { drawMoon } from '../render/draw.ts';
 import type { GameState } from '../sim/state.ts';
@@ -140,6 +141,11 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
     // The stars this reef named over the Breach.
     const stars = FIGURES.filter((f) => s.sky[f.id]).map((f) => f.name);
     if (stars.length) out.push(SKY.ending.replace('{names}', stars.length > 1 ? `${stars.slice(0, -1).join(', ')} and ${stars.at(-1)}` : stars[0]!));
+    // The vows this reef grew under.
+    if (s.vows.length) {
+      const names = (ok: boolean) => VOWS.filter((v) => s.vows.includes(v.id) && vowKept(s, v.id) === ok).map((v) => v.name.toLowerCase()).join(' and ');
+      out.push(ENDING.vows(names(true), names(false)).trim());
+    }
     // The sister reef: ahead of it at the surface, or behind.
     if (s.race.lit) out.push(ENDING.sisterLit);
     else if (s.race.decided >= 5) out.push(s.diary.some((d) => d.includes('|ahead|the surface')) ? ENDING.sisterAhead : ENDING.sisterBehind);

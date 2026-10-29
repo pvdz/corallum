@@ -210,6 +210,8 @@ export const ENDING = {
     'the gate. We were afraid every day, and we kept everything, and it was too much to carry. That is what we were.” ' +
     'It sounds lighter for saying it. “Tell them that. Tell them all of it, and then let them forget it gently.”',
   /** The sister reef, when the reef lit the way for her. */
+  vows: (kept: string, broken: string) => (kept ? `This reef grew under vows, and kept them: ${kept}. The line will remember that it could. ` : '') +
+    (broken ? `It meant to keep ${broken} too, and could not. Ossel says that is also a thing worth knowing.` : ''),
   sisterLit: 'On the next seamount, under the same moon, the sister reef spawns too: you lit its way, and it came up in time. ' +
     'The two clouds of spawn drift toward each other in the dark, and mix, and go on together.',
   /** The sister reef, by who reached the surface first. */
