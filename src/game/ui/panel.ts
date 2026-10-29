@@ -35,7 +35,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilThorn, untilFlurry, untilHeat, heatLeft, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilThorn, untilFlurry, untilHeat, heatLeft, closedNow, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -330,8 +330,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   heatRow.hidden = true;
   const heatText = el('span', 'heat-text');
   const heatWhat = el('span', 'heat-what');
-  let closedNow = false;
-  const heatButton = button('heat-toggle', '', () => hooks.closeUp(!closedNow));
+  let heatClosed = false;
+  const heatButton = button('heat-toggle', '', () => hooks.closeUp(!heatClosed));
   heatRow.append(heatText, heatButton, heatWhat);
   waterBox.append(waterName, waterLine, waterNext, waterSoon, heatRow);
   grow.prepend(waterBox);
@@ -1502,12 +1502,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         if (uh > 0 && uh < 1200) soon.push([uh, HEAT.word]);
         heatRow.hidden = !Number.isFinite(uh);
         if (Number.isFinite(uh)) {
-          closedNow = s.closed;
+          heatClosed = s.closed;
           heatRow.classList.toggle('warm', uh === 0);
           heatRow.classList.toggle('closed', s.closed);
           heatText.textContent = uh === 0 ? HEAT.now(duration(heatLeft(s))) : HEAT.next(duration(uh));
           heatButton.textContent = s.closed ? HEAT.closed : HEAT.open;
-          heatWhat.textContent = s.closed ? HEAT.closedWhat : HEAT.openWhat;
+          heatWhat.textContent = s.closed ? HEAT.closedWhat : closedNow(s) ? HEAT.shy : HEAT.openWhat;
         }
         if (s.height >= 1) soon.push([moonFull(s.t) ? 0 : untilFullMoon(s.t), WATER.moon]);
         soon.sort((a, b) => a[0] - b[0]);

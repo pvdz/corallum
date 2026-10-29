@@ -32,7 +32,7 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closeUp, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -637,12 +637,13 @@ function thornView(): ReefView['thorn'] {
 
 /** The warm spell as the Sunlit scene shows it: warmth eases in and out, an open reef pales and recovers. */
 function heatView(): ReefView['heat'] {
-  const closed = state.closed;
+  const closed = closedNow(state);
   if (!Number.isFinite(untilHeat(state))) return { warm: 0, bleach: 0, closed };
   const u = state.t % HEAT.period;
   const warm = u < HEAT.length ? Math.min(1, u / 20, (HEAT.length - u) / 20) : 0;
   const peak = Math.min(1, HEAT.length / 150) * 0.75;
-  const bleach = closed ? 0 : u < HEAT.length ? Math.min(1, u / 150) * 0.75 : Math.max(0, peak - (u - HEAT.length) / 120);
+  // A sun-shy reef closed through the spell, so it has nothing to recover from after it.
+  const bleach = closed || state.meta.traits['sun-shy'] ? 0 : u < HEAT.length ? Math.min(1, u / 150) * 0.75 : Math.max(0, peak - (u - HEAT.length) / 120);
   return { warm, bleach, closed };
 }
 

@@ -20,7 +20,7 @@ export const LINEAGE = {
 
 export type TraitId =
   | 'deep-memory' | 'quick-budding' | 'old-bands' | 'remembered-shoals' | 'glimmer' | 'kept-readings' | 'settling'
-  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table' | 'shoal-sense' | 'rasp-sense' | 'old-maps' | 'open-house' | 'water-wise' | 'thorn-wise' | 'moon-born' | 'layering' | 'shell-finder' | 'signal-wise';
+  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table' | 'shoal-sense' | 'rasp-sense' | 'old-maps' | 'open-house' | 'water-wise' | 'thorn-wise' | 'moon-born' | 'layering' | 'shell-finder' | 'signal-wise' | 'sun-shy';
 
 export type Trait = {
   id: TraitId;
@@ -202,6 +202,11 @@ export const TRAITS: readonly Trait[] = [
     id: 'moon-born', name: 'Moon-born', effect: 'the full-moon spawning can bring up to 5 lineage on a reef, not 3',
     flavour: 'Every one of them was released under a full moon, and they answer it.',
     cost: 14, growth: 1, max: 1, kind: 'way',
+  },
+  {
+    id: 'sun-shy', name: 'Sun-shy', effect: 'an open reef closes by itself while the water runs warm, and opens again after (away too)',
+    flavour: 'Your children feel the warmth coming in their skins, and fold before it reaches them.',
+    cost: 8, growth: 1, max: 1, kind: 'habit',
   },
 ];
 

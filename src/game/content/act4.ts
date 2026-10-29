@@ -35,6 +35,7 @@ export const HEAT = {
   closed: 'Open to the sun',
   openWhat: 'open: full sun · in warm water sun ×1.6, bloom fades ×5',
   closedWhat: 'closed: sun ×0.5 · no bleaching',
+  shy: 'sun-shy: closed by itself until the water cools',
 } as const;
 
 export const ACT4 = {

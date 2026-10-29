@@ -485,3 +485,4 @@ date, what landed, what is half-done, what's next.
 - Flurries on the Silt Floor drive sweeps ×3 (act1.ts FLURRY, economy inFlurry/untilFlurry; abyss drawFlurry on the sim clock; Soon line).
 - Each hard seamount has a moment of its own (moments.ts `seamount`, nextMoment filters on it): krill, echo, far light, drifts, eyes.
 - Warm water (act4.ts HEAT; economy inHeat/untilHeat/heatLeft/closeUp/heatEdge/skipCycles; state.closed): a row in the water box with a Close up / Open toggle; Sunlit scene haze + bleached palette + pulled-in polyps; Ossel whispers at the first one. advance splits at heat edges; a month away skips whole repeated cycles (tested against stepped cycles).
+- Sun-shy trait (habit, 8 lineage): closedNow() = chosen closed, or warm water with the trait; rates, panel and scene read it.

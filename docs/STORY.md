@@ -133,4 +133,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | The water's moods (rich, slack, lamp, carrying, gritty, clear, warm water) changing prices on a forecast | timed price swings are a genre convention (markets); names are plain descriptions of real sea states | OK |
 | Residents (guard crabs, pistol shrimp, sea cucumbers, coral gobies, feather dusters, farmer damselfish) given homes in the reef | real coral symbioses (Trapezia crabs, gobies, damselfish gardens); limited slots are a genre convention | OK |
 | Warm water: open polyps bleach, closed ones take half the sun | real coral bleaching (heat stress expels symbionts); no game mechanic I know frames it as an open/close stance | OK |
+| Sun-shy (trait): the reef folds before warm water | plain description of the mechanic | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

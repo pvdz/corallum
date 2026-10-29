@@ -215,7 +215,7 @@ export function rates(s: GameState): Rates {
     sandK: ACT3.sandSettle,
     bloomP: sunlight(s, target) * heatSun(s) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * ACT4.meadowBloom ** lv.meadow *
       (speaks(s, 'fluorescent') ? 1.5 : 1) * (lives(s, 'damselfish') ? 1.3 : 1) * (chose(s, 'storm', 'b') ? 1.15 : 1) * 1.15 ** s.works.terrace * (has(s, 'light-walls') ? 1.25 : 1) * (relic(s, 'sun-gate') ? 1.2 : 1) * (chose(s, 'first-light', 'a') ? 1.15 : 1) * (paired(s, 'feather-duster', 'damselfish') ? 1.15 : 1),
-    bloomK: ACT4.bloomFade * (inHeat(s) && !s.closed ? HEAT.openFade : 1) * (chose(s, 'turtle', 'a') ? 0.8 : 1) * (speaks(s, 'lullaby') ? 0.7 : 1),
+    bloomK: ACT4.bloomFade * (inHeat(s) && !closedNow(s) ? HEAT.openFade : 1) * (chose(s, 'turtle', 'a') ? 0.8 : 1) * (speaks(s, 'lullaby') ? 0.7 : 1),
     spawnP: target >= ACT5.from
       ? lv.polyp * ACT5.spawnRate * ACT5.ripenSpawn ** lv.ripen * (speaks(s, 'broadcast') ? 2 : 1) *
         (1 + sunlight(s, target) * lv.symbiont / 100) * (chose(s, 'bird', 'b') ? 1.1 : 1) * (chose(s, 'last-night', 'b') ? 1.05 : 1) * (has(s, 'last-spawning') ? 1.25 : 1) * 1.15 ** s.works.pool * 1.1 ** lv.cay * (lives(s, 'host-anemone') ? 1.15 : 1)
@@ -1265,7 +1265,17 @@ function heatEdge(s: GameState): number {
 
 /** Sun taken in for bloom: closed polyps take half; open ones take more while the water is warm. */
 function heatSun(s: GameState): number {
-  return s.closed ? HEAT.closedSun : inHeat(s) ? HEAT.openSun : 1;
+  return s.closed || (inHeat(s) && sunShy(s)) ? HEAT.closedSun : inHeat(s) ? HEAT.openSun : 1;
+}
+
+/** Sun-shy reefs close by themselves for a warm spell. */
+function sunShy(s: GameState): boolean {
+  return trait(s, 'sun-shy') > 0;
+}
+
+/** The polyps are closed now (chosen, or a sun-shy reef in warm water). */
+export function closedNow(s: GameState): boolean {
+  return s.closed || (inHeat(s) && sunShy(s));
 }
 
 /** Close the polyps against warm water, or open them to the sun. */
