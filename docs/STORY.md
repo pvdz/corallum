@@ -185,4 +185,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Jelly falls (a dead jellyfish sinking, a falling feast) | real phenomenon | OK |
 | Vows (Haste, Lightness, Solitude) for a new reef after an ending | generic challenge-mode idea, own names | OK |
 | Wishing on shooting stars (folk custom) at the Breach | common folk custom, no game lore | OK |
+| Memory: The weight let go (line title 'the line that let go') | this game's own theme | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

@@ -619,3 +619,4 @@ date, what landed, what is half-done, what's next.
 - Reef fish cast soft shadows on the Sunlit sand by day (sunlit.ts drawFishShadows). Full e2e suite green.
 - Vow Stillness (+5): sweep() does nothing on that reef.
 - Shooting stars at the Breach run on the reef's clock (sky.ts WISH; economy meteorShower/wishOpen/makeWish): every 20 min for 90 s; one wish per shower (four minutes of spawn, a lost shard, or +1 lineage at most three times a reef); a wish card; the renderer draws the sim's shower. Sim test.
+- Memory The weight let go (needs the Reading The kept stone; line title 'the line that let go').

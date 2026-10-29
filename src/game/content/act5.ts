@@ -71,7 +71,7 @@ export const BANDS_ACT5: readonly Band[] = [
 export type MemoryId =
   | 'vent' | 'ossel' | 'thousandfold' | 'slow-water' | 'lanternfish' | 'rasp'
   | 'long-animal' | 'colour' | 'rain' | 'fear' | 'silt-truth' | 'dialect'
-  | 'gate' | 'midden' | 'tablet' | 'eye' | 'turtle' | 'harbour';
+  | 'gate' | 'midden' | 'tablet' | 'eye' | 'turtle' | 'harbour' | 'weight';
 
 export type Memory = {
   id: MemoryId;
@@ -102,6 +102,12 @@ export const MEMORIES: readonly Memory[] = [
     hint: 'A city of walls, the greatest reef that ever lived.',
     epilogue: 'They dream of a city of walls, wall upon wall, so wide the fish take days to swim ' +
       'around it. Some of them will try to build it. You hope the other memories are enough to stop them.',
+  },
+  {
+    id: 'weight', title: 'The weight let go', needs: { reading: 'kept-stone' },
+    hint: 'Grey on every tip, and how light it was after.',
+    epilogue: 'When their tips go grey and heavy, they shed them without being told, and the stone falls ' +
+      'into the silt as quietly as snow. Nothing of them bows to the floor.',
   },
   {
     id: 'slow-water', title: 'The slow water', needs: { reading: 'slow-currents' },
@@ -240,7 +246,7 @@ export const GARDEN = {
 
 /** The line's title, from the memory its endings carried most often. */
 export const LINE_TITLES: Partial<Record<MemoryId, string>> = {
-  vent: 'the line of the warm vent', ossel: 'the line of the old wall', thousandfold: 'the line of the city',
+  vent: 'the line of the warm vent', weight: 'the line that let go', ossel: 'the line of the old wall', thousandfold: 'the line of the city',
   'slow-water': 'the line of open currents', lanternfish: 'the line of lamps', rasp: 'the friends of the Rasp',
   'long-animal': 'the line of the long animal', colour: 'the bright line', rain: 'the line of rain', fear: 'the brave line',
   'silt-truth': 'the line of the grey', dialect: 'the line of many shapes', gate: 'the line of open gates',
