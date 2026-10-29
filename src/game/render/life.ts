@@ -1,7 +1,7 @@
 // The small life of the Silt Floor: drifting jellies, brittle stars on the silt, and the vent
 // chimney with its plume. Pure functions of time and a seed.
 
-import { sight } from './sightings.ts';
+import { sight, spot } from './sightings.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { glow } from './draw.ts';
 
@@ -204,6 +204,7 @@ export function createLife(seed: number) {
     const oi = Math.round(0.62 * n);
     const [ox, oyTop] = pts[oi]!;
     const oy = oyTop + 14 * s;
+    spot('ossel', ox, oy, 30 * s);
     ctx.strokeStyle = `rgba(215,220,245,${0.45 + 0.25 * breathe})`;
     ctx.lineWidth = 1.1 * s;
     for (let k = 0; k < 7; k++) {

@@ -33,7 +33,7 @@ import { CREATURES } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
 import { creatureAt, endFrameSpots, takeSightings } from '../game/render/sightings.ts';
 import { ACT1, MILESTONES, type Milestone } from '../game/content/act1.ts';
-import { WHISPERS } from '../game/content/whispers.ts';
+import { OSSEL_LINES, WHISPERS } from '../game/content/whispers.ts';
 import { buyTrait, habitPurchase, spawnLesser } from '../game/sim/prestige.ts';
 import { createFinale } from '../game/ui/finale.ts';
 import { createPanel, reefName } from '../game/ui/panel.ts';
@@ -493,6 +493,12 @@ whisper.id = 'whisper';
 ui.append(whisper);
 let lastWhisper = -Infinity;
 let lastWhisperCheck = 0;
+/** Tapping Ossel: one of its lines, in turn, over the water. */
+let osselLine = 0;
+function sayOssel(): void {
+  showWhisperText(OSSEL_LINES[osselLine++ % OSSEL_LINES.length]!);
+}
+
 function whisperCheck(now: number): void {
   // Quiet once the spawn has gone: nothing should talk over the ending.
   if (frozenT !== null || now - lastWhisper < 80_000 || now - lastWhisperCheck < 1000 || !reader() || ended(state)) return;
@@ -501,10 +507,15 @@ function whisperCheck(now: number): void {
   if (!w) return;
   state.meta.seen.push(`w:${w.id}`);
   lastWhisper = now;
+  showWhisperText(w.text);
+}
+
+/** A line from Ossel (or, once its wall is ground down, the sand) over the water. */
+function showWhisperText(text: string): void {
   const speaker = state.truce.wall === 'a' ? 'the sand' : 'Ossel';
   whisper.innerHTML = '';
   const q = document.createElement('q');
-  q.textContent = w.text;
+  q.textContent = text;
   const who = document.createElement('span');
   who.textContent = `— ${speaker}`;
   whisper.append(q, who);
@@ -573,7 +584,8 @@ function eatFeast(): boolean {
 canvas.addEventListener('pointerdown', (e) => {
   // Tapping a creature names it (the sweep still happens).
   const who = creatureAt(e.clientX * dpr, e.clientY * dpr);
-  if (who) showCreatureLabel(who.id, who.x / dpr, who.y / dpr);
+  if (who?.id === 'ossel') sayOssel();
+  else if (who) showCreatureLabel(who.id, who.x / dpr, who.y / dpr);
   const f = currentFeast(state);
   if (f) {
     const [fx, fy] = feastPos(f, state.t - f.start, focusNow, feastPay(state));

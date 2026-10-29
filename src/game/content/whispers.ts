@@ -63,3 +63,15 @@ export const WHISPERS: readonly Whisper[] = [
     text: 'The moon is nearly round. Every reef is holding its breath.',
   },
 ];
+
+/** What Ossel says when you tap it on the Silt Floor, in turn. */
+export const OSSEL_LINES: readonly string[] = [
+  'Yes, I am still here. Where else would I be?',
+  'Grow. Do not look at me like that. Grow.',
+  'I was a wall once. A good one. Nothing got through.',
+  'The snow is ground stone, you know. Old reefs. Do not eat it.',
+  'You glow the way we used to, before the end.',
+  'Listen to the silt sometimes. It is mostly us, talking.',
+  'When you are tall enough, tell me what the light is like.',
+  'I have forgotten things. I know that I have. I do not know which.',
+];

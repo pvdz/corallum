@@ -181,3 +181,4 @@ date, what landed, what is half-done, what's next.
 - The Breach: glowing surf, blue plankton sparks running outward along the waterline from the reef's emerged top with each wave.
 - Tap a creature to name it: large creatures (anglerfish, vampire squid, manta, octopus, whale, turtle, clownfish, dolphins) record where they were drawn each frame (sightings.spot); a tap shows a label with the journal note beside it (the sweep still happens).
 - Sunlit Crown: dappled light on the coral, caustic glints drifting over the branches by day (fading at night).
+- Tap Ossel on the Silt Floor: it answers with one of eight lines, in turn (OSSEL_LINES in content/whispers.ts).

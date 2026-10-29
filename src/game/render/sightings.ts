@@ -19,12 +19,12 @@ export function takeSightings(): CreatureId[] {
 }
 
 /** Where creatures were drawn this frame, for tapping them (device pixels). */
-export type Spot = { id: CreatureId; x: number; y: number; r: number };
+export type Spot = { id: CreatureId | 'ossel'; x: number; y: number; r: number };
 let spots: Spot[] = [];
 let nextSpots: Spot[] = [];
 
 /** A creature was drawn at (x, y) with roughly radius r (device pixels). */
-export function spot(id: CreatureId, x: number, y: number, r: number): void {
+export function spot(id: CreatureId | 'ossel', x: number, y: number, r: number): void {
   nextSpots.push({ id, x, y, r });
 }
 
