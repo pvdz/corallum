@@ -1419,6 +1419,7 @@ let milkyHeard = false;
 let starsHeard = false;
 let whaleHeard = -1;
 let luckyHeard = -1;
+let tangleHeard = -1;
 /** Slow frames for a while: first the glow pass goes, then (still slow) the resolution drops to 1×. */
 let autoLowRes = false;
 function qualityCheck(dt: number): void {
@@ -1747,6 +1748,9 @@ function frame(now: number): void {
       whaleHeard = callSlot;
       audio.cue('whale');
     }
+    const tangleNow = currentTangle(state)?.k ?? -1;
+    if (tangleNow >= 0 && tangleNow !== tangleHeard) audio.cue('moment');
+    tangleHeard = tangleNow;
     const starsNow = !!meteorShower(state);
     if (starsNow && !starsHeard) audio.cue('feast');
     starsHeard = starsNow;
