@@ -1938,7 +1938,8 @@ function requestOpen(s: GameState, kind: RequestKind): boolean {
   switch (kind) {
     case 'bands': return !maxed(s, 'skeleton');
     case 'feast': return s.bands.includes(FEAST.band) && !seamount(s).noFeasts;
-    case 'prune': return s.old >= 0.5;
+    // Only once the reef has grown tips to carry it (the knobs are drawn on them).
+    case 'prune': return s.old >= 0.5 && s.height >= 15;
     case 'milky': return untilMilky(s) < 600;
     case 'lucky': return s.tally.touches >= 5;
     case 'visitor': return !!visitor(s) && !visited(s);

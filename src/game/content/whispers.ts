@@ -89,7 +89,7 @@ export const WHISPERS: readonly Whisper[] = [
     text: 'Look down. The whole deep is coming up to eat. Put the shoals on feeding and send them in with it.',
   },
   {
-    id: 'old', when: (s) => oldKnobs(s) >= 1 && s.tally.pruned === 0,
+    id: 'old', when: (s) => oldKnobs(s) >= 1 && s.tally.pruned === 0 && s.height >= 15,
     text: 'See the grey on the tips? Stone we kept too long. It is heavy. Tap it, and let it go.',
   },
   {
