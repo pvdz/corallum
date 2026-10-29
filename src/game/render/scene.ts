@@ -29,6 +29,8 @@ export type ReefView = {
   /** Shoals away at a ruin: how many, sim seconds since they left and until they are back, which side they went. */
   /** A flurry of the Long Silt is falling (Silt Floor). */
   flurry: boolean;
+  /** Lamp-nets woven between the branches (Midnight Water). */
+  nets: number;
   /** A set of swells at the Breach: seconds since it began, and which crests were caught (bits). */
   swell: { since: number; caught: number } | null;
   /** The grains chosen for every tenth band, as r,g,b colours, in order. */

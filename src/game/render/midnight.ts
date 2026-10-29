@@ -14,7 +14,7 @@ import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow, speck } from './draw.ts';
 import { createLayerCache } from './layer.ts';
-import { createReef, type ReefLayout } from './reef.ts';
+import { createReef, type Reef, type ReefLayout } from './reef.ts';
 import { createRuins, type RuinStyle } from './ruins.ts';
 import { createShoals } from './shoals.ts';
 import { drawShrimp } from './shrimp.ts';
@@ -369,6 +369,46 @@ export function createMidnightScene(seed: number): Scene {
       const wave = Math.max(0, Math.sin(t * 2 - f * 8));
       const run = age < 3 ? Math.exp(-((f - age / 1.2) ** 2) / 0.01) * (1 - age / 3) : 0;
       glow(ctx, px, py, (5 + 4 * run) * s, run > 0.2 ? '170,215,255' : '120,170,255', Math.min(1, 0.15 + 0.7 * wave * wave + run));
+    }
+    ctx.restore();
+  }
+
+  /**
+   * Lamp-nets: webs of glimmerseed strung between pairs of branches, a few lights trembling at the
+   * knots; one more for each net woven (up to six drawn).
+   */
+  function drawNets(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, n: number, t: number): void {
+    const c = reef.coral;
+    const r = mulberry32(0x7e75);
+    const pool: number[] = [];
+    for (let i = 0; i < c.count; i++) if (c.y[i]! < L.top * 0.85 && c.y[i]! > L.top * 0.3) pool.push(i);
+    if (pool.length < 4) return;
+    ctx.save();
+    for (let k = 0; k < Math.min(6, n); k++) {
+      // Two nodes on either side of the trunk at about the same height.
+      const a = pool[Math.floor(r() * pool.length)]!;
+      let b = a, best = Infinity;
+      for (const j of pool) {
+        const dx = c.x[j]! - c.x[a]!, dy = Math.abs(c.y[j]! - c.y[a]!);
+        if (Math.abs(dx) > 0.12 && Math.abs(dx) < 0.35 && dy < best) { best = dy; b = j; }
+      }
+      if (b === a) continue;
+      const [ax, ay] = reef.nodePx(L, a), [bx, by] = reef.nodePx(L, b);
+      const sag = 0.15 * Math.hypot(bx - ax, by - ay);
+      ctx.strokeStyle = 'rgba(150,210,255,0.4)';
+      ctx.lineWidth = 1.1 * L.dpr;
+      for (let q = 0; q < 4; q++) {
+        ctx.beginPath();
+        ctx.moveTo(ax, ay + q * 4 * L.s);
+        ctx.quadraticCurveTo((ax + bx) / 2, (ay + by) / 2 + sag + q * 4 * L.s, bx, by + q * 4 * L.s);
+        ctx.stroke();
+      }
+      ctx.globalCompositeOperation = 'lighter';
+      for (let q = 1; q < 6; q++) {
+        const u = q / 6, x = ax + (bx - ax) * u, y = ay + (by - ay) * u + sag * 4 * u * (1 - u) + 6 * L.s;
+        glow(ctx, x, y, 6 * L.s, '130,200,255', 0.5 + 0.3 * Math.sin(t * 2 + q + k));
+      }
+      ctx.globalCompositeOperation = 'source-over';
     }
     ctx.restore();
   }
@@ -889,6 +929,7 @@ export function createMidnightScene(seed: number): Scene {
       drawSpire(ctx, focus, v.works.spire, scale(), t, focus.y + focus.h * 0.99);
       reef.draw(ctx, L, v, t);
       drawRelics(ctx, reef, L, v.relics, t, v.moments['old-lamp'] === 'a');
+      if (v.nets > 0) drawNets(ctx, reef, L, v.nets, t);
       if (v.moments['fire-body'] === 'a') {
         const [crx, cry] = reef.crown(L);
         drawKeptFireBody(ctx, t, L.cx + (crx - L.cx) * 0.5 - 30 * scale(), cry + (L.baseY - cry) * 0.3);

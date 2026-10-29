@@ -2,7 +2,7 @@
 
 export type UpgradeId =
   | 'polyp' | 'symbiont' | 'skeleton' | 'lattice' | 'vent' | 'lure'
-  | 'shoal' | 'daughter'
+  | 'shoal' | 'daughter' | 'net'
   | 'grounds' | 'sandbar' | 'channel'
   | 'pigment' | 'canopy' | 'meadow'
   | 'ripen' | 'cay';

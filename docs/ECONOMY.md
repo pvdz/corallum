@@ -88,6 +88,10 @@ Reading costs 40/900/1800/3000/4500/6000/8000/7000/7500 murmurs (were 25…16000
 1100, so five stories landed within four minutes). Now one every 5–15 min through Act II. Act II
 band growth 1.155. Bot: 7h48 default, paths 7h08–8h28.
 
+## Lamp-nets (Midnight Water)
+Upgrade `net` (glow, 20 000 × 3^level, max 6): planktonP × 1.05^level. Plankton feeds calcite strongly, so
+the nets are dear; with them the band cost growth sits at {2: 1.195, 3: 1.315, 4: 1.225} (bot 7h28).
+
 ## Warm water (Sunlit Crown)
 HEAT: period 1800 s, warm for the first 240 s, from the purchased height ≥ 3800 m. bloomP × (closed ? 0.5 :
 warm ? 1.6 : 1); bloomK × (warm and open ? 5 : 1). Rates change at the edges, so `advance` splits time

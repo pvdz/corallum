@@ -151,4 +151,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Flashlight fish (Twilight, night only) | real animal (Anomalopidae) | OK |
 | Riding the swells (tap on the crest) | a timing mini-game is a genre convention; framed by real swell over a reef crest | OK |
 | Giant larvacean (rare Midnight sight) | real animal (Bathochordaeus) | OK |
+| Lamp-nets (glimmerseed webs between branches) | plain description | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

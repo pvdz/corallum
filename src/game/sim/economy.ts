@@ -204,7 +204,7 @@ export function rates(s: GameState): Rates {
     glowP: (ACT1.symbiontGlow * lv.symbiont * milestoneMult('symbiont', lv.symbiont) * (1 + ACT2.lightAmplify * s.jobs.light) +
       lightGlow * s.jobs.light * seasoned(s) * (chose(s, 'hunters', 'b') ? 1.2 : 1)) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1) * (chose(s, 'vent-crack', 'b') ? 1.15 : 1) * (sm.glow ?? 1) * (passed(s, 'dark') ? 1.25 : 1) * (s.strain === 'blue' ? 1.3 : 1) * (boon(s, 'warm-heart') ? 1.3 : 1) * (chose(s, 'old-lamp', 'a') ? 1.1 : 1) * (chose(s, 'echo', 'b') ? 1.15 : 1) * grainMult(s, 'bright') * (s.sport === 'ice' ? 1.25 : 1) * (chose(s, 'fire-body', 'a') ? 1.15 : 1),
     glowK: ACT1.glowFade * (chose(s, 'squid', 'a') ? 0.8 : 1) * (chose(s, 'eyes', 'b') ? 0.8 : 1) * (chose(s, 'rising-stop', 'b') ? 0.85 : 1),
-    planktonP: (onShelf ? 1 - CURRENT.planktonPerStep * s.current : 1) * (chose(s, 'krill', 'b') ? 1.2 : 1) * (chose(s, 'seep', 'a') ? 1.15 : 1) * seasoned(s) * ACT2.feedRate * s.jobs.feed * (chose(s, 'far-light', 'a') ? 1.15 : 1) * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
+    planktonP: (onShelf ? 1 - CURRENT.planktonPerStep * s.current : 1) * (chose(s, 'krill', 'b') ? 1.2 : 1) * (chose(s, 'seep', 'a') ? 1.15 : 1) * seasoned(s) * ACT2.feedRate * s.jobs.feed * ACT2.netPlankton ** lv.net * (chose(s, 'far-light', 'a') ? 1.15 : 1) * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
       (speaks(s, 'sweepers') ? 3 : 1) * (lives(s, 'feather-duster') ? 1.3 : 1),
     planktonK: ACT2.planktonEaten * (has(s, 'slow-currents') ? 0.6 : 1) * (relic(s, 'terraces') ? 0.75 : 1) * (chose(s, 'angler', 'b') ? 0.85 : 1),
     murmurP: ACT2.scoutRate * s.jobs.scout * (has(s, 'beaked') ? 1.5 : 1) * (relic(s, 'wells') ? 1.25 : 1) * (chose(s, 'lost-shoal', 'b') ? 1.2 : 1) * (passed(s, 'silent') ? 1.3 : 1) * (s.strain === 'violet' ? 1.4 : 1) * (s.sport === 'ultraviolet' ? 1.3 : 1) * (chose(s, 'fire-body', 'b') ? 1.15 : 1),
@@ -254,7 +254,7 @@ export function rates(s: GameState): Rates {
 const MAX_BANDS = 400;
 /** Fixed band stride for each act after the second (index = act number). */
 const STRIDE: Record<number, number> = { 3: 30, 4: 6, 5: 1 };
-const COST_GROWTH: Record<number, number> = { 1: 1.55, 2: 1.19, 3: 1.31, 4: 1.22, 5: 1.035 };
+const COST_GROWTH: Record<number, number> = { 1: 1.55, 2: 1.195, 3: 1.315, 4: 1.225, 5: 1.035 };
 
 const BAND_TOP = new Float64Array(MAX_BANDS + 1);
 const BAND_COST = new Float64Array(MAX_BANDS + 1);

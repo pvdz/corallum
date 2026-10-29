@@ -20,6 +20,8 @@ export const RISING = {
 } as const;
 
 export const ACT2 = {
+  /** Each lamp-net: feeding shoals bring this much more plankton. */
+  netPlankton: 1.05,
   /** Plankton/s per feeding shoal; plankton is eaten fast. */
   feedRate: 2,
   planktonEaten: 0.15,
@@ -47,6 +49,11 @@ export const UPGRADES_ACT2: readonly UpgradeDef[] = [
     id: 'shoal', name: 'Call a shoal',
     flavour: 'Pulse the glow slow and wide. Out in the black, a hundred small lamps turn toward you.',
     currency: 'glow', baseCost: 60, growth: 1.16, maxLevel: Infinity, reveal: { height: 60 },
+  },
+  {
+    id: 'net', name: 'Weave a lamp-net',
+    flavour: 'A web of your glimmerseed strung between the branches. The shoals herd plankton into its light.',
+    currency: 'glow', baseCost: 20000, growth: 3, maxLevel: 6, reveal: { level: ['shoal', 6] },
   },
   {
     id: 'daughter', name: 'Tend a daughter colony',

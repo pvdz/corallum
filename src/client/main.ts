@@ -809,6 +809,7 @@ function view(): ReefView {
     shell: currentShell(state),
     flurry: inFlurry(state),
     heat: heatView(),
+    nets: state.levels.net,
     swell: swellView(),
     grains: state.grains.map((g) => GRAINS.find((x) => x.id === g)!.rgb),
     rising: risingView(),
