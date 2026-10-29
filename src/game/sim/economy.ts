@@ -1497,7 +1497,12 @@ export function untilFlurry(s: GameState): number {
 /** A milky sea is glowing now (Midnight Water only, active slot of the clock). */
 export function inMilky(s: GameState): boolean {
   const u = (s.t - MILKY.start) % MILKY.period;
-  return actAt(s.height) === 2 && s.t >= MILKY.start && u < MILKY.length;
+  return actAt(s.height) === 2 && s.t >= MILKY.start && u < milkyLength(s);
+}
+
+/** How long a milky sea glows (Bright water doubles it). */
+function milkyLength(s: GameState): number {
+  return MILKY.length * (boon(s, 'bright-water') ? 2 : 1);
 }
 
 /** Seconds until the next milky sea (0 while one glows; Infinity outside the Midnight Water). */
@@ -1505,7 +1510,7 @@ export function untilMilky(s: GameState): number {
   if (actAt(s.height) !== 2) return Infinity;
   if (s.t < MILKY.start) return MILKY.start - s.t;
   const u = (s.t - MILKY.start) % MILKY.period;
-  return u < MILKY.length ? 0 : MILKY.period - u;
+  return u < milkyLength(s) ? 0 : MILKY.period - u;
 }
 
 /** Glow a sweep gathers in a milky sea. */
@@ -2037,7 +2042,7 @@ export function prune(s: GameState, slot: number): number {
   s.old -= 1;
   s.pruned = { t: s.t, slot };
   s.tally.pruned++;
-  return burst(s, OLD.seconds * (1 + 0.3 * trait(s, 'light-boned')) * (chose(s, 'heavy-crown', 'a') ? 1.5 : 1) * (passed(s, 'heavy') ? 2 : 1) * (chose(s, 'bowed', 'b') ? 1.5 : 1));
+  return burst(s, OLD.seconds * (1 + 0.3 * trait(s, 'light-boned')) * (chose(s, 'heavy-crown', 'a') ? 1.5 : 1) * (passed(s, 'heavy') ? 2 : 1) * (boon(s, 'brittle-tips') ? 2 : 1) * (chose(s, 'bowed', 'b') ? 1.5 : 1));
 }
 
 // ---------- Thorn stars ----------
