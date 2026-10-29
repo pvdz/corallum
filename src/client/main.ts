@@ -1356,6 +1356,7 @@ let slowFrames = 0;
 let thunderHeard = -1;
 let milkyHeard = false;
 let starsHeard = false;
+let whaleHeard = -1;
 /** Slow frames for a while: first the glow pass goes, then (still slow) the resolution drops to 1×. */
 let autoLowRes = false;
 function qualityCheck(dt: number): void {
@@ -1647,6 +1648,12 @@ function frame(now: number): void {
     const milkyNow = inMilky(state);
     if (milkyNow && !milkyHeard) audio.cue('shimmer');
     milkyHeard = milkyNow;
+    // Far off in the deep water, now and then, a whale calls.
+    const callSlot = Math.floor(animT / 170);
+    if (callSlot !== whaleHeard && (actAt(state.height) === 2 || actAt(state.height) === 3) && animT % 170 > 40) {
+      whaleHeard = callSlot;
+      audio.cue('whale');
+    }
     const starsNow = !!meteorShower(state);
     if (starsNow && !starsHeard) audio.cue('feast');
     starsHeard = starsNow;
