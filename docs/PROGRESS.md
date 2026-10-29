@@ -621,3 +621,4 @@ date, what landed, what is half-done, what's next.
 - Shooting stars at the Breach run on the reef's clock (sky.ts WISH; economy meteorShower/wishOpen/makeWish): every 20 min for 90 s; one wish per shower (four minutes of spawn, a lost shard, or +1 lineage at most three times a reef); a wish card; the renderer draws the sim's shower. Sim test.
 - Memory The weight let go (needs the Reading The kept stone; line title 'the line that let go').
 - A second Midnight great work, the listening dome (from 1500 m; calcite+glow; scouts hear ×1.25 per stage); works.ts drawDome (ring of stones, shell by stages, murmur rings). Bot 7h08.
+- A wish shows as one bright star falling into the crown, which flares (effect 'wish'); a run of bells when a shower begins.
