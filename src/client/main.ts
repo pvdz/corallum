@@ -1240,7 +1240,8 @@ canvas.addEventListener('pointerdown', (e) => {
   if (gain <= 0) return;
   hint.classList.add('done');
   audio.cue('sweep');
-  taps.push(wx, wy, animT);
+  // A combo throws up more motes with each sweep in the run.
+  taps.push(wx, wy, animT, 6 + Math.min(10, state.combo - 1));
   floatText(e.clientX, e.clientY, state.combo > 1 ? `+${num(gain)} ×${(1 + ACT1.comboStep * (state.combo - 1)).toFixed(1)}` : `+${num(gain)}`);
 });
 
