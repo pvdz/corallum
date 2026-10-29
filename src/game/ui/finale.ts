@@ -1,5 +1,6 @@
 // Act V's UI: the moon card in the panel, the memory choice, and the ending sequence.
 
+import { QUESTIONS } from '../content/ossel.ts';
 import { FIGURES, SKY } from '../content/sky.ts';
 import { ACT5, ENDING, MEMORIES, type MemoryId } from '../content/act5.ts';
 import { CREATURES, trustLevel } from '../content/creatures.ts';
@@ -132,6 +133,9 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
       const m = MEMORIES.find((x) => x.id === id);
       if (m) out.push(`${m.title}. ${m.epilogue}`);
     }
+    // What the reef told Ossel on the way up.
+    const told = QUESTIONS.filter((q) => s.asked[q.id]).map((q) => q.answers[Number(s.asked[q.id])]!.ending);
+    if (told.length) out.push(told.join(' '));
     // The stars this reef named over the Breach.
     const stars = FIGURES.filter((f) => s.sky[f.id]).map((f) => f.name);
     if (stars.length) out.push(SKY.ending.replace('{names}', stars.length > 1 ? `${stars.slice(0, -1).join(', ')} and ${stars.at(-1)}` : stars[0]!));

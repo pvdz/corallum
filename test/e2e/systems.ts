@@ -80,6 +80,11 @@ await withGame(async (open) => {
   await page.locator('.away:not([hidden]) button').last().click().catch(() => {});
   await dismiss();
 
+  // Ossel's question: answered, remembered, and answered back.
+  await page.locator('section.ossel-asks button').first().click();
+  check((await st()).asked.silt === '0', 'Ossel asked, and answered');
+  await dismiss();
+
   // The shoals' signal: repeat the pattern.
   const pattern = await page.evaluate(() => window.corallum!.signal());
   check(!!pattern, 'a signal comes');

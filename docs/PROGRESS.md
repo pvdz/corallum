@@ -509,3 +509,4 @@ date, what landed, what is half-done, what's next.
 - Dreams (events.ts DREAM; meta.dreams; economy dream; dailyGift adds one, max 3): a Dream (n) button in the prep row; main.ts runs catchUp(900).
 - Sea pens on the Silt Floor (render/life.ts drawSeaPens; a glowing creature for gifts): touched, a green wave runs up each in turn.
 - Ossel's requests: three more kinds (rising, signal, star); the bot skips them as it does touches.
+- Ossel's questions (content/ossel.ts QUESTIONS; state.asked; economy osselAsks/answerOssel; diary 'asked'): a card in choices.ts, the reply as a story, one ending page of what you told Ossel.

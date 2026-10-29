@@ -1,5 +1,6 @@
 // The whole game state. Plain JSON-able data so saving is a stringify.
 
+import type { QuestionId } from '../content/ossel.ts';
 import type { ForkId } from '../content/expeditions.ts';
 import type { GrainId, SportId } from '../content/act1.ts';
 import type { FigureId } from '../content/sky.ts';
@@ -132,6 +133,8 @@ export type GameState = {
   roseN: number;
   /** Grains chosen, in the order the bands set (every tenth band: content/act1.ts GRAIN). */
   grains: GrainId[];
+  /** Ossel's questions answered ('' not yet, else the answer's index as '0' or '1'). */
+  asked: Record<QuestionId, '' | '0' | '1'>;
   /** The polyps are closed against warm water (Sunlit Crown). */
   closed: boolean;
   /** Reef height up the seamount, metres. */
@@ -228,6 +231,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     strain: '',
     sport: '',
     closed: false,
+    asked: { silt: '', tell: '', keep: '', surface: '' },
     grains: [],
     rose: -1,
     roseN: 0,

@@ -19,6 +19,7 @@ import { ACT1, BANDS_ACT1, FLURRY, GRAIN, GRAINS, SPORT, SPORTS, type GrainId, t
 import { ACT2, RISING, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
 import { ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDLE, RIDDLES, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { FIGURES, SKY, type FigureId } from '../content/sky.ts';
+import { QUESTIONS, type Question, type QuestionId } from '../content/ossel.ts';
 import { ACT4, HEAT, BANDS_ACT4, DIALECTS, OTHERS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
 import { ACT5, BANDS_ACT5, GARDEN, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
@@ -927,6 +928,20 @@ export function choose(s: GameState, id: MeetingId, choice: Choice): boolean {
 }
 
 // ---------- Moments ----------
+
+/** Ossel's next question, once the reef is tall enough (one at a time, in order). */
+export function osselAsks(s: GameState): Question | undefined {
+  return QUESTIONS.find((q) => !s.asked[q.id] && s.height >= q.metres);
+}
+
+/** Answer Ossel (no effect on the numbers; remembered for the ending). */
+export function answerOssel(s: GameState, id: QuestionId, i: 0 | 1): boolean {
+  const q = osselAsks(s);
+  if (!q || q.id !== id) return false;
+  s.asked[id] = i === 0 ? '0' : '1';
+  remember(s, 'asked', q.answers[i].label);
+  return true;
+}
 
 /** The first moment the reef has reached and not yet answered. */
 export function nextMoment(s: GameState) {

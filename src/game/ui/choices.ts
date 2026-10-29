@@ -9,7 +9,8 @@ import { actAt } from '../content/acts.ts';
 import { SIGNAL } from '../content/events.ts';
 import { BOON_TEXT } from '../content/lineage.ts';
 import { FIGURES, SKY } from '../content/sky.ts';
-import { currentEncounter, grainsWaiting, sportOpen, boonsOffered, figureOpen, skyOpen, currentRiddle, currentSignal, forkOpen, othersCap, othersSpawning, strainOpen } from '../sim/economy.ts';
+import { QUESTION, type Question } from '../content/ossel.ts';
+import { osselAsks, currentEncounter, grainsWaiting, sportOpen, boonsOffered, figureOpen, skyOpen, currentRiddle, currentSignal, forkOpen, othersCap, othersSpawning, strainOpen } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { button, el } from './dom.ts';
 import { num } from './format.ts';
@@ -28,6 +29,22 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
   }
   strainBox.append(el('p', 'truce-kicker', STRAIN.kicker), el('p', 'truce-text', STRAIN.text), strainChoices);
   grow.prepend(strainBox);
+
+  // ---------- Ossel's questions ----------
+  const askBoxQ = el('section', 'truce moment ossel-asks');
+  askBoxQ.hidden = true;
+  const askText = el('p', 'truce-text');
+  const askChoices = el('div', 'truce-choices');
+  let asking: Question | undefined;
+  const askButtons = ([0, 1] as const).map((i) => {
+    const b = button('choice', '', () => { if (asking) hooks.answerOssel(asking.id, i); });
+    const label = el('strong');
+    b.append(label);
+    askChoices.append(b);
+    return label;
+  });
+  askBoxQ.append(el('p', 'truce-kicker', QUESTION.kicker), askText, askChoices);
+  grow.prepend(askBoxQ);
 
   // ---------- The strain's sport (at the Twilight Shelf) ----------
   const sportBox = el('section', 'truce moment sport');
@@ -173,6 +190,13 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
 
   return {
     update(s: GameState): void {
+      const q = osselAsks(s);
+      setShown(askBoxQ, !!q);
+      if (q && q !== asking) {
+        askText.textContent = q.ask;
+        q.answers.forEach((a, i) => { askButtons[i]!.textContent = a.label; });
+      }
+      asking = q;
       setShown(sportBox, sportOpen(s));
       if (sportOpen(s)) {
         sportText.textContent = SPORT.text(STRAINS.find((x) => x.id === s.strain)?.name ?? '');

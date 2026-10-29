@@ -18,6 +18,7 @@ export const DIARY: Record<string, string> = {
   reading: 'Your scouts read “{a}”.',
   roam: 'The shoals came home from roaming. {a}',
   mistake: 'Ossel misremembered: {a}.',
+  asked: 'Ossel asked you something, and you said: “{a}”',
   carcass: 'The shoals fed at the whale fall, and brought the reef its share.',
   visit: 'Your shoals visited the sister reef, and came home with its colours in their lights.',
 };

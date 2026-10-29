@@ -32,7 +32,7 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -47,6 +47,7 @@ import { drawMoon, glow as glowAt } from '../game/render/draw.ts';
 import { GAUGE_MOON } from '../game/content/act5.ts';
 import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { HEAT } from '../game/content/act4.ts';
+import { QUESTION, QUESTIONS } from '../game/content/ossel.ts';
 import { RISING } from '../game/content/act2.ts';
 import { FIGURES, SKY, type FigureId } from '../game/content/sky.ts';
 import { ACT1, GRAINS, MILESTONES, SPORTS, STRAINS, type Milestone } from '../game/content/act1.ts';
@@ -323,6 +324,13 @@ const panel = createPanel(ui, {
     if (tracing) audio.cue('shimmer');
   },
   feedRising: sendFeeders,
+  answerOssel(id, i) {
+    const q = QUESTIONS.find((x) => x.id === id);
+    if (!q || !answerOssel(state, id, i)) return;
+    audio.cue('whisper');
+    panel.story(QUESTION.kicker, q.answers[i].label, q.answers[i].reply);
+    save();
+  },
   dream() {
     if (!dream(state)) return;
     audio.cue('whisper');
@@ -1427,7 +1435,7 @@ function frame(now: number): void {
     const th = currentThorn(state);
     if (th && th.k !== thornHeard) audio.cue(th.kind === 'gull' ? 'gull' : 'intruder');
     thornHeard = th ? th.k : thornHeard;
-    const waitingChoice = `${nextMoment(state)?.id ?? ''}|${othersSpawning(state)}|${forkOpen(state)}|${strainOpen(state)}|${sportOpen(state)}`;
+    const waitingChoice = `${nextMoment(state)?.id ?? ''}|${othersSpawning(state)}|${forkOpen(state)}|${strainOpen(state)}|${sportOpen(state)}|${osselAsks(state)?.id ?? ''}`;
     if (waitingChoice !== choiceHeard && waitingChoice !== '|false|false|false') audio.cue('moment');
     choiceHeard = waitingChoice;
     // Ossel's mistakes: a claim heard, then the proof found: the correction is told.

@@ -2,6 +2,7 @@
 // reader and the away summary. Built once; `update()` only rewrites text and classes, so it
 // is cheap to call every frame.
 
+import type { QuestionId } from '../content/ossel.ts';
 import type { ForkId } from '../content/expeditions.ts';
 import { FIGURES, type FigureId } from '../content/sky.ts';
 import { ACT1, FLURRY, GRAINS, MILESTONES, SPORTS, STRAINS, type GrainId, type SportId, type StrainId } from '../content/act1.ts';
@@ -84,6 +85,7 @@ export type PanelHooks = {
   setCurrent(c: number): void;
   closeUp(closed: boolean): void;
   dream(): void;
+  answerOssel(id: QuestionId, i: 0 | 1): void;
   feedRising(): void;
   /** Trace a figure of the night sky (again: stop). */
   trace(id: FigureId): void;

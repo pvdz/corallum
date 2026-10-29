@@ -176,6 +176,10 @@ build leans one way. On the Silt Floor the grain bands show as coloured rings in
 **Flurries** (Silt Floor): every four minutes the Long Silt falls thick for 30 s; sweeps catch ×3 then
 (on the sim clock, so the snow and the pay agree; the Soon line counts down to the next).
 
+**Ossel's questions** (at 200, 1500, 3100 and 3850 m): Ossel asks the reef something (what the silt is
+for, whether to tell the spawn all of Thousandfold, what it would keep, what is past the light). No
+effect on the numbers: Ossel answers back, the reef's own bands record it, and the ending carries it.
+
 **Dreams**: each new calendar day brings one with the morning gift (at most three kept). A dream sleeps
 the reef a quarter of an hour forward at once (the exact offline advance) and shows the away summary.
 
