@@ -441,3 +441,4 @@ date, what landed, what is half-done, what's next.
 - The epilogue garden: act5.ts GARDEN, economy plant/plantCost, state.garden, +1 begin-again lineage each; card after the ending; colonies drawn in the Breach shallows.
 - Drill snail: the Silt Floor's intruder (from 20 m), tap to pick it off.
 - The Song dialect colours the melody in the shallows: lullaby slower and longer, chorus doubled a third above, call answers phrases with a high root.
+- Gulls: the Breach's intruder (before the release), circling and dipping; wave off for a spawn burst.

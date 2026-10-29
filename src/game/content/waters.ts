@@ -36,7 +36,7 @@ export const WATER = {
   turns: 'turns in',
   soon: 'Soon',
   feast: 'something falls',
-  intruder: { 'thorn-star': 'a thorn star', dragonfish: 'a dragonfish', 'drill-snail': 'a drill snail' } as Record<string, string>,
+  intruder: { 'thorn-star': 'a thorn star', dragonfish: 'a dragonfish', 'drill-snail': 'a drill snail', gull: 'a gull' } as Record<string, string>,
   moon: 'full moon',
   now: 'now',
 } as const;

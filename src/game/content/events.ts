@@ -39,14 +39,15 @@ export const THORN = {
   dragon: '· the dragonfish fled',
   lamps: '· the spire’s lamps dazzled it away',
   snail: '· the drill snail, off',
+  gull: '· the gull flew off',
   /** On the Silt Floor the snail comes once the reef is this tall. */
   snailFrom: 20,
 } as const;
 
 /** Which intruder comes in each zone. */
-export type Intruder = 'thorn-star' | 'dragonfish' | 'drill-snail';
+export type Intruder = 'thorn-star' | 'dragonfish' | 'drill-snail' | 'gull';
 export function intruderOf(zone: number): Intruder | null {
-  return zone === 1 ? 'drill-snail' : zone === 2 ? 'dragonfish' : zone === 3 || zone === 4 ? 'thorn-star' : null;
+  return zone === 5 ? 'gull' : zone === 1 ? 'drill-snail' : zone === 2 ? 'dragonfish' : zone === 3 || zone === 4 ? 'thorn-star' : null;
 }
 
 /** The shoals' signal: now and then the lanternfish flash a pattern; repeat it for a burst. Watching only. */

@@ -3,6 +3,7 @@
 // at the release they rise in their millions through the moonlight and spread on the surface.
 
 import { drawResidents } from './residents.ts';
+import { drawGull } from './thorn.ts';
 import { drawColony } from './daughters.ts';
 import { drawSong } from './song.ts';
 import { drawPool } from './works.ts';
@@ -816,6 +817,7 @@ export function createBreachScene(seed: number): Scene {
       drawWaitingFish(ctx, t, v, this.crownAt);
       drawDolphins(ctx, t);
       drawFlyingFish(ctx, t);
+      if (v.thorn?.kind === 'gull') drawGull(ctx, this.crownAt[0], waterY(), v.thorn.u, v.thorn.side, t, scale());
       if (v.bands.includes('rain')) drawRain(ctx, t);
       drawPool(ctx, L.cx, waterY(), v.works.pool, scale(), t);
       // The epilogue garden: children taking hold in the shallows either side of the crown.

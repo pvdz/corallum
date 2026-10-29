@@ -136,7 +136,7 @@ cucumbers: sand ×1.2; feather dusters + damselfish: bloom ×1.15). They live vi
 starfish climbs the reef for 70 s; tap it off for 2 minutes of the zone's currency. Guard crabs at
 home drive it off themselves at the last moment, for half (real biology: Trapezia crabs defend
 corals from crown-of-thorns starfish).
-On the Silt Floor (from 20 m) a drill snail bores into the coral. In the Midnight Water the intruder is a dragonfish stalking the feeding shoals; a finished lantern
+On the Silt Floor (from 20 m) a drill snail bores into the coral; at the Breach a gull goes for the ripening spawn. In the Midnight Water the intruder is a dragonfish stalking the feeding shoals; a finished lantern
 spire's lamps dazzle it away at the last moment, for half.
 
 **The shoals' signal** (Midnight Water and Twilight Shelf, while watching): every six minutes, for 75 s,

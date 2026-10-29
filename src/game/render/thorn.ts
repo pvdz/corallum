@@ -140,3 +140,41 @@ function drawSnail(ctx: CanvasRenderingContext2D, x: number, y: number, s: numbe
   }
   ctx.restore();
 }
+
+/** A gull circling low over the crown, now and then dipping at the surface; `u` runs its stay. */
+export function drawGull(ctx: CanvasRenderingContext2D, cx: number, waterY: number, u: number, side: number, t: number, s: number): void {
+  const a = t * 0.9 * side;
+  const dip = Math.max(0, Math.sin(t * 0.7)) ** 6;
+  const x = cx + Math.cos(a) * 120 * s;
+  const y = waterY - (70 - dip * 55) * s + Math.sin(a) * 18 * s - (1 - Math.min(1, u * 6)) * 200 * s;
+  const k = 1.4 * s;
+  sight('gull');
+  spot('gull', x, y, 24 * k);
+  const flap = Math.sin(t * 6) * 0.5;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(Math.cos(a + Math.PI / 2) * side > 0 ? 1 : -1, 1);
+  ctx.strokeStyle = '#e8ecf0';
+  ctx.fillStyle = '#e8ecf0';
+  ctx.lineWidth = 2.2 * k;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(-14 * k, (-4 - flap * 6) * k);
+  ctx.quadraticCurveTo(-6 * k, (-8 - flap * 4) * k, 0, 0);
+  ctx.quadraticCurveTo(6 * k, (-8 - flap * 4) * k, 14 * k, (-4 - flap * 6) * k);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.ellipse(0, 0.5 * k, 5 * k, 2 * k, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#2a2a2e';
+  ctx.beginPath();
+  ctx.arc(4 * k, -0.5 * k, 0.6 * k, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#e8b040';
+  ctx.beginPath();
+  ctx.moveTo(5 * k, 0);
+  ctx.lineTo(8 * k, 0.6 * k);
+  ctx.lineTo(5 * k, 1.2 * k);
+  ctx.fill();
+  ctx.restore();
+}

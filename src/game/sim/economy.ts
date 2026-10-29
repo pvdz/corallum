@@ -1478,7 +1478,7 @@ export type Thorn = { k: number; start: number; side: number; kind: Intruder };
 /** The intruder now, if any: a thorn star on the shelf and in the light, a dragonfish in the Midnight Water. */
 export function currentThorn(s: GameState): Thorn | null {
   const kind = intruderOf(actAt(s.height));
-  if (!kind || (kind === 'dragonfish' && s.levels.shoal === 0) || (kind === 'drill-snail' && s.height < THORN.snailFrom)) return null;
+  if (!kind || (kind === 'dragonfish' && s.levels.shoal === 0) || (kind === 'drill-snail' && s.height < THORN.snailFrom) || (kind === 'gull' && ended(s))) return null;
   const k = Math.floor(s.t / THORN.period);
   if (k <= s.thorned) return null;
   const r = mulberry32((s.seed ^ 0x7a0e) + Math.imul(k, 0x9e3779b1));
@@ -1489,7 +1489,7 @@ export function currentThorn(s: GameState): Thorn | null {
 /** Seconds until the next intruder comes (0 while one is here; Infinity where none come). */
 export function untilThorn(s: GameState): number {
   const kind = intruderOf(actAt(s.height));
-  if (!kind || (kind === 'dragonfish' && s.levels.shoal === 0) || (kind === 'drill-snail' && s.height < THORN.snailFrom)) return Infinity;
+  if (!kind || (kind === 'dragonfish' && s.levels.shoal === 0) || (kind === 'drill-snail' && s.height < THORN.snailFrom) || (kind === 'gull' && ended(s))) return Infinity;
   if (currentThorn(s)) return 0;
   for (let k = Math.floor(s.t / THORN.period); k < Math.floor(s.t / THORN.period) + 3; k++) {
     if (k <= s.thorned) continue;
