@@ -551,14 +551,47 @@ export function createBreachScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** A squall: every 25 minutes, for a minute and a half, the wind gets up (0 calm … 1 at its height). */
+  function squallAt(t: number): number {
+    const p = (t + 500) % 1500;
+    return p > 90 ? 0 : Math.min(1, p / 10, (90 - p) / 15);
+  }
+
+  /** The squall's spray: white spume torn off the wave tops and blown along, and rain driven slantwise. */
+  function drawSquall(ctx: CanvasRenderingContext2D, t: number, k: number): void {
+    const s = scale(), wy = waterY();
+    ctx.save();
+    ctx.fillStyle = `rgba(20,24,40,${0.25 * k})`;
+    ctx.fillRect(0, 0, w, wy);
+    ctx.strokeStyle = `rgba(200,215,240,${0.35 * k})`;
+    ctx.lineWidth = 1 * s;
+    ctx.beginPath();
+    for (let i = 0; i < 140; i++) {
+      const x = ((i * 0.618 + t * 0.9) % 1.2 - 0.1) * w;
+      const y = ((i * 0.381 + t * 1.6) % 1) * wy;
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + 14 * s, y + 9 * s);
+    }
+    ctx.stroke();
+    ctx.fillStyle = `rgba(240,245,255,${0.6 * k})`;
+    for (let i = 0; i < 50; i++) {
+      const x = ((i * 0.618 + t * 0.35) % 1) * w, y = wy - 4 * s - ((i * 0.37 + t * 0.8) % 1) * 18 * s;
+      ctx.beginPath();
+      ctx.arc(x, y, (1 + (i % 3)) * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
   function drawWaves(ctx: CanvasRenderingContext2D, t: number): void {
     const wy = waterY();
-    ctx.strokeStyle = 'rgba(200,225,255,0.35)';
+    const sq = squallAt(t);
+    ctx.strokeStyle = `rgba(200,225,255,${0.35 + 0.3 * sq})`;
     ctx.lineWidth = 1.5 * dpr;
     for (let k = 0; k < 3; k++) {
       ctx.beginPath();
       for (let x = 0; x <= w; x += 8 * dpr) {
-        const y = wy + k * 5 * dpr + Math.sin(x / (35 * dpr) + t * (1.2 + k * 0.4) + k) * 3 * dpr;
+        const y = wy + k * 5 * dpr + Math.sin(x / (35 * dpr) + t * (1.2 + k * 0.4 + sq * 1.5) + k) * (3 + 7 * sq) * dpr;
         if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
       }
       ctx.stroke();
@@ -1448,6 +1481,7 @@ export function createBreachScene(seed: number): Scene {
       drawSong(ctx, v.song, this.crownAt[0], this.crownAt[1], t, scale());
       reef.drawEffects(ctx, L, v, effects.live(t));
       drawWaves(ctx, t);
+      if (squallAt(t) > 0) drawSquall(ctx, t, squallAt(t));
       if (v.swell) drawSwell(ctx, v.swell, this.crownAt);
       drawSparkle(ctx, t, dawn);
       if (v.bands.includes('air')) drawGlowSurf(ctx, t, this.crownAt);
