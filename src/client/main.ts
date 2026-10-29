@@ -926,6 +926,7 @@ const rarePassing = new Map<string, number>();
 let lastJournal = 0;
 let lastFeatCheck = 0;
 let shownRecord = -1;
+let lastDolphinLap = -1;
 let lastWhaleLap = -1;
 // ?at=<sec> starts the scene clock there (to reach timed events such as rare creatures).
 let animT = params.has('at') ? Number(params.get('at')) : 40;
@@ -995,6 +996,10 @@ function frame(now: number): void {
   const whaleLap = Math.floor(tNow / 210);
   if (actAt(state.height) === 4 && whaleLap !== lastWhaleLap && tNow % 210 < 5) audio.cue('whale');
   lastWhaleLap = whaleLap;
+  // The Breach's dolphins (render/breach.ts: a leap every 75 s of scene time) whistle as they go.
+  const dolphinLap = Math.floor(tNow / 75);
+  if (actAt(state.height) === 5 && dolphinLap !== lastDolphinLap && tNow % 75 < 2) audio.cue('dolphin');
+  lastDolphinLap = dolphinLap;
   whisperCheck(now);
   if (fpsBox) fpsTick(now, dt);
   updateGauge();

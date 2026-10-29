@@ -318,3 +318,4 @@ date, what landed, what is half-done, what's next.
 - Refactor: view-mode zoom moved to client/zoom.ts (createZoom: apply, toWorld, toScreen, zoomAt, pinchDown, reset); main.ts 1132 → 1068 lines. Smoke, play, feast, pinch and wheel checks pass.
 - Touching a creature ticks the phone's vibration (double tick with a gift), when vibration is on.
 - Audio: the Sunlit Crown's ambience crackles quietly with snapping shrimp (random high-passed clicks).
+- Audio: the Breach's dolphins whistle as each leap begins (cue 'dolphin').
