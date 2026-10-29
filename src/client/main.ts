@@ -18,6 +18,7 @@ import { ACTS, act, actAt } from '../game/content/acts.ts';
 import { createAbyssScene } from '../game/render/abyss.ts';
 import { createMidnightScene } from '../game/render/midnight.ts';
 import { drawFragment, drawPinned, drawStray, drawTangle } from '../game/render/tangle.ts';
+import { drawOthersSpawn } from '../game/render/spawning.ts';
 import { createBreachScene, lightningAt, squallAt } from '../game/render/breach.ts';
 import { createSunlitScene } from '../game/render/sunlit.ts';
 import { createTwilightScene } from '../game/render/twilight.ts';
@@ -45,7 +46,7 @@ import { newFeats } from '../game/content/feats.ts';
 import { createPortraits } from './portraits.ts';
 import { createZoom } from './zoom.ts';
 import { drawMoon, glow as glowAt } from '../game/render/draw.ts';
-import { GAUGE_MOON } from '../game/content/act5.ts';
+import { ACT5, GAUGE_MOON } from '../game/content/act5.ts';
 import { creatureAt, endFrameSpots, hover, poke, spoke, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { HEAT } from '../game/content/act4.ts';
 import { AGAIN, QUESTION, QUESTIONS, OSSEL_PAST } from '../game/content/ossel.ts';
@@ -1945,6 +1946,11 @@ function frame(now: number): void {
   const fe = currentFeast(state);
   if (fe) drawFeast(ctx, fe, state.t - fe.start, tNow, focusNow, dpr, feastPay(state));
   const tg = currentTangle(state);
+  // Under the full moon the other reefs spawn: their bundles rise through the water below the Breach.
+  if (actAt(state.height) <= 4 && state.height >= 1 && moonFull(state.t)) {
+    const strength = Math.min(1, (ACT5.fullWindow - Math.abs(moonPhase(state.t) - 0.5)) / (ACT5.fullWindow * 0.3));
+    drawOthersSpawn(ctx, focusNow, tNow, strength, actAt(state.height) <= 2 ? 1 : actAt(state.height) === 3 ? 0.5 : 0, dpr);
+  }
   const sy = currentStray(state);
   if (sy) drawStray(ctx, sy, STRAY.life, tNow, focusNow, dpr);
   const fr = currentFragment(state);

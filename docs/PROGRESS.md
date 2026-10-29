@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended goal (user): add content, gameplay and graphics, keep going. Latest: yeti crabs, sargassum raft (Breach), bristlemouths, two great works in every zone (fence, beacon, rim, lawn, dome), moonlit sweeps, Quiet vow, Ossel's past memories, Long rhythm, lost shoals, fragments (+ Foster, Scattered city), hermit crab, man-o'-war, star march, fireworms, thermocline, sea spider, phone stock grid. Bot ~7h28; 7 browser tests + sim tests green. Run e2e with `timeout 500` per test.
+NOW: Open-ended goal (user): add content, gameplay and graphics, keep going. Latest: others' spawn drawn under the full moon, bristle-cloud + weed moments, yeti crabs, sargassum raft (Breach), bristlemouths, two great works in every zone (fence, beacon, rim, lawn, dome), moonlit sweeps, Quiet vow, Ossel's past memories, Long rhythm, lost shoals, fragments (+ Foster, Scattered city), hermit crab, man-o'-war, star march, fireworms, thermocline, sea spider, phone stock grid. Bot ~7h28; 7 browser tests + sim tests green. Run e2e with `timeout 500` per test.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -729,3 +729,4 @@ date, what landed, what is half-done, what's next.
 - Feat: A floating nursery (shelter under three weed rafts on one reef).
 - Creature: yeti crabs on the vent chimney's lower slope (Silt Floor), waving hairy claws in time; touched, they fold their arms.
 - Moments: A cloud settles (1300 m; bristlemouths stay → lost shoals twice as often, or shake them out → calcite ×1.05) and Weed on the crown (3985 m; rafts pay ×1.5, or freed creatures pay ×1.5). Bot 7h28 unchanged.
+- Graphics: under every full moon (Silt Floor to Sunlit Crown) the other reefs' spawn rises through the water as a slow pink snow (render/spawning.ts), swelling in and out with the moon; faintly lit in the deep.
