@@ -186,6 +186,10 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   .card footer { grid-area: foot; flex-direction: column; align-items: flex-end; justify-content: center; gap: 3px; }
   .buy { min-width: 104px; padding: 6px 12px; font-size: 12.5px; }
   .eta { font-size: 11px; }
+  /* The spawning card has more parts than an upgrade: stack them, button at the bottom. */
+  .card.spawn-lesser { display: block; }
+  .card.spawn-lesser .flavour { white-space: normal; }
+  .card.spawn-lesser footer { display: flex; flex-direction: row; justify-content: flex-end; margin-top: 8px; }
 }
 
 #yielded {
