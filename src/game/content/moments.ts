@@ -3,10 +3,13 @@
 // effect for this reef (applied in sim/economy.ts by `chose()`). Told in Ossel's voice.
 
 export type MomentId = 'brittle' | 'vent-crack' | 'snow' | 'lost-shoal' | 'hunters' | 'angler' | 'squid' | 'whale-fall' | 'old-lamp' | 'cleaners'
-  | 'young-rasp' | 'slope' | 'eggs' | 'storm' | 'turtle' | 'first-light' | 'last-night' | 'bird';
+  | 'young-rasp' | 'slope' | 'eggs' | 'storm' | 'turtle' | 'first-light' | 'last-night' | 'bird'
+  | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes';
 
 export type MomentOption = { label: string; effect: string; text: string };
-export type Moment = { id: MomentId; metres: number; title: string; text: string; a: MomentOption; b: MomentOption };
+export type Moment = { id: MomentId; metres: number; title: string; text: string; a: MomentOption; b: MomentOption;
+  /** Only on this seamount (the hard places each have one of their own). */
+  seamount?: string };
 
 export const MOMENT = { kicker: 'A moment', choose: 'What do you do?' } as const;
 
@@ -154,5 +157,35 @@ export const MOMENTS: readonly Moment[] = [
       text: 'You pull everything in and wait under your own stone until the sea comes back. What you have ripened, you keep.' },
     b: { label: 'Bear it', effect: 'spawn ×1.1',
       text: 'You stay open. It hurts. Every hour in the air ripens what you carry a little faster.' },
+  },
+  {
+    id: 'krill', metres: 400, seamount: 'hungry', title: 'A swarm of krill',
+    text: 'In all this thin water, suddenly: a cloud of krill, lost and drifting past.',
+    a: { label: 'Eat everything', effect: 'calcite ×1.1', text: 'You eat until the cloud is gone. On a hungry seamount, you remember feasts.' },
+    b: { label: 'Let some settle', effect: 'plankton ×1.2', text: 'You let half of them sink into your branches and breed. Their children feed the shoals.' },
+  },
+  {
+    id: 'echo', metres: 900, seamount: 'silent', title: 'An echo',
+    text: 'Nothing lies buried here, and yet when the scouts listen, something faint answers from very far off.',
+    a: { label: 'Listen to it', effect: 'murmurs fade ×0.5', text: 'It is another reef, far off, remembering. You hold its voice in your stone.' },
+    b: { label: 'Answer it', effect: 'glow ×1.15', text: 'You flash back across all that dark. It flashes back. You are not as alone as this seamount pretends.' },
+  },
+  {
+    id: 'far-light', metres: 600, seamount: 'lonely', title: 'The far light',
+    text: 'The light on the horizon has come a little closer. It is a reef, and it is calling the shoals.',
+    a: { label: 'Keep your shoals', effect: 'shoals feed ×1.15', text: 'You glow harder. Your few shoals stay, and work harder for it.' },
+    b: { label: 'Share them', effect: '+2 lineage at the next spawning', text: 'You let two shoals go to it. Next season, its spawn finds yours.' },
+  },
+  {
+    id: 'drifts', metres: 3200, seamount: 'buried', title: 'The drifts move',
+    text: 'The silt drifts heaped around your foot begin to slide, all of them at once, downslope.',
+    a: { label: 'Let them go', effect: 'silt swept +0.03/s', text: 'They go, and the water clears behind them, and the way stays open.' },
+    b: { label: 'Build on them', effect: 'calcite dissolves ×0.9', text: 'You lay stone over the shifting silt and make it hold. A wider foot, a steadier reef.' },
+  },
+  {
+    id: 'eyes', metres: 700, seamount: 'dark', title: 'Eyes in the dark',
+    text: 'Where your light cannot reach, something with very large eyes has been watching you for days.',
+    a: { label: 'Light it up', effect: 'lure +0.5', text: 'You flare. It is only a fish, with eyes as big as itself. It stays, as if your light were a gift.' },
+    b: { label: 'Stay dim', effect: 'glow fades ×0.8', text: 'You let it watch. In the dark, you learn to hold your light close and keep it.' },
   },
 ];

@@ -483,3 +483,4 @@ date, what landed, what is half-done, what's next.
 - The drifting lamp, taken in (moment), hangs lit in the branches.
 - Pin a card (📌): its wait shows in the tab title.
 - Flurries on the Silt Floor drive sweeps ×3 (act1.ts FLURRY, economy inFlurry/untilFlurry; abyss drawFlurry on the sim clock; Soon line).
+- Each hard seamount has a moment of its own (moments.ts `seamount`, nextMoment filters on it): krill, echo, far light, drifts, eyes.
