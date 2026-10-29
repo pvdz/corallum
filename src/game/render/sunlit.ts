@@ -230,6 +230,29 @@ export function createSunlitScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * Dappled light on the coral: the caustic net from the surface moving over the branches, drawn
+   * as soft glints on the reef's nodes where the pattern is bright.
+   */
+  function drawCausticsOnReef(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, t: number, day: number): void {
+    if (day <= 0.05) return;
+    const c = reef.coral;
+    const s = L.s;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < c.count; i += 2) {
+      if (c.y[i]! > L.top || c.parent[i]! < 0) continue;
+      const [x, y] = reef.nodePx(L, i);
+      // Two crossing wave trains make a moving net; only its bright crests light the stone.
+      const u = x / (14 * s), v = y / (14 * s);
+      const net = Math.sin(u + t * 0.9) * Math.sin(v * 0.8 - t * 0.7) + Math.sin((u + v) * 0.7 + t * 0.5);
+      const a = Math.max(0, net - 0.6) * 0.6 * day;
+      if (a < 0.02) continue;
+      glow(ctx, x, y, 12 * s, '255,250,215', Math.min(0.6, a));
+    }
+    ctx.restore();
+  }
+
   /** An anemone on the sand with its pair of clownfish weaving in and out of the tentacles. */
   function drawAnemone(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale() * 1.5;
@@ -504,6 +527,7 @@ export function createSunlitScene(seed: number): Scene {
       slugs.draw(ctx, reef, L, t);
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
+      drawCausticsOnReef(ctx, reef, L, t, 1 - night);
       // Reef fish shelter in the branches at night.
       ctx.save();
       ctx.globalAlpha = 1 - 0.85 * night;
