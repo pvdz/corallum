@@ -168,3 +168,4 @@ date, what landed, what is half-done, what's next.
 - Sunlit Crown: a 10-minute day — dusk, a blue night (veil behind and over the reef, plankton sparks, moonlit surface, the reef's own glow returns, reef fish shelter), dawn.
 - Twilight Shelf: an octopus rests sand-coloured on the slope, then crawls a short way flushing red (journal: 19 creatures).
 - Feasts pay in the zone's currency: carrion → calcite (Acts I–III), a drifting sargassum mat → bloom (Sunlit Crown), a rising swarm of moon plankton → spawn (the Breach, kept to the open water beside the reef).
+- Nudibranchs (render/slugs.ts): seven bright sea slugs creep along the reef's own branch paths (tip toward trunk and back) in the Twilight Shelf and Sunlit Crown; one tip per reef column so they spread out. Journal: 20 creatures.

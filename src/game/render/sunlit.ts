@@ -2,6 +2,7 @@
 // sand, young reefs of every shape, bright reef fish, drifting larvae. The reef's own shape
 // follows its Form dialect: a fan until it chooses, then antlers, a dome, or stacked tables.
 
+import { createSlugs } from './slugs.ts';
 import { sight } from './sightings.ts';
 import type { DialectId } from '../content/act4.ts';
 import { mulberry32, range } from '../sim/rng.ts';
@@ -49,6 +50,7 @@ export function createSunlitScene(seed: number): Scene {
   };
   const shoals = createShoals(seed ^ 0x77);
   const water = createLayerCache(0.5);
+  const slugs = createSlugs(7);
   let lastT = 0;
   const effects = createEffects();
   let bloom: Bloom | null = null;
@@ -442,6 +444,7 @@ export function createSunlitScene(seed: number): Scene {
       if (night > 0) drawNight(ctx, t, night, 0.55);
       reef.draw(ctx, L, v, t);
       drawCraft(ctx, v.craft, reef, L, t, 1);
+      slugs.draw(ctx, reef, L, t);
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
       // Reef fish shelter in the branches at night.

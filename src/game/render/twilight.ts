@@ -2,6 +2,7 @@
 // grazing it, pale sand bars where they have been, and Ossel's dead wall beside the reef —
 // until the truce decides what happens to it.
 
+import { createSlugs } from './slugs.ts';
 import { sight } from './sightings.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
@@ -41,6 +42,7 @@ export function createTwilightScene(seed: number): Scene {
     u: (i < 11 ? 0.12 : 0.72) + rng() * 0.16, len: range(rng, 22, 36), light: rng() < 0.6,
   }));
   const water = createLayerCache(0.5);
+  const slugs = createSlugs(7);
   const ruins = createRuins(seed);
   const effects = createEffects();
   let bloom: Bloom | null = null;
@@ -490,6 +492,7 @@ export function createTwilightScene(seed: number): Scene {
       drawRasp(ctx, t, v.rasp, v.raspTrust, v.raspPolite);
       if (v.gardeners) drawGardeners(ctx, t);
       reef.draw(ctx, L, v, t);
+      slugs.draw(ctx, reef, L, t);
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
       shoals.drawFront(ctx, focus, reef, L, v, t, '#1d3557');
