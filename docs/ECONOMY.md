@@ -76,6 +76,10 @@ A trip removes `shoals` from the jobs for `seconds`; the return is a breakpoint:
 dt at `expedition.back`, so offline equals stepped online (test/sim/expedition.test.ts). Pay on
 return: murmurs = 0.5 × shoals × seconds, plus the relic's multiplier (economy.ts `found()`).
 
+## Residents (Act III–V)
+Homes = count of [3000, 3400, 3800] ≤ height. Effects are plain multipliers in `rates()` (`lives()`),
+so offline needs nothing new.
+
 ## Readings spread out
 Reading costs 40/900/1800/3000/4500/6000/8000/7000/7500 murmurs (were 25…16000 with five under
 1100, so five stories landed within four minutes). Now one every 5–15 min through Act II. Act II

@@ -68,6 +68,13 @@ murmurs fade ×0.5, Rasp sand ×1.3). The verb is committing: a costly pause for
 best timed before going away. Shown in the world as a stream of shoal lights leaving for the
 edge of the water and hanging far off as a flicker.
 
+**Residents** (from 3000 m): the reef has homes for small animals that live with corals: one on
+the shelf, a second at 3400 m, a third at 3800 m. Six ask (guard crabs: Rasp eat ×0.5; pistol shrimp:
+silt swept +0.04/s; sea cucumbers: sand ×1.4; from 3400 m coral gobies: calcite ×1.15 and feather
+dusters: plankton ×1.3; from 3800 m farmer damselfish: bloom ×1.3). Taking one in or letting it go
+is free, so the verb is choosing a loadout that fits the zone (silt and Rasp on the shelf, bloom in
+the light). They live visibly on the coral and in the journal ("Residents"), each tappable.
+
 Falling feasts (from 42 m, late in the Silt Floor where buying slows): something dead sinks past the reef every few minutes; tap it (or F)
 for 90 s of calcite. A reward for watching (principle 6: never needed, never lost offline), and the
 "What falls" band made playable.

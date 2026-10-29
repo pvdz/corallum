@@ -102,4 +102,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Creature journal ("Seen for the first time"; 18 real animals plus the Rasp) | collection logs are a genre convention; animals are real | OK |
 | Feats (24 goals, named after story beats and zones) | achievements are a genre convention; names are our own | OK |
 | Expeditions to Thousandfold's ruins (the fallen gate, the nursery terraces, the lamp hall, the listening wells, the beak midden) bringing back relics | sending units away on timed trips is a genre convention; the sites, relics and the midden beat (Ossel: "I was there, and I did not know") are our own | OK |
+| Residents (guard crabs, pistol shrimp, sea cucumbers, coral gobies, feather dusters, farmer damselfish) given homes in the reef | real coral symbioses (Trapezia crabs, gobies, damselfish gardens); limited slots are a genre convention | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

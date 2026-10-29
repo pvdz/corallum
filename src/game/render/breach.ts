@@ -2,6 +2,7 @@
 // path on the waves, the reef's crown breaking the water. Spawn bundles swell on the polyps;
 // at the release they rise in their millions through the moonlight and spread on the surface.
 
+import { drawResidents } from './residents.ts';
 import { sight, spot, startled } from './sightings.ts';
 import type { DialectId } from '../content/act4.ts';
 import { mulberry32, range } from '../sim/rng.ts';
@@ -669,6 +670,7 @@ export function createBreachScene(seed: number): Scene {
       // Moonlight through the moving surface, on the stone below it.
       reef.drawCaustics(ctx, L, t, 0.55 * (1 - Math.abs(v.moonPhase - 0.5) * 2) * (1 - dawn) + 0.6 * dawn, dawn > 0.5 ? '255,235,200' : '200,215,255', waterY());
       drawCraft(ctx, v.craft, reef, L, t, 0.6);
+      drawResidents(ctx, reef, L, v.residents, t, seed);
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
       drawWaves(ctx, t);

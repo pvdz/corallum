@@ -5,6 +5,7 @@ import { CREATURES, type CreatureId } from '../content/creatures.ts';
 import type { MeetingId } from '../content/act3.ts';
 import type { DialectId, DialectTier } from '../content/act4.ts';
 import type { MemoryId } from '../content/act5.ts';
+import type { ResidentId } from '../content/residents.ts';
 import type { SiteId } from '../content/expeditions.ts';
 import type { SeamountId, TraitId } from '../content/lineage.ts';
 import type { UpgradeId } from '../content/types.ts';
@@ -101,6 +102,8 @@ export type GameState = {
   history: number[];
   /** Shoals away at a ruin: the site ('' for none), when they return, and the jobs they left. */
   expedition: { site: SiteId | ''; back: number; feed: number; light: number; scout: number };
+  /** Animals living in the reef's homes (content/residents.ts). */
+  residents: ResidentId[];
   /** Ruins searched this run (content/expeditions.ts), in order. */
   relics: SiteId[];
   /** Sim time each creature last gave a gift when touched (content/creatures.ts GIFT). */
@@ -148,6 +151,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     history: [],
     expedition: { site: '', back: 0, feed: 0, light: 0, scout: 0 },
     relics: [],
+    residents: [],
     gifts: Object.fromEntries(CREATURES.map((c) => [c.id, -1e9])) as Record<CreatureId, number>,
     seamount: 'plain',
     earned: { calcite: 0, glow: 0, murmurs: 0 },

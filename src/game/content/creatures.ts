@@ -6,7 +6,8 @@ export type CreatureId =
   | 'lanternfish' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration'
   | 'rasp' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark'
   | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly'
-  | 'shore-bird' | 'dolphin' | 'moon-jelly';
+  | 'shore-bird' | 'dolphin' | 'moon-jelly'
+  | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish';
 
 export type Creature = { id: CreatureId; name: string; zone: string; note: string };
 
@@ -50,6 +51,12 @@ export const CREATURES: readonly Creature[] = [
   { id: 'bait-ball', name: 'A bait ball', zone: 'The Sunlit Crown', note: 'Small fish pressed into one turning shape, and hunters going through it.' },
   { id: 'sea-firefly', name: 'Sea fireflies', zone: 'The Sunlit Crown', note: 'Only after dark. Specks that court in light, leaving strings of blue pearls as they rise.' },
   { id: 'shore-bird', name: 'Shore bird', zone: 'The Breach', note: 'It walks on your crown at low tide, as if it owned it.' },
+  { id: 'guard-crab', name: 'Guard crabs', zone: 'Residents', note: 'Red as a warning, no bigger than a polyp. They pinch for you.' },
+  { id: 'pistol-shrimp', name: 'Pistol shrimp', zone: 'Residents', note: 'A snap so loud the water lights for an instant.' },
+  { id: 'sea-cucumber', name: 'Sea cucumbers', zone: 'Residents', note: 'They eat the floor and leave it cleaner.' },
+  { id: 'goby', name: 'Coral gobies', zone: 'Residents', note: 'Perched on the branches like birds, watching everything.' },
+  { id: 'feather-duster', name: 'Feather dusters', zone: 'Residents', note: 'Crowns of feathers that vanish into their tubes at a shadow.' },
+  { id: 'damselfish', name: 'Farmer damselfish', zone: 'Residents', note: 'They keep gardens, and will fight a turtle over one.' },
 ];
 
 /**

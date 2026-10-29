@@ -3,6 +3,7 @@
 // until the truce decides what happens to it.
 
 import { createSlugs } from './slugs.ts';
+import { drawResidents } from './residents.ts';
 import { sight, spot, startled } from './sightings.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
@@ -940,6 +941,8 @@ export function createTwilightScene(seed: number): Scene {
       drawSiltSlide(ctx, t, v.siltLevel);
       reef.draw(ctx, L, v, t);
       slugs.draw(ctx, reef, L, t);
+      drawResidents(ctx, reef, L, v.residents, t, seed,
+        (x) => slopeY(Math.min(1, Math.max(0, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2)))));
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
       shoals.drawFront(ctx, focus, reef, L, v, t, '#1d3557');

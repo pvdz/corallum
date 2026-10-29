@@ -2,6 +2,7 @@
 
 import type { Job } from '../content/act2.ts';
 import type { DialectId } from '../content/act4.ts';
+import type { ResidentId } from '../content/residents.ts';
 import type { UpgradeId } from '../content/types.ts';
 
 /** What a scene needs from the game state. */
@@ -22,6 +23,8 @@ export type ReefView = {
   shoals: number;
   jobs: Record<Job, number>;
   /** Shoals away at a ruin: how many, sim seconds since they left and until they are back, which side they went. */
+  /** Animals living in the reef's homes. */
+  residents: readonly ResidentId[];
   trip: { shoals: number; since: number; left: number; side: number } | null;
   /** 0..1 of plankton's effect, for how thick the plankton motes are. */
   planktonLevel: number;

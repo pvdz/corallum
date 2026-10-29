@@ -14,13 +14,14 @@ import { CREATURES } from '../content/creatures.ts';
 import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
 import { upgradeIcon } from './icons.ts';
 import { FEATS } from '../content/feats.ts';
+import { RESIDENT, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { EXPEDITION, site, type Site } from '../content/expeditions.ts';
 import { canSpawnLesser, lineageFor, traitCost, traitMaxed } from '../sim/prestige.ts';
 import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -31,6 +32,8 @@ export type PanelHooks = {
   read(id: ReadingId): void;
   /** Send shoals to the next ruin. */
   send(): void;
+  /** Take a resident in, or let it go. */
+  house(id: ResidentId): void;
   setRasp(n: number): void;
   choose(id: MeetingId, choice: Choice): void;
   speak(id: DialectId): void;
@@ -254,6 +257,28 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     jobRows.set(j.id, { row, count, what, minus, plus });
   }
   grow.append(shoalBox);
+
+  // ---------- Residents ----------
+  const homeBox = el('section', 'residents');
+  homeBox.hidden = true;
+  const homeHead = el('header');
+  const homeCount = el('span', 'level');
+  homeHead.append(el('h3', '', RESIDENT.label), homeCount);
+  homeBox.append(homeHead, el('p', 'rasp-what', RESIDENT.intro));
+  const homeRows = new Map<ResidentId, { row: HTMLElement; btn: HTMLButtonElement }>();
+  for (const r of RESIDENTS) {
+    const row = el('div', `job resident resident-${r.id}`);
+    row.hidden = true;
+    const label = el('div', 'job-label');
+    label.append(el('span', 'job-name', r.name), el('span', 'job-what', r.effect), el('span', 'job-what resident-text', r.text));
+    label.addEventListener('click', () => row.classList.toggle('open'));
+    row.title = r.text;
+    const btn = button('step take', RESIDENT.take, () => hooks.house(r.id));
+    row.append(label, btn);
+    homeBox.append(row);
+    homeRows.set(r.id, { row, btn });
+  }
+  grow.append(homeBox);
 
   // ---------- Expeditions ----------
   const tripCard = el('article', 'card expedition');
@@ -1018,6 +1043,22 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
             : j.id === 'feed' ? (perFeed ? `${rate(perFeed)} plankton each` : 'herd plankton to the polyps') + gainText(jobGains.feed)
             : j.id === 'light' ? (perLight ? `${rate(perLight)} glow each` : 'swim the glow pattern') + gainText(jobGains.light)
             : perScout ? `${rate(perScout)} murmurs each` : 'listen at buried bands';
+        }
+      }
+
+      // Residents: who may move in, and who has.
+      const nHomes = homes(s);
+      homeBox.hidden = nHomes === 0;
+      if (nHomes > 0) {
+        const asking = residentsAsking(s);
+        homeCount.textContent = `${s.residents.length} of ${nHomes} home${nHomes === 1 ? '' : 's'}`;
+        for (const r of RESIDENTS) {
+          const h = homeRows.get(r.id)!;
+          h.row.hidden = !asking.includes(r);
+          const living = s.residents.includes(r.id);
+          h.row.classList.toggle('living', living);
+          h.btn.textContent = living ? RESIDENT.release : s.residents.length >= nHomes ? RESIDENT.full : RESIDENT.take;
+          h.btn.disabled = !living && s.residents.length >= nHomes;
         }
       }
 

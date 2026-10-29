@@ -24,6 +24,7 @@ import { act, actAt, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, giftOf, type CreatureId, type GiftStock } from '../content/creatures.ts';
 import { LINEAGE, SEAMOUNTS, type Seamount, type TraitId } from '../content/lineage.ts';
 import { FEAST } from '../content/events.ts';
+import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { EXPEDITION, SITES, type Site, type SiteId } from '../content/expeditions.ts';
 import type { Band, Currency, UpgradeDef, UpgradeId } from '../content/types.ts';
 import { UPGRADES } from '../content/upgrades.ts';
@@ -131,6 +132,10 @@ export function settleRate(s: GameState): number {
   return ACT1.settleRate * (trait(s, 'settling') ? 2 : 1);
 }
 
+function lives(s: GameState, id: ResidentId): boolean {
+  return s.residents.includes(id);
+}
+
 function found(s: GameState, id: SiteId): boolean {
   return s.relics.includes(id);
 }
@@ -187,18 +192,18 @@ export function rates(s: GameState): Rates {
       lightGlow * s.jobs.light) * 1.5 ** trait(s, 'glimmer'),
     glowK: ACT1.glowFade,
     planktonP: ACT2.feedRate * s.jobs.feed * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
-      (speaks(s, 'sweepers') ? 3 : 1),
+      (speaks(s, 'sweepers') ? 3 : 1) * (lives(s, 'feather-duster') ? 1.3 : 1),
     planktonK: ACT2.planktonEaten * (has(s, 'slow-currents') ? 0.6 : 1) * (found(s, 'terraces') ? 0.75 : 1),
     murmurP: ACT2.scoutRate * s.jobs.scout * (has(s, 'beaked') ? 1.5 : 1) * (found(s, 'wells') ? 1.25 : 1),
     murmurK: ACT2.murmurFade * (found(s, 'wells') ? 0.5 : 1),
     siltP: onShelf
       ? ACT3.siltFall * (1 + (target - ACT3.from) / ACT3.siltGrowthPer) * (s.truce.wall === 'a' ? 0.6 : 1) * sm.silt
       : 0,
-    siltK: ACT3.naturalSweep + ACT3.flowSweep * lv.sandbar + LINEAGE.glassSweep * trait(s, 'glass-gardeners') + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
-    sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1) * (found(s, 'midden') ? 1.3 : 1),
+    siltK: ACT3.naturalSweep + (lives(s, 'pistol-shrimp') ? 0.04 : 0) + ACT3.flowSweep * lv.sandbar + LINEAGE.glassSweep * trait(s, 'glass-gardeners') + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
+    sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1) * (found(s, 'midden') ? 1.3 : 1) * (lives(s, 'sea-cucumber') ? 1.4 : 1),
     sandK: ACT3.sandSettle,
     bloomP: sunlight(s, target) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * ACT4.meadowBloom ** lv.meadow *
-      (speaks(s, 'fluorescent') ? 1.5 : 1),
+      (speaks(s, 'fluorescent') ? 1.5 : 1) * (lives(s, 'damselfish') ? 1.3 : 1),
     bloomK: ACT4.bloomFade,
     spawnP: target >= ACT5.from
       ? lv.polyp * ACT5.spawnRate * ACT5.ripenSpawn ** lv.ripen * (speaks(s, 'broadcast') ? 2 : 1) *
@@ -213,11 +218,12 @@ export function rates(s: GameState): Rates {
       ACT3.sandbarCalcite ** lv.sandbar *
       (speaks(s, 'massive') ? 1.5 : 1) *
       1.5 ** trait(s, 'deep-memory') *
-      knownBonus(s),
+      knownBonus(s) *
+      (lives(s, 'goby') ? 1.15 : 1),
     calciteK:
       ACT1.dissolve * sm.dissolve * ACT1.latticeFactor ** lv.lattice * (ACT1.ventAcid * sm.ventAcid) ** vent *
       (has(s, 'lattice-songs') ? 0.7 : 1) * (speaks(s, 'massive') ? 0.5 : 1) +
-      (speaks(s, 'mucus') ? 0 : ACT3.raspEat * rasp * (s.truce.terms === 'b' ? ACT3.politeEat : 1)),
+      (speaks(s, 'mucus') ? 0 : ACT3.raspEat * rasp * (s.truce.terms === 'b' ? ACT3.politeEat : 1) * (lives(s, 'guard-crab') ? 0.5 : 1)),
     lureMax: ACT1.lureMax + ACT1.lureMaxPerPattern * lv.lure + (has(s, 'fear') ? 1 : 0) + (speaks(s, 'fluorescent') ? 2 : 0) +
       (found(s, 'lamp-hall') ? 1 : 0),
     reachPower: ACT2.reachPower + (s.truce.story === 'b' ? 0.05 : 0),
@@ -614,6 +620,27 @@ function homecoming(s: GameState): void {
   s.murmurs += heard;
   s.earned.murmurs += heard;
   if (!found(s, x.id)) s.relics.push(x.id);
+}
+
+// ---------- Residents ----------
+
+/** Homes in the reef (by height), and the animals that may ask for one by now. */
+export function homes(s: GameState): number {
+  return homesAt(s.height);
+}
+export function residentsAsking(s: GameState) {
+  return homes(s) > 0 ? RESIDENTS.filter((r) => s.height >= r.metres) : [];
+}
+
+/** Take a resident in (if there is a free home) or let it go. */
+export function house(s: GameState, id: ResidentId): boolean {
+  if (lives(s, id)) {
+    s.residents = s.residents.filter((r) => r !== id);
+    return true;
+  }
+  if (!residentsAsking(s).some((r) => r.id === id) || s.residents.length >= homes(s)) return false;
+  s.residents.push(id);
+  return true;
 }
 
 // ---------- Readings ----------

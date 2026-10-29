@@ -1,0 +1,59 @@
+// Residents: from the Twilight Shelf on, the reef has a few sheltered homes in its branches, and
+// small animals that live with corals ask to move in. Each brings one lasting effect while it
+// lives here; homes are few, so which to take in is a choice that changes with the zone.
+// Taking one in or letting it go is free and immediate.
+
+export type ResidentId = 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish';
+
+export type Resident = {
+  id: ResidentId;
+  name: string;
+  /** Reef height from which it comes asking. */
+  metres: number;
+  effect: string;
+  /** Why it is good to have (the panel's line under the name). */
+  text: string;
+};
+
+export const RESIDENT = {
+  /** Homes open at these heights: one on the shelf, a second up the shelf, a third in the light. */
+  homes: [3000, 3400, 3800],
+  label: 'Residents',
+  intro: 'Small animals that live with corals ask to move in. There is room for only a few.',
+  take: 'Take in',
+  release: 'Let go',
+  full: 'No room',
+  moved: '· moved in',
+} as const;
+
+export const RESIDENTS: readonly Resident[] = [
+  {
+    id: 'guard-crab', name: 'Guard crabs', metres: 3000, effect: 'the Rasp eat ×0.5 of your stone',
+    text: 'Tiny red crabs that live between the branches and pinch anything that bites the living coral.',
+  },
+  {
+    id: 'pistol-shrimp', name: 'Pistol shrimp', metres: 3000, effect: 'silt swept +0.04/s',
+    text: 'They dig burrows at the reef’s foot and snap a claw so hard the water flashes. The silt keeps moving.',
+  },
+  {
+    id: 'sea-cucumber', name: 'Sea cucumbers', metres: 3000, effect: 'sand ×1.4',
+    text: 'Slow sausages that swallow the silt and leave clean sand behind them in long coils.',
+  },
+  {
+    id: 'goby', name: 'Coral gobies', metres: 3400, effect: 'calcite ×1.15',
+    text: 'Little fish that perch on the branches and bite off the weed that would poison the polyps.',
+  },
+  {
+    id: 'feather-duster', name: 'Feather dusters', metres: 3400, effect: 'plankton ×1.3',
+    text: 'Worms in tubes, each with a crown of feathers combing the water. What they miss, the polyps catch.',
+  },
+  {
+    id: 'damselfish', name: 'Farmer damselfish', metres: 3800, effect: 'bloom ×1.3',
+    text: 'Fierce small fish that tend gardens of algae on the reef and chase off whatever comes near the crown.',
+  },
+];
+
+/** Homes the reef has at this height. */
+export function homesAt(height: number): number {
+  return RESIDENT.homes.filter((m) => height >= m).length;
+}

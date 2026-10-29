@@ -242,6 +242,17 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .buy.murmurs:not(:disabled):hover { background: rgba(160, 130, 255, 0.2); box-shadow: 0 0 16px rgba(170, 140, 255, 0.35); }
 .band.is-reading .band-depth { color: var(--murmurs); }
 .band.is-relic .band-depth { color: #9fd8ff; }
+.residents { background: rgba(255, 140, 120, 0.03); border: 1px solid rgba(255, 150, 130, 0.2); border-radius: var(--radius); padding: 10px 12px; }
+.residents[hidden], .resident[hidden] { display: none; }
+.residents header { display: flex; justify-content: space-between; align-items: baseline; }
+.residents h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 17px; color: #ffc9b8; }
+.resident { grid-template-columns: 1fr auto; }
+.resident.living .job-name { color: #ffc9b8; }
+.resident.living .job-name::after { content: ' · at home'; font-size: 11.5px; color: var(--ink-dim); }
+.resident .resident-text { display: none; font-style: italic; }
+.resident.open .resident-text { display: block; }
+.resident .job-label { cursor: pointer; }
+.resident .take { min-width: 5.6em; padding: 0 10px; }
 .card.expedition { border-color: rgba(140, 200, 255, 0.28); }
 .trip-bar .milestone-fill { background: linear-gradient(90deg, rgba(140, 200, 255, 0.4), #a8dcff); }
 

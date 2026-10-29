@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended polish, now favouring gameplay. Latest: expeditions (shoals sent to five Thousandfold ruins for relics). Ideas: relics shown on the reef; bot using expeditions; more Breach detail.
+NOW: Open-ended polish, favouring gameplay. Latest: expeditions (shoals to five ruins for relics), residents (homes for reef partners, a loadout per zone). Ideas: relics shown on the reef; bot using expeditions/residents; more Breach detail.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -326,3 +326,4 @@ date, what landed, what is half-done, what's next.
 - Upgrade cards carry small line icons (ui/icons.ts, inline SVG per upgrade).
 - Your line: a little chart of the generations, one small coral per reef as tall as it grew (gauge spacing), tinted by seamount, a moon over those that spawned at the surface, the living reef last.
 - Expeditions: from 150 m the shoals can be sent to a ruin (content/expeditions.ts, five sites in order). They leave their jobs (idle first, then scout, light, feed), come back at an exact sim moment (advance splits there, offline == online tested) to the same jobs, with murmurs and a relic: a story card in the Bands list and a lasting effect. Panel card with progress and time left; the Shoals header counts those away; whisper 'ruin'; feat 'Out in the black' (every relic). In the world the away shoals stream off to the edge of the water as small lamp clusters and flicker there.
+- Residents: homes in the reef from 3000 m (1, 2 at 3400 m, 3 at 3800 m) for six real coral partners, each one effect (content/residents.ts, economy `house()`); panel section with Take in / Let go, tap a name for its note; drawn on the coral in Twilight, Sunlit and Breach (render/residents.ts: crabs and gobies on branches, feather dusters low on the stone, pistol shrimp and sea cucumbers on the floor, damselfish over the crown), each tappable with a reaction; journal group 'Residents'; feat 'A full house'.
