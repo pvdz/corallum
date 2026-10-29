@@ -526,3 +526,4 @@ date, what landed, what is half-done, what's next.
 - The sheltered shark pups (moment 'a') circle the reef in the Sunlit scene.
 - Resident pair 'Clean water' (cleaner wrasse + feather dusters): plankton ×1.15.
 - Forget a trait (prestige.ts forgetTrait/forgetRefund, FORGET_SHARE 0.8): a Forget button on each bought trait, asks once ('Forget it? (+N)') then forgets on the second press within 4 s.
+- prestige e2e buys a trait with `button.buy` (each trait card now also has a Forget button).

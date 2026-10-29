@@ -32,7 +32,7 @@ await withGame(async (open) => {
     for (let i = 0; i < 20 && (await page.locator('.reader:not([hidden])').count()); i++)
       await page.locator('.reader:not([hidden]) button').first().click();
     await page.locator('.tab', { hasText: 'Lineage' }).click();
-    await page.locator('.trait', { hasText: 'Deep memory' }).locator('button').click();
+    await page.locator('.trait', { hasText: 'Deep memory' }).locator('button.buy').click();
     await page.locator('.trait', { hasText: 'Deep memory' }).locator('.level', { hasText: '×1' }).waitFor({ timeout: 3000 });
     if (process.env.SHOTS) await page.screenshot({ path: `${process.env.SHOTS}/${vp.name}-lineage.png` });
     const ok = fresh.h < 1 && fresh.l > 0 && fresh.where === 'cold' && errors.length === 0;
