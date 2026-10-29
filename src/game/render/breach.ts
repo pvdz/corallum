@@ -329,6 +329,45 @@ export function createBreachScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * The waiting fish (after that band): bright reef fish crowd under the crown, patient, turning
+   * slow circles, waiting for the spawn. After the release they scatter into the drifting bundles.
+   */
+  function drawWaitingFish(ctx: CanvasRenderingContext2D, t: number, v: ReefView, crown: readonly [number, number]): void {
+    if (!v.bands.includes('waiting-fish')) return;
+    const s = scale();
+    const wy = waterY();
+    const feeding = v.sinceBreach >= 0 ? Math.min(1, v.sinceBreach / 20) : 0;
+    const hues = [48, 200, 330, 20, 160, 280];
+    for (let k = 0; k < 18; k++) {
+      const a = t * (0.25 + (k % 4) * 0.06) * (k % 2 ? 1 : -1) + k * 1.9;
+      const rx = (60 + (k % 5) * 22) * s * (1 + feeding * 1.5), ry = (18 + (k % 3) * 10) * s;
+      const x = crown[0] + Math.cos(a) * rx;
+      const y = Math.max(wy + 14 * s, crown[1] + 40 * s + (k % 6) * 14 * s + Math.sin(a) * ry - feeding * 30 * s);
+      const dir = -Math.sin(a) * (k % 2 ? 1 : -1) >= 0 ? 1 : -1;
+      const len = (7 + (k % 3) * 2) * s;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(dir, 1);
+      ctx.fillStyle = `hsl(${hues[k % hues.length]},55%,46%)`;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, len, len * 0.55, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(-len * 0.8, 0);
+      ctx.lineTo(-len * 1.4, -len * 0.45);
+      ctx.lineTo(-len * 1.4, len * 0.45);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#111';
+      ctx.beginPath();
+      ctx.arc(len * 0.5, -len * 0.12, len * 0.09, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+    if (v.bands.includes('waiting-fish')) sight('reef-fish');
+  }
+
   /** Moon jellies drifting under the surface: translucent saucers with four pale rings, pulsing. */
   function drawMoonJellies(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
@@ -623,6 +662,7 @@ export function createBreachScene(seed: number): Scene {
       drawSea(ctx, t, v.moonPhase, dawn);
       drawChildren(ctx, v, t);
       drawMoonJellies(ctx, t);
+      drawWaitingFish(ctx, t, v, this.crownAt);
       drawDolphins(ctx, t);
       drawTop(ctx, v, reef.crown(L));
       reef.draw(ctx, L, v, t);
