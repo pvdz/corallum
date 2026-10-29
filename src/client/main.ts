@@ -516,7 +516,8 @@ function whisperCheck(now: number): void {
   // Quiet once the spawn has gone: nothing should talk over the ending.
   if (frozenT !== null || now - lastWhisper < 80_000 || now - lastWhisperCheck < 1000 || !reader() || ended(state)) return;
   lastWhisperCheck = now;
-  const w = WHISPERS.find((x) => !state.meta.seen.includes(`w:${x.id}`) && x.when(state));
+  // At the Breach only the moon speaks: the rest would talk over the spawning.
+  const w = WHISPERS.find((x) => !state.meta.seen.includes(`w:${x.id}`) && (state.height < 3980 || x.id === 'moon') && x.when(state));
   if (!w) return;
   state.meta.seen.push(`w:${w.id}`);
   lastWhisper = now;

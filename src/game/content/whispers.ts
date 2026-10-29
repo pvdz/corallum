@@ -48,7 +48,7 @@ export const WHISPERS: readonly Whisper[] = [
     text: 'The silt is choking your polyps. Let the Rasp graze, or turn the current with sand.',
   },
   {
-    id: 'rasp-away', when: (s) => s.rasp > 0 && s.height > 3100 && (() => {
+    id: 'rasp-away', when: (s) => s.rasp > 0 && s.height > 3100 && s.height < 3980 && (() => {
       const b = raspSettings(s);
       return Math.abs(b.forIncome - b.forHold) >= 4;
     })(),
