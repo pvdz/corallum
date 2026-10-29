@@ -1154,7 +1154,7 @@ window.addEventListener('keydown', (e) => {
   }
   if (e.key === '?') {
     panel.story('Keys', 'Shortcuts',
-      'Space sweeps your tentacles. 1–4 switch the panel tabs. F catches a falling feast. E sends the shoals on the next expedition. 7–0 answer the shoals' signal. P buds a polyp, B lays a band, G hosts ' +
+      'Space sweeps your tentacles. 1–4 switch the panel tabs. F catches a falling feast. E sends the shoals on the next expedition. 7–0 answer the shoals’ signal. P buds a polyp, B lays a band, G hosts ' +
       'glimmerseed. H hides the panel to see the whole reef. Hold any buy button to keep buying. ' +
       'Tap a creature to learn its name; tap Ossel and it will answer.');
     return;
