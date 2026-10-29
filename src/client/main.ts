@@ -31,7 +31,7 @@ import { PALETTES } from '../game/content/palettes.ts';
 import { REQUEST } from '../game/content/requests.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -1298,7 +1298,10 @@ function frame(now: number): void {
   if (now - lastTitle > 1000) {
     lastTitle = now;
     const who = reefName(state) || 'Corallum';
-    const t = ended(state) ? `${who} · spawned` : state.height < 1 ? who : `${metres(state.height)} · ${who}`;
+    const base = ended(state) ? `${who} · spawned` : state.height < 1 ? who : `${metres(state.height)} · ${who}`;
+    // Something to do right now (a feast, an intruder, a choice waiting): a dot, for background tabs.
+    const waiting = !!currentFeast(state) || !!currentThorn(state) || !!nextMoment(state) || othersSpawning(state) || boonsOffered(state).length > 0;
+    const t = waiting ? `● ${base}` : base;
     if (document.title !== t) document.title = t;
   }
   if (frozenT === null) requestAnimationFrame(frame);

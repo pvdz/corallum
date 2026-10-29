@@ -401,3 +401,4 @@ date, what landed, what is half-done, what's next.
 - Lineage tab: automation traits grouped as Habits (Old habits, Layering, Shoal sense, Rasp sense).
 - Requests can also ask to roam, raise a work stage, drive off an intruder or read a band (tally.intruders).
 - The ending names the neighbours the line knows well (familiar or more), come to watch.
+- The tab title gets a '●' when something waits (a feast, an intruder, a moment, the full-moon choice, a boon).
