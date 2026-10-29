@@ -21,7 +21,7 @@ decide which three memories your children carry into a new sea.
 - Milestones double polyps and glimmerseed at set counts; every card shows what its next level is
   worth to your reef right now, and shoal jobs show what one more feeder or light-swimmer adds.
 - Every creature can be touched: most answer in their own way (eels duck, an octopus inks, a
-  lure goes dark). The journal keeps a portrait of each as you first saw it; seen and touched
+  lure goes dark), and now and then one shares a little of what it lives by. The journal keeps a portrait of each as you first saw it; seen and touched
   creatures each add a little calcite. 29 feats across runs, seamounts with their own look and
   numbers, and a view mode (H) for the reef on the whole screen, where the wheel, a pinch or
   + / − zoom in up to 3× to look closer.
