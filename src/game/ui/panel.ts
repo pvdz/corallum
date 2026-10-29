@@ -1237,7 +1237,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         // Water-wise deepens every discount by 0.1: say the real factor.
         const ww = s.meta.traits['water-wise'] ? 0.1 : 0;
         waterLine.textContent = water.factor < 1 ? water.line.replace(/×0\.\d/, `×${(water.factor - ww).toFixed(1)}`) : water.line;
-        waterNext.textContent = `${WATER.turns} ${duration(untilWaterTurns(s))} · ${next.id === water.id ? WATER.same : `${WATER.next} ${next.name.toLowerCase()}`}`;
+        const after = waterAt(s, k + 2);
+        // The next two slots: "then the same, then carrying".
+        const say = (w: typeof water, prev: typeof water) => w.id === prev.id ? WATER.same : w.name.toLowerCase().replace(/ water$/, '');
+        waterNext.textContent = `${WATER.turns} ${duration(untilWaterTurns(s))} · ${WATER.next} ${say(next, water)}, ${WATER.next} ${say(after, next)}`;
         if (waterShown && waterShown !== water.id) { waterBox.classList.remove('turned'); void waterBox.offsetWidth; waterBox.classList.add('turned'); }
         waterShown = water.id;
       }

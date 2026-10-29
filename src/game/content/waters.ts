@@ -30,7 +30,7 @@ export const WATER = {
   band: 'rise',
   label: 'The water',
   next: 'then',
-  same: 'and after, the same',
+  same: 'the same',
   turns: 'turns in',
 } as const;
 
