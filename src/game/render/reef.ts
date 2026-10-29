@@ -412,6 +412,22 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
           ring(ctx, cx, cy - 20 * s, (30 + k * 180) * s, '255,230,150', 0.35 * (1 - k), 1.5 * s);
           break;
         }
+        case 'truce': {
+          // A choice made: two slow rose-gold rings spreading from the reef's heart.
+          const top = Math.min(1, L.top);
+          const cy = L.baseY - top * u * 0.45;
+          ring(ctx, L.cx, cy, (40 + k * 320) * s, '255,200,170', 0.5 * (1 - k), 2 * s);
+          if (k > 0.2) ring(ctx, L.cx, cy, (40 + (k - 0.2) * 320) * s, '255,200,170', 0.35 * (1 - k), 1.2 * s);
+          glow(ctx, L.cx, cy, top * u * 0.5 + 40 * s, '255,210,180', 0.2 * Math.sin(Math.PI * k));
+          break;
+        }
+        case 'reading': {
+          // A band read: blue light climbing the reef from the foot to the crown.
+          const top = Math.min(1, L.top);
+          const y = L.baseY - k * top * u;
+          glow(ctx, L.cx, y, 80 * s, '140,200,255', 0.45 * Math.sin(Math.PI * k));
+          break;
+        }
         default:
           break;
       }

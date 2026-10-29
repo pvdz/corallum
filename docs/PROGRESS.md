@@ -241,3 +241,4 @@ date, what landed, what is half-done, what's next.
 - Reef tab: 'How the reef grows' (content/guide.ts), five lines on calcite, bands, holding, zones and the goal; folded by default.
 - Midnight Water: each Reading wakes more of the lights in Thousandfold's drowned towers (1 per tower before any, all after nine). Subtle, since the towers sink out of frame as the reef climbs.
 - Reading a band makes every light in the drowned towers flare for ~2 s before settling to the new level.
+- Reef effects for story moments: a truce or dialect choice sends two rose-gold rings out from the reef; a Reading sends blue light climbing the reef from foot to crown.
