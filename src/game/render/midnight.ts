@@ -1057,6 +1057,29 @@ export function createMidnightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** The jelly bloom (a moment, once met): small pale bells drifting through the water, pulsing together. */
+  function drawJellyBloom(ctx: CanvasRenderingContext2D, t: number): void {
+    const s = scale();
+    const beat = 0.85 + 0.15 * Math.sin(t * 1.6);
+    ctx.save();
+    for (let i = 0; i < 36; i++) {
+      const x = focus.x + (((i * 0.618034 + t * 0.004 * (1 + (i % 3) * 0.3)) % 1) * focus.w);
+      const y = focus.y + focus.h * (0.08 + ((i * 0.3819) % 1) * 0.6) + Math.sin(t * 0.5 + i) * 8 * s;
+      const r = (3 + (i % 4)) * s * beat;
+      ctx.fillStyle = 'rgba(210,215,240,0.28)';
+      ctx.beginPath();
+      ctx.ellipse(x, y, r, r * 0.7, 0, Math.PI, 0);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(210,215,240,0.18)';
+      ctx.lineWidth = 0.7 * s;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + Math.sin(t + i) * 2 * s, y + r * 2.5);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
   /** Rarely (every sixteen minutes), a rising river of firefly squid, blue sparks drifting up through the dark. */
   function drawFireflySquid(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 960, length = 80;
@@ -1180,6 +1203,7 @@ export function createMidnightScene(seed: number): Scene {
       if (v.milky) drawMilky(ctx, t);
       drawGulper(ctx, t);
       drawFireflySquid(ctx, t);
+      if (v.moments['jelly-bloom']) drawJellyBloom(ctx, t);
       reef.draw(ctx, L, v, t);
       if (v.moments.eyes === 'a') {
         const [crx, cry] = reef.crown(L);
