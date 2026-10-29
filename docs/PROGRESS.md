@@ -288,3 +288,4 @@ date, what landed, what is half-done, what's next.
 - Journal heading counts creatures touched.
 - Stocks explain themselves: hover (title) or tap a stock for a short note under the stocks (content/guide.ts STOCK_NOTES); tap again to close, gone after 8 s.
 - Touch: the warm seamount's smokers belch a burst of smoke with a flare; the brine pool rings out from the touch.
+- Touch: every lanternfish shoal is tappable; a wave of light runs out through the shoal's photophores from the touch.

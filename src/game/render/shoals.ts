@@ -2,7 +2,7 @@
 // Each shoal's path shows its job: feeders circle the reef, light-swimmers spiral above the
 // crown, scouts dive into the dark below the frame and come back.
 
-import { sight, spot } from './sightings.ts';
+import { sight, spot, startled } from './sightings.ts';
 import type { Job } from '../content/act2.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { glow } from './draw.ts';
@@ -55,10 +55,11 @@ export function createShoals(seed: number) {
     const spread = (job === 'light' ? 22 : 30) * s;
     const flicker = job === 'light' ? 0.5 + 0.5 * Math.max(0, Math.sin(t * 0.35 * 4 + i)) ** 6 : 0;
     const lights: [number, number, number][] = [];
-    if (i === 0) {
-      const [sx, sy] = shoalCentre(F, reef, job, i, n, t, L);
-      spot('lanternfish', sx, sy, spread * 1.3);
-    }
+    const [sx, sy] = shoalCentre(F, reef, job, i, n, t, L);
+    spot('lanternfish', sx, sy, spread * 1.3);
+    // Touched, a wave of light runs out through the shoal from the touch, fish to fish.
+    const touch = startled('lanternfish', t);
+    const wave = touch && touch.age < 1.6 && Math.hypot(touch.x - sx, touch.y - sy) < spread * 2.5 ? touch : null;
     for (let k = 0; k < fish.length; k++) {
       const f = fish[k]!;
       const lag = k * 0.06;
@@ -93,7 +94,10 @@ export function createShoals(seed: number) {
     ctx.globalCompositeOperation = 'lighter';
     const rgb = job === 'light' ? '150,255,240' : job === 'scout' ? '190,170,255' : '120,200,255';
     const a = job === 'light' ? 0.35 + 0.4 * flicker : 0.4;
-    for (const [lx, ly] of lights) glow(ctx, lx, ly, 3.2 * s * (1 + 0.6 * flicker), rgb, a * gs);
+    for (const [lx, ly] of lights) {
+      const boost = wave ? Math.exp(-(((Math.hypot(lx - wave.x, ly - wave.y) - wave.age * 120 * s) / (14 * s)) ** 2)) * (1 - wave.age / 1.6) : 0;
+      glow(ctx, lx, ly, 3.2 * s * (1 + 0.6 * flicker + 1.2 * boost), rgb, Math.min(1, a * gs + boost));
+    }
     ctx.restore();
   }
 
