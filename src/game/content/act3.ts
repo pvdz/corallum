@@ -166,7 +166,7 @@ export const BANDS_ACT3: readonly Band[] = [
 
 // The elder's riddles: once the truce has begun, the Rasp elder asks about what the bands told.
 // A right answer: lineage. Each asked once per reef, after the band, Reading or relic that holds its answer.
-export type RiddleId = 'silt' | 'wall' | 'walls' | 'song' | 'beaks' | 'shallows' | 'rule' | 'ripple' | 'end' | 'children';
+export type RiddleId = 'silt' | 'wall' | 'walls' | 'song' | 'beaks' | 'shallows' | 'rule' | 'ripple' | 'end' | 'children' | 'weight' | 'burning';
 export const RIDDLES: readonly { id: RiddleId; after: string; ask: string; options: readonly string[]; right: number }[] = [
   { id: 'silt', after: 'truth', ask: 'You have read the falling grey. What is it?', options: ['Snow from the sky', 'Thousandfold, ground fine', 'Our dung'], right: 1 },
   { id: 'wall', after: 'form', ask: 'The voice in your oldest stone. What was it, once?', options: ['A Rasp', 'A wall of the city', 'The moon'], right: 1 },
@@ -177,6 +177,8 @@ export const RIDDLES: readonly { id: RiddleId; after: string; ask: string; optio
   { id: 'ripple', after: 'shelf-edge', ask: 'From the floor you saw a ripple of silver, far above. What was it?', options: ['Another reef', 'The surface, under the moon', 'A shoal of us, swimming'], right: 1 },
   { id: 'end', after: 'old-rasp', ask: 'When one of us is too old to grind, what becomes of it?', options: ['It is buried in the silt', 'The others grind it into the sand bars', 'It swims up into the light'], right: 1 },
   { id: 'children', after: 'other-children', ask: 'While the silt fell, was the whole sea dead?', options: ['All of it, everywhere', 'Only the deep, and only for a while', 'None of it: the silt was alive'], right: 1 },
+  { id: 'burning', after: 'burning-sea', ask: 'The night the whole sea burned white. What did the city make of it?', options: ['A warning from the moon', 'An omen, and it argued for a hundred years about what of', 'Nothing: it slept through it'], right: 1 },
+  { id: 'weight', after: 'kept-stone', ask: 'The grey on the city’s tips. Why did it never let it go?', options: ['It could not reach its own tips', 'It thought keeping was strength', 'We would not eat it'], right: 1 },
   { id: 'shallows', after: 'sun-gate', ask: 'Where did the city first grow?', options: ['In the dark, as it ended', 'In the shallows, open to the sun', 'On a beach, in the air'], right: 1 },
 ];
 export const RIDDLE = { kicker: 'The Rasp elder asks', lineage: 2, right: 'The elder grinds its beak, pleased.', wrong: 'The elder turns away. Not this time.',

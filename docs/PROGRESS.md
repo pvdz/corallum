@@ -624,3 +624,4 @@ date, what landed, what is half-done, what's next.
 - A wish shows as one bright star falling into the crown, which flares (effect 'wish'); a run of bells when a shower begins.
 - Each ending the line has reached stands far off in the Sunlit Crown: up to five pale distant colonies (sunlit.ts, drawColony).
 - Moment visuals: the slope that gave way leaves a pale rubble fan (scoured: a channel); the young Rasp fed sleeps by the reef's foot; the big-eyed fish lit up stays by the crown (dark seamount).
+- Two more of the elder's riddles (burning, weight), after the new Readings.
