@@ -80,7 +80,9 @@ export function createSunlitScene(seed: number): Scene {
       encrust: 0.8 + 0.2 * progress(v.height), encrustColours: ['#ff6b3d', '#a35cff', '#ffd23f', '#2ec4b6', '#ff4f8b'],
       polyp: v.craft === 'fluorescent' ? FLUORESCENT_POLYP : FORM_LOOK[form].polyp,
       // By night the reef's own light comes back (fluorescent reefs glow brighter still).
-      glowScale: (v.craft === 'fluorescent' ? 0.25 : 0) + 0.8 * nightAt(lastT), polypScale: 1.2,
+      glowScale: (v.craft === 'fluorescent' ? 0.25 : 0) + 0.8 * nightAt(lastT),
+      // Polyps pull in against the noon light and open wide to feed at night, as real corals do.
+      polypScale: 1.2 * (0.8 + 0.35 * nightAt(lastT)),
     };
   }
 
