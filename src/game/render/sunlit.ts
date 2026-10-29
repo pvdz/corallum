@@ -349,13 +349,20 @@ export function createSunlitScene(seed: number): Scene {
     const s = scale() * 1.9;
     const x0 = focus.x - focus.w * 0.1, span = focus.w * 1.2;
     sight('seahorse');
+    const touch = startled('seahorse', t);
     for (const [k, u] of [0.3, 0.72].entries()) {
       const x = x0 + u * span + Math.sin(t * 0.8 + k) * 3 * s, y = floorY(u) - 20 * s;
       spot('seahorse', x, y, 20 * s);
+      // Touched, a seahorse pales to the colour of the sand and draws in, then colours up again.
+      const near = touch && touch.age < 6 && Math.hypot(touch.x - x, touch.y - y) < 30 * s;
+      const pale = near ? (touch!.age < 0.5 ? touch!.age / 0.5 : Math.max(0, 1 - (touch!.age - 2) / 4)) : 0;
+      const [r0, g0, b0] = k ? [224, 160, 64] : [216, 112, 90];
+      const mixc = (c: number, to: number) => Math.round(c + (to - c) * pale);
       ctx.save();
       ctx.translate(x, y);
-      ctx.rotate(Math.sin(t * 0.8 + k) * 0.12);
-      ctx.strokeStyle = k ? '#e0a040' : '#d8705a';
+      ctx.rotate(Math.sin(t * 0.8 + k) * 0.12 * (1 - pale));
+      ctx.scale(1 - 0.12 * pale, 1 - 0.12 * pale);
+      ctx.strokeStyle = `rgb(${mixc(r0, 235)},${mixc(g0, 220)},${mixc(b0, 185)})`;
       ctx.fillStyle = ctx.strokeStyle;
       ctx.lineCap = 'round';
       // Curled tail, an upright S of a body, a snout and a little fin.

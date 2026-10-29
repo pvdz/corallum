@@ -665,6 +665,7 @@ canvas.addEventListener('pointerdown', (e) => {
   else if (who) showCreatureLabel(who.id, who.x / dpr, who.y / dpr);
   if (who) {
     startle(who.id, frozenT ?? animT, e.clientX * dpr, e.clientY * dpr);
+    if (who.id === 'whale') audio.cue('whale');
     if (frozenT === null && !state.meta.seen.includes(`t:${who.id}`)) state.meta.seen.push(`t:${who.id}`);
   }
   const f = currentFeast(state);

@@ -257,3 +257,4 @@ date, what landed, what is half-done, what's next.
 - Touching creatures: render/sightings.ts records the last touch (startle/startled); garden eels drop into their burrows near the tap and come back up slowly (two colonies, each tappable), the octopus blanches, inks and flushes dark, deep jellies flash a light round the rim. corallum.spots lists tappable creatures for tests.
 - More touch reactions: the pyrosome passes a bright wave down its length, the vampire squid throws out a glowing mucus cloud and flares its cape, the bait ball bursts and re-forms, the clownfish dive into their anemone. Guide line 'Neighbours'.
 - Feat 'A light touch': touch eight different creatures (meta.seen 't:<id>', recorded on tap).
+- Touch: the anglerfish's lure flares and goes out, returning warily; a touched seahorse pales and draws in; touching the whale plays its call.

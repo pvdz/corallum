@@ -81,7 +81,11 @@ export function createMidnightScene(seed: number): Scene {
     const s = scale() * 1.5;
     const x = focus.x + focus.w * (dir > 0 ? -0.1 + u * 1.2 : 1.1 - u * 1.2);
     const y = focus.y + focus.h * (0.2 + 0.06 * Math.sin(lap * 1.7)) + Math.sin(t * 0.4) * 8 * s;
-    const pulse = 0.6 + 0.4 * Math.sin(t * 2.4);
+    // Touched, the lure flares once and goes out; it comes back slowly, a little wary.
+    const touch = startled('anglerfish', t);
+    const age = touch ? touch.age : Infinity;
+    const lit = age < 0.3 ? 1.8 : age < 4 ? 0 : Math.min(1, (age - 4) / 3);
+    const pulse = (0.6 + 0.4 * Math.sin(t * 2.4)) * lit;
     spot('anglerfish', x, y, 45 * s);
     ctx.save();
     ctx.translate(x, y);
@@ -120,8 +124,8 @@ export function createMidnightScene(seed: number): Scene {
     ctx.quadraticCurveTo(26 * s, -42 * s, 40 * s, -30 * s);
     ctx.stroke();
     ctx.globalCompositeOperation = 'lighter';
-    glow(ctx, 40 * s, -30 * s, 18 * s, '150,240,255', 0.55 * pulse);
-    glow(ctx, 40 * s, -30 * s, 4 * s, '230,255,255', 0.9);
+    glow(ctx, 40 * s, -30 * s, 18 * s, '150,240,255', Math.min(1, 0.55 * pulse));
+    if (lit > 0) glow(ctx, 40 * s, -30 * s, 4 * s, '230,255,255', 0.9 * Math.min(1, lit));
     ctx.restore();
   }
 
