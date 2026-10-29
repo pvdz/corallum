@@ -120,3 +120,20 @@ over skipped warm-spell cycles). Each whole unit is a knob on a branch tip; brea
 ## Milky sea
 Midnight Water only, active: from t = 300 s every 1500 s for 60 s. Each sweep then also adds
 `glowP × 4 s` of glow (on top of its calcite). Nothing accrues while away.
+
+## Lucky neighbours
+Each creature, in each 120 s span of reef time, is lucky with probability 2.5% (seeded by reef seed,
+creature id and span). A touch then gives the creature's gift at once (ignoring the cooldown) ×5;
+one lucky touch per span. Active only.
+
+## Guard (shoal job)
+From 3800 m. With ≥ 4 shoals on guard, every intruder is driven off in its last second for half its
+pay (like guard crabs for thorn stars). Guards are taken from feeding, so it costs plankton.
+
+## Grottoes
+Sand sink on the shelf: 3000 × 5^level sand, max 2; each +1 resident home.
+
+## Vows
+After the line's first ending, a new reef may take vows; at its ending `lineageFor` adds each kept
+vow: Haste (surface within 7 h of reef time) +6, Lightness (carry one memory fewer) +4, Solitude
+(no resident homes) +4.
