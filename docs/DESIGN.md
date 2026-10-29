@@ -128,6 +128,8 @@ cucumbers: sand ×1.2; feather dusters + damselfish: bloom ×1.15). They live vi
 starfish climbs the reef for 70 s; tap it off for 2 minutes of the zone's currency. Guard crabs at
 home drive it off themselves at the last moment, for half (real biology: Trapezia crabs defend
 corals from crown-of-thorns starfish).
+In the Midnight Water the intruder is a dragonfish stalking the feeding shoals; a finished lantern
+spire's lamps dazzle it away at the last moment, for half.
 
 **Welcome back**: after an hour or more away, the away summary offers one of two gifts: a haul of
 stone (5% of each second away's calcite production, at most 8 h of it) or a search of the silt

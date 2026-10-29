@@ -513,7 +513,7 @@ function tripView(): ReefView['trip'] {
 
 function thornView(): ReefView['thorn'] {
   const th = currentThorn(state);
-  return th ? { u: (state.t - th.start) / THORN.life, side: th.side } : null;
+  return th ? { u: (state.t - th.start) / THORN.life, side: th.side, kind: th.kind } : null;
 }
 
 function view(): ReefView {
@@ -852,10 +852,10 @@ canvas.addEventListener('pointerdown', (e) => {
     if (frozenT === null && who.id !== 'ossel' && !state.meta.seen.includes(`t:${who.id}`)) state.meta.seen.push(`t:${who.id}`);
     // Now and then a neighbour gives a little of what it lives by.
     // A thorn star is pried off the reef, for a burst.
-    if (who.id === 'thorn-star' && frozenT === null) {
+    if ((who.id === 'thorn-star' || who.id === 'dragonfish') && frozenT === null) {
       const pay = pryThorn(state);
       if (pay > 0) {
-        floatText(e.clientX, e.clientY - 26, `+${num(pay)} ${feastPay(state)} ${THORN.pried}`, 'feast-float');
+        floatText(e.clientX, e.clientY - 26, `+${num(pay)} ${feastPay(state)} ${who.id === 'dragonfish' ? THORN.dragon : THORN.pried}`, 'feast-float');
         audio.cue('crunch');
         buzz([20, 30, 20]);
       }
@@ -1257,10 +1257,11 @@ function frame(now: number): void {
   // Shared table: a feast left to sink is eaten by the scavengers, half for the reef.
   if (frozenT === null && tableFeast(state)) eatFeast(LINEAGE.tableShare);
   // Guard crabs drive off a thorn star nobody pried loose, at its last moment.
-  if (frozenT === null && crabThorn(state)) {
+  const guardedOff = frozenT === null ? crabThorn(state) : null;
+  if (guardedOff) {
     const pay = pryThorn(state, THORN.crabShare);
     const [cx, cy] = scene.crownAt;
-    if (pay > 0) floatText(cx / dpr, cy / dpr, `+${num(pay)} ${feastPay(state)} ${THORN.crabs}`, 'feast-float');
+    if (pay > 0) floatText(cx / dpr, cy / dpr, `+${num(pay)} ${feastPay(state)} ${guardedOff.kind === 'dragonfish' ? THORN.lamps : THORN.crabs}`, 'feast-float');
   }
   // Old habits: the reef's own small purchases, only while the page is open.
   if (habits.get() && frozenT === null && now - lastHabit > 250) {

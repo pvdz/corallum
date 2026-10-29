@@ -4,6 +4,7 @@
 // the dark below. Glass shrimp and a passing siphonophore appear once their bands are laid.
 
 import { sight, spot, startled } from './sightings.ts';
+import { drawDragonfish } from './thorn.ts';
 import { drawSpire } from './works.ts';
 import { drawRelics } from './relics.ts';
 import { mulberry32, range } from '../sim/rng.ts';
@@ -678,6 +679,7 @@ export function createMidnightScene(seed: number): Scene {
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
       shoals.drawFront(ctx, focus, reef, L, v, t);
+      if (v.thorn?.kind === 'dragonfish') drawDragonfish(ctx, focus, v.thorn.u, v.thorn.side, t, scale());
       drawNearSnow(ctx, t);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
       vignette(ctx);

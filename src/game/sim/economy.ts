@@ -23,7 +23,7 @@ import { ACT5, BANDS_ACT5, MEMORIES, type Memory, type MemoryId } from '../conte
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
 import { LINEAGE, SEAMOUNTS, type Seamount, type SeamountId, type TraitId } from '../content/lineage.ts';
-import { FEAST, THORN, WELCOME } from '../content/events.ts';
+import { FEAST, THORN, WELCOME, intruderOf } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { WORKS, type WorkId } from '../content/works.ts';
 import { SISTER } from '../content/sister.ts';
@@ -1389,22 +1389,24 @@ export function checkRequest(s: GameState): number {
 
 // ---------- Thorn stars ----------
 
-export type Thorn = { k: number; start: number; side: number };
+export type Thorn = { k: number; start: number; side: number; kind: 'thorn-star' | 'dragonfish' };
 
-/** The thorn star climbing the reef now, if any (the shelf and the light only). */
+/** The intruder now, if any: a thorn star on the shelf and in the light, a dragonfish in the Midnight Water. */
 export function currentThorn(s: GameState): Thorn | null {
-  if (!(THORN.zones as readonly number[]).includes(actAt(s.height))) return null;
+  const kind = intruderOf(actAt(s.height));
+  if (!kind || (kind === 'dragonfish' && s.levels.shoal === 0)) return null;
   const k = Math.floor(s.t / THORN.period);
   if (k <= s.thorned) return null;
   const r = mulberry32((s.seed ^ 0x7a0e) + Math.imul(k, 0x9e3779b1));
   const start = k * THORN.period + r() * (THORN.period - THORN.life);
-  return s.t >= start && s.t < start + THORN.life ? { k, start, side: r() < 0.5 ? -1 : 1 } : null;
+  return s.t >= start && s.t < start + THORN.life ? { k, start, side: r() < 0.5 ? -1 : 1, kind } : null;
 }
 
-/** Guard crabs drive it off themselves in its last second. */
+/** Guard crabs (thorn stars) or a finished lantern spire (dragonfish) drive it off in its last second. */
 export function crabThorn(s: GameState): Thorn | null {
   const th = currentThorn(s);
-  return th && lives(s, 'guard-crab') && s.t >= th.start + THORN.life - 1 ? th : null;
+  const guarded = th && (th.kind === 'thorn-star' ? lives(s, 'guard-crab') : s.works.spire >= 3);
+  return th && guarded && s.t >= th.start + THORN.life - 1 ? th : null;
 }
 
 /** Pry the thorn star off (share 1) or let the crabs (crabShare). Returns the pay. */

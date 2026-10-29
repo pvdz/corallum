@@ -7,7 +7,7 @@ export type CreatureId =
   | 'rasp' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark'
   | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly'
   | 'shore-bird' | 'dolphin' | 'moon-jelly'
-  | 'thorn-star' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish';
+  | 'thorn-star' | 'dragonfish' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish';
 
 export type Creature = { id: CreatureId; name: string; zone: string; note: string };
 
@@ -51,6 +51,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'bait-ball', name: 'A bait ball', zone: 'The Sunlit Crown', note: 'Small fish pressed into one turning shape, and hunters going through it.' },
   { id: 'sea-firefly', name: 'Sea fireflies', zone: 'The Sunlit Crown', note: 'Only after dark. Specks that court in light, leaving strings of blue pearls as they rise.' },
   { id: 'shore-bird', name: 'Shore bird', zone: 'The Breach', note: 'It walks on your crown at low tide, as if it owned it.' },
+  { id: 'dragonfish', name: 'Dragonfish', zone: 'The Midnight Water', note: 'All teeth and a red light only it can see. It hunts the lanternfish. Drive it off.' },
   { id: 'thorn-star', name: 'Thorn star', zone: 'The Twilight Shelf', note: 'A starfish of spines that eats living coral. Pry it off; the crabs hate it too.' },
   { id: 'guard-crab', name: 'Guard crabs', zone: 'Residents', note: 'Red as a warning, no bigger than a polyp. They pinch for you.' },
   { id: 'pistol-shrimp', name: 'Pistol shrimp', zone: 'Residents', note: 'A snap so loud the water lights for an instant.' },

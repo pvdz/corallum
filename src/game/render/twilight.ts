@@ -945,7 +945,7 @@ export function createTwilightScene(seed: number): Scene {
       drawBreakwater(ctx, focus, v.works.breakwater, scale(), slopeY);
       reef.draw(ctx, L, v, t);
       drawRelics(ctx, reef, L, v.relics, t);
-      if (v.thorn) drawThorn(ctx, reef, L, v.thorn.u, v.thorn.side, t);
+      if (v.thorn?.kind === 'thorn-star') drawThorn(ctx, reef, L, v.thorn.u, v.thorn.side, t);
       slugs.draw(ctx, reef, L, t);
       drawResidents(ctx, reef, L, v.residents, t, seed,
         (x) => slopeY(Math.min(1, Math.max(0, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2)))));

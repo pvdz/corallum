@@ -26,7 +26,15 @@ export const THORN = {
   period: 420, life: 70, seconds: 120, crabShare: 0.5, zones: [3, 4],
   pried: '· the thorn star, off',
   crabs: '· the guard crabs drove it off',
+  /** In the Midnight Water the intruder is a dragonfish stalking the shoals; a finished lantern spire dazzles it away. */
+  dragon: '· the dragonfish fled',
+  lamps: '· the spire’s lamps dazzled it away',
 } as const;
+
+/** Which intruder comes in each zone. */
+export function intruderOf(zone: number): 'thorn-star' | 'dragonfish' | null {
+  return zone === 2 ? 'dragonfish' : zone === 3 || zone === 4 ? 'thorn-star' : null;
+}
 
 export const FEAST = {
   /** The band after which they come (the late Silt Floor, where purchases slow down). Ossel's

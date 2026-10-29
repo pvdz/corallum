@@ -2,6 +2,7 @@
 // coral on one side, higher as its time runs. Tap it off; touched, it is gone.
 
 import type { Reef, ReefLayout } from './reef.ts';
+import { glow } from './draw.ts';
 import { sight, spot } from './sightings.ts';
 
 /** `u`: 0..1 through its climb; `side`: −1 left, 1 right. */
@@ -49,5 +50,55 @@ export function drawThorn(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayo
   ctx.beginPath();
   ctx.arc(0, 0, 4 * s, 0, Math.PI * 2);
   ctx.fill();
+  ctx.restore();
+}
+
+/** The dragonfish: slinks in from one side toward the feeding shoals as `u` runs 0..1. */
+export function drawDragonfish(ctx: CanvasRenderingContext2D, F: { x: number; y: number; w: number; h: number }, u: number, side: number,
+  t: number, s: number): void {
+  const e = Math.min(1, u * 2.2);
+  const x0 = side > 0 ? F.x + F.w * 1.08 : F.x - F.w * 0.08;
+  const x1 = F.x + F.w * (0.5 + side * 0.28);
+  const x = x0 + (x1 - x0) * (e * e * (3 - 2 * e)) + Math.sin(t * 0.6) * 10 * s;
+  const y = F.y + F.h * 0.58 + Math.sin(t * 0.4) * 14 * s;
+  const k = 1.6 * s;
+  sight('dragonfish');
+  spot('dragonfish', x, y, 34 * k);
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(-side, 1);
+  // A long eel-like body, darker than the water.
+  ctx.fillStyle = '#05060c';
+  ctx.beginPath();
+  ctx.moveTo(18 * k, 0);
+  ctx.quadraticCurveTo(10 * k, -6 * k, -8 * k, -4 * k);
+  ctx.quadraticCurveTo(-30 * k, -2 * k + Math.sin(t * 3) * 2 * k, -44 * k, Math.sin(t * 3 + 1) * 3 * k);
+  ctx.quadraticCurveTo(-30 * k, 3 * k, -8 * k, 4 * k);
+  ctx.quadraticCurveTo(10 * k, 6 * k, 18 * k, 0);
+  ctx.fill();
+  // A faint rim of the shoals' light along its back, so the dark shape reads.
+  ctx.strokeStyle = 'rgba(110,150,220,0.35)';
+  ctx.lineWidth = 1 * k;
+  ctx.stroke();
+  // Fangs.
+  ctx.strokeStyle = 'rgba(230,230,240,0.7)';
+  ctx.lineWidth = 0.6 * k;
+  ctx.beginPath();
+  for (let i = 0; i < 4; i++) {
+    ctx.moveTo(16 * k - i * 2.2 * k, 0.5 * k);
+    ctx.lineTo(15 * k - i * 2.2 * k, 3 * k);
+  }
+  ctx.stroke();
+  ctx.globalCompositeOperation = 'lighter';
+  // The red lamp under its eye, and a blue line of photophores, and the barbel's lure.
+  glow(ctx, 11 * k, -1.5 * k, 7 * k, '255,60,50', 0.8);
+  for (let i = 0; i < 6; i++) glow(ctx, 4 * k - i * 6 * k, 3 * k, 2.2 * k, '120,170,255', 0.6);
+  const bx = 16 * k + Math.sin(t * 1.5) * 4 * k, by = 14 * k;
+  ctx.strokeStyle = 'rgba(150,180,255,0.3)';
+  ctx.beginPath();
+  ctx.moveTo(12 * k, 3 * k);
+  ctx.quadraticCurveTo(14 * k, 9 * k, bx, by);
+  ctx.stroke();
+  glow(ctx, bx, by, 6 * k, '150,200,255', 0.75 + 0.25 * Math.sin(t * 4));
   ctx.restore();
 }
