@@ -339,6 +339,8 @@ const panel = createPanel(ui, {
     if (!dream(state)) return;
     audio.cue('whisper');
     catchUp(DREAM.seconds);
+    const said = DREAM.dreams[(state.seed + state.tally.sweeps + Math.floor(state.t)) % DREAM.dreams.length]!;
+    panel.story(DREAM.kicker, DREAM.label(state.meta.dreams).replace(/ \(\d+\)$/, ''), said);
     save();
   },
   closeUp: setClosed,

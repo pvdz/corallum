@@ -165,4 +165,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Again: Ossel remembers earlier endings when a new reef begins | this game's own character | OK |
 | Christmas tree worms (on the Sunlit reef) | real animals (Spirobranchus) | OK |
 | A meteor shower over the Breach | real sky | OK |
+| Dream vignettes (eight short dreams of the reef) | this game's own world | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

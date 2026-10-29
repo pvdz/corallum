@@ -62,6 +62,18 @@ export const DREAM = {
   label: (n: number) => `Dream (${n})`,
   title: 'Sleep as Ossel sleeps: the reef dreams a quarter of an hour forward, all at once',
   gained: 'and a dream',
+  kicker: 'A dream',
+  /** What the reef dreams while it sleeps forward (picked by the reef's seed and the dreams used). */
+  dreams: [
+    'You dream of the city, whole and lit, and nobody in it is afraid. Then you wake, and it was only the vent.',
+    'You dream that the silt is falling upward, back to wherever it came from. It is very quiet.',
+    'You dream of a reef you will never see, growing from your spawn on a far seamount. It dreams of you back.',
+    'You dream you are a Rasp, grinding, and the stone tastes of a thousand years. It is not unpleasant.',
+    'You dream of the moon from the floor, small and silver, and of Ossel saying it is not far. It is very far.',
+    'You dream of the shoals, each lamp a word, and for a moment you can read the whole sentence.',
+    'You dream of nothing at all, for a quarter of an hour, and grow.',
+    'You dream that Ossel is young again, a wall of the city, proud of keeping everything. You do not wake it.',
+  ],
 } as const;
 
 export const WELCOME = {
