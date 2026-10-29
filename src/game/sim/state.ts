@@ -184,7 +184,10 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     works: { spire: 0, breakwater: 0, terrace: 0 },
     request: { kind: '', n: 0, base: 0, done: 0, paid: 0 },
     tally: { touches: 0, sweeps: 0, digs: 0, roams: 0 },
-    moments: { brittle: '', 'lost-shoal': '', squid: '', 'whale-fall': '', cleaners: '', storm: '', turtle: '', bird: '' },
+    moments: {
+      brittle: '', 'vent-crack': '', 'lost-shoal': '', angler: '', squid: '', 'whale-fall': '', cleaners: '', 'young-rasp': '',
+      storm: '', turtle: '', 'first-light': '', bird: '',
+    },
     gifts: Object.fromEntries(CREATURES.map((c) => [c.id, -1e9])) as Record<CreatureId, number>,
     seamount: 'plain',
     earned: { calcite: 0, glow: 0, murmurs: 0 },

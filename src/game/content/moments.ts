@@ -2,7 +2,8 @@
 // meeting it. They wait until answered and never block anything; each answer has one lasting
 // effect for this reef (applied in sim/economy.ts by `chose()`). Told in Ossel's voice.
 
-export type MomentId = 'brittle' | 'lost-shoal' | 'squid' | 'whale-fall' | 'cleaners' | 'storm' | 'turtle' | 'bird';
+export type MomentId = 'brittle' | 'vent-crack' | 'lost-shoal' | 'angler' | 'squid' | 'whale-fall' | 'cleaners' | 'young-rasp'
+  | 'storm' | 'turtle' | 'first-light' | 'bird';
 
 export type MomentOption = { label: string; effect: string; text: string };
 export type Moment = { id: MomentId; metres: number; title: string; text: string; a: MomentOption; b: MomentOption };
@@ -19,12 +20,28 @@ export const MOMENTS: readonly Moment[] = [
       text: 'It drags itself into the dark. Days later there are others like it at your foot, and they know where the food falls.' },
   },
   {
+    id: 'vent-crack', metres: 45, title: 'The vent cracks',
+    text: 'With a shudder the old chimney splits along its side, and hot sour water pours out across your foot.',
+    a: { label: 'Grow over the crack', effect: 'calcite dissolves ×0.8',
+      text: 'You lay stone over it, band by band, until the sourness only seeps. The warmth stays.' },
+    b: { label: 'Leave it open', effect: 'glow ×1.15',
+      text: 'The glimmerseed crowd to the new heat and burn brighter for it, and you learn to live with the sting.' },
+  },
+  {
     id: 'lost-shoal', metres: 400, title: 'A lost shoal',
     text: 'Three small shoals, their lamps out of rhythm with yours, circling as if they had forgotten the way.',
     a: { label: 'Teach them your pattern', effect: '+3 shoals now',
       text: 'It takes a long time. Then their lights fall into step with your glow, and they stay.' },
     b: { label: 'Guide them home', effect: 'scouts hear ×1.2',
       text: 'You light the way they came. They go. What they tell the others about you comes back as voices in the silt.' },
+  },
+  {
+    id: 'angler', metres: 900, title: 'Another light',
+    text: 'An anglerfish has hung its lure beside your glow, very still, and the small things come to both of you.',
+    a: { label: 'Outshine it', effect: 'lure +0.5',
+      text: 'You burn until its little lamp looks like nothing. It drifts off, offended. The food is yours.' },
+    b: { label: 'Share the dark', effect: 'plankton is eaten ×0.85 as fast',
+      text: 'You let it stay. It eats what strays too close to you, and the rest of the plankton lingers.' },
   },
   {
     id: 'squid', metres: 1800, title: 'Something enormous',
@@ -51,6 +68,14 @@ export const MOMENTS: readonly Moment[] = [
       text: 'You keep your edges thick and smooth. The cleaners move along the shelf, unhurt and unhelped.' },
   },
   {
+    id: 'young-rasp', metres: 3450, title: 'A young Rasp, alone',
+    text: 'Small, its beak still soft, it has lost the others and is scraping at your living polyps out of hunger.',
+    a: { label: 'Give it dead stone', effect: 'the Rasp eat ×0.8 of your stone',
+      text: 'You open a dead branch to it. It eats, and sleeps, and later the others come for it and are gentler with you.' },
+    b: { label: 'Send it to its kind', effect: 'sand ×1.15',
+      text: 'You close against it until it gives up and swims downslope, where the others are grinding. They grind harder with it back.' },
+  },
+  {
     id: 'storm', metres: 3850, title: 'A storm takes a branch',
     text: 'Waves you have never felt reach down and break off one of your tallest branches. It rolls across the sand.',
     a: { label: 'Let it go', effect: '+2 lineage at the next spawning',
@@ -65,6 +90,14 @@ export const MOMENTS: readonly Moment[] = [
       text: 'It sleeps through the night and wakes and eats the weed off you, gently, and comes back the next night.' },
     b: { label: 'Close your polyps on it', effect: 'sand ×1.25',
       text: 'It wakes stung and leaves. The Rasp move into the space it kept clear, and grind.' },
+  },
+  {
+    id: 'first-light', metres: 3982, title: 'First light',
+    text: 'Above you, through less water than you have ever had over you, the sky is going pale. Ossel has no word for it either.',
+    a: { label: 'Turn toward it', effect: 'bloom ×1.15',
+      text: 'Every polyp leans east. The symbionts drink the first light like water.' },
+    b: { label: 'Wait for the moon', effect: 'spawn is lost ×0.85 as fast',
+      text: 'You keep your face to where the moon will rise, and hold what you carry close.' },
   },
   {
     id: 'bird', metres: 3990, title: 'A bird at low tide',

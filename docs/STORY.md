@@ -114,6 +114,7 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Traits 'Old maps', 'Open house', 'Water-wise' | plain phrases | OK |
 | Hard seamounts (hungry, silent, lonely, buried) as challenge runs with a lasting reward | challenge runs are a genre convention (incremental 'challenges'); names are plain descriptions | OK |
 | Moments (a dying brittle star, a lost shoal, the giant squid's eye, a whale fall, cleaners asking for a ledge, a storm breaking a branch, a sleeping turtle, a shore bird at low tide) | real reef and deep-sea events; small choice events are a genre convention; beats written for Ossel | OK |
+| Moments: a vent cracking, an anglerfish's lure beside yours, a young Rasp alone, first light | our own beats | OK |
 | The water's moods (rich, slack, lamp, carrying, gritty, clear, warm water) changing prices on a forecast | timed price swings are a genre convention (markets); names are plain descriptions of real sea states | OK |
 | Residents (guard crabs, pistol shrimp, sea cucumbers, coral gobies, feather dusters, farmer damselfish) given homes in the reef | real coral symbioses (Trapezia crabs, gobies, damselfish gardens); limited slots are a genre convention | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |
