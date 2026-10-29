@@ -137,3 +137,14 @@ Sand sink on the shelf: 3000 × 5^level sand, max 2; each +1 resident home.
 After the line's first ending, a new reef may take vows; at its ending `lineageFor` adds each kept
 vow: Haste (surface within 7 h of reef time) +6, Lightness (carry one memory fewer) +4, Solitude
 (no resident homes) +4.
+
+## Tangles
+Zones 2–4, active only: one slot every 420 s at a seeded moment, there for 35 s. Freed, `burst(40 s)`.
+
+## Today's visitor
+Client passes the calendar day; one non-rare creature of the current zone (seeded by day and zone).
+Its first touch that day: +1 lineage.
+
+## Later works
+Listening dome (Midnight, 1500 m): scouts ×1.25 per stage. Grazing lawn (Twilight, 3400 m): sand ×1.15
+per stage. Both three stages, ×10 per stage in calcite.
