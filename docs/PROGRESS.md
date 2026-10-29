@@ -475,3 +475,4 @@ date, what landed, what is half-done, what's next.
 - Three more riddles (after the Rasp's own band, the midden, the sun gate): six in all.
 - Refactor: the choice cards (strain, boon, riddle, fork, signal, full moon) moved to ui/choices.ts; el/button to ui/dom.ts; panel.ts 2163 → 1993 lines.
 - Shells: content/shells.ts (8), economy currentShell/pickShell, meta.shells, knownBonus; drawn on the Sunlit sand with a glint, tap to keep (spot id 'shell'); shelf card in Bands; corallum.shell(); test.
+- Seamount tints carried into the Midnight Water and the Twilight Shelf (faint screen-space overlay per seamount).

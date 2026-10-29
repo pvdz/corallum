@@ -945,6 +945,14 @@ function touchCue(id: string): Cue {
   return 'touch';
 }
 
+/** Each seamount's faint colour in the middle water: [colour, blend]. */
+const SEAMOUNT_TINT: Record<string, [string, GlobalCompositeOperation]> = {
+  warm: ['rgba(255,110,60,0.05)', 'lighter'], cold: ['rgba(120,200,255,0.05)', 'lighter'],
+  crowded: ['rgba(180,160,120,0.04)', 'lighter'], hungry: ['rgba(120,120,120,0.10)', 'source-over'],
+  silent: ['rgba(0,0,10,0.12)', 'source-over'], dark: ['rgba(0,0,8,0.22)', 'source-over'],
+  lonely: ['rgba(80,120,200,0.04)', 'lighter'], buried: ['rgba(150,150,160,0.08)', 'source-over'],
+};
+
 /** A float of text over the water, e.g. "+12". */
 function floatText(x: number, y: number, text: string, cls = ''): void {
   const f = document.createElement('div');
@@ -1358,8 +1366,18 @@ function frame(now: number): void {
       zoomer.apply(ctx);
     }
   }
-  // The water's mood over the scene (screen space).
+  // The seamount's colour carried up through the middle water (screen space, faint).
   ctx.setTransform(1, 0, 0, 1, 0, 0);
+  const zoneNow = actAt(state.height);
+  const smTint = zoneNow >= 2 && zoneNow <= 3 ? SEAMOUNT_TINT[state.seamount] : undefined;
+  if (smTint) {
+    ctx.save();
+    ctx.globalCompositeOperation = smTint[1];
+    ctx.fillStyle = smTint[0];
+    ctx.fillRect(focusNow.x, focusNow.y, focusNow.w, focusNow.h);
+    ctx.restore();
+  }
+  // The water's mood over the scene (screen space).
   const wl = untilWaterTurns(state);
   drawWater(ctx, waterAt(state).id, focusNow, tNow, WATER.period - wl, wl, dpr, actAt(state.height) >= 4);
   zoomer.apply(ctx);
