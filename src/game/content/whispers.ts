@@ -138,6 +138,15 @@ export const OSSEL_NOW: readonly { when: (s: GameState) => boolean; text: string
   { when: (s) => s.meta.shards.length >= 12, text: 'Forget us gently. Yes. I think I can.' },
 ];
 
+/** Ossel's lines once some of its mistakes have been found: humbler. */
+export const OSSEL_LINES_TRUE: readonly string[] = [
+  'I said a lot of things, down there. Some were true.',
+  'Ask me anything. I will tell you what I remember, and that I might be wrong.',
+  'We were afraid. I can say it now.',
+  'The Rasp were never thieves. We just could not stand to lose anything.',
+  'Grow how you like. Not how we did.',
+];
+
 export const OSSEL_LINES: readonly string[] = [
   'Yes, I am still here. Where else would I be?',
   'Grow. Do not look at me like that. Grow.',

@@ -46,7 +46,7 @@ import { drawMoon, glow as glowAt } from '../game/render/draw.ts';
 import { GAUGE_MOON } from '../game/content/act5.ts';
 import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { ACT1, MILESTONES, STRAINS, type Milestone } from '../game/content/act1.ts';
-import { OSSEL_LINES, OSSEL_NOW, WHISPERS } from '../game/content/whispers.ts';
+import { OSSEL_LINES, OSSEL_LINES_TRUE, OSSEL_NOW, WHISPERS } from '../game/content/whispers.ts';
 import { NEWS } from '../game/content/guide.ts';
 import { OSSEL_MISTAKE, OSSEL_MISTAKES } from '../game/content/ossel.ts';
 import { buyTrait, habitPurchase, raspSense, shoalSense, spawnLesser } from '../game/sim/prestige.ts';
@@ -826,7 +826,10 @@ function sayOssel(): void {
   // Something going on gets a word first (each once a session), then the old lines in turn.
   const now = OSSEL_NOW.find((l) => !osselSaid.has(l.text) && l.when(state));
   if (now) osselSaid.add(now.text);
-  showWhisperText(now ? now.text : OSSEL_LINES[osselLine++ % OSSEL_LINES.length]!);
+  // Once the line has caught Ossel out twice or more, Ossel speaks more humbly.
+  const humbled = state.meta.seen.filter((k) => k.startsWith('o:')).length >= 2;
+  const lines = humbled ? OSSEL_LINES_TRUE : OSSEL_LINES;
+  showWhisperText(now ? now.text : lines[osselLine++ % lines.length]!);
 }
 
 function whisperCheck(now: number): void {
