@@ -528,6 +528,24 @@ export function createMidnightScene(seed: number): Scene {
     sg.addColorStop(1, 'rgba(40,60,140,0)');
     ctx.fillStyle = sg;
     ctx.fillRect(0, 0, w, h);
+    // Near the top of the zone the first grey light reaches down: a few faint shafts.
+    const near = Math.max(0, (p - 0.75) / 0.25);
+    if (near > 0) {
+      for (let i = 0; i < 4; i++) {
+        const bx = cx() + focus.w * ((i - 1.5) * 0.18) + Math.sin(t * 0.05 + i * 1.9) * focus.w * 0.02;
+        const lg = ctx.createLinearGradient(0, 0, 0, h * 0.75);
+        lg.addColorStop(0, `rgba(120,150,210,${0.07 * near})`);
+        lg.addColorStop(1, 'rgba(120,150,210,0)');
+        ctx.fillStyle = lg;
+        ctx.beginPath();
+        ctx.moveTo(bx - focus.w * 0.015, 0);
+        ctx.lineTo(bx + focus.w * 0.015, 0);
+        ctx.lineTo(bx + focus.w * 0.06 - focus.w * 0.05, h * 0.75);
+        ctx.lineTo(bx - focus.w * 0.06 - focus.w * 0.05, h * 0.75);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
     ctx.restore();
   }
 
