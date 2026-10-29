@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended goal (user): add content, gameplay and graphics, keep going. Latest: old stone (knobs to let go, Light-boned, heavy seamount, falls at the release), milky sea, far storm, grotto + boxer crab, trip encounters, three moments, foreground depth layer, corallites, city map trip. Bot ~7h08; 7 browser tests + 72 sim tests green.
+NOW: Open-ended goal (user): add content, gameplay and graphics, keep going. Latest: vows (4), wishes on shooting stars, lucky neighbours, guard job, grottoes + boxer crab, Pillars form, old stone (+ heavy seamount, Light-boned, memory, reading, mistake), milky sea, rings cross-section, foreground depth, UI strings in content/ui.ts. Bot ~7h08; 7 browser tests + 76 sim tests green.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
