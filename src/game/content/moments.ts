@@ -4,6 +4,7 @@
 
 export type MomentId = 'brittle' | 'vent-crack' | 'snow' | 'lost-shoal' | 'hunters' | 'angler' | 'squid' | 'whale-fall' | 'old-lamp' | 'cleaners'
   | 'young-rasp' | 'slope' | 'eggs' | 'storm' | 'turtle' | 'first-light' | 'last-night' | 'bird'
+  | 'fire-body' | 'seep' | 'rising-stop' | 'split-shoal'
   | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes';
 
 export type MomentOption = { label: string; effect: string; text: string };
@@ -63,6 +64,18 @@ export const MOMENTS: readonly Moment[] = [
       text: 'You let it stay. It eats what strays too close to you, and the rest of the plankton lingers.' },
   },
   {
+    id: 'fire-body', metres: 1200, title: 'A fire-body drifts in',
+    text: 'A hollow tube of light as long as your tallest branch, made of thousands of tiny animals, snags in your crown and glows.',
+    a: { label: 'Let it light you', effect: 'glow ×1.15', text: 'You hold it a while. When it drifts on, some of its light has stayed in your glimmerseed.' },
+    b: { label: 'Ask it the way it came', effect: 'murmurs ×1.15', text: 'It has drifted past a hundred buried reefs. Its light flickers their names; your scouts learn to listen for them.' },
+  },
+  {
+    id: 'seep', metres: 1500, title: 'A cold seep',
+    text: 'Down the slope, water that smells of stone and gas bubbles out of a crack. White mats of life grow around it.',
+    a: { label: 'Drink from it', effect: 'plankton ×1.15', text: 'The mats feed things that feed things. Your shoals come back fatter from that side of the slope.' },
+    b: { label: 'Build your foot over it', effect: 'calcite dissolves ×0.95', text: 'The seep turns the water around your foot hard and chalky. Your oldest stone stops wearing away.' },
+  },
+  {
     id: 'squid', metres: 1800, title: 'Something enormous',
     text: 'A shape longer than your whole reef slides past in the dark. One eye, the size of a polyp colony, turns toward your light.',
     a: { label: 'Dim your glow', effect: 'glow fades ×0.8',
@@ -79,12 +92,24 @@ export const MOMENTS: readonly Moment[] = [
       text: 'You let the hagfish and the worms have it. They remember who did not crowd them.' },
   },
   {
+    id: 'rising-stop', metres: 2100, title: 'The rising stops here',
+    text: 'Tonight, halfway up, the whole rising pauses in your branches, as if your reef were the surface.',
+    a: { label: 'Feed on them', effect: 'the rising pays ×1.25', text: 'Your feeders eat well, and learn exactly when to wait for the deep to come up.' },
+    b: { label: 'Let them rest', effect: 'glow fades ×0.85', text: 'They rest in your light until the dark changes, and leave some of their own behind.' },
+  },
+  {
     id: 'old-lamp', metres: 2600, title: 'A lamp drifting',
     text: 'A shell from the old city drifts by, very slowly, still faintly lit after all this time.',
     a: { label: 'Take it in', effect: 'glow ×1.1',
       text: 'You catch it in your branches. Its light goes into your glimmerseed and stays there.' },
     b: { label: 'Let it light the way', effect: 'trips ×0.85 as long',
       text: 'You let it go on. The shoals follow it a little way and learn a quicker path to the ruins.' },
+  },
+  {
+    id: 'split-shoal', metres: 2800, title: 'A shoal breaking up',
+    text: 'A great shoal that has travelled a long way is coming apart at the edges. The stragglers flicker toward your glow.',
+    a: { label: 'Take in the stragglers', effect: '+2 shoals now', text: 'They are tired and grateful, and their lamps match yours within a day.' },
+    b: { label: 'Light their way on', effect: '+1 lineage at the next spawning', text: 'You show them the way the rest went. Somewhere far off, a reef you will never see is told about you.' },
   },
   {
     id: 'cleaners', metres: 3200, title: 'The cleaners ask for room',

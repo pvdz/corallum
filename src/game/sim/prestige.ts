@@ -12,7 +12,7 @@ import { newGame, type GameState, type Meta } from './state.ts';
 export function lineageFor(s: GameState): number {
   const base = Math.floor(LINEAGE.perRoot * Math.sqrt(Math.max(0, s.height) / 60));
   const frag = s.dialects.spawn === 'fragmenting' ? LINEAGE.fragmentingBonus : 1;
-  return Math.floor(base * frag) + (s.moments.storm === 'a' ? 2 : 0) + (s.moments['far-light'] === 'b' ? 2 : 0) + s.levels.daughter + (ended(s) ? endingLineage(s, s.released) + s.garden : 0);
+  return Math.floor(base * frag) + (s.moments.storm === 'a' ? 2 : 0) + (s.moments['far-light'] === 'b' ? 2 : 0) + (s.moments['split-shoal'] === 'b' ? 1 : 0) + s.levels.daughter + (ended(s) ? endingLineage(s, s.released) + s.garden : 0);
 }
 
 /** The ending's lineage for a release of this much spawn. */

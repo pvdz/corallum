@@ -495,3 +495,4 @@ date, what landed, what is half-done, what's next.
 - Your reef (Reef tab) lists the glimmerseed and its sport, the grains, the stars named and risings fed on.
 - Traits: Deep larder (way, 10: the feeders go into each rising twice; state.roseN) and Grain-sense (habit, 6: prestige.ts grainSense, run in the habit tick).
 - Audio: 'rising' (low swell climbing, bells rising out of it) and 'heat' (wavering tone) cues as each begins (not on load mid-way).
+- Four Midnight moments filling 900–2800 m: fire-body (glow / murmurs), seep (plankton / dissolve), rising-stop (rising ×1.25 / glow fade), split-shoal (+2 shoals / +1 lineage).
