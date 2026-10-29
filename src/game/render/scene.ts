@@ -22,6 +22,8 @@ export type ReefView = {
   glowLevel: number;
   /** Seconds since the lure was last flared (the light blazes out wide for a few seconds). */
   sinceFlare: number;
+  /** Calmer motion (the setting or the system's reduced motion): no sudden flashes. */
+  calm: boolean;
   /** Seconds since the last hand sweep, for the tentacle flick. */
   sinceSweep: number;
   /** Vent chimney tier, 0 = none. */

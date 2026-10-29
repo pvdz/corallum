@@ -629,3 +629,4 @@ date, what landed, what is half-done, what's next.
 - Trait Lucky line (way, 8): lucky neighbours twice as often.
 - Time-lapse (T, or the Reef tab): the reef regrows from the start of its zone to now in 8 s (main.ts lapseHeight overrides the view height).
 - The dark beyond the reef's light (draw.ts drawDarkness): in the Silt Floor and Midnight Water the water dims away from the crown; the lit circle widens with the glow lure.
+- Calmer motion (setting or system reduced motion) reaches the renderers (ReefView calm): lightning becomes a slow soft glow with no flicker.

@@ -623,7 +623,7 @@ export function createBreachScene(seed: number): Scene {
   }
 
   /** A storm far off: a forked bolt to the horizon, the sky lit for an instant, a glint on the sea. */
-  function drawLightning(ctx: CanvasRenderingContext2D, t: number): void {
+  function drawLightning(ctx: CanvasRenderingContext2D, t: number, calm: boolean): void {
     const l = lightningAt(t);
     if (!l) return;
     sight('far-storm');
@@ -631,8 +631,9 @@ export function createBreachScene(seed: number): Scene {
     const wy = waterY();
     const r = mulberry32(l.lap * 131 + l.k * 17 + 5);
     const x0 = focus.x + focus.w * (0.12 + r() * 0.76);
-    // Two quick flickers, then a fading afterglow.
-    const f = l.since < 0.08 ? 1 : l.since < 0.16 ? 0.25 : l.since < 0.26 ? 0.9 : Math.max(0, 1 - (l.since - 0.26) / 0.9);
+    // Two quick flickers, then a fading afterglow; calm, only a slow soft glow.
+    const f = calm ? 0.35 * Math.sin(Math.min(1, l.since / 3) * Math.PI)
+      : l.since < 0.08 ? 1 : l.since < 0.16 ? 0.25 : l.since < 0.26 ? 0.9 : Math.max(0, 1 - (l.since - 0.26) / 0.9);
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     // The whole sky over the sea lights up, most around the bolt.
@@ -1267,7 +1268,7 @@ export function createBreachScene(seed: number): Scene {
       if (v.sinceBreach >= 60) drawPelican(ctx, t);
       if (v.sinceBreach >= 0) drawGreenFlash(ctx, v.sinceBreach);
       if (v.thorn?.kind === 'gull') drawGull(ctx, this.crownAt[0], waterY(), v.thorn.u, v.thorn.side, t, scale());
-      if (v.bands.includes('rain')) { drawLightning(ctx, t); drawRain(ctx, t); drawMoonbow(ctx, t, v.moonPhase, lastDawn); }
+      if (v.bands.includes('rain')) { drawLightning(ctx, t, v.calm); drawRain(ctx, t); drawMoonbow(ctx, t, v.moonPhase, lastDawn); }
       drawPool(ctx, L.cx, waterY(), v.works.pool, scale(), t);
       // Sand cays the reef has raised: low pale islands breaking the surface beside it.
       for (let k = 0; k < v.cays; k++) {

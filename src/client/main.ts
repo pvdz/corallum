@@ -849,6 +849,7 @@ function view(): ReefView {
     height: lapseHeight() ?? state.height,
     glowLevel: r.lureMax > 0 ? (lure(r, state.glow, state.height) - 1) / r.lureMax : 0,
     sinceFlare: state.t - state.lastFlare,
+    calm: reducedMotion.matches || calm.get(),
     sinceSweep: state.t - state.lastSweep,
     vent: state.levels.vent,
     shoals: state.levels.shoal,
