@@ -65,7 +65,7 @@ export const CREATURES: readonly Creature[] = [
  * at most `holdShare` of what the reef can hold of it; rare visitors give `rare` times as much.
  */
 export const GIFT = { seconds: 30, cooldown: 180, holdShare: 0.3, rare: 3 } as const;
-export type GiftStock = 'calcite' | 'glow' | 'plankton' | 'sand';
+export type GiftStock = 'calcite' | 'glow' | 'plankton' | 'sand' | 'bloom' | 'spawn';
 const GLOWING: readonly CreatureId[] = [
   'jelly', 'comb-jelly', 'siphonophore', 'anglerfish', 'vampire-squid', 'pyrosome', 'moon-jelly', 'sea-firefly',
 ];
@@ -79,11 +79,13 @@ export function giftOf(id: CreatureId): GiftStock {
 /** The float text after a gift's amount. */
 export const GIFT_TEXT: Record<GiftStock, string> = {
   calcite: 'calcite · a gift', glow: 'glow · a gift of light', plankton: 'plankton · they share', sand: 'sand · a gift',
+  bloom: 'bloom · a gift', spawn: 'spawn · they guard it',
 };
 
 /** The creature label's gift line: what a touch brings. */
 export const GIFT_WORD: Record<GiftStock, string> = {
   calcite: 'Shares a little food', glow: 'Shares a little light', plankton: 'Shares a little plankton', sand: 'Shares a little sand',
+  bloom: 'Shares a little food', spawn: 'Shares a little food',
 };
 
 /** The note shown when a rare visitor already in the journal comes by again. */

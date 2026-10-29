@@ -340,14 +340,18 @@ export function createBreachScene(seed: number): Scene {
     const s = scale();
     const wy = waterY();
     const feeding = v.sinceBreach >= 0 ? Math.min(1, v.sinceBreach / 20) : 0;
+    // Touched, the crowd bursts outward and drifts back over a few seconds.
+    const touch = startled('reef-fish', t);
+    const burst = touch && touch.age < 4 ? Math.sin(Math.min(1, touch.age / 4) * Math.PI) ** 0.6 : 0;
     const hues = [48, 200, 330, 20, 160, 280];
     for (let k = 0; k < 18; k++) {
       const a = t * (0.25 + (k % 4) * 0.06) * (k % 2 ? 1 : -1) + k * 1.9;
-      const rx = (60 + (k % 5) * 22) * s * (1 + feeding * 1.5), ry = (18 + (k % 3) * 10) * s;
+      const rx = (60 + (k % 5) * 22) * s * (1 + feeding * 1.5 + burst * 1.8), ry = (18 + (k % 3) * 10) * s * (1 + burst);
       const x = crown[0] + Math.cos(a) * rx;
       const y = Math.max(wy + 14 * s, crown[1] + 40 * s + (k % 6) * 14 * s + Math.sin(a) * ry - feeding * 30 * s);
       const dir = -Math.sin(a) * (k % 2 ? 1 : -1) >= 0 ? 1 : -1;
       const len = (7 + (k % 3) * 2) * s;
+      spot('reef-fish', x, y, Math.max(14 * s, 18 * dpr));
       ctx.save();
       ctx.translate(x, y);
       ctx.scale(dir, 1);

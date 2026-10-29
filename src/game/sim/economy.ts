@@ -1021,10 +1021,15 @@ export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: 
   const made = stock === 'glow' ? r.glowP : stock === 'plankton' ? r.planktonP : stock === 'sand' ? r.sandP : 0;
   const k = stock === 'glow' ? r.glowK : stock === 'plankton' ? r.planktonK : r.sandK;
   if (!(made > 0)) stock = 'calcite';
+  // Food feeds what the zone lives by: bloom in the light, the spawn at the surface (as feasts do).
+  const pay = feastPay(s);
+  if (stock === 'calcite' && pay !== 'calcite') stock = pay;
   // Never more than a share of what the reef can hold of it (P/k), or it would only wash away.
   // Rare visitors give more: catching one is luck as well as attention.
   const rare = CREATURES.find((c) => c.id === id)?.note.startsWith('Rare.') ? GIFT.rare : 1;
-  const amount = (chose(s, 'whale-fall', 'b') ? 2 : 1) * rare * (stock === 'calcite' ? calciteRate(s, r) * GIFT.seconds : Math.min(made * GIFT.seconds, GIFT.holdShare * made / k));
+  const amount = (chose(s, 'whale-fall', 'b') ? 2 : 1) * rare * (stock === 'calcite' ? calciteRate(s, r) * GIFT.seconds
+    : stock === 'bloom' ? r.bloomP * GIFT.seconds : stock === 'spawn' ? r.spawnP * GIFT.seconds
+    : Math.min(made * GIFT.seconds, GIFT.holdShare * made / k));
   if (!(amount > 0)) return null;
   s.gifts[id] = s.t;
   if (stock === 'calcite') {
@@ -1034,6 +1039,8 @@ export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: 
     s.glow += amount;
     s.earned.glow += amount;
   } else if (stock === 'plankton') s.plankton += amount;
+  else if (stock === 'bloom') s.bloom += amount;
+  else if (stock === 'spawn') s.spawn += amount;
   else s.sand += amount;
   return { stock, amount };
 }

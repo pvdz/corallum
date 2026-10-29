@@ -337,3 +337,4 @@ date, what landed, what is half-done, what's next.
 - Hard seamounts drawn on the Silt Floor: hungry (a third of the snow, a pale wash), silent (no ruins, darker water), lonely (no ruins, one far light on the horizon), buried (the flurry never stops, pale silt drifts slumping along the floor).
 
 - Rasp favours: content/act3.ts FAVOURS, economy favourOpen/favourCost/favourMaxed/askFavour, state.favours; three buttons under the Rasp dial. 'Clear the silt now' was useless (silt resettles in ~10 s), so the favour turns silt aside for good instead.
+- Gifts of food follow the zone's currency (bloom in the Sunlit Crown, spawn in the Breach before the release), so touching neighbours matters late. The Breach's waiting fish are tappable one by one and the crowd bursts outward when touched.
