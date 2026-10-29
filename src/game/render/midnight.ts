@@ -1061,6 +1061,30 @@ export function createMidnightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** Bristlemouths: a loose cloud of tiny silver fish drifting; touched, the cloud scatters and slowly gathers again. */
+  function drawBristlemouths(ctx: CanvasRenderingContext2D, t: number): void {
+    sight('bristlemouths');
+    const s = scale();
+    const touch = startled('bristlemouths', t);
+    const scatter = touch && touch.age < 6 ? Math.sin(Math.min(1, touch.age / 6) * Math.PI) : 0;
+    const cx = focus.x + focus.w * (0.2 + 0.1 * Math.sin(t * 0.03)), cy = focus.y + focus.h * (0.62 + 0.05 * Math.sin(t * 0.05));
+    spot('bristlemouths', cx, cy, 60 * s);
+    ctx.save();
+    ctx.strokeStyle = 'rgba(190,200,215,0.6)';
+    ctx.lineWidth = 1 * s;
+    ctx.beginPath();
+    for (let i = 0; i < 60; i++) {
+      const a = i * 2.39996 + t * 0.05;
+      const r = Math.sqrt(i / 60) * 55 * s * (1 + 1.6 * scatter);
+      const x = cx + Math.cos(a) * r + Math.sin(t * 0.7 + i) * 3 * s, y = cy + Math.sin(a) * r * 0.5;
+      const dir = Math.sin(t * 0.2 + i * 0.3) > 0 ? 1 : -1;
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + dir * 4 * s, y);
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+
   /** A whale far above, the one whose call carries down (the call sounds 40 s into each 170 s): a vast dim shape crossing. */
   function drawFarWhale(ctx: CanvasRenderingContext2D, t: number): void {
     const p = t % 170;
@@ -1237,6 +1261,7 @@ export function createMidnightScene(seed: number): Scene {
       if (v.moments.seep) drawSeep(ctx, t, L, v.moments.seep === 'b');
       if (v.milky) drawMilky(ctx, t);
       drawFarWhale(ctx, t);
+      drawBristlemouths(ctx, t);
       drawGulper(ctx, t);
       drawFireflySquid(ctx, t);
       {

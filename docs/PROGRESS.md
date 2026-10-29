@@ -724,3 +724,4 @@ date, what landed, what is half-done, what's next.
 - Resident pair The waterline (sea star + host anemone): spawn ×1.1.
 - Midnight marine snow near the reef's crown catches its light and glints blue (the lit radius grows with the glow lure).
 - The Rasp elder asks each wrongly answered riddle once more once the reef is in the light (3800 m), for half the lineage (state riddlesAgain; 'asks again' kicker); sim test.
+- Creature: bristlemouths (Midnight Water), a loose drifting cloud of tiny silver fish that scatters when touched.
