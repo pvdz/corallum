@@ -539,6 +539,32 @@ export function createTwilightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** A sardine run (rare): every 30 minutes, for a minute, a dense silver river across the upper water. */
+  function drawSardineRun(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 1800, length = 60;
+    const u = ((t + 600) % period) / length;
+    if (u >= 1) return;
+    sight('sardine-run');
+    const s = scale();
+    const k = Math.min(1, u * 6, (1 - u) * 6);
+    spot('sardine-run', focus.x + focus.w * 0.5, focus.y + focus.h * 0.25, focus.h * 0.1);
+    ctx.save();
+    ctx.globalAlpha = k;
+    ctx.fillStyle = '#9fb4c8';
+    ctx.beginPath();
+    for (let i = 0; i < 420; i++) {
+      // Packed close around a band that snakes across the water.
+      const lane = ((i * 0.618034) % 1) - 0.5;
+      const x = focus.x + (((t * 0.09 + i * 0.0071) % 1.2) - 0.1) * focus.w;
+      const mid = focus.y + focus.h * (0.24 + 0.06 * Math.sin(x * 0.006 + t * 0.4));
+      const y = mid + lane * focus.h * 0.07 * (1 - lane * lane * 2);
+      ctx.moveTo(x + 5 * s, y);
+      ctx.ellipse(x, y, 5 * s, 1.4 * s, 0.08, 0, Math.PI * 2);
+    }
+    ctx.fill();
+    ctx.restore();
+  }
+
   /** A frogfish on the slope, lumpy as a sponge, waving a small lure; touched, it gulps. */
   function drawFrogfish(ctx: CanvasRenderingContext2D, t: number): void {
     sight('frogfish');
@@ -1147,6 +1173,7 @@ export function createTwilightScene(seed: number): Scene {
       drawCurrent(ctx, t, v.current);
       drawNautilus(ctx, t);
       drawFrogfish(ctx, t);
+      drawSardineRun(ctx, t);
       drawOctopus(ctx, t);
       drawCleaningStation(ctx, t);
       drawWall(ctx, t, v.wall);

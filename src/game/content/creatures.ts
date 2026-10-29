@@ -4,9 +4,9 @@
 export type CreatureId =
   | 'jelly' | 'tripod-fish' | 'isopod' | 'brittle-star' | 'rattail' | 'sea-pig' | 'brine-pool' | 'smokers' | 'dumbo' | 'squat-lobster' | 'sea-lily' | 'glass-sponge' | 'tube-worm'
   | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'milky-sea' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration'
-  | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark'
+  | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'sardine-run' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark'
   | 'cuttlefish' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly'
-  | 'shore-bird' | 'pelican' | 'hatchlings' | 'flying-fish' | 'dolphin' | 'moon-jelly'
+  | 'shore-bird' | 'pelican' | 'hatchlings' | 'green-flash' | 'flying-fish' | 'dolphin' | 'moon-jelly'
   | 'thorn-star' | 'dragonfish' | 'drill-snail' | 'gull' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish' | 'host-anemone';
 
 export type Creature = { id: CreatureId; name: string; zone: string; note: string };
@@ -39,6 +39,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'giant-squid', name: 'Giant squid', zone: 'The Midnight Water', note: 'Rare. A shape longer than the reef, an eye like a plate, and gone.' },
   { id: 'migration', name: 'The migration', zone: 'The Midnight Water', note: 'Every night the deep rises to feed: the biggest journey any animals make.' },
   { id: 'rasp', name: 'The Rasp', zone: 'The Twilight Shelf', note: 'Blunt beaks that grind dead stone into sand.' },
+  { id: 'sardine-run', name: 'A sardine run', zone: 'The Twilight Shelf', note: 'Rare. A river of silver a hundred thousand fish long, pouring past the shelf.' },
   { id: 'frogfish', name: 'Frogfish', zone: 'The Twilight Shelf', note: 'It looks exactly like a sponge, until something swims too close to its little lure.' },
   { id: 'nautilus', name: 'Nautilus', zone: 'The Twilight Shelf', note: 'A shell of chambers it fills and empties to rise and sink. It has done this for a very long time.' },
   { id: 'moray', name: 'Moray eel', zone: 'The Twilight Shelf', note: 'It gapes all day, not to threaten: it breathes through its mouth. It is shy.' },
@@ -62,6 +63,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'cuttlefish', name: 'Cuttlefish', zone: 'The Sunlit Crown', note: 'Waves of colour run down its skin like thoughts. Startle it and it goes white.' },
   { id: 'bait-ball', name: 'A bait ball', zone: 'The Sunlit Crown', note: 'Small fish pressed into one turning shape, and hunters going through it.' },
   { id: 'sea-firefly', name: 'Sea fireflies', zone: 'The Sunlit Crown', note: 'Only after dark. Specks that court in light, leaving strings of blue pearls as they rise.' },
+  { id: 'green-flash', name: 'The green flash', zone: 'The Breach', note: 'Only after the release. The very first edge of the sun, green for one breath.' },
   { id: 'pelican', name: 'Pelican', zone: 'The Breach', note: 'Only after dawn. It glides along the swell, folds itself up, and drops like a stone.' },
   { id: 'hatchlings', name: 'Turtle hatchlings', zone: 'The Breach', note: 'Only after the release, at dawn. A beach somewhere let them go the same night you did.' },
   { id: 'flying-fish', name: 'Flying fish', zone: 'The Breach', note: 'They leave the sea entirely, for a few seconds at a time, on fins like wings.' },

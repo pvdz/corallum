@@ -469,3 +469,4 @@ date, what landed, what is half-done, what's next.
 - Feats: A garden at dawn, The elder's respect, Fluent, Kept close.
 - The line's title (Lineage header), from the memory its endings carried most (act5.ts LINE_TITLES).
 - Rare: a milky sea in the Midnight Water (every 40 min, for 2), touch stirs swirls; journal entry.
+- Rare sights: a sardine run on the Twilight Shelf (every 30 min, a minute); the green flash at the Breach's sunrise after the release.

@@ -371,6 +371,21 @@ export function createBreachScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** The green flash: the instant the sun's rim clears the sea after the release. */
+  function drawGreenFlash(ctx: CanvasRenderingContext2D, since: number): void {
+    const u = (since - 150) / 3;
+    if (u < 0 || u > 1) return;
+    sight('green-flash');
+    const s = scale();
+    const x = focus.x + focus.w * 0.62, y = waterY() - 2 * s;
+    spot('green-flash', x, y, 40 * s);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, x, y, 70 * s, '120,255,150', 0.7 * Math.sin(u * Math.PI));
+    glow(ctx, x, y, 14 * s, '200,255,210', Math.sin(u * Math.PI));
+    ctx.restore();
+  }
+
   /** A pelican after dawn: glides low across, then plunges; touched, it climbs away. */
   function drawPelican(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 45, u = (t % period) / period;
@@ -909,6 +924,7 @@ export function createBreachScene(seed: number): Scene {
       drawFlyingFish(ctx, t);
       if (v.sinceBreach >= 0) drawHatchlings(ctx, t, v.sinceBreach);
       if (v.sinceBreach >= 60) drawPelican(ctx, t);
+      if (v.sinceBreach >= 0) drawGreenFlash(ctx, v.sinceBreach);
       if (v.thorn?.kind === 'gull') drawGull(ctx, this.crownAt[0], waterY(), v.thorn.u, v.thorn.side, t, scale());
       if (v.bands.includes('rain')) drawRain(ctx, t);
       drawPool(ctx, L.cx, waterY(), v.works.pool, scale(), t);
