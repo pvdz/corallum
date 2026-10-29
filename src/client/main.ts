@@ -1329,6 +1329,7 @@ let slowFrames = 0;
 /** The last lightning strike whose thunder was heard. */
 let thunderHeard = -1;
 let milkyHeard = false;
+let starsHeard = false;
 /** Slow frames for a while: first the glow pass goes, then (still slow) the resolution drops to 1×. */
 let autoLowRes = false;
 function qualityCheck(dt: number): void {
@@ -1616,6 +1617,9 @@ function frame(now: number): void {
     const milkyNow = inMilky(state);
     if (milkyNow && !milkyHeard) audio.cue('shimmer');
     milkyHeard = milkyNow;
+    const starsNow = !!meteorShower(state);
+    if (starsNow && !starsHeard) audio.cue('feast');
+    starsHeard = starsNow;
     upHeard = upNow;
     swellHeard = swellNow;
     heatHeard = heatNow;
