@@ -159,7 +159,7 @@ export const TRAITS: readonly Trait[] = [
     cost: 10, growth: 1, max: 1, kind: 'habit',
   },
   {
-    id: 'rasp-sense', name: 'Rasp sense', effect: 'while you watch, the Rasp dial keeps to the best setting for income; when you leave, to the best for being away',
+    id: 'rasp-sense', name: 'Rasp sense', effect: 'while you watch, the Rasp dial keeps to the best setting for income (when you leave, for being away), and the current to its best',
     flavour: 'Your children and the Rasp have an understanding about how much is enough.',
     cost: 10, growth: 1, max: 1, kind: 'habit',
   },

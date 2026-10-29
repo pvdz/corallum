@@ -5,7 +5,7 @@ import type { SiteId } from '../content/expeditions.ts';
 import { MEETINGS } from '../content/act3.ts';
 import { DIALECTS } from '../content/act4.ts';
 import { HABIT_SHARE, LINEAGE, TRAITS, type SeamountId, type Trait, type TraitId } from '../content/lineage.ts';
-import { assign, balanceFeedLight, cost, ended, maxed, idleShoals, jobGain, raspMax, raspSettings, revealed, setRasp, spawnTarget } from './economy.ts';
+import { assign, balanceFeedLight, cost, ended, maxed, setCurrent, steadyCalciteRate, idleShoals, jobGain, raspMax, raspSettings, revealed, setRasp, spawnTarget } from './economy.ts';
 import { newGame, type GameState, type Meta } from './state.ts';
 
 /** Lineage a spawning released now would bring. */
@@ -80,6 +80,16 @@ export function raspSense(s: GameState, away: boolean): void {
   if (!s.meta.traits['rasp-sense'] || raspMax(s) === 0) return;
   const best = raspSettings(s);
   setRasp(s, away ? best.forHold : best.forIncome);
+  // And the current, to whichever setting makes the most calcite.
+  if (s.height >= 3000) {
+    let c0 = 0, top = -Infinity;
+    for (const c of [-2, -1, 0, 1, 2]) {
+      setCurrent(s, c);
+      const r = steadyCalciteRate(s);
+      if (r > top) { top = r; c0 = c; }
+    }
+    setCurrent(s, c0);
+  }
 }
 
 export function traitDef(id: TraitId): Trait {
