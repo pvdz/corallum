@@ -642,3 +642,4 @@ date, what landed, what is half-done, what's next.
 - The shelf of kept shells shows each shell drawn (render/shells.ts drawShellShape, shared with the sand), its name as the tooltip.
 - Ossel can be heard in the light too: the sand it became glitters on the Sunlit floor and in the Breach shallows (draw.ts drawOsselSand, tappable, flickers as it speaks), so its after-ending lines are reachable. Almanac labels stack in up to three rows without overlapping.
 - Hard seamount 'gleaming' (lineage.ts lucky/noFeasts): lucky neighbours ×3, no falling feasts; trial 3500 m → Fortune's child (lucky ×1.5 after); its moment The water like glass (glow ×1.15 or dissolve ×0.9); chart tint; sim test.
+- Full browser suite green. A suite run once stalled at browser launch for 35 min: run e2e loops with `timeout 300` per test.
