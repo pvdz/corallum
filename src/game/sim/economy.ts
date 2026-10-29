@@ -536,14 +536,19 @@ export function untilWaterTurns(s: GameState): number {
   return (Math.floor(s.t / WATER.period) + 1) * WATER.period - s.t;
 }
 
+/** A water's price factor for this reef (Water-wise deepens it). */
+function deep(s: GameState, w: Water): number {
+  return w.factor < 1 ? w.factor - 0.1 * trait(s, 'water-wise') : 1;
+}
+
 function waterFactor(s: GameState, id: UpgradeId): number {
   const w = waterAt(s);
-  return w.upgrades.includes(id) ? w.factor : 1;
+  return w.upgrades.includes(id) ? deep(s, w) : 1;
 }
 
 function murmurFactor(s: GameState): number {
   const w = waterAt(s);
-  return w.murmurs ? w.factor : 1;
+  return w.murmurs ? deep(s, w) : 1;
 }
 
 /**
@@ -660,6 +665,11 @@ function roamSite(s: GameState): Site {
   };
 }
 
+/** How long a trip takes this reef (Old maps halves it). */
+export function tripSeconds(s: GameState, x: Site): number {
+  return x.seconds * (trait(s, 'old-maps') ? 0.5 : 1);
+}
+
 /** The trip the shoals are on now (a ruin, or a roam of the size that left), if any. */
 export function tripSite(s: GameState): Site | undefined {
   const ex = s.expedition;
@@ -696,7 +706,7 @@ export function send(s: GameState): boolean {
     took[j] = n;
     need -= n;
   }
-  s.expedition = { site: x.id, back: s.t + x.seconds, ...took, n: x.shoals };
+  s.expedition = { site: x.id, back: s.t + tripSeconds(s, x), ...took, n: x.shoals };
   return true;
 }
 
@@ -705,7 +715,7 @@ function homecoming(s: GameState): void {
   const ex = s.expedition;
   const x = SITES.find((v) => v.id === ex.site);
   const roam = ex.site === 'roam';
-  const seconds = roam ? ROAM.seconds : x?.seconds ?? 0;
+  const seconds = (roam ? ROAM.seconds : x?.seconds ?? 0) * (trait(s, 'old-maps') ? 0.5 : 1);
   const heard = EXPEDITION.heard * ex.n * seconds;
   s.jobs.feed += ex.feed;
   s.jobs.light += ex.light;
@@ -728,7 +738,7 @@ function homecoming(s: GameState): void {
 /** Homes in the reef (by height), and the animals that may ask for one by now. */
 export function homes(s: GameState): number {
   const n = homesAt(s.height);
-  return n > 0 && chose(s, 'cleaners', 'a') ? n + 1 : n;
+  return n > 0 ? n + (chose(s, 'cleaners', 'a') ? 1 : 0) + trait(s, 'open-house') : 0;
 }
 export function residentsAsking(s: GameState) {
   return homes(s) > 0 ? RESIDENTS.filter((r) => s.height >= r.metres) : [];
@@ -951,7 +961,7 @@ export function dialect(id: DialectId) {
 /** Bloom a dialect tier costs now (clear water lowers it). */
 export function tierCost(s: GameState, t: { cost: number }): number {
   const w = waterAt(s);
-  return t.cost * (w.dialects ? w.factor : 1);
+  return t.cost * (w.dialects ? deep(s, w) : 1);
 }
 
 export function nextTier(s: GameState) {

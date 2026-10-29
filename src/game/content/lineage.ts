@@ -20,7 +20,7 @@ export const LINEAGE = {
 
 export type TraitId =
   | 'deep-memory' | 'quick-budding' | 'old-bands' | 'remembered-shoals' | 'glimmer' | 'kept-readings' | 'settling'
-  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table' | 'shoal-sense' | 'rasp-sense';
+  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table' | 'shoal-sense' | 'rasp-sense' | 'old-maps' | 'open-house' | 'water-wise';
 
 export type Trait = {
   id: TraitId;
@@ -155,6 +155,21 @@ export const TRAITS: readonly Trait[] = [
   {
     id: 'rasp-sense', name: 'Rasp sense', effect: 'while you watch, the Rasp dial keeps to the best setting for income; when you leave, to the best for being away',
     flavour: 'Your children and the Rasp have an understanding about how much is enough.',
+    cost: 10, growth: 1, max: 1, kind: 'way',
+  },
+  {
+    id: 'old-maps', name: 'Old maps', effect: 'expeditions and roams take half as long',
+    flavour: 'The shoals that swam for your parent taught their young the way to every ruin.',
+    cost: 10, growth: 1, max: 1, kind: 'way',
+  },
+  {
+    id: 'open-house', name: 'Open house', effect: 'one more home for residents',
+    flavour: 'Your children grow with a ledge left empty, as if expecting someone.',
+    cost: 12, growth: 1, max: 1, kind: 'way',
+  },
+  {
+    id: 'water-wise', name: 'Water-wise', effect: 'each water’s discount goes 0.1 deeper (×0.7 becomes ×0.6)',
+    flavour: 'They taste a change in the water a moment before it comes, and are ready.',
     cost: 10, growth: 1, max: 1, kind: 'way',
   },
 ];

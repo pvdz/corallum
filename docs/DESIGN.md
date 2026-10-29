@@ -200,7 +200,8 @@ the release also sets the lineage for beginning again.
     watching) · Tide-reader (every full moon a great tide) · Shared table (missed feasts
     are eaten for you at half: tapping becomes optional) · Shoal sense (idle shoals placed and feed/light
     rebalanced every 30 s while watching) · Rasp sense (dial at best-for-income while watching, best-for-hold
-    when the page is left).
+    when the page is left). · Old maps (trips take half as long) · Open house (one more resident home) ·
+    Water-wise (every water's discount 0.1 deeper).
 - **Seamounts**: each spawning chooses where to settle: plain, warm (active-friendly), cold
   (idle-friendly), crowded (fast story, more silt). See ECONOMY.md for numbers.
 - **Nurseries**: from 100 polyps, *Tend a daughter colony* (calcite ×4 each, one per daughter at the

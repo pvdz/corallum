@@ -353,3 +353,4 @@ date, what landed, what is half-done, what's next.
 - Records of the line: meta.records (best sim time to each sister mark, set in judgeMark); codex row 'Line’s best'; a note when a reef beats one.
 - The Breach shows the sister reef on the horizon once it nears the surface (a low dark crown rising, lit tips when it breaks the water); ReefView.sister.
 - Late Readings: three more (act2.ts, `after` band gate in nextReading): sand ×1.3, bloom ×1.25, spawn ×1.25; feat 'Every band read' now needs 12.
+- Lineage ways for the new systems: Old maps (tripSeconds halves trips), Open house (+1 home), Water-wise (deep(): discounts 0.1 deeper; the water line shows the real factor).

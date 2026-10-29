@@ -52,7 +52,7 @@ export function newMeta(): Meta {
     lineage: 0,
     traits: {
       'deep-memory': 0, 'quick-budding': 0, 'old-bands': 0, 'remembered-shoals': 0, glimmer: 0,
-      'kept-readings': 0, settling: 0, 'early-shoals': 0, 'rasp-kin': 0, 'glass-gardeners': 0, 'old-habits': 0, 'tide-reader': 0, 'shared-table': 0, 'shoal-sense': 0, 'rasp-sense': 0,
+      'kept-readings': 0, settling: 0, 'early-shoals': 0, 'rasp-kin': 0, 'glass-gardeners': 0, 'old-habits': 0, 'tide-reader': 0, 'shared-table': 0, 'shoal-sense': 0, 'rasp-sense': 0, 'old-maps': 0, 'open-house': 0, 'water-wise': 0,
     },
     spawnings: 0,
     seen: [],

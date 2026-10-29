@@ -30,7 +30,7 @@ import { SISTER } from '../game/content/sister.ts';
 import { REQUEST } from '../game/content/requests.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, sisterAt, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, sisterAt, tripSeconds, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -484,7 +484,7 @@ function tripView(): ReefView['trip'] {
   const x = tripSite(state);
   if (!x) return null;
   const i = SITES.indexOf(x) + state.tally.roams;
-  return { shoals: x.shoals, since: x.seconds - (ex.back - state.t), left: ex.back - state.t, side: i % 2 ? -1 : 1 };
+  return { shoals: x.shoals, since: tripSeconds(state, x) - (ex.back - state.t), left: ex.back - state.t, side: i % 2 ? -1 : 1 };
 }
 
 function view(): ReefView {

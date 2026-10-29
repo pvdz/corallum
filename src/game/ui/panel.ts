@@ -28,7 +28,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -1204,7 +1204,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const next = waterAt(s, k + 1);
         waterBox.dataset.water = water.id;
         waterName.textContent = water.name;
-        waterLine.textContent = water.line;
+        // Water-wise deepens every discount by 0.1: say the real factor.
+        const ww = s.meta.traits['water-wise'] ? 0.1 : 0;
+        waterLine.textContent = water.factor < 1 ? water.line.replace(/×0\.\d/, `×${(water.factor - ww).toFixed(1)}`) : water.line;
         waterNext.textContent = `${WATER.turns} ${duration(untilWaterTurns(s))} · ${next.id === water.id ? WATER.same : `${WATER.next} ${next.name.toLowerCase()}`}`;
         if (waterShown && waterShown !== water.id) { waterBox.classList.remove('turned'); void waterBox.offsetWidth; waterBox.classList.add('turned'); }
         waterShown = water.id;
@@ -1271,7 +1273,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         tripBar.hidden = !away;
         if (away) {
           const left = Math.max(0, s.expedition.back - s.t);
-          (tripBar.firstChild as HTMLElement).style.width = `${(1 - left / away.seconds) * 100}%`;
+          (tripBar.firstChild as HTMLElement).style.width = `${(1 - left / tripSeconds(s, away)) * 100}%`;
           tripEffect.textContent = away.relic
             ? `${away.shoals} shoals ${EXPEDITION.away} · bringing ${away.relic.toLowerCase()} (${away.effect})`
             : `${away.shoals} shoals ${EXPEDITION.away} · ${away.effect}`;
@@ -1280,7 +1282,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           tripEta.textContent = `back in ${duration(left)}`;
           tripCard.classList.remove('ready');
         } else {
-          tripEffect.textContent = ahead.relic ? `${duration(ahead.seconds)} away · a relic: ${ahead.effect}` : `${duration(ahead.seconds)} away · ${ahead.effect}`;
+          tripEffect.textContent = ahead.relic ? `${duration(tripSeconds(s, ahead))} away · a relic: ${ahead.effect}` : `${duration(tripSeconds(s, ahead))} away · ${ahead.effect}`;
           tripCost.textContent = `${ahead.shoals} shoals`;
           const ok = canSend(s);
           tripBtn.disabled = !ok;
