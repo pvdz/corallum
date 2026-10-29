@@ -1,6 +1,7 @@
 // The small life of the Silt Floor: drifting jellies, brittle stars on the silt, and the vent
 // chimney with its plume. Pure functions of time and a seed.
 
+import { sight } from './sightings.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { glow } from './draw.ts';
 
@@ -41,6 +42,7 @@ export function createLife(seed: number) {
   }));
 
   function drawJelly(ctx: CanvasRenderingContext2D, st: Stage, j: Jelly, t: number): void {
+    sight('jelly');
     const s = st.s * j.size;
     // Wraps across the focus area very slowly.
     const span = st.w * 1.2;
@@ -103,6 +105,7 @@ export function createLife(seed: number) {
   }
 
   function drawStar(ctx: CanvasRenderingContext2D, st: Stage, star: Star, t: number): void {
+    sight('brittle-star');
     const s = st.s * star.size;
     const x = st.cx + star.x * st.w;
     const y = st.baseY + 10 * s;
@@ -223,6 +226,7 @@ export function createLife(seed: number) {
    * light along their seams. They do not move; only a few motes drift through their walls.
    */
   function drawSponge(ctx: CanvasRenderingContext2D, st: Stage, g: Sponge, t: number): void {
+    sight('glass-sponge');
     const s = st.s * g.size;
     const x = st.cx + st.w * g.x, base = st.baseY + 5 * st.s;
     const hgt = 70 * s, wid = 12 * s;
@@ -273,6 +277,7 @@ export function createLife(seed: number) {
    * current and swaying slowly with it. Half-lit, pale, very old.
    */
   function drawLily(ctx: CanvasRenderingContext2D, st: Stage, c: Lily, t: number): void {
+    sight('sea-lily');
     const s = st.s * c.size;
     const x0 = st.cx + st.w * c.x, y0 = st.baseY + 4 * st.s;
     const sway = Math.sin(t * 0.35 + c.phase) * 0.12;
@@ -323,6 +328,7 @@ export function createLife(seed: number) {
     const period = 150;
     const u = (t % period) / period;
     if (u > 0.6) return;
+    sight('rattail');
     const s = st.s * 1.2;
     const x = st.cx - st.w * 0.7 + (u / 0.6) * st.w * 1.4;
     const y = st.baseY + 2 * s + Math.sin(t * 0.6) * 4 * s;
@@ -407,6 +413,7 @@ export function createLife(seed: number) {
 
   /** Tube worms crowding the warm water at the vent's foot: white stalks with red plumes. */
   function drawTubeWorms(ctx: CanvasRenderingContext2D, x: number, base: number, count: number, s: number, t: number): void {
+    sight('tube-worm');
     for (let i = 0; i < count; i++) {
       const off = ((i * 0.618) % 1 - 0.5) * 70 * s;
       const len = (14 + ((i * 7) % 5) * 4) * s;

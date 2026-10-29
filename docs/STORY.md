@@ -97,4 +97,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Band "Too much light" (polyps closing against noon light) | real biology (photo-stress) | OK |
 | Trait "Tide-reader" | generic phrase | OK |
 | Seamounts to settle on (plain, warm, cold, crowded) | descriptive words; real geology (hydrothermal, cold seeps) | OK |
+| Creature journal ("Seen for the first time"; 18 real animals plus the Rasp) | collection logs are a genre convention; animals are real | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

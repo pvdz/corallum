@@ -3,6 +3,7 @@
 // circle the reef herding plankton, light-swimmers spiral above the crown, scouts dive into
 // the dark below. Glass shrimp and a passing siphonophore appear once their bands are laid.
 
+import { sight } from './sightings.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow } from './draw.ts';
@@ -56,6 +57,7 @@ export function createMidnightScene(seed: number): Scene {
 
   /** Glass shrimp swimming across the frame. */
   function swimShrimp(ctx: CanvasRenderingContext2D, t: number, i: number): void {
+    sight('glass-shrimp');
     const s = scale() * (1.1 + (i % 2) * 0.4);
     const period = 60 + i * 17;
     const u = ((t + i * 23) % period) / period;
@@ -73,6 +75,7 @@ export function createMidnightScene(seed: number): Scene {
     const period = 170, crossing = 70;
     const u = (t % period) / crossing;
     if (u >= 1) return;
+    sight('anglerfish');
     const lap = Math.floor(t / period);
     const dir = lap % 2 ? 1 : -1;
     const s = scale() * 1.5;
@@ -154,6 +157,7 @@ export function createMidnightScene(seed: number): Scene {
 
   /** Comb jellies: glassy ovals whose eight comb rows ripple with travelling rainbow light. */
   function drawComb(ctx: CanvasRenderingContext2D, c: Comb, t: number): void {
+    sight('comb-jelly');
     const s = scale() * c.size;
     const x = focus.x + focus.w * (0.5 + c.x + Math.sin(t * 0.03 + c.phase) * 0.04);
     const y = focus.y + focus.h * (c.y + Math.sin(t * 0.05 + c.phase * 2) * 0.03);
@@ -257,6 +261,7 @@ export function createMidnightScene(seed: number): Scene {
     const period = 140;
     const u = (t % period) / period;
     if (u > 0.55) return;
+    sight('siphonophore');
     const head = -0.25 + (u / 0.55) * 1.6;
     const y0 = focus.y + focus.h * 0.22;
     ctx.save();

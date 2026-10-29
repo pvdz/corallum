@@ -2,6 +2,7 @@
 // sand, young reefs of every shape, bright reef fish, drifting larvae. The reef's own shape
 // follows its Form dialect: a fan until it chooses, then antlers, a dome, or stacked tables.
 
+import { sight } from './sightings.ts';
 import type { DialectId } from '../content/act4.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
@@ -187,6 +188,7 @@ export function createSunlitScene(seed: number): Scene {
    */
   function drawTurtle(ctx: CanvasRenderingContext2D, t: number, meadows: number): void {
     if (meadows < 2) return;
+    sight('turtle');
     const s = scale() * 1.4;
     const period = 140;
     const u = (t % period) / period;
@@ -279,6 +281,7 @@ export function createSunlitScene(seed: number): Scene {
   }
 
   function drawFish(ctx: CanvasRenderingContext2D, t: number): void {
+    sight('reef-fish');
     const s = scale();
     for (const f of fish) {
       const u = (((f.phase + t * f.speed) % 1) + 1) % 1;
@@ -317,6 +320,7 @@ export function createSunlitScene(seed: number): Scene {
     const period = 210, crossing = 80;
     const u = (t % period) / crossing;
     if (u >= 1) return;
+    sight('whale');
     const lap = Math.floor(t / period);
     const dir = lap % 2 ? -1 : 1;
     const s = Math.min(focus.w, focus.h) / 700 * 1.6;

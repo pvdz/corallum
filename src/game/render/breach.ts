@@ -2,6 +2,7 @@
 // path on the waves, the reef's crown breaking the water. Spawn bundles swell on the polyps;
 // at the release they rise in their millions through the moonlight and spread on the surface.
 
+import { sight } from './sightings.ts';
 import type { DialectId } from '../content/act4.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
@@ -264,6 +265,7 @@ export function createBreachScene(seed: number): Scene {
 
   function drawBird(ctx: CanvasRenderingContext2D, t: number, v: ReefView, crown: readonly [number, number]): void {
     if (!v.bands.includes('air')) return;
+    sight('shore-bird');
     const { s, wy, hx, hw, hh } = topOf(v, crown);
     const flying = v.sinceBreach >= 0;
     const k = flying ? Math.min(1, v.sinceBreach / 12) : 0;

@@ -29,6 +29,8 @@ import { newGame, type GameState } from '../game/sim/state.ts';
 import { metres, num } from '../game/ui/format.ts';
 import { createAudio } from '../game/audio/audio.ts';
 import { LINEAGE_BANDS } from '../game/content/lineage.ts';
+import { CREATURES } from '../game/content/creatures.ts';
+import { takeSightings } from '../game/render/sightings.ts';
 import { ACT1, MILESTONES, type Milestone } from '../game/content/act1.ts';
 import { WHISPERS } from '../game/content/whispers.ts';
 import { buyTrait, habitPurchase, spawnLesser } from '../game/sim/prestige.ts';
@@ -426,6 +428,33 @@ function showMilestone(ms: Milestone, what: string): void {
   scene.effect('reading');
 }
 
+const journalNote = document.createElement('div');
+journalNote.id = 'journal-note';
+ui.append(journalNote);
+let journalQueue: string[] = [];
+let journalBusy = false;
+/** "Seen for the first time: Anglerfish", one at a time. */
+function showJournalNote(name: string): void {
+  journalQueue.push(name);
+  if (journalBusy) return;
+  const next = () => {
+    const n = journalQueue.shift();
+    if (!n) { journalBusy = false; return; }
+    journalBusy = true;
+    journalNote.textContent = '';
+    const k = document.createElement('span');
+    k.textContent = 'Seen for the first time';
+    const b = document.createElement('strong');
+    b.textContent = n;
+    journalNote.append(k, b);
+    journalNote.classList.remove('show');
+    void journalNote.offsetWidth;
+    journalNote.classList.add('show');
+    setTimeout(next, 3200);
+  };
+  next();
+}
+
 function showZoneTitle(n: number): void {
   const a = act(n);
   zoneTitle.innerHTML = '';
@@ -568,6 +597,7 @@ let last = performance.now();
 let lastSave = last;
 let lastTitle = 0;
 let lastHabit = 0;
+let lastJournal = 0;
 let lastWhaleLap = -1;
 let animT = 40;
 let needResize = true;
@@ -621,6 +651,17 @@ function frame(now: number): void {
   lastWhaleLap = whaleLap;
   whisperCheck(now);
   if (fpsBox) fpsTick(now, dt);
+  // The journal: creatures drawn on screen are recorded the first time they are seen.
+  if (now - lastJournal > 1000) {
+    lastJournal = now;
+    for (const id of takeSightings()) {
+      const key = `c:${id}`;
+      if (frozenT !== null || state.meta.seen.includes(key)) continue;
+      state.meta.seen.push(key);
+      const c = CREATURES.find((x) => x.id === id);
+      if (c) showJournalNote(c.name);
+    }
+  }
   // Old habits: the reef's own small purchases, only while the page is open.
   if (habitsOn && frozenT === null && now - lastHabit > 250) {
     lastHabit = now;

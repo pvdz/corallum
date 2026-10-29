@@ -2,6 +2,7 @@
 // grazing it, pale sand bars where they have been, and Ossel's dead wall beside the reef —
 // until the truce decides what happens to it.
 
+import { sight } from './sightings.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow } from './draw.ts';
@@ -240,6 +241,7 @@ export function createTwilightScene(seed: number): Scene {
    * the current to catch drifting food, and ducking down in waves when something passes.
    */
   function drawGardenEels(ctx: CanvasRenderingContext2D, t: number): void {
+    sight('garden-eel');
     const s = scale();
     for (const [k, e] of eels.entries()) {
       const x = focus.x - focus.w * 0.1 + e.u * focus.w * 1.2;
@@ -269,6 +271,7 @@ export function createTwilightScene(seed: number): Scene {
     const period = 230, crossing = 75;
     const u = (t % period) / crossing;
     if (u >= 1) return;
+    sight('manta');
     const lap = Math.floor(t / period);
     const dir = lap % 2 ? -1 : 1;
     const s = scale() * 1.4;
@@ -327,6 +330,7 @@ export function createTwilightScene(seed: number): Scene {
 
   /** The Rasp: blunt-beaked grazers with coin scales, nosing along the slope. */
   function drawRasp(ctx: CanvasRenderingContext2D, t: number, n: number, trust: boolean, polite: boolean): void {
+    if (n > 0) sight('rasp');
     const s = scale();
     for (let i = 0; i < Math.min(n, MAX_RASP); i++) {
       const g = grazers[i]!;

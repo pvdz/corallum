@@ -10,6 +10,7 @@ import { ACT3, MEETINGS, type Choice, type Meeting, type MeetingId } from '../co
 import { DIALECTS, TIERS, type DialectId } from '../content/act4.ts';
 import { SEAMOUNTS, TRAIT_GROUPS, TRAITS, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { MEMORIES } from '../content/act5.ts';
+import { CREATURES } from '../content/creatures.ts';
 import { canSpawnLesser, lineageFor, traitCost, traitMaxed } from '../sim/prestige.ts';
 import { act, actAt, SURFACE } from '../content/acts.ts';
 import {
@@ -271,7 +272,25 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const codex = el('article', 'card codex');
   const codexList = el('dl', 'codex-list');
   codex.append(el('h3', '', 'Your reef'), codexList);
-  bandsPage.append(codex, readingCard, bandsIntro, bandList);
+  // The journal of creatures seen (kept across spawnings).
+  const journal = el('article', 'card codex journal');
+  const journalHead = el('h3', '', 'Creatures seen');
+  const journalList = el('dl', 'codex-list');
+  journal.append(journalHead, journalList);
+  let journalKey = '';
+  function renderJournal(s: GameState): void {
+    const seen = CREATURES.filter((c) => s.meta.seen.includes(`c:${c.id}`));
+    const key = seen.map((c) => c.id).join();
+    if (key === journalKey) return;
+    journalKey = key;
+    journalHead.textContent = `Creatures seen · ${seen.length} of ${CREATURES.length}`;
+    journalList.innerHTML = '';
+    for (const c of CREATURES) {
+      const known = seen.includes(c);
+      journalList.append(el('dt', known ? '' : 'unknown', known ? c.name : 'Not yet seen'), el('dd', known ? '' : 'unknown', known ? c.note : c.zone));
+    }
+  }
+  bandsPage.append(codex, journal, readingCard, bandsIntro, bandList);
   let codexKey = '';
   function codexRow(term: string, value: string): void {
     codexList.append(el('dt', '', term), el('dd', '', value));
@@ -800,6 +819,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         }
       }
       renderCodex(s);
+      renderJournal(s);
       habitToggle.hidden = !s.meta.traits['old-habits'];
       bandsDot.hidden = seenStories >= storyCount;
       primed = true;

@@ -2,6 +2,7 @@
 // Each shoal's path shows its job: feeders circle the reef, light-swimmers spiral above the
 // crown, scouts dive into the dark below the frame and come back.
 
+import { sight } from './sightings.ts';
 import type { Job } from '../content/act2.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { glow } from './draw.ts';
@@ -130,6 +131,7 @@ export function createShoals(seed: number) {
     /** The other feeders and the light-swimmers: drawn in front of the reef. */
     drawFront(ctx: CanvasRenderingContext2D, F: Focus, reef: Reef, L: ReefLayout, v: ReefView, t: number, body = '#16233f'): void {
       const c = counts(v);
+      if (v.shoals > 0) sight('lanternfish');
       for (let i = 1; i < c.feed; i += 2) drawFishShoal(ctx, F, reef, 'feed', i, c.feed, t, L, body);
       for (let i = 0; i < c.light; i++) drawFishShoal(ctx, F, reef, 'light', i, c.light, t, L, body);
     },

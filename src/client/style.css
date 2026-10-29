@@ -21,7 +21,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 }
 #title p { margin: 0.6em 0 0; font-family: var(--display); font-style: italic; color: var(--ink-dim); font-size: clamp(13px, 1.6vw, 18px); letter-spacing: 0.08em; }
 /* Reduced motion: no movement; the title cards keep their fade, without which they never appear. */
-@media (prefers-reduced-motion: reduce) { *:not(#zone-title):not(#milestone):not(#whisper) { animation: none !important; transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { *:not(#zone-title):not(#milestone):not(#whisper):not(#journal-note) { animation: none !important; transition: none !important; } }
 
 /* ---------- Title ---------- */
 #title { transition: opacity 2.5s ease, transform 2.5s ease; }
@@ -445,10 +445,21 @@ button:focus-visible, input:focus-visible, .tab:focus-visible {
   outline: 2px solid var(--glowc); outline-offset: 2px; border-radius: 10px;
 }
 .trait-group { margin: 14px 2px 0; font-family: var(--display); font-weight: 400; font-size: 13px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--lineage); }
-html.calm *:not(#zone-title):not(#milestone):not(#whisper) { animation: none !important; transition: none !important; }
+html.calm *:not(#zone-title):not(#milestone):not(#whisper):not(#journal-note) { animation: none !important; transition: none !important; }
 .seamounts { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0; }
 .seamount {
   font: inherit; font-size: 12px; padding: 5px 10px; border-radius: 999px; cursor: pointer;
   color: var(--ink-dim); background: rgba(255, 255, 255, 0.04); border: 1px solid var(--edge);
 }
 .seamount.on { color: var(--lineage); border-color: rgba(199, 240, 168, 0.6); background: rgba(199, 240, 168, 0.08); }
+
+/* ---------- Journal: a creature seen for the first time ---------- */
+#journal-note {
+  position: absolute; left: max(64px, env(safe-area-inset-left)); top: max(18px, env(safe-area-inset-top));
+  pointer-events: none; opacity: 0; display: flex; flex-direction: column; gap: 1px; font-family: var(--display);
+}
+#journal-note span { font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--glowc); }
+#journal-note strong { font-weight: 400; font-size: 17px; color: #eaf6ff; text-shadow: 0 0 12px rgba(120, 220, 255, 0.5); }
+#journal-note.show { animation: journal-note 3s ease both; }
+@keyframes journal-note { 0% { opacity: 0; transform: translateY(-4px); } 15%, 75% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+.codex-list .unknown { opacity: 0.45; font-style: italic; }
