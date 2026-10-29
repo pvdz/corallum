@@ -249,6 +249,39 @@ export function createMidnightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * A pyrosome: a glowing tube colony drifting slowly, its light rippling along its length in
+   * waves, each little animal in it flashing in turn.
+   */
+  function drawPyrosome(ctx: CanvasRenderingContext2D, t: number): void {
+    const s = scale() * 1.5;
+    const u = ((t * 0.006) % 1.4) - 0.2;
+    if (u < -0.15 || u > 1.15) return;
+    sight('pyrosome');
+    const x = focus.x + focus.w * (1 - u), y = focus.y + focus.h * 0.62 + Math.sin(t * 0.25) * 12 * s;
+    spot('pyrosome', x, y, 40 * s);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(-0.25 + Math.sin(t * 0.2) * 0.08);
+    const len = 70 * s, rad = 9 * s;
+    ctx.fillStyle = 'rgba(160,180,255,0.08)';
+    ctx.strokeStyle = 'rgba(180,200,255,0.25)';
+    ctx.lineWidth = 0.8 * s;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, len / 2, rad, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let k = 0; k < 26; k++) {
+      const f = k / 25;
+      const px = (f - 0.5) * len * 0.92;
+      const py = Math.sin(k * 2.3) * rad * 0.6;
+      const wave = Math.max(0, Math.sin(t * 2 - f * 8));
+      glow(ctx, px, py, 5 * s, '120,170,255', 0.15 + 0.7 * wave * wave);
+    }
+    ctx.restore();
+  }
+
   /** Comb jellies: glassy ovals whose eight comb rows ripple with travelling rainbow light. */
   function drawComb(ctx: CanvasRenderingContext2D, c: Comb, t: number): void {
     sight('comb-jelly');
@@ -430,6 +463,7 @@ export function createMidnightScene(seed: number): Scene {
       drawAngler(ctx, t);
       for (const c of combs) drawComb(ctx, c, t);
       drawVampireSquid(ctx, t);
+      drawPyrosome(ctx, t);
       if (v.bands.includes('glass')) for (let i = 0; i < 4; i++) swimShrimp(ctx, t, i);
       if (v.bands.includes('siphon')) drawSiphonophore(ctx, t);
       drawSnow(ctx, t);

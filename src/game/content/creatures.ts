@@ -3,7 +3,7 @@
 
 export type CreatureId =
   | 'jelly' | 'brittle-star' | 'rattail' | 'sea-pig' | 'brine-pool' | 'smokers' | 'sea-lily' | 'glass-sponge' | 'tube-worm'
-  | 'lanternfish' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall'
+  | 'lanternfish' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome'
   | 'rasp' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper'
   | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse'
   | 'shore-bird' | 'dolphin' | 'moon-jelly';
@@ -27,6 +27,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'anglerfish', name: 'Anglerfish', zone: 'The Midnight Water', note: 'A lure of light on a rod, and a mouth of needles behind it.' },
   { id: 'vampire-squid', name: 'Vampire squid', zone: 'The Midnight Water', note: 'A red cloak of arms, blue eyes, and lights at the tips of its fins.' },
   { id: 'whale-fall', name: 'A whale fall', zone: 'The Midnight Water', note: 'Bones on the flank, and a whole small world living off them.' },
+  { id: 'pyrosome', name: 'Pyrosome', zone: 'The Midnight Water', note: 'A tube of thousands of little lights, flashing one after another.' },
   { id: 'rasp', name: 'The Rasp', zone: 'The Twilight Shelf', note: 'Blunt beaks that grind dead stone into sand.' },
   { id: 'manta', name: 'Manta', zone: 'The Twilight Shelf', note: 'Wings as wide as the reef is tall, gliding through the light.' },
   { id: 'garden-eel', name: 'Garden eels', zone: 'The Twilight Shelf', note: 'A colony standing out of the sand, ducking all at once.' },
