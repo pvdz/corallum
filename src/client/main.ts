@@ -14,7 +14,7 @@
 // Console: corallum.skip(seconds), corallum.state, corallum.speed = x, corallum.feast
 
 import type { UpgradeId } from '../game/content/types.ts';
-import { ACTS, SURFACE, act, actAt } from '../game/content/acts.ts';
+import { ACTS, act, actAt } from '../game/content/acts.ts';
 import { createAbyssScene } from '../game/render/abyss.ts';
 import { createMidnightScene } from '../game/render/midnight.ts';
 import { createBreachScene } from '../game/render/breach.ts';
@@ -820,6 +820,7 @@ let lastTitle = 0;
 let lastHabit = 0;
 let lastJournal = 0;
 let lastFeatCheck = 0;
+let shownRecord = -1;
 let lastWhaleLap = -1;
 // ?at=<sec> starts the scene clock there (to reach timed events such as rare creatures).
 let animT = params.has('at') ? Number(params.get('at')) : 40;
@@ -909,11 +910,10 @@ function frame(now: number): void {
       audio.cue('buy');
     }
   }
-  // The line's record: the fastest climb to the surface (set the first time this reef gets there).
-  if (state.height >= SURFACE && (state.meta.fastest === 0 || state.t < state.meta.fastest)) {
-    const beat = state.meta.fastest > 0;
-    state.meta.fastest = state.t;
-    if (beat && frozenT === null) showJournalNote('A new record', `The surface in ${duration(state.t)}`);
+  // The line's record (set by the sim at the exact moment of reaching the surface): announce a new one.
+  if (state.meta.fastest !== shownRecord) {
+    if (shownRecord > 0 && frozenT === null) showJournalNote('A new record', `The surface in ${duration(state.meta.fastest)}`);
+    shownRecord = state.meta.fastest;
   }
   // Old habits: the reef's own small purchases, only while the page is open.
   if (habits.get() && frozenT === null && now - lastHabit > 250) {

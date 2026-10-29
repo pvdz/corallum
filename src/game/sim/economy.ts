@@ -357,6 +357,11 @@ export function advance(s: GameState, dt: number, stepFraction = STEP_FRACTION):
   if (!(dt > 0)) return s;
   const r = rates(s);
   const kH = settleRate(s);
+  // The line's record: the exact moment this reef reaches the surface, if it happens in this step.
+  // Height relaxes to its target in closed form, so the crossing time is solvable.
+  const surfaceAt = r.heightTarget >= SURFACE && s.height < SURFACE - 1e-3 && kH > 0
+    ? s.t + Math.log((r.heightTarget - s.height) / (r.heightTarget - (SURFACE - 1e-3))) / kH
+    : Infinity;
   const up: { key: Upstream; P: number; k: number; eq: number }[] = [
     { key: 'glow', P: r.glowP, k: r.glowK, eq: equilibrium(r.glowP, r.glowK) },
     { key: 'plankton', P: r.planktonP, k: r.planktonK, eq: equilibrium(r.planktonP, r.planktonK) },
@@ -399,6 +404,7 @@ export function advance(s: GameState, dt: number, stepFraction = STEP_FRACTION):
   s.spawn = relax(s.spawn, r.spawnP, r.spawnK, dt);
   // Snap the last sliver so "reached the goal" is reachable in finite time.
   if (r.heightTarget - s.height < 1e-3) s.height = r.heightTarget;
+  if (surfaceAt <= s.t + dt && (s.meta.fastest === 0 || surfaceAt < s.meta.fastest)) s.meta.fastest = surfaceAt;
   // Growth chart: one height sample per HISTORY_STEP of sim time (offline catch-up included; the
   // samples during a long absence all show the height at its end, which is what the reef was).
   const before = Math.floor(s.t / HISTORY_STEP);

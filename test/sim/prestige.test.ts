@@ -120,3 +120,17 @@ test('seamounts: a spawning settles where it was sent, and the place bends the n
   for (let i = 0; i < 600 * 30; i++) advance(b, 1 / 30);
   assert.ok(Math.abs(a.calcite - b.calcite) / Math.max(1, a.calcite) < 1e-6);
 });
+
+test('the record for reaching the surface is the exact crossing time, offline or not', async () => {
+  const { runBot } = await import('../../src/game/sim/bot.ts');
+  const { advance, heightForBands } = await import('../../src/game/sim/economy.ts');
+  const { state } = runBot((s) => s.height >= 3990, 16 * 3600);
+  // Lay the bands up to the surface; the reef then settles up to it.
+  while (heightForBands(state.levels.skeleton) < 4000) state.levels.skeleton++;
+  state.dialects.spawn ||= 'broadcast';
+  const a = structuredClone(state), b = structuredClone(state);
+  advance(a, 3 * 3600);
+  for (let i = 0; i < 3 * 3600; i++) advance(b, 1);
+  assert.ok(a.meta.fastest > state.t && a.meta.fastest < state.t + 3 * 3600, `${a.meta.fastest}`);
+  assert.ok(Math.abs(a.meta.fastest - b.meta.fastest) < 1e-6, `${a.meta.fastest} vs ${b.meta.fastest}`);
+});
