@@ -1240,10 +1240,15 @@ export function othersSpawning(s: GameState): boolean {
   return actAt(s.height) <= 4 && s.height >= 1 && moonFull(s.t) && Math.floor(s.t / ACT5.moonPeriod) !== s.others.last;
 }
 
+/** How much lineage the full-moon spawning can bring on one reef. */
+export function othersCap(s: GameState): number {
+  return OTHERS.maxJoins + (trait(s, 'moon-born') ? 2 : 0);
+}
+
 /** Meet the other reefs' spawning: feed on it (bloom) or add your own (lineage). */
 export function meetOthers(s: GameState, how: 'feed' | 'join'): boolean {
   if (!othersSpawning(s)) return false;
-  if (how === 'join' && s.others.joined >= OTHERS.maxJoins) return false;
+  if (how === 'join' && s.others.joined >= othersCap(s)) return false;
   s.others.last = Math.floor(s.t / ACT5.moonPeriod);
   if (how === 'feed') burst(s, OTHERS.seconds);
   else {
@@ -1446,7 +1451,7 @@ export function untilThorn(s: GameState): number {
 /** Guard crabs (thorn stars) or a finished lantern spire (dragonfish) drive it off in its last second. */
 export function crabThorn(s: GameState): Thorn | null {
   const th = currentThorn(s);
-  const guarded = th && (th.kind === 'thorn-star' ? lives(s, 'guard-crab') : s.works.spire >= 3);
+  const guarded = th && (trait(s, 'thorn-wise') > 0 || (th.kind === 'thorn-star' ? lives(s, 'guard-crab') : s.works.spire >= 3));
   return th && guarded && s.t >= th.start + THORN.life - 1 ? th : null;
 }
 

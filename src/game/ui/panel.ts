@@ -31,7 +31,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, othersSpawning, boonsOffered, untilFeast, untilThorn, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, othersSpawning, othersCap, boonsOffered, untilFeast, untilThorn, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -1374,8 +1374,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         othersText.textContent = z.text;
         for (const x of othersButtons) {
           x.label.textContent = z[x.how].label;
-          x.effect.textContent = z[x.how].effect;
-          x.b.disabled = x.how === 'join' && s.others.joined >= OTHERS.maxJoins;
+          x.effect.textContent = z[x.how].effect.replace('{n}', String(Math.max(0, othersCap(s) - s.others.joined)));
+          x.b.disabled = x.how === 'join' && s.others.joined >= othersCap(s);
         }
       }
 
