@@ -1926,6 +1926,7 @@ function requestCount(s: GameState, kind: RequestKind): number {
     case 'milky': return s.tally.milky;
     case 'lucky': return s.tally.lucky;
     case 'free': return s.tally.freed;
+    case 'visitor': return s.meta.seen.filter((k) => k.startsWith('v:')).length;
   }
 }
 
@@ -1940,6 +1941,7 @@ function requestOpen(s: GameState, kind: RequestKind): boolean {
     case 'prune': return s.old >= 0.5;
     case 'milky': return untilMilky(s) < 600;
     case 'lucky': return s.tally.touches >= 5;
+    case 'visitor': return !!visitor(s) && !visited(s);
     case 'shoals': return revealed(s, 'shoal') && !maxed(s, 'shoal');
     case 'sandbar': case 'pigment': case 'ripen': return revealed(s, kind) && !maxed(s, kind);
     case 'glimmer': return revealed(s, 'symbiont') && !maxed(s, 'symbiont');

@@ -4,7 +4,7 @@
 // reef is. Never needed: the reef grows the same without them.
 
 export type RequestKind = 'bud' | 'glimmer' | 'bands' | 'feast' | 'touch' | 'sweep' | 'shoals' | 'sandbar' | 'pigment' | 'ripen'
-  | 'roam' | 'work' | 'intruder' | 'read' | 'shell' | 'rising' | 'signal' | 'star' | 'prune' | 'milky' | 'lucky' | 'free';
+  | 'roam' | 'work' | 'intruder' | 'read' | 'shell' | 'rising' | 'signal' | 'star' | 'prune' | 'milky' | 'lucky' | 'free' | 'visitor';
 
 export type RequestDef = {
   kind: RequestKind;
@@ -56,5 +56,6 @@ export const REQUESTS: readonly RequestDef[] = [
   { kind: 'milky', ask: 'Sweep through the next milky sea {n} times.', n: (d) => Math.min(10, 4 + Math.floor(d / 4)), zones: [2] },
   { kind: 'lucky', ask: 'Touch a lucky one: watch for golden sparks.', n: () => 1, zones: [1, 2, 3, 4, 5] },
   { kind: 'free', ask: 'Free the next small fish in trouble.', n: () => 1, zones: [2, 3, 4, 5] },
+  { kind: 'visitor', ask: 'Today’s visitor is near. Touch it.', n: () => 1, zones: [1, 2, 3, 4, 5] },
   { kind: 'prune', ask: 'Let {n} knobs of old stone go.', one: 'Let a knob of old stone go.', n: (d) => Math.min(3, 1 + Math.floor(d / 6)), zones: [1, 2, 3, 4, 5] },
 ];
