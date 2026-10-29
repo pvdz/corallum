@@ -1995,6 +1995,12 @@ export function oldKnobs(s: GameState): number {
   return Math.min(OLD.max, Math.floor(s.old + 1e-9));
 }
 
+/** The reef's own band the last knob let go was holding (every OLD.heldEvery-th), or ''. */
+export function oldHeld(s: GameState): string {
+  if (s.tally.pruned === 0 || s.tally.pruned % OLD.heldEvery !== 0 || !s.diary.length) return '';
+  return s.diary[(s.tally.pruned * 7) % s.diary.length]!;
+}
+
 /** Break off the knob shown in `slot`: the zone's burst. Its slot moves to the end, so the others stay put. */
 export function prune(s: GameState, slot: number): number {
   const n = oldKnobs(s);

@@ -23,4 +23,10 @@ export const DIARY: Record<string, string> = {
   visit: 'Your shoals visited the sister reef, and came home with its colours in their lights.',
 };
 
+/** The words of one stored entry. */
+export function diaryLine(line: string): string {
+  const [, , key, arg] = line.split('|');
+  return (DIARY[key!] ?? '{a}').replace('{a}', arg ?? '');
+}
+
 export const DIARY_TEXT = { label: 'Your own bands', intro: 'What this reef laid down in its stone, newest first.', max: 200 } as const;

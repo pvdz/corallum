@@ -24,6 +24,8 @@ export const FLARE = {
 export const OLD = {
   max: 6, k: 1 / 1500, seconds: 25,
   float: '· old stone let go',
+  /** Every `heldEvery`th knob let go held a memory of this reef, glimpsed as it falls. */
+  heldEvery: 4, held: 'As it fell, it held',
 } as const;
 
 export type GrainId = 'dense' | 'quick' | 'bright';

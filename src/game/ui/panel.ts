@@ -26,7 +26,7 @@ import { WATER } from '../content/waters.ts';
 import { REQUEST } from '../content/requests.ts';
 import { WORKS, WORK_TEXT, type WorkId } from '../content/works.ts';
 import { SISTER } from '../content/sister.ts';
-import { DIARY, DIARY_TEXT } from '../content/diary.ts';
+import { DIARY_TEXT, diaryLine } from '../content/diary.ts';
 import { OSSEL_MISTAKES } from '../content/ossel.ts';
 import { PALETTES, PALETTE_TEXT } from '../content/palettes.ts';
 import { SHARD, SHARD_LINES } from '../content/shards.ts';
@@ -739,9 +739,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     diaryHead.textContent = `${DIARY_TEXT.label} · ${s.diary.length}`;
     diaryList.innerHTML = '';
     for (const line of [...s.diary].reverse()) {
-      const [t, h, key, arg] = line.split('|');
+      const [t, h] = line.split('|');
       const li = el('li');
-      li.append(el('span', 'diary-when', `${duration(Number(t))} · ${metres(Number(h))}`), el('span', 'diary-what', (DIARY[key!] ?? '{a}').replace('{a}', arg ?? '')));
+      li.append(el('span', 'diary-when', `${duration(Number(t))} · ${metres(Number(h))}`), el('span', 'diary-what', diaryLine(line)));
       diaryList.append(li);
     }
   }

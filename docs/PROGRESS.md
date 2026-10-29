@@ -578,3 +578,4 @@ date, what landed, what is half-done, what's next.
 - The dust moment leaves a rust-red haze and falling motes in the Sunlit Crown (sunlit.ts drawDust).
 - Sunlit creatures: a giant clam on the sand (mantle shimmering; touched, it closes and slowly opens) and a trumpetfish hanging head-down in the branches (touched, it swings level and drifts off). Full e2e suite green.
 - Hard seamount 'heavy' (lineage.ts Seamount.old): old stone gathers ×3, polyps feed ×0.7; trial 3000 m → Stone-light (old stone pays ×2 after); moment 'bowed' (500 m: dissolve ×0.9 or old stone ×1.5). Sea chart tint.
+- Every fourth knob of old stone let go held one of the reef's own bands (economy oldHeld; diary.ts diaryLine shared with the panel): shown as a journal note ahead of the queue.
