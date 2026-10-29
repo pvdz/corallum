@@ -572,3 +572,4 @@ date, what landed, what is half-done, what's next.
 - The cloud shadow is a tall soft ellipse, darker (0.42), so it reads over sand and reef.
 - Old stone (act1.ts OLD; economy oldKnobs/prune; state old/oldSlots/pruned, tally.pruned): grey knobs fill the branch tips toward six (dx/dt = P − kx, away too), tap one to break it off for 25 s of the zone's currency. Request 'prune', feat Light stone, whisper, guide row; reef.ts drawOld (spaced tips, falling piece); systems e2e taps one.
 - A far storm at the Breach (breach.ts lightningAt/drawLightning): every third shower, four strikes with a forked bolt to the horizon, the sky lit; thunder cue (audio thunder) ~2 s after each; codex 'far-storm'.
+- Trait Light-boned (way, max 2): old stone gathers 40% faster (oldK) and pays 30% more per level.

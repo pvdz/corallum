@@ -169,4 +169,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Lighting the way for the sister reef; both spawning under one moon | this game's own characters | OK |
 | Old stone: grey knobs of over-kept stone broken off the tips ("let it go"); feat "Light stone" | real coral senescence, this game's remembering/forgetting theme; no game known | OK |
 | A storm far off (lightning in some showers at the Breach, thunder after) | real weather; no lore | OK |
+| Light-boned (trait: the line keeps less old stone) | this game's own theme | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

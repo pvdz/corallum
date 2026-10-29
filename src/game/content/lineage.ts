@@ -20,7 +20,7 @@ export const LINEAGE = {
 
 export type TraitId =
   | 'deep-memory' | 'quick-budding' | 'old-bands' | 'remembered-shoals' | 'glimmer' | 'kept-readings' | 'settling'
-  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table' | 'shoal-sense' | 'rasp-sense' | 'old-maps' | 'open-house' | 'water-wise' | 'thorn-wise' | 'moon-born' | 'layering' | 'shell-finder' | 'signal-wise' | 'sun-shy' | 'deep-larder' | 'grain-sense';
+  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table' | 'shoal-sense' | 'rasp-sense' | 'old-maps' | 'open-house' | 'water-wise' | 'thorn-wise' | 'moon-born' | 'layering' | 'shell-finder' | 'signal-wise' | 'sun-shy' | 'deep-larder' | 'grain-sense' | 'light-boned';
 
 export type Trait = {
   id: TraitId;
@@ -230,6 +230,11 @@ export const TRAITS: readonly Trait[] = [
     id: 'grain-sense', name: 'Grain-sense', effect: 'while you watch, a band waiting for its grain sets like the last one you chose',
     flavour: 'Your stone remembers how it likes to set.',
     cost: 6, growth: 1, max: 1, kind: 'habit',
+  },
+  {
+    id: 'light-boned', name: 'Light-boned', effect: 'old stone grows on the tips 40% faster and pays 30% more when let go, per level',
+    flavour: 'Your line does not keep what it does not need, and is the stronger for it.',
+    cost: 5, growth: 2, max: 2, kind: 'way',
   },
 ];
 

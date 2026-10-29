@@ -420,7 +420,7 @@ function skipCycles(s: GameState, end: number, stepFraction: number): void {
   for (const k of ['calcite', 'glow', 'murmurs'] as const) s.earned[k] += n * (s.earned[k] - e0[k]);
   const before = Math.floor(s.t / HISTORY_STEP);
   s.t += n * HEAT.period;
-  s.old = relax(s.old, OLD.max * OLD.k, OLD.k, n * HEAT.period);
+  s.old = relax(s.old, OLD.max * oldK(s), oldK(s), n * HEAT.period);
   for (let k = before, after = Math.floor(s.t / HISTORY_STEP); k < after && k - before < HISTORY_MAX; k++) {
     s.history.push(Math.round(s.height * 10) / 10);
     if (s.history.length > HISTORY_MAX) s.history = s.history.filter((_, i) => i % 2 === 0);
@@ -429,7 +429,7 @@ function skipCycles(s: GameState, end: number, stepFraction: number): void {
 
 function flow(s: GameState, dt: number, stepFraction: number): GameState {
   if (!(dt > 0)) return s;
-  s.old = relax(s.old, OLD.max * OLD.k, OLD.k, dt);
+  s.old = relax(s.old, OLD.max * oldK(s), oldK(s), dt);
   const r = rates(s);
   const kH = settleRate(s);
   // The line's record: the exact moment this reef reaches the surface, if it happens in this step.
@@ -1984,6 +1984,11 @@ export function pickShell(s: GameState): string {
 
 // ---------- Old growth ----------
 
+/** How fast old stone gathers (Light-boned speeds it). */
+export function oldK(s: GameState): number {
+  return OLD.k * (1 + 0.4 * trait(s, 'light-boned'));
+}
+
 /** Knobs of old stone on the tips now. */
 export function oldKnobs(s: GameState): number {
   return Math.min(OLD.max, Math.floor(s.old + 1e-9));
@@ -1999,7 +2004,7 @@ export function prune(s: GameState, slot: number): number {
   s.old -= 1;
   s.pruned = { t: s.t, slot };
   s.tally.pruned++;
-  return burst(s, OLD.seconds);
+  return burst(s, OLD.seconds * (1 + 0.3 * trait(s, 'light-boned')));
 }
 
 // ---------- Thorn stars ----------
