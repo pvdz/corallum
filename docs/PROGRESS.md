@@ -562,3 +562,4 @@ date, what landed, what is half-done, what's next.
 - The cold seep (moment) stays in the Midnight scene: white mats and rising bubbles, or chalk-crusted once built over.
 - The anglerfish the reef shared the dark with (moment 'b') hangs beside the crown in the Midnight scene.
 - The cleaners' ledge (moment 'a') stays on the Twilight reef with three striped shrimp waving their antennae.
+- The Rasp nursery (moment eggs 'a'): a stone lip on the Twilight slope with young Rasp darting round it.

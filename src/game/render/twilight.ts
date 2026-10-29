@@ -745,6 +745,36 @@ export function createTwilightScene(seed: number): Scene {
    * the current to catch drifting food, and ducking down in waves when something passes.
    */
   /**
+   * The Rasp nursery (a moment): a lip of stone on the slope by the reef's foot, and the young Rasp
+   * that hatched there darting in and out of it.
+   */
+  function drawNursery(ctx: CanvasRenderingContext2D, t: number): void {
+    const s = scale() * 1.9;
+    const u = 0.38, x = focus.x - focus.w * 0.1 + u * focus.w * 1.2, y = slopeY(u) + 2 * s;
+    ctx.save();
+    ctx.fillStyle = '#7a6a68';
+    ctx.beginPath();
+    ctx.ellipse(x, y - 3 * s, 20 * s, 6 * s, 0, Math.PI, 0);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(10,12,20,0.8)';
+    ctx.beginPath();
+    ctx.ellipse(x, y - 1 * s, 12 * s, 3 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    for (let k = 0; k < 5; k++) {
+      const a = t * (0.8 + k * 0.13) + k * 1.9;
+      const fx = x + Math.cos(a) * (14 + k * 4) * s, fy = y - 10 * s + Math.sin(a * 1.4) * 6 * s;
+      const dir = -Math.sin(a) > 0 ? 1 : -1;
+      ctx.fillStyle = `hsl(${180 + k * 12},35%,55%)`;
+      ctx.beginPath();
+      ctx.ellipse(fx, fy, 4 * s, 1.8 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(240,240,230,0.8)';
+      ctx.fillRect(fx + dir * 2.5 * s, fy - 0.6 * s, 1.2 * s, 1.2 * s);
+    }
+    ctx.restore();
+  }
+
+  /**
    * The ledge the reef grew for the cleaner shrimp (a moment): a small shelf on a branch partway
    * up, three striped shrimp on it waving their long white antennae for customers.
    */
@@ -1522,6 +1552,7 @@ export function createTwilightScene(seed: number): Scene {
       reef.draw(ctx, L, v, t);
       drawRelics(ctx, reef, L, v.relics, t, v.moments['old-lamp'] === 'a');
       if (v.moments.cleaners === 'a') drawLedge(ctx, reef, L, t);
+      if (v.moments.eggs === 'a') drawNursery(ctx, t);
       if (v.thorn?.kind === 'thorn-star') drawThorn(ctx, reef, L, v.thorn.u, v.thorn.side, t);
       slugs.draw(ctx, reef, L, t);
       drawResidents(ctx, reef, L, v.residents, t, seed,
