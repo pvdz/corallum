@@ -92,17 +92,6 @@ test('Act III saturates: silt and sand settle at their holds', () => {
   assert.ok(rel(week.calcite, calciteHold(s)) < 1e-9);
 });
 
-test('the Rasp dial clamps to the grazing grounds', () => {
-  const s = newGame(1);
-  setRasp(s, 5);
-  assert.equal(s.rasp, 0);
-  s.levels.grounds = 2;
-  setRasp(s, 100);
-  assert.equal(s.rasp, raspMax(s));
-  setRasp(s, -3);
-  assert.equal(s.rasp, 0);
-});
-
 test('truce: meetings come in order, after their band, paid in murmurs', () => {
   const s = newGame(1);
   s.murmurs = 1e6;
@@ -172,11 +161,14 @@ test('offline saturates at the hold: a week equals a month', () => {
   assert.equal(week.calcite, month.calcite);
 });
 
-test('a month offline is cheap to compute', () => {
-  const s = midGame();
-  const t0 = performance.now();
-  advance(s, 30 * 86400);
-  assert.ok(performance.now() - t0 < 50);
+test('a month offline is cheap to compute, even late with slow stocks still creeping', () => {
+  // Late game: bloom creeps toward its hold long after glow has settled; steps must not stay
+  // as short as glow's (that made a week away take over a minute).
+  for (const s of [midGame(), act4Game()]) {
+    const t0 = performance.now();
+    advance(s, 30 * 86400);
+    assert.ok(performance.now() - t0 < 100, `${(performance.now() - t0).toFixed(0)} ms`);
+  }
 });
 
 test('buying spends the right currency and raises cost', () => {
@@ -188,20 +180,6 @@ test('buying spends the right currency and raises cost', () => {
   assert.ok(cost(s, 'polyp') > c);
   s.calcite = 0;
   assert.equal(buy(s, 'polyp'), false);
-});
-
-test('hidden upgrades cannot be bought', () => {
-  const s = newGame(1);
-  s.calcite = 1e9;
-  assert.equal(buy(s, 'vent'), false);
-});
-
-test('sweep has a cooldown in sim time', () => {
-  const s = newGame(1);
-  assert.ok(sweep(s) > 0);
-  assert.equal(sweep(s), 0);
-  advance(s, 1);
-  assert.ok(sweep(s) > 0);
 });
 
 test('timeUntil is consistent with advance', () => {
@@ -220,27 +198,6 @@ test('bands are read in height order and the act completes', () => {
   assert.ok(act1Done(state));
   assert.deepEqual(state.bands, ['wake', 'silt', 'bands', 'moon', 'thousandfold', 'forgetting', 'beaks', 'rise']);
   assert.equal(state.act, 2);
-});
-
-test('pacing: the bot finishes Act I in 15–45 minutes of sim time', () => {
-  const { state } = runBot(act1Done, 6 * 3600);
-  assert.ok(state.t > 15 * 60 && state.t < 45 * 60, `took ${state.t}s`);
-});
-
-test('pacing: the bot climbs the Twilight Shelf in 1.5–3.5 h, whatever the truce', () => {
-  for (const truce of [{ terms: 'a', story: 'a', wall: 'a' }, { terms: 'b', story: 'b', wall: 'b' }] as const) {
-    const start = runBot((s) => s.height >= 3000, 12 * 3600).state.t;
-    const { state } = runBot((s) => s.height >= 3800, 16 * 3600, { truce });
-    const t = state.t - start;
-    assert.ok(state.height >= 3800 && t > 1.5 * 3600 && t < 3.5 * 3600, `${JSON.stringify(truce)} took ${t}s`);
-  }
-});
-
-test('pacing: the bot finishes Act II 1–2.5 h after Act I', () => {
-  const a1 = runBot(act1Done, 6 * 3600).state.t;
-  const { state } = runBot((s) => s.height >= 3000, 12 * 3600);
-  const t = state.t - a1;
-  assert.ok(state.height >= 3000 && t > 3600 && t < 2.5 * 3600, `took ${t}s after Act I`);
 });
 
 /** A Sunlit Crown state: bloom far from settled, a dialect spoken. */
@@ -276,29 +233,6 @@ test('dialects: one per tier, in order, after their band, paid in bloom', () => 
   assert.ok(speak(s, 'brooding'));
   assert.equal(nextTier(s), undefined);
   assert.deepEqual(s.dialects, { form: 'plating', craft: 'mucus', spawn: 'brooding' });
-});
-
-test('sunlight only reaches the Sunlit Crown, and plating doubles it', () => {
-  const s = newGame(1);
-  assert.equal(sunlight(s), 0);
-  while (heightForBands(s.levels.skeleton) < 3830) s.levels.skeleton++;
-  const sun = sunlight(s);
-  assert.ok(sun > 0);
-  s.dialects.form = 'plating';
-  assert.ok(rel(sunlight(s), 2 * sun) < 1e-12);
-});
-
-test('pacing: the Sunlit Crown takes 1–3 h whatever the dialects', () => {
-  const start = runBot((s) => s.height >= 3800, 16 * 3600).state.t;
-  for (const dialects of [
-    { form: 'branching', craft: 'sweepers', spawn: 'broadcast' },
-    { form: 'massive', craft: 'fluorescent', spawn: 'brooding' },
-    { form: 'plating', craft: 'mucus', spawn: 'fragmenting' },
-  ] as const) {
-    const { state } = runBot((s) => s.height >= 3980, 16 * 3600, { dialects });
-    const t = state.t - start;
-    assert.ok(state.height >= 3980 && t > 3600 && t < 3 * 3600, `${JSON.stringify(dialects)} took ${t}s`);
-  }
 });
 
 test('the moon: full for a window each cycle; untilFullMoon lands in it', () => {

@@ -10,11 +10,6 @@ test('round trip preserves state exactly', () => {
   assert.deepEqual(back, { state, savedAt: 12345 });
 });
 
-test('export string round trip', () => {
-  const { state } = runBot((s) => s.t > 120, 1000);
-  assert.deepEqual(importString(exportString(state, 7))?.state, state);
-});
-
 test('garbage and partial saves are handled', () => {
   assert.equal(deserialize('not json'), null);
   assert.equal(deserialize('42'), null);

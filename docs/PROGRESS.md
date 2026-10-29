@@ -161,3 +161,5 @@ date, what landed, what is half-done, what's next.
 - Warm and cold seamounts tint the deep water of the Silt Floor (red / ice-blue near the floor).
 - Rasp card shows both good settings when they differ: most calcite/s (while watching) and most held (before going away).
 - Whisper teaching the dial's trade-off before going away; whisper conditions checked at most once a second (some are costly).
+- Perf fix (real bug): advance sized its sub-steps by the fastest stock even after it had settled, so a slow stock creeping in (late bloom) made a day of offline catch-up cost ~10 s (a week >1 min). Steps now follow the fastest stock still moving: a day 10 s → 6 ms. Sim suite 94 s → 1.8 s.
+- Tests pruned (user: no tests of the obvious, don't worry about timing yet): per-act pacing tests, seamount pacing, trivial checks (cooldown, hidden buys, k=0, formatter, duplicate round trips). Kept: one whole-game pacing guard; the month-offline test now uses a late-game reef (it would have caught the bug above).

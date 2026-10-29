@@ -18,10 +18,6 @@ test('relax saturates: a week and a month offline are the same', () => {
   close(month, week);
 });
 
-test('relax with k=0 is linear', () => {
-  close(relax(1, 2, 0, 10), 21);
-});
-
 test('logistic: composition and cap', () => {
   let x = 1;
   for (let i = 0; i < 1000; i++) x = logistic(x, 100, 0.05, 0.5);

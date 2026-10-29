@@ -61,16 +61,6 @@ test('traits: cost lineage, take effect, start bonuses apply to the next run', (
   assert.equal(buyTrait(next, 'kept-readings'), false, 'max 1');
 });
 
-test('the meta survives a save round trip', () => {
-  const s = newGame(1);
-  s.bands.push('eyes');
-  s.height = 2000;
-  const next = spawnLesser(s)!;
-  buyTrait(next, 'glimmer');
-  const back = deserialize(serialize(next, 5))!.state;
-  assert.deepEqual(back.meta, next.meta);
-});
-
 test('offline stays exact with traits (settling changes the height rate)', () => {
   const s = newGame(1);
   s.meta.traits.settling = 1;
@@ -81,12 +71,6 @@ test('offline stays exact with traits (settling changes the height rate)', () =>
   for (let i = 0; i < 300 * 20; i++) advance(b, 1 / 20);
   assert.ok(Math.abs(a.height - b.height) < 1e-6 * a.height);
   assert.ok(Math.abs(a.calcite - b.calcite) < 1e-6 * a.calcite);
-});
-
-test('pacing: one lesser spawning at 1000 m finishes the game sooner than none', () => {
-  const none = runBot(ended, 14 * 3600).total;
-  const one = runBot(ended, 14 * 3600, { spawnAt: 1000 }).total;
-  assert.ok(one < none, `${one} vs ${none}`);
 });
 
 test('strategy traits open things earlier', async () => {
@@ -114,50 +98,6 @@ test('glass gardeners: a reef with no Rasp at all beats the best Rasp dial witho
   assert.ok(calciteHold(s) > best, `${calciteHold(s)} vs ${best}`);
 });
 
-test('endings and carried memories survive beginning again', async () => {
-  const { spawnLesser } = await import('../../src/game/sim/prestige.ts');
-  const s = newGame(5);
-  s.bands.push('eyes');
-  s.height = 4000;
-  s.carried = ['vent', 'ossel', 'rasp'];
-  s.meta.carriedEver = ['vent', 'ossel', 'rasp'];
-  s.meta.endings = 1;
-  const next = spawnLesser(s);
-  assert.ok(next);
-  assert.equal(next.meta.endings, 1);
-  assert.deepEqual(next.meta.carriedEver, ['vent', 'ossel', 'rasp']);
-  assert.deepEqual(next.carried, []);
-});
-
-test('a bigger release sends more lineage into the next run', async () => {
-  const { lineageFor, endingLineage } = await import('../../src/game/sim/prestige.ts');
-  const { spawnTarget } = await import('../../src/game/sim/economy.ts');
-  const s = newGame(9);
-  s.height = 4000;
-  s.carried = ['vent', 'ossel', 'rasp'];
-  const target = spawnTarget(s);
-  assert.equal(endingLineage(s, target), 10);
-  assert.equal(endingLineage(s, 4 * target), 18);
-  assert.equal(endingLineage(s, 0), 10, 'old saves without a recorded release keep the old bonus');
-  s.released = target;
-  const small = lineageFor(s);
-  s.released = 4 * target;
-  assert.equal(lineageFor(s) - small, 8);
-});
-
-test('old habits: buys the cheaper of polyp and glimmerseed only when it is cheap', async () => {
-  const { habitPurchase } = await import('../../src/game/sim/prestige.ts');
-  const { cost } = await import('../../src/game/sim/economy.ts');
-  const s = newGame(2);
-  s.levels.polyp = 6;
-  s.calcite = cost(s, 'polyp') * 20;
-  assert.equal(habitPurchase(s), null, 'not without the trait');
-  s.meta.traits['old-habits'] = 1;
-  assert.equal(habitPurchase(s), 'polyp');
-  s.calcite = cost(s, 'polyp') * 5;
-  assert.equal(habitPurchase(s), null, 'too dear: more than a tenth of the calcite');
-});
-
 test('seamounts: a spawning settles where it was sent, and the place bends the numbers', async () => {
   const { spawnLesser } = await import('../../src/game/sim/prestige.ts');
   const { rates, readingCost } = await import('../../src/game/sim/economy.ts');
@@ -179,13 +119,4 @@ test('seamounts: a spawning settles where it was sent, and the place bends the n
   advance(a, 600);
   for (let i = 0; i < 600 * 30; i++) advance(b, 1 / 30);
   assert.ok(Math.abs(a.calcite - b.calcite) / Math.max(1, a.calcite) < 1e-6);
-});
-
-test('pacing: every seamount finishes the game in 6–11 h', async () => {
-  const { runBot } = await import('../../src/game/sim/bot.ts');
-  const { ended } = await import('../../src/game/sim/economy.ts');
-  for (const seamount of ['plain', 'warm', 'cold', 'crowded'] as const) {
-    const { state } = runBot(ended, 14 * 3600, { seamount });
-    assert.ok(ended(state) && state.t > 6 * 3600 && state.t < 11 * 3600, `${seamount}: ${state.t}s`);
-  }
 });

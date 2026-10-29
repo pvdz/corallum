@@ -355,12 +355,15 @@ export function advance(s: GameState, dt: number, stepFraction = STEP_FRACTION):
     { key: 'silt', P: r.siltP, k: r.siltK, eq: equilibrium(r.siltP, r.siltK) },
     { key: 'bloom', P: r.bloomP, k: r.bloomK, eq: equilibrium(r.bloomP, r.bloomK) },
   ];
-  const maxStep = stepFraction / Math.max(...up.map((u) => u.k));
   const at = (x: Record<Upstream, number>) => production(r, x.glow, x.plankton, x.height, x.silt, x.bloom);
   let left = dt;
   while (left > 0) {
-    const settled = up.every((u) => settledAt(s[u.key], u.eq));
-    const h = settled ? left : Math.min(left, maxStep);
+    // Steps are sized by the fastest stock still moving: one that has settled no longer limits
+    // them (otherwise a slow stock creeping in keeps the steps as short as the fastest one's).
+    let kMax = 0;
+    for (const u of up) if (!settledAt(s[u.key], u.eq)) kMax = Math.max(kMax, u.k);
+    const settled = kMax === 0;
+    const h = settled ? left : Math.min(left, stepFraction / kMax);
     let p: number;
     if (settled) {
       for (const u of up) s[u.key] = u.eq;

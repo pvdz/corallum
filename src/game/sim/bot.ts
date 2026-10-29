@@ -90,7 +90,8 @@ export function botDecide(
       if (gap(under) < 1 || !reassign(s, over, under)) break;
     }
   }
-  if (raspMax(s) > 0) setRasp(s, bestRasp(s));
+  // The dial is re-judged twice a minute (judging it searches every setting).
+  if (raspMax(s) > 0 && (s.t % 30 < 1 || s.rasp > raspMax(s))) setRasp(s, bestRasp(s));
   if (sweeps) sweep(s);
   return bought;
 }
