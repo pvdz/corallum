@@ -184,6 +184,10 @@ export const WHISPERS: readonly Whisper[] = [
 /** What Ossel says when you tap it (the Silt Floor, or its wall on the Twilight Shelf), in turn. */
 /** What Ossel says when tapped and something is going on: the first that applies, in order. */
 export const OSSEL_NOW: readonly { when: (s: GameState) => boolean; text: string }[] = [
+  { when: (s) => oldKnobs(s) >= 5, text: 'So much grey on you. I know how that feels. Let some of it go, little mouth.' },
+  { when: (s) => inMilky(s), text: 'The sea is burning cold and white. Sweep. Sweep!' },
+  { when: (s) => s.vows.includes('still'), text: 'You promised not to reach for anything. It is hard. I never managed it.' },
+  { when: (s) => s.vows.length > 0 && !s.vows.includes('still'), text: 'Vows. Thousandfold made vows too, but only ever to keep things.' },
   { when: (s) => !!s.expedition.site, text: 'The shoals are out there somewhere. I can feel the water they push.' },
   { when: (s) => s.race.decided > 0 && s.race.decided < 5 && sisterNow(s, s.t) > gaugeAt(s.height), text: 'Your sister is ahead. I knew its wall too. It was always the quick one.' },
   { when: (s) => s.race.decided > 0 && s.race.decided < 5 && sisterNow(s, s.t) <= gaugeAt(s.height), text: 'You are ahead of your sister. Do not gloat. Well. A little.' },
@@ -211,4 +215,7 @@ export const OSSEL_LINES: readonly string[] = [
   'Listen to the silt sometimes. It is mostly us, talking.',
   'When you are tall enough, tell me what the light is like.',
   'I have forgotten things. I know that I have. I do not know which.',
+  'Every reef dies a little at the tips and a little at the heart. The trick is to keep growing in between.',
+  'Some days the shoals sing. Fish cannot sing. And yet.',
+  'If you meet something lucky, touch it. Luck does not wait in the dark.',
 ];
