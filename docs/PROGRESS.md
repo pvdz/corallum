@@ -414,3 +414,4 @@ date, what landed, what is half-done, what's next.
 - Pacing: Twilight 1.31, Sunlit 1.22 band growth (the new moments had pulled the b/massive path under 6 h); bot 8h28 / 7h48.
 - The quick cousin: a faster racer (sister.ts COUSIN, 5 h) for lines that have reached an ending; double lineage per mark; orange gauge marker; diary line; codex.
 - Setting 'Fewer words from Ossel': only story whispers (claims, the moon).
+- New creature: the barreleye (Midnight): clear dome head, green tube eyes looking up; touched they swing forward.

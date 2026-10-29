@@ -644,6 +644,58 @@ export function createMidnightScene(seed: number): Scene {
     }
   }
 
+  /**
+   * The barreleye: a small dark fish hanging still, its head a transparent dome with two green tube
+   * eyes inside, turned up toward the faint light. Touched, the eyes swing forward to look at you.
+   */
+  function drawBarreleye(ctx: CanvasRenderingContext2D, t: number): void {
+    sight('barreleye');
+    const s = scale() * 1.6;
+    const x = focus.x + focus.w * 0.2 + Math.sin(t * 0.07) * 20 * s, y = focus.y + focus.h * 0.3 + Math.sin(t * 0.11) * 10 * s;
+    const touch = startled('barreleye', t);
+    const look = touch && touch.age < 6 ? Math.sin(Math.min(1, touch.age / 6) * Math.PI) : 0;
+    spot('barreleye', x, y, 20 * s);
+    ctx.save();
+    ctx.translate(x, y);
+    // Body: dark, with big fins held out, sculling gently.
+    ctx.fillStyle = '#1c1a26';
+    ctx.beginPath();
+    ctx.moveTo(10 * s, 0);
+    ctx.quadraticCurveTo(4 * s, 5 * s, -10 * s, 2 * s);
+    ctx.lineTo(-16 * s, 4 * s + Math.sin(t * 2) * 1.5 * s);
+    ctx.lineTo(-15 * s, -2 * s + Math.sin(t * 2) * 1.5 * s);
+    ctx.lineTo(-10 * s, -1 * s);
+    ctx.quadraticCurveTo(0, -3 * s, 10 * s, 0);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(60,60,80,0.6)';
+    ctx.beginPath();
+    ctx.ellipse(-2 * s, 3 * s, 6 * s, 2 * s, 0.4 + Math.sin(t * 1.3) * 0.2, 0, Math.PI * 2);
+    ctx.fill();
+    // The clear dome of the head.
+    ctx.fillStyle = 'rgba(170,210,230,0.12)';
+    ctx.strokeStyle = 'rgba(190,230,250,0.45)';
+    ctx.lineWidth = 0.8 * s;
+    ctx.beginPath();
+    ctx.ellipse(5 * s, -4 * s, 7 * s, 6 * s, 0, Math.PI * 0.95, Math.PI * 2.05);
+    ctx.fill();
+    ctx.stroke();
+    // Two green tube eyes inside the dome: up, or forward when touched.
+    const a = -Math.PI / 2 + look * (Math.PI / 2);
+    for (const ox of [3 * s, 6 * s]) {
+      const ex = ox + Math.cos(a) * 3 * s, ey = -3 * s + Math.sin(a) * 3 * s;
+      ctx.strokeStyle = '#4fdc7a';
+      ctx.lineWidth = 2.2 * s;
+      ctx.beginPath();
+      ctx.moveTo(ox, -2.5 * s);
+      ctx.lineTo(ex, ey);
+      ctx.stroke();
+      ctx.globalCompositeOperation = 'lighter';
+      glow(ctx, ex, ey, 5 * s, '90,255,140', 0.6);
+      ctx.globalCompositeOperation = 'source-over';
+    }
+    ctx.restore();
+  }
+
   function drawSiphonophore(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
     const period = 140;
@@ -735,6 +787,7 @@ export function createMidnightScene(seed: number): Scene {
       reef.drawEffects(ctx, L, v, effects.live(t));
       shoals.drawFront(ctx, focus, reef, L, v, t);
       drawHatchetfish(ctx, t);
+      drawBarreleye(ctx, t);
       if (v.thorn?.kind === 'dragonfish') drawDragonfish(ctx, focus, v.thorn.u, v.thorn.side, t, scale());
       drawNearSnow(ctx, t);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
