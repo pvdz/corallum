@@ -1536,6 +1536,18 @@ export function createSunlitScene(seed: number): Scene {
       // The turtle let sleep in the branches (a moment) spends the night there instead.
       const turtleRests = v.moments.turtle === 'a' && night > 0.5;
       if (!turtleRests) drawTurtle(ctx, t, v.meadows);
+      // The line's earlier endings: their reefs, far off on other seamounts, faint in the blue.
+      if (v.endings > 0) {
+        ctx.save();
+        ctx.globalAlpha = 0.4;
+        for (let k = 0; k < Math.min(5, v.endings); k++) {
+          const u = [0.1, 0.9, 0.24, 0.78, 0.36][k]!;
+          const fx = focus.x + u * focus.w;
+          drawColony(ctx, fx, focus.y + focus.h * (0.84 + 0.015 * (k % 2)), scale() * (2.2 - k * 0.2), t,
+            { branch: '#4a7a8a', tip: '#7ab0b8', polyp: 'rgba(220,245,250,0.8)' }, seed ^ (0xe0d + k * 977));
+        }
+        ctx.restore();
+      }
       // The storm's branch, let go, grows on far off on the sand.
       if (v.moments.storm === 'a') {
         const fx = focus.x + focus.w * 0.93;

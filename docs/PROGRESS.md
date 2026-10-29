@@ -622,3 +622,4 @@ date, what landed, what is half-done, what's next.
 - Memory The weight let go (needs the Reading The kept stone; line title 'the line that let go').
 - A second Midnight great work, the listening dome (from 1500 m; calcite+glow; scouts hear ×1.25 per stage); works.ts drawDome (ring of stones, shell by stages, murmur rings). Bot 7h08.
 - A wish shows as one bright star falling into the crown, which flares (effect 'wish'); a run of bells when a shower begins.
+- Each ending the line has reached stands far off in the Sunlit Crown: up to five pale distant colonies (sunlit.ts, drawColony).
