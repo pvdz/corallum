@@ -1154,12 +1154,15 @@ window.addEventListener('keydown', (e) => {
   }
   if (e.key === '?') {
     panel.story('Keys', 'Shortcuts',
-      'Space sweeps your tentacles. 1–4 switch the panel tabs. F catches a falling feast. E sends the shoals on the next expedition. P buds a polyp, B lays a band, G hosts ' +
+      'Space sweeps your tentacles. 1–4 switch the panel tabs. F catches a falling feast. E sends the shoals on the next expedition. 7–0 answer the shoals' signal. P buds a polyp, B lays a band, G hosts ' +
       'glimmerseed. H hides the panel to see the whole reef. Hold any buy button to keep buying. ' +
       'Tap a creature to learn its name; tap Ossel and it will answer.');
     return;
   }
   if (/^[1-4]$/.test(e.key) && panel.showTabAt(Number(e.key))) return;
+  // The shoals' signal: 7, 8, 9, 0 press the four lamps.
+  const lampKey = ['7', '8', '9', '0'].indexOf(e.key);
+  if (lampKey >= 0 && panel.pressLamp(lampKey)) return;
   if (viewMode && (e.key === '+' || e.key === '=' || e.key === '-' || e.key === '0')) {
     const k = e.key === '0' ? 1 : zoom.k * (e.key === '-' ? 1 / 1.25 : 1.25);
     zoomer.zoomAt(k, canvas.width / 2, canvas.height / 2);

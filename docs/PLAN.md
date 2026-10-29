@@ -182,6 +182,12 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] early polyps cluster at the reef foot until the stone can host them
 - [x] real-speed playtest of the first 3 minutes: a purchase every 4–6 s, a story every 40–60 s
 - [x] perf: panel countdown probes were 19–25 ms/frame in Acts IV–V → coarse probes, one card per frame (<1 ms); glows use cached sprites; `corallum.prof` shows draw/panel ms
+- Backlog (goal: keep adding features and gameplay):
+  - [x] keyboard play for the shoals' signal (7–0)
+  - [ ] a chronicle of the line's endings (which memories each time) in the Lineage tab
+  - [ ] more creatures: frogfish (Twilight), sea snake (Sunlit), pelican (Breach)
+  - [ ] the Rasp elder: a named Rasp who appears at each truce meeting
+  - [ ] a Midnight 'blackout' moment where the reef must go dark (choice)
 - [ ] perf on a real phone (unmeasured: headless is software-rendered). Tools ready: `--lan` prints the network address, `?fps` shows a readout; see README "Trying it on a phone"
 - [x] rebalance pacing after the feature push (bot fell to ~4h): band cost growth 2: 1.18, 3: 1.28, 4: 1.2 → bot 7h28; test bound back to 6–11 h
 

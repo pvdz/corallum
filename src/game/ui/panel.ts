@@ -1324,6 +1324,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let tickZone = -1;
   return {
     setBackupDue,
+    /** Press signal lamp i (keys 7–0), when the signal card is up. */
+    pressLamp(i: number): boolean {
+      if (signalBox.hidden || sigK < 0) return false;
+      lampButtons[i]?.click();
+      return true;
+    },
     update(s: GameState): void {
       const r = rates(s);
       // Countdown labels look ahead with the integrator; twice a second is plenty.
