@@ -208,4 +208,24 @@ export const LINEAGE_BANDS: readonly { title: string; text: string }[] = [
     text: 'One has grown into a reef of its own, big enough to spawn. On the last full moon, ' +
       'very faintly, through all that water, you felt it let go.',
   },
+  {
+    title: 'Side by side',
+    text: 'Your children and the sister reef’s have settled together on a ridge of black rock. They are ' +
+      'different colours, and they grow into each other anyway.',
+  },
+  {
+    title: 'Cold water',
+    text: 'One of yours has drifted very far, to water that is nearly ice. It lays down a band a year, if ' +
+      'that. Every one of them is full.',
+  },
+  {
+    title: 'A white beach',
+    text: 'Somewhere the Rasp have ground your children’s dead stone into a beach, white and fine, and ' +
+      'turtles haul out to sleep on it. Nobody planned it. It is good.',
+  },
+  {
+    title: 'Over the old city',
+    text: 'One of your line has found the edge of Thousandfold and is growing over it, slowly, leaving ' +
+      'every channel open. Nobody told it to. It remembers the gate.',
+  },
 ];
