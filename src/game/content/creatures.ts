@@ -6,7 +6,7 @@ export type CreatureId =
   | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'milky-sea' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration' | 'larvacean' | 'lantern-shark'
   | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'sardine-run' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark' | 'oarfish' | 'flashlight-fish' | 'mantis-shrimp'
   | 'cuttlefish' | 'eagle-rays' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly' | 'tree-worms'
-  | 'shore-bird' | 'pelican' | 'hatchlings' | 'green-flash' | 'flying-fish' | 'dolphin' | 'moon-jelly' | 'sailors' | 'petrel' | 'sea-sparkle' | 'moonbow' | 'far-storm' | 'giant-clam' | 'trumpetfish' | 'breaching' | 'chimaera' | 'rasp-herd' | 'gulper' | 'sixgill' | 'meteors' | 'breathing-turtle'
+  | 'shore-bird' | 'pelican' | 'hatchlings' | 'green-flash' | 'flying-fish' | 'dolphin' | 'moon-jelly' | 'sailors' | 'petrel' | 'sea-sparkle' | 'moonbow' | 'far-storm' | 'giant-clam' | 'trumpetfish' | 'breaching' | 'chimaera' | 'rasp-herd' | 'barracuda' | 'gulper' | 'sixgill' | 'meteors' | 'breathing-turtle'
   | 'thorn-star' | 'dragonfish' | 'drill-snail' | 'gull' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish' | 'host-anemone' | 'cleaner-wrasse' | 'boxer-crab' | 'decorator-crab';
 
 export type Creature = { id: CreatureId; name: string; zone: string; note: string };
@@ -83,6 +83,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'sixgill', name: 'Sixgill shark', zone: 'The Twilight Shelf', note: 'Rare. Old and slow, up from the deep at dusk, gliding low along the slope with an eye that shines green.' },
   { id: 'giant-clam', name: 'Giant clam', zone: 'The Sunlit Crown', note: 'Sits in the sand and never moves again. Between its lips it farms the same small lights you do, in blue and green.' },
   { id: 'trumpetfish', name: 'Trumpetfish', zone: 'The Sunlit Crown', note: 'Hangs head-down among your branches, as still and straight as one of them, waiting for something small to pass.' },
+  { id: 'barracuda', name: 'A barracuda tornado', zone: 'The Sunlit Crown', note: 'Rare. Hundreds of long silver fish wheeling in one slow spiral, a column of knives turning in the light.' },
   { id: 'rasp-herd', name: 'A herd of Rasp', zone: 'The Twilight Shelf', note: 'Rare. Hundreds of them, from every reef on the shelf, moving along the slope together to new grazing. The sound of their beaks carries for a whole band.' },
   { id: 'chimaera', name: 'Ghost shark', zone: 'The Silt Floor', note: 'Rare. Older than sharks: a pale body tapering to a thread of a tail, flying low over the silt on wide fins, with eyes that shine back green.' },
   { id: 'breaching', name: 'A whale breaching', zone: 'The Breach', note: 'Rare. Far off, a whole whale throws itself into the air, hangs there, and falls back in a hill of white water. Nobody knows why. It looks like joy.' },

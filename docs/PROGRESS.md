@@ -662,3 +662,4 @@ date, what landed, what is half-done, what's next.
 - On the Silt Floor the rescue slot is a brittle star pinned under a fallen stone (tangle.ts drawPinned): every zone now has a small creature to help.
 - Trait Gentle (way, 5): freed creatures pay ×2.
 - Rare on the Twilight Shelf: a great herd of Rasp streams along the shelf every 15 min (twilight.ts drawRaspHerd).
+- Rare in the Sunlit Crown by day: a barracuda tornado, a slow spiral column of silver fish (every 18 min).

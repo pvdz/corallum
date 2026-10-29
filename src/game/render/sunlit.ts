@@ -1122,6 +1122,40 @@ export function createSunlitScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** Rarely (every eighteen minutes, by day), a tornado of barracuda: a slow spiral column of silver fish. */
+  function drawBarracuda(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 1080, length = 70;
+    const p = (t + 700) % period;
+    if (p > length) return;
+    sight('barracuda');
+    const s = scale() * 1.3;
+    const fade = Math.min(1, p / 8, (length - p) / 8);
+    const cx = focus.x + focus.w * 0.82, cy = focus.y + focus.h * 0.38;
+    spot('barracuda', cx, cy, 80 * s);
+    ctx.save();
+    ctx.globalAlpha = fade;
+    for (let i = 0; i < 90; i++) {
+      const lvl = i / 90;
+      const a = t * 0.9 + i * 0.7;
+      const r = (34 + 10 * Math.sin(lvl * 9)) * s;
+      const x = cx + Math.cos(a) * r, y = cy - 90 * s + lvl * 190 * s + Math.sin(a) * r * 0.22;
+      const dir = -Math.sin(a) >= 0 ? 1 : -1;
+      const len = 11 * s;
+      const back = Math.sin(a) > 0;
+      ctx.fillStyle = back ? 'rgba(150,170,185,0.75)' : 'rgba(215,228,236,0.95)';
+      ctx.beginPath();
+      ctx.ellipse(x, y, len, len * 0.18, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(x - dir * len, y);
+      ctx.lineTo(x - dir * len * 1.4, y - len * 0.25);
+      ctx.lineTo(x - dir * len * 1.4, y + len * 0.25);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
   /** A dugong grazing the meadows (four or more): nose down in the grass; touched, it rises to breathe and sinks back. */
   function drawDugong(ctx: CanvasRenderingContext2D, t: number, meadows: number): void {
     if (meadows < 4) return;
@@ -1535,6 +1569,7 @@ export function createSunlitScene(seed: number): Scene {
       drawDugong(ctx, t, v.meadows);
       if (v.shell) drawShell(ctx, t, v.shell.x, v.shell.id);
       if (night < 0.5) drawSeaSnake(ctx, t);
+      if (night < 0.5) drawBarracuda(ctx, t);
       if (night < 0.5) drawEagleRays(ctx, t);
       drawClumps(ctx, t);
       drawDaughters(ctx, v.polyps, (u) => [focus.x - focus.w * 0.1 + u * focus.w * 1.2, floorY(u) + 2 * scale()], scale() * 1.2, t,
