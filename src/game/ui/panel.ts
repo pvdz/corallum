@@ -1757,7 +1757,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
             const f = Math.max(0, t) / 1200;
             m.style.transform = f < 0.08 ? 'translateX(-4px)' : f > 0.92 ? 'translateX(calc(-100% + 4px))' : '';
             m.title = `${w} ${t > 0 ? `in ${duration(t)}` : WATER.now}`;
-            m.addEventListener('click', () => { almanacNote.textContent = m.title; });
+            m.addEventListener('click', () => {
+              almanacNote.textContent = m.title;
+              // A snapshot of the time left: cleared before it goes stale.
+              const said = m.title;
+              setTimeout(() => { if (almanacNote.textContent === said) almanacNote.textContent = ''; }, 5000);
+            });
             m.append(el('i'));
             if (row >= 0) m.append(el('b', '', label));
             almanac.append(m);
