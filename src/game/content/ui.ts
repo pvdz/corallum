@@ -91,4 +91,5 @@ export const UI = {
   momentsIntro: 'Across your line: each moment, and the ways your reefs have met it.',
   notYetMet: 'Not yet met',
   blueMoon: 'a blue moon (+2 lineage at the release)',
+  waxing: 'Waxing', waning: 'Waning', fullIn: 'full in', aGreatTide: 'a great tide',
 } as const;

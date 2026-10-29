@@ -209,7 +209,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
       const blue = blueMoon(s.t + wait);
       status.textContent = (full
         ? (great ? UI.greatFull : UI.moonFull)
-        : `${phase < 0.5 ? 'Waxing' : 'Waning'} · full in ${duration(wait)}${great ? ' · a great tide' : ''}`) + (blue ? ` · ${UI.blueMoon}` : '');
+        : `${phase < 0.5 ? UI.waxing : UI.waning} · ${UI.fullIn} ${duration(wait)}${great ? ` · ${UI.aGreatTide}` : ''}`) + (blue ? ` · ${UI.blueMoon}` : '');
       const r = rates(s);
       const target = spawnTarget(s);
       const parts: string[] = [];
