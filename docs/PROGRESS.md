@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended goal (user): add features and gameplay, repeat. Recent: signal minigame, intruders in every zone (snail, dragonfish, thorn star, gull), elder's riddles, glimmerseed strain, fork on trips, whale-fall trip, Song dialect, epilogue garden, chronicle, companion, daily gift, cays, secret ending page, many creatures. PLAN.md has a backlog list (all done so far; add more there). Bot ~7.5 h.
+NOW: Open-ended goal (user): add features and gameplay, repeat. Latest round: shells, sixth ruin, seventh resident, rare sights (milky sea, sardine run, eagle rays, green flash), six riddles, Ways shell-finder/signal-wise, choices.ts split, systems e2e test. Keep a backlog in PLAN.md. Bot ~7 h; all 7 browser tests + 54 sim tests green.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.

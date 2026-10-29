@@ -37,7 +37,7 @@ export const STOCK_NOTES: Record<string, string> = {
 
 /** Shown once (per browser line) after an update with new things to find; `id` changes per update. */
 export const NEWS = {
-  id: 'news:2026-10-29',
+  id: 'news:2026-10-29b',
   kicker: 'New in the sea',
   title: 'The reef has neighbours, and plans',
   text: 'The water turns every ten minutes and makes one kind of growing cheaper. Ossel asks for small things, ' +
@@ -45,5 +45,6 @@ export const NEWS = {
     'visit the sister reef that races you to the surface. Residents move into your branches; each zone has a ' +
     'great work to build; thorn stars and dragonfish come to eat and can be driven off; shards of an old tablet ' +
     'turn up in the silt; the reef keeps its own bands. New seamounts bring boons, heirlooms and hard places, ' +
-    'and the line learns new ways. The Reef tab’s guide has a line on each.',
+    'and the line learns new ways. Since then: intruders in every zone, the shoals’ signal, the Rasp elder’s riddles, ' +
+    'shells on the sand, the glimmerseed strain, the current, a garden after the end. The Reef tab’s guide has a line on each.',
 } as const;
