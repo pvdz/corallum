@@ -411,6 +411,7 @@ function view(): ReefView {
     readings: state.readings.length,
     siltLevel: 1 - smother(state.silt),
     sandBars: state.levels.sandbar,
+    channels: state.levels.channel,
     meadows: state.levels.meadow,
     seamount: state.seamount,
     rasp: state.rasp,

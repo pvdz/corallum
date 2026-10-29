@@ -196,6 +196,49 @@ export function createTwilightScene(seed: number): Scene {
     }
   }
 
+  /**
+   * Feeding channels: grooves cut in the slope that lead the current to the reef's foot, each
+   * with plankton streaming along it, faster near the reef.
+   */
+  function drawChannels(ctx: CanvasRenderingContext2D, t: number, n: number): void {
+    if (n <= 0) return;
+    const s = scale();
+    const x0 = focus.x - focus.w * 0.1, span = focus.w * 1.2;
+    const foot = 0.5;
+    for (let k = 0; k < Math.min(6, n); k++) {
+      // Alternate sides, the later ones further out; each groove bends down the slope.
+      const side = k % 2 ? 1 : -1;
+      const from = foot + side * (0.2 + Math.floor(k / 2) * 0.1);
+      const sag = (8 + k * 3) * s;
+      const pt = (q: number): [number, number] => {
+        const u = from + (foot - from) * q;
+        return [x0 + u * span, slopeY(u) + 6 * s + Math.sin(q * Math.PI) * sag];
+      };
+      ctx.lineCap = 'round';
+      // Thrown-up sand banks either side, then the groove, then the light catching its far lip.
+      for (const [col, wdt, dy] of [['rgba(215,200,165,0.28)', 3, -5], ['rgba(215,200,165,0.2)', 3, 5],
+        ['rgba(2,6,18,0.6)', 7, 0], ['rgba(190,210,240,0.3)', 1.4, 3.5]] as const) {
+        ctx.strokeStyle = col;
+        ctx.lineWidth = wdt * s;
+        ctx.beginPath();
+        for (let q = 0; q <= 1.0001; q += 0.05) {
+          const [x, y] = pt(q);
+          if (q === 0) ctx.moveTo(x, y + dy * s);
+          else ctx.lineTo(x, y + dy * s);
+        }
+        ctx.stroke();
+      }
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      for (let m = 0; m < 6; m++) {
+        const q = ((t * 0.12 + m / 6 + k * 0.13) % 1) ** 1.6;
+        const [x, y] = pt(q);
+        glow(ctx, x, y - 1 * s, 4.5 * s, '230,240,150', 0.85 * Math.sin(q * Math.PI));
+      }
+      ctx.restore();
+    }
+  }
+
   /** Ossel's wall: a dead grey reef wall on the left. Ground away, it is a dune of warm sand. */
   function drawWall(ctx: CanvasRenderingContext2D, t: number, wall: '' | 'a' | 'b'): void {
     const s = scale();
@@ -884,6 +927,7 @@ export function createTwilightScene(seed: number): Scene {
       drawMotes(ctx, t, v.siltLevel);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#1d3557');
       drawShelf(ctx, v.sandBars, v.siltLevel);
+      drawChannels(ctx, t, v.channels);
       drawDaughters(ctx, v.polyps, (u) => [focus.x - focus.w * 0.1 + u * focus.w * 1.2, slopeY(u) + 3 * scale()], scale(), t,
         { branch: '#9a5a6c', tip: '#c98292', polyp: 'rgba(255,225,235,0.9)' }, slopeSeed);
       drawSeaFans(ctx, t);

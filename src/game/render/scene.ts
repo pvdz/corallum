@@ -29,6 +29,8 @@ export type ReefView = {
   /** 0..1, how smothered the reef is (Act III). */
   siltLevel: number;
   sandBars: number;
+  /** Feeding channels cut in the slope (Act III), 0–6. */
+  channels: number;
   /** Seagrass meadows sown on the sunlit sand. */
   meadows: number;
   /** Which seamount this run grows on (warm and cold tint the deep). */
