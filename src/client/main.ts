@@ -50,7 +50,7 @@ import { HEAT } from '../game/content/act4.ts';
 import { AGAIN, QUESTION, QUESTIONS } from '../game/content/ossel.ts';
 import { MILKY, RISING } from '../game/content/act2.ts';
 import { UPWELL } from '../game/content/act3.ts';
-import { FIGURES, SKY, WISH, type FigureId } from '../game/content/sky.ts';
+import { FIGURES, SKY, WISH, type FigureId, type WishId } from '../game/content/sky.ts';
 import { ACT1, FLARE, GRAINS, OLD, MILESTONES, SPORTS, STRAINS, type Milestone } from '../game/content/act1.ts';
 import { diaryLine } from '../game/content/diary.ts';
 import { OSSEL_LINES, OSSEL_LINES_TRUE, OSSEL_NOW, WHISPERS, WHISPER_BY } from '../game/content/whispers.ts';
@@ -245,16 +245,7 @@ const panel = createPanel(ui, {
     audio.cue(how === 'press' || how === 'wait' || how === 'follow' || how === 'gather' ? 'depart' : 'choice');
     save();
   },
-  makeWish(id) {
-    const got = makeWish(state, id);
-    if (!got) return;
-    audio.cue('shimmer');
-    scene.effect('wish');
-    if (got >= 1000) showJournalNote(SHARD.found, SHARD_LINES[got - 1000] ?? '', true);
-    else if (id === 'line') showJournalNote(WISH.kicker, WISH.lineGot, true);
-    else floatText(innerWidth / 2, innerHeight / 3, `+${num(got)} ${feastPay(state)} ${WISH.float}`, 'feast-float');
-    save();
-  },
+  makeWish: wish,
   chooseSport(id) {
     if (!chooseSport(state, id)) return;
     scene.effect('symbiont');
@@ -996,6 +987,18 @@ function showJournalNote(kicker: string, name: string, now = false): void {
   next();
 }
 
+/** Make a wish on falling stars (the wish card or W). */
+function wish(id: WishId): void {
+  const got = makeWish(state, id);
+  if (!got) return;
+  audio.cue('shimmer');
+  scene.effect('wish');
+  if (got >= 1000) showJournalNote(SHARD.found, SHARD_LINES[got - 1000] ?? '', true);
+  else if (id === 'line') showJournalNote(WISH.kicker, WISH.lineGot, true);
+  else floatText(innerWidth / 2, innerHeight / 3, `+${num(got)} ${feastPay(state)} ${WISH.float}`, 'feast-float');
+  save();
+}
+
 /** The time-lapse: the reef regrows from the start of this zone to now over LAPSE seconds of scene time. */
 const LAPSE = 8;
 let lapseStart = -1;
@@ -1511,6 +1514,25 @@ window.addEventListener('keydown', (e) => {
       const [x, y] = scene.crownAt;
       taps.push(x + (Math.sin(animT * 7) > 0 ? 1 : -1) * 160 * dpr, y - 60 * dpr, animT);
     }
+    return;
+  }
+  if (e.key === 'k' || e.key === 'K') {
+    // Let the first knob of old stone go.
+    const slot = state.oldSlots[0];
+    if (frozenT === null && oldKnobs(state) > 0 && slot !== undefined) {
+      const gain = prune(state, slot);
+      if (gain > 0) {
+        floatText(innerWidth / 2, innerHeight / 3, `+${num(gain)} ${feastPay(state)} ${OLD.float}`, 'feast-float');
+        const held = oldHeld(state);
+        if (held) showJournalNote(OLD.held, diaryLine(held), true);
+        audio.cue('crunch');
+        save();
+      }
+    }
+    return;
+  }
+  if (e.key === 'w' || e.key === 'W') {
+    wish(state.lineWishes < WISH.lineMax ? 'line' : 'ripen');
     return;
   }
   if (e.key === 't' || e.key === 'T') {
