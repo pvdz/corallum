@@ -16,7 +16,7 @@ import type { WorkId } from '../content/works.ts';
 import type { MomentId } from '../content/moments.ts';
 import type { ResidentId } from '../content/residents.ts';
 import type { SiteId, TripId } from '../content/expeditions.ts';
-import type { BoonId, SeamountId, TraitId } from '../content/lineage.ts';
+import type { BoonId, SeamountId, TraitId, VowId } from '../content/lineage.ts';
 import type { UpgradeId } from '../content/types.ts';
 
 export const SAVE_VERSION = 1;
@@ -162,6 +162,9 @@ export type GameState = {
   signal: { last: number; answered: number; right: number; streak: number };
   /** Index of the last shell slot picked up. */
   shelled: number;
+  /** Vows this reef grows under (content/lineage.ts VOWS), and when it reached the surface (−1 not yet). */
+  vows: VowId[];
+  surfacedAt: number;
   /** The span of time (content/creatures.ts LUCKY) in which a lucky neighbour was last touched. */
   luckySpan: number;
   /** Old growth on the tips (content/act1.ts OLD): the stock, the knobs' slot order, and the last one broken off. */
@@ -269,6 +272,8 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     thorned: -1,
     shelled: -1,
     luckySpan: -1,
+    vows: [],
+    surfacedAt: -1,
     old: 0,
     oldSlots: [0, 1, 2, 3, 4, 5],
     pruned: { t: -1e9, slot: -1 },

@@ -183,4 +183,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Form dialect Pillars (columns from one foot, feeding by day: real pillar coral habit) | real biology | OK |
 | Ossel's mistake: strength is keeping (corrected by The kept stone) | this game's own theme | OK |
 | Jelly falls (a dead jellyfish sinking, a falling feast) | real phenomenon | OK |
+| Vows (Haste, Lightness, Solitude) for a new reef after an ending | generic challenge-mode idea, own names | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

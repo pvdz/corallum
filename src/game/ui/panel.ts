@@ -11,7 +11,7 @@ import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId, RISING, MILKY } from '../content/act2.ts';
 import { ACT3, CURRENT, FAVOURS, FAVOUR_TEXT, MEETINGS, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId, FAN, GUARD, UPWELL } from '../content/act3.ts';
 import { DIALECTS, HEAT, TIERS, type DialectId } from '../content/act4.ts';
-import { BOONS, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId, FORGET } from '../content/lineage.ts';
+import { BOONS, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId, FORGET, VOW, VOWS, type VowId } from '../content/lineage.ts';
 import { GARDEN, LINE_TITLES, MEMORIES, type MemoryId } from '../content/act5.ts';
 import { COMPANION, CREATURES, TRUST, trustLevel, LUCKY } from '../content/creatures.ts';
 import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
@@ -39,8 +39,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, steadyCalciteRate, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilThorn, untilFlurry, untilMilky, untilHeat, heatLeft, closedNow, untilRising, untilSwell, currentUpwelling, canFlare, risingLeft, canFeedRising, risingHaul, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
-} from '../sim/economy.ts';
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilThorn, untilFlurry, untilMilky, untilHeat, heatLeft, closedNow, untilRising, untilSwell, currentUpwelling, canFlare, risingLeft, canFeedRising, risingHaul, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks, vowKept } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
 
@@ -105,7 +104,7 @@ export type PanelHooks = {
   setRasp(n: number): void;
   choose(id: MeetingId, choice: Choice): void;
   speak(id: DialectId): void;
-  spawnLesser(where: SeamountId, heirloom: string): void;
+  spawnLesser(where: SeamountId, heirloom: string, vows: VowId[]): void;
   buyTrait(id: TraitId): void;
   forgetTrait(id: TraitId): void;
   exportSave(): string;
@@ -851,6 +850,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (spoken.length) codexRow('Dialects', spoken.join(' · '));
     if (s.meta.name) codexRow('Name', reefName(s));
     codexRow(UI.thisReef, `${duration(s.t)} growing · ${num(s.earned.calcite)} calcite gathered${s.feasts ? ` · ${s.feasts} feast${s.feasts === 1 ? '' : 's'} caught` : ''}`);
+    if (s.vows.length) codexRow(VOW.label, VOWS.filter((v) => s.vows.includes(v.id)).map((v) => `${v.name.toLowerCase()} (${vowKept(s, v.id) ? VOW.kept : VOW.broken})`).join(' · '));
     if (s.meta.endings > 0) codexRow(UI.theSea, `healing: the Long Silt falls ×${(0.95 ** Math.min(6, s.meta.endings)).toFixed(2)} for the endings your line has reached`);
     if (s.meta.endings > 0) codexRow('Endings', `${s.meta.endings} · ${s.meta.carriedEver.length} of ${MEMORIES.length} memories carried so far`);
     if (s.carried.length) codexRow('Carried', s.carried.map((id) => MEMORIES.find((m) => m.id === id)?.title ?? id).join(' · '));
@@ -881,7 +881,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const msg = ended(s)
       ? `Begin again on a new seamount, with +${lineageFor(s)} lineage?`
       : `Release a lesser spawning now for +${lineageFor(s)} lineage? This reef starts over.`;
-    if (window.confirm(`${msg}\nIt will settle on ${seamountDef(whereNext).name.toLowerCase()}.`)) hooks.spawnLesser(whereNext, heirNext);
+    if (window.confirm(`${msg}\nIt will settle on ${seamountDef(whereNext).name.toLowerCase()}.`)) hooks.spawnLesser(whereNext, heirNext, [...vowsNext]);
   });
   // Where the spawn settles: each seamount bends the next run one way.
   let whereNext: SeamountId = 'plain';
@@ -909,6 +909,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const heirNote = el('p', 'hint', EXPEDITION.heirNote);
   let heirKey = '';
   function renderHeirs(s: GameState): void {
+    vowLabel.hidden = vowBox.hidden = vowNote.hidden = s.meta.endings === 0;
     const key = s.relics.join();
     heirLabel.hidden = heirBox.hidden = heirNote.hidden = s.relics.length === 0;
     if (key === heirKey) return;
@@ -926,7 +927,21 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       heirBox.append(b);
     }
   }
-  spawnCard.append(spawnTitle, spawnText, spawnBuys, el('p', 'stock-name', UI.whereItSettles), whereBox, whereNote, heirLabel, heirBox, heirNote, spawnFoot);
+  // Vows: once the line has reached an ending, the next reef may take any of them.
+  const vowsNext = new Set<VowId>();
+  const vowLabel = el('p', 'stock-name', VOW.label);
+  const vowBox = el('div', 'seamounts vows');
+  const vowNote = el('p', 'hint', VOW.note);
+  for (const v of VOWS) {
+    const b = button('seamount', v.name, () => {
+      if (vowsNext.has(v.id)) vowsNext.delete(v.id);
+      else vowsNext.add(v.id);
+      b.classList.toggle('on', vowsNext.has(v.id));
+      vowNote.textContent = `${v.name}: ${v.effect} · +${v.lineage} lineage at its ending if kept.`;
+    });
+    vowBox.append(b);
+  }
+  spawnCard.append(spawnTitle, spawnText, spawnBuys, el('p', 'stock-name', UI.whereItSettles), whereBox, whereNote, heirLabel, heirBox, heirNote, vowLabel, vowBox, vowNote, spawnFoot);
   // Feats: goals across all runs, one lineage each.
   const featCard = el('article', 'card codex feats');
   const featHead = el('h3', '', 'Feats');

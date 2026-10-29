@@ -24,7 +24,7 @@ import { ACT4, HEAT, BANDS_ACT4, DIALECTS, OTHERS, TIERS, type DialectId, type D
 import { ACT5, BANDS_ACT5, GARDEN, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, LUCKY, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
-import { BOONS, LINEAGE, SEAMOUNTS, type BoonId, type Seamount, type SeamountId, type TraitId } from '../content/lineage.ts';
+import { BOONS, LINEAGE, SEAMOUNTS, type BoonId, type Seamount, type SeamountId, type TraitId, VOW, VOWS, type VowId } from '../content/lineage.ts';
 import { DAYS, type DayId, DAILY, FEAST, SIGNAL, SWELL, THORN, WELCOME, intruderOf, type Intruder, DREAM } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { WORKS, type WorkId } from '../content/works.ts';
@@ -496,6 +496,7 @@ function flow(s: GameState, dt: number, stepFraction: number): GameState {
   // Snap the last sliver so "reached the goal" is reachable in finite time.
   if (r.heightTarget - s.height < 1e-3) s.height = r.heightTarget;
   if (surfaceAt <= s.t + dt && (s.meta.fastest === 0 || surfaceAt < s.meta.fastest)) s.meta.fastest = surfaceAt;
+  if (surfaceAt <= s.t + dt && s.surfacedAt < 0) s.surfacedAt = surfaceAt;
   // Growth chart: one height sample per HISTORY_STEP of sim time (offline catch-up included; the
   // samples during a long absence all show the height at its end, which is what the reef was).
   const before = Math.floor(s.t / HISTORY_STEP);
@@ -835,6 +836,7 @@ function homecoming(s: GameState): void {
 
 /** Homes in the reef (by height), and the animals that may ask for one by now. */
 export function homes(s: GameState): number {
+  if (s.vows.includes('alone')) return 0;
   const n = homesAt(s.height);
   return n > 0 ? n + (chose(s, 'cleaners', 'a') ? 1 : 0) + trait(s, 'open-house') + s.levels.grotto : 0;
 }
@@ -1200,7 +1202,7 @@ export function greatTide(s: GameState, t = s.t): boolean {
 
 /** Memories a release at time t may carry. */
 export function carryAt(s: GameState, t = s.t): number {
-  return greatTide(s, t) ? ACT5.greatCarry : ACT5.carry;
+  return (greatTide(s, t) ? ACT5.greatCarry : ACT5.carry) - (s.vows.includes('light') ? 1 : 0);
 }
 
 /** Seconds until the next full moon that is a great tide (0 while one is full). */
@@ -1302,6 +1304,18 @@ export function breach(s: GameState, memories: MemoryId[]): boolean {
   // The line's chronicle: one line per ending (seamount, memories carried, hours it took).
   s.meta.chronicle = [...s.meta.chronicle, `${s.seamount}|${unique.join(',')}|${Math.round(s.t / 360) / 10}`].slice(-30);
   return true;
+}
+
+/** Whether a vow this reef took is kept (so far, or at its ending). */
+export function vowKept(s: GameState, id: VowId): boolean {
+  if (id === 'haste') return s.surfacedAt >= 0 ? s.surfacedAt <= VOW.hasteHours * 3600 : s.t <= VOW.hasteHours * 3600;
+  // Lightness and solitude are kept by the rules themselves.
+  return true;
+}
+
+/** Lineage the reef's kept vows bring at its ending. */
+export function vowLineage(s: GameState): number {
+  return VOWS.filter((v) => s.vows.includes(v.id) && vowKept(s, v.id)).reduce((a, v) => a + v.lineage, 0);
 }
 
 // ---------- Look-ahead ----------

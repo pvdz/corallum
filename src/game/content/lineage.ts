@@ -96,6 +96,18 @@ export const SEAMOUNTS: readonly Seamount[] = [
     trial: { goal: 3000, reward: 'Stone-light: old stone pays ×2 when let go, on every reef after' } },
 ];
 
+/**
+ * Vows: once the line has reached an ending, a new reef may begin under vows, harder ways to grow that
+ * pay lineage at its ending if they were kept.
+ */
+export type VowId = 'haste' | 'light' | 'alone';
+export const VOWS: readonly { id: VowId; name: string; effect: string; lineage: number }[] = [
+  { id: 'haste', name: 'Haste', effect: 'reach the surface within 7 hours of this reef’s time', lineage: 6 },
+  { id: 'light', name: 'Lightness', effect: 'the spawn carries one memory fewer', lineage: 4 },
+  { id: 'alone', name: 'Solitude', effect: 'no residents move in', lineage: 4 },
+];
+export const VOW = { hasteHours: 7, label: 'Vows', note: 'Optional: grow the next reef a harder way, for lineage at its ending if the vow is kept.', kept: 'kept', broken: 'broken' } as const;
+
 /** Forgetting a trait (Lineage tab). */
 export const FORGET = { label: 'Forget', sure: 'Forget it?', title: 'Forget the last level of this trait: most of its lineage comes back' } as const;
 

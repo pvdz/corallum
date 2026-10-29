@@ -4,15 +4,15 @@ import { MOMENTS } from '../content/moments.ts';
 import type { SiteId } from '../content/expeditions.ts';
 import { MEETINGS } from '../content/act3.ts';
 import { DIALECTS } from '../content/act4.ts';
-import { HABIT_SHARE, LINEAGE, TRAITS, type SeamountId, type Trait, type TraitId } from '../content/lineage.ts';
-import { assign, balanceFeedLight, cost, ended, maxed, setCurrent, steadyCalciteRate, idleShoals, jobGain, raspMax, raspSettings, revealed, setRasp, spawnTarget, chooseGrain } from './economy.ts';
+import { HABIT_SHARE, LINEAGE, TRAITS, type SeamountId, type Trait, type TraitId, type VowId } from '../content/lineage.ts';
+import { vowLineage, assign, balanceFeedLight, cost, ended, maxed, setCurrent, steadyCalciteRate, idleShoals, jobGain, raspMax, raspSettings, revealed, setRasp, spawnTarget, chooseGrain } from './economy.ts';
 import { newGame, type GameState, type Meta } from './state.ts';
 
 /** Lineage a spawning released now would bring. */
 export function lineageFor(s: GameState): number {
   const base = Math.floor(LINEAGE.perRoot * Math.sqrt(Math.max(0, s.height) / 60));
   const frag = s.dialects.spawn === 'fragmenting' ? LINEAGE.fragmentingBonus : 1;
-  return Math.floor(base * frag) + (s.moments.storm === 'a' ? 2 : 0) + (s.moments['far-light'] === 'b' ? 2 : 0) + (s.moments['split-shoal'] === 'b' ? 1 : 0) + s.levels.daughter + (ended(s) ? endingLineage(s, s.released) + s.garden : 0);
+  return Math.floor(base * frag) + (s.moments.storm === 'a' ? 2 : 0) + (s.moments['far-light'] === 'b' ? 2 : 0) + (s.moments['split-shoal'] === 'b' ? 1 : 0) + s.levels.daughter + (ended(s) ? endingLineage(s, s.released) + s.garden + vowLineage(s) : 0);
 }
 
 /** The ending's lineage for a release of this much spawn. */
@@ -36,7 +36,7 @@ function storiesOf(s: GameState): string[] {
  * Release a lesser spawning (or, after the ending, begin again): a new run on a new seamount
  * that keeps the lineage. Returns the new state, or null if it is not allowed yet.
  */
-export function spawnLesser(s: GameState, where: SeamountId = 'plain', heirloom: SiteId | '' = ''): GameState | null {
+export function spawnLesser(s: GameState, where: SeamountId = 'plain', heirloom: SiteId | '' = '', vows: readonly VowId[] = []): GameState | null {
   if (!canSpawnLesser(s)) return null;
   const meta: Meta = structuredClone(s.meta);
   meta.lineage += lineageFor(s);
@@ -50,6 +50,8 @@ export function spawnLesser(s: GameState, where: SeamountId = 'plain', heirloom:
   next.seamount = where;
   // One relic this reef found may go with the spawn.
   if (heirloom && s.relics.includes(heirloom)) next.heirloom = heirloom;
+  // Vows only once the line has seen an ending.
+  if (meta.endings > 0) next.vows = [...new Set(vows)];
   return next;
 }
 

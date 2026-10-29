@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { advance, calciteRate, cost, ended, heightForBands, rates } from '../../src/game/sim/economy.ts';
+import { advance, calciteRate, carryAt, cost, ended, heightForBands, homes, rates, vowLineage } from '../../src/game/sim/economy.ts';
+import { LINEAGE } from '../../src/game/content/lineage.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { buyTrait, canSpawnLesser, lineageFor, spawnLesser, traitCost } from '../../src/game/sim/prestige.ts';
 import { deserialize, serialize } from '../../src/game/sim/save.ts';
@@ -182,4 +183,23 @@ test('forgetting a trait gives back most of its last level, and only what was bo
   assert.equal(s.meta.traits['deep-memory'], 0);
   assert.equal(s.meta.lineage, 1000 - c + Math.floor(0.8 * c));
   assert.equal(forgetTrait(s, 'deep-memory'), 0);
+});
+
+test('vows: taken only after an ending; kept ones pay at the next ending; lightness carries one fewer; solitude has no homes', () => {
+  const first = newGame(11);
+  first.bands.push(LINEAGE.unlockBand);
+  const early = spawnLesser(first, 'plain', '', ['light'])!;
+  assert.deepEqual(early.vows, [], 'no vows before the line has an ending');
+  const ended0 = newGame(12);
+  ended0.meta.endings = 1;
+  ended0.bands.push(LINEAGE.unlockBand);
+  const s = spawnLesser(ended0, 'plain', '', ['light', 'alone', 'haste'])!;
+  assert.deepEqual([...s.vows].sort(), ['alone', 'haste', 'light']);
+  assert.equal(carryAt(s), carryAt({ ...s, vows: [] }) - 1);
+  s.height = 3900;
+  assert.equal(homes(s), 0);
+  s.surfacedAt = 6 * 3600;
+  assert.equal(vowLineage(s), 14);
+  s.surfacedAt = 8 * 3600;
+  assert.equal(vowLineage(s), 8, 'haste broken');
 });

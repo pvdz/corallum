@@ -394,8 +394,8 @@ const panel = createPanel(ui, {
     buzz(20);
     save();
   },
-  spawnLesser(where, heirloom) {
-    const next = spawnLesser(state, where, heirloom as SiteId | '');
+  spawnLesser(where, heirloom, vows) {
+    const next = spawnLesser(state, where, heirloom as SiteId | '', vows);
     if (!next) return;
     if (ephemeral) {
       state = next;
