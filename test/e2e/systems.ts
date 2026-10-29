@@ -1,5 +1,5 @@
 // The newer systems through their cards, on one page: send an expedition and call it home, take a
-// resident in, answer a riddle and the shoals' signal, pick up a shell, break off old stone, close up against warm water, send the feeders into the rising. Each must change the state.
+// resident in, answer a riddle and the shoals' signal, pick up a shell, make a wish, break off old stone, close up against warm water, send the feeders into the rising. Each must change the state.
 
 import { withGame, VIEWPORTS } from '../../tools/browser.ts';
 import { RIDDLES } from '../../src/game/content/act3.ts';
@@ -132,5 +132,19 @@ await withGame(async (open) => {
   await page.locator('.heat-row:not(.rise-row) .heat-toggle').click();
   check((await page.evaluate(() => window.corallum!.state.closed)) === false, 'polyps opened to the sun');
   check(errors.length === 0, 'no console errors (Sunlit)');
+});
+await withGame(async (open) => {
+  // At the Breach: wait for shooting stars, and make a wish for the line.
+  const { page, errors } = await open(VIEWPORTS[0]!, '?bot=24400&at=60');
+  page.setDefaultTimeout(4000);
+  await page.waitForTimeout(2000);
+  await page.evaluate(() => { const t = window.corallum!.state.t; window.corallum!.skip(1200 - ((t + 640) % 1200) + 20); });
+  for (let i = 0; i < 12 && (await page.locator('.away:not([hidden]) button, .reader:not([hidden]) button').count()); i++)
+    await page.locator('.away:not([hidden]) button, .reader:not([hidden]) button').first().click().catch(() => {});
+  const before = await page.evaluate(() => window.corallum!.state.meta.lineage);
+  await page.locator('.wish button', { hasText: 'For the line' }).click();
+  await page.waitForTimeout(200);
+  check((await page.evaluate(() => window.corallum!.state.meta.lineage)) === before + 1, 'a wish on falling stars, for the line');
+  check(errors.length === 0, 'no console errors (Breach)');
 });
 process.exitCode = failed ? 1 : 0;
