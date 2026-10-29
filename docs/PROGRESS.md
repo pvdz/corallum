@@ -298,3 +298,4 @@ date, what landed, what is half-done, what's next.
 - Ossel's whispers point at neighbours worth touching (lanternfish, octopus, clownfish, dolphins), in their own zone, once seen and not yet touched.
 - Album: tap (or Enter on) a journal portrait to see it large with its name, note and zone; tap or Escape closes. Portraits are 160 px now.
 - Feeding channels are visible: one groove per channel cut in the Twilight slope toward the reef's foot, with sand banks and plankton streaming along it (ReefView.channels).
+- Sunlit upgrades show on the reef: each pigment adds encrusting colour (denser, and a new hue every two: rose, gold, green, …); each canopy spread opens the polyps a little wider (ReefView.pigments, canopy).

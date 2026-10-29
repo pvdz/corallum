@@ -27,6 +27,9 @@ type Larva = { x: number; y: number; phase: number; speed: number };
 /** Length of a sunlit day, in seconds of scene time. */
 const DAY = 600;
 
+/** Encrusting colours, in the order pigments bring them. */
+const PIGMENTS = ['#ff4f8b', '#ffd23f', '#2ec4b6', '#ff6b3d', '#a35cff', '#9ef01a', '#3a86ff'];
+
 const FORM_LOOK: Record<CoralForm, { girth: number; palette: [string, string, string]; polyp: [string, string] }> = {
   fan: { girth: 1, palette: ['#3a1d33', '#c25a76', 'rgba(255,225,210,0.35)'], polyp: ['#ffd2c4', 'rgba(255,240,170,0.95)'] },
   branching: { girth: 0.9, palette: ['#3b2a18', '#d99a54', 'rgba(255,240,200,0.4)'], polyp: ['#7fe0c9', 'rgba(220,255,140,0.95)'] },
@@ -78,12 +81,15 @@ export function createSunlitScene(seed: number): Scene {
     return {
       cx: cx(), baseY: focus.y + focus.h * 0.97, unit: focus.h * tall, s: scale(), dpr,
       top: 0.35 + 0.65 * progress(v.height), bandStep: 0, palette: FORM_LOOK[form].palette,
-      encrust: 0.8 + 0.2 * progress(v.height), encrustColours: ['#ff6b3d', '#a35cff', '#ffd23f', '#2ec4b6', '#ff4f8b'],
+      // Each pigment grown adds colour: more of the reef crusted, in more hues (rose, gold, green…).
+      encrust: (0.3 + 0.7 * Math.min(1, v.pigments / 6)) * (0.8 + 0.2 * progress(v.height)),
+      encrustColours: PIGMENTS.slice(0, 2 + Math.min(PIGMENTS.length - 2, Math.floor(v.pigments / 2))),
       polyp: v.craft === 'fluorescent' ? FLUORESCENT_POLYP : FORM_LOOK[form].polyp,
       // By night the reef's own light comes back (fluorescent reefs glow brighter still).
       glowScale: (v.craft === 'fluorescent' ? 0.25 : 0) + 0.8 * nightAt(lastT),
       // Polyps pull in against the noon light and open wide to feed at night, as real corals do.
-      polypScale: 1.2 * (0.8 + 0.35 * nightAt(lastT)),
+      // The canopy leans the polyps open to the light: wider with each spread.
+      polypScale: 1.2 * (0.8 + 0.35 * nightAt(lastT)) * (1 + 0.025 * Math.min(12, v.canopy)),
     };
   }
 

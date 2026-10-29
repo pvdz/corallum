@@ -413,6 +413,8 @@ function view(): ReefView {
     sandBars: state.levels.sandbar,
     channels: state.levels.channel,
     meadows: state.levels.meadow,
+    pigments: state.levels.pigment,
+    canopy: state.levels.canopy,
     seamount: state.seamount,
     rasp: state.rasp,
     wall: state.truce.wall,

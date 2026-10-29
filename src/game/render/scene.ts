@@ -33,6 +33,9 @@ export type ReefView = {
   channels: number;
   /** Seagrass meadows sown on the sunlit sand. */
   meadows: number;
+  /** Sunlit Crown: pigments grown (colour on the reef) and canopy spread (polyps opened to the light). */
+  pigments: number;
+  canopy: number;
   /** Which seamount this run grows on (warm and cold tint the deep). */
   seamount: string;
   rasp: number;
