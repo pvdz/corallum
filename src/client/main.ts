@@ -561,7 +561,10 @@ function drawAscent(k: number): void {
 /** The panel's tint for each zone: violet-black, deep blue, twilight blue, sea green, night. */
 const ZONE_TINTS = ['14, 20, 46', '10, 14, 40', '16, 34, 68', '14, 52, 70', '20, 22, 52'];
 function setZoneTint(n: number): void {
-  document.documentElement.style.setProperty('--zone-tint', ZONE_TINTS[n - 1] ?? ZONE_TINTS[0]!);
+  const tint = ZONE_TINTS[n - 1] ?? ZONE_TINTS[0]!;
+  document.documentElement.style.setProperty('--zone-tint', tint);
+  // Phones colour their address bar from the theme colour: let it follow the zone too.
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', `rgb(${tint})`);
 }
 setZoneTint(actAt(state.height));
 
