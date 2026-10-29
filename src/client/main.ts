@@ -1231,7 +1231,7 @@ function frame(now: number): void {
     roamsSeen = state.tally.roams;
     // An intruder arriving, a moment or a full-moon choice appearing: a cue each.
     const th = currentThorn(state);
-    if (th && th.k !== thornHeard) audio.cue('intruder');
+    if (th && th.k !== thornHeard) audio.cue(th.kind === 'gull' ? 'gull' : 'intruder');
     thornHeard = th ? th.k : thornHeard;
     const waitingChoice = `${nextMoment(state)?.id ?? ''}|${othersSpawning(state)}|${forkOpen(state)}|${strainOpen(state)}`;
     if (waitingChoice !== choiceHeard && waitingChoice !== '|false|false|false') audio.cue('moment');
