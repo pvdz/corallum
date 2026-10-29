@@ -4,7 +4,7 @@ export type UpgradeId =
   | 'polyp' | 'symbiont' | 'skeleton' | 'lattice' | 'vent' | 'lure'
   | 'shoal' | 'daughter' | 'net'
   | 'grounds' | 'sandbar' | 'channel'
-  | 'pigment' | 'canopy' | 'meadow'
+  | 'pigment' | 'canopy' | 'meadow' | 'sweeten'
   | 'ripen' | 'cay';
 
 export type Currency = 'calcite' | 'glow' | 'sand' | 'bloom';

@@ -34,6 +34,8 @@ const ICONS: Record<UpgradeId, string> = {
   // Ripening spawn: a bundle of eggs.
   // A lamp-net: a mesh with lights at its knots.
   net: '<path d="M4 6l16 0M4 12h16M4 18h16M6 4l4 16M12 4v16M18 4l-4 16"/><circle cx="12" cy="12" r="1.6"/>',
+  // Sweeten: a droplet over a bundle.
+  sweeten: '<path d="M12 4c2 3 4 5 4 7a4 4 0 0 1-8 0c0-2 2-4 4-7z"/><circle cx="12" cy="18" r="2"/>',
   // A cay: a low island above a wavy line.
   cay: '<path d="M3 15c3-4 6-6 9-6s6 2 9 6"/><path d="M2 18c2-1.2 4-1.2 6 0s4 1.2 6 0 4-1.2 6 0"/>',
   ripen: '<circle cx="10" cy="11" r="2.4"/><circle cx="14.5" cy="10" r="2.4"/><circle cx="12" cy="14.5" r="2.4"/><path d="M12 7V3"/>',

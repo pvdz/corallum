@@ -30,6 +30,11 @@ export const UPGRADES_ACT5: readonly UpgradeDef[] = [
     flavour: 'Heap the Rasp’s sand where the waves slow down, until it breaks the surface and stays.',
     currency: 'sand', baseCost: 40000, growth: 1.6, maxLevel: 6, reveal: { band: 'breach' },
   },
+  {
+    id: 'sweeten', name: 'Sweeten the spawn',
+    flavour: 'Pour the symbionts’ sugar into the bundles, so the young go out fed.',
+    currency: 'bloom', baseCost: 2e7, growth: 3, maxLevel: 6, reveal: { band: 'breach' },
+  },
 ];
 
 export const BANDS_ACT5: readonly Band[] = [

@@ -38,5 +38,6 @@ export function effectText(id: UpgradeId): string {
     case 'canopy': return `sunlight ×${ACT4.canopySun}`;
     case 'ripen': return `spawn ×${ACT5.ripenSpawn}`;
     case 'cay': return 'spawn ×1.1 (sheltered water)';
+    case 'sweeten': return 'spawn ×1.1';
   }
 }
