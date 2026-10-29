@@ -233,7 +233,9 @@ test('dialects: one per tier, in order, after their band, paid in bloom', () => 
   assert.ok(speak(s, 'mucus'));
   assert.ok(speak(s, 'brooding'));
   assert.equal(nextTier(s), undefined);
-  assert.deepEqual(s.dialects, { form: 'plating', craft: 'mucus', spawn: 'brooding' });
+  s.bands.push('storm');
+  assert.ok(speak(s, 'chorus'));
+  assert.deepEqual(s.dialects, { form: 'plating', craft: 'mucus', spawn: 'brooding', song: 'chorus' });
 });
 
 test('the moon: full for a window each cycle; untilFullMoon lands in it', () => {
@@ -272,7 +274,7 @@ test('the Breach: needs the surface, the spawn, the full moon and exactly three 
 test('pacing: the whole game takes the bot 6–11 h whatever the path', () => {
   for (const opts of [
     {},
-    { truce: { terms: 'b', story: 'b', wall: 'b' }, dialects: { form: 'massive', craft: 'fluorescent', spawn: 'brooding' } },
+    { truce: { terms: 'b', story: 'b', wall: 'b' }, dialects: { form: 'massive', craft: 'fluorescent', spawn: 'brooding', song: 'lullaby' } },
   ] as const) {
     const { state } = runBot(ended, 14 * 3600, opts);
     assert.ok(ended(state) && state.t > 6 * 3600 && state.t < 11 * 3600, `${JSON.stringify(opts)}: ${state.t}s`);

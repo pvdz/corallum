@@ -29,7 +29,7 @@ const DEFAULT_SPLIT: Record<Job, number> = { feed: 0.5, light: 0.3, scout: 0.2 }
 
 /** One decision: read if possible, buy the cheapest affordable upgrades, place idle shoals. */
 const DEFAULT_TRUCE: Record<MeetingId, Choice> = { terms: 'a', story: 'a', wall: 'a' };
-const DEFAULT_DIALECTS: Record<DialectTier, DialectId> = { form: 'branching', craft: 'sweepers', spawn: 'broadcast' };
+const DEFAULT_DIALECTS: Record<DialectTier, DialectId> = { form: 'branching', craft: 'sweepers', spawn: 'broadcast', song: 'call' };
 
 /** The Rasp dial setting with the best calcite hold (the dial is small, so try them all). */
 export { bestRasp };

@@ -210,7 +210,7 @@ export function rates(s: GameState): Rates {
     sandK: ACT3.sandSettle,
     bloomP: sunlight(s, target) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * ACT4.meadowBloom ** lv.meadow *
       (speaks(s, 'fluorescent') ? 1.5 : 1) * (lives(s, 'damselfish') ? 1.3 : 1) * (chose(s, 'storm', 'b') ? 1.15 : 1) * 1.15 ** s.works.terrace * (has(s, 'light-walls') ? 1.25 : 1) * (chose(s, 'first-light', 'a') ? 1.15 : 1) * (paired(s, 'feather-duster', 'damselfish') ? 1.15 : 1),
-    bloomK: ACT4.bloomFade * (chose(s, 'turtle', 'a') ? 0.8 : 1),
+    bloomK: ACT4.bloomFade * (chose(s, 'turtle', 'a') ? 0.8 : 1) * (speaks(s, 'lullaby') ? 0.7 : 1),
     spawnP: target >= ACT5.from
       ? lv.polyp * ACT5.spawnRate * ACT5.ripenSpawn ** lv.ripen * (speaks(s, 'broadcast') ? 2 : 1) *
         (1 + sunlight(s, target) * lv.symbiont / 100) * (chose(s, 'bird', 'b') ? 1.1 : 1) * (chose(s, 'last-night', 'b') ? 1.05 : 1) * (has(s, 'last-spawning') ? 1.25 : 1) * 1.15 ** s.works.pool
@@ -1179,7 +1179,7 @@ export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: 
   // Never more than a share of what the reef can hold of it (P/k), or it would only wash away.
   // Rare visitors give more: catching one is luck as well as attention.
   const rare = CREATURES.find((c) => c.id === id)?.note.startsWith('Rare.') ? GIFT.rare : 1;
-  const amount = (boon(s, 'welcome') ? 2 : 1) * TRUST.gift[trustLevel(s.meta.trust[id] ?? 0)]! * (chose(s, 'whale-fall', 'b') ? 2 : 1) * rare * (stock === 'calcite' ? calciteRate(s, r) * GIFT.seconds
+  const amount = (boon(s, 'welcome') ? 2 : 1) * (speaks(s, 'chorus') ? 2 : 1) * TRUST.gift[trustLevel(s.meta.trust[id] ?? 0)]! * (chose(s, 'whale-fall', 'b') ? 2 : 1) * rare * (stock === 'calcite' ? calciteRate(s, r) * GIFT.seconds
     : stock === 'bloom' ? r.bloomP * GIFT.seconds : stock === 'spawn' ? r.spawnP * GIFT.seconds
     : Math.min(made * GIFT.seconds, GIFT.holdShare * made / k));
   if (!(amount > 0)) return null;
@@ -1362,7 +1362,7 @@ function keepRequest(s: GameState): number {
   const prev = q.kind;
   if (q.kind && (requestCount(s, q.kind) - q.base >= q.n || !requestOpen(s, q.kind))) {
     if (requestCount(s, q.kind) - q.base >= q.n) {
-      paid = burst(s, REQUEST.seconds * (1 + REQUEST.streakBonus * Math.min(REQUEST.streakMax, q.streak)));
+      paid = burst(s, REQUEST.seconds * (1 + REQUEST.streakBonus * Math.min(REQUEST.streakMax, q.streak)) * (speaks(s, 'call') ? 1.5 : 1));
       q.paid = paid;
       q.done++;
       q.streak++;

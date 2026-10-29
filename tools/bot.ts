@@ -15,8 +15,8 @@ const fmt = (t: number) => `${Math.floor(t / 3600)}h${String(Math.floor((t % 360
 
 const tr = opt('truce');
 const truce = tr ? { terms: tr[0] as 'a' | 'b', story: tr[1] as 'a' | 'b', wall: tr[2] as 'a' | 'b' } : undefined;
-const dl = opt('dialects')?.split(',') as [string, string, string] | undefined;
-const dialects = dl ? { form: dl[0], craft: dl[1], spawn: dl[2] } as never : undefined;
+const dl = opt('dialects')?.split(',') as [string, string, string, string?] | undefined;
+const dialects = dl ? { form: dl[0], craft: dl[1], spawn: dl[2], song: dl[3] ?? 'call' } as never : undefined;
 const sa = opt('spawn-at');
 const { state, events, total } = runBot((s) => s.height >= to || ended(s), maxT, { sweeps, split, truce, dialects, spawnAt: sa ? Number(sa) : undefined });
 for (const e of events) console.log(`${fmt(e.t).padStart(10)}  ${e.what}`);

@@ -46,7 +46,7 @@ export function has(s: GameState, id: ReadingId): boolean {
 }
 
 export function speaks(s: GameState, id: DialectId): boolean {
-  return s.dialects.form === id || s.dialects.craft === id || s.dialects.spawn === id;
+  return s.dialects.form === id || s.dialects.craft === id || s.dialects.spawn === id || s.dialects.song === id;
 }
 
 export function boon(s: GameState, id: BoonId): boolean {

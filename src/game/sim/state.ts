@@ -179,7 +179,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     carried: [],
     released: 0,
     breachedAt: 0,
-    dialects: { form: '', craft: '', spawn: '' },
+    dialects: { form: '', craft: '', spawn: '', song: '' },
     height: 0,
     levels: {
       polyp: 0, symbiont: 0, skeleton: 0, lattice: 0, vent: 0, lure: 0, shoal: 0, daughter: 0,

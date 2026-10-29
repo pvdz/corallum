@@ -119,6 +119,7 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Boons offered at a new seamount (pick one of three) | a roguelite convention; names are plain | OK |
 | Roam tales (a wreck of crabs, a whale's song, glowing larvae, writing in the silt…) | our own | OK |
 | Ossel's mistakes (claims proved wrong by bands and relics) | unreliable narrator is a general device; the beats are ours | OK |
+| Dialect tier Song (Lullaby, Chorus, Call) | plain words | OK |
 | Hard seamounts (hungry, silent, lonely, buried) as challenge runs with a lasting reward | challenge runs are a genre convention (incremental 'challenges'); names are plain descriptions | OK |
 | Moments (a dying brittle star, a lost shoal, the giant squid's eye, a whale fall, cleaners asking for a ledge, a storm breaking a branch, a sleeping turtle, a shore bird at low tide) | real reef and deep-sea events; small choice events are a genre convention; beats written for Ossel | OK |
 | Moments: a vent cracking, an anglerfish's lure beside yours, a young Rasp alone, first light | our own beats | OK |

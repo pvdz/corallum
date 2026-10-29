@@ -431,3 +431,4 @@ date, what landed, what is half-done, what's next.
 - The current drawn on the shelf: faint streaks running with it, longer and faster with the setting.
 - economy.ts split: sim/modifiers.ts (trait, chose, passed, lives, paired, found, relic, has, speaks, boon), sim/water.ts (water slots and price factors), sim/race.ts (sisterAt, gaugeAt); economy re-exports what callers used.
 - Secret feats (??? until earned): Old friends talking (tap Ossel ten times), A picture in the dark, Just watching (five minutes of view mode).
+- A fourth dialect tier, Song (band 'storm', 400k bloom): Lullaby, Chorus, Call.

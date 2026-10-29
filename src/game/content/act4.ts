@@ -51,11 +51,12 @@ export const UPGRADES_ACT4: readonly UpgradeDef[] = [
   },
 ];
 
-export type DialectTier = 'form' | 'craft' | 'spawn';
+export type DialectTier = 'form' | 'craft' | 'spawn' | 'song';
 export type DialectId =
   | 'branching' | 'massive' | 'plating'
   | 'fluorescent' | 'sweepers' | 'mucus'
-  | 'broadcast' | 'brooding' | 'fragmenting';
+  | 'broadcast' | 'brooding' | 'fragmenting'
+  | 'lullaby' | 'chorus' | 'call';
 
 export type Dialect = { id: DialectId; tier: DialectTier; name: string; effect: string; flavour: string };
 
@@ -71,6 +72,10 @@ export const TIERS: readonly { tier: DialectTier; title: string; band: string; c
   {
     tier: 'spawn', title: 'Spawning', band: 'way-of-spawning', cost: 250000,
     intro: 'How a reef lets go of its children is the last thing it decides.',
+  },
+  {
+    tier: 'song', title: 'Song', band: 'storm', cost: 400000,
+    intro: 'In the shallows a reef is loud: everything near it hears how it sounds. Choose what they hear.',
   },
 ];
 
@@ -110,6 +115,18 @@ export const DIALECTS: readonly Dialect[] = [
   {
     id: 'fragmenting', tier: 'spawn', name: 'Fragmenting', effect: 'Lesser Spawnings give ×1.5 Lineage',
     flavour: 'Let a branch break and drift and take root somewhere else, still remembering you.',
+  },
+  {
+    id: 'lullaby', tier: 'song', name: 'Lullaby', effect: 'bloom fades ×0.7 as fast',
+    flavour: 'A low, slow hum at dusk. The symbionts settle into it and keep what they have made.',
+  },
+  {
+    id: 'chorus', tier: 'song', name: 'Chorus', effect: 'gifts from neighbours ×2',
+    flavour: 'Every polyp answering every other. The fish come to listen, and bring something.',
+  },
+  {
+    id: 'call', tier: 'song', name: 'Call', effect: 'Ossel’s requests pay ×1.5',
+    flavour: 'One clear note, again and again, until the old wall answers it.',
   },
 ];
 

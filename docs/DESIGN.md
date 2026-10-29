@@ -181,6 +181,7 @@ Entry requires the last Act II Reading (*Inside the wall*): the story turn opens
   - Tier 2 *Craft*: Fluorescent (lure +2, glow ×2) · Sweeper tentacles (plankton ×3) ·
     Mucus nets (silt swept ×2, Rasp eat nothing)
   - Tier 3 *Spawn*: Broadcast · Brooding · Fragmenting — each shapes Act V's spawning.
+  - Tier 4 *Song* (after *Storm*): Lullaby (bloom fades ×0.7) · Chorus (gifts ×2) · Call (requests ×1.5).
 - **Full-moon spawning** (every zone below the Breach): at each full moon, while watching, a card:
   take it back in / feed on it (5 minutes of the zone's currency) or let it drift / add your own
   (+1 lineage, at most 3 per reef). In the Sunlit Crown the other reefs spawn around you (pink
