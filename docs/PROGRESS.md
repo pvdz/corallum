@@ -456,3 +456,4 @@ date, what landed, what is half-done, what's next.
 - New creatures: frogfish (Twilight slope, gulps when touched), banded sea snake (Sunlit, rising to breathe).
 - New creature: a pelican at the Breach after dawn, gliding then plunging.
 - The Rasp elder's riddles: act3.ts RIDDLES (3), economy currentRiddle/answerRiddle, state.riddles (fixed keys so saves keep them); card in Grow; the bot answers right.
+- Moment 'Hunters in the dark' (650 m): shoals cost ×0.9, or light shoals ×1.2 glow. Backlog in PLAN done.

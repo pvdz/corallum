@@ -231,7 +231,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     request: { kind: '', n: 0, base: 0, done: 0, paid: 0, skipped: -1e9, streak: 0 },
     tally: { touches: 0, sweeps: 0, digs: 0, roams: 0, intruders: 0 },
     moments: {
-      brittle: '', 'vent-crack': '', snow: '', 'lost-shoal': '', angler: '', squid: '', 'whale-fall': '', 'old-lamp': '', cleaners: '',
+      brittle: '', 'vent-crack': '', snow: '', 'lost-shoal': '', hunters: '', angler: '', squid: '', 'whale-fall': '', 'old-lamp': '', cleaners: '',
       'young-rasp': '', eggs: '', storm: '', turtle: '', 'first-light': '', 'last-night': '', bird: '',
     },
     gifts: Object.fromEntries(CREATURES.map((c) => [c.id, -1e9])) as Record<CreatureId, number>,

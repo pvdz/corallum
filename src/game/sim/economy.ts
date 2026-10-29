@@ -197,7 +197,7 @@ export function rates(s: GameState): Rates {
   const onShelf = target >= ACT3.from;
   return {
     glowP: (ACT1.symbiontGlow * lv.symbiont * milestoneMult('symbiont', lv.symbiont) * (1 + ACT2.lightAmplify * s.jobs.light) +
-      lightGlow * s.jobs.light * seasoned(s)) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1) * (chose(s, 'vent-crack', 'b') ? 1.15 : 1) * (sm.glow ?? 1) * (passed(s, 'dark') ? 1.25 : 1) * (s.strain === 'blue' ? 1.3 : 1) * (boon(s, 'warm-heart') ? 1.3 : 1) * (chose(s, 'old-lamp', 'a') ? 1.1 : 1),
+      lightGlow * s.jobs.light * seasoned(s) * (chose(s, 'hunters', 'b') ? 1.2 : 1)) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1) * (chose(s, 'vent-crack', 'b') ? 1.15 : 1) * (sm.glow ?? 1) * (passed(s, 'dark') ? 1.25 : 1) * (s.strain === 'blue' ? 1.3 : 1) * (boon(s, 'warm-heart') ? 1.3 : 1) * (chose(s, 'old-lamp', 'a') ? 1.1 : 1),
     glowK: ACT1.glowFade * (chose(s, 'squid', 'a') ? 0.8 : 1),
     planktonP: (onShelf ? 1 - CURRENT.planktonPerStep * s.current : 1) * seasoned(s) * ACT2.feedRate * s.jobs.feed * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
       (speaks(s, 'sweepers') ? 3 : 1) * (lives(s, 'feather-duster') ? 1.3 : 1),
@@ -492,7 +492,8 @@ export function cost(s: GameState, id: UpgradeId): number {
     const discount = (has(s, 'walls') ? 0.75 : 1) * (speaks(s, 'branching') ? 0.6 : 1) * (relic(s, 'gate') ? 0.85 : 1);
     return Math.ceil(u.baseCost * BAND_COST[Math.min(MAX_BANDS, l)]! * discount * waterFactor(s, id) * (boon(s, 'quick-stone') ? 0.9 : 1));
   }
-  const discount = (id === 'polyp' ? 0.85 ** trait(s, 'quick-budding') : 1) * (id === 'shoal' && passed(s, 'lonely') ? 0.8 : 1);
+  const discount = (id === 'polyp' ? 0.85 ** trait(s, 'quick-budding') : 1) * (id === 'shoal' && passed(s, 'lonely') ? 0.8 : 1) *
+    (id === 'shoal' && chose(s, 'hunters', 'a') ? 0.9 : 1);
   const [from, gentle] = u.growthAfter ?? [Infinity, u.growth];
   const scale = l <= from ? u.growth ** l : u.growth ** from * gentle ** (l - from);
   return Math.ceil(u.baseCost * scale * discount * waterFactor(s, id));

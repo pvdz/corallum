@@ -2,7 +2,7 @@
 // meeting it. They wait until answered and never block anything; each answer has one lasting
 // effect for this reef (applied in sim/economy.ts by `chose()`). Told in Ossel's voice.
 
-export type MomentId = 'brittle' | 'vent-crack' | 'snow' | 'lost-shoal' | 'angler' | 'squid' | 'whale-fall' | 'old-lamp' | 'cleaners'
+export type MomentId = 'brittle' | 'vent-crack' | 'snow' | 'lost-shoal' | 'hunters' | 'angler' | 'squid' | 'whale-fall' | 'old-lamp' | 'cleaners'
   | 'young-rasp' | 'eggs' | 'storm' | 'turtle' | 'first-light' | 'last-night' | 'bird';
 
 export type MomentOption = { label: string; effect: string; text: string };
@@ -42,6 +42,14 @@ export const MOMENTS: readonly Moment[] = [
       text: 'It takes a long time. Then their lights fall into step with your glow, and they stay.' },
     b: { label: 'Guide them home', effect: 'scouts hear ×1.2',
       text: 'You light the way they came. They go. What they tell the others about you comes back as voices in the silt.' },
+  },
+  {
+    id: 'hunters', metres: 650, title: 'Hunters in the dark',
+    text: 'A swarm of small fast squid falls on the lanternfish, flashing red to each other as they hunt.',
+    a: { label: 'Shelter the shoals', effect: 'shoals cost ×0.9',
+      text: 'You pull the shoals in among your branches and go still. The squid pass. The lanternfish never forget whose branches they were.' },
+    b: { label: 'Light the water', effect: 'light shoals make ×1.2 glow',
+      text: 'You flare as bright as you can, and the shoals flare with you. The squid scatter, dazzled. Your shoals learned to shine together.' },
   },
   {
     id: 'angler', metres: 900, title: 'Another light',
