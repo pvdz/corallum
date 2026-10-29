@@ -31,7 +31,7 @@ import { PALETTES } from '../game/content/palettes.ts';
 import { REQUEST } from '../game/content/requests.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, takeFork, chooseStrain, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, forkOpen, strainOpen, takeFork, chooseStrain, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -508,7 +508,7 @@ let lampFlash: { rgb: string; at: number } | null = null;
 /** Shards the line had found (a new one is announced). */
 let shardsSeen = state.meta.shards.length;
 /** The intruder and the waiting choice last announced. */
-let thornHeard = -1, choiceHeard = '|false';
+let thornHeard = -1, choiceHeard = '|false|false|false';
 /** The water last heard (a turn to a new water gets its swell). */
 let waterHeard = '';
 /** Sister race marks decided and won (a new one is announced). */
@@ -1225,8 +1225,8 @@ function frame(now: number): void {
     const th = currentThorn(state);
     if (th && th.k !== thornHeard) audio.cue('intruder');
     thornHeard = th ? th.k : thornHeard;
-    const waitingChoice = `${nextMoment(state)?.id ?? ''}|${othersSpawning(state)}`;
-    if (waitingChoice !== choiceHeard && waitingChoice !== '|false') audio.cue('moment');
+    const waitingChoice = `${nextMoment(state)?.id ?? ''}|${othersSpawning(state)}|${forkOpen(state)}|${strainOpen(state)}`;
+    if (waitingChoice !== choiceHeard && waitingChoice !== '|false|false|false') audio.cue('moment');
     choiceHeard = waitingChoice;
     // Ossel's mistakes: a claim heard, then the proof found: the correction is told.
     for (const m of OSSEL_MISTAKES) {
@@ -1433,7 +1433,8 @@ function frame(now: number): void {
     const who = reefName(state) || 'Corallum';
     const base = ended(state) ? `${who} · spawned` : state.height < 1 ? who : `${metres(state.height)} · ${who}`;
     // Something to do right now (a feast, an intruder, a choice waiting): a dot, for background tabs.
-    const waiting = !!currentFeast(state) || !!currentThorn(state) || !!nextMoment(state) || othersSpawning(state) || boonsOffered(state).length > 0;
+    const waiting = !!currentFeast(state) || !!currentThorn(state) || !!nextMoment(state) || othersSpawning(state) || boonsOffered(state).length > 0 ||
+      forkOpen(state) || strainOpen(state) || !!currentSignal(state);
     const t = waiting ? `● ${base}` : base;
     if (document.title !== t) document.title = t;
   }
