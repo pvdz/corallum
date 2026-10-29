@@ -545,6 +545,7 @@ function view(): ReefView {
     nurseries: state.levels.daughter,
     works: state.works,
     sister: sisterAt(state.t),
+    gauge: gaugeAt(state.height),
     moments: state.moments,
     thorn: thornView(),
     othersSpawn: actAt(state.height) === 4 && moonFull(state.t),

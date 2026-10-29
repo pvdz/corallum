@@ -395,3 +395,4 @@ date, what landed, what is half-done, what's next.
 - Ways: Thorn-wise, Moon-born (othersCap); the full-moon card says how much lineage is left on this reef.
 - A first reef earns the boon offer by keeping ten requests ('Ossel is pleased').
 - Palettes Violet, Ember and Pale moon are earned by feats (A friend in the deep, First to the light, Four memories); locked swatches dim with the feat's name.
+- The sister reef seen from the Midnight Water and the Twilight Shelf: when near your depth, its faint crown far off on the right, above or below by how far ahead it is (render/sister.ts; ReefView.gauge).

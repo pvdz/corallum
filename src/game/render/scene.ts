@@ -32,8 +32,9 @@ export type ReefView = {
   othersSpawn: boolean;
   /** How each moment was met. */
   moments: Readonly<Record<MomentId, '' | 'a' | 'b'>>;
-  /** The sister reef's place, 0 (seamount) … 1 (surface). */
+  /** The sister reef's place, 0 (seamount) … 1 (surface), and yours on the same scale. */
   sister: number;
+  gauge: number;
   /** Stages built of each great work. */
   works: Record<WorkId, number>;
   /** Daughter colonies tended into nurseries. */
