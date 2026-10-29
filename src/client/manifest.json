@@ -1,0 +1,14 @@
+{
+  "name": "Corallum",
+  "short_name": "Corallum",
+  "description": "A coral reef climbs four thousand metres through a buried sea to spawn under the Spawning Moon.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#04030c",
+  "theme_color": "#04030c",
+  "icons": [
+    { "src": "/src/client/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

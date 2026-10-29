@@ -30,6 +30,7 @@ decide which three memories your children carry into a new sea.
 Run `node src/server/server.ts --lan`; it prints an address on your network to open on the
 phone. Add `?fps` to the URL for a frame-rate and draw-time readout, and `?bot=12000` to jump
 into a later zone (the Twilight Shelf) without playing up to it (`?bot` games are not saved).
+"Add to Home Screen" installs it to open full-screen like an app (web manifest).
 If frames run slow for a few seconds the glow pass switches itself off ("bloom off" in the readout).
 
 ## Development
