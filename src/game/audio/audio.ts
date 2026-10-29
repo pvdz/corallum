@@ -3,7 +3,7 @@
 // gesture before audio can start anyway).
 
 export type Zone = 1 | 2 | 3 | 4 | 5;
-export type Cue = 'buy' | 'sweep' | 'story' | 'choice' | 'release' | 'spawning' | 'whisper' | 'feast' | 'whale' | 'zone' | 'touch';
+export type Cue = 'buy' | 'sweep' | 'story' | 'choice' | 'release' | 'spawning' | 'whisper' | 'feast' | 'whale' | 'zone' | 'touch' | 'shimmer' | 'crunch';
 
 /** Per zone: root frequency of the pad, pad brightness, and how much surf noise. */
 const ZONES: Record<Zone, { root: number; bright: number; surf: number; notes: number[] }> = {
@@ -194,6 +194,26 @@ export function createAudio() {
     vib.stop(t + length + 0.1);
   }
 
+  /** A short gritty crunch: band-passed white noise with a fast decay (a beak on stone). */
+  function crunch(): void {
+    if (!ctx || !master || !enabled) return;
+    const t = ctx.currentTime;
+    const len = Math.floor(ctx.sampleRate * 0.12);
+    const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 2 * (i % 300 < 150 ? 1 : 0.4);
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const f = ctx.createBiquadFilter();
+    f.type = 'bandpass';
+    f.frequency.value = 1800;
+    f.Q.value = 1.2;
+    const e = ctx.createGain();
+    e.gain.value = 0.12;
+    src.connect(f).connect(e).connect(master);
+    src.start(t);
+  }
+
   function bubble(): void {
     if (!ctx || !master || !enabled) return;
     const t = ctx.currentTime;
@@ -263,6 +283,13 @@ export function createAudio() {
         case 'feast':
           // A quick rising run: something good came down.
           for (const [i, n] of [0, 4, 7, 12, 16].entries()) setTimeout(() => bell(root * 2 ** (n / 12), 0.05, 1.6), i * 70);
+          break;
+        case 'shimmer':
+          // Something that glows answered: a quick rising sparkle of high bells.
+          for (const [i, n] of [0, 7, 12, 19].entries()) setTimeout(() => bell(root * 8 * 2 ** (n / 12), 0.015, 0.7), i * 45);
+          break;
+        case 'crunch':
+          crunch();
           break;
         case 'touch':
           // A creature touched: a quiet high pair, like something answering.

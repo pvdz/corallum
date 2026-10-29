@@ -701,7 +701,7 @@ canvas.addEventListener('pointerdown', (e) => {
   if (who) {
     startle(who.id, frozenT ?? animT, wx, wy);
     if (who.id === 'whale') audio.cue('whale');
-    else if (who.id !== 'ossel') audio.cue('touch');
+    else if (who.id !== 'ossel') audio.cue(giftOf(who.id) === 'glow' ? 'shimmer' : who.id === 'rasp' ? 'crunch' : 'touch');
     if (frozenT === null && who.id !== 'ossel' && !state.meta.seen.includes(`t:${who.id}`)) state.meta.seen.push(`t:${who.id}`);
     // Now and then a neighbour gives a little of what it lives by.
     const g = frozenT === null && who.id !== 'ossel' ? gift(state, who.id) : null;
