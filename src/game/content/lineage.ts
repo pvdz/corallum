@@ -30,8 +30,8 @@ export type Trait = {
   cost: number;
   growth: number;
   max: number;
-  /** 'way' traits change how a run plays (new routes); the rest are gifts (stronger numbers). */
-  kind?: 'way';
+  /** 'way' traits change how a run plays (new routes), 'habit' ones do things for you; the rest are gifts (stronger numbers). */
+  kind?: 'way' | 'habit';
 };
 
 /**
@@ -84,6 +84,7 @@ export const SEAMOUNTS: readonly Seamount[] = [
 export const TRAIT_GROUPS = {
   gift: { title: 'Gifts', text: 'What your children are born stronger at.' },
   way: { title: 'Ways', text: 'What your children know to do differently.' },
+  habit: { title: 'Habits', text: 'What your children do without being told, while you watch.' },
 } as const;
 
 export const TRAITS: readonly Trait[] = [
@@ -140,7 +141,7 @@ export const TRAITS: readonly Trait[] = [
   {
     id: 'old-habits', name: 'Old habits', effect: 'while you watch, the reef buds polyps and hosts glimmerseed itself when one costs under a tenth of its calcite',
     flavour: 'Some growing does not need deciding any more.',
-    cost: 9, growth: 1, max: 1, kind: 'way',
+    cost: 9, growth: 1, max: 1, kind: 'habit',
   },
   {
     id: 'tide-reader', name: 'Tide-reader', effect: 'every full moon is a great tide: the spawn always carries four memories',
@@ -155,12 +156,12 @@ export const TRAITS: readonly Trait[] = [
   {
     id: 'shoal-sense', name: 'Shoal sense', effect: 'while you watch, idle shoals find their own work, and feeders and light-swimmers shift to where they are worth most',
     flavour: 'The lanternfish learned your rhythm so long ago they no longer wait to be told.',
-    cost: 10, growth: 1, max: 1, kind: 'way',
+    cost: 10, growth: 1, max: 1, kind: 'habit',
   },
   {
     id: 'rasp-sense', name: 'Rasp sense', effect: 'while you watch, the Rasp dial keeps to the best setting for income; when you leave, to the best for being away',
     flavour: 'Your children and the Rasp have an understanding about how much is enough.',
-    cost: 10, growth: 1, max: 1, kind: 'way',
+    cost: 10, growth: 1, max: 1, kind: 'habit',
   },
   {
     id: 'old-maps', name: 'Old maps', effect: 'expeditions and roams take half as long',
@@ -185,7 +186,7 @@ export const TRAITS: readonly Trait[] = [
   {
     id: 'layering', name: 'Layering', effect: 'while you watch, the reef lays down a band itself when one costs under a tenth of its calcite',
     flavour: 'Laying stone is a habit now, like breathing.',
-    cost: 12, growth: 1, max: 1, kind: 'way',
+    cost: 12, growth: 1, max: 1, kind: 'habit',
   },
   {
     id: 'moon-born', name: 'Moon-born', effect: 'the full-moon spawning can bring up to 5 lineage on a reef, not 3',

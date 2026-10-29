@@ -772,10 +772,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const traitCards = new Map<TraitId, Card>();
   const groupHead = (g: keyof typeof TRAIT_GROUPS) =>
     lineagePage.append(el('h4', 'trait-group', TRAIT_GROUPS[g].title), el('p', 'hint', TRAIT_GROUPS[g].text));
-  const ordered = [...TRAITS.filter((t) => t.kind !== 'way'), ...TRAITS.filter((t) => t.kind === 'way')];
+  const groupOf = (t: (typeof TRAITS)[number]) => t.kind ?? 'gift';
+  const ordered = (['gift', 'way', 'habit'] as const).flatMap((k) => TRAITS.filter((t) => groupOf(t) === k));
   for (const tr of ordered) {
-    if (tr === ordered[0]) groupHead('gift');
-    if (tr.kind === 'way' && ordered[ordered.indexOf(tr) - 1]?.kind !== 'way') groupHead('way');
+    const prev = ordered[ordered.indexOf(tr) - 1];
+    if (!prev || groupOf(prev) !== groupOf(tr)) groupHead(groupOf(tr));
     const root = el('article', 'card trait');
     const head = el('header');
     const level = el('span', 'level');
