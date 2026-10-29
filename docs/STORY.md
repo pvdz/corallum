@@ -102,6 +102,8 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Creature journal ("Seen for the first time"; 18 real animals plus the Rasp) | collection logs are a genre convention; animals are real | OK |
 | Feats (24 goals, named after story beats and zones) | achievements are a genre convention; names are our own | OK |
 | Expeditions to Thousandfold's ruins (the fallen gate, the nursery terraces, the lamp hall, the listening wells, the beak midden) bringing back relics | sending units away on timed trips is a genre convention; the sites, relics and the midden beat (Ossel: "I was there, and I did not know") are our own | OK |
+| Shards of Thousandfold's tablet (an inscription that ends 'Forget us gently, and live') | collectible lore fragments are a genre convention; the text is our own | OK |
+| Ossel's requests (small rotating goals) | quests/daily goals are a genre convention | OK |
 | Hard seamounts (hungry, silent, lonely, buried) as challenge runs with a lasting reward | challenge runs are a genre convention (incremental 'challenges'); names are plain descriptions | OK |
 | Moments (a dying brittle star, a lost shoal, the giant squid's eye, a whale fall, cleaners asking for a ledge, a storm breaking a branch, a sleeping turtle, a shore bird at low tide) | real reef and deep-sea events; small choice events are a genre convention; beats written for Ossel | OK |
 | The water's moods (rich, slack, lamp, carrying, gritty, clear, warm water) changing prices on a forecast | timed price swings are a genre convention (markets); names are plain descriptions of real sea states | OK |

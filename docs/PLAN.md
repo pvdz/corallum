@@ -183,6 +183,7 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] real-speed playtest of the first 3 minutes: a purchase every 4–6 s, a story every 40–60 s
 - [x] perf: panel countdown probes were 19–25 ms/frame in Acts IV–V → coarse probes, one card per frame (<1 ms); glows use cached sprites; `corallum.prof` shows draw/panel ms
 - [ ] perf on a real phone (unmeasured: headless is software-rendered). Tools ready: `--lan` prints the network address, `?fps` shows a readout; see README "Trying it on a phone"
+- [ ] rebalance pacing once the feature push settles: expeditions, residents, moments, water, requests and shards took the bot from ~8h to ~4.5h (test bound lowered step by step to 4–11 h; target back to 6–11 h)
 
 ### M4 Lesser Spawning prestige + Lineage — landed 2026-10-27
 - [x] sim: lineage by height, seven traits, meta kept across runs, seen stories suppressed on reruns

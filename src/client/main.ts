@@ -27,6 +27,7 @@ import { runBot } from '../game/sim/bot.ts';
 import { SITES } from '../game/content/expeditions.ts';
 import { WATER } from '../game/content/waters.ts';
 import { REQUEST } from '../game/content/requests.ts';
+import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
 import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, house, meet, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
@@ -386,6 +387,8 @@ if (params.has('skip')) catchUp(Number(params.get('skip')));
 let speed = Number(params.get('speed') ?? 1);
 /** Relics found so far (a homecoming while watching gets the reading's light). */
 let relicsSeen = state.relics.length;
+/** Shards the line had found (a new one is announced). */
+let shardsSeen = state.meta.shards.length;
 /** Requests kept so far (a kept one while watching is announced). */
 let requestsSeen = state.request.done;
 /** Whether this reef's trial was already met when the page loaded (no announcement then). */
@@ -996,6 +999,12 @@ function frame(now: number): void {
     // A long gap means the tab slept; treat it like being away.
     if (dt > AWAY_NOTICE) catchUp(dt * speed);
     else advance(state, dt * speed);
+    if (state.meta.shards.length > shardsSeen) {
+      showJournalNote(SHARD.found, SHARD_LINES[state.meta.shards.at(-1)!] ?? '');
+      audio.cue('shimmer');
+      buzz([20, 40, 20]);
+    }
+    shardsSeen = state.meta.shards.length;
     if (state.request.done > requestsSeen) {
       const [cx, cy] = scene.crownAt;
       floatText(cx / dpr, cy / dpr - 30, `+${num(state.request.paid)} ${feastPay(state)} ${REQUEST.float}`, 'feast-float');

@@ -25,6 +25,7 @@ import { CREATURES, GIFT, giftOf, type CreatureId, type GiftStock } from '../con
 import { LINEAGE, SEAMOUNTS, type Seamount, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { FEAST } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
+import { SHARD, SHARD_LINES, type ShardSource } from '../content/shards.ts';
 import { REQUEST, REQUESTS, type RequestKind } from '../content/requests.ts';
 import { MOMENTS, type MomentId } from '../content/moments.ts';
 import { WATER, WATERS, type Water } from '../content/waters.ts';
@@ -239,7 +240,7 @@ export function rates(s: GameState): Rates {
       ACT3.sandbarCalcite ** lv.sandbar *
       (speaks(s, 'massive') ? 1.5 : 1) *
       1.5 ** trait(s, 'deep-memory') *
-      knownBonus(s) *
+      knownBonus(s) * shardBonus(s) *
       (lives(s, 'goby') ? 1.15 : 1) * (chose(s, 'whale-fall', 'a') ? 1.1 : 1),
     calciteK:
       ACT1.dissolve * sm.dissolve * ACT1.latticeFactor ** lv.lattice * (ACT1.ventAcid * sm.ventAcid) ** vent *
@@ -677,6 +678,7 @@ function homecoming(s: GameState): void {
   s.murmurs += heard;
   s.earned.murmurs += heard;
   if (!found(s, x.id)) s.relics.push(x.id);
+  dig(s, 'expedition');
 }
 
 // ---------- Residents ----------
@@ -969,6 +971,7 @@ export function sweep(s: GameState): number {
   s.earned.calcite += gain;
   s.lastSweep = s.t;
   s.tally.sweeps++;
+  dig(s, 'sweep');
   return gain;
 }
 
@@ -980,6 +983,7 @@ export function sweep(s: GameState): number {
  */
 export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: number } | null {
   s.tally.touches++;
+  dig(s, 'touch');
   if (s.t - s.gifts[id] < GIFT.cooldown) return null;
   const r = rates(s);
   let stock = giftOf(id);
@@ -1001,6 +1005,28 @@ export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: 
   } else if (stock === 'plankton') s.plankton += amount;
   else s.sand += amount;
   return { stock, amount };
+}
+
+// ---------- Shards of Thousandfold ----------
+
+/**
+ * Search the silt after an action: by chance (seeded by the reef and how many searches it has
+ * made), a shard the line has not found yet. Returns its index, or -1.
+ */
+export function dig(s: GameState, source: ShardSource): number {
+  const left = SHARD_LINES.map((_, i) => i).filter((i) => !s.meta.shards.includes(i));
+  if (!left.length) return -1;
+  const r = mulberry32((s.seed ^ 0x5a4d) + Math.imul(++s.tally.digs, 0x2c1b3c6d));
+  if (r() >= SHARD.chance[source]) return -1;
+  const i = left[Math.floor(r() * left.length)]!;
+  s.meta.shards.push(i);
+  return i;
+}
+
+/** Calcite for the shards the line holds: a little each, more for the whole tablet. */
+export function shardBonus(s: GameState): number {
+  const n = s.meta.shards.length;
+  return 1 + SHARD.each * n + (n >= SHARD_LINES.length ? SHARD.whole : 0);
 }
 
 // ---------- Ossel's requests ----------
@@ -1139,6 +1165,7 @@ export function feast(s: GameState, share = 1): number {
   const gain = burst(s, FEAST.seconds * share * (chose(s, 'brittle', 'b') ? 1.5 : 1));
   s.feasted = f.k;
   s.feasts++;
+  dig(s, 'feast');
   return gain;
 }
 

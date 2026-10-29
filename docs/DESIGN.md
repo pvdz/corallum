@@ -59,6 +59,13 @@ the previous act's scene is gone below the frame.
 - Trade-off: plankton grows the economy, light buys more shoals, scouting buys knowledge and
   permanent effects. No allocation is right for the whole act.
 
+**Shards of Thousandfold** (lineage-wide collection): sweeps (5%), feasts (30%), touches (4%)
+and every expedition's return may turn up one of twelve shards of a carved tablet (seeded by the
+reef and its search count). Each is a line of the city's last inscription ("We are Thousandfold,
+and we keep everything." … "Forget us gently, and live."), +1% calcite, +10% more for the whole
+tablet. Drawn as a cracked round stone in the Bands tab, filling in. Gives the active verbs a
+second reason and tells the theme from the city's own mouth.
+
 **Ossel's requests** (from 3 polyps): one small thing at a time to do while watching (bud n
 polyps, take in glimmerseed, lay bands, catch a feast, touch neighbours, sweep, call shoals, raise a
 sand bar, grow a pigment, ripen), picked from the seed among the kinds that make sense in the zone,

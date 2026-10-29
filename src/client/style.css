@@ -263,6 +263,11 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .ask-bar { width: 54px; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
 .ask-fill { display: block; height: 100%; background: #ffd9a8; transition: width 0.3s ease; }
 .ask-count { font-variant-numeric: tabular-nums; color: var(--ink-dim); min-width: 2.6em; text-align: right; }
+.tablet[hidden] { display: none; }
+.tablet-stone { display: block; margin: 6px auto 8px; }
+.tablet-lines { margin: 0; padding-left: 1.6em; font-family: var(--display); font-size: 13.5px; line-height: 1.5; color: var(--ink-dim); }
+.tablet-lines li.found { color: #efe6d6; }
+.tablet-lines li.whole { list-style: none; margin-top: 6px; font-style: italic; color: #ffd9a8; }
 .residents { background: rgba(255, 140, 120, 0.03); border: 1px solid rgba(255, 150, 130, 0.2); border-radius: var(--radius); padding: 10px 12px; }
 .residents[hidden], .resident[hidden] { display: none; }
 .residents header { display: flex; justify-content: space-between; align-items: baseline; }

@@ -16,6 +16,7 @@ import { upgradeIcon } from './icons.ts';
 import { FEATS } from '../content/feats.ts';
 import { WATER } from '../content/waters.ts';
 import { REQUEST } from '../content/requests.ts';
+import { SHARD, SHARD_LINES } from '../content/shards.ts';
 import { MOMENT, MOMENTS, type Moment, type MomentId } from '../content/moments.ts';
 import { RESIDENT, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { EXPEDITION, site, type Site } from '../content/expeditions.ts';
@@ -525,7 +526,27 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       }
     }
   }
-  bandsPage.append(codex, journal, readingCard, bandsIntro, bandList);
+  // Shards of Thousandfold: the tablet, filling in as the line finds its pieces.
+  const tablet = el('article', 'card codex tablet');
+  const tabletHead = el('h3');
+  const tabletCanvas = el('canvas', 'tablet-stone') as HTMLCanvasElement;
+  const tabletLines = el('ol', 'tablet-lines');
+  tablet.append(tabletHead, el('p', 'hint', SHARD.intro), tabletCanvas, tabletLines);
+  collapsible(tablet, tabletHead);
+  let tabletKey = '';
+  function renderTablet(s: GameState): void {
+    const got = s.meta.shards;
+    tablet.hidden = got.length === 0;
+    const key = got.join();
+    if (key === tabletKey || !got.length) return;
+    tabletKey = key;
+    tabletHead.textContent = `${SHARD.label} · ${got.length} of ${SHARD_LINES.length}`;
+    tabletLines.innerHTML = '';
+    SHARD_LINES.forEach((line, i) => tabletLines.append(el('li', got.includes(i) ? 'found' : '', got.includes(i) ? line : SHARD.missing)));
+    if (got.length === SHARD_LINES.length) tabletLines.append(el('li', 'whole', SHARD.whole_text));
+    drawTablet(tabletCanvas, got);
+  }
+  bandsPage.append(codex, journal, readingCard, tablet, bandsIntro, bandList);
   let codexKey = '';
   function codexRow(term: string, value: string): void {
     codexList.append(el('dt', '', term), el('dd', '', value));
@@ -1349,6 +1370,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       renderCodex(s);
       renderJournal(s);
       renderChart(s);
+      renderTablet(s);
       renderFeats(s);
       renderLine(s);
       habitToggle.hidden = !s.meta.traits['old-habits'];
@@ -1530,6 +1552,79 @@ function etaText(t: number): string {
 function setEta(eta: HTMLElement, t: number): void {
   eta.textContent = etaText(t);
   eta.classList.toggle('never', !Number.isFinite(t));
+}
+
+/**
+ * The tablet: a round stone cracked into twelve wedges; found ones carved with lines of small
+ * glyphs (seeded per wedge), missing ones a dark gap with a faint outline.
+ */
+function drawTablet(c: HTMLCanvasElement, got: readonly number[]): void {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const S = 150;
+  c.width = c.height = S * dpr;
+  c.style.width = c.style.height = `${S}px`;
+  const g = c.getContext('2d')!;
+  g.scale(dpr, dpr);
+  const cx = S / 2, cy = S / 2, R = S / 2 - 6;
+  const n = SHARD_LINES.length;
+  // Crack lines wander a little: each wedge edge is a jagged radius.
+  const edge = (k: number): [number, number][] => {
+    const a = (k / n) * Math.PI * 2 - Math.PI / 2;
+    const pts: [number, number][] = [];
+    for (let q = 0; q <= 6; q++) {
+      const r = (q / 6) * R;
+      const j = q > 0 && q < 6 ? Math.sin(k * 12.9 + q * 4.1) * 0.06 : 0;
+      pts.push([cx + Math.cos(a + j) * r, cy + Math.sin(a + j) * r]);
+    }
+    return pts;
+  };
+  for (let k = 0; k < n; k++) {
+    const a0 = (k / n) * Math.PI * 2 - Math.PI / 2, a1 = ((k + 1) / n) * Math.PI * 2 - Math.PI / 2;
+    const e0 = edge(k), e1 = edge(k + 1);
+    const wedge = new Path2D();
+    wedge.moveTo(cx, cy);
+    for (const [x, y] of e0) wedge.lineTo(x, y);
+    wedge.arc(cx, cy, R, a0, a1);
+    for (const [x, y] of [...e1].reverse()) wedge.lineTo(x, y);
+    wedge.closePath();
+    const have = got.includes(k);
+    if (have) {
+      const grad = g.createRadialGradient(cx - 20, cy - 24, 10, cx, cy, R);
+      grad.addColorStop(0, '#d9d0bf');
+      grad.addColorStop(1, '#9d9381');
+      g.fillStyle = grad;
+      g.fill(wedge);
+      // Carved glyphs: short strokes along arcs, seeded by the wedge.
+      g.save();
+      g.clip(wedge);
+      g.strokeStyle = 'rgba(70, 60, 48, 0.75)';
+      g.lineWidth = 1.1;
+      for (let ring = 0; ring < 4; ring++) {
+        const r = R * (0.38 + ring * 0.16);
+        for (let q = 0; q < 5; q++) {
+          const a = a0 + ((q + 0.5) / 5) * (a1 - a0);
+          const x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r;
+          const h = (k * 7 + ring * 3 + q) % 4;
+          g.beginPath();
+          if (h === 0) { g.moveTo(x - 2, y - 2); g.lineTo(x + 2, y + 2); }
+          else if (h === 1) { g.arc(x, y, 1.6, 0, Math.PI * 2); }
+          else if (h === 2) { g.moveTo(x - 2.4, y); g.lineTo(x + 2.4, y); g.moveTo(x, y - 2.4); g.lineTo(x, y + 2.4); }
+          else { g.moveTo(x - 2, y + 2); g.lineTo(x, y - 2.4); g.lineTo(x + 2, y + 2); }
+          g.stroke();
+        }
+      }
+      g.restore();
+      g.strokeStyle = 'rgba(40, 34, 28, 0.6)';
+      g.lineWidth = 1;
+      g.stroke(wedge);
+    } else {
+      g.setLineDash([2, 3]);
+      g.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+      g.lineWidth = 1;
+      g.stroke(wedge);
+      g.setLineDash([]);
+    }
+  }
 }
 
 export type Panel = ReturnType<typeof createPanel>;

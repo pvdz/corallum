@@ -36,6 +36,8 @@ export type Meta = {
   /** Every memory any spawn has carried, and how many times the reef has reached the ending. */
   carriedEver: string[];
   endings: number;
+  /** Shards of Thousandfold's tablet found by the line (indices into content/shards.ts). */
+  shards: number[];
 };
 
 export function newMeta(): Meta {
@@ -53,6 +55,7 @@ export function newMeta(): Meta {
     fastest: 0,
     carriedEver: [],
     endings: 0,
+    shards: [],
   };
 }
 
@@ -106,8 +109,8 @@ export type GameState = {
   expedition: { site: SiteId | ''; back: number; feed: number; light: number; scout: number };
   /** Ossel's current request (kind '' for none yet), its count at the start, and how many are done; `paid` is what the last one brought. */
   request: { kind: RequestKind | ''; n: number; base: number; done: number; paid: number };
-  /** Counters the requests watch. */
-  tally: { touches: number; sweeps: number };
+  /** Counters the requests watch, and how many times the silt was searched for a shard. */
+  tally: { touches: number; sweeps: number; digs: number };
   /** Moments answered ('' until then): content/moments.ts. */
   moments: Record<MomentId, '' | 'a' | 'b'>;
   /** Animals living in the reef's homes (content/residents.ts). */
@@ -161,7 +164,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     relics: [],
     residents: [],
     request: { kind: '', n: 0, base: 0, done: 0, paid: 0 },
-    tally: { touches: 0, sweeps: 0 },
+    tally: { touches: 0, sweeps: 0, digs: 0 },
     moments: { brittle: '', 'lost-shoal': '', squid: '', 'whale-fall': '', cleaners: '', storm: '', turtle: '', bird: '' },
     gifts: Object.fromEntries(CREATURES.map((c) => [c.id, -1e9])) as Record<CreatureId, number>,
     seamount: 'plain',
