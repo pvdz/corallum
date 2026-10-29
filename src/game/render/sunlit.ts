@@ -254,6 +254,61 @@ export function createSunlitScene(seed: number): Scene {
   }
 
   /**
+   * Sleeping Rasp: by night the grazers rest among the clumps at the reef's foot, each in a
+   * bubble of mucus it blows around itself (real parrotfish do this), faintly catching the light.
+   */
+  function drawSleepers(ctx: CanvasRenderingContext2D, t: number, n: number, night: number): void {
+    const count = Math.min(5, Math.ceil(n / 12));
+    if (count <= 0 || night < 0.05) return;
+    sight('rasp');
+    const s = scale() * 1.3;
+    const x0 = focus.x - focus.w * 0.1, span = focus.w * 1.2;
+    ctx.save();
+    ctx.globalAlpha = night;
+    for (let k = 0; k < count; k++) {
+      const u = [0.33, 0.62, 0.27, 0.7, 0.4][k]!;
+      const x = x0 + u * span, y = floorY(u) - (9 + (k % 2) * 5) * s;
+      const dir = k % 2 ? -1 : 1;
+      const breathe = 1 + 0.03 * Math.sin(t * 0.8 + k);
+      spot('rasp', x, y, 18 * s);
+      // The fish, dim and still.
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(dir, 1);
+      ctx.fillStyle = `hsl(${170 + k * 12},30%,30%)`;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 9 * s, 4 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(-8 * s, 0);
+      ctx.lineTo(-13 * s, -3.5 * s);
+      ctx.lineTo(-13 * s, 3.5 * s);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#d8d2c0';
+      ctx.beginPath();
+      ctx.ellipse(8.5 * s, 0.5 * s, 2 * s, 1.4 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+      // The cocoon: a clear bubble with a bright rim and one highlight.
+      const R = 15 * s * breathe;
+      const g = ctx.createRadialGradient(x - R * 0.3, y - R * 0.3, R * 0.1, x, y, R);
+      g.addColorStop(0, 'rgba(200,230,255,0.04)');
+      g.addColorStop(0.85, 'rgba(170,215,255,0.10)');
+      g.addColorStop(1, 'rgba(200,235,255,0.35)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.ellipse(x, y, R * 1.15, R * 0.8, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(235,245,255,0.5)';
+      ctx.beginPath();
+      ctx.ellipse(x - R * 0.45, y - R * 0.4, R * 0.18, R * 0.08, -0.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  /**
    * Rain (after the band "Rain"): a shower for one minute in every five. Seen from below, drops
    * make little expanding rings on the surface and the light dims a little.
    */
@@ -741,6 +796,7 @@ export function createSunlitScene(seed: number): Scene {
       drawAnemone(ctx, t);
       drawClumps(ctx, t);
       if (night > 0) drawNight(ctx, t, night, 0.6);
+      drawSleepers(ctx, t, v.rasp, night);
       reef.draw(ctx, L, v, t);
       drawCraft(ctx, v.craft, reef, L, t, 1);
       slugs.draw(ctx, reef, L, t);
