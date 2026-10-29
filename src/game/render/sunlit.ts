@@ -430,6 +430,50 @@ export function createSunlitScene(seed: number): Scene {
   }
 
   /**
+   * A bait ball: every seven minutes, for forty-five seconds, the small silver fish crowd into a
+   * swirling ball in the upper water while a few hunters dart through it.
+   */
+  function drawBaitBall(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 420, length = 45;
+    const u = ((t + 200) % period) / length;
+    if (u >= 1) return;
+    sight('bait-ball');
+    const s = scale();
+    const form = Math.min(1, u * 5, (1 - u) * 5);
+    const cx = focus.x + focus.w * 0.78, cy = focus.y + focus.h * 0.3;
+    const R = 66 * s;
+    spot('bait-ball', cx, cy, R * 1.3);
+    // The ball: fish on rings, swimming round it, the whole thing breathing as the hunters pass.
+    const squeeze = 1 - 0.18 * Math.max(0, Math.sin(t * 2.2));
+    for (let i = 0; i < 160; i++) {
+      const ring = Math.sqrt(((i * 0.618) % 1)) * R * squeeze;
+      const a = i * 2.4 + t * (1.2 + (i % 3) * 0.3) * (i % 2 ? 1 : -1);
+      const x = cx + Math.cos(a) * ring * (form + (1 - form) * 3);
+      const y = cy + Math.sin(a) * ring * 0.75 * (form + (1 - form) * 3);
+      const dir = Math.cos(a + Math.PI / 2) * (i % 2 ? 1 : -1);
+      ctx.fillStyle = `rgba(215,230,240,${0.85 * form})`;
+      ctx.beginPath();
+      ctx.ellipse(x, y, 4 * s, 1.4 * s, dir > 0 ? 0.3 : -0.3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // Hunters: dark streaks cutting through.
+    for (let k = 0; k < 3; k++) {
+      const p = ((t * 0.35 + k * 0.33) % 1);
+      const hx = cx - R * 2.2 + p * R * 4.4;
+      const hy = cy + Math.sin(p * Math.PI * 2 + k * 2) * R * 0.5;
+      ctx.fillStyle = `rgba(30,60,90,${0.85 * form})`;
+      ctx.beginPath();
+      ctx.ellipse(hx, hy, 12 * s, 3.5 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(hx - 11 * s, hy);
+      ctx.lineTo(hx - 17 * s, hy - 5 * s);
+      ctx.lineTo(hx - 17 * s, hy + 5 * s);
+      ctx.fill();
+    }
+  }
+
+  /**
    * A green turtle comes to graze once there are meadows: it paddles slowly over the seagrass,
    * dips to crop it, and drifts on.
    */
@@ -639,6 +683,7 @@ export function createSunlitScene(seed: number): Scene {
       if (v.bands.includes('rain')) drawRain(ctx, t);
       drawWhale(ctx, t);
       drawMola(ctx, t);
+      drawBaitBall(ctx, t);
       drawLarvae(ctx, t);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#5d7d96');
       drawFloor(ctx, t);
