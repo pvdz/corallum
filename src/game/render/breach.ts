@@ -240,6 +240,61 @@ export function createBreachScene(seed: number): Scene {
    * A shore bird standing on the crown where it breaks the air ("Birds walk on you"), pecking now
    * and then. When the spawn is released it lifts off and flies away over the water.
    */
+  /** Now and then a pod of dolphins arcs out of the moonlit water, one after another. */
+  function drawDolphins(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 75;
+    const u = (t % period) / 6;
+    if (u >= 1.6) return;
+    sight('dolphin');
+    const lap = Math.floor(t / period);
+    const s = scale() * 1.6;
+    const wy = waterY();
+    const x0 = focus.x + focus.w * (lap % 2 ? 0.12 : 0.62);
+    for (let k = 0; k < 3; k++) {
+      const p = u - k * 0.3;
+      if (p < 0 || p > 1) continue;
+      // A leap: a parabola from the water and back, body tilted along the arc.
+      const x = x0 + (p + k * 0.25) * focus.w * 0.22;
+      const y = wy - Math.sin(Math.PI * p) * 46 * s;
+      const ang = -Math.cos(Math.PI * p) * 0.9;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(ang);
+      ctx.fillStyle = '#0c1028';
+      ctx.beginPath();
+      ctx.moveTo(18 * s, 0);
+      ctx.quadraticCurveTo(10 * s, -6 * s, -10 * s, -3 * s);
+      ctx.lineTo(-16 * s, -7 * s);
+      ctx.lineTo(-14 * s, 0);
+      ctx.lineTo(-16 * s, 6 * s);
+      ctx.lineTo(-10 * s, 2 * s);
+      ctx.quadraticCurveTo(8 * s, 5 * s, 18 * s, 0);
+      ctx.fill();
+      // Dorsal fin and beak.
+      ctx.beginPath();
+      ctx.moveTo(2 * s, -4.5 * s);
+      ctx.lineTo(-3 * s, -10 * s);
+      ctx.lineTo(-5 * s, -3.5 * s);
+      ctx.fill();
+      // Moonlight along the back.
+      ctx.strokeStyle = 'rgba(220,225,255,0.35)';
+      ctx.lineWidth = 1 * s;
+      ctx.beginPath();
+      ctx.moveTo(14 * s, -2 * s);
+      ctx.quadraticCurveTo(6 * s, -5.5 * s, -8 * s, -3.2 * s);
+      ctx.stroke();
+      ctx.restore();
+      // Splash rings where it leaves and re-enters.
+      if (p < 0.12 || p > 0.88) {
+        ctx.strokeStyle = 'rgba(210,225,255,0.5)';
+        ctx.lineWidth = 1 * s;
+        ctx.beginPath();
+        ctx.ellipse(x, wy, 10 * s, 2.5 * s, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+  }
+
   /** Where the reef's top stands in the air: a low hump at the waterline that grows over the last metres. */
   function topOf(v: ReefView, crown: readonly [number, number]) {
     const s = scale() * 1.8;
@@ -419,6 +474,7 @@ export function createBreachScene(seed: number): Scene {
       drawSky(ctx, t, v.moonPhase, v.greatMoon);
       drawSea(ctx, t, v.moonPhase);
       drawChildren(ctx, v, t);
+      drawDolphins(ctx, t);
       drawTop(ctx, v, reef.crown(L));
       reef.draw(ctx, L, v, t);
       drawCraft(ctx, v.craft, reef, L, t, 0.6);
