@@ -34,6 +34,11 @@ export const WATER = {
   /** Before the water starts turning (the reef still in the silt). */
   notYet: 'the deep does not change yet',
   turns: 'turns in',
+  soon: 'Soon',
+  feast: 'something falls',
+  intruder: { 'thorn-star': 'a thorn star', dragonfish: 'a dragonfish' } as Record<string, string>,
+  moon: 'full moon',
+  now: 'now',
 } as const;
 
 export const WATERS: readonly Water[] = [

@@ -1429,6 +1429,20 @@ export function currentThorn(s: GameState): Thorn | null {
   return s.t >= start && s.t < start + THORN.life ? { k, start, side: r() < 0.5 ? -1 : 1, kind } : null;
 }
 
+/** Seconds until the next intruder comes (0 while one is here; Infinity where none come). */
+export function untilThorn(s: GameState): number {
+  const kind = intruderOf(actAt(s.height));
+  if (!kind || (kind === 'dragonfish' && s.levels.shoal === 0)) return Infinity;
+  if (currentThorn(s)) return 0;
+  for (let k = Math.floor(s.t / THORN.period); k < Math.floor(s.t / THORN.period) + 3; k++) {
+    if (k <= s.thorned) continue;
+    const r = mulberry32((s.seed ^ 0x7a0e) + Math.imul(k, 0x9e3779b1));
+    const start = k * THORN.period + r() * (THORN.period - THORN.life);
+    if (start > s.t) return start - s.t;
+  }
+  return Infinity;
+}
+
 /** Guard crabs (thorn stars) or a finished lantern spire (dragonfish) drive it off in its last second. */
 export function crabThorn(s: GameState): Thorn | null {
   const th = currentThorn(s);
@@ -1469,6 +1483,18 @@ export function currentFeast(s: GameState): Feast | null {
   if (k <= s.feasted) return null;
   const f = feastAt(s.seed, k);
   return s.t >= f.start && s.t < f.start + FEAST.life ? f : null;
+}
+
+/** Seconds until the next feast starts falling (0 while one is falling; Infinity before feasts come). */
+export function untilFeast(s: GameState): number {
+  if (!s.bands.includes(FEAST.band)) return Infinity;
+  if (currentFeast(s)) return 0;
+  for (let k = Math.floor(s.t / FEAST.period); k < Math.floor(s.t / FEAST.period) + 3; k++) {
+    if (k <= s.feasted) continue;
+    const f = feastAt(s.seed, k);
+    if (f.start > s.t) return f.start - s.t;
+  }
+  return Infinity;
 }
 
 /** Shared table: the feast the scavengers take for the reef now, in its last second in reach. */

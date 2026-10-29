@@ -15,7 +15,7 @@ import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
 import { upgradeIcon } from './icons.ts';
 import { drawCity, drawTablet } from './drawings.ts';
 import { FEATS } from '../content/feats.ts';
-import { WELCOME } from '../content/events.ts';
+import { WELCOME, intruderOf } from '../content/events.ts';
 import { WATER } from '../content/waters.ts';
 import { REQUEST } from '../content/requests.ts';
 import { WORKS, WORK_TEXT, type WorkId } from '../content/works.ts';
@@ -31,7 +31,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, othersSpawning, boonsOffered, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, othersSpawning, boonsOffered, untilFeast, untilThorn, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -318,7 +318,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const waterName = el('strong');
   const waterLine = el('span', 'water-line');
   const waterNext = el('span', 'water-next');
-  waterBox.append(waterName, waterLine, waterNext);
+  const waterSoon = el('span', 'water-soon');
+  waterBox.append(waterName, waterLine, waterNext, waterSoon);
   grow.prepend(waterBox);
   let waterShown = '';
   // Ossel's request: one small thing to do, with its progress.
@@ -1299,6 +1300,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const turning = s.bands.includes(WATER.band);
         waterNext.textContent = turning ? `${WATER.turns} ${duration(untilWaterTurns(s))} · ${WATER.next} ${say(next, water)}, ${WATER.next} ${say(after, next)}` : '';
         if (!turning) waterLine.textContent = WATER.notYet;
+        // What comes soon, for planning: the next feast, intruder and full moon (within twenty minutes).
+        const soon: [number, string][] = [];
+        const fe = untilFeast(s), th = untilThorn(s), kind = intruderOf(actAt(s.height));
+        if (fe < 1200) soon.push([fe, WATER.feast]);
+        if (th < 1200 && kind) soon.push([th, WATER.intruder[kind]!]);
+        if (s.height >= 1) soon.push([moonFull(s.t) ? 0 : untilFullMoon(s.t), WATER.moon]);
+        soon.sort((a, b) => a[0] - b[0]);
+        waterSoon.textContent = soon.length ? `${WATER.soon}: ${soon.map(([t, w]) => `${w} ${t > 0 ? `in ${duration(t)}` : WATER.now}`).join(' · ')}` : '';
         if (waterShown && waterShown !== water.id) { waterBox.classList.remove('turned'); void waterBox.offsetWidth; waterBox.classList.add('turned'); }
         waterShown = water.id;
       }
