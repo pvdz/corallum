@@ -6,7 +6,7 @@ import { runBot } from '../../src/game/sim/bot.ts';
 import { serialize } from '../../src/game/sim/save.ts';
 import { VIEWPORTS, withGame } from '../../tools/browser.ts';
 
-const { state } = runBot((s) => s.height >= 1000, 6 * 3600);
+const { state } = runBot((s) => s.height >= 1000 && s.t > 3700, 6 * 3600);
 const save = serialize(state, Date.now());
 
 let failed = false;
