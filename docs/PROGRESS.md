@@ -680,3 +680,4 @@ date, what landed, what is half-done, what's next.
 - Feeding: with plankton in the water, pale motes drift in to the polyps' tentacle tips and vanish there (reef.ts).
 - Feat An album: a picture in every zone (did:photo-z<n>).
 - Moment fry (3820 m: bloom ×1.1 or plankton ×1.1); sheltered, little clouds of clear fry swirl among the branches.
+- Reading The quick one (32000, after first-words): the sister reef grew from the city's other wall, Ossel's sister; visits bring +1 lineage more.

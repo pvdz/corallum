@@ -89,7 +89,7 @@ export const JOBS: readonly { id: Job; name: string; verb: string }[] = [
 export type ReadingId =
   | 'city' | 'lattice-songs' | 'shoal-pact' | 'beaked' | 'tidebooks'
   | 'walls' | 'slow-currents' | 'fear' | 'inside-the-wall'
-  | 'rasp-song' | 'light-walls' | 'last-spawning' | 'burning-sea' | 'kept-stone';
+  | 'rasp-song' | 'light-walls' | 'last-spawning' | 'burning-sea' | 'kept-stone' | 'quick-one';
 
 export type Reading = {
   id: ReadingId;
@@ -182,6 +182,13 @@ export const READINGS: readonly Reading[] = [
     text: 'Grey on every tip of the old city, layer over layer, the tips so heavy the branches bowed to ' +
       'the floor. Thousandfold let nothing go: not a grain, not a day. “It was so heavy,” Ossel says, ' +
       'very quietly, “and I thought that was what it meant to be strong.”',
+  },
+  {
+    id: 'quick-one', cost: 32000, title: 'The quick one', after: 'first-words',
+    effect: 'visits to the sister reef bring +1 lineage more',
+    text: 'A band about the city’s other wall, the one that faced the shallows: thin, quick, always growing ahead of the ' +
+      'rest. The polyps called it the quick one. “My sister,” says Ossel, astonished. “That reef over there grew from her ' +
+      'stone. She got out first. Of course she did.”',
   },
   {
     id: 'light-walls', cost: 40000, title: 'Light in the old walls', after: 'form',

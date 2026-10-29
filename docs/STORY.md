@@ -208,4 +208,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Trait Helping habit | this game's own systems | OK |
 | Ossel remembering your answers in later whispers | this game's own characters | OK |
 | Moment: a cloud of fry (3820 m) | real behaviour | OK |
+| Reading The quick one: the sister reef grew from Ossel's sister wall | this game's own lore | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

@@ -803,7 +803,7 @@ function homecoming(s: GameState): void {
     return;
   }
   if (visit) {
-    s.meta.lineage += VISIT.lineage;
+    s.meta.lineage += VISIT.lineage + (has(s, 'quick-one') ? 1 : 0);
     remember(s, 'visit');
     return;
   }
