@@ -906,6 +906,7 @@ function view(): ReefView {
     grotto: state.levels.grotto,
     blueMoon: blueMoon(state.t),
     age: state.t,
+    combo: state.t - state.lastSweep <= ACT1.comboGap ? state.combo : 1,
     fragments: state.fragments,
     fragmentAges: state.fragmentAt.map((x) => state.t - x),
     stranded: (() => { const tg = actAt(state.height) === 5 ? currentTangle(state) : null; return tg ? { k: tg.k, age: tg.age } : null; })(),

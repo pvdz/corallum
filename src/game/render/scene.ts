@@ -49,6 +49,8 @@ export type ReefView = {
   fragments: number;
   /** Seconds since each fragment was taken in. */
   fragmentAges: number[];
+  /** Sweeps in a row right now (1 = none running). */
+  combo: number;
   /** Seconds this reef has lived (for its first moments). */
   age: number;
   /** This cycle's moon is a blue moon. */
