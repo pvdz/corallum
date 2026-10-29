@@ -3,7 +3,7 @@
 
 export type CreatureId =
   | 'jelly' | 'tripod-fish' | 'isopod' | 'brittle-star' | 'rattail' | 'sea-pig' | 'brine-pool' | 'smokers' | 'dumbo' | 'squat-lobster' | 'sea-lily' | 'glass-sponge' | 'tube-worm' | 'sea-pen'
-  | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'milky-sea' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration'
+  | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'milky-sea' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration' | 'larvacean'
   | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'sardine-run' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark' | 'oarfish' | 'flashlight-fish'
   | 'cuttlefish' | 'eagle-rays' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly'
   | 'shore-bird' | 'pelican' | 'hatchlings' | 'green-flash' | 'flying-fish' | 'dolphin' | 'moon-jelly' | 'sailors' | 'petrel' | 'sea-sparkle'
@@ -37,6 +37,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'vampire-squid', name: 'Vampire squid', zone: 'The Midnight Water', note: 'A red cloak of arms, blue eyes, and lights at the tips of its fins.' },
   { id: 'whale-fall', name: 'A whale fall', zone: 'The Midnight Water', note: 'Bones on the flank, and a whole small world living off them.' },
   { id: 'pyrosome', name: 'Pyrosome', zone: 'The Midnight Water', note: 'A tube of thousands of little lights, flashing one after another.' },
+  { id: 'larvacean', name: 'Giant larvacean', zone: 'The Midnight Water', note: 'Rare. A tadpole the size of a finger, beating its tail inside a house of clear mucus as wide as your crown.' },
   { id: 'giant-squid', name: 'Giant squid', zone: 'The Midnight Water', note: 'Rare. A shape longer than the reef, an eye like a plate, and gone.' },
   { id: 'migration', name: 'The migration', zone: 'The Midnight Water', note: 'Every night the deep rises to feed: the biggest journey any animals make.' },
   { id: 'rasp', name: 'The Rasp', zone: 'The Twilight Shelf', note: 'Blunt beaks that grind dead stone into sand.' },

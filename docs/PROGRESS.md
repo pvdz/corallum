@@ -517,3 +517,4 @@ date, what landed, what is half-done, what's next.
 - Twilight nights: garden eels sleep in their burrows (a few stay half out); flashlight fish (night only) wander left of the reef, lamps shuttering; touched, they all go dark and relight one by one.
 - Swells at the Breach (events.ts SWELL; economy currentSwell/untilSwell/rideSwell; state.swell): breach.ts drawSwell (humps + timing ring), tap near the crown or S, Soon line, tab dot.
 - SWELL's tolerance is `slack` (the determinism lint rejects the other word in sim/content). Two commits went in with that lint red: chain commits on `node --test` itself, not on a grep of it.
+- Rare giant larvacean in the Midnight Water (every 22 min for 110 s, high in the open water); touched, the tadpole bolts and the empty house sags. Frame costs checked across zones: 2–7 ms draw headless.

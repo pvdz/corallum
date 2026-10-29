@@ -400,6 +400,55 @@ export function createMidnightScene(seed: number): Scene {
   }
 
   /**
+   * Rarely, a giant larvacean: a mucus house as wide as the crown drifting slowly across, an inner
+   * filter like folded wings, and in it a small tadpole whose beating tail pumps the water through.
+   * Touched, the tadpole bolts out of the back and the empty house drifts on, slowly collapsing.
+   */
+  function drawLarvacean(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 1320, pass = 110;
+    const u = ((t + 700) % period) / pass;
+    if (u >= 1) return;
+    sight('larvacean');
+    const s = scale() * 1.6;
+    const x = focus.x + focus.w * (1.1 - u * 1.2), y = focus.y + focus.h * 0.16 + Math.sin(t * 0.2) * 10 * s;
+    spot('larvacean', x, y, 50 * s);
+    const touch = startled('larvacean', t);
+    const left = touch ? Math.min(1, touch.age / 8) : 0;
+    ctx.save();
+    ctx.translate(x, y);
+    // The outer house: a clear, faintly lit bubble, sagging once abandoned.
+    ctx.strokeStyle = `rgba(170,200,255,${0.22 * (1 - 0.5 * left)})`;
+    ctx.fillStyle = `rgba(120,160,230,${0.06 * (1 - 0.5 * left)})`;
+    ctx.lineWidth = 1 * s;
+    ctx.beginPath();
+    ctx.ellipse(0, 4 * s * left, 46 * s, (34 - 12 * left) * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    // The inner filter: two folded wings of fine mesh.
+    ctx.strokeStyle = `rgba(190,215,255,${0.18 * (1 - left)})`;
+    for (const side of [-1, 1]) {
+      for (let k = 0; k < 7; k++) {
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.quadraticCurveTo(side * 16 * s, (-12 + k * 4) * s, side * 26 * s, (-14 + k * 5) * s);
+        ctx.stroke();
+      }
+    }
+    // The tadpole: a small bright trunk and a beating tail; gone once touched.
+    const tx = left > 0 ? -left * 140 * s : 0;
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, tx, 0, 7 * s, '200,225,255', 0.5);
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.strokeStyle = 'rgba(220,235,255,0.7)';
+    ctx.lineWidth = 1.4 * s;
+    ctx.beginPath();
+    ctx.moveTo(tx, 0);
+    for (let i = 1; i <= 8; i++) ctx.lineTo(tx + i * 2 * s, Math.sin(t * (left > 0 ? 30 : 14) - i * 0.9) * 2.5 * s * (i / 8));
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  /**
    * Rarely, a giant squid: once in every twenty minutes a huge dim shape slides through the deep
    * background, arms trailing, one eye the size of a dinner plate catching the reef's light.
    */
@@ -817,6 +866,7 @@ export function createMidnightScene(seed: number): Scene {
       drawFlashes(ctx, t);
       drawRising(ctx, t, w, h, focus, dpr, v.rising, true);
       drawGiantSquid(ctx, t, v.moments.squid === 'b');
+      drawLarvacean(ctx, t);
       // The old stone's lights answer the scouts listening at it.
       // Each Reading of Thousandfold's bands wakes more of the lights in its drowned towers.
       // A Reading just read: every light in the old stone flares, then settles.
