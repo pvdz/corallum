@@ -421,3 +421,4 @@ date, what landed, what is half-done, what's next.
 - The touch shard roll moved inside the once-a-minute trust growth (spam taps found shards).
 - Each friend of the line adds +2% calcite (knownBonus).
 - Feats with a count show progress (e.g. 'Send the shoals roaming ten times (3 of 10)').
+- The line's old reefs: on later seamounts, up to three pale silhouettes of earlier reefs that climbed past this height, in the Midnight and Twilight water (render/ghosts.ts; ReefView.ancestors).

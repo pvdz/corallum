@@ -3,6 +3,7 @@
 // until the truce decides what happens to it.
 
 import { createSlugs } from './slugs.ts';
+import { drawGhosts } from './ghosts.ts';
 import { drawSisterFar } from './sister.ts';
 import { drawThorn } from './thorn.ts';
 import { drawBreakwater } from './works.ts';
@@ -1081,6 +1082,7 @@ export function createTwilightScene(seed: number): Scene {
       drawRasp(ctx, t, v.rasp, v.raspTrust, v.raspPolite);
       if (v.gardeners) drawGardeners(ctx, t);
       drawSiltSlide(ctx, t, v.siltLevel);
+      drawGhosts(ctx, focus, v.ancestors, v.height, t, scale(), 'rgba(190,210,240,1)');
       drawSisterFar(ctx, focus, v.sister - v.gauge, t, scale(), true);
       drawBreakwater(ctx, focus, v.works.breakwater, scale(), slopeY);
       reef.draw(ctx, L, v, t);

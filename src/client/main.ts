@@ -562,6 +562,7 @@ function view(): ReefView {
     nurseries: state.levels.daughter,
     works: state.works,
     sister: sisterAt(state.t),
+    ancestors: state.meta.ancestors.map((a) => Number(a.split('|')[0]) || 0),
     gauge: gaugeAt(state.height),
     moments: state.moments,
     thorn: thornView(),
