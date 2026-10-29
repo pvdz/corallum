@@ -8,6 +8,7 @@ import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import type { CoralForm } from './coral.ts';
 import { drawMoon, glow } from './draw.ts';
+import { createLayerCache } from './layer.ts';
 import { drawCraft, FLUORESCENT_POLYP } from './craft.ts';
 import { createReef, type Reef, type ReefLayout } from './reef.ts';
 import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts';
@@ -42,6 +43,7 @@ export function createBreachScene(seed: number): Scene {
   };
   const effects = createEffects();
   let bloom: Bloom | null = null;
+  const galaxy = createLayerCache(1);
   const stars: Star[] = Array.from({ length: 160 }, () => ({ x: rng(), y: rng(), r: range(rng, 0.4, 1.4), tw: rng() * 10 }));
   const bundles: Bundle[] = Array.from({ length: 420 }, () => ({
     x: range(rng, -0.32, 0.32), delay: rng() * 14, speed: range(rng, 0.05, 0.11), drift: range(rng, -1, 1), size: range(rng, 0.6, 1.3),
@@ -97,6 +99,13 @@ export function createBreachScene(seed: number): Scene {
       ctx.fillStyle = d;
       ctx.fillRect(0, 0, w, wy + 2);
     }
+    // The Milky Way: a faint band of dust and crowded stars across the sky, gone with the dawn.
+    if (dawn < 1) {
+      ctx.save();
+      ctx.globalAlpha = 1 - dawn;
+      galaxy.draw(ctx, w, h, 0, 1e9, `${w}x${h}x${wy}`, (c) => drawGalaxy(c, wy));
+      ctx.restore();
+    }
     for (const st of stars) {
       const a = (0.4 + 0.4 * Math.sin(t * 1.3 + st.tw)) * (1 - dawn);
       ctx.fillStyle = `rgba(230,235,255,${a})`;
@@ -143,6 +152,31 @@ export function createBreachScene(seed: number): Scene {
     ctx.globalAlpha = 1 - 0.65 * dawn;
     drawMoon(ctx, mx, my, 26 * scale() * (great ? 1.3 : 1), phase);
     ctx.restore();
+  }
+
+  /** The galaxy band, painted once per size into its cache: soft dust and many faint stars. */
+  function drawGalaxy(c: CanvasRenderingContext2D, wy: number): void {
+    const r = mulberry32(seed ^ 0x9a1a);
+    // The band runs from low left to high right, across the top of the sky.
+    const along = (u: number): [number, number] => [w * (-0.1 + 1.2 * u), wy * (0.85 - 0.75 * u)];
+    c.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < 40; i++) {
+      const [x, y] = along(r());
+      glow(c, x + range(r, -1, 1) * w * 0.03, y + range(r, -1, 1) * wy * 0.06, range(r, 0.04, 0.1) * w, '150,160,220', 0.05);
+    }
+    // A dark lane of dust down its middle.
+    c.globalCompositeOperation = 'source-over';
+    for (let i = 0; i < 18; i++) {
+      const [x, y] = along(i / 17);
+      glow(c, x, y + wy * 0.01, w * 0.035, '5,6,26', 0.18);
+    }
+    c.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < 700; i++) {
+      const [x, y] = along(r());
+      const spread = (r() - 0.5) * (r() - 0.5) * 4;
+      c.fillStyle = `rgba(220,225,255,${range(r, 0.15, 0.55)})`;
+      c.fillRect(x + spread * w * 0.04, y + spread * wy * 0.1, range(r, 0.6, 1.4) * dpr, range(r, 0.6, 1.4) * dpr);
+    }
   }
 
   function drawSea(ctx: CanvasRenderingContext2D, t: number, phase: number, dawn = 0): void {

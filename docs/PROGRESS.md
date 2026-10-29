@@ -309,3 +309,4 @@ date, what landed, what is half-done, what's next.
 - Every full moon, in every zone below the Breach, the reef 'remembers': pink bundles slip from the polyps and drift up into the dark (reef.ts, ReefView.moonFull).
 - Ossel's whisper 'moon-deep' at the first full moon below the light.
 - A small moon in its current phase above the depth gauge's surface end, all game; its tooltip says when it is next full (content act5 GAUGE_MOON).
+- Breach sky: a faint Milky Way band (soft dust, a dark lane, ~700 faint stars), cached once per size, fading with the dawn.
