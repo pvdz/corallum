@@ -413,3 +413,4 @@ date, what landed, what is half-done, what's next.
 - Four more moments (a blizzard of snow 120 m, a lamp drifting 2600 m, eggs in the dead stone 3600 m, the last night under water 3988 m): sixteen; tripFactor() gathers trip-length effects.
 - Pacing: Twilight 1.31, Sunlit 1.22 band growth (the new moments had pulled the b/massive path under 6 h); bot 8h28 / 7h48.
 - The quick cousin: a faster racer (sister.ts COUSIN, 5 h) for lines that have reached an ending; double lineage per mark; orange gauge marker; diary line; codex.
+- Setting 'Fewer words from Ossel': only story whispers (claims, the moon).

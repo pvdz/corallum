@@ -172,6 +172,8 @@ const glow = setting('glow', true, (on) => scenes.forEach((sc, i) => { sc.bloomS
 const habits = setting('habits', true);
 /** Calmer motion: as the system's reduced-motion setting, by choice. */
 const calm = setting('calm', false, (on) => document.documentElement.classList.toggle('calm', on));
+/** Fewer words from Ossel: only the whispers that carry story. */
+const quiet = setting('quiet', false);
 /** Larger text: the panel, the reader and Ossel's words a size up. */
 const big = setting('big', false, (on, initial) => { document.documentElement.classList.toggle('big', on); if (!initial) relayout(); });
 const sci = setting('sci', false, (on) => setScientific(on));
@@ -186,7 +188,7 @@ function buzz(ms: number | number[]): void {
 
 const portraits = createPortraits(!ephemeral);
 const panel = createPanel(ui, {
-  sharp, buzz: buzzing, volume, sci, calm, big, habits, glow,
+  sharp, buzz: buzzing, volume, sci, calm, big, quiet, habits, glow,
   rename(name) {
     state.meta.name = name;
     showReefName();
@@ -749,7 +751,9 @@ function whisperCheck(now: number): void {
   if (frozenT !== null || now - lastWhisper < 80_000 || now - lastWhisperCheck < 1000 || !reader() || ended(state)) return;
   lastWhisperCheck = now;
   // At the Breach only the moon speaks: the rest would talk over the spawning.
-  const w = WHISPERS.find((x) => !state.meta.seen.includes(`w:${x.id}`) && (state.height < 3980 || x.id === 'moon') && x.when(state));
+  // Fewer words: only the whispers that carry story (Ossel's claims, the moon).
+  const w = WHISPERS.find((x) => !state.meta.seen.includes(`w:${x.id}`) && (state.height < 3980 || x.id === 'moon') &&
+    (!quiet.get() || x.id.startsWith('claim-') || x.id.startsWith('moon')) && x.when(state));
   if (!w) return;
   state.meta.seen.push(`w:${w.id}`);
   lastWhisper = now;

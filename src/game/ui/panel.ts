@@ -87,6 +87,8 @@ export type PanelHooks = {
   calm: { get(): boolean; set(on: boolean): void };
   /** Larger text. */
   big: { get(): boolean; set(on: boolean): void };
+  /** Fewer whispers (only story). */
+  quiet: { get(): boolean; set(on: boolean): void };
   /** Old habits (a lineage trait): whether the reef buys cheap polyps and glimmerseed itself. */
   habits: { get(): boolean; set(on: boolean): void };
   /** A story card opened (for its sound). */
@@ -1019,6 +1021,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   bigBox.checked = hooks.big.get();
   bigBox.addEventListener('change', () => hooks.big.set(bigBox.checked));
   bigToggle.append(bigBox, el('span', '', 'Larger text'));
+  const quietToggle = el('label', 'toggle');
+  const quietBox = el('input') as HTMLInputElement;
+  quietBox.type = 'checkbox';
+  quietBox.checked = hooks.quiet.get();
+  quietBox.addEventListener('change', () => hooks.quiet.set(quietBox.checked));
+  quietToggle.append(quietBox, el('span', '', 'Fewer words from Ossel (only what carries the story)'));
   const habitToggle = el('label', 'toggle');
   const habitBox = el('input') as HTMLInputElement;
   habitBox.type = 'checkbox';
@@ -1069,7 +1077,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     group('Saves'),
     el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn,
     group('Sound'), volRow, buzzToggle,
-    group('Display'), glowToggle, sharpToggle, calmToggle, bigToggle, sciToggle, habitToggle,
+    group('Display'), glowToggle, sharpToggle, calmToggle, bigToggle, sciToggle, quietToggle, habitToggle,
     el('p', 'hint', 'Hold a buy button to keep buying. Keys (? lists them): Space sweeps · 1–4 switch tabs · H hides the panel · F catches a falling feast · E sends an expedition · P buds a polyp · B lays a band · G hosts glimmerseed.'),
     group('Start over'), resetBtn,
   );
