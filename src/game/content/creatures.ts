@@ -2,7 +2,7 @@
 // actually seen on screen (kept across lesser spawnings, in meta.seen as 'c:<id>').
 
 export type CreatureId =
-  | 'jelly' | 'tripod-fish' | 'isopod' | 'brittle-star' | 'rattail' | 'sea-pig' | 'brine-pool' | 'smokers' | 'dumbo' | 'squat-lobster' | 'sea-lily' | 'glass-sponge' | 'tube-worm' | 'sea-pen'
+  | 'jelly' | 'tripod-fish' | 'isopod' | 'brittle-star' | 'rattail' | 'sea-pig' | 'brine-pool' | 'smokers' | 'dumbo' | 'squat-lobster' | 'sea-lily' | 'glass-sponge' | 'tube-worm' | 'sea-pen' | 'vent-shrimp'
   | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'milky-sea' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration' | 'larvacean'
   | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'sardine-run' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark' | 'oarfish' | 'flashlight-fish' | 'mantis-shrimp'
   | 'cuttlefish' | 'eagle-rays' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly'
@@ -13,6 +13,7 @@ export type Creature = { id: CreatureId; name: string; zone: string; note: strin
 
 export const CREATURES: readonly Creature[] = [
   { id: 'jelly', name: 'Deep jellies', zone: 'The Silt Floor', note: 'Bells of violet light, pulsing without hurry.' },
+  { id: 'vent-shrimp', name: 'Vent shrimp', zone: 'The Silt Floor', note: 'Only on a vent. Pale shrimp by the hundred, crowding the warm stone, eyeless but for a patch on their backs that sees the vent’s faint glow.' },
   { id: 'sea-pen', name: 'Sea pens', zone: 'The Silt Floor', note: 'Colonies shaped like quill feathers, rooted in the silt. Touch one and green light runs up it.' },
   { id: 'isopod', name: 'Giant isopod', zone: 'The Silt Floor', note: 'A woodlouse as long as your hand, armoured, patient. It can go years between meals.' },
   { id: 'tripod-fish', name: 'Tripod fish', zone: 'The Silt Floor', note: 'It stands on three long fins, facing the current, and waits for food to walk into its mouth.' },

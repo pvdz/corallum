@@ -769,6 +769,31 @@ export function createLife(seed: number) {
     }
   }
 
+  /**
+   * Vent shrimp: a pale swarm crowding the upper chimney where the water is warmest, jostling and
+   * shifting. Touched, they scatter off the stone and drift back over a few seconds.
+   */
+  function drawVentShrimp(ctx: CanvasRenderingContext2D, x: number, base: number, hgt: number, tier: number, s: number, t: number): void {
+    sight('vent-shrimp');
+    const top = base - hgt;
+    spot('vent-shrimp', x, top + hgt * 0.25, 22 * s);
+    const touch = startled('vent-shrimp', t);
+    const scatter = touch && touch.age < 6 ? (touch.age < 0.4 ? touch.age / 0.4 : Math.max(0, 1 - (touch.age - 0.4) / 5.6)) : 0;
+    ctx.save();
+    for (let i = 0; i < 18 + tier * 8; i++) {
+      const h = ((i * 0.37) % 1) * 0.45, side = i % 2 ? 1 : -1;
+      const hx = x + side * (9 - h * 6) * s + Math.sin(t * 1.3 + i) * 1.5 * s;
+      const hy = top + hgt * (0.06 + h) + Math.sin(t * 0.9 + i * 1.7) * 2 * s;
+      const away = scatter * (16 + (i % 5) * 6) * s;
+      const px = hx + side * away, py = hy - away * 0.6;
+      ctx.fillStyle = 'rgba(235,225,215,0.85)';
+      ctx.beginPath();
+      ctx.ellipse(px, py, 3 * s, 1.3 * s, side * 0.8 + Math.sin(t * 3 + i) * 0.2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
   function drawVent(ctx: CanvasRenderingContext2D, st: Stage, tier: number, t: number): { x: number; y: number } {
     const s = st.s;
     const x = st.cx + st.w * 0.3;
@@ -782,6 +807,7 @@ export function createLife(seed: number) {
     for (let i = spires.length - 1; i >= 0; i--) drawSpire(ctx, x + spires[i]![0], base, spires[i]![1], spires[i]![2], i, s);
     drawTubeWorms(ctx, x, base, 5 + tier * 3, s, t);
     drawSquatLobsters(ctx, x, base, 2 + tier, s, t);
+    drawVentShrimp(ctx, x, base, hgt, tier, s, t);
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     for (const [dx, h] of spires) {
