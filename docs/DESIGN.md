@@ -213,7 +213,8 @@ begin again.
 
 Great tides: every third full moon carries four memories instead of three. Releasing at the
 first full moon or waiting (up to 40 min) for a great tide is Act V's wait-or-go choice; the size of
-the release also sets the lineage for beginning again.
+the release also sets the lineage for beginning again. Every memory the line has ever carried adds +1% calcite to every reef after,
+so carrying different ones across endings pays.
 
 ## Systems added in M6 (core loop)
 - **Milestones**: polyps (10/25/50/100/150/200) and glimmerseed (10/25/50/100) double their kind;

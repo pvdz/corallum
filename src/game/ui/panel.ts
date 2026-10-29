@@ -1179,6 +1179,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     for (const w of WORKS) if (s.works[w.id] > 0) rows.push([`${w.name} (${s.works[w.id]}/${w.stages.length})`, w.effect]);
     if (s.favours.clear > 0) rows.push([`${FAVOURS[0]!.name} ×${s.favours.clear}`, FAVOURS[0]!.effect]);
     for (const m of SEAMOUNTS) if (m.trial && s.meta.seen.includes(`trial:${m.id}`)) rows.push(['Learned on ' + m.name.toLowerCase(), m.trial.reward.split(': ')[1] ?? m.trial.reward]);
+    if (s.meta.carriedEver.length) rows.push([`${s.meta.carriedEver.length} memories carried by the line`, `calcite +${s.meta.carriedEver.length}%`]);
     shapes.hidden = rows.length === 0;
     const key = rows.map((r) => r.join(':')).join('|');
     if (key === shapesKey) return;

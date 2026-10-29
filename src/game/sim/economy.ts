@@ -168,6 +168,7 @@ export function raspMax(s: GameState): number {
 export const KNOWN_BONUS = 0.02;
 export const TOUCH_BONUS = 0.01;
 export const FRIEND_BONUS = 0.02;
+export const MEMORY_BONUS = 0.01;
 export function knownBonus(s: GameState): number {
   let seen = 0, touched = 0;
   for (const k of s.meta.seen) {
@@ -177,7 +178,8 @@ export function knownBonus(s: GameState): number {
   // Friends of the line (trust at its highest) add more.
   let friends = 0;
   for (const n of Object.values(s.meta.trust)) if (n >= TRUST.at[2]) friends++;
-  return 1 + KNOWN_BONUS * seen + TOUCH_BONUS * touched + FRIEND_BONUS * friends;
+  // Every memory the line has ever carried out to sea adds a little too.
+  return 1 + KNOWN_BONUS * seen + TOUCH_BONUS * touched + FRIEND_BONUS * friends + MEMORY_BONUS * s.meta.carriedEver.length;
 }
 
 /** This run's seamount and how it bends the numbers. */

@@ -445,3 +445,4 @@ date, what landed, what is half-done, what's next.
 - Glimmerseed strain: Act I's three-way choice at 15 m (act1.ts STRAINS, state.strain, chooseStrain); specks take the strain's colour; the bot takes gold.
 - Turtle hatchlings paddle across the Breach's surface at dawn after the release; touched they dive.
 - The fork on a ruin trip: press on (×1.5 time, a sure shard) or come home; forkOpen/takeFork, expedition.fork; test.
+- Each memory the line has ever carried: +1% calcite on every reef (knownBonus), listed in What shapes this reef.
