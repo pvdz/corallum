@@ -1381,6 +1381,17 @@ function frame(now: number): void {
   const wl = untilWaterTurns(state);
   drawWater(ctx, waterAt(state).id, focusNow, tNow, WATER.period - wl, wl, dpr, actAt(state.height) >= 4);
   zoomer.apply(ctx);
+  // The companion: a small warm light circling the crown.
+  if (state.meta.companion && !viewMode) {
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.globalCompositeOperation = 'lighter';
+    const [cx, cy] = scene.crownAt;
+    const a = animT * 0.6;
+    glowAt(ctx, cx + Math.cos(a) * 46 * dpr, cy - 20 * dpr + Math.sin(a * 1.3) * 18 * dpr, 7 * dpr, '255,215,150', 0.55);
+    ctx.restore();
+    zoomer.apply(ctx);
+  }
   // A signal lamp lit in the panel: the shoals around the crown flash its colour.
   if (lampFlash) {
     const age = (now - lampFlash.at) / 500;

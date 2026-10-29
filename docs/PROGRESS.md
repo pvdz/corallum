@@ -479,3 +479,4 @@ date, what landed, what is half-done, what's next.
 - Ambient calls: fish grunts on the Twilight Shelf, a vent rumble on the Silt Floor (audio zoneCall).
 - Ways: Shell-finder, Signal-wise.
 - The vent-crack moment shown: a glowing fissure down the chimney (left open) or a pale patch (grown over).
+- A companion shows as a small warm light circling the crown.
