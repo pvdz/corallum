@@ -205,3 +205,4 @@ date, what landed, what is half-done, what's next.
 - Cold seamount: a brine pool on the Silt Floor (shimmering surface, ring of mussels); in the journal (27).
 - Warm seamount: a field of five black smokers on the Silt Floor, smoking, hot at the mouth; in the journal (28).
 - Reef tab: volume slider (remembered as corallum.volume).
+- Midnight Water: a near layer of marine snow in front of the reef (bigger, softer, faster) for depth.

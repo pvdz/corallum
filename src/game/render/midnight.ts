@@ -342,6 +342,19 @@ export function createMidnightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** Near flakes, in front of the reef: bigger, softer and faster, so the snow has depth. */
+  function drawNearSnow(ctx: CanvasRenderingContext2D, t: number): void {
+    ctx.fillStyle = 'rgba(200,215,245,0.22)';
+    for (let i = 0; i < flakes.length; i += 6) {
+      const f = flakes[i]!;
+      const y = ((f.y + 0.3 + t * f.speed * 2.2) % 1) * (h + 20) - 10;
+      const x = (((f.x + 0.5 + Math.sin(t * 0.2 + f.phase) * 0.006) % 1) + 1) % 1 * w;
+      ctx.beginPath();
+      ctx.arc(x, y, f.r * 2.4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
   function drawSnow(ctx: CanvasRenderingContext2D, t: number): void {
     ctx.fillStyle = 'rgba(190,205,240,0.35)';
     for (const f of flakes) {
@@ -426,6 +439,7 @@ export function createMidnightScene(seed: number): Scene {
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
       shoals.drawFront(ctx, focus, reef, L, v, t);
+      drawNearSnow(ctx, t);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
       vignette(ctx);
     },
