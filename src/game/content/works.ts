@@ -33,14 +33,14 @@ export const WORKS: readonly Work[] = [
     id: 'breakwater', name: 'The breakwater', zone: 3,
     flavour: 'A long arc of stacked stone upslope, so the sliding silt goes round you instead of over.',
     effect: 'silt falls ×0.85 per stage',
-    stages: [{ calcite: 5e8, sand: 10000 }, { calcite: 5e9, sand: 40000 }, { calcite: 5e10, sand: 160000 }],
+    stages: [{ calcite: 5e8, sand: 10000 }, { calcite: 5e9, sand: 30000 }, { calcite: 5e10, sand: 80000 }],
     stageNames: ['A first course', 'A long arc', 'The crest'],
   },
   {
     id: 'terrace', name: 'The sun terrace', zone: 4,
     flavour: 'Flat steps of sand-set stone around your foot, where the light lies longest.',
     effect: 'bloom ×1.15 per stage',
-    stages: [{ bloom: 1e5, sand: 50000 }, { bloom: 1e6, sand: 150000 }, { bloom: 1e7, sand: 400000 }],
+    stages: [{ bloom: 1e5, sand: 30000 }, { bloom: 1e6, sand: 80000 }, { bloom: 1e7, sand: 160000 }],
     stageNames: ['One step', 'Three steps', 'The terrace'],
   },
 ];
