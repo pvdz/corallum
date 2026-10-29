@@ -93,6 +93,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
     letGo.disabled = chosen.size !== n || !state || !moonFull(state.t);
   }
   back.addEventListener('click', () => { choice.hidden = true; });
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !choice.hidden) choice.hidden = true; });
   letGo.addEventListener('click', () => {
     if (!hooks.breach([...chosen])) return;
     choice.hidden = true;

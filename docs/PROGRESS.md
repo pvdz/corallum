@@ -207,3 +207,4 @@ date, what landed, what is half-done, what's next.
 - Reef tab: volume slider (remembered as corallum.volume).
 - Midnight Water: a near layer of marine snow in front of the reef (bigger, softer, faster) for depth.
 - Accessibility: zone titles, milestones, journal/feat notes, whispers and creature labels are polite live regions; the story reader is a labelled modal dialog.
+- Escape closes the story card, the away summary or the memory choice.

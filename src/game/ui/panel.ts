@@ -610,6 +610,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   awayCard.append(el('h2', '', 'While you drifted'), awayText, awayClose);
   away.append(awayCard);
   host.append(away);
+  // Escape closes whichever card is open.
+  window.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (!reader.hidden) closeReader();
+    else if (!away.hidden) awayClose.click();
+  });
 
   function storyItem(depth: string, title: string, st: Story, cls = ''): HTMLLIElement {
     const li = el('li');
