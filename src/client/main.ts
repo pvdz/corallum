@@ -1043,6 +1043,12 @@ function drawLucky(t: number): void {
   for (const p of tappable()) {
     if (done.has(p.id) || p.id === 'ossel' || p.id === 'shell' || p.id === 'star' || p.id === 'old' || !lucky(state, p.id)) continue;
     done.add(p.id);
+    // A soft chime the first time a lucky one shows in this span.
+    const span = Math.floor(state.t / LUCKY.span);
+    if (span !== luckyHeard && frozenT === null) {
+      luckyHeard = span;
+      audio.cue('shimmer');
+    }
     const r = Math.min(Math.max(p.r, 22 * dpr), 70 * dpr);
     glowAt(ctx, p.x, p.y, r * 1.4, '255,200,90', 0.18);
     for (let k = 0; k < 8; k++) {
@@ -1383,6 +1389,7 @@ let thunderHeard = -1;
 let milkyHeard = false;
 let starsHeard = false;
 let whaleHeard = -1;
+let luckyHeard = -1;
 /** Slow frames for a while: first the glow pass goes, then (still slow) the resolution drops to 1×. */
 let autoLowRes = false;
 function qualityCheck(dt: number): void {
