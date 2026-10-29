@@ -56,6 +56,9 @@ the previous act's scene is gone below the frame.
   - *Scout* — dive into the silt to listen at buried bands → **Murmurs** stock.
 - **Readings**: one-off purchases with murmurs. Each deciphers a buried Thousandfold band:
   a piece of lore plus an effect. This is how Act II's story is told.
+- **Late Readings**: three more bands wait for later zones (the Rasp's own band after *First words*:
+  sand ×1.3; *Light in the old walls* after *Shapes in the light*: bloom ×1.25; *Thousandfold's spawning*
+  after *Air*: spawn ×1.25), so scouting stays worth something to the end.
 - Trade-off: plankton grows the economy, light buys more shoals, scouting buys knowledge and
   permanent effects. No allocation is right for the whole act.
 

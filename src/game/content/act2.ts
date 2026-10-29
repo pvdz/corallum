@@ -52,7 +52,8 @@ export const JOBS: readonly { id: Job; name: string; verb: string }[] = [
 
 export type ReadingId =
   | 'city' | 'lattice-songs' | 'shoal-pact' | 'beaked' | 'tidebooks'
-  | 'walls' | 'slow-currents' | 'fear' | 'inside-the-wall';
+  | 'walls' | 'slow-currents' | 'fear' | 'inside-the-wall'
+  | 'rasp-song' | 'light-walls' | 'last-spawning';
 
 export type Reading = {
   id: ReadingId;
@@ -60,6 +61,8 @@ export type Reading = {
   title: string;
   effect: string;
   text: string;
+  /** A later band that has to be read first (the late Readings wait for their zone). */
+  after?: string;
 };
 
 export const READINGS: readonly Reading[] = [
@@ -121,6 +124,28 @@ export const READINGS: readonly Reading[] = [
     text: 'The deepest band of the outer wall, the one that faced the Rasp. You know the voice in ' +
       'it before it finishes a word. It is Ossel’s. Ossel was the wall. Ossel says nothing for a ' +
       'very long time, and then: “Keep growing. Please.”',
+  },
+  {
+    id: 'rasp-song', cost: 20000, title: 'The Rasp’s own band', after: 'first-words',
+    effect: 'the Rasp grind ×1.3 sand',
+    text: 'Not a Thousandfold band at all. Under the outer wall, pressed into the stone by beaks, a band ' +
+      'the Rasp laid down themselves: grit and patience, the sound of grinding kept as carefully as the ' +
+      'city kept its glory. They remembered too. They remembered different things. Your Rasp hear you ' +
+      'hearing it, and grind with a will.',
+  },
+  {
+    id: 'light-walls', cost: 40000, title: 'Light in the old walls', after: 'form',
+    effect: 'bloom ×1.25',
+    text: 'A band from when the city was young and shallow, before it walled itself into the dark. ' +
+      'There is light in every line of it. Thousandfold was a reef like you once, opening to the sun. ' +
+      'Your symbionts drink deeper for knowing it.',
+  },
+  {
+    id: 'last-spawning', cost: 60000, title: 'Thousandfold’s spawning', after: 'air',
+    effect: 'spawn ×1.25',
+    text: 'The last band the city laid down before the silt closed over it: a spawning, the only one it ' +
+      'ever tried, too late, under a moon it could not see through its own walls. Nothing it let go ' +
+      'reached the surface. You are nearly there. What you carry ripens as if to make up the difference.',
   },
 ];
 

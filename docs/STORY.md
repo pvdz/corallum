@@ -110,6 +110,7 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Palette names (Lagoon, Violet, Ember, Pale moon) | plain words | OK |
 | Great works (the lantern spire, the breakwater, the sun terrace) | wonders/multi-stage builds are a genre convention; names are plain | OK |
 | The sister reef (another reef of Ossel's wall racing to the surface) | racing a pacer is a general device; no specific beat copied | OK |
+| Late Readings (the Rasp's own band, Light in the old walls, Thousandfold's spawning) | our own beats | OK |
 | Hard seamounts (hungry, silent, lonely, buried) as challenge runs with a lasting reward | challenge runs are a genre convention (incremental 'challenges'); names are plain descriptions | OK |
 | Moments (a dying brittle star, a lost shoal, the giant squid's eye, a whale fall, cleaners asking for a ledge, a storm breaking a branch, a sleeping turtle, a shore bird at low tide) | real reef and deep-sea events; small choice events are a genre convention; beats written for Ossel | OK |
 | The water's moods (rich, slack, lamp, carrying, gritty, clear, warm water) changing prices on a forecast | timed price swings are a genre convention (markets); names are plain descriptions of real sea states | OK |

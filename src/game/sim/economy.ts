@@ -224,14 +224,14 @@ export function rates(s: GameState): Rates {
       ? ACT3.siltFall * (1 + (target - ACT3.from) / ACT3.siltGrowthPer) * (s.truce.wall === 'a' ? 0.6 : 1) * sm.silt * (passed(s, 'buried') ? 0.8 : 1) * 0.85 ** s.works.breakwater
       : 0,
     siltK: ACT3.naturalSweep + (lives(s, 'pistol-shrimp') ? 0.04 : 0) + 0.02 * s.favours.clear + ACT3.flowSweep * lv.sandbar + LINEAGE.glassSweep * trait(s, 'glass-gardeners') + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
-    sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1) * (found(s, 'midden') ? 1.3 : 1) * (lives(s, 'sea-cucumber') ? 1.4 : 1) * (chose(s, 'turtle', 'b') ? 1.25 : 1),
+    sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1) * (found(s, 'midden') ? 1.3 : 1) * (lives(s, 'sea-cucumber') ? 1.4 : 1) * (chose(s, 'turtle', 'b') ? 1.25 : 1) * (has(s, 'rasp-song') ? 1.3 : 1),
     sandK: ACT3.sandSettle,
     bloomP: sunlight(s, target) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * ACT4.meadowBloom ** lv.meadow *
-      (speaks(s, 'fluorescent') ? 1.5 : 1) * (lives(s, 'damselfish') ? 1.3 : 1) * (chose(s, 'storm', 'b') ? 1.15 : 1) * 1.15 ** s.works.terrace,
+      (speaks(s, 'fluorescent') ? 1.5 : 1) * (lives(s, 'damselfish') ? 1.3 : 1) * (chose(s, 'storm', 'b') ? 1.15 : 1) * 1.15 ** s.works.terrace * (has(s, 'light-walls') ? 1.25 : 1),
     bloomK: ACT4.bloomFade * (chose(s, 'turtle', 'a') ? 0.8 : 1),
     spawnP: target >= ACT5.from
       ? lv.polyp * ACT5.spawnRate * ACT5.ripenSpawn ** lv.ripen * (speaks(s, 'broadcast') ? 2 : 1) *
-        (1 + sunlight(s, target) * lv.symbiont / 100) * (chose(s, 'bird', 'b') ? 1.1 : 1)
+        (1 + sunlight(s, target) * lv.symbiont / 100) * (chose(s, 'bird', 'b') ? 1.1 : 1) * (has(s, 'last-spawning') ? 1.25 : 1)
       : 0,
     spawnK: ACT5.spawnFade * (chose(s, 'bird', 'a') ? 0.8 : 1),
     calciteBase:
@@ -772,7 +772,9 @@ export function reading(id: ReadingId) {
 /** The next Reading on offer: they are deciphered in order, one band at a time. */
 export function nextReading(s: GameState) {
   if (seamount(s).noReadings) return undefined;
-  return READINGS.find((r) => !s.readings.includes(r.id));
+  const r = READINGS.find((x) => !s.readings.includes(x.id));
+  // A late Reading waits until its zone's band has been read.
+  return r && (!r.after || s.bands.includes(r.after)) ? r : undefined;
 }
 
 /** Murmurs a Reading costs (halved by the Kept readings trait). */

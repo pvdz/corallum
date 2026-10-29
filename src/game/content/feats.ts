@@ -27,7 +27,7 @@ export const FEATS: readonly Feat[] = [
   { id: 'full-house', name: 'A full house', text: 'Give all three homes in the reef to residents.', when: (s) => s.residents.length >= 3 },
   { id: 'requests', name: 'Asked and done', text: 'Keep 20 of Ossel’s requests in one reef.', when: (s) => s.request.done >= 20 },
   { id: 'tablet', name: 'The whole tablet', text: 'Find every shard of Thousandfold’s tablet.', when: (s) => s.meta.shards.length >= 12 },
-  { id: 'readings', name: 'Every band read', text: 'Read all of Thousandfold’s bands.', when: (s) => s.readings.length >= 9 },
+  { id: 'readings', name: 'Every band read', text: 'Read every band the scouts can find.', when: (s) => s.readings.length >= 12 },
   { id: 'truce', name: 'Terms', text: 'Settle all three truce meetings.', when: (s) => !!s.truce.wall },
   { id: 'meadows', name: 'Gardener', text: 'Sow 6 seagrass meadows.', when: (s) => s.levels.meadow >= 6 },
   { id: 'deep-known', name: 'Deep things', text: 'See every creature of the Silt Floor.', when: (s) => zoneSeen(s, 'The Silt Floor') },
