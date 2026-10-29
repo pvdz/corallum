@@ -574,3 +574,4 @@ date, what landed, what is half-done, what's next.
 - A far storm at the Breach (breach.ts lightningAt/drawLightning): every third shower, four strikes with a forked bolt to the horizon, the sky lit; thunder cue (audio thunder) ~2 s after each; codex 'far-storm'.
 - Trait Light-boned (way, max 2): old stone gathers 40% faster (oldK) and pays 30% more per level.
 - Requests can have a singular phrasing (one): 'Lay down a band.', 'Call one more shoal.', 'Let a knob of old stone go.'; the prune request waits until old stone is gathering (old ≥ 0.5).
+- Three moments: heavy-crown (250 m: old stone ×1.5 or dissolve ×0.92), cold-slide (3050 m: upwellings ×1.5 or silt +0.02/s), dust (3750 m: bloom ×1.1 or plankton ×1.15). Bot 7h28.

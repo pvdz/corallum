@@ -5,7 +5,7 @@
 export type MomentId = 'brittle' | 'vent-crack' | 'snow' | 'lost-shoal' | 'hunters' | 'angler' | 'squid' | 'whale-fall' | 'old-lamp' | 'cleaners'
   | 'young-rasp' | 'slope' | 'eggs' | 'storm' | 'turtle' | 'first-light' | 'last-night' | 'bird'
   | 'fire-body' | 'seep' | 'rising-stop' | 'split-shoal' | 'heatwave' | 'pups' | 'king-tide' | 'outbreak'
-  | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes';
+  | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes' | 'heavy-crown' | 'cold-slide' | 'dust';
 
 export type MomentOption = { label: string; effect: string; text: string };
 export type Moment = { id: MomentId; metres: number; title: string; text: string; a: MomentOption; b: MomentOption;
@@ -38,6 +38,14 @@ export const MOMENTS: readonly Moment[] = [
       text: 'You open every mouth into it. Most of it is nothing, but not all of it, and you grow fat on the rest.' },
     b: { label: 'Shield your polyps', effect: 'calcite dissolves ×0.95',
       text: 'You close up and let it slide off your stone. Afterwards your skin is a little thicker than before.' },
+  },
+  {
+    id: 'heavy-crown', metres: 250, title: 'The crown grows heavy',
+    text: 'Grey stone has gathered on your tips, layer on layer, everything you ever laid down there. The branches bow under it.',
+    a: { label: 'Let it go', effect: 'old stone pays ×1.5',
+      text: 'You loosen your hold, and the grey falls away in pieces. What is left grows lighter, and quicker.' },
+    b: { label: 'Carry it', effect: 'calcite dissolves ×0.92',
+      text: 'You hold it all. It is heavy, but it is yours, and the deep water finds less of you to take.' },
   },
   {
     id: 'lost-shoal', metres: 400, title: 'A lost shoal',
@@ -120,6 +128,14 @@ export const MOMENTS: readonly Moment[] = [
       text: 'You keep your edges thick and smooth. The cleaners move along the shelf, unhurt and unhelped.' },
   },
   {
+    id: 'cold-slide', metres: 3050, title: 'A cold slide',
+    text: 'A river of cold water pours down the shelf from above, heavy with salt, and the whole slope shivers.',
+    a: { label: 'Meet it', effect: 'upwellings bring ×1.5',
+      text: 'You lean into it and learn its ways. When the cold comes up again from the deep, you know just how to catch it.' },
+    b: { label: 'Huddle', effect: 'silt clears +0.02/s',
+      text: 'You fold in and let it pass. It scours the slope as it goes, and takes the silt with it.' },
+  },
+  {
     id: 'young-rasp', metres: 3450, title: 'A young Rasp, alone',
     text: 'Small, its beak still soft, it has lost the others and is scraping at your living polyps out of hunger.',
     a: { label: 'Give it dead stone', effect: 'the Rasp eat ×0.8 of your stone',
@@ -142,6 +158,14 @@ export const MOMENTS: readonly Moment[] = [
       text: 'You grow a lip of stone over the crack. Months later the young come out grinding, and stay.' },
     b: { label: 'Let the shrimp have them', effect: 'silt swept +0.02/s',
       text: 'The glass shrimp find them before you decide. Fed, they clean your branches twice as hard.' },
+  },
+  {
+    id: 'dust', metres: 3750, title: 'Dust from far away',
+    text: 'Red dust settles on the water, so fine it hangs there like a haze. Ossel says it came from a land that is all sand, over the edge of the sea.',
+    a: { label: 'Drink it in', effect: 'bloom ×1.1',
+      text: 'Your symbionts take the iron in it and turn greener than you have ever seen them.' },
+    b: { label: 'Let the shoals have it', effect: 'plankton ×1.15',
+      text: 'The water itself blooms with it, and the shoals feed for days on what grows.' },
   },
   {
     id: 'storm', metres: 3850, title: 'A storm takes a branch',
