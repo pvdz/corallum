@@ -131,9 +131,15 @@ export function createBreachScene(seed: number): Scene {
     glow(ctx, mx, my, r * 5, great ? '255,215,160' : '230,230,200', (great ? 0.22 : 0.15) * lit + 0.03);
     if (great) glow(ctx, mx, my, r * 2.2, '255,200,150', 0.18 * lit);
     ctx.restore();
+    drawMoonFace(ctx, phase, great, dawn);
+  }
+
+  /** The moon's disc itself; drawn again after the glow pass, which would wash out its seas. */
+  function drawMoonFace(ctx: CanvasRenderingContext2D, phase: number, great: boolean, dawn: number): void {
+    const [mx, my] = moonPos();
     ctx.save();
     ctx.globalAlpha = 1 - 0.65 * dawn;
-    drawMoon(ctx, mx, my, r, phase);
+    drawMoon(ctx, mx, my, 26 * scale() * (great ? 1.3 : 1), phase);
     ctx.restore();
   }
 
@@ -577,7 +583,10 @@ export function createBreachScene(seed: number): Scene {
       drawWaves(ctx, t);
       if (v.bands.includes('air')) drawGlowSurf(ctx, t, this.crownAt);
       drawSpawn(ctx, t, v, L, reef);
-      if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
+      if (this.bloomStrength > 0) {
+        (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
+        drawMoonFace(ctx, v.moonPhase, v.greatMoon, dawn);
+      }
       // After the glow pass, so the crown's light does not swallow its silhouette.
       drawBird(ctx, t, v, this.crownAt);
     },

@@ -4,6 +4,7 @@
 
 import type { DialectId } from '../content/act4.ts';
 import type { Reef, ReefLayout } from './reef.ts';
+import { glow } from './draw.ts';
 
 /** Fluorescent polyps: proteins that turn sunlight into colour. */
 export const FLUORESCENT_POLYP: [string, string] = ['#4dffb4', 'rgba(255,110,215,0.95)'];
@@ -54,7 +55,10 @@ function drawMucus(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, t: 
   ctx.restore();
 }
 
-/** Sweeper tentacles: a few long, thin, stinging arms reaching out from the lower branches. */
+/**
+ * Sweeper tentacles: a few long, thin, stinging arms reaching out from the lower branches. Each
+ * tapers to a knobbed tip, carries beads of stinging cells, and slowly reaches out and draws back.
+ */
 function drawSweepers(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, t: number): void {
   const s = L.s;
   ctx.save();
@@ -62,27 +66,44 @@ function drawSweepers(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, 
   // From the outermost of the lower branches, reaching away from the reef.
   const c = reef.coral;
   const outer = nodes(reef, L, 3, 0.05, 0.6).sort((a, b) => Math.abs(c.x[b]!) - Math.abs(c.x[a]!)).slice(0, 9);
+  const n = 14;
+  const px: number[] = new Array(n + 1), py: number[] = new Array(n + 1);
   for (const [k, i] of outer.entries()) {
     const [x, y] = reef.nodePx(L, i);
     const side = c.x[i]! >= 0 ? 1 : -1;
-    const len = (110 + (k % 4) * 25) * s;
     const ph = k * 2.3;
-    ctx.strokeStyle = 'rgba(255,150,120,0.8)';
-    ctx.lineWidth = 2 * s;
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    let px = x, py = y;
-    for (let q = 1; q <= 10; q++) {
-      const u = q / 10;
-      px = x + side * len * u;
-      py = y - len * 0.25 * u + Math.sin(t * 0.9 + ph + u * 5) * 9 * s * u;
-      ctx.lineTo(px, py);
+    const reach = 0.75 + 0.25 * Math.sin(t * 0.21 + ph);
+    const len = (110 + (k % 4) * 25) * s * reach;
+    const lift = 0.15 + 0.12 * Math.sin(k * 1.7);
+    for (let q = 0; q <= n; q++) {
+      const u = q / n;
+      // Out and a little up, sagging at the middle, the far end weaving in the current.
+      px[q] = x + side * len * u;
+      py[q] = y - len * lift * u + len * 0.12 * Math.sin(Math.PI * u) + Math.sin(t * 0.9 + ph + u * 5) * 10 * s * u * u;
     }
-    ctx.stroke();
-    // Stinging tip.
-    ctx.fillStyle = 'rgba(255,240,220,0.8)';
+    for (let q = 1; q <= n; q++) {
+      const u = q / n;
+      ctx.strokeStyle = `rgba(255,${150 + 40 * u},${125 + 40 * u},${0.8 - 0.4 * u})`;
+      ctx.lineWidth = (2.8 - 2.1 * u) * s;
+      ctx.beginPath();
+      ctx.moveTo(px[q - 1]!, py[q - 1]!);
+      ctx.lineTo(px[q]!, py[q]!);
+      ctx.stroke();
+    }
+    // Batteries of stinging cells: pale beads along the outer half.
+    ctx.fillStyle = 'rgba(255,235,215,0.75)';
+    for (let q = Math.ceil(n / 2); q < n; q += 2) {
+      ctx.beginPath();
+      ctx.arc(px[q]!, py[q]!, (1.6 - 0.6 * (q / n)) * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // The knobbed tip, faintly alight.
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, px[n]!, py[n]!, 6 * s, '255,180,160', 0.35 + 0.15 * Math.sin(t * 2 + ph));
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = 'rgba(255,240,225,0.9)';
     ctx.beginPath();
-    ctx.arc(px, py, 1.8 * s, 0, Math.PI * 2);
+    ctx.arc(px[n]!, py[n]!, 2 * s, 0, Math.PI * 2);
     ctx.fill();
   }
   ctx.restore();

@@ -258,3 +258,4 @@ date, what landed, what is half-done, what's next.
 - More touch reactions: the pyrosome passes a bright wave down its length, the vampire squid throws out a glowing mucus cloud and flares its cape, the bait ball bursts and re-forms, the clownfish dive into their anemone. Guide line 'Neighbours'.
 - Feat 'A light touch': touch eight different creatures (meta.seen 't:<id>', recorded on tap).
 - Touch: the anglerfish's lure flares and goes out, returning warily; a touched seahorse pales and draws in; touching the whale plays its call.
+- Moon (render/draw.ts drawMoon): soft grey seas, rimmed craters, limb darkening on the lit part, earthshine on the dark; the Breach redraws the disc after the glow pass so the seas show. Sweeper tentacles (craft.ts) taper, sag and weave, reach out and draw back, with beads of stinging cells and a lit knobbed tip.
