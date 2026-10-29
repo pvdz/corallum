@@ -22,11 +22,20 @@ decide which three memories your children carry into a new sea.
   worth to your reef right now, and shoal jobs show what one more feeder or light-swimmer adds.
 - Every creature can be touched: most answer in their own way (eels duck, an octopus inks, a
   lure goes dark), and now and then one shares a little of what it lives by. The journal keeps a portrait of each as you first saw it; seen and touched
-  creatures each add a little calcite. 30 feats across runs, seamounts with their own look and
+  creatures each add a little calcite, and ones touched often become friends. Feats across runs, seamounts with their own look and
   numbers, and a view mode (H) for the reef on the whole screen, where the wheel, a pinch or
   + / − zoom in up to 3× to look closer.
 - Falling feasts sink past now and then for those who watch; under a great tide moon the spawn
   carries four memories instead of three.
+- The water turns every ten minutes and makes one kind of growing cheaper (with a forecast);
+  Ossel asks for small things and pays for them; moments ask how you meet what happens to the reef.
+- Shoals can be sent to Thousandfold's ruins for relics, or roam the dark; residents move into
+  your branches (some pairs live well together); every zone has a great work to build in stages
+  from two kinds of wealth; the Rasp grant favours for sand.
+- A sister reef climbs the next seamount on its own schedule: reach each zone first for lineage.
+- Shards of an old tablet turn up in the silt; the reef keeps its own bands, a diary of the run.
+- Lesser spawnings: boons on each new seamount, hard seamounts that teach the whole line
+  something, Ways that automate or bend the systems, and the line's best times.
 - Desktop, phone portrait and phone landscape. Sound is procedural and off by default.
 
 ## Trying it on a phone
