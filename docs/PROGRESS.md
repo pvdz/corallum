@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended goal (user): add features and gameplay, repeat. Latest: seamount moments; warm water in the Sunlit Crown (+ Sun-shy trait); the night sky at the Breach (trace figures); the rising (Midnight/Twilight active haul); grain of the stone; 4th-order calcite step; the strain's sport. Keep a backlog in PLAN.md. Bot ~7 h; 7 browser tests + 55 sim tests green.
+NOW: Open-ended goal (user): add content, gameplay and graphics, keep going. Latest: old stone (knobs to let go, Light-boned, heavy seamount, falls at the release), milky sea, far storm, grotto + boxer crab, trip encounters, three moments, foreground depth layer, corallites, city map trip. Bot ~7h08; 7 browser tests + 72 sim tests green.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
