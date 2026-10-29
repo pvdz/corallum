@@ -14,6 +14,7 @@ import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow, speck } from './draw.ts';
 import { createLayerCache } from './layer.ts';
+import { createForeground } from './foreground.ts';
 import { createReef, type Reef, type ReefLayout } from './reef.ts';
 import { createRuins, type RuinStyle } from './ruins.ts';
 import { createShoals } from './shoals.ts';
@@ -53,6 +54,7 @@ export function createMidnightScene(seed: number): Scene {
   const shoals = createShoals(seed);
   const ruins = createRuins(seed);
   const water = createLayerCache(0.5);
+  const fore = createForeground(seed);
 
   const combs: Comb[] = Array.from({ length: 3 }, (_, i) => ({
     x: [-0.32, 0.3, 0.05][i]! + range(rng, -0.03, 0.03), y: [0.2, 0.32, 0.08][i]! + range(rng, -0.03, 0.03),
@@ -1084,6 +1086,7 @@ export function createMidnightScene(seed: number): Scene {
       if (v.thorn?.kind === 'dragonfish') drawDragonfish(ctx, focus, v.thorn.u, v.thorn.side, t, scale());
       drawNearSnow(ctx, t);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
+      fore.draw(ctx, focus, t, '3,8,22', 0.9, '140,220,255');
       vignette(ctx);
     },
   };

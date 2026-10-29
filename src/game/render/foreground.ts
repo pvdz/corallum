@@ -21,7 +21,7 @@ export function createForeground(seed: number) {
   grow(0, 0, -Math.PI / 2 + 0.35, 0.11, 0.016, 6);
   const blades = Array.from({ length: 6 }, (_, i) => ({ x: i * 0.018 + r() * 0.01, h: 0.22 + r() * 0.16, ph: r() * 6 }));
 
-  function paint(c: CanvasRenderingContext2D, focus: Focus, t: number, rgb: string): void {
+  function paint(c: CanvasRenderingContext2D, focus: Focus, t: number, rgb: string, lights: string): void {
     const u = Math.min(focus.w, focus.h * 1.2);
     c.fillStyle = c.strokeStyle = `rgb(${rgb})`;
     c.lineCap = 'round';
@@ -38,6 +38,18 @@ export function createForeground(seed: number) {
       c.lineTo(sg.x1 * u, sg.y1 * u);
       c.stroke();
     }
+    // In the dark, small lights live on it: blurred by the low resolution into soft discs.
+    if (lights) {
+      fan.forEach((sg, i) => {
+        if (i % 3) return;
+        const a = 0.4 + 0.6 * Math.max(0, Math.sin(t * 0.9 + i * 1.7));
+        c.fillStyle = `rgba(${lights},${a})`;
+        c.beginPath();
+        c.arc(sg.x1 * u, sg.y1 * u, 0.006 * u, 0, Math.PI * 2);
+        c.fill();
+      });
+      c.fillStyle = `rgb(${rgb})`;
+    }
     c.restore();
     // Blades of weed, bottom-right, bending with the swell.
     const bx = focus.x + focus.w * 0.9;
@@ -53,11 +65,12 @@ export function createForeground(seed: number) {
   }
 
   return {
-    draw(ctx: CanvasRenderingContext2D, focus: Focus, t: number, rgb: string, alpha: number): void {
+    /** `lights`: an rgb for small lights on the fan (in the dark zones), or ''. */
+    draw(ctx: CanvasRenderingContext2D, focus: Focus, t: number, rgb: string, alpha: number, lights = ''): void {
       const { width: w, height: h } = ctx.canvas;
       ctx.save();
       ctx.globalAlpha = alpha;
-      cache.draw(ctx, w, h, t, 0.1, `${focus.x},${focus.y},${focus.w},${focus.h},${rgb}`, (c, tq) => paint(c, focus, tq, rgb));
+      cache.draw(ctx, w, h, t, 0.1, `${focus.x},${focus.y},${focus.w},${focus.h},${rgb},${lights}`, (c, tq) => paint(c, focus, tq, rgb, lights));
       ctx.restore();
     },
   };

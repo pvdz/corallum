@@ -583,3 +583,4 @@ date, what landed, what is half-done, what's next.
 - Three trip encounters (expeditions.ts): wall (stop and listen: ×1.4 time, hear ×2), hunter (scatter: ×1.1, hear ×0.5; dazzle: half the glow, ×0.8), store (break it open: ×1.4, five minutes of calcite at homecoming).
 - A near foreground in the Twilight Shelf and Sunlit Crown (render/foreground.ts): a sea fan and weed blades in the bottom corners, dark, swaying, painted at quarter resolution so they read out of focus.
 - A milky sea in the Midnight Water (act2.ts MILKY; economy inMilky/untilMilky/milkyGlow): a minute in every 25, the water glows and each sweep gathers 4 s of glow. Soon line, whisper, shimmer cue, midnight.ts drawMilky wash and sparkles; sim test.
+- The near foreground also in the Silt Floor and Midnight Water, near-black with small lights on the fan that blur into soft bokeh.

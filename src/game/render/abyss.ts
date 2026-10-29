@@ -11,6 +11,7 @@ import { glow, speck } from './draw.ts';
 import { createLife, type Stage } from './life.ts';
 import { createGround } from './ground.ts';
 import { createLayerCache } from './layer.ts';
+import { createForeground } from './foreground.ts';
 import { createReef, type ReefLayout } from './reef.ts';
 import { createRuins, type RuinStyle } from './ruins.ts';
 import { createShoals } from './shoals.ts';
@@ -44,6 +45,7 @@ export function createAbyssScene(seed: number): Scene {
   const reefSeed = Math.floor(rng() * 1e9);
   const ruins = createRuins(seed);
   const water = createLayerCache(0.5);
+  const fore = createForeground(seed);
 
   const reef = createReef(reefSeed);
   const life = createLife(reefSeed ^ 0x9e3779b9);
@@ -525,6 +527,7 @@ export function createAbyssScene(seed: number): Scene {
         ctx.restore();
       }
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
+      fore.draw(ctx, focus, t, '4,6,18', 0.9, '170,140,255');
       vignette(ctx);
     },
   };
