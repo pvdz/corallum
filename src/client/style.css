@@ -528,3 +528,7 @@ html.view-mode #photo { display: grid; }
 .codex-list .journal-zone {
   grid-column: 1 / -1; margin-top: 8px; font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--glowc);
 }
+.collapsible > h3 { cursor: pointer; }
+.collapsible > h3::after { content: ' ▾'; color: var(--ink-dim); font-size: 0.8em; }
+.collapsible.folded > h3::after { content: ' ▸'; }
+.collapsible.folded > :not(h3) { display: none; }

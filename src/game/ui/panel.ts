@@ -320,7 +320,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const journalHead = el('h3', '', 'Creatures seen');
   const journalList = el('dl', 'codex-list');
   journal.append(journalHead, journalList);
-  let journalKey = '';
+  collapsible(journal, journalHead);
+  let journalKey: string | null = null;
   function renderJournal(s: GameState): void {
     const seen = CREATURES.filter((c) => s.meta.seen.includes(`c:${c.id}`));
     const key = seen.map((c) => c.id).join();
@@ -412,7 +413,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const featHead = el('h3', '', 'Feats');
   const featList = el('dl', 'codex-list');
   featCard.append(featHead, featList);
-  let featKey = '';
+  collapsible(featCard, featHead);
+  let featKey: string | null = null;
   function renderFeats(s: GameState): void {
     const done = FEATS.filter((f) => s.meta.seen.includes(`f:${f.id}`));
     const key = done.map((f) => f.id).join();
@@ -454,7 +456,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const lineList = el('dl', 'codex-list');
   lineCard.append(el('h3', '', 'Your line'), lineList);
   lineagePage.append(lineCard);
-  let lineKey = '';
+  let lineKey: string | null = null;
   function renderLine(s: GameState): void {
     const key = s.meta.ancestors.join() + s.meta.name;
     lineCard.hidden = s.meta.ancestors.length === 0;
@@ -1058,6 +1060,20 @@ function gaugeFraction(h: number): number {
   const n = actAt(h);
   const a = ACTS[n - 1]!;
   return (n - 1 + Math.min(1, Math.max(0, (h - a.from) / (a.to - a.from)))) / ACTS.length;
+}
+
+/** A long card that starts folded: tapping its heading opens and closes it. */
+function collapsible(card: HTMLElement, head: HTMLElement): void {
+  card.classList.add('collapsible', 'folded');
+  head.setAttribute('role', 'button');
+  head.tabIndex = 0;
+  head.setAttribute('aria-expanded', 'false');
+  const toggle = () => {
+    const folded = card.classList.toggle('folded');
+    head.setAttribute('aria-expanded', String(!folded));
+  };
+  head.addEventListener('click', toggle);
+  head.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
 }
 
 /** What opens a hidden upgrade, in words. */
