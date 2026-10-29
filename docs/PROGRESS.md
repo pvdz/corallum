@@ -271,3 +271,4 @@ date, what landed, what is half-done, what's next.
 - Tappable (and portrait-able): one lanternfish shoal, sunlit reef fish, the warm seamount's smokers, the cold seamount's brine pool.
 - Moon craters reworked: small asymmetric pits with a lit rim and one bright rayed crater (the first version read as a smiling face at full moon).
 - Touch: the turtle ducks and dives a little; the mola sculls hard and tips to look; the giant squid pulls back into the dark (for the rest of that crossing).
+- Plankton sparks on a tap now also light up under the Breach's surface (until the dawn after the release) and in the Sunlit Crown at night (Scene.darkAt).

@@ -910,7 +910,7 @@ function frame(now: number): void {
   }
   const fe = currentFeast(state);
   if (fe) drawFeast(ctx, fe, state.t - fe.start, tNow, focusNow, dpr, feastPay(state));
-  taps.draw(ctx, tNow, scene.crownAt, dpr, actAt(state.height) <= 2);
+  taps.draw(ctx, tNow, scene.crownAt, dpr, (x, y) => actAt(state.height) <= 2 || !!scene.darkAt?.(x, y));
   endFrameSpots();
   if (now - lastPortrait > 1000 && frozenT === null && !fadingFrom) {
     lastPortrait = now;

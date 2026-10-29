@@ -71,6 +71,8 @@ export type Scene = {
   bloomStrength: number;
   /** Where the reef's crown polyp was last drawn, in device pixels. */
   crownAt: [number, number];
+  /** Whether the water at (x, y) is dark enough for a touch to light the plankton (deep zones always). */
+  darkAt?(x: number, y: number): boolean;
 };
 
 /** Queue of running effects, stamped with scene time when first drawn. */

@@ -689,6 +689,7 @@ export function createSunlitScene(seed: number): Scene {
   return {
     bloomStrength: 0,
     crownAt: [0, 0] as [number, number],
+    darkAt: () => nightAt(lastT) > 0.5,
     effect(kind) {
       effects.push(kind);
     },

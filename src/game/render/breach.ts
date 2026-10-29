@@ -54,6 +54,8 @@ export function createBreachScene(seed: number): Scene {
   const cx = () => focus.x + focus.w * 0.5;
   // The tide: the surface rises and falls a little over three minutes of scene time.
   let tideT = 0;
+  /** The dawn after the release, 0..1, as last drawn. */
+  let lastDawn = 0;
   const stillY = () => focus.y + focus.h * 0.3;
   const waterY = () => stillY() + focus.h * 0.012 * Math.sin((tideT / 180) * Math.PI * 2);
 
@@ -567,6 +569,8 @@ export function createBreachScene(seed: number): Scene {
   return {
     bloomStrength: 0.5,
     crownAt: [0, 0] as [number, number],
+    // Under the surface, until the dawn after the release.
+    darkAt: (_x: number, y: number) => y > waterY() && lastDawn < 0.5,
     effect(kind) {
       effects.push(kind);
     },
@@ -580,6 +584,7 @@ export function createBreachScene(seed: number): Scene {
       const L = layout(v, form);
       // Dawn comes up over the three minutes after the release, then holds.
       const dawn = v.sinceBreach > 30 ? Math.min(1, (v.sinceBreach - 30) / 180) : 0;
+      lastDawn = dawn;
       drawSky(ctx, t, v.moonPhase, v.greatMoon, dawn);
       drawSea(ctx, t, v.moonPhase, dawn);
       drawChildren(ctx, v, t);
