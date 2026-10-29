@@ -478,3 +478,4 @@ date, what landed, what is half-done, what's next.
 - Seamount tints carried into the Midnight Water and the Twilight Shelf (faint screen-space overlay per seamount).
 - Ambient calls: fish grunts on the Twilight Shelf, a vent rumble on the Silt Floor (audio zoneCall).
 - Ways: Shell-finder, Signal-wise.
+- The vent-crack moment shown: a glowing fissure down the chimney (left open) or a pale patch (grown over).

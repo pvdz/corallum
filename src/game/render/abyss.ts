@@ -450,6 +450,29 @@ export function createAbyssScene(seed: number): Scene {
       if (v.seamount === 'crowded') drawBuriedReefs(ctx, t);
       drawGarden(ctx, centreX(), v.works.garden, scale(), t, floorY);
       const vent = v.vent > 0 ? life.drawVent(ctx, st, v.vent, t) : null;
+      // The vent crack (a moment): left open it glows and smokes; grown over, a pale patch of new stone.
+      if (vent && v.moments['vent-crack']) {
+        const sc = scale();
+        ctx.save();
+        if (v.moments['vent-crack'] === 'b') {
+          ctx.globalCompositeOperation = 'lighter';
+          ctx.strokeStyle = `rgba(255,140,70,${0.6 + 0.2 * Math.sin(t * 2)})`;
+          ctx.lineWidth = 2 * sc;
+          ctx.beginPath();
+          ctx.moveTo(vent.x - 4 * sc, vent.y + 14 * sc);
+          ctx.lineTo(vent.x + 4 * sc, vent.y + 30 * sc);
+          ctx.lineTo(vent.x - 3 * sc, vent.y + 46 * sc);
+          ctx.lineTo(vent.x + 5 * sc, vent.y + 64 * sc);
+          ctx.stroke();
+          glow(ctx, vent.x, vent.y + 40 * sc, 22 * sc, '255,120,60', 0.35);
+        } else {
+          ctx.fillStyle = 'rgba(200,190,210,0.35)';
+          ctx.beginPath();
+          ctx.ellipse(vent.x, vent.y + 40 * sc, 6 * sc, 16 * sc, 0.1, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
       drawRidge(ctx, ridges[2]!);
       ground.draw(ctx, w, Math.min(h, focus.y + focus.h), scale(), floorY, { light: '150,160,215', dark: '0,0,8', alpha: 0.9, tracks: true },
         `${w}x${h}:${focus.x},${focus.y},${focus.w},${focus.h}`);
