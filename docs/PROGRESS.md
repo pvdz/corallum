@@ -210,3 +210,4 @@ date, what landed, what is half-done, what's next.
 - Escape closes the story card, the away summary or the memory choice.
 - Opening screen: journal notes wait until the title has faded, and the depth gauge appears with the first metre of stone (both collided with the title/hint on phones).
 - Twilight Shelf: a cleaning station, a mottled grouper hanging beside the reef with two cleaner wrasse darting over it (tappable; journal: 29).
+- Sunlit Crown: two seahorses holding on to the seagrass with 3+ meadows (tappable; journal: 30).

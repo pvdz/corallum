@@ -336,6 +336,49 @@ export function createSunlitScene(seed: number): Scene {
     }
   }
 
+  /** Seahorses holding on to the seagrass by their tails, swaying with the blades (3+ meadows). */
+  function drawSeahorses(ctx: CanvasRenderingContext2D, t: number, meadows: number): void {
+    if (meadows < 3) return;
+    const s = scale() * 1.9;
+    const x0 = focus.x - focus.w * 0.1, span = focus.w * 1.2;
+    sight('seahorse');
+    for (const [k, u] of [0.3, 0.72].entries()) {
+      const x = x0 + u * span + Math.sin(t * 0.8 + k) * 3 * s, y = floorY(u) - 20 * s;
+      spot('seahorse', x, y, 20 * s);
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(Math.sin(t * 0.8 + k) * 0.12);
+      ctx.strokeStyle = k ? '#e0a040' : '#d8705a';
+      ctx.fillStyle = ctx.strokeStyle;
+      ctx.lineCap = 'round';
+      // Curled tail, an upright S of a body, a snout and a little fin.
+      ctx.lineWidth = 2.4 * s;
+      ctx.beginPath();
+      ctx.moveTo(0, 12 * s);
+      ctx.quadraticCurveTo(4 * s, 16 * s, 2 * s, 18 * s);
+      ctx.quadraticCurveTo(-1 * s, 19 * s, 0, 15 * s);
+      ctx.stroke();
+      ctx.lineWidth = 4.2 * s;
+      ctx.beginPath();
+      ctx.moveTo(0, 12 * s);
+      ctx.bezierCurveTo(4 * s, 6 * s, -3 * s, 0, 1 * s, -6 * s);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(2 * s, -8 * s, 2.6 * s, 2.2 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.lineWidth = 1.6 * s;
+      ctx.beginPath();
+      ctx.moveTo(3 * s, -8 * s);
+      ctx.lineTo(8 * s, -7 * s);
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(255,240,200,0.7)';
+      ctx.beginPath();
+      ctx.ellipse(-3 * s, 2 * s, 1.6 * s, 3 * s + Math.sin(t * 9) * 0.6 * s, 0.3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
   /**
    * A green turtle comes to graze once there are meadows: it paddles slowly over the seagrass,
    * dips to crop it, and drifts on.
@@ -549,6 +592,7 @@ export function createSunlitScene(seed: number): Scene {
       shoals.drawBack(ctx, focus, reef, L, v, t, '#5d7d96');
       drawFloor(ctx, t);
       drawMeadows(ctx, t, v.meadows);
+      drawSeahorses(ctx, t, v.meadows);
       drawTurtle(ctx, t, v.meadows);
       drawAnemone(ctx, t);
       drawClumps(ctx, t);
