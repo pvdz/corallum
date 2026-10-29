@@ -590,3 +590,4 @@ date, what landed, what is half-done, what's next.
 - The map of Thousandfold shows a trip under way: a dotted way to the ruin and the shoals' lights out along it and home (drawings.ts drawCity trip; redrawn each 1% of the trip).
 - Upgrade Hollow a grotto (act3.ts, sand 3000×5^l, max 2): +1 resident home each; reef.ts drawGrottoes (arched hollows in a mound at the foot, eyes glinting); icon.
 - Resident: a boxer crab (3400 m): intruders driven off pay ×1.5; drawn at the reef's foot waving its two anemones (shakes them when touched).
+- Resident pair All claws (boxer crab + guard crabs): intruders driven off pay ×1.3 more. Systems e2e green.

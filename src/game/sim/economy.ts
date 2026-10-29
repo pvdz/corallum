@@ -2086,7 +2086,7 @@ export function pryThorn(s: GameState, share = 1): number {
   if (!th) return 0;
   s.thorned = th.k;
   s.tally.intruders++;
-  return burst(s, THORN.seconds * share * (passed(s, 'thorny') ? 1.5 : 1) * (lives(s, 'boxer-crab') ? 1.5 : 1));
+  return burst(s, THORN.seconds * share * (passed(s, 'thorny') ? 1.5 : 1) * (lives(s, 'boxer-crab') ? 1.5 : 1) * (paired(s, 'boxer-crab', 'guard-crab') ? 1.3 : 1));
 }
 
 // ---------- Falling feasts ----------
