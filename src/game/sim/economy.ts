@@ -217,7 +217,7 @@ export function rates(s: GameState): Rates {
     sandK: ACT3.sandSettle,
     bloomP: today(s, 'clear', 1.15) * sunlight(s, target) * heatSun(s) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * ACT4.meadowBloom ** lv.meadow *
       (speaks(s, 'fluorescent') ? 1.5 : 1) * (lives(s, 'damselfish') ? 1.3 : 1) * (chose(s, 'storm', 'b') ? 1.15 : 1) * 1.15 ** s.works.terrace * (has(s, 'light-walls') ? 1.25 : 1) * (relic(s, 'sun-gate') ? 1.2 : 1) * (s.sport === 'sun' ? 1.2 : 1) * (chose(s, 'pups', 'b') ? 1.1 : 1) * (chose(s, 'first-light', 'a') ? 1.15 : 1) * (paired(s, 'feather-duster', 'damselfish') ? 1.15 : 1),
-    bloomK: ACT4.bloomFade * (chose(s, 'heatwave', 'a') ? 0.85 : 1) * (inHeat(s) && !closedNow(s) ? HEAT.openFade * (passed(s, 'shallow') ? 0.5 : 1) : 1) * (chose(s, 'turtle', 'a') ? 0.8 : 1) * (speaks(s, 'lullaby') ? 0.7 : 1),
+    bloomK: ACT4.bloomFade * (chose(s, 'heatwave', 'a') ? 0.85 : 1) * (inHeat(s) && !closedNow(s) ? HEAT.openFade * (passed(s, 'shallow') ? 0.5 : 1) * (boon(s, 'kind-shallows') ? 0.5 : 1) : 1) * (chose(s, 'turtle', 'a') ? 0.8 : 1) * (speaks(s, 'lullaby') ? 0.7 : 1),
     spawnP: target >= ACT5.from
       ? lv.polyp * ACT5.spawnRate * ACT5.ripenSpawn ** lv.ripen * (speaks(s, 'broadcast') ? 2 : 1) *
         (1 + sunlight(s, target) * lv.symbiont / 100) * (chose(s, 'bird', 'b') ? 1.1 : 1) * (chose(s, 'last-night', 'b') ? 1.05 : 1) * (has(s, 'last-spawning') ? 1.25 : 1) * 1.15 ** s.works.pool * 1.1 ** lv.cay * (lives(s, 'host-anemone') ? 1.15 : 1) * SKY.spawnEach ** named(s) * today(s, 'long-swell', 1.1) * (chose(s, 'king-tide', 'a') ? 1.1 : 1)
@@ -874,12 +874,12 @@ export function nextReading(s: GameState) {
 
 /** Murmurs a Reading costs (halved by the Kept readings trait). */
 export function readingCost(s: GameState, r: { cost: number }): number {
-  return r.cost * (trait(s, 'kept-readings') ? 0.5 : 1) * seamount(s).readings * murmurFactor(s) * (s.sport === 'dusk' ? 0.8 : 1);
+  return r.cost * (trait(s, 'kept-readings') ? 0.5 : 1) * seamount(s).readings * murmurFactor(s) * (s.sport === 'dusk' ? 0.8 : 1) * (boon(s, 'clear-voices') ? 0.8 : 1);
 }
 
 /** Murmurs it takes to learn a meeting's words. */
 export function meetingWords(s: GameState, m: { words: number }): number {
-  return m.words * (trait(s, 'kept-readings') ? 0.5 : 1) * murmurFactor(s) * (s.sport === 'dusk' ? 0.8 : 1);
+  return m.words * (trait(s, 'kept-readings') ? 0.5 : 1) * murmurFactor(s) * (s.sport === 'dusk' ? 0.8 : 1) * (boon(s, 'clear-voices') ? 0.8 : 1);
 }
 
 export function readingsRevealed(s: GameState): boolean {

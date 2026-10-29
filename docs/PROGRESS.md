@@ -531,3 +531,4 @@ date, what landed, what is half-done, what's next.
 - Moonbow at the Breach (breach.ts drawMoonbow): a minute after each shower, if the moon is bright; a rare sight for the journal.
 - The Rasp elder shows on the slope (twilight.ts drawElder: pale, worn beak) while a riddle is asked.
 - Audio: 'upwell' (rising bubbles) and 'swell' (two long surges) as each begins.
+- Boons: Clear voices (Readings and words ×0.8), Kind shallows (open bleaching ×0.5); nine boons now. Rasp elder and upwell/swell sounds before this.

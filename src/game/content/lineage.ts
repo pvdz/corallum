@@ -280,7 +280,7 @@ export const LINEAGE_BANDS: readonly { title: string; text: string }[] = [
 ];
 
 // Boons: each reef after the first is offered three (seeded by its seamount) and keeps one.
-export type BoonId = 'currents' | 'lamps' | 'quick-stone' | 'warm-heart' | 'roots' | 'welcome' | 'near-ruins';
+export type BoonId = 'currents' | 'lamps' | 'quick-stone' | 'warm-heart' | 'roots' | 'welcome' | 'near-ruins' | 'clear-voices' | 'kind-shallows';
 export const BOONS: readonly { id: BoonId; name: string; effect: string }[] = [
   { id: 'currents', name: 'Rich currents', effect: 'calcite ×1.15 on this reef' },
   { id: 'lamps', name: 'Early lamps', effect: 'start with 4 shoals feeding' },
@@ -289,6 +289,8 @@ export const BOONS: readonly { id: BoonId; name: string; effect: string }[] = [
   { id: 'roots', name: 'Deep roots', effect: 'calcite dissolves ×0.85 on this reef' },
   { id: 'welcome', name: 'A welcoming sea', effect: 'gifts from neighbours ×2 on this reef' },
   { id: 'near-ruins', name: 'Near ruins', effect: 'expeditions take half as long on this reef' },
+  { id: 'clear-voices', name: 'Clear voices', effect: 'Readings and the Rasp’s words cost ×0.8 on this reef' },
+  { id: 'kind-shallows', name: 'Kind shallows', effect: 'open polyps bleach half as fast on this reef' },
 ];
 export const BOON_TEXT = {
   kicker: 'A new seamount', head: 'Something here is on your side. Choose one:',
