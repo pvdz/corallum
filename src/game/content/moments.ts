@@ -2,8 +2,8 @@
 // meeting it. They wait until answered and never block anything; each answer has one lasting
 // effect for this reef (applied in sim/economy.ts by `chose()`). Told in Ossel's voice.
 
-export type MomentId = 'brittle' | 'vent-crack' | 'lost-shoal' | 'angler' | 'squid' | 'whale-fall' | 'cleaners' | 'young-rasp'
-  | 'storm' | 'turtle' | 'first-light' | 'bird';
+export type MomentId = 'brittle' | 'vent-crack' | 'snow' | 'lost-shoal' | 'angler' | 'squid' | 'whale-fall' | 'old-lamp' | 'cleaners'
+  | 'young-rasp' | 'eggs' | 'storm' | 'turtle' | 'first-light' | 'last-night' | 'bird';
 
 export type MomentOption = { label: string; effect: string; text: string };
 export type Moment = { id: MomentId; metres: number; title: string; text: string; a: MomentOption; b: MomentOption };
@@ -26,6 +26,14 @@ export const MOMENTS: readonly Moment[] = [
       text: 'You lay stone over it, band by band, until the sourness only seeps. The warmth stays.' },
     b: { label: 'Leave it open', effect: 'glow ×1.15',
       text: 'The glimmerseed crowd to the new heat and burn brighter for it, and you learn to live with the sting.' },
+  },
+  {
+    id: 'snow', metres: 120, title: 'A blizzard of snow',
+    text: 'For a whole day the marine snow comes down thick as smoke, and everything it touches is soft and grey.',
+    a: { label: 'Feed on it', effect: 'calcite ×1.05',
+      text: 'You open every mouth into it. Most of it is nothing, but not all of it, and you grow fat on the rest.' },
+    b: { label: 'Shield your polyps', effect: 'calcite dissolves ×0.95',
+      text: 'You close up and let it slide off your stone. Afterwards your skin is a little thicker than before.' },
   },
   {
     id: 'lost-shoal', metres: 400, title: 'A lost shoal',
@@ -60,6 +68,14 @@ export const MOMENTS: readonly Moment[] = [
       text: 'You let the hagfish and the worms have it. They remember who did not crowd them.' },
   },
   {
+    id: 'old-lamp', metres: 2600, title: 'A lamp drifting',
+    text: 'A shell from the old city drifts by, very slowly, still faintly lit after all this time.',
+    a: { label: 'Take it in', effect: 'glow ×1.1',
+      text: 'You catch it in your branches. Its light goes into your glimmerseed and stays there.' },
+    b: { label: 'Let it light the way', effect: 'trips ×0.85 as long',
+      text: 'You let it go on. The shoals follow it a little way and learn a quicker path to the ruins.' },
+  },
+  {
     id: 'cleaners', metres: 3200, title: 'The cleaners ask for room',
     text: 'A cleaner station has grown up at your edge, and the shrimp want a ledge of your stone to keep it on.',
     a: { label: 'Give them a ledge', effect: '+1 home for residents',
@@ -74,6 +90,14 @@ export const MOMENTS: readonly Moment[] = [
       text: 'You open a dead branch to it. It eats, and sleeps, and later the others come for it and are gentler with you.' },
     b: { label: 'Send it to its kind', effect: 'sand ×1.15',
       text: 'You close against it until it gives up and swims downslope, where the others are grinding. They grind harder with it back.' },
+  },
+  {
+    id: 'eggs', metres: 3600, title: 'Eggs in the dead stone',
+    text: 'A Rasp has laid a clutch of eggs in a crack of your oldest, deadest stone, and gone.',
+    a: { label: 'Keep them safe', effect: 'room for 4 more Rasp',
+      text: 'You grow a lip of stone over the crack. Months later the young come out grinding, and stay.' },
+    b: { label: 'Let the shrimp have them', effect: 'silt swept +0.02/s',
+      text: 'The glass shrimp find them before you decide. Fed, they clean your branches twice as hard.' },
   },
   {
     id: 'storm', metres: 3850, title: 'A storm takes a branch',
@@ -98,6 +122,14 @@ export const MOMENTS: readonly Moment[] = [
       text: 'Every polyp leans east. The symbionts drink the first light like water.' },
     b: { label: 'Wait for the moon', effect: 'spawn is lost ×0.85 as fast',
       text: 'You keep your face to where the moon will rise, and hold what you carry close.' },
+  },
+  {
+    id: 'last-night', metres: 3988, title: 'The last night under water',
+    text: 'Tomorrow your crown will be in the air. Tonight there is still water over all of you, the last of it.',
+    a: { label: 'Remember the deep', effect: 'calcite dissolves ×0.9',
+      text: 'You think of the vent, the dark, the snow. Your old stone hardens, as if to keep them.' },
+    b: { label: 'Look only up', effect: 'spawn ×1.05',
+      text: 'You turn everything toward the light that is coming. What you carry ripens toward it.' },
   },
   {
     id: 'bird', metres: 3990, title: 'A bird at low tide',

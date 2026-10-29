@@ -192,7 +192,7 @@ export function sunlight(s: GameState, target = heightForBands(s.levels.skeleton
 }
 
 export function raspMax(s: GameState): number {
-  return s.levels.grounds * ACT3.raspPerGround + (s.truce.terms === 'a' ? 4 : s.truce.terms === 'b' ? 2 : 0);
+  return s.levels.grounds * ACT3.raspPerGround + (s.truce.terms === 'a' ? 4 : s.truce.terms === 'b' ? 2 : 0) + (chose(s, 'eggs', 'a') ? 4 : 0);
 }
 
 /**
@@ -225,7 +225,7 @@ export function rates(s: GameState): Rates {
   const onShelf = target >= ACT3.from;
   return {
     glowP: (ACT1.symbiontGlow * lv.symbiont * milestoneMult('symbiont', lv.symbiont) * (1 + ACT2.lightAmplify * s.jobs.light) +
-      lightGlow * s.jobs.light * seasoned(s)) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1) * (chose(s, 'vent-crack', 'b') ? 1.15 : 1) * (sm.glow ?? 1) * (passed(s, 'dark') ? 1.25 : 1) * (boon(s, 'warm-heart') ? 1.3 : 1),
+      lightGlow * s.jobs.light * seasoned(s)) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1) * (chose(s, 'vent-crack', 'b') ? 1.15 : 1) * (sm.glow ?? 1) * (passed(s, 'dark') ? 1.25 : 1) * (boon(s, 'warm-heart') ? 1.3 : 1) * (chose(s, 'old-lamp', 'a') ? 1.1 : 1),
     glowK: ACT1.glowFade * (chose(s, 'squid', 'a') ? 0.8 : 1),
     planktonP: seasoned(s) * ACT2.feedRate * s.jobs.feed * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
       (speaks(s, 'sweepers') ? 3 : 1) * (lives(s, 'feather-duster') ? 1.3 : 1),
@@ -235,7 +235,7 @@ export function rates(s: GameState): Rates {
     siltP: onShelf
       ? ACT3.siltFall * (1 + (target - ACT3.from) / ACT3.siltGrowthPer) * (s.truce.wall === 'a' ? 0.6 : 1) * sm.silt * (passed(s, 'buried') ? 0.8 : 1) * 0.85 ** s.works.breakwater
       : 0,
-    siltK: ACT3.naturalSweep + (lives(s, 'pistol-shrimp') ? 0.04 : 0) + 0.02 * s.favours.clear + ACT3.flowSweep * lv.sandbar + LINEAGE.glassSweep * trait(s, 'glass-gardeners') + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
+    siltK: ACT3.naturalSweep + (lives(s, 'pistol-shrimp') ? 0.04 : 0) + 0.02 * s.favours.clear + (chose(s, 'eggs', 'b') ? 0.02 : 0) + ACT3.flowSweep * lv.sandbar + LINEAGE.glassSweep * trait(s, 'glass-gardeners') + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
     sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1) * (relic(s, 'midden') ? 1.3 : 1) * (lives(s, 'sea-cucumber') ? 1.4 : 1) * (chose(s, 'turtle', 'b') ? 1.25 : 1) * (has(s, 'rasp-song') ? 1.3 : 1) * (chose(s, 'young-rasp', 'b') ? 1.15 : 1) * (paired(s, 'pistol-shrimp', 'sea-cucumber') ? 1.2 : 1),
     sandK: ACT3.sandSettle,
     bloomP: sunlight(s, target) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * ACT4.meadowBloom ** lv.meadow *
@@ -243,7 +243,7 @@ export function rates(s: GameState): Rates {
     bloomK: ACT4.bloomFade * (chose(s, 'turtle', 'a') ? 0.8 : 1),
     spawnP: target >= ACT5.from
       ? lv.polyp * ACT5.spawnRate * ACT5.ripenSpawn ** lv.ripen * (speaks(s, 'broadcast') ? 2 : 1) *
-        (1 + sunlight(s, target) * lv.symbiont / 100) * (chose(s, 'bird', 'b') ? 1.1 : 1) * (has(s, 'last-spawning') ? 1.25 : 1) * 1.15 ** s.works.pool
+        (1 + sunlight(s, target) * lv.symbiont / 100) * (chose(s, 'bird', 'b') ? 1.1 : 1) * (chose(s, 'last-night', 'b') ? 1.05 : 1) * (has(s, 'last-spawning') ? 1.25 : 1) * 1.15 ** s.works.pool
       : 0,
     spawnK: ACT5.spawnFade * (chose(s, 'bird', 'a') ? 0.8 : 1) * (chose(s, 'first-light', 'b') ? 0.85 : 1),
     calciteBase:
@@ -255,11 +255,11 @@ export function rates(s: GameState): Rates {
       (speaks(s, 'massive') ? 1.5 : 1) *
       1.5 ** trait(s, 'deep-memory') *
       knownBonus(s) * shardBonus(s) *
-      (lives(s, 'goby') ? 1.15 : 1) * (chose(s, 'whale-fall', 'a') ? 1.1 : 1) * 1.05 ** s.works.garden *
+      (lives(s, 'goby') ? 1.15 : 1) * (chose(s, 'whale-fall', 'a') ? 1.1 : 1) * (chose(s, 'snow', 'a') ? 1.05 : 1) * 1.05 ** s.works.garden *
       (boon(s, 'currents') ? 1.15 : 1),
     calciteK:
       ACT1.dissolve * sm.dissolve * ACT1.latticeFactor ** lv.lattice * (ACT1.ventAcid * sm.ventAcid) ** vent * (vent > 0 && chose(s, 'vent-crack', 'a') ? 0.8 : 1) *
-      (has(s, 'lattice-songs') ? 0.7 : 1) * (chose(s, 'brittle', 'a') ? 0.9 : 1) * (chose(s, 'cleaners', 'b') ? 0.9 : 1) * (boon(s, 'roots') ? 0.85 : 1) * (speaks(s, 'massive') ? 0.5 : 1) +
+      (has(s, 'lattice-songs') ? 0.7 : 1) * (chose(s, 'brittle', 'a') ? 0.9 : 1) * (chose(s, 'cleaners', 'b') ? 0.9 : 1) * (chose(s, 'snow', 'b') ? 0.95 : 1) * (chose(s, 'last-night', 'a') ? 0.9 : 1) * (boon(s, 'roots') ? 0.85 : 1) * (speaks(s, 'massive') ? 0.5 : 1) +
       (speaks(s, 'mucus') ? 0 : ACT3.raspEat * rasp * (s.truce.terms === 'b' ? ACT3.politeEat : 1) * (lives(s, 'guard-crab') ? 0.5 : 1) * (chose(s, 'young-rasp', 'a') ? 0.8 : 1) * (paired(s, 'guard-crab', 'goby') ? 0.8 : 1)),
     lureMax: ACT1.lureMax + ACT1.lureMaxPerPattern * lv.lure + (has(s, 'fear') ? 1 : 0) + (speaks(s, 'fluorescent') ? 2 : 0) +
       (relic(s, 'lamp-hall') ? 1 : 0) + 0.5 * s.works.spire + (chose(s, 'angler', 'a') ? 0.5 : 0),
@@ -683,9 +683,14 @@ function roamSite(s: GameState): Site {
   };
 }
 
+/** How much shorter trips are on this reef (Old maps, Near ruins, the drifting lamp). */
+function tripFactor(s: GameState): number {
+  return (trait(s, 'old-maps') ? 0.5 : 1) * (boon(s, 'near-ruins') ? 0.5 : 1) * (chose(s, 'old-lamp', 'b') ? 0.85 : 1);
+}
+
 /** How long a trip takes this reef (Old maps halves it). */
 export function tripSeconds(s: GameState, x: Site): number {
-  return x.seconds * (trait(s, 'old-maps') ? 0.5 : 1) * (boon(s, 'near-ruins') ? 0.5 : 1);
+  return x.seconds * tripFactor(s);
 }
 
 /** The trip the shoals are on now (a ruin, or a roam of the size that left), if any. */
@@ -739,7 +744,7 @@ function homecoming(s: GameState): void {
   const ex = s.expedition;
   const x = SITES.find((v) => v.id === ex.site);
   const roam = ex.site === 'roam', visit = ex.site === 'visit';
-  const seconds = (roam ? ROAM.seconds : visit ? VISIT.seconds : x?.seconds ?? 0) * (trait(s, 'old-maps') ? 0.5 : 1) * (boon(s, 'near-ruins') ? 0.5 : 1);
+  const seconds = (roam ? ROAM.seconds : visit ? VISIT.seconds : x?.seconds ?? 0) * tripFactor(s);
   const heard = EXPEDITION.heard * ex.n * seconds;
   s.jobs.feed += ex.feed;
   s.jobs.light += ex.light;

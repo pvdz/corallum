@@ -410,3 +410,4 @@ date, what landed, what is half-done, what's next.
 - Heirlooms: spawnLesser(s, where, heirloom); state.heirloom; relic() used for effects (found() for progress); 'What it carries' in the spawning card; test in prestige.test.ts.
 - Ossel's mistakes: content/ossel.ts (5), claims as whispers ('claim-<id>'), corrections told when the proof is found (meta.seen 'o:<id>'), kept in the Bands list (panel.keepStory), diary line, codex count.
 - Request streaks: each kept in a row adds +10% to the next pay (up to +50%); a swap breaks it; shown on the request line.
+- Four more moments (a blizzard of snow 120 m, a lamp drifting 2600 m, eggs in the dead stone 3600 m, the last night under water 3988 m): sixteen; tripFactor() gathers trip-length effects.
