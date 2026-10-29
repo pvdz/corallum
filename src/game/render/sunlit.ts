@@ -93,20 +93,24 @@ export function createSunlitScene(seed: number): Scene {
     }));
   }
 
-  function drawWater(ctx: CanvasRenderingContext2D, t: number, p: number): void {
+  function drawWater(ctx: CanvasRenderingContext2D, t: number, p: number, night: number): void {
+    // Day colours blend toward a deep moonlit navy by night.
+    const mix = (day: [number, number, number], dark: [number, number, number]) =>
+      `rgb(${day.map((c, i) => Math.round(c + (dark[i]! - c) * night)).join(',')})`;
     const g = ctx.createLinearGradient(0, 0, 0, h);
-    g.addColorStop(0, `rgb(${120 + p * 60},${220 + p * 20},${235 + p * 15})`);
-    g.addColorStop(0.35, '#2aa7c4');
-    g.addColorStop(0.8, '#0f6c93');
-    g.addColorStop(1, '#0a4f70');
+    g.addColorStop(0, mix([120 + p * 60, 220 + p * 20, 235 + p * 15], [40, 70, 120]));
+    g.addColorStop(0.35, mix([42, 167, 196], [14, 40, 82]));
+    g.addColorStop(0.8, mix([15, 108, 147], [6, 22, 52]));
+    g.addColorStop(1, mix([10, 79, 112], [4, 14, 36]));
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, w, h);
-    // The surface: a bright rippling band with the sun's glare in it.
+    // The surface: a bright rippling band with the sun's glare in it (the moon's, at night).
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     const sx = cx() + focus.w * 0.18;
-    glow(ctx, sx, -h * 0.02, h * 0.45, '255,250,220', 0.35 + 0.1 * p);
-    ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+    glow(ctx, sx, -h * 0.02, h * 0.45, '255,250,220', (0.35 + 0.1 * p) * (1 - night));
+    glow(ctx, cx() - focus.w * 0.2, -h * 0.02, h * 0.3, '190,210,255', 0.22 * night);
+    ctx.strokeStyle = `rgba(${night > 0.5 ? '190,210,255' : '255,255,255'},${0.18 - 0.08 * night})`;
     ctx.lineWidth = 2 * dpr;
     for (let k = 0; k < 3; k++) {
       ctx.beginPath();
@@ -116,12 +120,29 @@ export function createSunlitScene(seed: number): Scene {
       }
       ctx.stroke();
     }
+    // Moon shafts: few, thin and silver.
+    if (night > 0) {
+      for (let i = 0; i < 3; i++) {
+        const bx = cx() - focus.w * (0.2 - i * 0.1) + Math.sin(t * 0.06 + i * 2.7) * focus.w * 0.02;
+        const lg = ctx.createLinearGradient(0, 0, 0, h * 0.8);
+        lg.addColorStop(0, `rgba(190,210,255,${0.07 * night})`);
+        lg.addColorStop(1, 'rgba(190,210,255,0)');
+        ctx.fillStyle = lg;
+        ctx.beginPath();
+        ctx.moveTo(bx - focus.w * 0.006, 0);
+        ctx.lineTo(bx + focus.w * 0.006, 0);
+        ctx.lineTo(bx + focus.w * 0.03 - focus.w * 0.06, h * 0.8);
+        ctx.lineTo(bx - focus.w * 0.03 - focus.w * 0.06, h * 0.8);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
     // Sun shafts.
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 6 && night < 1; i++) {
       const bx = sx + focus.w * ((i - 3) * 0.12) + Math.sin(t * 0.08 + i * 2.1) * focus.w * 0.03;
       const spread = focus.w * (0.02 + 0.015 * Math.sin(t * 0.13 + i));
       const lg = ctx.createLinearGradient(0, 0, 0, h);
-      lg.addColorStop(0, `rgba(255,255,230,${0.10 + 0.05 * Math.sin(t * 0.3 + i)})`);
+      lg.addColorStop(0, `rgba(255,255,230,${(0.10 + 0.05 * Math.sin(t * 0.3 + i)) * (1 - night)})`);
       lg.addColorStop(1, 'rgba(255,255,230,0)');
       ctx.fillStyle = lg;
       ctx.beginPath();
@@ -704,7 +725,9 @@ export function createSunlitScene(seed: number): Scene {
       lastT = t;
       const night = nightAt(t);
       const L = layout(v, form);
-      water.draw(ctx, w, h, t, 0.2, `${w}x${h} ${p.toFixed(3)}`, (c, tq) => drawWater(c, tq, p));
+      // The night is quantised so the cache repaints only when it has visibly changed.
+      const nq = Math.round(night * 40) / 40;
+      water.draw(ctx, w, h, t, 0.2, `${w}x${h} ${p.toFixed(3)} ${nq}`, (c, tq) => drawWater(c, tq, p, nq));
       if (v.bands.includes('rain')) drawRain(ctx, t);
       drawWhale(ctx, t);
       drawMola(ctx, t);
@@ -717,7 +740,7 @@ export function createSunlitScene(seed: number): Scene {
       drawTurtle(ctx, t, v.meadows);
       drawAnemone(ctx, t);
       drawClumps(ctx, t);
-      if (night > 0) drawNight(ctx, t, night, 0.55);
+      if (night > 0) drawNight(ctx, t, night, 0.6);
       reef.draw(ctx, L, v, t);
       drawCraft(ctx, v.craft, reef, L, t, 1);
       slugs.draw(ctx, reef, L, t);
@@ -730,7 +753,7 @@ export function createSunlitScene(seed: number): Scene {
       drawFish(ctx, t);
       ctx.restore();
       shoals.drawFront(ctx, focus, reef, L, v, t, '#5d7d96');
-      if (night > 0) drawNight(ctx, t, night, 0.4);
+      if (night > 0) drawNight(ctx, t, night, 0.3);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
     },
   };

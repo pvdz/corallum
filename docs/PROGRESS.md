@@ -276,3 +276,4 @@ date, what landed, what is half-done, what's next.
 - Ossel's wall (Twilight): a slumped knobbly mound lit from above, broken branch stumps, bands with silt on their ledges, borer holes, dull sponge crusts, and Ossel's breathing light near the crest.
 - Stock sub-lines wrap instead of being cut off with an ellipsis (landscape phones, the spawn line on desktop).
 - Feat 'Known to all': touch 25 different creatures.
+- Sunlit night: the water itself turns moonlit navy (cached, keyed by the quantised night), the sun's glare and shafts fade into a moon glow and three thin silver shafts; the veils are rebalanced so the floor goes dim and the reef's own light shows.
