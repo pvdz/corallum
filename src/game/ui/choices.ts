@@ -81,6 +81,9 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
       }
     });
     b.style.setProperty('--lamp', `rgb(${rgb})`);
+    // Each lamp carries its key, so the pattern does not depend on telling the colours apart.
+    b.textContent = ['7', '8', '9', '0'][i]!;
+    b.setAttribute('aria-label', `Lamp ${i + 1}`);
     signalLamps.append(b);
     return b;
   });
