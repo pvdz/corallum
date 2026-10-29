@@ -240,3 +240,4 @@ date, what landed, what is half-done, what's next.
 - Sunlit Crown: a bait ball every 7 min (45 s, by day), small silver fish swirling, hunters darting through; journal: 37.
 - Reef tab: 'How the reef grows' (content/guide.ts), five lines on calcite, bands, holding, zones and the goal; folded by default.
 - Midnight Water: each Reading wakes more of the lights in Thousandfold's drowned towers (1 per tower before any, all after nine). Subtle, since the towers sink out of frame as the reef climbs.
+- Reading a band makes every light in the drowned towers flare for ~2 s before settling to the new level.
