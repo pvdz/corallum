@@ -233,6 +233,21 @@ export function createBreachScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** Sea sparkle before dawn: blue glints where the small waves break along the surface. */
+  function drawSparkle(ctx: CanvasRenderingContext2D, t: number, dawn: number): void {
+    if (dawn >= 1) return;
+    const wy = waterY();
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < 40; i++) {
+      const x = focus.x + ((i * 0.618034 + t * 0.004 * (i % 3 + 1)) % 1) * focus.w;
+      const on = Math.max(0, Math.sin(t * 1.7 + i * 2.3)) ** 8;
+      if (on < 0.05) continue;
+      glow(ctx, x, wy + Math.sin(x * 0.02 + t) * 2 * dpr, 6 * dpr, '90,190,255', 0.7 * on * (1 - dawn));
+    }
+    ctx.restore();
+  }
+
   function drawWaves(ctx: CanvasRenderingContext2D, t: number): void {
     const wy = waterY();
     ctx.strokeStyle = 'rgba(200,225,255,0.35)';
@@ -959,6 +974,7 @@ export function createBreachScene(seed: number): Scene {
       drawSong(ctx, v.song, this.crownAt[0], this.crownAt[1], t, scale());
       reef.drawEffects(ctx, L, v, effects.live(t));
       drawWaves(ctx, t);
+      drawSparkle(ctx, t, dawn);
       if (v.bands.includes('air')) drawGlowSurf(ctx, t, this.crownAt);
       drawSpawn(ctx, t, v, L, reef);
       if (this.bloomStrength > 0) {

@@ -471,3 +471,4 @@ date, what landed, what is half-done, what's next.
 - Rare: a milky sea in the Midnight Water (every 40 min, for 2), touch stirs swirls; journal entry.
 - Rare sights: a sardine run on the Twilight Shelf (every 30 min, a minute); the green flash at the Breach's sunrise after the release.
 - Rare: a squadron of eagle rays in the Sunlit Crown by day (every 25 min).
+- Sea sparkle at the Breach before dawn: blue glints where waves break.
