@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended polish (features, UI, graphics). Recent: neighbours (every creature tappable and answering, touch bonus), photo journal, view-mode zoom, Sunlit night, floor detail, daughter colonies, stock notes. Ideas: zoomed draw cost (caches bypassed), more night life, portraits retake.
+NOW: Open-ended polish (features, UI, graphics). Recent: neighbours (every creature tappable, reactions, gifts, touch bonus, rare-visitor notes), photo journal + lightbox, view-mode zoom, Sunlit night (sea fireflies, sleeping Rasp), moon everywhere (gauge moon, full-moon bundles), upgrade visuals (channels, pigments, lattice). Ideas: zoomed draw cost, more Breach detail.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
