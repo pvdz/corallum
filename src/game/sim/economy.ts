@@ -23,7 +23,7 @@ import { ACT5, BANDS_ACT5, GARDEN, MEMORIES, type Memory, type MemoryId } from '
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
 import { BOONS, LINEAGE, SEAMOUNTS, type BoonId, type Seamount, type SeamountId, type TraitId } from '../content/lineage.ts';
-import { FEAST, SIGNAL, THORN, WELCOME, intruderOf, type Intruder } from '../content/events.ts';
+import { DAILY, FEAST, SIGNAL, THORN, WELCOME, intruderOf, type Intruder } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { WORKS, type WorkId } from '../content/works.ts';
 import { COUSIN, SISTER } from '../content/sister.ts';
@@ -1326,6 +1326,16 @@ export function chooseStrain(s: GameState, id: StrainId): boolean {
   if (!strainOpen(s)) return false;
   s.strain = id;
   return true;
+}
+
+// ---------- A new day ----------
+
+/** The day's gift, once per calendar day (the client passes the day number). Returns the pay, or 0. */
+export function dailyGift(s: GameState, day: number): number {
+  if (day <= s.meta.lastDay || s.levels.polyp === 0) return 0;
+  s.meta.lastDay = day;
+  dig(s, 'feast');
+  return burst(s, DAILY.seconds);
 }
 
 // ---------- Before you go ----------

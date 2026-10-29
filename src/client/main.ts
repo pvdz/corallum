@@ -31,12 +31,12 @@ import { PALETTES } from '../game/content/palettes.ts';
 import { REQUEST } from '../game/content/requests.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, forkOpen, strainOpen, takeFork, chooseStrain, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio } from '../game/audio/audio.ts';
-import { AWAY_PREP, FEAST, SIGNAL, THORN, WELCOME } from '../game/content/events.ts';
+import { AWAY_PREP, DAILY, FEAST, SIGNAL, THORN, WELCOME } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS, TRIAL_TEXT } from '../game/content/lineage.ts';
 import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf, TRUST, trustLevel, COMPANION } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
@@ -389,6 +389,13 @@ const panel = createPanel(ui, {
   },
 });
 panel.primeStories(state);
+// A new day's gift (calendar days in local time; never in debug sessions).
+if (frozenT === null && botT === null) {
+  const now0 = new Date();
+  const day = Math.floor((now0.getTime() - now0.getTimezoneOffset() * 60_000) / 86_400_000);
+  const pay = dailyGift(state, day);
+  if (pay > 0) setTimeout(() => showJournalNote(DAILY.kicker, `${DAILY.text} +${num(pay)} ${feastPay(state)}`), 2500);
+}
 // Once after an update: what is new (not on a brand-new reef, which meets everything as it comes).
 if (!state.meta.seen.includes(NEWS.id) && (state.t > 600 || state.meta.spawnings > 0) && frozenT === null && botT === null) {
   state.meta.seen.push(NEWS.id);

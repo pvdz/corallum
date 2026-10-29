@@ -42,6 +42,8 @@ export type Meta = {
   records: number[];
   /** How many times the line has touched each creature (content/creatures.ts TRUST). */
   trust: Record<CreatureId, number>;
+  /** The last calendar day (days since 1970, from the client) a daily gift was taken. */
+  lastDay: number;
   /** The line's companion creature ('' none). */
   companion: string;
   /** The colours the line's reefs wear in the light (content/palettes.ts; '' for the reef's own). */
@@ -68,6 +70,7 @@ export function newMeta(): Meta {
     shards: [],
     palette: '',
     companion: '',
+    lastDay: 0,
     records: [0, 0, 0, 0, 0],
     trust: Object.fromEntries(CREATURES.map((c) => [c.id, 0])) as Record<CreatureId, number>,
   };

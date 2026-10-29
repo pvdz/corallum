@@ -11,6 +11,9 @@ export const AWAY_PREP = {
   nothing: 'nothing to change: the reef is ready',
 } as const;
 
+/** A new day: the first visit of each calendar day brings a small gift. */
+export const DAILY = { seconds: 600, kicker: 'A new day', text: 'Ossel has been keeping something for you.' } as const;
+
 export const WELCOME = {
   /** Offered after this long away (sim seconds). */
   after: 3600,

@@ -448,3 +448,4 @@ date, what landed, what is half-done, what's next.
 - Each memory the line has ever carried: +1% calcite on every reef (knownBonus), listed in What shapes this reef.
 - New creature: a dugong grazing the Sunlit meadows (four or more); touched it rises to breathe.
 - Secret ending page 'remembered' (all Ossel's mistakes found + whole tablet) and a hidden feat.
+- A new day's gift: first visit each local calendar day pays 10 minutes of the zone's currency and a shard roll (economy dailyGift; meta.lastDay; client passes the day).

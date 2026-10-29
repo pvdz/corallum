@@ -144,6 +144,9 @@ spire's lamps dazzle it away at the last moment, for half.
 the lanternfish flash a pattern on four lamps; repeat it for 20 s of production per light. Patterns
 grow from 3 to 8 lights as you answer right. One try per slot. A small memory game, never needed.
 
+**A new day**: the first visit of each calendar day brings Ossel's morning gift (10 minutes of the zone's
+currency and a shard roll). The day number comes from the client; the sim stays clock-free.
+
 **Welcome back**: after an hour or more away, the away summary offers one of two gifts: a haul of
 stone (5% of each second away's calcite production, at most 8 h of it) or a search of the silt
 (three shard chances). A small choice on return; absence costs nothing and earns a little.
