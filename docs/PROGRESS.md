@@ -586,3 +586,4 @@ date, what landed, what is half-done, what's next.
 - The near foreground also in the Silt Floor and Midnight Water, near-black with small lights on the fan that blur into soft bokeh.
 - The near foreground at the Breach too (under the surface, dark blue).
 - Feat Wading in light: 40 sweeps through a milky sea (tally.milky).
+- Corallites: small pits with pale rims along every thick branch (reef.ts drawBranches; drawn into the branch cache).

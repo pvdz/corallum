@@ -167,6 +167,41 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
         ctx.stroke();
       }
     }
+    // Corallites: the cups each polyp sits in, small pits with a pale rim along every thick branch.
+    ctx.fillStyle = shadow;
+    const rims: number[] = [];
+    ctx.globalAlpha = 0.55;
+    for (let i = 0; i < coral.count; i++) {
+      const r = radii[i]!;
+      const p = coral.parent[i]!;
+      if (r <= 0 || p < 0) continue;
+      const lw = r * u * 2;
+      if (lw < 5 * L.dpr) continue;
+      const [x0, y0] = nodePx(L, p);
+      const [x1, y1] = nodePx(L, i);
+      const len = Math.hypot(x1 - x0, y1 - y0);
+      const nx = -(y1 - y0) / (len || 1), ny = (x1 - x0) / (len || 1);
+      const n = Math.floor(len / (lw * 0.55));
+      for (let k = 0; k < n; k++) {
+        const h = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453;
+        const across = ((h - Math.floor(h)) - 0.5) * 0.7 * lw;
+        const along = (k + 0.5) / n;
+        const px = x0 + (x1 - x0) * along + nx * across, py = y0 + (y1 - y0) * along + ny * across;
+        const pr = lw * 0.07 + 0.4 * L.dpr;
+        ctx.beginPath();
+        ctx.arc(px, py, pr, 0, Math.PI * 2);
+        ctx.fill();
+        rims.push(px - pr * 0.4, py - pr * 0.5, pr * 0.55);
+      }
+    }
+    ctx.fillStyle = light;
+    ctx.globalAlpha = 0.4;
+    for (let k = 0; k < rims.length; k += 3) {
+      ctx.beginPath();
+      ctx.arc(rims[k]!, rims[k + 1]!, rims[k + 2]!, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
     // Growth bands: faint rings where the stone crossed each band line.
     if (L.bandStep > 0) {
       ctx.fillStyle = 'rgba(255,215,200,0.16)';
