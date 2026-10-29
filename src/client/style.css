@@ -62,7 +62,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .stock[hidden] { display: none; }
 .stock-name { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim); }
 .stock-value { font-family: var(--display); font-size: 22px; text-align: right; font-variant-numeric: tabular-nums; }
-.stock-sub { grid-column: 1 / -1; font-size: 11px; color: var(--ink-dim); text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.stock-sub { grid-column: 1 / -1; font-size: 11px; color: var(--ink-dim); text-align: right; font-variant-numeric: tabular-nums; }
 .stock.calcite .stock-value { color: var(--calcite); text-shadow: 0 0 14px rgba(255, 150, 120, 0.35); }
 .stock.glow .stock-value { color: var(--glowc); text-shadow: 0 0 14px rgba(120, 255, 230, 0.45); }
 .stock.falling .stock-sub { color: #ffb4a0; }

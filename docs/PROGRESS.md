@@ -274,3 +274,4 @@ date, what landed, what is half-done, what's next.
 - Plankton sparks on a tap now also light up under the Breach's surface (until the dawn after the release) and in the Sunlit Crown at night (Scene.darkAt).
 - Journal: '· touched' after the names of creatures you have touched.
 - Ossel's wall (Twilight): a slumped knobbly mound lit from above, broken branch stumps, bands with silt on their ledges, borer holes, dull sponge crusts, and Ossel's breathing light near the crest.
+- Stock sub-lines wrap instead of being cut off with an ellipsis (landscape phones, the spawn line on desktop).
