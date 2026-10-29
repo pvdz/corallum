@@ -932,7 +932,29 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       featList.append(el('dt', got ? '' : 'unknown', secret ? '???' : f.name), el('dd', got ? '' : 'unknown', secret ? 'A secret.' : pr ? `${f.text} (${Math.min(pr[0], pr[1])} of ${pr[1]})` : f.text));
     }
   }
-  lineagePage.append(lineageHead, spawnCard);
+  // The chronicle: every ending the line has reached, and what each carried.
+  const chronicle = el('article', 'card codex chronicle');
+  const chronHead = el('h3', '', 'The chronicle');
+  const chronList = el('ol', 'diary-list');
+  chronicle.append(chronHead, chronList);
+  collapsible(chronicle, chronHead);
+  let chronKey = '';
+  function renderChronicle(s: GameState): void {
+    chronicle.hidden = s.meta.chronicle.length === 0;
+    const key = s.meta.chronicle.join(';');
+    if (key === chronKey) return;
+    chronKey = key;
+    chronHead.textContent = `The chronicle · ${s.meta.chronicle.length} ending${s.meta.chronicle.length === 1 ? '' : 's'}`;
+    chronList.innerHTML = '';
+    s.meta.chronicle.forEach((line, i) => {
+      const [sm, ids, hours] = line.split('|');
+      const names = (ids ?? '').split(',').map((id) => MEMORIES.find((m) => m.id === id)?.title ?? id).join(', ');
+      const li = el('li');
+      li.append(el('span', 'diary-when', `${i + 1} · ${seamountDef((sm ?? 'plain') as SeamountId).name.replace(/^A /, '')} · ${hours} h`), el('span', 'diary-what', names));
+      chronList.append(li);
+    });
+  }
+  lineagePage.append(lineageHead, spawnCard, chronicle);
   const traitCards = new Map<TraitId, Card>();
   const groupHead = (g: keyof typeof TRAIT_GROUPS) =>
     lineagePage.append(el('h4', 'trait-group', TRAIT_GROUPS[g].title), el('p', 'hint', TRAIT_GROUPS[g].text));
@@ -1871,6 +1893,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       renderTablet(s);
       renderDiary(s);
       renderShapes(s);
+      renderChronicle(s);
       renderHeirs(s);
       renderCity(s);
       renderFeats(s);

@@ -1117,6 +1117,8 @@ export function breach(s: GameState, memories: MemoryId[]): boolean {
   s.breachedAt = s.t;
   s.meta.carriedEver = [...new Set([...s.meta.carriedEver, ...unique])];
   s.meta.endings++;
+  // The line's chronicle: one line per ending (seamount, memories carried, hours it took).
+  s.meta.chronicle = [...s.meta.chronicle, `${s.seamount}|${unique.join(',')}|${Math.round(s.t / 360) / 10}`].slice(-30);
   return true;
 }
 
