@@ -529,7 +529,7 @@ export function createAbyssScene(seed: number): Scene {
       // The reef's light holds back the dark: the more glow, the wider the lit water round it.
       {
         const [dcx, dcy] = reef.crown(L);
-        drawDarkness(ctx, dcx, dcy - L.unit * 0.1, Math.max(focus.w, focus.h) * (0.32 + 0.3 * v.glowLevel), 0.42);
+        drawDarkness(ctx, dcx, dcy - L.unit * 0.1, Math.max(focus.w, focus.h) * (0.32 + 0.3 * v.glowLevel + 0.5 * Math.max(0, 1 - v.sinceFlare / 5)), 0.42);
       }
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
       fore.draw(ctx, focus, t, '4,6,18', 0.9, '170,140,255');

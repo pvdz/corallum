@@ -20,6 +20,8 @@ export type ReefView = {
   height: number;
   /** 0..1, how strongly the glow lure is working. */
   glowLevel: number;
+  /** Seconds since the lure was last flared (the light blazes out wide for a few seconds). */
+  sinceFlare: number;
   /** Seconds since the last hand sweep, for the tentacle flick. */
   sinceSweep: number;
   /** Vent chimney tier, 0 = none. */
