@@ -6,6 +6,7 @@ import { createSlugs } from './slugs.ts';
 import { drawSong } from './song.ts';
 import { drawThorn } from './thorn.ts';
 import { drawTerrace } from './works.ts';
+import { SHELLS } from '../content/shells.ts';
 import { drawRelics } from './relics.ts';
 import { drawResidents } from './residents.ts';
 import { palette } from '../content/palettes.ts';
@@ -731,6 +732,51 @@ export function createSunlitScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** A shell lying on the sand (tap to keep it): a small shape in its colour, glinting now and then. */
+  function drawShell(ctx: CanvasRenderingContext2D, t: number, u: number, id: string): void {
+    const s = scale() * 1.6;
+    const x = focus.x - focus.w * 0.1 + u * focus.w * 1.2, y = floorY(u) + 1 * s;
+    const sh = SHELLS.find((v) => v.id === id);
+    spot('shell', x, y - 3 * s, 16 * s);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.fillStyle = sh?.colour ?? '#e8dcc8';
+    ctx.strokeStyle = 'rgba(90,60,40,0.5)';
+    ctx.lineWidth = 0.6 * s;
+    ctx.beginPath();
+    if (id === 'scallop') {
+      ctx.moveTo(0, 0);
+      ctx.arc(0, 0, 5 * s, Math.PI * 1.1, Math.PI * 1.9);
+      ctx.closePath();
+      ctx.fill();
+      for (let k = 0; k < 5; k++) { ctx.moveTo(0, 0); ctx.lineTo(Math.cos(Math.PI * (1.15 + k * 0.17)) * 5 * s, Math.sin(Math.PI * (1.15 + k * 0.17)) * 5 * s); }
+      ctx.stroke();
+    } else if (id === 'sand-dollar') {
+      ctx.ellipse(0, -1.5 * s, 4.5 * s, 1.6 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    } else if (id === 'auger' || id === 'cone') {
+      ctx.moveTo(-5 * s, 0);
+      ctx.lineTo(5 * s, -1.5 * s);
+      ctx.lineTo(-5 * s, -3.5 * s);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    } else {
+      ctx.ellipse(0, -2 * s, 4.5 * s, 2.6 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    }
+    ctx.restore();
+    const glint = Math.max(0, Math.sin(t * 2.2)) ** 12;
+    if (glint > 0.05) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      glow(ctx, x + 1 * s, y - 3 * s, 6 * s, '255,250,230', 0.8 * glint);
+      ctx.restore();
+    }
+  }
+
   /** Eagle rays (rare): every 25 minutes a line of spotted rays flies across the upper water. */
   function drawEagleRays(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 1500, length = 40;
@@ -1180,6 +1226,7 @@ export function createSunlitScene(seed: number): Scene {
       if (night < 0.5) drawCuttlefish(ctx, t);
       if (night < 0.5) drawReefShark(ctx, t);
       drawDugong(ctx, t, v.meadows);
+      if (v.shell) drawShell(ctx, t, v.shell.x, v.shell.id);
       if (night < 0.5) drawSeaSnake(ctx, t);
       if (night < 0.5) drawEagleRays(ctx, t);
       drawClumps(ctx, t);

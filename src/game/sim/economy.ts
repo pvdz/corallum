@@ -28,6 +28,7 @@ import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { WORKS, type WorkId } from '../content/works.ts';
 import { COUSIN, SISTER } from '../content/sister.ts';
 import { DIARY_TEXT } from '../content/diary.ts';
+import { SHELL, SHELLS } from '../content/shells.ts';
 import { SHARD, SHARD_LINES, type ShardSource } from '../content/shards.ts';
 import { REQUEST, REQUESTS, type RequestKind } from '../content/requests.ts';
 import { MOMENTS, type MomentId } from '../content/moments.ts';
@@ -179,7 +180,9 @@ export function knownBonus(s: GameState): number {
   let friends = 0;
   for (const n of Object.values(s.meta.trust)) if (n >= TRUST.at[2]) friends++;
   // Every memory the line has ever carried out to sea adds a little too.
-  return 1 + KNOWN_BONUS * seen + TOUCH_BONUS * touched + FRIEND_BONUS * friends + MEMORY_BONUS * s.meta.carriedEver.length;
+  // Shells on the line's shelf.
+  const shells = SHELL.each * s.meta.shells.length + (s.meta.shells.length >= SHELLS.length ? SHELL.whole : 0);
+  return 1 + KNOWN_BONUS * seen + TOUCH_BONUS * touched + FRIEND_BONUS * friends + MEMORY_BONUS * s.meta.carriedEver.length + shells;
 }
 
 /** This run's seamount and how it bends the numbers. */
@@ -1554,6 +1557,31 @@ export function answerSignal(s: GameState, answer: readonly number[]): number {
   if (answer.length !== sig.pattern.length || answer.some((a, i) => a !== sig.pattern[i])) return 0;
   s.signal.answered++;
   return burst(s, SIGNAL.secondsPerLight * sig.pattern.length);
+}
+
+// ---------- Shells ----------
+
+/** The shell lying on the Sunlit sand now (slot, place 0..1, kind), if one is still to pick up. */
+export function currentShell(s: GameState): { k: number; x: number; id: string } | null {
+  if (actAt(s.height) !== SHELL.zone) return null;
+  const k = Math.floor(s.t / SHELL.period);
+  if (k <= s.shelled) return null;
+  const r = mulberry32((s.seed ^ 0x5e11) + Math.imul(k, 0x9e3779b1));
+  const start = k * SHELL.period + r() * (SHELL.period - SHELL.life);
+  if (s.t < start || s.t >= start + SHELL.life) return null;
+  // New kinds first, then any.
+  const left = SHELLS.filter((x) => !s.meta.shells.includes(x.id));
+  const pool = left.length ? left : SHELLS;
+  return { k, x: 0.12 + r() * 0.76, id: pool[Math.floor(r() * pool.length)]!.id };
+}
+
+/** Pick up the shell: kept by the line if new. Returns its id, or ''. */
+export function pickShell(s: GameState): string {
+  const sh = currentShell(s);
+  if (!sh) return '';
+  s.shelled = sh.k;
+  if (!s.meta.shells.includes(sh.id)) s.meta.shells.push(sh.id);
+  return sh.id;
 }
 
 // ---------- Thorn stars ----------

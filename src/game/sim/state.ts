@@ -42,6 +42,8 @@ export type Meta = {
   records: number[];
   /** How many times the line has touched each creature (content/creatures.ts TRUST). */
   trust: Record<CreatureId, number>;
+  /** Shells the line has kept (content/shells.ts). */
+  shells: string[];
   /** One entry per ending: "seamount|memory,ids|hours" (oldest first). */
   chronicle: string[];
   /** The last calendar day (days since 1970, from the client) a daily gift was taken. */
@@ -74,6 +76,7 @@ export function newMeta(): Meta {
     companion: '',
     lastDay: 0,
     chronicle: [],
+    shells: [],
     records: [0, 0, 0, 0, 0],
     trust: Object.fromEntries(CREATURES.map((c) => [c.id, 0])) as Record<CreatureId, number>,
   };
@@ -129,6 +132,8 @@ export type GameState = {
   feasted: number;
   /** The shoals' signals: last slot tried, and how many answered right. */
   signal: { last: number; answered: number };
+  /** Index of the last shell slot picked up. */
+  shelled: number;
   /** Index of the last thorn-star slot driven off. */
   thorned: number;
   /** Falling feasts caught this run. */
@@ -214,6 +219,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     lastSweep: -1e9,
     feasted: -1,
     thorned: -1,
+    shelled: -1,
     signal: { last: -1, answered: 0 },
     feasts: 0,
     history: [],

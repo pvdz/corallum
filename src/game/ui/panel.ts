@@ -13,6 +13,7 @@ import { GARDEN, LINE_TITLES, MEMORIES, type MemoryId } from '../content/act5.ts
 import { COMPANION, CREATURES, TRUST, trustLevel } from '../content/creatures.ts';
 import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
 import { upgradeIcon } from './icons.ts';
+import { SHELL, SHELLS } from '../content/shells.ts';
 import { button, el } from './dom.ts';
 import { createChoices } from './choices.ts';
 import { drawCity, drawTablet } from './drawings.ts';
@@ -714,7 +715,27 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     cityNote.textContent = s.tally.roams ? `${s.tally.roams} ${CITY_MAP.roams}` : '';
     drawCity(cityCanvas, s.relics, s.tally.roams, s.seed);
   }
-  bandsPage.append(codex, journal, readingCard, tablet, cityCard, diary, bandsIntro, bandList);
+  // The shelf: shells the line has kept.
+  const shelf = el('article', 'card codex shelf');
+  const shelfHead = el('h3');
+  const shelfRow = el('div', 'shelf-row');
+  shelf.append(shelfHead, shelfRow);
+  let shelfKey = '';
+  function renderShelf(s: GameState): void {
+    shelf.hidden = s.meta.shells.length === 0;
+    const key = s.meta.shells.join();
+    if (key === shelfKey) return;
+    shelfKey = key;
+    shelfHead.textContent = `${SHELL.label} · ${s.meta.shells.length} of ${SHELLS.length} · calcite +${s.meta.shells.length + (s.meta.shells.length >= SHELLS.length ? 5 : 0)}%`;
+    shelfRow.innerHTML = '';
+    for (const sh of SHELLS) {
+      const got = s.meta.shells.includes(sh.id);
+      const d = el('span', got ? 'shell-chip' : 'shell-chip missing', got ? sh.name : '?');
+      if (got) d.style.borderColor = sh.colour;
+      shelfRow.append(d);
+    }
+  }
+  bandsPage.append(codex, journal, readingCard, tablet, shelf, cityCard, diary, bandsIntro, bandList);
   let codexKey = '';
   function codexRow(term: string, value: string): void {
     codexList.append(el('dt', '', term), el('dd', '', value));
@@ -1767,6 +1788,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       renderTablet(s);
       renderDiary(s);
       renderShapes(s);
+      renderShelf(s);
       renderChronicle(s);
       renderHeirs(s);
       renderCity(s);

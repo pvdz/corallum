@@ -19,12 +19,12 @@ export function takeSightings(): CreatureId[] {
 }
 
 /** Where creatures were drawn this frame, for tapping them (device pixels). */
-export type Spot = { id: CreatureId | 'ossel'; x: number; y: number; r: number };
+export type Spot = { id: CreatureId | 'ossel' | 'shell'; x: number; y: number; r: number };
 let spots: Spot[] = [];
 let nextSpots: Spot[] = [];
 
 /** A creature was drawn at (x, y) with roughly radius r (device pixels). */
-export function spot(id: CreatureId | 'ossel', x: number, y: number, r: number): void {
+export function spot(id: CreatureId | 'ossel' | 'shell', x: number, y: number, r: number): void {
   nextSpots.push({ id, x, y, r });
 }
 
@@ -50,15 +50,15 @@ export function creatureAt(x: number, y: number): Spot | null {
 }
 
 /** The last time each creature was touched (scene time) and where (device pixels). */
-const touched = new Map<CreatureId | 'ossel', { t: number; x: number; y: number }>();
+const touched = new Map<CreatureId | 'ossel' | 'shell', { t: number; x: number; y: number }>();
 
 /** A creature was tapped: its renderer may react (eels duck, an octopus inks, a jelly flashes). */
-export function startle(id: CreatureId | 'ossel', t: number, x: number, y: number): void {
+export function startle(id: CreatureId | 'ossel' | 'shell', t: number, x: number, y: number): void {
   touched.set(id, { t, x, y });
 }
 
 /** Seconds since the creature was last touched, and where (null if never or before `t`). */
-export function startled(id: CreatureId | 'ossel', t: number): { age: number; x: number; y: number } | null {
+export function startled(id: CreatureId | 'ossel' | 'shell', t: number): { age: number; x: number; y: number } | null {
   const e = touched.get(id);
   return e && t >= e.t ? { age: t - e.t, x: e.x, y: e.y } : null;
 }

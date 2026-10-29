@@ -112,3 +112,17 @@ test('the fork: pressing on makes the trip half again as long and brings a shard
   assert.deepEqual(s.relics, ['gate']);
   assert.ok(s.meta.shards.length >= 1);
 });
+
+test('shells: one per slot on the Sunlit sand, new kinds first, kept by the line', async () => {
+  const { currentShell, pickShell, knownBonus } = await import('../../src/game/sim/economy.ts');
+  const { state: s } = runBot((x) => x.height >= 3850, 12 * 3600, { ventures: false });
+  s.meta.shells = [];
+  const before = knownBonus(s);
+  let sh = null;
+  for (let i = 0; i < 400 && !sh; i++) { advance(s, 5); sh = currentShell(s); }
+  assert.ok(sh);
+  assert.equal(pickShell(s), sh!.id);
+  assert.equal(currentShell(s), null);
+  assert.deepEqual(s.meta.shells, [sh!.id]);
+  assert.ok(knownBonus(s) > before);
+});

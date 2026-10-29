@@ -29,9 +29,10 @@ import { WATER } from '../game/content/waters.ts';
 import { COUSIN, SISTER } from '../game/content/sister.ts';
 import { PALETTES } from '../game/content/palettes.ts';
 import { REQUEST } from '../game/content/requests.ts';
+import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -68,6 +69,8 @@ declare global {
       readonly spots: { id: string; x: number; y: number }[];
       /** Move the clock to the next time slot with this water (for checking its look). */
       water(id: string): boolean;
+      /** Move the clock to the next shell on the sand (for checking it). */
+      shell(): boolean;
       /** Move the clock to the next shoal signal; returns its pattern (for checking it). */
       signal(): number[] | null;
       /** Move the clock into the next thorn star's climb (for checking it). */
@@ -551,6 +554,15 @@ window.corallum = {
   },
   get zoom() { return zoom.k; },
   flourish: (kind: string) => scene.effect(kind as EffectKind),
+  shell() {
+    const t0 = state.t;
+    for (let dt = 0; dt < 5000; dt += 5) {
+      state.t = t0 + dt;
+      if (currentShell(state)) { state.t += 3; return true; }
+    }
+    state.t = t0;
+    return false;
+  },
   signal() {
     const t0 = state.t;
     for (let dt = 0; dt < 5000; dt += 5) {
@@ -646,6 +658,7 @@ function view(): ReefView {
     gauge: gaugeAt(state.height),
     moments: state.moments,
     thorn: thornView(),
+    shell: currentShell(state),
     othersSpawn: actAt(state.height) === 4 && moonFull(state.t),
     planktonLevel: Math.min(1, (feeding(state.plankton) - 1) / 2),
     bands: state.bands,
@@ -881,7 +894,7 @@ function takePortrait(): void {
   // Zoomed in (2× or more), a creature large in view earns a sharper close-up, once.
   const closeUp = zoom.k >= 2;
   for (const p of tappable()) {
-    if (p.id === 'ossel' || !portraits.wants(p.id, closeUp)) continue;
+    if (p.id === 'ossel' || p.id === 'shell' || !portraits.wants(p.id, closeUp)) continue;
     const [x, y] = toScreen(p.x, p.y);
     const r = p.r * zoom.k;
     if (closeUp && r < 60 * dpr) continue;
@@ -968,7 +981,21 @@ canvas.addEventListener('pointerdown', (e) => {
   // The world point under the finger (the view may be zoomed).
   const [wx, wy] = toWorld(e.clientX * dpr, e.clientY * dpr);
   // Tapping a creature names it (the sweep still happens).
-  const who = creatureAt(wx, wy);
+  const hit = creatureAt(wx, wy);
+  // A shell on the sand: picked up for the line's shelf (no label, no gift).
+  if (hit?.id === 'shell') {
+    if (frozenT === null) {
+      const id = pickShell(state);
+      if (id) {
+        floatText(e.clientX, e.clientY - 20, `${SHELLS.find((x) => x.id === id)?.name ?? ''} ${SHELL.float}`, 'feast-float');
+        audio.cue('shard');
+        buzz(15);
+        save();
+      }
+    }
+    return;
+  }
+  const who = hit as (typeof hit & { id: CreatureId | 'ossel' }) | null;
   if (who?.id === 'ossel') sayOssel();
   if (who) {
     startle(who.id, frozenT ?? animT, wx, wy);
