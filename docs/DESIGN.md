@@ -229,6 +229,12 @@ Entry requires the last Act II Reading (*Inside the wall*): the story turn opens
   tablet, the squid moment and the sleeping turtle). The ending composes the release, one epilogue paragraph per
   memory, Ossel's closing (kept or let go), and the last line.
 
+**The night sky** (the Breach, before the release): no reef has seen stars, so this one names them
+after its own run: Ossel's Cup (always), the Beak (the Rasp met), the Two Branches (the sister raced),
+the Falling Whale, the Sleeper (turtle), the Lamp (lamp hall or the drifting lamp). Pick one in the
+sky card and tap its stars in order in the scene; each named adds spawn ×1.04, stays drawn in the
+sky, and the ending names them. Tracing is screen-only; only the naming is saved.
+
 **The epilogue garden** (principle 10): after the release, children can be planted in the dawn
 shallows (calcite, ×1.6 each, at most 12); each grows around the crown and adds +1 lineage when you
 begin again.

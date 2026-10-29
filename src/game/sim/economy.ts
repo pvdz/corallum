@@ -18,6 +18,7 @@
 import { ACT1, BANDS_ACT1, FLURRY, MILESTONES, STRAIN, type Milestone, type StrainId } from '../content/act1.ts';
 import { ACT2, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
 import { ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDLE, RIDDLES, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
+import { FIGURES, SKY, type FigureId } from '../content/sky.ts';
 import { ACT4, HEAT, BANDS_ACT4, DIALECTS, OTHERS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
 import { ACT5, BANDS_ACT5, GARDEN, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
@@ -218,7 +219,7 @@ export function rates(s: GameState): Rates {
     bloomK: ACT4.bloomFade * (inHeat(s) && !closedNow(s) ? HEAT.openFade : 1) * (chose(s, 'turtle', 'a') ? 0.8 : 1) * (speaks(s, 'lullaby') ? 0.7 : 1),
     spawnP: target >= ACT5.from
       ? lv.polyp * ACT5.spawnRate * ACT5.ripenSpawn ** lv.ripen * (speaks(s, 'broadcast') ? 2 : 1) *
-        (1 + sunlight(s, target) * lv.symbiont / 100) * (chose(s, 'bird', 'b') ? 1.1 : 1) * (chose(s, 'last-night', 'b') ? 1.05 : 1) * (has(s, 'last-spawning') ? 1.25 : 1) * 1.15 ** s.works.pool * 1.1 ** lv.cay * (lives(s, 'host-anemone') ? 1.15 : 1)
+        (1 + sunlight(s, target) * lv.symbiont / 100) * (chose(s, 'bird', 'b') ? 1.1 : 1) * (chose(s, 'last-night', 'b') ? 1.05 : 1) * (has(s, 'last-spawning') ? 1.25 : 1) * 1.15 ** s.works.pool * 1.1 ** lv.cay * (lives(s, 'host-anemone') ? 1.15 : 1) * SKY.spawnEach ** named(s)
       : 0,
     spawnK: ACT5.spawnFade * (chose(s, 'bird', 'a') ? 0.8 : 1) * (chose(s, 'first-light', 'b') ? 0.85 : 1),
     calciteBase:
@@ -1147,6 +1148,33 @@ export function memoryAvailable(s: GameState, m: Memory): boolean {
 
 export function memoriesAvailable(s: GameState): Memory[] {
   return MEMORIES.filter((m) => memoryAvailable(s, m));
+}
+
+// ---------- The night sky ----------
+
+/** The sky is there to look at: the reef has reached the Breach, and has not yet let go. */
+export function skyOpen(s: GameState): boolean {
+  return s.height >= ACT5.from && !ended(s);
+}
+
+/** A figure can be traced now. */
+export function figureOpen(s: GameState, id: FigureId): boolean {
+  const f = FIGURES.find((x) => x.id === id);
+  return !!f && skyOpen(s) && !s.sky[id] && f.when(s);
+}
+
+/** Name a traced figure (the tracing itself happens on the screen). */
+export function nameFigure(s: GameState, id: FigureId): boolean {
+  if (!figureOpen(s, id)) return false;
+  s.sky[id] = true;
+  return true;
+}
+
+/** Figures named on this reef. */
+export function named(s: GameState): number {
+  let n = 0;
+  for (const f of FIGURES) if (s.sky[f.id]) n++;
+  return n;
 }
 
 export function ended(s: GameState): boolean {

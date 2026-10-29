@@ -198,6 +198,7 @@ Tick items as they land; keep this list honest. Add items freely.
   - [x] each hard seamount has a moment of its own
   - [x] warm water in the Sunlit Crown: open (sun ×1.6, bleaching) or closed (sun ×0.5)
   - [x] Sun-shy trait: an open reef closes itself in warm water
+  - [x] the night sky at the Breach: name six figures by tracing their stars (spawn ×1.04 each, ending page, feat)
 - [ ] perf on a real phone (unmeasured: headless is software-rendered). Tools ready: `--lan` prints the network address, `?fps` shows a readout; see README "Trying it on a phone"
 - [x] rebalance pacing after the feature push (bot fell to ~4h): band cost growth 2: 1.18, 3: 1.28, 4: 1.2 → bot 7h28; test bound back to 6–11 h
 

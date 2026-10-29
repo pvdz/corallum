@@ -15,6 +15,7 @@ import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import type { CoralForm } from './coral.ts';
 import { drawMoon, glow } from './draw.ts';
+import { FIGURES, type Figure } from '../content/sky.ts';
 import { createLayerCache } from './layer.ts';
 import { drawCraft, FLUORESCENT_POLYP } from './craft.ts';
 import { createReef, type Reef, type ReefLayout } from './reef.ts';
@@ -150,6 +151,55 @@ export function createBreachScene(seed: number): Scene {
     if (great) glow(ctx, mx, my, r * 2.2, '255,200,150', 0.18 * lit);
     ctx.restore();
     drawMoonFace(ctx, phase, great, dawn);
+  }
+
+  /** A figure's star i, in device pixels: placed in the focus's share of the sky. */
+  function starAt(f: Figure, i: number): [number, number] {
+    const top = focus.y, sky = (waterY() - top) * 0.92;
+    const [u, v] = f.stars[i]!;
+    return [focus.x + focus.w * (f.at[0] + (u - 0.5) * f.size[0]), top + sky * (f.at[1] + (v - 0.5) * f.size[1])];
+  }
+
+  /**
+   * The figures of the night sky: named ones joined by faint lines for good; the one being traced
+   * shows all its stars brighter, the joined part drawn, the next star pulsing. Its stars are tappable.
+   */
+  function drawFigures(ctx: CanvasRenderingContext2D, t: number, v: ReefView, dawn: number): void {
+    const tr = v.sky.tracing;
+    if (!v.sky.named.length && !tr) return;
+    ctx.save();
+    ctx.lineCap = 'round';
+    for (const f of FIGURES) {
+      const isNamed = v.sky.named.includes(f.id);
+      const tracing = tr?.id === f.id;
+      if (!isNamed && !tracing) continue;
+      const n = isNamed ? f.stars.length : tr!.n;
+      const pts = f.stars.map((_, i) => starAt(f, i));
+      const fade = 1 - 0.7 * dawn;
+      // The lines joined so far (all of a named figure, closing it if it closes).
+      ctx.strokeStyle = isNamed ? `rgba(200,215,255,${0.28 * fade})` : `rgba(255,236,190,${0.75 * fade})`;
+      ctx.lineWidth = (isNamed ? 1 : 1.6) * dpr;
+      ctx.beginPath();
+      for (let i = 0; i < n; i++) i === 0 ? ctx.moveTo(pts[i]![0], pts[i]![1]) : ctx.lineTo(pts[i]![0], pts[i]![1]);
+      if (isNamed && f.close !== undefined) ctx.lineTo(pts[f.close]![0], pts[f.close]![1]);
+      ctx.stroke();
+      ctx.globalCompositeOperation = 'lighter';
+      for (let i = 0; i < pts.length; i++) {
+        const [x, y] = pts[i]!;
+        const next = tracing && i === n;
+        const joined = isNamed || i < n;
+        const tw = 0.85 + 0.15 * Math.sin(t * 2 + i * 1.7);
+        const r = (next ? 2.6 + 0.8 * Math.sin(t * 5) : joined ? 2 : 1.6) * dpr;
+        glow(ctx, x, y, r * (next ? 7 : 4), next ? '255,230,170' : '210,225,255', (next ? 0.5 : joined ? 0.3 : 0.18) * fade * tw);
+        ctx.fillStyle = `rgba(255,250,235,${(joined || next ? 0.95 : 0.7) * fade})`;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+        if (tracing) spot('star', x, y, Math.max(16 * dpr, 0.03 * focus.w), i);
+      }
+      ctx.globalCompositeOperation = 'source-over';
+    }
+    ctx.restore();
   }
 
   /** The moon's disc itself; drawn again after the glow pass, which would wash out its seas. */
@@ -930,6 +980,7 @@ export function createBreachScene(seed: number): Scene {
       const dawn = v.sinceBreach > 30 ? Math.min(1, (v.sinceBreach - 30) / 180) : 0;
       lastDawn = dawn;
       drawSky(ctx, t, v.moonPhase, v.greatMoon, dawn);
+      drawFigures(ctx, t, v, dawn);
       drawSea(ctx, t, v.moonPhase, dawn);
       drawSister(ctx, t, v.sister);
       drawChildren(ctx, v, t);

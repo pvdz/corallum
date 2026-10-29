@@ -32,7 +32,7 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -47,6 +47,7 @@ import { drawMoon, glow as glowAt } from '../game/render/draw.ts';
 import { GAUGE_MOON } from '../game/content/act5.ts';
 import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { HEAT } from '../game/content/act4.ts';
+import { FIGURES, SKY, type FigureId } from '../game/content/sky.ts';
 import { ACT1, MILESTONES, STRAINS, type Milestone } from '../game/content/act1.ts';
 import { OSSEL_LINES, OSSEL_LINES_TRUE, OSSEL_NOW, WHISPERS } from '../game/content/whispers.ts';
 import { NEWS } from '../game/content/guide.ts';
@@ -67,7 +68,7 @@ declare global {
       /** View-mode zoom factor (1 = none). */
       readonly zoom: number;
       /** The tappable creatures on screen, in CSS pixels. */
-      readonly spots: { id: string; x: number; y: number }[];
+      readonly spots: { id: string; x: number; y: number; n?: number }[];
       /** Move the clock to the next time slot with this water (for checking its look). */
       water(id: string): boolean;
       /** Move the clock to the next shell on the sand (for checking it). */
@@ -297,6 +298,11 @@ const panel = createPanel(ui, {
     scene.effect('pigment');
     audio.cue('shimmer');
     save();
+  },
+  tracing: () => tracing?.id ?? null,
+  trace(id) {
+    tracing = tracing?.id === id || !figureOpen(state, id) ? null : { id, n: 0 };
+    if (tracing) audio.cue('shimmer');
   },
   closeUp(closed) {
     closeUp(state, closed);
@@ -598,7 +604,7 @@ window.corallum = {
     return false;
   },
   get spots() {
-    return tappable().map((p) => ({ id: p.id, x: p.x / dpr, y: p.y / dpr }));
+    return tappable().map((p) => ({ id: p.id, x: p.x / dpr, y: p.y / dpr, n: p.n }));
   },
 };
 
@@ -633,6 +639,30 @@ function tripView(): ReefView['trip'] {
 function thornView(): ReefView['thorn'] {
   const th = currentThorn(state);
   return th ? { u: (state.t - th.start) / THORN.life, side: th.side, kind: th.kind } : null;
+}
+
+/** The figure being traced in the night sky (stars joined so far); only on screen, never saved. */
+let tracing: { id: FigureId; n: number } | null = null;
+
+/** A star of the figure being traced was tapped: the next one joins it; the last names the figure. */
+function tapStar(n: number, x: number, y: number): void {
+  if (!tracing || frozenT !== null) return;
+  if (n !== tracing.n) {
+    // The wrong star: the figure stays as it was; a soft note says so.
+    audio.cue('sweep');
+    return;
+  }
+  tracing.n++;
+  audio.cue('shimmer');
+  buzz(6);
+  const f = FIGURES.find((g) => g.id === tracing!.id)!;
+  if (tracing.n < f.stars.length) return;
+  tracing = null;
+  if (!nameFigure(state, f.id)) return;
+  floatText(x, y - 20, f.name, 'feast-float');
+  showJournalNote(SKY.title, `${f.name} · ${f.text}`);
+  audio.cue('moment');
+  save();
 }
 
 /** The warm spell as the Sunlit scene shows it: warmth eases in and out, an open reef pales and recovers. */
@@ -679,6 +709,7 @@ function view(): ReefView {
     shell: currentShell(state),
     flurry: inFlurry(state),
     heat: heatView(),
+    sky: { named: FIGURES.filter((f) => state.sky[f.id]).map((f) => f.id), tracing },
     othersSpawn: actAt(state.height) === 4 && moonFull(state.t),
     planktonLevel: Math.min(1, (feeding(state.plankton) - 1) / 2),
     bands: state.bands,
@@ -914,7 +945,7 @@ function takePortrait(): void {
   // Zoomed in (2× or more), a creature large in view earns a sharper close-up, once.
   const closeUp = zoom.k >= 2;
   for (const p of tappable()) {
-    if (p.id === 'ossel' || p.id === 'shell' || !portraits.wants(p.id, closeUp)) continue;
+    if (p.id === 'ossel' || p.id === 'shell' || p.id === 'star' || !portraits.wants(p.id, closeUp)) continue;
     const [x, y] = toScreen(p.x, p.y);
     const r = p.r * zoom.k;
     if (closeUp && r < 60 * dpr) continue;
@@ -1011,6 +1042,10 @@ canvas.addEventListener('pointerdown', (e) => {
   // Tapping a creature names it (the sweep still happens).
   const hit = creatureAt(wx, wy);
   // A shell on the sand: picked up for the line's shelf (no label, no gift).
+  if (hit?.id === 'star') {
+    tapStar(hit.n ?? -1, e.clientX, e.clientY);
+    return;
+  }
   if (hit?.id === 'shell') {
     if (frozenT === null) {
       const id = pickShell(state);

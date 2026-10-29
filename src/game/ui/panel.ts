@@ -2,6 +2,7 @@
 // reader and the away summary. Built once; `update()` only rewrites text and classes, so it
 // is cheap to call every frame.
 
+import type { FigureId } from '../content/sky.ts';
 import { ACT1, FLURRY, MILESTONES, type StrainId } from '../content/act1.ts';
 import type { Band, Currency, UpgradeId } from '../content/types.ts';
 import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
@@ -79,6 +80,9 @@ export type PanelHooks = {
   /** Turn the current (−2 … +2). */
   setCurrent(c: number): void;
   closeUp(closed: boolean): void;
+  /** Trace a figure of the night sky (again: stop). */
+  trace(id: FigureId): void;
+  tracing(): FigureId | null;
   /** Ask the Rasp a favour. */
   favour(id: FavourId): void;
   /** Answer a moment. */

@@ -1,5 +1,6 @@
 // Act V's UI: the moon card in the panel, the memory choice, and the ending sequence.
 
+import { FIGURES, SKY } from '../content/sky.ts';
 import { ACT5, ENDING, MEMORIES, type MemoryId } from '../content/act5.ts';
 import { CREATURES, trustLevel } from '../content/creatures.ts';
 import { OSSEL_MISTAKES } from '../content/ossel.ts';
@@ -131,6 +132,9 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
       const m = MEMORIES.find((x) => x.id === id);
       if (m) out.push(`${m.title}. ${m.epilogue}`);
     }
+    // The stars this reef named over the Breach.
+    const stars = FIGURES.filter((f) => s.sky[f.id]).map((f) => f.name);
+    if (stars.length) out.push(SKY.ending.replace('{names}', stars.length > 1 ? `${stars.slice(0, -1).join(', ')} and ${stars.at(-1)}` : stars[0]!));
     // The sister reef: ahead of it at the surface, or behind.
     if (s.race.decided >= 5) out.push(s.diary.some((d) => d.includes('|ahead|the surface')) ? ENDING.sisterAhead : ENDING.sisterBehind);
     // The secret page: every mistake of Ossel's found, and the tablet whole.

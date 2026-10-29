@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended goal (user): add features and gameplay, repeat. Latest: seamount moments; warm water in the Sunlit Crown (open/closed stance, bleaching, advance splits at the edges and skips repeated cycles). Keep a backlog in PLAN.md. Bot ~7 h; 7 browser tests + 55 sim tests green.
+NOW: Open-ended goal (user): add features and gameplay, repeat. Latest: seamount moments; warm water in the Sunlit Crown (+ Sun-shy trait); the night sky at the Breach (trace figures). Keep a backlog in PLAN.md. Bot ~7 h; 7 browser tests + 55 sim tests green.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -486,3 +486,4 @@ date, what landed, what is half-done, what's next.
 - Each hard seamount has a moment of its own (moments.ts `seamount`, nextMoment filters on it): krill, echo, far light, drifts, eyes.
 - Warm water (act4.ts HEAT; economy inHeat/untilHeat/heatLeft/closeUp/heatEdge/skipCycles; state.closed): a row in the water box with a Close up / Open toggle; Sunlit scene haze + bleached palette + pulled-in polyps; Ossel whispers at the first one. advance splits at heat edges; a month away skips whole repeated cycles (tested against stepped cycles).
 - Sun-shy trait (habit, 8 lineage): closedNow() = chosen closed, or warm water with the trait; rates, panel and scene read it.
+- The night sky (content/sky.ts FIGURES; economy skyOpen/figureOpen/nameFigure/named; state.sky): sky card in choices.ts, breach.ts drawFigures + 'star' spots with an index, main.ts tracing/tapStar; ending page + 'stars' feat; finale e2e traces Ossel's Cup.

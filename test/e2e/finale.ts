@@ -30,6 +30,16 @@ await withGame(async (open) => {
     await page.locator('.away:not([hidden]) button').click();
     for (let i = 0; i < 10 && (await page.locator('.reader:not([hidden])').count()); i++)
       await page.locator('.reader:not([hidden]) button').first().click();
+    // Name a figure in the night sky: trace Ossel's Cup star by star.
+    if (great) {
+      await page.locator('.sky-row', { hasText: "Ossel's Cup" }).locator('.sky-trace').click();
+      await page.waitForTimeout(300);
+      const stars = await page.evaluate(() => window.corallum!.spots.filter((p) => p.id === 'star').sort((a, b) => a.n! - b.n!));
+      for (const p of stars) { await page.mouse.click(p.x, p.y); await page.waitForTimeout(80); }
+      const cup = await page.evaluate(() => window.corallum!.state.sky.cup);
+      console.log(`${cup ? 'ok  ' : 'FAIL'} a figure traced and named in the night sky (${stars.length} stars)`);
+      if (!cup) failed = true;
+    }
     await page.locator('.moon-card button.release:not([disabled])').click({ timeout: 5000 });
     const memories = page.locator('.choice-screen .memory');
     const carry = great ? 4 : 3;
@@ -60,10 +70,11 @@ await withGame(async (open) => {
       if (label === 'The reef lives on') break;
     }
     const endedFlag = await page.evaluate(() => document.documentElement.classList.contains('ended'));
-    // Release, one per memory, the sister reef (once the race reached the surface), Ossel, the last line.
+    // Release, one per memory, the stars named, the sister reef (once the race reached the surface), Ossel, the last line.
     const sister = await page.evaluate(() => window.corallum!.state.race.decided >= 5 ? 1 : 0);
     const friends = await page.evaluate(() => Object.values(window.corallum!.state.meta.trust).some((n) => n >= 5) ? 1 : 0);
-    const ok = endedFlag && pages.length === carry + 4 + sister + friends && errors.length === 0;
+    const named = great ? 1 : 0; // the stars page
+    const ok = endedFlag && pages.length === carry + 4 + sister + friends + named && errors.length === 0;
     console.log(`${ok ? 'ok  ' : 'FAIL'} ${vp.name}: ${pages.length} ending pages${errors.length ? ' · ' + errors.join(' | ') : ''}`);
     failed ||= !ok;
   }

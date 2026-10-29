@@ -1,5 +1,6 @@
 // The whole game state. Plain JSON-able data so saving is a stringify.
 
+import type { FigureId } from '../content/sky.ts';
 import type { Job, ReadingId } from '../content/act2.ts';
 import type { StrainId } from '../content/act1.ts';
 import { CREATURES, type CreatureId } from '../content/creatures.ts';
@@ -116,6 +117,8 @@ export type GameState = {
   truce: Record<MeetingId, '' | 'a' | 'b'>;
   /** The glimmerseed strain ('' until chosen at 15 m). */
   strain: StrainId | '';
+  /** Figures named in the night sky over the Breach. */
+  sky: Record<FigureId, boolean>;
   /** The polyps are closed against warm water (Sunlit Crown). */
   closed: boolean;
   /** Reef height up the seamount, metres. */
@@ -211,6 +214,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     height: 0,
     strain: '',
     closed: false,
+    sky: { cup: false, beak: false, sister: false, whale: false, sleeper: false, lamp: false },
     levels: {
       polyp: 0, symbiont: 0, skeleton: 0, lattice: 0, vent: 0, lure: 0, shoal: 0, daughter: 0,
       grounds: 0, sandbar: 0, channel: 0, pigment: 0, canopy: 0, meadow: 0, ripen: 0, cay: 0,

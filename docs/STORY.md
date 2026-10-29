@@ -134,4 +134,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Residents (guard crabs, pistol shrimp, sea cucumbers, coral gobies, feather dusters, farmer damselfish) given homes in the reef | real coral symbioses (Trapezia crabs, gobies, damselfish gardens); limited slots are a genre convention | OK |
 | Warm water: open polyps bleach, closed ones take half the sun | real coral bleaching (heat stress expels symbionts); no game mechanic I know frames it as an open/close stance | OK |
 | Sun-shy (trait): the reef folds before warm water | plain description of the mechanic | OK |
+| Naming the stars after the run (Ossel's Cup, the Beak, the Two Branches, the Falling Whale, the Sleeper, the Lamp); tap-to-connect constellations | connect-the-stars minigames exist in many games (a mechanic, not lore); every name comes from this game's own events | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

@@ -9,7 +9,8 @@ import { actAt } from '../content/acts.ts';
 import { SIGNAL } from '../content/events.ts';
 import { EXPEDITION } from '../content/expeditions.ts';
 import { BOON_TEXT } from '../content/lineage.ts';
-import { boonsOffered, currentRiddle, currentSignal, forkOpen, othersCap, othersSpawning, strainOpen } from '../sim/economy.ts';
+import { FIGURES, SKY } from '../content/sky.ts';
+import { boonsOffered, figureOpen, skyOpen, currentRiddle, currentSignal, forkOpen, othersCap, othersSpawning, strainOpen } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { button, el } from './dom.ts';
 import { num } from './format.ts';
@@ -119,8 +120,37 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
   othersBox.append(othersKicker, othersText, othersChoices);
   grow.prepend(othersBox);
 
+  // ---------- The night sky over the Breach: figures to name ----------
+  const skyBox = el('section', 'truce sky');
+  skyBox.hidden = true;
+  const skyList = el('div', 'sky-list');
+  const skyRows = FIGURES.map((f) => {
+    const row = el('div', 'sky-row');
+    const name = el('strong');
+    const note = el('span', 'sky-note');
+    const b = button('sky-trace', SKY.trace, () => hooks.trace(f.id));
+    row.append(name, note, b);
+    skyList.append(row);
+    return { f, row, name, note, b };
+  });
+  skyBox.append(el('p', 'truce-kicker', `${SKY.title} · ${SKY.effect}`), el('p', 'truce-text', SKY.intro), skyList);
+  grow.prepend(skyBox);
+
   return {
     update(s: GameState): void {
+      setShown(skyBox, skyOpen(s));
+      if (skyOpen(s)) {
+        const now = hooks.tracing();
+        for (const r of skyRows) {
+          const named = s.sky[r.f.id], open = figureOpen(s, r.f.id);
+          r.row.classList.toggle('named', named);
+          r.row.classList.toggle('now', now === r.f.id);
+          r.name.textContent = named || open ? r.f.name : SKY.locked;
+          r.note.textContent = named ? '✓' : open ? (now === r.f.id ? SKY.tracing : '') : r.f.hint;
+          r.b.hidden = !open;
+          r.b.textContent = now === r.f.id ? SKY.stop : SKY.trace;
+        }
+      }
       setShown(strainBox, strainOpen(s));
       setShown(forkBox, forkOpen(s));
       const rd = currentRiddle(s);

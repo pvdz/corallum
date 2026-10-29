@@ -19,13 +19,14 @@ export function takeSightings(): CreatureId[] {
 }
 
 /** Where creatures were drawn this frame, for tapping them (device pixels). */
-export type Spot = { id: CreatureId | 'ossel' | 'shell'; x: number; y: number; r: number };
+/** `n`: which star, for a star of a figure being traced in the night sky. */
+export type Spot = { id: CreatureId | 'ossel' | 'shell' | 'star'; x: number; y: number; r: number; n?: number };
 let spots: Spot[] = [];
 let nextSpots: Spot[] = [];
 
 /** A creature was drawn at (x, y) with roughly radius r (device pixels). */
-export function spot(id: CreatureId | 'ossel' | 'shell', x: number, y: number, r: number): void {
-  nextSpots.push({ id, x, y, r });
+export function spot(id: CreatureId | 'ossel' | 'shell' | 'star', x: number, y: number, r: number, n?: number): void {
+  nextSpots.push(n === undefined ? { id, x, y, r } : { id, x, y, r, n });
 }
 
 /** Call once per frame after drawing: the spots of this frame become the tappable ones. */

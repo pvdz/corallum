@@ -1,5 +1,6 @@
 // The contract between the game loop and a zone scene.
 
+import type { FigureId } from '../content/sky.ts';
 import type { Job } from '../content/act2.ts';
 import type { DialectId } from '../content/act4.ts';
 import type { SiteId } from '../content/expeditions.ts';
@@ -28,6 +29,8 @@ export type ReefView = {
   /** Shoals away at a ruin: how many, sim seconds since they left and until they are back, which side they went. */
   /** A flurry of the Long Silt is falling (Silt Floor). */
   flurry: boolean;
+  /** The night sky over the Breach: figures named, and the one being traced (stars joined so far). */
+  sky: { named: readonly FigureId[]; tracing: { id: FigureId; n: number } | null };
   /** Warm water in the Sunlit Crown: how warm (0..1), how bleached the reef is (0..1), polyps closed. */
   heat: { warm: number; bleach: number; closed: boolean };
   /** A shell on the Sunlit sand (place 0..1 and kind), if one lies there now. */
