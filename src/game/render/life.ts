@@ -239,9 +239,12 @@ export function createLife(seed: number) {
     if (u >= 1) return;
     sight('dumbo');
     const s = st.s * 2;
-    const x = st.cx + st.w * (-0.6 + u * 1.2), y = st.baseY - 130 * st.s + Math.sin(t * 1.5) * 8 * st.s;
+    // Touched, it flaps hard and bobs up out of reach, then sinks back.
+    const touch = startled('dumbo', t);
+    const bob = touch && touch.age < 5 ? Math.sin(Math.min(1, touch.age / 5) * Math.PI) : 0;
+    const x = st.cx + st.w * (-0.6 + u * 1.2), y = st.baseY - 130 * st.s + Math.sin(t * 1.5) * 8 * st.s - bob * 50 * st.s;
     spot('dumbo', x, y, 24 * s);
-    const flap = Math.sin(t * 5);
+    const flap = Math.sin(t * (5 + 10 * bob));
     ctx.save();
     ctx.translate(x, y);
     ctx.fillStyle = 'rgba(255,205,190,0.85)';

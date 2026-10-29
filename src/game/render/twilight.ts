@@ -414,8 +414,11 @@ export function createTwilightScene(seed: number): Scene {
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(-1, 1);
+    // Touched, it shuts its mouth and the cleaners scatter; they come back after a while.
+    const touch = startled('grouper', t);
+    const shy = touch && touch.age < 6 ? (touch.age < 0.3 ? touch.age / 0.3 : Math.max(0, 1 - (touch.age - 3) / 3)) : 0;
     // The grouper: heavy, mottled, fins spread; it gapes slowly while it is cleaned.
-    const gape = 0.5 + 0.5 * Math.sin(t * 0.5);
+    const gape = (0.5 + 0.5 * Math.sin(t * 0.5)) * (1 - shy);
     const sway = Math.sin(t * 0.9) * 2 * s;
     // Dorsal fin: a spiny front half, a soft rounded back half.
     ctx.fillStyle = '#4e4034';
@@ -509,7 +512,8 @@ export function createTwilightScene(seed: number): Scene {
     // The cleaners: tiny blue fish with a black stripe, darting about the grouper.
     for (let k = 0; k < 2; k++) {
       const a = t * (1.3 + k * 0.4) + k * 3;
-      const cx = x + Math.cos(a) * (18 + 8 * Math.sin(a * 1.7)) * s, cy = y + Math.sin(a * 1.3) * 10 * s;
+      const flee = 1 + 3 * shy;
+      const cx = x + Math.cos(a) * (18 + 8 * Math.sin(a * 1.7)) * s * flee, cy = y + Math.sin(a * 1.3) * 10 * s * flee;
       const dir = -Math.sin(a) >= 0 ? 1 : -1;
       ctx.save();
       ctx.translate(cx, cy);
@@ -624,11 +628,15 @@ export function createTwilightScene(seed: number): Scene {
     const y = focus.y + focus.h * (0.22 + 0.05 * Math.sin(lap)) + Math.sin(t * 0.3) * 10 * s;
     const flap = Math.sin(t * 1.1);
     spot('manta', x, y, 45 * s);
+    // Touched, it rolls right over, showing its pale belly, and glides on.
+    const touch = startled('manta', t);
+    const roll = touch && touch.age < 3 ? touch.age / 3 : 0;
+    const tilt = Math.cos(roll * Math.PI * 2);
     ctx.save();
     ctx.translate(x, y);
     // Seen at a low angle: the wing span flattened, so it reads as a wide ray gliding past.
-    ctx.scale(dir, 0.38);
-    ctx.fillStyle = 'rgba(12,30,62,0.75)';
+    ctx.scale(dir, 0.38 * (Math.abs(tilt) < 0.08 ? 0.08 * Math.sign(tilt || 1) : tilt));
+    ctx.fillStyle = tilt < 0 ? 'rgba(200,210,225,0.8)' : 'rgba(12,30,62,0.75)';
     // From a little below: a diamond of wings that bend at the tips, a whip of a tail.
     ctx.beginPath();
     ctx.moveTo(30 * s, 0);
