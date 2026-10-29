@@ -721,3 +721,4 @@ date, what landed, what is half-done, what's next.
 - The blue hour on the Twilight Shelf: as dusk deepens, a short spell when the water and everything in it washes into one deep blue (colour blend; the reef keeps its colours).
 - Lineage tab: The line in numbers (reefs grown, endings, creatures seen, friends, shells, shards, moments met, feats), shown once the line has a second reef.
 - Resident: an ochre sea star (3980 m): spawn fades ×0.9; clamped to a branch high on the crown.
+- Resident pair The waterline (sea star + host anemone): spawn ×1.1.
