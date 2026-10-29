@@ -722,3 +722,4 @@ date, what landed, what is half-done, what's next.
 - Lineage tab: The line in numbers (reefs grown, endings, creatures seen, friends, shells, shards, moments met, feats), shown once the line has a second reef.
 - Resident: an ochre sea star (3980 m): spawn fades ×0.9; clamped to a branch high on the crown.
 - Resident pair The waterline (sea star + host anemone): spawn ×1.1.
+- Midnight marine snow near the reef's crown catches its light and glints blue (the lit radius grows with the glow lure).

@@ -836,15 +836,19 @@ export function createMidnightScene(seed: number): Scene {
   }
 
   /** Marine snow; above the snowline (that band) the Long Silt thins to a third. */
-  function drawSnow(ctx: CanvasRenderingContext2D, t: number, thin: boolean): void {
-    ctx.fillStyle = 'rgba(190,205,240,0.35)';
+  /** Marine snow; flakes near the reef's crown (within `lit`) catch its light and glint blue. */
+  function drawSnow(ctx: CanvasRenderingContext2D, t: number, thin: boolean, crown: [number, number], lit: number): void {
+    const dim = 'rgba(190,205,240,0.35)';
     for (const [i, f] of flakes.entries()) {
       if (thin && i % 3) continue;
       const y = ((f.y + t * f.speed) % 1) * (h + 10) - 5;
       const x = (((f.x + Math.sin(t * 0.25 + f.phase) * 0.003) % 1) + 1) % 1 * w;
       // A sweep nearby swirls the snow away from it.
       const [px, py] = pushed(x, y, t, 110 * scale());
-      speck(ctx, x + px, y + py, f.r);
+      const d = Math.hypot(x + px - crown[0], y + py - crown[1]);
+      const near = d < lit ? 1 - d / lit : 0;
+      ctx.fillStyle = near > 0 ? `rgba(${190 - 40 * near},${215 + 30 * near},255,${0.35 + 0.55 * near})` : dim;
+      speck(ctx, x + px, y + py, f.r * (1 + 0.6 * near));
     }
   }
 
@@ -1223,7 +1227,7 @@ export function createMidnightScene(seed: number): Scene {
       drawMigration(ctx, t);
       if (v.bands.includes('glass')) for (let i = 0; i < 4; i++) swimShrimp(ctx, t, i);
       if (v.bands.includes('siphon')) drawSiphonophore(ctx, t);
-      drawSnow(ctx, t, v.bands.includes('snowline'));
+      drawSnow(ctx, t, v.bands.includes('snowline'), reef.crown(L), L.unit * (0.5 + 0.4 * v.glowLevel));
       shoals.drawBack(ctx, focus, reef, L, v, t);
       drawFlank(ctx, p, t);
       drawGhosts(ctx, focus, v.ancestors, v.height, t, scale(), 'rgba(170,180,230,1)');
