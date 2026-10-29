@@ -405,9 +405,13 @@ export function createSunlitScene(seed: number): Scene {
     const s = scale() * 2.6;
     const x = focus.x + focus.w * (1.15 - u * 1.3), y = focus.y + focus.h * 0.38 + Math.sin(t * 0.4) * 6 * s;
     spot('mola', x, y, 34 * s);
-    const scull = Math.sin(t * 1.4) * 0.35;
+    // Touched, it sculls hard and tips to look at you with one round eye.
+    const touch = startled('mola', t);
+    const stir = touch && touch.age < 3 ? 1 - touch.age / 3 : 0;
+    const scull = Math.sin(t * (1.4 + 4 * stir)) * (0.35 + 0.25 * stir);
     ctx.save();
     ctx.translate(x, y);
+    ctx.rotate(Math.sin(stir * Math.PI) * 0.25);
     const g = ctx.createLinearGradient(0, -20 * s, 0, 20 * s);
     g.addColorStop(0, '#b8c6d0');
     g.addColorStop(1, '#6f8290');
@@ -501,8 +505,11 @@ export function createSunlitScene(seed: number): Scene {
     const u = (t % period) / period;
     const dir = Math.floor(t / period) % 2 ? 1 : -1;
     const x = focus.x + focus.w * (dir > 0 ? -0.1 + u * 1.2 : 1.1 - u * 1.2);
-    const dip = Math.max(0, Math.sin(t * 0.5)) ** 4;
-    const y = focus.y + focus.h * 0.8 + dip * 14 * s + Math.sin(t * 0.8) * 3 * s;
+    // Touched, it ducks its head and dives a little way, then comes back up.
+    const touch = startled('turtle', t);
+    const duck = touch && touch.age < 4 ? Math.sin(Math.min(1, touch.age / 4) * Math.PI) : 0;
+    const dip = Math.max(Math.max(0, Math.sin(t * 0.5)) ** 4, duck);
+    const y = focus.y + focus.h * 0.8 + dip * 14 * s + duck * 30 * s + Math.sin(t * 0.8) * 3 * s;
     const stroke = Math.sin(t * 1.6);
     spot('turtle', x, y, 30 * s);
     ctx.save();

@@ -382,7 +382,10 @@ export function createMidnightScene(seed: number): Scene {
     const pulse = Math.sin(t * 0.9);
     ctx.save();
     ctx.translate(x, y);
-    ctx.globalAlpha = 0.55 * Math.min(1, u * 6, (1 - u) * 6);
+    // Touched, it is gone: it pulls back into the dark, and you are not sure you saw it.
+    const touch = startled('giant-squid', t);
+    const gone = touch && touch.age <= (t + 600) % period ? Math.min(1, touch.age / 1.5) : 0;
+    ctx.globalAlpha = 0.55 * Math.min(1, u * 6, (1 - u) * 6) * (1 - gone);
     ctx.fillStyle = '#3a1820';
     // Mantle with its fins, pointing forward (left).
     ctx.beginPath();
@@ -413,7 +416,7 @@ export function createMidnightScene(seed: number): Scene {
     ctx.restore();
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    glow(ctx, x + 4 * s, y - 2 * s, 3 * s, '180,200,255', 0.5 * Math.min(1, u * 6, (1 - u) * 6));
+    glow(ctx, x + 4 * s, y - 2 * s, 3 * s, '180,200,255', 0.5 * Math.min(1, u * 6, (1 - u) * 6) * (1 - gone));
     ctx.restore();
   }
 
