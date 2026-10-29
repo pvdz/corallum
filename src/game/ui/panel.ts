@@ -699,7 +699,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (tr) codexRow('Trial', `${seamountDef(s.seamount).name}: grow to ${metres(tr.goal)}${s.meta.seen.includes(`trial:${s.seamount}`) ? ` · ${TRIAL_TEXT.met}` : ''} · ${tr.reward}`);
     const wrong = s.meta.seen.filter((k) => k.startsWith('o:')).length;
     if (wrong) codexRow('Ossel', `${wrong} of ${OSSEL_MISTAKES.length} mistakes found`);
-    if (s.race.decided > 0) codexRow('Sister reef', `first to ${s.race.won} of ${s.race.decided} marks`);
+    if (s.race.decided > 0) codexRow('Sister reef', `first to ${s.race.won} of ${s.race.decided} marks` + (s.meta.endings > 0 ? ` · ahead of the quick cousin at ${s.race.cousin}` : ''));
     const recs = s.meta.records.map((t, i) => t > 0 ? `${metres(SISTER.marks[i]!)} in ${duration(t)}` : '').filter(Boolean);
     if (recs.length) codexRow('Line’s best', recs.join(' · '));
     codexRow('Grown', `${metres(s.height)} up the seamount, ${Math.round(Math.max(0, SURFACE - s.height)).toLocaleString('en-US')} m down`);

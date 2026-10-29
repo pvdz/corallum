@@ -11,6 +11,7 @@ export const DIARY: Record<string, string> = {
   work: 'You raised {a}.',
   shard: 'A shard of the old tablet: “{a}”',
   ahead: 'You reached {a} before the sister reef.',
+  cousin: 'You reached {a} before even the quick cousin.',
   behind: 'The sister reef reached {a} before you.',
   trial: 'This hard place taught your line something: {a}.',
   request: 'You had kept {a} of Ossel’s requests.',

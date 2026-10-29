@@ -108,7 +108,8 @@ trials, every fifth request, each with its time and height. Bands tab, newest fi
 **The sister reef**: another child of Ossel's wall on the next seamount grows on a fixed schedule
 (the surface at 8 h) and shows as a small cool mark on the depth gauge. Each zone reached before
 it brings +1 lineage (the surface +2), judged at the exact crossing moment so offline and stepped
-agree. A pacer: something to race inside every run.
+agree. A pacer: something to race inside every run. Once the line has reached an ending a second racer
+joins, the quick cousin (the surface in 5 h): beating it to a mark pays double.
 
 **Expeditions** (from 150 m): shoals can be sent to a buried ruin of Thousandfold, one trip at a
 time, five sites in order (150 m → 3300 m, 6 → 24 shoals, 6 → 30 minutes). Idle shoals go first,

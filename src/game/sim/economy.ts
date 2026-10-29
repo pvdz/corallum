@@ -26,7 +26,7 @@ import { BOONS, LINEAGE, SEAMOUNTS, type BoonId, type Seamount, type SeamountId,
 import { FEAST, THORN, WELCOME, intruderOf } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { WORKS, type WorkId } from '../content/works.ts';
-import { SISTER } from '../content/sister.ts';
+import { COUSIN, SISTER } from '../content/sister.ts';
 import { DIARY_TEXT } from '../content/diary.ts';
 import { SHARD, SHARD_LINES, type ShardSource } from '../content/shards.ts';
 import { REQUEST, REQUESTS, type RequestKind } from '../content/requests.ts';
@@ -922,8 +922,7 @@ export function remember(s: GameState, key: string, arg = '', at = s.t): void {
 // ---------- The sister reef ----------
 
 /** The sister reef's place on the gauge (0 seamount … 1 surface) at sim time t. */
-export function sisterAt(t: number): number {
-  const sc = SISTER.schedule;
+export function sisterAt(t: number, sc: readonly (readonly [number, number])[] = SISTER.schedule): number {
   for (let i = 1; i < sc.length; i++) {
     const [t1, f1] = sc[i]!, [t0, f0] = sc[i - 1]!;
     if (t <= t1) return f0 + ((f1 - f0) * (t - t0)) / (t1 - t0);
@@ -952,6 +951,17 @@ function judgeMark(s: GameState, at: number): void {
     s.meta.lineage += SISTER.lineage[i]!;
     remember(s, 'ahead', where, at);
   } else remember(s, 'behind', where, at);
+  // The quick cousin races lines that have reached an ending.
+  if (cousinRaces(s) && sisterAt(at, COUSIN.schedule) < gaugeAt(mark) - 1e-9) {
+    s.race.cousin++;
+    s.meta.lineage += SISTER.lineage[i]! * COUSIN.lineageFactor;
+    remember(s, 'cousin', where, at);
+  }
+}
+
+/** Whether the quick cousin races this reef (the line has reached an ending). */
+export function cousinRaces(s: GameState): boolean {
+  return s.meta.endings > 0;
 }
 
 // ---------- Great works ----------

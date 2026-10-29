@@ -16,3 +16,11 @@ export const SISTER = {
   behind: 'The sister reef got there first',
   title: 'The sister reef: another child of Ossel’s wall, on the next seamount. Reach each zone before it for lineage.',
 } as const;
+
+/** The quick cousin: once the line has reached an ending, a faster racer (the surface in five hours) for double lineage. */
+export const COUSIN = {
+  name: 'The quick cousin',
+  schedule: [[0, 0], [600, 0.2], [4200, 0.4], [9600, 0.6], [14400, 0.8], [18000, 1]] as readonly (readonly [number, number])[],
+  lineageFactor: 2,
+  title: 'The quick cousin: another reef of the old wall, faster than any. Beat it to a zone for double lineage.',
+} as const;
