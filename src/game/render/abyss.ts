@@ -3,6 +3,7 @@
 // seed, state and time always render the same frame — screenshots rely on that.
 
 import { sight, spot, startled } from './sightings.ts';
+import { drawThorn } from './thorn.ts';
 import { drawGarden } from './works.ts';
 import { mulberry32, range, type Rng } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
@@ -460,6 +461,7 @@ export function createAbyssScene(seed: number): Scene {
       const L = layout(v);
       if (v.shoals > 0) shoals.drawBack(ctx, focus, reef, L, v, t);
       reef.draw(ctx, L, v, t);
+      if (v.thorn?.kind === 'drill-snail') drawThorn(ctx, reef, L, v.thorn.u, v.thorn.side, t, 'drill-snail');
       this.crownAt = reef.crown(L);
       const live = effects.live(t);
       reef.drawEffects(ctx, L, v, live);

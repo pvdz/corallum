@@ -6,7 +6,8 @@ import { glow } from './draw.ts';
 import { sight, spot } from './sightings.ts';
 
 /** `u`: 0..1 through its climb; `side`: −1 left, 1 right. */
-export function drawThorn(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, u: number, side: number, t: number): void {
+export function drawThorn(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, u: number, side: number, t: number,
+  kind: 'thorn-star' | 'drill-snail' = 'thorn-star'): void {
   const c = reef.coral;
   const want = (0.12 + 0.55 * u) * L.top;
   let best = -1, bestD = Infinity;
@@ -18,6 +19,10 @@ export function drawThorn(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayo
   if (best < 0) return;
   const [x, y] = reef.nodePx(L, best);
   const s = L.s * 1.5;
+  if (kind === 'drill-snail') {
+    drawSnail(ctx, x, y, s, t);
+    return;
+  }
   sight('thorn-star');
   spot('thorn-star', x, y, 18 * s);
   ctx.save();
@@ -100,5 +105,38 @@ export function drawDragonfish(ctx: CanvasRenderingContext2D, F: { x: number; y:
   ctx.quadraticCurveTo(14 * k, 9 * k, bx, by);
   ctx.stroke();
   glow(ctx, bx, by, 6 * k, '150,200,255', 0.75 + 0.25 * Math.sin(t * 4));
+  ctx.restore();
+}
+
+/** A drill snail on the coral: a spired shell, ridged, its foot clamped to the branch. */
+function drawSnail(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, t: number): void {
+  sight('drill-snail');
+  spot('drill-snail', x, y, 16 * s);
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(-0.5 + Math.sin(t * 0.4) * 0.05);
+  ctx.fillStyle = 'rgba(200,170,150,0.7)';
+  ctx.beginPath();
+  ctx.ellipse(0, 3 * s, 7 * s, 2 * s, 0, 0, Math.PI * 2);
+  ctx.fill();
+  const g = ctx.createLinearGradient(-6 * s, -10 * s, 6 * s, 3 * s);
+  g.addColorStop(0, '#e8dcc8');
+  g.addColorStop(1, '#9a7c62');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.moveTo(-6 * s, 2 * s);
+  ctx.quadraticCurveTo(-5 * s, -5 * s, 0, -12 * s);
+  ctx.quadraticCurveTo(5 * s, -5 * s, 6 * s, 2 * s);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(90,60,40,0.6)';
+  ctx.lineWidth = 0.8 * s;
+  for (let k = 0; k < 4; k++) {
+    const yy = 1 * s - k * 3 * s, hw = 5.5 * s - k * 1.2 * s;
+    ctx.beginPath();
+    ctx.moveTo(-hw, yy);
+    ctx.quadraticCurveTo(0, yy - 1.5 * s, hw, yy - 1 * s);
+    ctx.stroke();
+  }
   ctx.restore();
 }

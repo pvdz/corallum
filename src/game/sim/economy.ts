@@ -23,7 +23,7 @@ import { ACT5, BANDS_ACT5, GARDEN, MEMORIES, type Memory, type MemoryId } from '
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
 import { BOONS, LINEAGE, SEAMOUNTS, type BoonId, type Seamount, type SeamountId, type TraitId } from '../content/lineage.ts';
-import { FEAST, SIGNAL, THORN, WELCOME, intruderOf } from '../content/events.ts';
+import { FEAST, SIGNAL, THORN, WELCOME, intruderOf, type Intruder } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { WORKS, type WorkId } from '../content/works.ts';
 import { COUSIN, SISTER } from '../content/sister.ts';
@@ -1473,12 +1473,12 @@ export function answerSignal(s: GameState, answer: readonly number[]): number {
 
 // ---------- Thorn stars ----------
 
-export type Thorn = { k: number; start: number; side: number; kind: 'thorn-star' | 'dragonfish' };
+export type Thorn = { k: number; start: number; side: number; kind: Intruder };
 
 /** The intruder now, if any: a thorn star on the shelf and in the light, a dragonfish in the Midnight Water. */
 export function currentThorn(s: GameState): Thorn | null {
   const kind = intruderOf(actAt(s.height));
-  if (!kind || (kind === 'dragonfish' && s.levels.shoal === 0)) return null;
+  if (!kind || (kind === 'dragonfish' && s.levels.shoal === 0) || (kind === 'drill-snail' && s.height < THORN.snailFrom)) return null;
   const k = Math.floor(s.t / THORN.period);
   if (k <= s.thorned) return null;
   const r = mulberry32((s.seed ^ 0x7a0e) + Math.imul(k, 0x9e3779b1));
@@ -1489,7 +1489,7 @@ export function currentThorn(s: GameState): Thorn | null {
 /** Seconds until the next intruder comes (0 while one is here; Infinity where none come). */
 export function untilThorn(s: GameState): number {
   const kind = intruderOf(actAt(s.height));
-  if (!kind || (kind === 'dragonfish' && s.levels.shoal === 0)) return Infinity;
+  if (!kind || (kind === 'dragonfish' && s.levels.shoal === 0) || (kind === 'drill-snail' && s.height < THORN.snailFrom)) return Infinity;
   if (currentThorn(s)) return 0;
   for (let k = Math.floor(s.t / THORN.period); k < Math.floor(s.t / THORN.period) + 3; k++) {
     if (k <= s.thorned) continue;
@@ -1503,7 +1503,7 @@ export function untilThorn(s: GameState): number {
 /** Guard crabs (thorn stars) or a finished lantern spire (dragonfish) drive it off in its last second. */
 export function crabThorn(s: GameState): Thorn | null {
   const th = currentThorn(s);
-  const guarded = th && (trait(s, 'thorn-wise') > 0 || (th.kind === 'thorn-star' ? lives(s, 'guard-crab') : s.works.spire >= 3));
+  const guarded = th && (trait(s, 'thorn-wise') > 0 || (th.kind === 'thorn-star' ? lives(s, 'guard-crab') : th.kind === 'dragonfish' ? s.works.spire >= 3 : false));
   return th && guarded && s.t >= th.start + THORN.life - 1 ? th : null;
 }
 

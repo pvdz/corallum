@@ -939,10 +939,10 @@ canvas.addEventListener('pointerdown', (e) => {
     if (frozenT === null && who.id !== 'ossel' && !state.meta.seen.includes(`t:${who.id}`)) state.meta.seen.push(`t:${who.id}`);
     // Now and then a neighbour gives a little of what it lives by.
     // A thorn star is pried off the reef, for a burst.
-    if ((who.id === 'thorn-star' || who.id === 'dragonfish') && frozenT === null) {
+    if ((who.id === 'thorn-star' || who.id === 'dragonfish' || who.id === 'drill-snail') && frozenT === null) {
       const pay = pryThorn(state);
       if (pay > 0) {
-        floatText(e.clientX, e.clientY - 26, `+${num(pay)} ${feastPay(state)} ${who.id === 'dragonfish' ? THORN.dragon : THORN.pried}`, 'feast-float');
+        floatText(e.clientX, e.clientY - 26, `+${num(pay)} ${feastPay(state)} ${who.id === 'dragonfish' ? THORN.dragon : who.id === 'drill-snail' ? THORN.snail : THORN.pried}`, 'feast-float');
         audio.cue('crunch');
         buzz([20, 30, 20]);
       }

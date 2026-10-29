@@ -38,11 +38,15 @@ export const THORN = {
   /** In the Midnight Water the intruder is a dragonfish stalking the shoals; a finished lantern spire dazzles it away. */
   dragon: '· the dragonfish fled',
   lamps: '· the spire’s lamps dazzled it away',
+  snail: '· the drill snail, off',
+  /** On the Silt Floor the snail comes once the reef is this tall. */
+  snailFrom: 20,
 } as const;
 
 /** Which intruder comes in each zone. */
-export function intruderOf(zone: number): 'thorn-star' | 'dragonfish' | null {
-  return zone === 2 ? 'dragonfish' : zone === 3 || zone === 4 ? 'thorn-star' : null;
+export type Intruder = 'thorn-star' | 'dragonfish' | 'drill-snail';
+export function intruderOf(zone: number): Intruder | null {
+  return zone === 1 ? 'drill-snail' : zone === 2 ? 'dragonfish' : zone === 3 || zone === 4 ? 'thorn-star' : null;
 }
 
 /** The shoals' signal: now and then the lanternfish flash a pattern; repeat it for a burst. Watching only. */
