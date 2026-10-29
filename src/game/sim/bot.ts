@@ -95,7 +95,7 @@ export function botDecide(
     }
   }
   // The bot cannot touch creatures or drive off intruders: it asks Ossel for something else.
-  if (s.request.kind === 'touch' || s.request.kind === 'intruder') skipRequest(s);
+  if (s.request.kind === 'touch' || s.request.kind === 'intruder' || s.request.kind === 'shell') skipRequest(s);
   if (strainOpen(s)) chooseStrain(s, 'gold');
   const rd = currentRiddle(s);
   if (rd) answerRiddle(s, rd.id, rd.right);

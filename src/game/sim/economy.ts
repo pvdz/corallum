@@ -1429,6 +1429,7 @@ function requestCount(s: GameState, kind: RequestKind): number {
     case 'work': return Object.values(s.works).reduce((a, b) => a + b, 0);
     case 'intruder': return s.tally.intruders;
     case 'read': return s.readings.length;
+    case 'shell': return s.tally.shells;
   }
 }
 
@@ -1580,6 +1581,7 @@ export function pickShell(s: GameState): string {
   const sh = currentShell(s);
   if (!sh) return '';
   s.shelled = sh.k;
+  s.tally.shells++;
   if (!s.meta.shells.includes(sh.id)) s.meta.shells.push(sh.id);
   return sh.id;
 }
