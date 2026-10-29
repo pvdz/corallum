@@ -21,7 +21,7 @@ const KILL = 0.035;
 const MAX_NODES = 2600;
 
 /** Growth forms: the deep reef's fan, and the three sunlit Form dialects. */
-export type CoralForm = 'fan' | 'branching' | 'massive' | 'plating';
+export type CoralForm = 'fan' | 'branching' | 'massive' | 'plating' | 'pillar';
 
 type FormSpec = {
   /** Half-width of the envelope at height y (0..1). */
@@ -31,9 +31,25 @@ type FormSpec = {
   up: number;
   /** Attractor height sampler, from a uniform u. */
   height: (u: number, r: () => number) => number;
+  /** Attractor x at height y (default: anywhere across the envelope). */
+  x?: (y: number, r: () => number) => number;
 };
 
+/** Pillars: where each column stands, and how tall it grows (fractions of the full height). */
+const COLUMNS: readonly [number, number][] = [[-0.2, 0.7], [-0.08, 1], [0.05, 0.85], [0.17, 0.95], [0.27, 0.6]];
+
 const FORMS: Record<CoralForm, FormSpec> = {
+  // Columns from one shared foot: attractors in narrow upright bands, a few spread low to make the base.
+  pillar: {
+    envelope: () => 0.3, attractors: 900, up: 0.9,
+    height: (u, r) => (u < 0.1 ? r() * 0.08 : 0.06 + Math.pow(r(), 0.85) * 0.96),
+    x: (y, r) => {
+      if (y < 0.08) return (r() - 0.5) * 0.5;
+      const live = COLUMNS.filter(([, top]) => y <= top);
+      const [cx] = live[Math.floor(r() * live.length)] ?? COLUMNS[1]!;
+      return cx + (r() - 0.5) * 0.045;
+    },
+  },
   // A narrow foot opening into a fan.
   fan: {
     envelope: (y) => 0.05 + 0.32 * Math.pow(y, 0.85) * (1 - 0.35 * y * y),
@@ -75,7 +91,7 @@ export function generateCoral(seed: number, form: CoralForm = 'fan'): Coral {
   const ay: number[] = [];
   while (ax.length < spec.attractors) {
     const y = spec.height(rng(), rng);
-    const x = range(rng, -1, 1) * spec.envelope(Math.max(0, Math.min(1, y)));
+    const x = spec.x ? spec.x(y, rng) : range(rng, -1, 1) * spec.envelope(Math.max(0, Math.min(1, y)));
     ax.push(x);
     ay.push(y);
   }

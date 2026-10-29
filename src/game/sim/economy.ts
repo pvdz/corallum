@@ -204,7 +204,7 @@ export function rates(s: GameState): Rates {
     glowP: (ACT1.symbiontGlow * lv.symbiont * milestoneMult('symbiont', lv.symbiont) * (1 + ACT2.lightAmplify * s.jobs.light) +
       lightGlow * s.jobs.light * seasoned(s) * (chose(s, 'hunters', 'b') ? 1.2 : 1)) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1) * (chose(s, 'vent-crack', 'b') ? 1.15 : 1) * (sm.glow ?? 1) * (passed(s, 'dark') ? 1.25 : 1) * (s.strain === 'blue' ? 1.3 : 1) * (boon(s, 'warm-heart') ? 1.3 : 1) * (chose(s, 'old-lamp', 'a') ? 1.1 : 1) * (chose(s, 'echo', 'b') ? 1.15 : 1) * grainMult(s, 'bright') * today(s, 'bright', 1.2) * (s.sport === 'ice' ? 1.25 : 1) * (chose(s, 'fire-body', 'a') ? 1.15 : 1),
     glowK: ACT1.glowFade * (chose(s, 'squid', 'a') ? 0.8 : 1) * (chose(s, 'eyes', 'b') ? 0.8 : 1) * (chose(s, 'rising-stop', 'b') ? 0.85 : 1),
-    planktonP: today(s, 'rich', 1.2) * (onShelf ? 1 - CURRENT.planktonPerStep * s.current : 1) * (chose(s, 'krill', 'b') ? 1.2 : 1) * (chose(s, 'seep', 'a') ? 1.15 : 1) * (paired(s, 'cleaner-wrasse', 'feather-duster') ? 1.15 : 1) * seasoned(s) * ACT2.feedRate * s.jobs.feed * ACT2.netPlankton ** lv.net * (chose(s, 'far-light', 'a') ? 1.15 : 1) * (chose(s, 'dust', 'b') ? 1.15 : 1) * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
+    planktonP: today(s, 'rich', 1.2) * (onShelf ? 1 - CURRENT.planktonPerStep * s.current : 1) * (chose(s, 'krill', 'b') ? 1.2 : 1) * (chose(s, 'seep', 'a') ? 1.15 : 1) * (paired(s, 'cleaner-wrasse', 'feather-duster') ? 1.15 : 1) * seasoned(s) * ACT2.feedRate * s.jobs.feed * ACT2.netPlankton ** lv.net * (chose(s, 'far-light', 'a') ? 1.15 : 1) * (chose(s, 'dust', 'b') ? 1.15 : 1) * (speaks(s, 'pillar') ? 1.5 : 1) * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
       (speaks(s, 'sweepers') ? 3 : 1) * (lives(s, 'feather-duster') ? 1.3 : 1),
     planktonK: ACT2.planktonEaten * (has(s, 'slow-currents') ? 0.6 : 1) * (relic(s, 'terraces') ? 0.75 : 1) * (chose(s, 'angler', 'b') ? 0.85 : 1),
     murmurP: ACT2.scoutRate * s.jobs.scout * (has(s, 'beaked') ? 1.5 : 1) * (relic(s, 'wells') ? 1.25 : 1) * (chose(s, 'lost-shoal', 'b') ? 1.2 : 1) * (passed(s, 'silent') ? 1.3 : 1) * (s.strain === 'violet' ? 1.4 : 1) * (s.sport === 'ultraviolet' ? 1.3 : 1) * (chose(s, 'fire-body', 'b') ? 1.15 : 1),
@@ -229,7 +229,7 @@ export function rates(s: GameState): Rates {
       (has(s, 'inside-the-wall') ? 2 : 1) *
       (s.truce.wall === 'b' ? 1.25 : 1) *
       ACT3.sandbarCalcite ** lv.sandbar *
-      (speaks(s, 'massive') ? 1.5 : 1) *
+      (speaks(s, 'massive') ? 1.5 : 1) * (speaks(s, 'pillar') ? 1.25 : 1) *
       1.5 ** trait(s, 'deep-memory') *
       knownBonus(s) * shardBonus(s) *
       (lives(s, 'goby') ? 1.15 : 1) * (chose(s, 'whale-fall', 'a') ? 1.1 : 1) * (chose(s, 'snow', 'a') ? 1.05 : 1) * (chose(s, 'slope', 'a') ? 1.05 : 1) * (chose(s, 'krill', 'a') ? 1.1 : 1) * (chose(s, 'heatwave', 'b') ? 1.1 : 1) * (chose(s, 'outbreak', 'a') ? 1.1 : 1) * 1.05 ** s.works.garden *
@@ -1166,7 +1166,7 @@ export function nextTier(s: GameState) {
 export function speak(s: GameState, id: DialectId): boolean {
   const d = dialect(id);
   const t = nextTier(s);
-  if (!t || t.tier !== d.tier || s.bloom < tierCost(s, t)) return false;
+  if (!d || !t || t.tier !== d.tier || s.bloom < tierCost(s, t)) return false;
   s.bloom -= tierCost(s, t);
   s.dialects[d.tier] = id;
   return true;

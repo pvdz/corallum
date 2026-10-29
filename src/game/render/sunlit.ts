@@ -40,10 +40,11 @@ const FORM_LOOK: Record<CoralForm, { girth: number; palette: [string, string, st
   branching: { girth: 0.9, palette: ['#3b2a18', '#d99a54', 'rgba(255,240,200,0.4)'], polyp: ['#7fe0c9', 'rgba(220,255,140,0.95)'] },
   massive: { girth: 3.2, palette: ['#2a3320', '#8fae5e', 'rgba(235,255,200,0.35)'], polyp: ['#ff9ec4', 'rgba(255,220,120,0.95)'] },
   plating: { girth: 1.6, palette: ['#33204a', '#9a6fd0', 'rgba(235,220,255,0.35)'], polyp: ['#ffe08a', 'rgba(140,255,230,0.95)'] },
+  pillar: { girth: 2.4, palette: ['#3a2c1c', '#c9a878', 'rgba(255,245,220,0.4)'], polyp: ['#f2e6c8', 'rgba(255,250,225,0.95)'] },
 };
 
 function formOf(id: DialectId | ''): CoralForm {
-  return id === 'branching' || id === 'massive' || id === 'plating' ? id : 'fan';
+  return id === 'branching' || id === 'massive' || id === 'plating' || id === 'pillar' ? id : 'fan';
 }
 
 export function createSunlitScene(seed: number): Scene {

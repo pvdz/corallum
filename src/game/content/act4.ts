@@ -72,7 +72,7 @@ export const UPGRADES_ACT4: readonly UpgradeDef[] = [
 
 export type DialectTier = 'form' | 'craft' | 'spawn' | 'song';
 export type DialectId =
-  | 'branching' | 'massive' | 'plating'
+  | 'branching' | 'massive' | 'plating' | 'pillar'
   | 'fluorescent' | 'sweepers' | 'mucus'
   | 'broadcast' | 'brooding' | 'fragmenting'
   | 'lullaby' | 'chorus' | 'call';
@@ -110,6 +110,10 @@ export const DIALECTS: readonly Dialect[] = [
   {
     id: 'plating', tier: 'form', name: 'Plating', effect: 'sunlight ×2',
     flavour: 'Wide flat tables, stacked like shelves, every one of them a hand held up to the sun.',
+  },
+  {
+    id: 'pillar', tier: 'form', name: 'Pillars', effect: 'calcite ×1.25 · plankton ×1.5',
+    flavour: 'Columns standing up from one foot like a stand of candles, tentacles out even at noon, eating all day.',
   },
   {
     id: 'fluorescent', tier: 'craft', name: 'Fluorescent', effect: 'bloom ×1.5 · the lure reaches +2',
