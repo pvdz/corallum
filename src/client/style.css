@@ -558,3 +558,13 @@ html.view-mode #photo { display: grid; }
 .moon-day::before { content: '○ '; }
 .moon-day.great { color: #ffd9a8; border-color: rgba(255, 210, 160, 0.5); }
 .moon-day.great::before { content: '◉ '; }
+
+/* Story cards: a slice through the reef's stone across the top, banded, in the zone's colours. */
+.reader-card { position: relative; overflow: hidden; }
+.reader-card::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 9px;
+  background: linear-gradient(180deg,
+    rgba(255, 215, 195, 0.55) 0 2px, rgba(var(--zone-tint), 0.95) 2px 3px, rgba(255, 180, 160, 0.4) 3px 5px,
+    rgba(255, 225, 210, 0.3) 5px 6px, rgba(var(--zone-tint), 0.9) 6px 7px, rgba(255, 190, 170, 0.22) 7px 9px);
+  box-shadow: 0 1px 10px rgba(255, 190, 170, 0.3);
+}
