@@ -1320,6 +1320,21 @@ export function risingLeft(s: GameState): number {
   return inRising(s) ? RISING.start + RISING.length - s.t % HEAT.period : 0;
 }
 
+/** How many spells starting at `offset` (and lasting `len`) of each half-hour cycle overlap [t0, t1). */
+function spellsIn(t0: number, t1: number, offset: number, len: number): number {
+  const P = HEAT.period;
+  const first = Math.ceil((t0 - offset - len) / P), last = Math.ceil((t1 - offset) / P) - 1;
+  return Math.max(0, last - first + 1);
+}
+
+/** Warm spells and risings that passed between t0 and t1, where the reef is now (for the away summary). */
+export function cyclesBetween(s: GameState, t0: number, t1: number): { heat: number; risings: number } {
+  return {
+    heat: heatZone(s) ? spellsIn(t0, t1, 0, HEAT.length) : 0,
+    risings: risingZone(s) ? spellsIn(t0, t1, RISING.start, RISING.length) : 0,
+  };
+}
+
 /** The feeders can still be sent into this rising (once each, twice with Deep larder; only with feeders on the job). */
 export function canFeedRising(s: GameState): boolean {
   const fed = s.rose === Math.floor(s.t / HEAT.period) ? s.roseN : 0;

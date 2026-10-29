@@ -32,12 +32,12 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio, type Cue } from '../game/audio/audio.ts';
-import { AWAY_PREP, DAILY, FEAST, SIGNAL, THORN, WELCOME } from '../game/content/events.ts';
+import { AWAY_CYCLES, AWAY_PREP, DAILY, FEAST, SIGNAL, THORN, WELCOME } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS, TRIAL_TEXT } from '../game/content/lineage.ts';
 import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf, TRUST, trustLevel, COMPANION, type CreatureId } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
@@ -513,6 +513,7 @@ function catchUp(seconds: number): void {
   // When the stores would have filled, from the state as it was left.
   const start = structuredClone(state);
   const fullAfter = timeUntil(start, 'calcite', 0.98 * calciteHold(start));
+  const cycles = cyclesBetween(start, start.t, start.t + seconds);
   advance(state, seconds);
   panel.showAway(seconds, {
     bands: state.bands.slice(before.bands),
@@ -524,6 +525,8 @@ function catchUp(seconds: number): void {
     relics: state.relics.slice(before.relics).map((id) => SITES.find((x) => x.id === id)?.relic ?? id),
     roams: state.tally.roams - before.roams,
     shards: state.meta.shards.length - before.shards,
+    heat: cycles.heat ? (start.closed ? AWAY_CYCLES.heatClosed(cycles.heat) : start.meta.traits['sun-shy'] ? AWAY_CYCLES.heatShy(cycles.heat) : AWAY_CYCLES.heatOpen(cycles.heat)) : '',
+    risings: cycles.risings ? AWAY_CYCLES.risings(cycles.risings) : '',
   }, seconds >= WELCOME.after && state.levels.polyp > 0 ? [
     { label: WELCOME.haul, note: `+${num(welcomeHaul(state, seconds))} calcite`, take: () => { const g = welcome(state, 'haul', seconds); save(); return `+${num(g)} calcite`; } },
     { label: WELCOME.search, note: WELCOME.searchNote, take: () => { const n = welcome(state, 'search', seconds); save(); return n ? `${n} shard${n > 1 ? 's' : ''}` : 'nothing this time'; } },

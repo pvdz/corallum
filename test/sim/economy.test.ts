@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
+import { cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { newGame, type GameState } from '../../src/game/sim/state.ts';
 import { GIFT } from '../../src/game/content/creatures.ts';
@@ -284,6 +284,15 @@ test('the sport: only at the Twilight Shelf, only of the strain kept, once', () 
   const plain = clone(s);
   plain.sport = '';
   assert.ok(rel(rates(s).glowP, rates(plain).glowP * 1.25) < 1e-12 && glow >= 0);
+});
+
+test('cyclesBetween counts every spell that overlaps the absence, partial ones included', () => {
+  const s = act4Game();
+  const P = HEAT.period;
+  const k = Math.ceil(s.t / P) * P;
+  assert.deepEqual(cyclesBetween(s, k + 300, k + P - 1), { heat: 0, risings: 0 });
+  assert.equal(cyclesBetween(s, k + 100, k + 300).heat, 1, 'left mid-spell');
+  assert.equal(cyclesBetween(s, k + 300, k + 3 * P + 1).heat, 3);
 });
 
 test('dialects: one per tier, in order, after their band, paid in bloom', () => {

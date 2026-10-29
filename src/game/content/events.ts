@@ -11,6 +11,16 @@ export const AWAY_PREP = {
   nothing: 'nothing to change: the reef is ready',
 } as const;
 
+/** The away summary's lines about the half-hour cycles that passed. */
+export const AWAY_CYCLES = {
+  heat: 'Warm water',
+  heatOpen: (n: number) => `${n} warm spell${n === 1 ? '' : 's'} came; the reef stayed open and bleached in each (close up before you go, or grow Sun-shy)`,
+  heatClosed: (n: number) => `${n} warm spell${n === 1 ? '' : 's'} came and went; the reef was closed`,
+  heatShy: (n: number) => `${n} warm spell${n === 1 ? '' : 's'}; the reef closed itself each time`,
+  rising: 'The rising',
+  risings: (n: number) => `came up past the reef ${n} time${n === 1 ? '' : 's'} while no one sent the feeders in`,
+} as const;
+
 /** A new day: the first visit of each calendar day brings a small gift. */
 export const DAILY = { seconds: 600, kicker: 'A new day', text: 'Ossel has been keeping something for you.' } as const;
 

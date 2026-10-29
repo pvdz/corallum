@@ -19,7 +19,7 @@ import { button, el } from './dom.ts';
 import { createChoices } from './choices.ts';
 import { drawCity, drawTablet } from './drawings.ts';
 import { FEATS } from '../content/feats.ts';
-import { AWAY_PREP, WELCOME, intruderOf } from '../content/events.ts';
+import { AWAY_CYCLES, AWAY_PREP, WELCOME, intruderOf } from '../content/events.ts';
 import { WATER } from '../content/waters.ts';
 import { REQUEST } from '../content/requests.ts';
 import { WORKS, WORK_TEXT, type WorkId } from '../content/works.ts';
@@ -1881,7 +1881,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     },
     /** Show the offline summary; any bands read while away are queued behind it. */
     showAway(seconds: number, gained: { calcite: number; glow: number; metres: number; full: boolean; bands: string[]; fullAfter: number | null;
-      relics?: string[]; roams?: number; shards?: number }, gifts?: { label: string; note: string; take: () => string }[]): void {
+      relics?: string[]; roams?: number; shards?: number; heat?: string; risings?: string }, gifts?: { label: string; note: string; take: () => string }[]): void {
       // A headline, then what changed as labelled rows (like the Your reef card).
       awayText.textContent = `You were gone ${duration(seconds)}. The reef kept growing.`;
       awayList.innerHTML = '';
@@ -1894,6 +1894,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       if (gained.relics?.length) row('The shoals brought', gained.relics.join(', ').toLowerCase());
       if (gained.roams) row('Roamed', gained.roams === 1 ? 'the shoals came home from the dark' : `${gained.roams} times`);
       if (gained.shards) row('Shards', `${gained.shards} found`);
+      if (gained.heat) row(AWAY_CYCLES.heat, gained.heat);
+      if (gained.risings) row(AWAY_CYCLES.rising, gained.risings);
       if (gained.full) {
         row('Full', `the stores filled${gained.fullAfter !== null && gained.fullAfter > 60 ? ` after ${duration(gained.fullAfter)}` : ''}; the rest dissolved back into the sea`);
         awayHint.textContent = 'A denser lattice holds more while you are away.';
