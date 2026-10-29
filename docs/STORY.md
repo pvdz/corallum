@@ -147,4 +147,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Dreams (the reef sleeps forward, as Ossel does) | a time-skip is a genre convention; framed by this game's own band 'Ossel dreams' | OK |
 | Sea pens (Silt Floor; touched, green light runs up them) | real bioluminescent sea pens | OK |
 | Ossel's questions (the silt's purpose, telling the spawn, what to keep, what is up there) | this game's own characters and theme | OK |
+| Oarfish (rare Twilight sight) | real animal | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

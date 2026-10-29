@@ -4,7 +4,7 @@
 export type CreatureId =
   | 'jelly' | 'tripod-fish' | 'isopod' | 'brittle-star' | 'rattail' | 'sea-pig' | 'brine-pool' | 'smokers' | 'dumbo' | 'squat-lobster' | 'sea-lily' | 'glass-sponge' | 'tube-worm' | 'sea-pen'
   | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'milky-sea' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration'
-  | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'sardine-run' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark'
+  | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'sardine-run' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark' | 'oarfish'
   | 'cuttlefish' | 'eagle-rays' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly'
   | 'shore-bird' | 'pelican' | 'hatchlings' | 'green-flash' | 'flying-fish' | 'dolphin' | 'moon-jelly' | 'sailors' | 'petrel' | 'sea-sparkle'
   | 'thorn-star' | 'dragonfish' | 'drill-snail' | 'gull' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish' | 'host-anemone' | 'cleaner-wrasse';
@@ -49,6 +49,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'octopus', name: 'Octopus', zone: 'The Twilight Shelf', note: 'The colour of sand until it moves, and then of fire.' },
   { id: 'nudibranch', name: 'Nudibranchs', zone: 'The Twilight Shelf', note: 'Slugs in colours meant as warnings, creeping along your branches.' },
   { id: 'grouper', name: 'Grouper and cleaners', zone: 'The Twilight Shelf', note: 'A big fish holding still while two small ones pick it clean.' },
+  { id: 'oarfish', name: 'Oarfish', zone: 'The Twilight Shelf', note: 'Rare. A silver ribbon longer than your tallest branch, hanging head-up in the water, its red crest rippling.' },
   { id: 'whale-shark', name: 'Whale shark', zone: 'The Twilight Shelf', note: 'Rare. The biggest fish in the sea, eating the smallest things in it.' },
   { id: 'reef-fish', name: 'Reef fish', zone: 'The Sunlit Crown', note: 'Colours you had no words for, darting between the branches.' },
   { id: 'whale', name: 'Whale', zone: 'The Sunlit Crown', note: 'A long shadow in the haze, calling as it passes.' },

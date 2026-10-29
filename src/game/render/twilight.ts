@@ -906,6 +906,61 @@ export function createTwilightScene(seed: number): Scene {
    * Rarely, a whale shark: once in eighteen minutes the biggest fish in the sea glides across the
    * upper water, broad-headed and spotted, mouth open for plankton.
    */
+  /**
+   * Rarely, an oarfish: once in about twenty-five minutes a long silver ribbon drifts down through
+   * the open water head-up, its body barely moving while waves run down its red crest. Touched, it
+   * coils away into the blue faster than it came.
+   */
+  function drawOarfish(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 1500, pass = 90;
+    const touch = startled('oarfish', t);
+    let u = ((t + 260) % period) / pass;
+    if (touch && touch.age < 6 && u < 1.5) u += touch.age * 0.15;
+    if (u >= 1) return;
+    sight('oarfish');
+    const s = scale() * 1.5;
+    const x0 = focus.x + focus.w * 0.18 + u * focus.w * 0.1;
+    const y0 = focus.y + focus.h * (-0.15 + u * 0.75);
+    const len = 160 * s;
+    spot('oarfish', x0, y0 + len * 0.3, 40 * s);
+    // The body: a ribbon from the head (top) down, swaying in a slow standing wave.
+    const pt = (f: number): [number, number] => [x0 + Math.sin(f * 5 - t * 0.9) * 6 * s * f, y0 + f * len];
+    ctx.save();
+    ctx.lineCap = 'round';
+    const body = ctx.createLinearGradient(x0 - 6 * s, 0, x0 + 6 * s, 0);
+    body.addColorStop(0, '#9fb0c4');
+    body.addColorStop(0.5, '#e8eef6');
+    body.addColorStop(1, '#8a9cb2');
+    ctx.strokeStyle = body;
+    for (let i = 0; i < 24; i++) {
+      const f0 = i / 24, f1 = (i + 1) / 24;
+      const [ax, ay] = pt(f0), [bx, by] = pt(f1);
+      ctx.lineWidth = (7 - 5 * f0) * s;
+      ctx.beginPath();
+      ctx.moveTo(ax, ay);
+      ctx.lineTo(bx, by);
+      ctx.stroke();
+    }
+    // The crest: red rays along the back, a wave running down them.
+    ctx.strokeStyle = 'rgba(230,70,70,0.85)';
+    ctx.lineWidth = 1.2 * s;
+    for (let i = 0; i < 40; i++) {
+      const f = i / 40;
+      const [x, y] = pt(f);
+      const ray = (i < 4 ? 14 - i * 2 : 5) * s * (0.6 + 0.4 * Math.sin(f * 20 - t * 4));
+      ctx.beginPath();
+      ctx.moveTo(x - 3 * s, y);
+      ctx.lineTo(x - 3 * s - ray, y - ray * 0.4);
+      ctx.stroke();
+    }
+    // Head: a small dark eye.
+    ctx.fillStyle = '#1b2230';
+    ctx.beginPath();
+    ctx.arc(x0 + 1.5 * s, y0 + 4 * s, 1.6 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
   function drawWhaleShark(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 1080, crossing = 70;
     const u = ((t + 500) % period) / crossing;
@@ -1162,6 +1217,7 @@ export function createTwilightScene(seed: number): Scene {
       ruins.draw(ctx, w, h, focus, v.height, RUINS, t);
       drawManta(ctx, t);
       drawWhaleShark(ctx, t);
+      drawOarfish(ctx, t);
       drawMotes(ctx, t, v.siltLevel);
       drawRising(ctx, t, w, h, focus, dpr, v.rising, false);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#1d3557');

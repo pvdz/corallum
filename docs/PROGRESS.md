@@ -512,3 +512,4 @@ date, what landed, what is half-done, what's next.
 - Ossel's questions (content/ossel.ts QUESTIONS; state.asked; economy osselAsks/answerOssel; diary 'asked'): a card in choices.ts, the reply as a story, one ending page of what you told Ossel.
 - finale e2e: the save has one of Ossel's questions answered (its ending page is counted); reads up to 20 pages.
 - The reseeded sea: the chronicle card draws every ending as a reef islet on a spiral chart (ui/drawings.ts drawSeaChart; SEAMOUNT_TINT shared with the line chart).
+- Rare oarfish in the Twilight (twilight.ts drawOarfish: every 25 min for 90 s, head-up silver ribbon with a rippling red crest; touched it hurries off). Note: tools/screenshot `--t` freezes the clock and overrides `at`.
