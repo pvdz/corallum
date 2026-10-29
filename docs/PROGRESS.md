@@ -381,3 +381,4 @@ date, what landed, what is half-done, what's next.
 - The sun terrace redrawn: shaded fronts, stone seams, algae tufts swaying on top.
 - The vent garden's chimneys: larger, banded, glowing at the mouth.
 - Tapping Ossel: a word about what is going on first (trip, sister ahead/behind, the water, lodgers, shards), each once a session, then the old lines.
+- Thorn stars: events.ts THORN, economy currentThorn/crabThorn/pryThorn (slots like feasts), state.thorned; render/thorn.ts on the coral in Twilight and Sunlit; tap to pry, guard crabs take it at the end for half; journal creature 'thorn-star'; corallum.thorn() jumps to one.

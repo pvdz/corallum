@@ -114,6 +114,7 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Traits 'Old maps', 'Open house', 'Water-wise' | plain phrases | OK |
 | Other reefs spawning at the full moon (mass coral spawning) | real biology | OK |
 | Lineage bands 6–9 (Side by side, Cold water, A white beach, Over the old city) | our own | OK |
+| Thorn stars (coral-eating starfish) driven off by guard crabs | real biology | OK |
 | Hard seamounts (hungry, silent, lonely, buried) as challenge runs with a lasting reward | challenge runs are a genre convention (incremental 'challenges'); names are plain descriptions | OK |
 | Moments (a dying brittle star, a lost shoal, the giant squid's eye, a whale fall, cleaners asking for a ledge, a storm breaking a branch, a sleeping turtle, a shore bird at low tide) | real reef and deep-sea events; small choice events are a genre convention; beats written for Ossel | OK |
 | Moments: a vent cracking, an anglerfish's lure beside yours, a young Rasp alone, first light | our own beats | OK |

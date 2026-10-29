@@ -30,12 +30,12 @@ import { SISTER } from '../game/content/sister.ts';
 import { REQUEST } from '../game/content/requests.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio } from '../game/audio/audio.ts';
-import { FEAST, WELCOME } from '../game/content/events.ts';
+import { FEAST, THORN, WELCOME } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS, TRIAL_TEXT } from '../game/content/lineage.ts';
 import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf, TRUST, trustLevel } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
@@ -65,6 +65,8 @@ declare global {
       readonly spots: { id: string; x: number; y: number }[];
       /** Move the clock to the next time slot with this water (for checking its look). */
       water(id: string): boolean;
+      /** Move the clock into the next thorn star's climb (for checking it). */
+      thorn(): boolean;
     };
   }
 }
@@ -458,6 +460,15 @@ window.corallum = {
   },
   get zoom() { return zoom.k; },
   flourish: (kind: string) => scene.effect(kind as EffectKind),
+  thorn() {
+    const t0 = state.t;
+    for (let dt = 0; dt < 5000; dt += 5) {
+      state.t = t0 + dt;
+      if (currentThorn(state)) { state.t += 20; return true; }
+    }
+    state.t = t0;
+    return false;
+  },
   water(id: string) {
     const k0 = Math.floor(state.t / WATER.period);
     for (let k = k0; k < k0 + 500; k++) {
@@ -500,6 +511,11 @@ function tripView(): ReefView['trip'] {
   return { shoals: x.shoals, since: tripSeconds(state, x) - (ex.back - state.t), left: ex.back - state.t, side: i % 2 ? -1 : 1, site: x.id };
 }
 
+function thornView(): ReefView['thorn'] {
+  const th = currentThorn(state);
+  return th ? { u: (state.t - th.start) / THORN.life, side: th.side } : null;
+}
+
 function view(): ReefView {
   const r = rates(state);
   return {
@@ -521,6 +537,7 @@ function view(): ReefView {
     works: state.works,
     sister: sisterAt(state.t),
     moments: state.moments,
+    thorn: thornView(),
     othersSpawn: actAt(state.height) === 4 && moonFull(state.t),
     planktonLevel: Math.min(1, (feeding(state.plankton) - 1) / 2),
     bands: state.bands,
@@ -834,6 +851,15 @@ canvas.addEventListener('pointerdown', (e) => {
     else if (who.id !== 'ossel') audio.cue(giftOf(who.id) === 'glow' ? 'shimmer' : who.id === 'rasp' ? 'crunch' : 'touch');
     if (frozenT === null && who.id !== 'ossel' && !state.meta.seen.includes(`t:${who.id}`)) state.meta.seen.push(`t:${who.id}`);
     // Now and then a neighbour gives a little of what it lives by.
+    // A thorn star is pried off the reef, for a burst.
+    if (who.id === 'thorn-star' && frozenT === null) {
+      const pay = pryThorn(state);
+      if (pay > 0) {
+        floatText(e.clientX, e.clientY - 26, `+${num(pay)} ${feastPay(state)} ${THORN.pried}`, 'feast-float');
+        audio.cue('crunch');
+        buzz([20, 30, 20]);
+      }
+    }
     const g = frozenT === null && who.id !== 'ossel' ? gift(state, who.id) : null;
     if (g) floatText(e.clientX, e.clientY - 26, `+${num(g.amount)} ${GIFT_TEXT[g.stock]}`, 'feast-float');
     // A light tick on phones; a double one when it brought a gift.
@@ -1230,6 +1256,12 @@ function frame(now: number): void {
   }
   // Shared table: a feast left to sink is eaten by the scavengers, half for the reef.
   if (frozenT === null && tableFeast(state)) eatFeast(LINEAGE.tableShare);
+  // Guard crabs drive off a thorn star nobody pried loose, at its last moment.
+  if (frozenT === null && crabThorn(state)) {
+    const pay = pryThorn(state, THORN.crabShare);
+    const [cx, cy] = scene.crownAt;
+    if (pay > 0) floatText(cx / dpr, cy / dpr, `+${num(pay)} ${feastPay(state)} ${THORN.crabs}`, 'feast-float');
+  }
   // Old habits: the reef's own small purchases, only while the page is open.
   if (habits.get() && frozenT === null && now - lastHabit > 250) {
     lastHabit = now;

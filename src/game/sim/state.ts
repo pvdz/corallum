@@ -111,6 +111,8 @@ export type GameState = {
   lastSweep: number;
   /** Index of the last feast slot eaten (see content/events.ts). */
   feasted: number;
+  /** Index of the last thorn-star slot driven off. */
+  thorned: number;
   /** Falling feasts caught this run. */
   feasts: number;
   /** The reef's height sampled every HISTORY_STEP sim seconds (for the growth chart). */
@@ -178,6 +180,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     bands: [],
     lastSweep: -1e9,
     feasted: -1,
+    thorned: -1,
     feasts: 0,
     history: [],
     expedition: { site: '', back: 0, feed: 0, light: 0, scout: 0, n: 0 },

@@ -26,6 +26,8 @@ export type ReefView = {
   shoals: number;
   jobs: Record<Job, number>;
   /** Shoals away at a ruin: how many, sim seconds since they left and until they are back, which side they went. */
+  /** A thorn star climbing the reef: how far through its climb (0..1), and on which side. */
+  thorn: { u: number; side: number } | null;
   /** The other reefs are spawning (Sunlit full moon). */
   othersSpawn: boolean;
   /** How each moment was met. */

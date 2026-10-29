@@ -17,6 +17,17 @@ export const WELCOME = {
   took: 'Taken',
 } as const;
 
+/**
+ * Thorn stars: now and then on the Twilight Shelf and in the Sunlit Crown a coral-eating starfish
+ * climbs the reef. Tap it off for a burst; guard crabs at home drive it off themselves at the last
+ * moment, for a share. Only while you watch (slots like feasts).
+ */
+export const THORN = {
+  period: 420, life: 70, seconds: 120, crabShare: 0.5, zones: [3, 4],
+  pried: '· the thorn star, off',
+  crabs: '· the guard crabs drove it off',
+} as const;
+
 export const FEAST = {
   /** The band after which they come (the late Silt Floor, where purchases slow down). Ossel's
    * whisper introduces the first; the "What falls" band tells what they are. */
