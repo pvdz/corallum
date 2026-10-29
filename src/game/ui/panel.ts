@@ -1491,7 +1491,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       primed = true;
     },
     /** Show the offline summary; any bands read while away are queued behind it. */
-    showAway(seconds: number, gained: { calcite: number; glow: number; metres: number; full: boolean; bands: string[]; fullAfter: number | null }): void {
+    showAway(seconds: number, gained: { calcite: number; glow: number; metres: number; full: boolean; bands: string[]; fullAfter: number | null;
+      relics?: string[]; roams?: number; shards?: number }): void {
       // A headline, then what changed as labelled rows (like the Your reef card).
       awayText.textContent = `You were gone ${duration(seconds)}. The reef kept growing.`;
       awayList.innerHTML = '';
@@ -1501,6 +1502,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       if (gained.metres > 0.05) row('Rose', metres(gained.metres));
       const titles = gained.bands.map((id) => BANDS.find((b) => b.id === id)?.title).filter((x): x is string => !!x);
       if (titles.length) row(titles.length === 1 ? 'New band' : 'New bands', titles.map((t) => `“${t}”`).join(', '));
+      if (gained.relics?.length) row('The shoals brought', gained.relics.join(', ').toLowerCase());
+      if (gained.roams) row('Roamed', gained.roams === 1 ? 'the shoals came home from the dark' : `${gained.roams} times`);
+      if (gained.shards) row('Shards', `${gained.shards} found`);
       if (gained.full) {
         row('Full', `the stores filled${gained.fullAfter !== null && gained.fullAfter > 60 ? ` after ${duration(gained.fullAfter)}` : ''}; the rest dissolved back into the sea`);
         awayHint.textContent = 'A denser lattice holds more while you are away.';

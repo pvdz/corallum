@@ -383,7 +383,8 @@ function backupDue(): boolean {
 
 /** Advance by a long span and tell the player what happened while they were gone. */
 function catchUp(seconds: number): void {
-  const before = { calcite: state.calcite, glow: state.glow, height: state.height, bands: state.bands.length };
+  const before = { calcite: state.calcite, glow: state.glow, height: state.height, bands: state.bands.length,
+    relics: state.relics.length, roams: state.tally.roams, shards: state.meta.shards.length };
   // When the stores would have filled, from the state as it was left.
   const start = structuredClone(state);
   const fullAfter = timeUntil(start, 'calcite', 0.98 * calciteHold(start));
@@ -395,6 +396,9 @@ function catchUp(seconds: number): void {
     metres: state.height - before.height,
     full: state.calcite >= 0.98 * calciteHold(state),
     fullAfter: fullAfter < seconds ? fullAfter : null,
+    relics: state.relics.slice(before.relics).map((id) => SITES.find((x) => x.id === id)?.relic ?? id),
+    roams: state.tally.roams - before.roams,
+    shards: state.meta.shards.length - before.shards,
   });
 }
 
