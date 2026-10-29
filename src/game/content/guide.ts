@@ -45,14 +45,13 @@ export const STOCK_NOTES: Record<string, string> = {
 
 /** Shown once (per browser line) after an update with new things to find; `id` changes per update. */
 export const NEWS = {
-  id: 'news:2026-10-29c',
+  id: 'news:2026-10-29d',
   kicker: 'New in the sea',
-  title: 'Old stone, and lucky neighbours',
-  text: 'Grey knobs of old stone now gather on the reef’s tips, even while you are away: tap one to let it go, and now and ' +
-    'then one held a memory. Some neighbours are lucky for a while (golden sparks): touch one then. The Midnight Water ' +
-    'sometimes turns to a milky sea, and sweeps gather light. In the light, shoals can stand guard; the shelf has grottoes ' +
-    'for more residents (a boxer crab among them); a fourth Form, Pillars; a heavy seamount; storms far off at the Breach; ' +
-    'new moments, Readings, trips and creatures. The Reef tab’s guide has a line on each.',
+  title: 'Small things in trouble, and a blue moon',
+  text: 'Now and then a small creature near the reef is in trouble (a fish in a jelly’s threads, a brittle star under a ' +
+    'stone, a fish stranded on your crown): tap it free. Each day one creature is the day’s visitor. Every seventh moon ' +
+    'is blue. Rare sights wait in every zone, the line keeps a record of every moment it met, and the strip under the ' +
+    'water’s forecast shows the next twenty minutes. In view mode (H), leave the reef a while and the view drifts.',
 } as const;
 
 /** The first time the line enters a zone: what is new there, in a few lines (zones 2–5). */
