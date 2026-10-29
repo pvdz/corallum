@@ -195,4 +195,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | A gleaming seamount; trial Fortune's child; moment The water like glass | this game's own systems | OK |
 | Trait Star-gazer | this game's own systems | OK |
 | Decorator crab resident | real animal | OK |
+| A whale breaching at the Breach | real behaviour | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

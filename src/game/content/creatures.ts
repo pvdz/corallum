@@ -6,7 +6,7 @@ export type CreatureId =
   | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'milky-sea' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration' | 'larvacean' | 'lantern-shark'
   | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'sardine-run' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark' | 'oarfish' | 'flashlight-fish' | 'mantis-shrimp'
   | 'cuttlefish' | 'eagle-rays' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly' | 'tree-worms'
-  | 'shore-bird' | 'pelican' | 'hatchlings' | 'green-flash' | 'flying-fish' | 'dolphin' | 'moon-jelly' | 'sailors' | 'petrel' | 'sea-sparkle' | 'moonbow' | 'far-storm' | 'giant-clam' | 'trumpetfish' | 'gulper' | 'sixgill' | 'meteors' | 'breathing-turtle'
+  | 'shore-bird' | 'pelican' | 'hatchlings' | 'green-flash' | 'flying-fish' | 'dolphin' | 'moon-jelly' | 'sailors' | 'petrel' | 'sea-sparkle' | 'moonbow' | 'far-storm' | 'giant-clam' | 'trumpetfish' | 'breaching' | 'gulper' | 'sixgill' | 'meteors' | 'breathing-turtle'
   | 'thorn-star' | 'dragonfish' | 'drill-snail' | 'gull' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish' | 'host-anemone' | 'cleaner-wrasse' | 'boxer-crab' | 'decorator-crab';
 
 export type Creature = { id: CreatureId; name: string; zone: string; note: string };
@@ -83,6 +83,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'sixgill', name: 'Sixgill shark', zone: 'The Twilight Shelf', note: 'Rare. Old and slow, up from the deep at dusk, gliding low along the slope with an eye that shines green.' },
   { id: 'giant-clam', name: 'Giant clam', zone: 'The Sunlit Crown', note: 'Sits in the sand and never moves again. Between its lips it farms the same small lights you do, in blue and green.' },
   { id: 'trumpetfish', name: 'Trumpetfish', zone: 'The Sunlit Crown', note: 'Hangs head-down among your branches, as still and straight as one of them, waiting for something small to pass.' },
+  { id: 'breaching', name: 'A whale breaching', zone: 'The Breach', note: 'Rare. Far off, a whole whale throws itself into the air, hangs there, and falls back in a hill of white water. Nobody knows why. It looks like joy.' },
   { id: 'far-storm', name: 'A storm far off', zone: 'The Breach', note: 'Rare. In some showers, light walks on the sea at the edge of the sky, and a long while after, a sound like stone grinding comes over the water.' },
   { id: 'sailors', name: 'By-the-wind sailors', zone: 'The Breach', note: 'A fleet of blue floats, each with a little stiff sail set at a slant. Wherever the wind goes, they go.' },
   { id: 'petrel', name: 'Storm petrels', zone: 'The Breach', note: 'Birds no bigger than a fist, fluttering so low their feet patter on the water as if walking on it.' },

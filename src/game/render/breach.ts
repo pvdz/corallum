@@ -226,6 +226,70 @@ export function createBreachScene(seed: number): Scene {
    * Rarely, a meteor shower: for forty seconds in every twenty minutes, streaks fall across the
    * sky from one point, thick for a while, then thinning out. Touched, a big bright fireball.
    */
+  /** Rarely (every fifteen minutes), far off, a humpback leaps clear of the sea and falls back in a burst of spray. */
+  function drawBreaching(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 900, length = 9;
+    const p = (t + 210) % period;
+    if (p > length) return;
+    sight('breaching');
+    const s = scale() * 1.3;
+    const wy = waterY();
+    const x0 = focus.x + focus.w * 0.82;
+    const k = Math.min(1, p / 3);
+    // Up out of the water and over, rotating from nose-up to belly-up.
+    const rise = Math.sin(k * Math.PI) * 60 * s;
+    const ang = -1.2 + k * 2;
+    spot('breaching', x0, wy - 30 * s, 60 * s);
+    if (k < 1) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, 0, w, wy + 1);
+      ctx.clip();
+      ctx.translate(x0 + k * 30 * s, wy + 20 * s - rise);
+      ctx.rotate(ang);
+      ctx.fillStyle = '#1c2230';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 40 * s, 11 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // Its long pale flipper, out like a wing.
+      ctx.fillStyle = '#c8ccd6';
+      ctx.beginPath();
+      ctx.moveTo(8 * s, 4 * s);
+      ctx.quadraticCurveTo(0, 30 * s, -10 * s, 28 * s);
+      ctx.quadraticCurveTo(-2 * s, 14 * s, 0, 4 * s);
+      ctx.fill();
+      // Pale throat grooves.
+      ctx.strokeStyle = 'rgba(200,205,215,0.6)';
+      ctx.lineWidth = 1 * s;
+      for (let q = 0; q < 4; q++) {
+        ctx.beginPath();
+        ctx.moveTo(30 * s, (2 + q * 1.6) * s);
+        ctx.lineTo(8 * s, (4 + q * 1.8) * s);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+    // The splash: a white hill of water rising and falling, and rings spreading.
+    const sp = (p - 2.6) / 6;
+    if (sp > 0 && sp < 1) {
+      ctx.save();
+      ctx.fillStyle = `rgba(235,240,250,${0.8 * (1 - sp)})`;
+      for (let q = 0; q < 14; q++) {
+        const a = Math.PI * (0.1 + 0.8 * (q / 13));
+        const hgt = Math.sin(sp * Math.PI) * (40 + (q % 3) * 14) * s;
+        ctx.beginPath();
+        ctx.arc(x0 + 40 * s + Math.cos(a) * 34 * s * sp, wy - Math.sin(a) * hgt, (3 + (q % 4)) * s, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.strokeStyle = `rgba(220,230,250,${0.5 * (1 - sp)})`;
+      ctx.lineWidth = 1.5 * s;
+      ctx.beginPath();
+      ctx.ellipse(x0 + 40 * s, wy + 2 * s, (20 + sp * 90) * s, (4 + sp * 12) * s, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
   /** Where the king tide reached (a moment): a line of dried weed and pale salt along the reef above the water. */
   function drawWrack(ctx: CanvasRenderingContext2D, L: ReefLayout): void {
     const s = scale();
@@ -1259,6 +1323,7 @@ export function createBreachScene(seed: number): Scene {
       drawMoonJellies(ctx, t);
       drawWaitingFish(ctx, t, v, this.crownAt);
       drawDolphins(ctx, t);
+      drawBreaching(ctx, t);
       drawFlyingFish(ctx, t);
       const sf: Surface = { focus, wy: waterY(), s: scale(), dpr, dawn };
       drawSailors(ctx, t, sf);

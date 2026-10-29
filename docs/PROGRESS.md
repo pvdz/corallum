@@ -651,3 +651,4 @@ date, what landed, what is half-done, what's next.
 - Four more dreams (twelve).
 - Resident pair A busy station (decorator crab + cleaner wrasse): gifts ×1.3.
 - With a mouse, polyps near the pointer pull their tentacles in (sightings.ts hover/shy; reef.ts).
+- Rare at the Breach: a humpback breaching far off every 15 min (leap, flipper out, a hill of spray and rings).
