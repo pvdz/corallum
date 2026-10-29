@@ -35,6 +35,8 @@ export type PanelHooks = {
   reset(): void;
   /** The soft glow (bloom) pass: read and set; off helps slow phones. */
   glow: { get(): boolean; set(on: boolean): void };
+  /** The reef's name changed. */
+  rename(name: string): void;
   /** Calmer motion: the world's ambient animation runs slower. */
   calm: { get(): boolean; set(on: boolean): void };
   /** Old habits (a lineage trait): whether the reef buys cheap polyps and glimmerseed itself. */
@@ -296,7 +298,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     codexList.append(el('dt', '', term), el('dd', '', value));
   }
   function renderCodex(s: GameState): void {
-    const key = JSON.stringify([Math.floor(s.height), Math.floor(s.t / 60), s.feasts, s.truce, s.dialects, s.carried, s.meta.spawnings, s.meta.endings, s.readings.length]);
+    const key = JSON.stringify([s.meta.name, Math.floor(s.height), Math.floor(s.t / 60), s.feasts, s.truce, s.dialects, s.carried, s.meta.spawnings, s.meta.endings, s.readings.length]);
     if (key === codexKey) return;
     codexKey = key;
     codexList.innerHTML = '';
@@ -306,6 +308,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (truce.length) codexRow('The truce', truce.join(' · '));
     const spoken = TIERS.filter((t) => s.dialects[t.tier]).map((t) => DIALECTS.find((d) => d.id === s.dialects[t.tier])!.name);
     if (spoken.length) codexRow('Dialects', spoken.join(' · '));
+    if (s.meta.name) codexRow('Name', reefName(s));
     codexRow('This reef', `${duration(s.t)} growing · ${num(s.earned.calcite)} calcite gathered${s.feasts ? ` · ${s.feasts} feast${s.feasts === 1 ? '' : 's'} caught` : ''}`);
     if (s.meta.endings > 0) codexRow('Endings', `${s.meta.endings} · ${s.meta.carriedEver.length} of ${MEMORIES.length} memories carried so far`);
     if (s.carried.length) codexRow('Carried', s.carried.map((id) => MEMORIES.find((m) => m.id === id)?.title ?? id).join(' · '));
@@ -426,6 +429,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   glowBox.checked = hooks.glow.get();
   glowBox.addEventListener('change', () => hooks.glow.set(glowBox.checked));
   glowToggle.append(glowBox, el('span', '', 'Soft glow (turn off if a phone runs slow or warm)'));
+  const nameRow = el('label', 'name-row');
+  const nameInput = el('input') as HTMLInputElement;
+  nameInput.type = 'text';
+  nameInput.maxLength = 24;
+  nameInput.placeholder = 'Name your reef';
+  nameInput.addEventListener('change', () => hooks.rename(nameInput.value.trim()));
+  nameRow.append(el('span', 'stock-name', 'Name'), nameInput);
   const calmToggle = el('label', 'toggle');
   const calmBox = el('input') as HTMLInputElement;
   calmBox.type = 'checkbox';
@@ -440,6 +450,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   habitToggle.append(habitBox, el('span', '', 'Old habits: bud polyps and host glimmerseed on their own when they are cheap'));
   habitToggle.hidden = true;
   reefPage.append(
+    nameRow,
     el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn, glowToggle, calmToggle, habitToggle, resetBtn,
     el('p', 'hint', 'Hold a buy button to keep buying. Keys: Space sweeps · F catches a falling feast · P buds a polyp · B lays a band · G hosts glimmerseed.'),
   );
@@ -821,6 +832,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       renderCodex(s);
       renderJournal(s);
       habitToggle.hidden = !s.meta.traits['old-habits'];
+      if (document.activeElement !== nameInput && nameInput.value !== s.meta.name) nameInput.value = s.meta.name;
       bandsDot.hidden = seenStories >= storyCount;
       primed = true;
     },
@@ -897,6 +909,14 @@ function repeatWhileHeld(btn: HTMLButtonElement, fn: () => void): { repeated: bo
 }
 
 const GAIN_SHOWN = new Set<UpgradeId>(['lattice', 'lure', 'vent', 'sandbar', 'channel', 'pigment', 'canopy', 'meadow']);
+
+/** The reef's name with its generation: "Mara", then "Mara II" on the next seamount, and so on. */
+export function reefName(s: GameState): string {
+  if (!s.meta.name) return '';
+  const n = s.meta.spawnings + 1;
+  const roman = ['', '', ' II', ' III', ' IV', ' V', ' VI', ' VII', ' VIII', ' IX', ' X'];
+  return s.meta.name + (n < roman.length ? roman[n] : ` ${n}`);
+}
 
 function seamountDef(id: SeamountId) {
   return SEAMOUNTS.find((m) => m.id === id)!;

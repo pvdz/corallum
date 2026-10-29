@@ -18,6 +18,8 @@ export type Meta = {
   seen: string[];
   /** Highest reef ever grown. */
   best: number;
+  /** The name the player gave their reef ('' for none); kept across spawnings. */
+  name: string;
   /** Every memory any spawn has carried, and how many times the reef has reached the ending. */
   carriedEver: string[];
   endings: number;
@@ -33,6 +35,7 @@ export function newMeta(): Meta {
     spawnings: 0,
     seen: [],
     best: 0,
+    name: '',
     carriedEver: [],
     endings: 0,
   };

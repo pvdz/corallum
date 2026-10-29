@@ -35,7 +35,7 @@ import { ACT1, MILESTONES, type Milestone } from '../game/content/act1.ts';
 import { WHISPERS } from '../game/content/whispers.ts';
 import { buyTrait, habitPurchase, spawnLesser } from '../game/sim/prestige.ts';
 import { createFinale } from '../game/ui/finale.ts';
-import { createPanel } from '../game/ui/panel.ts';
+import { createPanel, reefName } from '../game/ui/panel.ts';
 
 declare global {
   interface Window {
@@ -88,6 +88,13 @@ const canvas = document.getElementById('world') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d', { alpha: false })!;
 const ui = document.getElementById('ui')!;
 const title = document.getElementById('title')!;
+const titleName = document.createElement('p');
+titleName.className = 'reef-name';
+title.append(titleName);
+/** Under the title: the reef's name, if it has one. */
+function showReefName(): void {
+  titleName.textContent = reefName(state);
+}
 // One scene per zone; the zone follows the reef's height, with a crossfade between them.
 const scenes: Scene[] = [createAbyssScene(state.seed), createMidnightScene(state.seed), createTwilightScene(state.seed), createSunlitScene(state.seed),
   createBreachScene(state.seed)];
@@ -151,6 +158,11 @@ try { calmOn = localStorage.getItem(CALM_KEY) === 'on'; } catch { /* no storage 
 document.documentElement.classList.toggle('calm', calmOn);
 
 const panel = createPanel(ui, {
+  rename(name) {
+    state.meta.name = name;
+    showReefName();
+    save();
+  },
   calm: {
     get: () => calmOn,
     set(on) {
@@ -235,6 +247,7 @@ const panel = createPanel(ui, {
   },
 });
 panel.primeStories(state);
+showReefName();
 // A brand-new reef: let the title and the dark water show before the first band's story.
 if (state.bands.length === 0 && state.meta.spawnings === 0 && frozenT === null) panel.holdStories(3500);
 
@@ -675,7 +688,8 @@ function frame(now: number): void {
   // The tab title carries the reef's height, so a background tab still shows progress.
   if (now - lastTitle > 1000) {
     lastTitle = now;
-    const t = ended(state) ? 'Corallum · spawned' : state.height < 1 ? 'Corallum' : `${metres(state.height)} · Corallum`;
+    const who = reefName(state) || 'Corallum';
+    const t = ended(state) ? `${who} · spawned` : state.height < 1 ? who : `${metres(state.height)} · ${who}`;
     if (document.title !== t) document.title = t;
   }
   if (frozenT === null) requestAnimationFrame(frame);
