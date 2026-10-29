@@ -36,6 +36,7 @@ export function createAudio() {
   let surf: { gain: GainNode; filter: BiquadFilterNode } | null = null;
   let zone: Zone = 1;
   let enabled = false;
+  let volume = 0.9;
   let noteIndex = 0;
   // The melody: a wandering walk over the zone's scale, scheduled a little ahead of time.
   let nextBeat = 0;
@@ -220,7 +221,15 @@ export function createAudio() {
         const c = ensure();
         void c.resume();
       }
-      if (ctx && master) master.gain.setTargetAtTime(on ? 0.9 : 0, ctx.currentTime, 0.4);
+      if (ctx && master) master.gain.setTargetAtTime(on ? volume : 0, ctx.currentTime, 0.4);
+    },
+    /** Overall loudness, 0..1. */
+    setVolume(v: number): void {
+      volume = Math.max(0, Math.min(1, v));
+      if (ctx && master && enabled) master.gain.setTargetAtTime(volume, ctx.currentTime, 0.1);
+    },
+    get volume() {
+      return volume;
     },
     setZone(z: number): void {
       const next = Math.max(1, Math.min(5, Math.round(z))) as Zone;

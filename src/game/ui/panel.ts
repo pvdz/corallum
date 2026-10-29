@@ -38,6 +38,8 @@ export type PanelHooks = {
   glow: { get(): boolean; set(on: boolean): void };
   /** The reef's name changed. */
   rename(name: string): void;
+  /** Sound volume, 0..1. */
+  volume: { get(): number; set(v: number): void };
   /** Scientific notation for large numbers. */
   sci: { get(): boolean; set(on: boolean): void };
   /** Calmer motion: the world's ambient animation runs slower. */
@@ -516,6 +518,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   nameInput.placeholder = 'Name your reef';
   nameInput.addEventListener('change', () => hooks.rename(nameInput.value.trim()));
   nameRow.append(el('span', 'stock-name', 'Name'), nameInput);
+  const volRow = el('label', 'toggle');
+  const volInput = el('input') as HTMLInputElement;
+  volInput.type = 'range';
+  volInput.min = '0';
+  volInput.max = '100';
+  volInput.value = String(Math.round(hooks.volume.get() * 100));
+  volInput.addEventListener('input', () => hooks.volume.set(Number(volInput.value) / 100));
+  volRow.append(el('span', '', 'Volume'), volInput);
   const sciToggle = el('label', 'toggle');
   const sciBox = el('input') as HTMLInputElement;
   sciBox.type = 'checkbox';
@@ -537,7 +547,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   habitToggle.hidden = true;
   reefPage.append(
     nameRow,
-    el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn, glowToggle, calmToggle, sciToggle, habitToggle, resetBtn,
+    el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn, volRow, glowToggle, calmToggle, sciToggle, habitToggle, resetBtn,
     el('p', 'hint', 'Hold a buy button to keep buying. Keys (? lists them): Space sweeps · H hides the panel · F catches a falling feast · P buds a polyp · B lays a band · G hosts glimmerseed.'),
   );
 

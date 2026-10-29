@@ -163,7 +163,17 @@ let sciOn = false;
 try { sciOn = localStorage.getItem(SCI_KEY) === 'on'; } catch { /* no storage */ }
 setScientific(sciOn);
 
+const VOL_KEY = 'corallum.volume';
+try { const v = Number(localStorage.getItem(VOL_KEY)); if (localStorage.getItem(VOL_KEY) !== null && Number.isFinite(v)) audio.setVolume(v); } catch { /* no storage */ }
+
 const panel = createPanel(ui, {
+  volume: {
+    get: () => audio.volume,
+    set(v) {
+      audio.setVolume(v);
+      try { localStorage.setItem(VOL_KEY, String(v)); } catch { /* no storage */ }
+    },
+  },
   sci: {
     get: () => sciOn,
     set(on) {

@@ -521,3 +521,4 @@ html.view-mode #depth-gauge { right: 18px; }
 html.view-mode #photo { display: grid; }
 .growth-chart { display: block; width: 100%; height: 70px; margin-top: 8px; }
 .growth-chart[hidden] { display: none; }
+.toggle input[type="range"] { width: auto; flex: 1; height: auto; accent-color: #8ffff0; }

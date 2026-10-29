@@ -204,3 +204,4 @@ date, what landed, what is half-done, what's next.
 - Crowded seamount: half-buried old reefs (humps with dead branches and faint lights) around the Silt Floor.
 - Cold seamount: a brine pool on the Silt Floor (shimmering surface, ring of mussels); in the journal (27).
 - Warm seamount: a field of five black smokers on the Silt Floor, smoking, hot at the mouth; in the journal (28).
+- Reef tab: volume slider (remembered as corallum.volume).
