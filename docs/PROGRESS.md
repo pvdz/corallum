@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended goal (user): add content, gameplay and graphics, keep going. Latest: sargassum raft (Breach), bristlemouths, two great works in every zone (fence, beacon, rim, lawn, dome), moonlit sweeps, Quiet vow, Ossel's past memories, Long rhythm, lost shoals, fragments (+ Foster, Scattered city), hermit crab, man-o'-war, star march, fireworms, thermocline, sea spider, phone stock grid. Bot ~7h28; 7 browser tests + sim tests green. Run e2e with `timeout 500` per test.
+NOW: Open-ended goal (user): add content, gameplay and graphics, keep going. Latest: yeti crabs, sargassum raft (Breach), bristlemouths, two great works in every zone (fence, beacon, rim, lawn, dome), moonlit sweeps, Quiet vow, Ossel's past memories, Long rhythm, lost shoals, fragments (+ Foster, Scattered city), hermit crab, man-o'-war, star march, fireworms, thermocline, sea spider, phone stock grid. Bot ~7h28; 7 browser tests + sim tests green. Run e2e with `timeout 500` per test.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -727,3 +727,4 @@ date, what landed, what is half-done, what's next.
 - Creature: bristlemouths (Midnight Water), a loose drifting cloud of tiny silver fish that scatters when touched.
 - Event: a sargassum raft drifts over the crown at the Breach (every 10 min, 50 s, while watching); tapped, the reef's young shelter under it for 60 s of spawn (state rafted, tally.rafts; debug hook raft(); systems e2e).
 - Feat: A floating nursery (shelter under three weed rafts on one reef).
+- Creature: yeti crabs on the vent chimney's lower slope (Silt Floor), waving hairy claws in time; touched, they fold their arms.

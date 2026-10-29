@@ -916,6 +916,61 @@ export function createLife(seed: number) {
     ctx.restore();
   }
 
+  /**
+   * Yeti crabs at the foot of the vent: pale, their claws thick with silky hair, waving slowly all
+   * in time to feed the bacteria they farm there. Touched, they fold their arms in a moment.
+   */
+  function drawYetiCrabs(ctx: CanvasRenderingContext2D, x: number, base: number, tier: number, s0: number, t: number): void {
+    const s = s0 * 1.4;
+    sight('yeti-crabs');
+    spot('yeti-crabs', x - 24 * s0, base - 30 * s0, 26 * s0);
+    const touch = startled('yeti-crabs', t);
+    const fold = touch && touch.age < 4 ? Math.sin(Math.min(1, touch.age / 4) * Math.PI) : 0;
+    ctx.save();
+    for (let i = 0; i < 1 + tier; i++) {
+      const cx = x - (16 + i * 9) * s0, cy = base - (22 + i * 7 + (i % 2) * 3) * s0;
+      const side = i % 2 ? -1 : 1;
+      // The wave: slow, shared, a little offset crab to crab.
+      const wave = Math.sin(t * 1.1 + i * 0.5) * 0.5 * (1 - fold);
+      ctx.fillStyle = 'rgba(232,226,212,0.95)';
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, 4.5 * s, 3 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      for (const arm of [-1, 1]) {
+        const a = -Math.PI / 2 + arm * (0.7 + wave * arm * side) - fold * arm * 0.6;
+        const ex = cx + arm * 3 * s + Math.cos(a) * 9 * s, ey = cy - 1 * s + Math.sin(a) * 9 * s;
+        ctx.strokeStyle = 'rgba(232,226,212,0.95)';
+        ctx.lineWidth = 1.6 * s;
+        ctx.beginPath();
+        ctx.moveTo(cx + arm * 3 * s, cy - 1 * s);
+        ctx.lineTo(ex, ey);
+        ctx.stroke();
+        // The hair: soft strands off the arm, a little yellow with what grows in it.
+        ctx.strokeStyle = 'rgba(250,230,160,0.8)';
+        ctx.lineWidth = 0.9 * s;
+        ctx.beginPath();
+        for (let h = 1; h <= 10; h++) {
+          const u = h / 10, hx = cx + arm * 3 * s + (ex - cx - arm * 3 * s) * u, hy = cy - 1 * s + (ey - cy + 1 * s) * u;
+          ctx.moveTo(hx, hy);
+          ctx.lineTo(hx + arm * 4 * s + Math.sin(t * 2 + h + i) * 1 * s, hy + 3.5 * s);
+          ctx.moveTo(hx, hy);
+          ctx.lineTo(hx - arm * 2 * s + Math.sin(t * 1.7 + h) * 0.8 * s, hy + 3 * s);
+        }
+        ctx.stroke();
+      }
+      // Legs.
+      ctx.strokeStyle = 'rgba(210,204,190,0.8)';
+      ctx.lineWidth = 0.8 * s;
+      ctx.beginPath();
+      for (let k = 0; k < 3; k++) for (const arm of [-1, 1]) {
+        ctx.moveTo(cx + arm * 2 * s, cy + 1 * s);
+        ctx.lineTo(cx + arm * (6 + k * 1.5) * s, cy + (4 - k * 0.5) * s);
+      }
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
   function drawVent(ctx: CanvasRenderingContext2D, st: Stage, tier: number, t: number): { x: number; y: number } {
     const s = st.s;
     const x = st.cx + st.w * 0.3;
@@ -930,6 +985,7 @@ export function createLife(seed: number) {
     drawTubeWorms(ctx, x, base, 5 + tier * 3, s, t);
     drawSquatLobsters(ctx, x, base, 2 + tier, s, t);
     drawVentShrimp(ctx, x, base, hgt, tier, s, t);
+    drawYetiCrabs(ctx, x, base, tier, s, t);
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     for (const [dx, h] of spires) {
