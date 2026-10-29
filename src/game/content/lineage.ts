@@ -38,7 +38,7 @@ export type Trait = {
  * Where a lesser spawning settles. Each seamount bends the economy one way; the plain one is the
  * first reef's. Multipliers are read by sim/economy.ts.
  */
-export type SeamountId = 'plain' | 'warm' | 'cold' | 'crowded' | 'hungry' | 'silent' | 'lonely' | 'buried';
+export type SeamountId = 'plain' | 'warm' | 'cold' | 'crowded' | 'hungry' | 'silent' | 'lonely' | 'buried' | 'dark';
 export type Seamount = {
   id: SeamountId; name: string; text: string; effect: string;
   ventBoost: number; ventAcid: number; dissolve: number; polyp: number; readings: number; silt: number;
@@ -48,6 +48,8 @@ export type Seamount = {
   shoalCap?: number;
   /** No band can be read here (silent). */
   noReadings?: boolean;
+  /** The glimmerseed's glow is multiplied by this (dark). */
+  glow?: number;
 };
 
 /** Hard seamounts are offered once the line has spawned this many times. */
@@ -74,6 +76,9 @@ export const SEAMOUNTS: readonly Seamount[] = [
   { id: 'buried', name: 'A buried seamount', text: 'The Long Silt lies thickest here, and is still falling.', effect: 'silt falls ×3',
     ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 1, readings: 1, silt: 3,
     trial: { goal: 3600, reward: 'Silt-hardened: silt falls ×0.8 on every reef after' } },
+  { id: 'dark', name: 'A dark seamount', text: 'Even the glimmerseed burn low here, as if the water drinks their light.', effect: 'glow ×0.3',
+    ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 1, readings: 1, silt: 1, glow: 0.3,
+    trial: { goal: 2500, reward: 'Lamp-born: glow ×1.25 on every reef after' } },
 ];
 
 export const TRAIT_GROUPS = {

@@ -32,7 +32,7 @@ export const FEATS: readonly Feat[] = [
   { id: 'works', name: 'Builder', text: 'Finish every great work in one reef.', when: (s) => Object.values(s.works).every((n) => n >= 3) },
   { id: 'moments', name: 'Met them all', text: 'Answer every moment in one reef.', when: (s) => Object.values(s.moments).every((c) => c !== '') },
   { id: 'sister', name: 'First to the light', text: 'Reach the surface before the sister reef.', when: (s) => s.race.decided >= 5 && s.race.won >= 1 && s.diary.some((d) => d.includes('|ahead|the surface')) },
-  { id: 'trials', name: 'Every hard place', text: 'Meet the trial of every hard seamount.', when: (s) => ['hungry', 'silent', 'lonely', 'buried'].every((m) => s.meta.seen.includes(`trial:${m}`)) },
+  { id: 'trials', name: 'Every hard place', text: 'Meet the trial of every hard seamount.', when: (s) => ['hungry', 'silent', 'lonely', 'buried', 'dark'].every((m) => s.meta.seen.includes(`trial:${m}`)) },
   { id: 'readings', name: 'Every band read', text: 'Read every band the scouts can find.', when: (s) => s.readings.length >= 12 },
   { id: 'truce', name: 'Terms', text: 'Settle all three truce meetings.', when: (s) => !!s.truce.wall },
   { id: 'meadows', name: 'Gardener', text: 'Sow 6 seagrass meadows.', when: (s) => s.levels.meadow >= 6 },

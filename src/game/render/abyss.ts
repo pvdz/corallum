@@ -476,10 +476,10 @@ export function createAbyssScene(seed: number): Scene {
       drawSnow(ctx, t, 2);
       drawFlurry(ctx, t);
       // A warm seamount reddens the water near the floor; a cold one leaves a faint ice-blue.
-      // Hungry water is pale and washed out; silent water darker.
+      // Hungry water is pale and washed out; silent water darker, dark water darker still.
       const tint = { warm: 'rgba(255,90,40,0.10)', cold: 'rgba(150,210,255,0.09)', hungry: 'rgba(120,130,140,0.10)' }[v.seamount as 'warm'];
-      if (v.seamount === 'silent') {
-        ctx.fillStyle = 'rgba(0,0,6,0.22)';
+      if (v.seamount === 'silent' || v.seamount === 'dark') {
+        ctx.fillStyle = v.seamount === 'dark' ? 'rgba(0,0,6,0.4)' : 'rgba(0,0,6,0.22)';
         ctx.fillRect(0, 0, w, h);
       }
       if (tint) {
