@@ -433,3 +433,4 @@ date, what landed, what is half-done, what's next.
 - Secret feats (??? until earned): Old friends talking (tap Ossel ten times), A picture in the dark, Just watching (five minutes of view mode).
 - A fourth dialect tier, Song (band 'storm', 400k bloom): Lullaby, Chorus, Call.
 - The Song shown around the crown in the Sunlit Crown and the Breach (render/song.ts): lullaby glow, chorus lights, call rings.
+- Rain at the Breach (after the Rain band): a shower every five minutes, streaks and rings on the surface.

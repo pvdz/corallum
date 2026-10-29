@@ -335,6 +335,41 @@ export function createBreachScene(seed: number): Scene {
   }
 
   /**
+   * Rain (once the reef has read the band): a shower every few minutes, streaks from the sky and
+   * small rings spreading on the surface where the drops land.
+   */
+  function drawRain(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 300, length = 70;
+    const u = (t % period) / length;
+    if (u >= 1) return;
+    const k = Math.min(1, u * 5, (1 - u) * 5);
+    const s = scale();
+    const wy = waterY();
+    ctx.save();
+    ctx.strokeStyle = `rgba(210,225,255,${0.35 * k})`;
+    ctx.lineWidth = 1 * s;
+    ctx.beginPath();
+    for (let i = 0; i < 160; i++) {
+      const x = focus.x + ((i * 0.618034 + t * 0.03) % 1) * focus.w;
+      const y = focus.y + ((t * 1.8 + i * 0.37) % 1) * (wy - focus.y);
+      ctx.moveTo(x, y);
+      ctx.lineTo(x - 2 * s, y + 12 * s);
+    }
+    ctx.stroke();
+    // Rings on the surface.
+    ctx.strokeStyle = `rgba(220,235,255,${0.3 * k})`;
+    for (let i = 0; i < 26; i++) {
+      const ph = (t * 1.3 + i * 0.29) % 1;
+      const x = focus.x + ((i * 0.381966 + Math.floor(t * 1.3 + i * 0.29) * 0.13) % 1) * focus.w;
+      ctx.beginPath();
+      ctx.ellipse(x, wy + 2 * s, ph * 9 * s, ph * 2.5 * s, 0, 0, Math.PI * 2);
+      ctx.globalAlpha = 1 - ph;
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  /**
    * Flying fish: every so often a few burst from the water, glide low over the surface on spread
    * wing-fins, and drop back in. Tapped in the air, they glide on farther.
    */
@@ -780,6 +815,7 @@ export function createBreachScene(seed: number): Scene {
       drawWaitingFish(ctx, t, v, this.crownAt);
       drawDolphins(ctx, t);
       drawFlyingFish(ctx, t);
+      if (v.bands.includes('rain')) drawRain(ctx, t);
       drawPool(ctx, L.cx, waterY(), v.works.pool, scale(), t);
       drawTop(ctx, v, reef.crown(L));
       reef.draw(ctx, L, v, t);
