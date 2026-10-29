@@ -31,7 +31,7 @@ import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio } from '../game/audio/audio.ts';
 import { FEAST } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS } from '../game/content/lineage.ts';
-import { CREATURES, GIFT_TEXT } from '../game/content/creatures.ts';
+import { CREATURES, GIFT, GIFT_TEXT, GIFT_WORD, giftOf } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
 import { createPortraits } from './portraits.ts';
 import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
@@ -644,7 +644,11 @@ function showCreatureLabel(id: string, x: number, y: number, r = 20): void {
   n.textContent = c.name;
   const t = document.createElement('span');
   t.textContent = c.note;
-  creatureLabel.append(n, t);
+  // What it gives when touched, and when it will give again.
+  const g = document.createElement('em');
+  const wait = state.gifts[c.id] + GIFT.cooldown - state.t;
+  g.textContent = wait > 0 ? `${GIFT_WORD[giftOf(c.id)]} again in ${duration(wait)}` : `${GIFT_WORD[giftOf(c.id)]} when touched`;
+  creatureLabel.append(n, t, g);
   const reach = Math.min(r, 90);
   const lw = creatureLabel.offsetWidth || 220, lh = creatureLabel.offsetHeight || 56;
   const left = Math.min(window.innerWidth - lw - 8, Math.max(8, x - lw / 2));
@@ -694,10 +698,6 @@ canvas.addEventListener('pointerdown', (e) => {
   // Tapping a creature names it (the sweep still happens).
   const who = creatureAt(wx, wy);
   if (who?.id === 'ossel') sayOssel();
-  else if (who) {
-    const [lx, ly] = toScreen(who.x, who.y);
-    showCreatureLabel(who.id, lx / dpr, ly / dpr, (who.r * zoom.k) / dpr);
-  }
   if (who) {
     startle(who.id, frozenT ?? animT, wx, wy);
     if (who.id === 'whale') audio.cue('whale');
@@ -706,6 +706,10 @@ canvas.addEventListener('pointerdown', (e) => {
     // Now and then a neighbour gives a little of what it lives by.
     const g = frozenT === null && who.id !== 'ossel' ? gift(state, who.id) : null;
     if (g) floatText(e.clientX, e.clientY - 26, `+${num(g.amount)} ${GIFT_TEXT[g.stock]}`, 'feast-float');
+    if (who.id !== 'ossel') {
+      const [lx, ly] = toScreen(who.x, who.y);
+      showCreatureLabel(who.id, lx / dpr, ly / dpr, (who.r * zoom.k) / dpr);
+    }
   }
   const f = currentFeast(state);
   if (f) {

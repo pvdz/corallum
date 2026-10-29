@@ -73,3 +73,8 @@ export function giftOf(id: CreatureId): GiftStock {
 export const GIFT_TEXT: Record<GiftStock, string> = {
   calcite: 'calcite · a gift', glow: 'glow · a gift of light', plankton: 'plankton · they share', sand: 'sand · a gift',
 };
+
+/** The creature label's gift line: what a touch brings. */
+export const GIFT_WORD: Record<GiftStock, string> = {
+  calcite: 'Shares a little food', glow: 'Shares a little light', plankton: 'Shares a little plankton', sand: 'Shares a little sand',
+};
