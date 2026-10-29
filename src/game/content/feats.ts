@@ -78,6 +78,7 @@ export const FEATS: readonly Feat[] = [
   { id: 'heard-it-all', name: 'Ossel heard it all', text: 'Answer all of Ossel’s questions on one reef.', when: (s) => Object.values(s.asked).every((a) => a !== '') },
   { id: 'both-ways', name: 'Both ways', text: 'Across the line, meet every moment both ways.', when: (s) => MOMENTS.every((m) => s.meta.seen.includes(`m:${m.id}:a`) && s.meta.seen.includes(`m:${m.id}:b`)), progress: (s) => [s.meta.seen.filter((k) => k.startsWith('m:')).length, MOMENTS.length * 2] },
   { id: 'vowed', name: 'Every vow kept', text: 'Reach the surface and spawn under all three vows, all kept.', hidden: true, when: (s) => ended(s) && s.vows.length === VOWS.length && vowLineage(s) === VOWS.reduce((a, v) => a + v.lineage, 0) },
+  { id: 'freed', name: 'Untangler', text: 'Free ten tangled fish in one reef.', when: (s) => s.tally.freed >= 10, progress: (s) => [s.tally.freed, 10] },
   { id: 'visitors', name: 'A week of visitors', text: 'Touch the day’s visitor on seven different days.', when: (s) => seenCount(s, 'v:') >= 7, progress: (s) => [seenCount(s, 'v:'), 7] },
   { id: 'garden-kinds', name: 'Every kind', text: 'Plant a quick, a bright and a deep child in one garden.', when: (s) => ['q', 'b', 'd'].every((k) => s.gardenKinds.includes(k)) },
   { id: 'three-wishes', name: 'Three wishes', text: 'Wish for the line three times on one reef.', when: (s) => s.lineWishes >= 3, progress: (s) => [s.lineWishes, 3] },

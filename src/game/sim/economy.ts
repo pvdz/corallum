@@ -25,7 +25,7 @@ import { ACT5, BANDS_ACT5, GARDEN, MEMORIES, type Memory, type MemoryId, type Ga
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, LUCKY, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
 import { BOONS, LINEAGE, SEAMOUNTS, type BoonId, type Seamount, type SeamountId, type TraitId, VOW, VOWS, type VowId } from '../content/lineage.ts';
-import { DAYS, type DayId, DAILY, FEAST, SIGNAL, SWELL, THORN, WELCOME, intruderOf, type Intruder, DREAM } from '../content/events.ts';
+import { DAYS, type DayId, DAILY, FEAST, SIGNAL, SWELL, THORN, WELCOME, intruderOf, type Intruder, DREAM, TANGLE } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { WORKS, type WorkId } from '../content/works.ts';
 import { COUSIN, SISTER } from '../content/sister.ts';
@@ -1918,6 +1918,7 @@ function requestCount(s: GameState, kind: RequestKind): number {
     case 'prune': return s.tally.pruned;
     case 'milky': return s.tally.milky;
     case 'lucky': return s.tally.lucky;
+    case 'free': return s.tally.freed;
   }
 }
 
@@ -2114,6 +2115,26 @@ export function currentShell(s: GameState): { k: number; x: number; id: string }
   const left = SHELLS.filter((x) => !s.meta.shells.includes(x.id));
   const pool = left.length ? left : SHELLS;
   return { k, x: 0.12 + r() * 0.76, id: pool[Math.floor(r() * pool.length)]!.id };
+}
+
+/** A fish tangled in a jelly's threads now (slot, place across the water 0..1, seconds in), if not yet freed. */
+export function currentTangle(s: GameState): { k: number; x: number; age: number } | null {
+  if (!TANGLE.zones.includes(actAt(s.height))) return null;
+  const k = Math.floor(s.t / TANGLE.period);
+  if (k <= s.untangled) return null;
+  const r = mulberry32((s.seed ^ 0x7a96) + Math.imul(k, 0x9e3779b1));
+  const start = k * TANGLE.period + r() * (TANGLE.period - TANGLE.life);
+  if (s.t < start || s.t >= start + TANGLE.life) return null;
+  return { k, x: r() < 0.5 ? 0.12 + r() * 0.2 : 0.68 + r() * 0.2, age: s.t - start };
+}
+
+/** Free the tangled fish: a burst of the zone's currency. */
+export function freeTangle(s: GameState): number {
+  const tg = currentTangle(s);
+  if (!tg) return 0;
+  s.untangled = tg.k;
+  s.tally.freed++;
+  return burst(s, TANGLE.seconds);
 }
 
 /** Pick up the shell: kept by the line if new. Returns its id, or ''. */

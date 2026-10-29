@@ -156,3 +156,12 @@ export const FEAST = {
   brought: '· the scavengers’ share',
   eaten: 'feast',
 } as const;
+
+/**
+ * A fish tangled in a jelly's trailing tentacles (Midnight Water to the Sunlit Crown, while you
+ * watch): one slot every `period` seconds, there for `life`. Freed, it pays `seconds` of the zone's currency.
+ */
+export const TANGLE = {
+  period: 420, life: 35, seconds: 40, zones: [2, 3, 4] as readonly number[],
+  float: '· freed',
+} as const;

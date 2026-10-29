@@ -17,6 +17,7 @@ import type { UpgradeId } from '../game/content/types.ts';
 import { ACTS, act, actAt } from '../game/content/acts.ts';
 import { createAbyssScene } from '../game/render/abyss.ts';
 import { createMidnightScene } from '../game/render/midnight.ts';
+import { drawTangle } from '../game/render/tangle.ts';
 import { createBreachScene, lightningAt } from '../game/render/breach.ts';
 import { createSunlitScene } from '../game/render/sunlit.ts';
 import { createTwilightScene } from '../game/render/twilight.ts';
@@ -32,12 +33,12 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inMilky, milkyGlow, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, lucky, visitor, visited, meteorShower, makeWish, prune, oldKnobs, oldHeld, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, sisterNow, lightSister, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inMilky, milkyGlow, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, currentTangle, freeTangle, lucky, visitor, visited, meteorShower, makeWish, prune, oldKnobs, oldHeld, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, sisterNow, lightSister, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio, type Cue } from '../game/audio/audio.ts';
-import { AWAY_CYCLES, AWAY_PREP, DAILY, DREAM, NOTIFY, SWELL, FEAST, SIGNAL, THORN, WELCOME, TODAY } from '../game/content/events.ts';
+import { AWAY_CYCLES, AWAY_PREP, DAILY, DREAM, NOTIFY, SWELL, FEAST, SIGNAL, THORN, WELCOME, TODAY, TANGLE } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS, TRIAL_TEXT } from '../game/content/lineage.ts';
 import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, LUCKY, giftOf, TRUST, trustLevel, COMPANION, type CreatureId } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
@@ -1041,7 +1042,7 @@ function drawLucky(t: number): void {
   // One of its kind is the lucky one: the first drawn.
   const done = new Set<string>();
   for (const p of tappable()) {
-    if (done.has(p.id) || p.id === 'ossel' || p.id === 'shell' || p.id === 'star' || p.id === 'old' || !lucky(state, p.id)) continue;
+    if (done.has(p.id) || p.id === 'ossel' || p.id === 'shell' || p.id === 'star' || p.id === 'old' || p.id === 'tangle' || !lucky(state, p.id)) continue;
     done.add(p.id);
     // A soft chime the first time a lucky one shows in this span.
     const span = Math.floor(state.t / LUCKY.span);
@@ -1191,7 +1192,7 @@ function takePortrait(): void {
   // Zoomed in (2× or more), a creature large in view earns a sharper close-up, once.
   const closeUp = zoom.k >= 2;
   for (const p of tappable()) {
-    if (p.id === 'ossel' || p.id === 'shell' || p.id === 'star' || p.id === 'old' || !portraits.wants(p.id, closeUp)) continue;
+    if (p.id === 'ossel' || p.id === 'shell' || p.id === 'star' || p.id === 'old' || p.id === 'tangle' || !portraits.wants(p.id, closeUp)) continue;
     const [x, y] = toScreen(p.x, p.y);
     const r = p.r * zoom.k;
     if (closeUp && r < 60 * dpr) continue;
@@ -1302,6 +1303,18 @@ canvas.addEventListener('pointerdown', (e) => {
   }
   if (hit?.id === 'star') {
     tapStar(hit.n ?? -1, e.clientX, e.clientY);
+    return;
+  }
+  if (hit?.id === 'tangle') {
+    if (frozenT === null) {
+      const gain = freeTangle(state);
+      if (gain > 0) {
+        floatText(e.clientX, e.clientY - 20, `+${num(gain)} ${feastPay(state)} ${TANGLE.float}`, 'feast-float');
+        audio.cue('shimmer');
+        buzz([10, 30, 10]);
+        save();
+      }
+    }
     return;
   }
   if (hit?.id === 'old') {
@@ -1823,6 +1836,8 @@ function frame(now: number): void {
   }
   const fe = currentFeast(state);
   if (fe) drawFeast(ctx, fe, state.t - fe.start, tNow, focusNow, dpr, feastPay(state));
+  const tg = currentTangle(state);
+  if (tg) drawTangle(ctx, tg, TANGLE.life, tNow, focusNow, dpr);
   taps.draw(ctx, tNow, scene.crownAt, dpr, (x, y) => actAt(state.height) <= 2 || !!scene.darkAt?.(x, y));
   drawLucky(tNow);
   ctx.setTransform(1, 0, 0, 1, 0, 0);
