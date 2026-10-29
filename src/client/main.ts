@@ -35,10 +35,10 @@ import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay,
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
-import { createAudio } from '../game/audio/audio.ts';
+import { createAudio, type Cue } from '../game/audio/audio.ts';
 import { AWAY_PREP, DAILY, FEAST, SIGNAL, THORN, WELCOME } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS, TRIAL_TEXT } from '../game/content/lineage.ts';
-import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf, TRUST, trustLevel, COMPANION } from '../game/content/creatures.ts';
+import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf, TRUST, trustLevel, COMPANION, type CreatureId } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
 import { createPortraits } from './portraits.ts';
 import { createZoom } from './zoom.ts';
@@ -923,6 +923,15 @@ function showCreatureLabel(id: string, x: number, y: number, r = 20): void {
   labelTimer = window.setTimeout(() => creatureLabel.classList.remove('show'), 3500);
 }
 
+/** The sound a touched creature makes: glowing ones shimmer, birds cry, shelled ones click, fish bubble. */
+function touchCue(id: string): Cue {
+  if (giftOf(id as CreatureId) === 'glow') return 'shimmer';
+  if (['shore-bird', 'gull', 'pelican'].includes(id)) return 'gull';
+  if (['rasp', 'guard-crab', 'isopod', 'squat-lobster', 'pistol-shrimp', 'drill-snail', 'thorn-star', 'nautilus'].includes(id)) return 'crunch';
+  if (['reef-fish', 'reef-shark', 'grouper', 'goby', 'damselfish', 'hatchetfish', 'flying-fish', 'clownfish', 'rattail', 'tripod-fish', 'moray', 'frogfish'].includes(id)) return 'sweep';
+  return 'touch';
+}
+
 /** A float of text over the water, e.g. "+12". */
 function floatText(x: number, y: number, text: string, cls = ''): void {
   const f = document.createElement('div');
@@ -964,7 +973,7 @@ canvas.addEventListener('pointerdown', (e) => {
   if (who) {
     startle(who.id, frozenT ?? animT, wx, wy);
     if (who.id === 'whale') audio.cue('whale');
-    else if (who.id !== 'ossel') audio.cue(giftOf(who.id) === 'glow' ? 'shimmer' : who.id === 'rasp' ? 'crunch' : 'touch');
+    else if (who.id !== 'ossel') audio.cue(touchCue(who.id));
     if (frozenT === null && who.id !== 'ossel' && !state.meta.seen.includes(`t:${who.id}`)) state.meta.seen.push(`t:${who.id}`);
     // Now and then a neighbour gives a little of what it lives by.
     // A thorn star is pried off the reef, for a burst.
