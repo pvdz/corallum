@@ -2,7 +2,7 @@
 // path from a branch tip toward the trunk and back again. Drawn over the reef.
 
 import type { Reef, ReefLayout } from './reef.ts';
-import { sight } from './sightings.ts';
+import { sight, spot } from './sightings.ts';
 
 const COLOURS: readonly [string, string][] = [
   ['#7a3cff', '#ffb02e'], ['#ff5ab4', '#fff2a8'], ['#2ec4ff', '#ff7a2e'], ['#f2f2f2', '#ff4d6d'],
@@ -57,6 +57,7 @@ export function createSlugs(count: number) {
         const ang = Math.atan2(by - ay, bx - ax) + (u < 1 ? 0 : Math.PI);
         const [body, tips] = COLOURS[k % COLOURS.length]!;
         sight('nudibranch');
+        spot('nudibranch', x, y, Math.max(10 * s, 22 * L.dpr));
         ctx.save();
         ctx.translate(x, y);
         ctx.rotate(ang);

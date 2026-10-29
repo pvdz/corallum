@@ -62,8 +62,15 @@ export function createMidnightScene(seed: number): Scene {
     const period = 60 + i * 17;
     const u = ((t + i * 23) % period) / period;
     const dir = i % 2 ? 1 : -1;
-    const x = focus.x + focus.w * (dir > 0 ? -0.1 + u * 1.2 : 1.1 - u * 1.2);
+    let x = focus.x + focus.w * (dir > 0 ? -0.1 + u * 1.2 : 1.1 - u * 1.2);
     const y = focus.y + focus.h * (0.25 + 0.12 * i) + Math.sin(t * 0.7 + i) * 12 * s;
+    // Touched, a shrimp flicks its tail and shoots backwards, then drifts on.
+    const touch = startled('glass-shrimp', t);
+    if (touch && touch.age < 5 && Math.abs(touch.y - y) < 40 * s) {
+      const a = touch.age;
+      x -= dir * 70 * s * (1 - (1 - Math.min(1, a / 0.4)) ** 3) * Math.max(0, 1 - (a - 1) / 4);
+    }
+    spot('glass-shrimp', x, y, Math.max(18 * s, 24 * dpr));
     drawShrimp(ctx, x, y, s, dir, t, i);
   }
 
@@ -163,6 +170,7 @@ export function createMidnightScene(seed: number): Scene {
     const wx = focus.x + focus.w * 0.2, wy = base - focus.h * 0.035;
     if (wy < h) {
       sight('whale-fall');
+      spot('whale-fall', wx, wy, 60 * s);
       ctx.save();
       ctx.strokeStyle = 'rgba(200,205,225,0.55)';
       ctx.lineCap = 'round';
@@ -394,6 +402,10 @@ export function createMidnightScene(seed: number): Scene {
     const x = focus.x + focus.w * (0.5 + c.x + Math.sin(t * 0.03 + c.phase) * 0.04);
     const y = focus.y + focus.h * (c.y + Math.sin(t * 0.05 + c.phase * 2) * 0.03);
     const rx = 16 * s, ry = 26 * s;
+    spot('comb-jelly', x, y, Math.max(ry, 24 * dpr));
+    // Touched, its combs beat hard: the rainbow runs fast and bright for a moment.
+    const touch = startled('comb-jelly', t);
+    const beat = touch && touch.age < 3 && Math.hypot(touch.x - x, touch.y - y) < ry * 1.5 ? 1 - touch.age / 3 : 0;
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(c.tilt + Math.sin(t * 0.2 + c.phase) * 0.1);
@@ -417,7 +429,7 @@ export function createMidnightScene(seed: number): Scene {
         const py = f * ry * 1.7;
         const px = ax * Math.sqrt(Math.max(0, 1 - (py / ry) ** 2));
         const hue = (t * 120 + q * 40 + row * 25) % 360;
-        const a = (0.25 + 0.35 * Math.max(0, Math.sin(t * 4 - q * 0.8 + row))) * (0.5 + 0.5 * bow);
+        const a = Math.min(1, (0.25 + 0.35 * Math.max(0, Math.sin(t * (4 + 8 * beat) - q * 0.8 + row)) + 0.6 * beat) * (0.5 + 0.5 * bow));
         ctx.fillStyle = `hsla(${hue},100%,70%,${a})`;
         ctx.fillRect(px - 1.1 * s, py - 1.1 * s, 2.2 * s, 2.2 * s);
       }
@@ -510,13 +522,17 @@ export function createMidnightScene(seed: number): Scene {
     sight('siphonophore');
     const head = -0.25 + (u / 0.55) * 1.6;
     const y0 = focus.y + focus.h * 0.22;
+    spot('siphonophore', focus.x + (head - 0.3) * focus.w, y0 + 10 * s, Math.max(focus.w * 0.3, 40 * s));
+    // Touched, a flash runs down the whole chain from the head.
+    const touch = startled('siphonophore', t);
+    const run = touch && touch.age < 2.5 ? touch.age / 1.8 : -1;
     ctx.save();
     for (let k = 0; k < 34; k++) {
       const xu = head - k * 0.018;
       if (xu < -0.1 || xu > 1.1) continue;
       const x = focus.x + xu * focus.w;
       const y = y0 + Math.sin(xu * 7 + t * 0.4) * 18 * s + k * 0.6 * s;
-      const pulse = 0.5 + 0.5 * Math.sin(t * 3 - k * 0.5);
+      const pulse = Math.min(1.6, 0.5 + 0.5 * Math.sin(t * 3 - k * 0.5) + (run >= 0 ? 1.5 * Math.exp(-((k / 34 - run) ** 2) / 0.006) : 0));
       const r = (6 + 2 * pulse) * s * (1 - k / 60);
       ctx.fillStyle = `rgba(170,210,255,${0.10 + 0.08 * pulse})`;
       ctx.strokeStyle = `rgba(200,230,255,${0.25 + 0.2 * pulse})`;

@@ -263,3 +263,4 @@ date, what landed, what is half-done, what's next.
 - Touch: the manta barrel-rolls showing its pale belly; the grouper shuts its mouth and its cleaners scatter; the dumbo octopus flaps hard and bobs up.
 - Touch: the dolphins answer with an encore, a higher leap of the pod from where they were touched.
 - Silt Floor creatures are all tappable now (brittle stars, sea pigs, glass sponges, sea lilies, rattail, tube worms, squat lobsters). Tube worms snap their plumes in, nearest first; sea lilies fold their arms; brittle stars curl.
+- Tappable: comb jellies (combs beat bright and fast), glass shrimp (tail-flip backwards), the siphonophore (a flash runs down the chain), whale fall, nudibranchs, moon jellies, the shore bird.

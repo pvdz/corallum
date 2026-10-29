@@ -302,6 +302,7 @@ export function createBreachScene(seed: number): Scene {
       const u = ((t * 0.008 + k * 0.17) % 1);
       const x = focus.x + focus.w * (k % 2 ? 0.05 + u * 0.25 : 0.95 - u * 0.25);
       const y = wy + focus.h * (0.12 + 0.1 * (k % 3)) + Math.sin(t * 0.4 + k) * 10 * s;
+      spot('moon-jelly', x, y, Math.max(20 * s, 24 * dpr));
       const pulse = 0.85 + 0.15 * Math.sin(t * 1.6 + k);
       const r = (14 + (k % 3) * 4) * s;
       ctx.save();
@@ -432,6 +433,7 @@ export function createBreachScene(seed: number): Scene {
     if (k >= 1) return;
     const x = hx - hw * 0.35 - k * focus.w * 0.6;
     const y = wy - hh * 0.9 - 13 * s - k * k * focus.h * 0.35;
+    spot('shore-bird', x, y, Math.max(14 * s, 24 * dpr));
     ctx.save();
     ctx.translate(x, y);
     ctx.fillStyle = '#0b0b1c';
