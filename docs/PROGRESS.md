@@ -245,3 +245,4 @@ date, what landed, what is half-done, what's next.
 - Silt Floor: squat lobsters clinging to the vent chimney (more per vent tier); journal: 38. Choice rings verified rose.
 - Reef photos carry a caption in the corner: name, height, zone.
 - Polyp and glimmerseed cards show a thin bar toward the next milestone.
+- Reef tab 'Full resolution' switch: off renders at 1× device pixels. Headless phone size: 21.8 ms → 2.7 ms draw (glow had also auto-switched off).

@@ -39,6 +39,8 @@ export type PanelHooks = {
   glow: { get(): boolean; set(on: boolean): void };
   /** The reef's name changed. */
   rename(name: string): void;
+  /** Full-resolution rendering (off draws at 1× for slow phones). */
+  sharp: { get(): boolean; set(on: boolean): void };
   /** Vibration on purchases and milestones (phones). */
   buzz: { get(): boolean; set(on: boolean): void };
   /** Sound volume, 0..1. */
@@ -560,6 +562,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   sciBox.checked = hooks.sci.get();
   sciBox.addEventListener('change', () => hooks.sci.set(sciBox.checked));
   sciToggle.append(sciBox, el('span', '', 'Scientific numbers (1.23e9 instead of 1.23B)'));
+  const sharpToggle = el('label', 'toggle');
+  const sharpBox = el('input') as HTMLInputElement;
+  sharpBox.type = 'checkbox';
+  sharpBox.checked = hooks.sharp.get();
+  sharpBox.addEventListener('change', () => hooks.sharp.set(sharpBox.checked));
+  sharpToggle.append(sharpBox, el('span', '', 'Full resolution (turn off to make a slow phone faster)'));
   const calmToggle = el('label', 'toggle');
   const calmBox = el('input') as HTMLInputElement;
   calmBox.type = 'checkbox';
@@ -586,7 +594,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     group('Saves'),
     el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn,
     group('Sound'), volRow, buzzToggle,
-    group('Display'), glowToggle, calmToggle, sciToggle, habitToggle,
+    group('Display'), glowToggle, sharpToggle, calmToggle, sciToggle, habitToggle,
     el('p', 'hint', 'Hold a buy button to keep buying. Keys (? lists them): Space sweeps · 1–4 switch tabs · H hides the panel · F catches a falling feast · P buds a polyp · B lays a band · G hosts glimmerseed.'),
     group('Start over'), resetBtn,
   );

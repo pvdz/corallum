@@ -169,6 +169,11 @@ setScientific(sciOn);
 const VOL_KEY = 'corallum.volume';
 try { const v = Number(localStorage.getItem(VOL_KEY)); if (localStorage.getItem(VOL_KEY) !== null && Number.isFinite(v)) audio.setVolume(v); } catch { /* no storage */ }
 
+// Full resolution: off renders at 1× (a quarter of the pixels on a 2× screen) for slow phones.
+const SHARP_KEY = 'corallum.sharp';
+let sharpOn = true;
+try { sharpOn = localStorage.getItem(SHARP_KEY) !== 'off'; } catch { /* no storage */ }
+
 // Vibration on phones (where the browser supports it): a tick per purchase, a longer pulse for
 // milestones and feats. On by default on touch devices; a Reef-tab switch turns it off.
 const BUZZ_KEY = 'corallum.buzz';
@@ -179,6 +184,14 @@ function buzz(ms: number | number[]): void {
 }
 
 const panel = createPanel(ui, {
+  sharp: {
+    get: () => sharpOn,
+    set(on) {
+      sharpOn = on;
+      try { localStorage.setItem(SHARP_KEY, on ? 'on' : 'off'); } catch { /* no storage */ }
+      relayout();
+    },
+  },
   buzz: {
     get: () => buzzOn,
     set(on) {
@@ -425,7 +438,7 @@ window.corallum = {
 let dpr = 1;
 let focusNow: Focus = { x: 0, y: 0, w: 1, h: 1 };
 function resize(): void {
-  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  dpr = sharpOn ? Math.min(window.devicePixelRatio || 1, 2) : 1;
   const w = Math.round(window.innerWidth * dpr);
   const h = Math.round(window.innerHeight * dpr);
   const r = panel.element.getBoundingClientRect();
