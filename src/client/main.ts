@@ -549,6 +549,7 @@ let shardsSeen = state.meta.shards.length;
 let thornHeard = -1, choiceHeard = '|false|false|false';
 /** The water last heard (a turn to a new water gets its swell). */
 let waterHeard = '';
+let risingHeard = true, heatHeard = true;
 /** Sister race marks decided and won (a new one is announced). */
 let raceSeen = state.race.decided, raceWon = state.race.won;
 /** The line's best times as last seen (a beaten one is announced). */
@@ -1407,6 +1408,12 @@ function frame(now: number): void {
     const wNow = waterAt(state).id;
     if (wNow !== waterHeard && waterHeard !== '' && wNow !== 'still') audio.cue('water');
     waterHeard = wNow;
+    // The rising and warm water beginning: heard once each as they come.
+    const risingNow = inRising(state), heatNow = inHeat(state);
+    if (risingNow && !risingHeard) audio.cue('rising');
+    if (heatNow && !heatHeard) audio.cue('heat');
+    risingHeard = risingNow;
+    heatHeard = heatNow;
     if (state.race.decided > raceSeen) {
       const won = state.race.won > raceWon;
       const i = state.race.decided - 1;

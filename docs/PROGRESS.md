@@ -494,3 +494,4 @@ date, what landed, what is half-done, what's next.
 - The sport (act1.ts SPORT/SPORTS; economy sportOpen/chooseSport; state.sport): card in choices.ts (only the strain's two shown; `.boon-choices .choice[hidden]` now really hides), specks take its colour, bot keeps amber/ice/ultraviolet.
 - Your reef (Reef tab) lists the glimmerseed and its sport, the grains, the stars named and risings fed on.
 - Traits: Deep larder (way, 10: the feeders go into each rising twice; state.roseN) and Grain-sense (habit, 6: prestige.ts grainSense, run in the habit tick).
+- Audio: 'rising' (low swell climbing, bells rising out of it) and 'heat' (wavering tone) cues as each begins (not on load mid-way).

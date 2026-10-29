@@ -3,7 +3,7 @@
 // gesture before audio can start anyway).
 
 export type Zone = 1 | 2 | 3 | 4 | 5;
-export type Cue = 'buy' | 'sweep' | 'story' | 'choice' | 'release' | 'spawning' | 'whisper' | 'feast' | 'whale' | 'zone' | 'touch' | 'shimmer' | 'crunch' | 'dolphin' | 'water' | 'depart' | 'shard' | 'intruder' | 'moment' | 'gull';
+export type Cue = 'buy' | 'sweep' | 'story' | 'choice' | 'release' | 'spawning' | 'whisper' | 'feast' | 'whale' | 'zone' | 'touch' | 'shimmer' | 'crunch' | 'dolphin' | 'water' | 'depart' | 'shard' | 'intruder' | 'moment' | 'gull' | 'rising' | 'heat';
 
 /** Per zone: root frequency of the pad, pad brightness, and how much surf noise. */
 const ZONES: Record<Zone, { root: number; bright: number; surf: number; notes: number[] }> = {
@@ -362,6 +362,16 @@ export function createAudio() {
           // Two falling cries.
           glide(1500, 900, 0.35, 0);
           glide(1400, 850, 0.4, 0.5);
+          break;
+        case 'rising':
+          // The deep coming up: a long low swell climbing an octave, small bells rising out of it.
+          glide(root / 4, root / 2, 4, 0);
+          for (const [i, n] of [0, 5, 7, 12, 17].entries()) setTimeout(() => bell(root * 2 * 2 ** (n / 12), 0.02, 1.2), 900 + i * 260);
+          break;
+        case 'heat':
+          // Warm water: a slow wavering tone, like air shimmering over sand.
+          glide(root * 1.5, root * 1.5 * 2 ** (1 / 12), 1.4, 0);
+          glide(root * 1.5 * 2 ** (1 / 12), root * 1.5, 1.4, 1.4);
           break;
         case 'moment':
           // A choice is waiting: a soft rising third.
