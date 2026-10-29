@@ -25,6 +25,8 @@ export type ReefView = {
   shoals: number;
   jobs: Record<Job, number>;
   /** Shoals away at a ruin: how many, sim seconds since they left and until they are back, which side they went. */
+  /** The sister reef's place, 0 (seamount) … 1 (surface). */
+  sister: number;
   /** Stages built of each great work. */
   works: Record<WorkId, number>;
   /** Daughter colonies tended into nurseries. */

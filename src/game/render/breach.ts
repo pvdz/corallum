@@ -333,6 +333,40 @@ export function createBreachScene(seed: number): Scene {
   }
 
   /**
+   * The sister reef on the next seamount: far off on the horizon once it nears the surface, a
+   * small dark crown rising out of the haze, breaking the water when it arrives, lights on its tips.
+   */
+  function drawSister(ctx: CanvasRenderingContext2D, t: number, f: number): void {
+    if (f < 0.85) return;
+    const s = scale();
+    const y0 = waterY();
+    const rise = Math.min(1, (f - 0.85) / 0.15);
+    const x = focus.x + focus.w * 0.12;
+    // Only the part above the water shows: a low bumpy crown, taller as the sister nears the air.
+    const H = (4 + 22 * rise) * s;
+    ctx.save();
+    ctx.fillStyle = `rgba(22,26,48,${0.4 + 0.4 * rise})`;
+    ctx.beginPath();
+    ctx.moveTo(x - 50 * s, y0);
+    const tips: [number, number][] = [];
+    for (let k = 0; k <= 10; k++) {
+      const u = k / 10;
+      const hk = H * Math.sin(u * Math.PI) ** 0.7 * (0.75 + 0.25 * Math.sin(k * 2.7));
+      const px = x - 50 * s + u * 100 * s, py = y0 - hk;
+      ctx.lineTo(px, py);
+      if (k % 2 === 1) tips.push([px, py]);
+    }
+    ctx.lineTo(x + 50 * s, y0);
+    ctx.closePath();
+    ctx.fill();
+    if (rise >= 1) {
+      ctx.globalCompositeOperation = 'lighter';
+      for (const [k, [px, py]] of tips.entries()) glow(ctx, px, py, 6 * s, '255,210,230', 0.45 + 0.25 * Math.sin(t * 1.3 + k));
+    }
+    ctx.restore();
+  }
+
+  /**
    * The waiting fish (after that band): bright reef fish crowd under the crown, patient, turning
    * slow circles, waiting for the spawn. After the release they scatter into the drifting bundles.
    */
@@ -667,6 +701,7 @@ export function createBreachScene(seed: number): Scene {
       lastDawn = dawn;
       drawSky(ctx, t, v.moonPhase, v.greatMoon, dawn);
       drawSea(ctx, t, v.moonPhase, dawn);
+      drawSister(ctx, t, v.sister);
       drawChildren(ctx, v, t);
       drawMoonJellies(ctx, t);
       drawWaitingFish(ctx, t, v, this.crownAt);

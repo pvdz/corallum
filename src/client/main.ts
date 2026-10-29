@@ -506,6 +506,7 @@ function view(): ReefView {
     palette: state.meta.palette,
     nurseries: state.levels.daughter,
     works: state.works,
+    sister: sisterAt(state.t),
     planktonLevel: Math.min(1, (feeding(state.plankton) - 1) / 2),
     bands: state.bands,
     readings: state.readings.length,
