@@ -965,7 +965,7 @@ export function createBreachScene(seed: number): Scene {
       }
       drawTop(ctx, v, reef.crown(L));
       reef.draw(ctx, L, v, t);
-      drawRelics(ctx, reef, L, v.relics, t);
+      drawRelics(ctx, reef, L, v.relics, t, v.moments['old-lamp'] === 'a');
       // Moonlight through the moving surface, on the stone below it.
       reef.drawCaustics(ctx, L, t, 0.55 * (1 - Math.abs(v.moonPhase - 0.5) * 2) * (1 - dawn) + 0.6 * dawn, dawn > 0.5 ? '255,235,200' : '200,215,255', waterY());
       drawCraft(ctx, v.craft, reef, L, t, 0.6);

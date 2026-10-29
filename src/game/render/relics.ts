@@ -32,8 +32,26 @@ function findNode(reef: Reef, L: ReefLayout, frac: number, side: number): number
   return best;
 }
 
-export function drawRelics(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, relics: readonly SiteId[], t: number): void {
-  if (!relics.length || L.top <= 0.05) return;
+export function drawRelics(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, relics: readonly SiteId[], t: number,
+  driftLamp = false): void {
+  if (L.top <= 0.05) return;
+  // The lamp taken in from the drift (a moment) hangs higher up, on the other side from the hall's.
+  if (driftLamp) {
+    const i = nodeAt(reef, L, 0.55, 1);
+    if (i >= 0) {
+      const [x, y] = reef.nodePx(L, i);
+      const s = L.s * 1.3;
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      glow(ctx, x + Math.sin(t * 0.7) * 1.5 * s, y + 10 * s, 22 * s, '170,215,255', 0.45 * Math.max(0.35, L.glowScale ?? 1));
+      ctx.restore();
+      ctx.fillStyle = '#e8eef8';
+      ctx.beginPath();
+      ctx.ellipse(x + Math.sin(t * 0.7) * 1.5 * s, y + 10 * s, 2.6 * s, 3.4 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  if (!relics.length) return;
   const s = L.s * 1.3;
   const gs = L.glowScale ?? 1;
   ctx.save();

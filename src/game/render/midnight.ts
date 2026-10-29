@@ -810,7 +810,7 @@ export function createMidnightScene(seed: number): Scene {
       drawSisterFar(ctx, focus, v.sister - v.gauge, t, scale(), false);
       drawSpire(ctx, focus, v.works.spire, scale(), t, focus.y + focus.h * 0.99);
       reef.draw(ctx, L, v, t);
-      drawRelics(ctx, reef, L, v.relics, t);
+      drawRelics(ctx, reef, L, v.relics, t, v.moments['old-lamp'] === 'a');
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
       shoals.drawFront(ctx, focus, reef, L, v, t);

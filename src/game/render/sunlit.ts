@@ -1238,7 +1238,7 @@ export function createSunlitScene(seed: number): Scene {
       if (v.othersSpawn) drawOthersSpawn(ctx, t);
       drawSleepers(ctx, t, v.rasp, night);
       reef.draw(ctx, L, v, t);
-      drawRelics(ctx, reef, L, v.relics, t);
+      drawRelics(ctx, reef, L, v.relics, t, v.moments['old-lamp'] === 'a');
       if (v.thorn?.kind === 'thorn-star') drawThorn(ctx, reef, L, v.thorn.u, v.thorn.side, t);
       if (turtleRests) {
         const [tx, ty] = reef.crown(L);
