@@ -100,11 +100,12 @@ export const SEAMOUNTS: readonly Seamount[] = [
  * Vows: once the line has reached an ending, a new reef may begin under vows, harder ways to grow that
  * pay lineage at its ending if they were kept.
  */
-export type VowId = 'haste' | 'light' | 'alone';
+export type VowId = 'haste' | 'light' | 'alone' | 'still';
 export const VOWS: readonly { id: VowId; name: string; effect: string; lineage: number }[] = [
   { id: 'haste', name: 'Haste', effect: 'reach the surface within 7 hours of this reef’s time', lineage: 6 },
   { id: 'light', name: 'Lightness', effect: 'the spawn carries one memory fewer', lineage: 4 },
   { id: 'alone', name: 'Solitude', effect: 'no residents move in', lineage: 4 },
+  { id: 'still', name: 'Stillness', effect: 'the tentacles never sweep: the reef eats only what comes to it', lineage: 5 },
 ];
 export const VOW = { hasteHours: 7, label: 'Vows', note: 'Optional: grow the next reef a harder way, for lineage at its ending if the vow is kept.', kept: 'kept', broken: 'broken' } as const;
 

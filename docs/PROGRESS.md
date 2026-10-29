@@ -617,3 +617,4 @@ date, what landed, what is half-done, what's next.
 - Feat Every vow kept (hidden).
 - Ossel's light rises and flickers while it speaks (sightings.ts spoke/speaking; Silt Floor and the Twilight wall).
 - Reef fish cast soft shadows on the Sunlit sand by day (sunlit.ts drawFishShadows). Full e2e suite green.
+- Vow Stillness (+5): sweep() does nothing on that reef.

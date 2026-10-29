@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { advance, calciteRate, carryAt, cost, ended, heightForBands, homes, rates, vowLineage } from '../../src/game/sim/economy.ts';
+import { sweep, advance, calciteRate, carryAt, cost, ended, heightForBands, homes, rates, vowLineage } from '../../src/game/sim/economy.ts';
 import { LINEAGE } from '../../src/game/content/lineage.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { buyTrait, canSpawnLesser, lineageFor, spawnLesser, traitCost } from '../../src/game/sim/prestige.ts';
@@ -202,4 +202,6 @@ test('vows: taken only after an ending; kept ones pay at the next ending; lightn
   assert.equal(vowLineage(s), 14);
   s.surfacedAt = 8 * 3600;
   assert.equal(vowLineage(s), 8, 'haste broken');
+  s.vows.push('still');
+  assert.equal(sweep(s), 0, 'a still reef does not sweep');
 });
