@@ -319,3 +319,4 @@ date, what landed, what is half-done, what's next.
 - Touching a creature ticks the phone's vibration (double tick with a gift), when vibration is on.
 - Audio: the Sunlit Crown's ambience crackles quietly with snapping shrimp (random high-passed clicks).
 - Audio: the Breach's dolphins whistle as each leap begins (cue 'dolphin').
+- Purchase flourishes for pigment (colour sparks washing up the reef), canopy (gold bloom over the crown), ripen (pink lights in the polyps) and floor works (meadow/sandbar/channel/grounds: a puff at the foot).

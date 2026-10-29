@@ -472,6 +472,43 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
           glow(ctx, L.cx, y, 80 * s, '140,200,255', 0.45 * Math.sin(Math.PI * k));
           break;
         }
+        case 'pigment': {
+          // A new colour washes up through the reef from the foot, in sparks of rose, gold and green.
+          const top = Math.min(1, L.top);
+          for (let i = 0; i < 18; i++) {
+            const node = (i * 4513 + Math.floor(fx.start * 7)) % coral.count;
+            if (coral.y[node]! > Math.min(top, k * 1.3 * top)) continue;
+            const [tx, ty] = nodePx(L, node);
+            glow(ctx, tx, ty, 9 * s, ['255,110,170', '255,215,90', '120,240,170'][i % 3]!, 0.8 * (1 - k));
+          }
+          break;
+        }
+        case 'canopy': {
+          // The branches lean open to the light: a soft gold bloom over the crown.
+          const [cx, cy] = crown(L);
+          glow(ctx, cx, cy - 30 * s, (60 + 160 * k) * s, '255,240,170', 0.4 * Math.sin(Math.PI * k));
+          break;
+        }
+        case 'ripen': {
+          // The spawn ripens: pink lights swell in the polyps and fade.
+          const nodes = polypNodes(L, shownPolyps(L, v));
+          for (let i = 0; i < nodes.length; i += 3) {
+            const [tx, ty] = nodePx(L, nodes[i]!);
+            glow(ctx, tx, ty - 6 * s, 8 * s, '255,140,200', 0.7 * Math.sin(Math.PI * k));
+          }
+          break;
+        }
+        case 'meadow':
+        case 'sandbar':
+        case 'channel':
+        case 'grounds': {
+          // Work on the floor: a puff of pale sand spreading at the reef's foot.
+          for (const side of [-1, 1]) {
+            glow(ctx, L.cx + side * (40 + 140 * k) * s, L.baseY - 6 * s, (30 + 40 * k) * s,
+              fx.kind === 'meadow' ? '150,230,140' : '235,215,170', 0.35 * (1 - k));
+          }
+          break;
+        }
         default:
           break;
       }
