@@ -429,3 +429,4 @@ date, what landed, what is half-done, what's next.
 - Request line: kicker (with the streak) on its own row, text full width, no bar for one-step asks.
 - The current (Twilight verb): act3.ts CURRENT, state.current, setCurrent; a five-step control in the Rasp box; the bot picks the best each half minute. Bot 8h08 / 7h28.
 - The current drawn on the shelf: faint streaks running with it, longer and faster with the setting.
+- economy.ts split: sim/modifiers.ts (trait, chose, passed, lives, paired, found, relic, has, speaks, boon), sim/water.ts (water slots and price factors), sim/race.ts (sisterAt, gaugeAt); economy re-exports what callers used.

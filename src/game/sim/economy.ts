@@ -31,13 +31,19 @@ import { DIARY_TEXT } from '../content/diary.ts';
 import { SHARD, SHARD_LINES, type ShardSource } from '../content/shards.ts';
 import { REQUEST, REQUESTS, type RequestKind } from '../content/requests.ts';
 import { MOMENTS, type MomentId } from '../content/moments.ts';
-import { WATER, WATERS, type Water } from '../content/waters.ts';
 import { EXPEDITION, ROAM, ROAM_TALES, SITES, VISIT, type Site, type SiteId } from '../content/expeditions.ts';
 import type { Band, Currency, UpgradeDef, UpgradeId } from '../content/types.ts';
 import { UPGRADES } from '../content/upgrades.ts';
 import { equilibrium, relax } from './ode.ts';
 import { mulberry32 } from './rng.ts';
 import { HISTORY_MAX, HISTORY_STEP, type GameState } from './state.ts';
+import { boon, chose, found, has, lives, paired, passed, relic, speaks, trait } from './modifiers.ts';
+import { murmurFactor, untilWaterTurns, waterAt, waterFactor, deep } from './water.ts';
+import { gaugeAt, sisterAt } from './race.ts';
+
+export { chose, paired, passed, speaks } from './modifiers.ts';
+export { untilWaterTurns, waterAt } from './water.ts';
+export { gaugeAt, sisterAt } from './race.ts';
 
 export const BANDS: readonly Band[] = [...BANDS_ACT1, ...BANDS_ACT2, ...BANDS_ACT3, ...BANDS_ACT4, ...BANDS_ACT5];
 
@@ -130,23 +136,9 @@ export function nextMilestone(id: 'polyp' | 'symbiont', level: number): Mileston
   return MILESTONES[id].find((ms) => ms.level > level);
 }
 
-function trait(s: GameState, id: TraitId): number {
-  return s.meta.traits[id];
-}
-
 /** Reef settling rate (1/s): how fast height follows the laid bands. */
 export function settleRate(s: GameState): number {
   return ACT1.settleRate * (trait(s, 'settling') ? 2 : 1);
-}
-
-/** How a moment was met ('a' or 'b'). */
-export function chose(s: GameState, id: MomentId, c: 'a' | 'b'): boolean {
-  return s.moments[id] === c;
-}
-
-/** A hard seamount's trial met by this line (kept in meta.seen as 'trial:<id>'). */
-export function passed(s: GameState, id: SeamountId): boolean {
-  return s.meta.seen.includes(`trial:${id}`);
 }
 
 /** Meet this seamount's trial once the reef has grown to its goal. Returns true the moment it is met. */
@@ -156,32 +148,6 @@ function trialCheck(s: GameState): boolean {
   s.meta.seen.push(`trial:${s.seamount}`);
   remember(s, 'trial', tr.reward.split(':')[0]!);
   return true;
-}
-
-function lives(s: GameState, id: ResidentId): boolean {
-  return s.residents.includes(id);
-}
-
-/** Both of a pairing live in the reef. */
-export function paired(s: GameState, a: ResidentId, b: ResidentId): boolean {
-  return lives(s, a) && lives(s, b);
-}
-
-function found(s: GameState, id: SiteId): boolean {
-  return s.relics.includes(id);
-}
-
-/** A relic's effect is in play: found on this reef, or brought along as the heirloom. */
-function relic(s: GameState, id: SiteId): boolean {
-  return found(s, id) || s.heirloom === id;
-}
-
-function has(s: GameState, id: ReadingId): boolean {
-  return s.readings.includes(id);
-}
-
-export function speaks(s: GameState, id: DialectId): boolean {
-  return s.dialects.form === id || s.dialects.craft === id || s.dialects.spawn === id;
 }
 
 /** Sunlight per symbiont colony; zero below the Sunlit Crown. */
@@ -528,44 +494,6 @@ export function cost(s: GameState, id: UpgradeId): number {
   const [from, gentle] = u.growthAfter ?? [Infinity, u.growth];
   const scale = l <= from ? u.growth ** l : u.growth ** from * gentle ** (l - from);
   return Math.ceil(u.baseCost * scale * discount * waterFactor(s, id));
-}
-
-// ---------- The water's moods ----------
-
-const STILL = WATERS[0]!;
-
-/**
- * The water in time slot k (the current one by default): seeded per reef, drawn from the kinds that
- * come in the reef's zone, still before the reef has risen out of the silt.
- */
-export function waterAt(s: GameState, k = Math.floor(s.t / WATER.period)): Water {
-  if (!s.bands.includes(WATER.band)) return STILL;
-  const zone = actAt(s.height);
-  const pool = WATERS.filter((w) => w.zones.includes(zone));
-  const r = mulberry32((s.seed ^ 0x3a7e1) + Math.imul(k, 0x85ebca6b));
-  let x = r() * pool.reduce((a, w) => a + w.weight, 0);
-  for (const w of pool) if ((x -= w.weight) < 0) return w;
-  return STILL;
-}
-
-/** Seconds until the water turns. */
-export function untilWaterTurns(s: GameState): number {
-  return (Math.floor(s.t / WATER.period) + 1) * WATER.period - s.t;
-}
-
-/** A water's price factor for this reef (Water-wise deepens it). */
-function deep(s: GameState, w: Water): number {
-  return w.factor < 1 ? w.factor - 0.1 * trait(s, 'water-wise') : 1;
-}
-
-function waterFactor(s: GameState, id: UpgradeId): number {
-  const w = waterAt(s);
-  return w.upgrades.includes(id) ? deep(s, w) : 1;
-}
-
-function murmurFactor(s: GameState): number {
-  const w = waterAt(s);
-  return w.murmurs ? deep(s, w) : 1;
 }
 
 /**
@@ -938,22 +866,6 @@ export function remember(s: GameState, key: string, arg = '', at = s.t): void {
 }
 
 // ---------- The sister reef ----------
-
-/** The sister reef's place on the gauge (0 seamount … 1 surface) at sim time t. */
-export function sisterAt(t: number, sc: readonly (readonly [number, number])[] = SISTER.schedule): number {
-  for (let i = 1; i < sc.length; i++) {
-    const [t1, f1] = sc[i]!, [t0, f0] = sc[i - 1]!;
-    if (t <= t1) return f0 + ((f1 - f0) * (t - t0)) / (t1 - t0);
-  }
-  return 1;
-}
-
-/** 0 (seamount) … 1 (surface): each zone an equal share, linear within it (as the gauge draws it). */
-export function gaugeAt(h: number): number {
-  const n = actAt(Math.min(h, SURFACE));
-  const a = ACTS[n - 1]!;
-  return (n - 1 + Math.min(1, Math.max(0, (h - a.from) / (a.to - a.from)))) / ACTS.length;
-}
 
 /** Judge the next mark, reached at sim time `at`: won if the sister is still below it then. */
 function judgeMark(s: GameState, at: number): void {
@@ -1357,10 +1269,6 @@ export function chooseBoon(s: GameState, id: BoonId): boolean {
     s.jobs.feed += 4;
   }
   return true;
-}
-
-function boon(s: GameState, id: BoonId): boolean {
-  return s.boon === id;
 }
 
 // ---------- Before you go ----------
