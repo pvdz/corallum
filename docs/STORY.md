@@ -164,4 +164,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Lantern shark (Midnight) | real animal (Etmopterus) | OK |
 | Again: Ossel remembers earlier endings when a new reef begins | this game's own character | OK |
 | Christmas tree worms (on the Sunlit reef) | real animals (Spirobranchus) | OK |
+| A meteor shower over the Breach | real sky | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

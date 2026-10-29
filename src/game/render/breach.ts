@@ -205,6 +205,48 @@ export function createBreachScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * Rarely, a meteor shower: for forty seconds in every twenty minutes, streaks fall across the
+   * sky from one point, thick for a while, then thinning out. Touched, a big bright fireball.
+   */
+  function drawMeteors(ctx: CanvasRenderingContext2D, t: number, dawn: number): void {
+    const period = 1200, length = 40;
+    const u = ((t + 640) % period) / length;
+    if (u >= 1 || dawn > 0.6) return;
+    sight('meteors');
+    const wy = waterY();
+    const rx = focus.x + focus.w * 0.85, ry = focus.y;
+    spot('meteors', focus.x + focus.w * 0.6, focus.y + (wy - focus.y) * 0.4, focus.w * 0.2);
+    const touch = startled('meteors', t);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    const rate = Math.sin(u * Math.PI);
+    for (let k = 0; k < 180; k++) {
+      const r = mulberry32(k * 911 + Math.floor((t + 640) / period) * 7);
+      const start = r() * length, dur = 0.6 + r() * 0.6;
+      const p = ((t + 640) % period - start) / dur;
+      if (p < 0 || p > 1 || r() > rate) continue;
+      const ang = Math.PI * (0.7 + r() * 0.25), len = (wy - focus.y) * (0.3 + r() * 0.5);
+      const x0 = rx + (r() - 0.5) * focus.w * 0.3, y0 = ry + r() * (wy - focus.y) * 0.3;
+      const hx = x0 + Math.cos(ang) * len * p, hy = y0 + Math.sin(ang) * len * p;
+      const g = ctx.createLinearGradient(hx - Math.cos(ang) * 40 * dpr, hy - Math.sin(ang) * 40 * dpr, hx, hy);
+      g.addColorStop(0, 'rgba(255,255,255,0)');
+      g.addColorStop(1, `rgba(235,240,255,${0.8 * (1 - p) * (1 - dawn)})`);
+      ctx.strokeStyle = g;
+      ctx.lineWidth = 1.3 * dpr;
+      ctx.beginPath();
+      ctx.moveTo(hx - Math.cos(ang) * 40 * dpr, hy - Math.sin(ang) * 40 * dpr);
+      ctx.lineTo(hx, hy);
+      ctx.stroke();
+    }
+    if (touch && touch.age < 2) {
+      const p = touch.age / 2;
+      const x = touch.x - p * focus.w * 0.3, y = touch.y + p * (wy - touch.y) * 0.8;
+      glow(ctx, x, y, 14 * dpr, '255,230,190', 0.9 * (1 - p));
+    }
+    ctx.restore();
+  }
+
   /** A figure's star i, in device pixels: placed in the focus's share of the sky. */
   function starAt(f: Figure, i: number): [number, number] {
     const top = focus.y, sky = (waterY() - top) * 0.92;
@@ -1078,6 +1120,7 @@ export function createBreachScene(seed: number): Scene {
       lastDawn = dawn;
       drawSky(ctx, t, v.moonPhase, v.greatMoon, dawn);
       drawFigures(ctx, t, v, dawn);
+      drawMeteors(ctx, t, dawn);
       drawSea(ctx, t, v.moonPhase, dawn);
       drawSister(ctx, t, v.sister);
       drawChildren(ctx, v, t);

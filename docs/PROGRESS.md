@@ -549,3 +549,4 @@ date, what landed, what is half-done, what's next.
 - Job 'fan' (act2.ts JOBS; act3.ts FAN; jobOpen needs the shelf; siltK + 0.003 × fanners; trips take fanners first, homecoming returns them; shoals drawn sand-coloured).
 - Ossel's fifth question at 3990 m ('remember': what will you tell them about me).
 - Christmas tree worms on the Sunlit reef (sunlit.ts drawTreeWorms, after the slugs so nothing covers them): touched, all vanish and come back one by one. Full browser suite green before this.
+- Rare meteor shower over the Breach (breach.ts drawMeteors: 40 s every 20 min, streaks from the moon's side; touched, a fireball).
