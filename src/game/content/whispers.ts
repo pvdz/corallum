@@ -64,7 +64,7 @@ export const WHISPERS: readonly Whisper[] = [
   },
 ];
 
-/** What Ossel says when you tap it on the Silt Floor, in turn. */
+/** What Ossel says when you tap it (the Silt Floor, or its wall on the Twilight Shelf), in turn. */
 export const OSSEL_LINES: readonly string[] = [
   'Yes, I am still here. Where else would I be?',
   'Grow. Do not look at me like that. Grow.',

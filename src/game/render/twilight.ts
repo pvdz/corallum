@@ -191,6 +191,8 @@ export function createTwilightScene(seed: number): Scene {
     const u = 0.14;
     const bx = focus.x - focus.w * 0.1 + u * focus.w * 1.2;
     const by = slopeY(u);
+    // Ossel (or the sand it became) answers a tap here too.
+    spot('ossel', bx, by - 40 * s, 70 * s);
     if (wall === 'a') {
       const g = ctx.createRadialGradient(bx, by, 0, bx, by, 120 * s);
       g.addColorStop(0, 'rgba(255,225,170,0.85)');
