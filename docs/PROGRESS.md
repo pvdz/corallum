@@ -221,3 +221,4 @@ date, what landed, what is half-done, what's next.
 - Rare sightings, one per deep zone: a dumbo octopus over the Silt Floor (every 15 min), a whale shark across the Twilight Shelf (every 18 min); journal: 34.
 - Sunlit Crown rare sighting: an ocean sunfish (mola) every 16 min (journal: 35). Dumbo octopus drawn in front of the reef.
 - Journal grouped by zone with per-zone counts; unseen entries hint 'Rare: watch for it.' or 'Only on a cold/warm seamount.'
+- First sighting of a rare creature: note reads 'A rare sighting' with its own chime.

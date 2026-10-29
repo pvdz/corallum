@@ -878,7 +878,10 @@ function frame(now: number): void {
       if (frozenT !== null || state.meta.seen.includes(key)) continue;
       state.meta.seen.push(key);
       const c = CREATURES.find((x) => x.id === id);
-      if (c) showJournalNote('Seen for the first time', c.name);
+      if (c?.note.startsWith('Rare.')) {
+        showJournalNote('A rare sighting', c.name);
+        audio.cue('feast');
+      } else if (c) showJournalNote('Seen for the first time', c.name);
     }
   }
   // Feats: each earned once per lineage, worth one lineage (checked once a second).
