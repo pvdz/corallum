@@ -48,3 +48,21 @@ export const NEWS = {
     'and the line learns new ways. Since then: intruders in every zone, the shoals’ signal, the Rasp elder’s riddles, ' +
     'shells on the sand, the glimmerseed strain, the current, a garden after the end. The Reef tab’s guide has a line on each.',
 } as const;
+
+/** The first time the line enters a zone: what is new there, in a few lines (zones 2–5). */
+export const ZONE_GUIDE: Record<number, { title: string; text: string }> = {
+  2: { title: 'New in the Midnight Water',
+    text: 'Shoals of lanternfish come when you pulse your glow: set them to feed, to light, or to scout the buried bands. ' +
+      'Send them to Thousandfold’s ruins for relics. Every half hour the deep rises past you: put shoals on feeding and send them in. ' +
+      'Answer their light signals, and watch for what hunts them.' },
+  3: { title: 'New on the Twilight Shelf',
+    text: 'Silt falls here and smothers the polyps. Let the Rasp graze (they grind silt and stone to sand), turn the current, ' +
+      'set shoals to fan. Meet the Rasp and make terms; their elder asks riddles. Turn the current toward an upwelling when one comes. ' +
+      'Small animals ask to live in your branches, and your glimmerseed throw a sport.' },
+  4: { title: 'New in the Sunlit Crown',
+    text: 'Sunlight feeds your symbionts: bloom, a new wealth, buys pigments, canopy and dialects, the shape your reef will be. ' +
+      'Every half hour the water runs warm: stay open for more sun, or close up before you bleach. Shells wash up on the sand.' },
+  5: { title: 'New at the Breach',
+    text: 'Air. Ripen the spawn and wait for the full moon; a great tide carries four memories. Ride the swells as they crest, ' +
+      'name the stars, and when the moon is full, let go.' },
+};

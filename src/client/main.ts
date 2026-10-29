@@ -53,7 +53,7 @@ import { UPWELL } from '../game/content/act3.ts';
 import { FIGURES, SKY, type FigureId } from '../game/content/sky.ts';
 import { ACT1, FLARE, GRAINS, MILESTONES, SPORTS, STRAINS, type Milestone } from '../game/content/act1.ts';
 import { OSSEL_LINES, OSSEL_LINES_TRUE, OSSEL_NOW, WHISPERS } from '../game/content/whispers.ts';
-import { NEWS } from '../game/content/guide.ts';
+import { NEWS, ZONE_GUIDE } from '../game/content/guide.ts';
 import { OSSEL_MISTAKE, OSSEL_MISTAKES } from '../game/content/ossel.ts';
 import { buyTrait, forgetTrait, grainSense, habitPurchase, raspSense, shoalSense, spawnLesser } from '../game/sim/prestige.ts';
 import { createFinale } from '../game/ui/finale.ts';
@@ -1579,6 +1579,12 @@ function frame(now: number): void {
     scene = want;
     showZoneTitle(actAt(state.height));
     setZoneTint(actAt(state.height));
+    // The first time the line comes this high: what is new here.
+    const zg = ZONE_GUIDE[actAt(state.height)];
+    if (zg && frozenT === null && botT === null && !state.meta.seen.includes(`zone:${actAt(state.height)}`)) {
+      state.meta.seen.push(`zone:${actAt(state.height)}`);
+      setTimeout(() => panel.story('A new zone', zg.title, zg.text), 5000);
+    }
     audio.cue('zone');
     // Let the new zone arrive (title, ascent) before the band that tells it opens.
     panel.holdStories(4000);
