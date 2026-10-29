@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { flare, prune, oldKnobs, currentThorn, dayOf, catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
+import { flare, prune, oldKnobs, inMilky, currentThorn, dayOf, catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { newGame, type GameState } from '../../src/game/sim/state.ts';
 import { GIFT } from '../../src/game/content/creatures.ts';
@@ -8,6 +8,7 @@ import { HEAT } from '../../src/game/content/act4.ts';
 import { RISING } from '../../src/game/content/act2.ts';
 import { SWELL } from '../../src/game/content/events.ts';
 import { OLD } from '../../src/game/content/act1.ts';
+import { MILKY } from '../../src/game/content/act2.ts';
 
 const rel = (a: number, b: number) => Math.abs(a - b) / Math.max(1, Math.abs(b));
 const clone = (s: GameState): GameState => structuredClone(s);
@@ -565,4 +566,20 @@ test('a heavy seamount gathers old stone three times as fast; met, its trial dou
   b.meta.seen.push('trial:heavy');
   const pa = prune(a, a.oldSlots[0]!), pb = prune(b, b.oldSlots[0]!);
   assert.ok(Math.abs(pb / pa - 2) < 1e-9, `${pb / pa}`);
+});
+
+test('a milky sea: in the Midnight Water, for a minute in each period, sweeps gather glow too', () => {
+  const s = newGame(6);
+  s.height = 500;
+  s.levels.symbiont = 4;
+  s.t = MILKY.start + MILKY.period + 10;
+  assert.ok(inMilky(s));
+  const g0 = s.glow;
+  sweep(s);
+  assert.ok(Math.abs(s.glow - g0 - rates(s).glowP * MILKY.glowSeconds) < 1e-9);
+  s.t += MILKY.length;
+  assert.ok(!inMilky(s));
+  s.height = 10;
+  s.t = MILKY.start + 10;
+  assert.ok(!inMilky(s), 'not on the Silt Floor');
 });

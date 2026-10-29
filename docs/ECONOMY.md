@@ -116,3 +116,7 @@ After expeditions, residents, moments, the water, requests, shards, works and th
 `old` follows dx/dt = P − k·old with k = 1/1500 s⁻¹, P = 6k (cap six knobs; closed form, also
 over skipped warm-spell cycles). Each whole unit is a knob on a branch tip; breaking one off pays
 `burst(25 s)` of the zone's currency. Away, at most six knobs wait: the cap is the dynamics.
+
+## Milky sea
+Midnight Water only, active: from t = 300 s every 1500 s for 60 s. Each sweep then also adds
+`glowP × 4 s` of glow (on top of its calcite). Nothing accrues while away.

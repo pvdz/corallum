@@ -29,6 +29,8 @@ export type ReefView = {
   /** Shoals away at a ruin: how many, sim seconds since they left and until they are back, which side they went. */
   /** A flurry of the Long Silt is falling (Silt Floor). */
   flurry: boolean;
+  /** A milky sea glows in the Midnight Water now. */
+  milky: boolean;
   /** The reef lit the way for the sister reef. */
   sisterLit: boolean;
   /** Old growth: the slots holding a grey knob now, and the last one broken off (`since` seconds ago). */

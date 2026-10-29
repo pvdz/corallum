@@ -8,7 +8,7 @@ import { FIGURES, type FigureId } from '../content/sky.ts';
 import { ACT1, FLARE, FLURRY, GRAINS, MILESTONES, SPORTS, STRAINS, type GrainId, type SportId, type StrainId } from '../content/act1.ts';
 import type { Band, Currency, UpgradeId } from '../content/types.ts';
 import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
-import { JOBS, READINGS, type Job, type Reading, type ReadingId, RISING } from '../content/act2.ts';
+import { JOBS, READINGS, type Job, type Reading, type ReadingId, RISING, MILKY } from '../content/act2.ts';
 import { ACT3, CURRENT, FAVOURS, FAVOUR_TEXT, MEETINGS, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId, FAN, UPWELL } from '../content/act3.ts';
 import { DIALECTS, HEAT, TIERS, type DialectId } from '../content/act4.ts';
 import { BOONS, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId, FORGET } from '../content/lineage.ts';
@@ -38,7 +38,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, steadyCalciteRate, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilThorn, untilFlurry, untilHeat, heatLeft, closedNow, untilRising, untilSwell, currentUpwelling, canFlare, risingLeft, canFeedRising, risingHaul, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilThorn, untilFlurry, untilMilky, untilHeat, heatLeft, closedNow, untilRising, untilSwell, currentUpwelling, canFlare, risingLeft, canFeedRising, risingHaul, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -1582,6 +1582,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         if (fe < 1200) soon.push([fe, WATER.feast]);
         const fl = untilFlurry(s);
         if (fl < 1200) soon.push([fl, FLURRY.word + ' (sweeps ×3)']);
+        const mk = untilMilky(s);
+        if (mk < 1200) soon.push([mk, MILKY.word]);
         if (th < 1200 && kind) soon.push([th, WATER.intruder[kind]!]);
         const day = DAYS.find((d) => d.id === s.meta.today);
         todayLine.textContent = day ? `${TODAY.label}: ${day.name.toLowerCase()} · ${day.effect}` : '';

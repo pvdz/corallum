@@ -999,6 +999,30 @@ export function createMidnightScene(seed: number): Scene {
     ctx.fillRect(0, 0, w, h);
   }
 
+
+  /** A milky sea: the whole water glows a soft blue-white, flickering here and there with tiny lights. */
+  function drawMilky(ctx: CanvasRenderingContext2D, t: number): void {
+    const s = Math.min(focus.w, focus.h) / 700;
+    const breathe = 0.85 + 0.15 * Math.sin(t * 0.8);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    const g = ctx.createLinearGradient(0, focus.y, 0, focus.y + focus.h);
+    g.addColorStop(0, `rgba(120,170,220,${0.16 * breathe})`);
+    g.addColorStop(0.6, `rgba(150,215,240,${0.26 * breathe})`);
+    g.addColorStop(1, `rgba(120,170,220,${0.14 * breathe})`);
+    ctx.fillStyle = g;
+    ctx.fillRect(focus.x, focus.y, focus.w, focus.h);
+    for (let i = 0; i < 320; i++) {
+      const x = focus.x + ((i * 0.618034 + Math.sin(t * 0.1 + i) * 0.01) % 1) * focus.w;
+      const y = focus.y + ((i * 0.3819 + t * 0.004 * (1 + (i % 3))) % 1) * focus.h;
+      const a = Math.max(0, Math.sin(t * (1.2 + (i % 7) * 0.3) + i * 2.1));
+      if (a < 0.4) continue;
+      ctx.fillStyle = `rgba(210,240,255,${0.8 * (a - 0.4)})`;
+      ctx.fillRect(x, y, 2.5 * s, 2.5 * s);
+    }
+    ctx.restore();
+  }
+
   return {
     bloomStrength: 0.6,
     crownAt: [0, 0] as [number, number],
@@ -1039,6 +1063,7 @@ export function createMidnightScene(seed: number): Scene {
       drawSisterFar(ctx, focus, v.sister - v.gauge, t, scale(), false);
       drawSpire(ctx, focus, v.works.spire, scale(), t, focus.y + focus.h * 0.99);
       if (v.moments.seep) drawSeep(ctx, t, L, v.moments.seep === 'b');
+      if (v.milky) drawMilky(ctx, t);
       reef.draw(ctx, L, v, t);
       drawRelics(ctx, reef, L, v.relics, t, v.moments['old-lamp'] === 'a');
       if (v.nets > 0) drawNets(ctx, reef, L, v.nets, t);

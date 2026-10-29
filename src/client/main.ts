@@ -32,7 +32,7 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, prune, oldKnobs, oldHeld, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, sisterNow, lightSister, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inMilky, milkyGlow, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, prune, oldKnobs, oldHeld, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, sisterNow, lightSister, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -48,7 +48,7 @@ import { GAUGE_MOON } from '../game/content/act5.ts';
 import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { HEAT } from '../game/content/act4.ts';
 import { AGAIN, QUESTION, QUESTIONS } from '../game/content/ossel.ts';
-import { RISING } from '../game/content/act2.ts';
+import { MILKY, RISING } from '../game/content/act2.ts';
 import { UPWELL } from '../game/content/act3.ts';
 import { FIGURES, SKY, type FigureId } from '../game/content/sky.ts';
 import { ACT1, FLARE, GRAINS, OLD, MILESTONES, SPORTS, STRAINS, type Milestone } from '../game/content/act1.ts';
@@ -857,6 +857,7 @@ function view(): ReefView {
     thorn: thornView(),
     shell: currentShell(state),
     flurry: inFlurry(state),
+    milky: inMilky(state),
     heat: heatView(),
     sisterLit: state.race.lit > 0,
     old: { slots: state.oldSlots.slice(0, oldKnobs(state)), slot: state.pruned.slot, since: state.t - state.pruned.t },
@@ -1280,6 +1281,8 @@ canvas.addEventListener('pointerdown', (e) => {
   audio.cue('sweep');
   // A combo throws up more motes with each sweep in the run.
   taps.push(wx, wy, animT, 6 + Math.min(10, state.combo - 1));
+  const lit = milkyGlow(state);
+  if (lit > 0) floatText(e.clientX + 30, e.clientY - 18, `+${num(lit)} ${MILKY.float}`, 'feast-float');
   floatText(e.clientX, e.clientY, state.combo > 1 ? `+${num(gain)} ×${(1 + ACT1.comboStep * (state.combo - 1)).toFixed(1)}` : `+${num(gain)}`);
 });
 
@@ -1287,6 +1290,7 @@ canvas.addEventListener('pointerdown', (e) => {
 let slowFrames = 0;
 /** The last lightning strike whose thunder was heard. */
 let thunderHeard = -1;
+let milkyHeard = false;
 /** Slow frames for a while: first the glow pass goes, then (still slow) the resolution drops to 1×. */
 let autoLowRes = false;
 function qualityCheck(dt: number): void {
@@ -1573,6 +1577,9 @@ function frame(now: number): void {
     const upNow = !!currentUpwelling(state), swellNow = !!currentSwell(state);
     if (upNow && !upHeard) audio.cue('upwell');
     if (swellNow && !swellHeard) audio.cue('swell');
+    const milkyNow = inMilky(state);
+    if (milkyNow && !milkyHeard) audio.cue('shimmer');
+    milkyHeard = milkyNow;
     upHeard = upNow;
     swellHeard = swellNow;
     heatHeard = heatNow;

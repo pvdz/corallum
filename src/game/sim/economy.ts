@@ -16,7 +16,7 @@
 // month offline costs a few hundred iterations and ends exactly where the dynamics settle.
 
 import { ACT1, BANDS_ACT1, FLARE, FLURRY, OLD, GRAIN, GRAINS, SPORT, SPORTS, type GrainId, type SportId, MILESTONES, STRAIN, type Milestone, type StrainId } from '../content/act1.ts';
-import { ACT2, RISING, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
+import { ACT2, MILKY, RISING, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
 import { FAN, UPWELL, ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDLE, RIDDLES, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { FIGURES, SKY, type FigureId } from '../content/sky.ts';
 import { QUESTIONS, type Question, type QuestionId } from '../content/ossel.ts';
@@ -1494,6 +1494,25 @@ export function untilFlurry(s: GameState): number {
   return u < FLURRY.length ? 0 : FLURRY.period - u;
 }
 
+/** A milky sea is glowing now (Midnight Water only, active slot of the clock). */
+export function inMilky(s: GameState): boolean {
+  const u = (s.t - MILKY.start) % MILKY.period;
+  return actAt(s.height) === 2 && s.t >= MILKY.start && u < MILKY.length;
+}
+
+/** Seconds until the next milky sea (0 while one glows; Infinity outside the Midnight Water). */
+export function untilMilky(s: GameState): number {
+  if (actAt(s.height) !== 2) return Infinity;
+  if (s.t < MILKY.start) return MILKY.start - s.t;
+  const u = (s.t - MILKY.start) % MILKY.period;
+  return u < MILKY.length ? 0 : MILKY.period - u;
+}
+
+/** Glow a sweep gathers in a milky sea. */
+export function milkyGlow(s: GameState): number {
+  return inMilky(s) ? rates(s).glowP * MILKY.glowSeconds : 0;
+}
+
 export function sweep(s: GameState): number {
   if (!canSweep(s)) return 0;
   // Quick sweeps one after another build a combo.
@@ -1501,6 +1520,9 @@ export function sweep(s: GameState): number {
   const gain = (ACT1.sweepFlat + calciteRate(s) * ACT1.sweepSeconds) * (inFlurry(s) ? FLURRY.sweep : 1) * (1 + ACT1.comboStep * (s.combo - 1));
   s.calcite += gain;
   s.earned.calcite += gain;
+  const lit = milkyGlow(s);
+  s.glow += lit;
+  s.earned.glow += lit;
   s.lastSweep = s.t;
   s.tally.sweeps++;
   dig(s, 'sweep');

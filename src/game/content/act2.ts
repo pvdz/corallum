@@ -8,6 +8,16 @@ import type { Band, UpgradeDef } from './types.ts';
  * passes, the feeding shoals can be sent into it once: four minutes of calcite, times the share of
  * shoals that are feeding. Midnight Water and Twilight Shelf only, while watching.
  */
+/**
+ * A milky sea in the Midnight Water: now and then, for a minute, the whole water glows pale with
+ * countless tiny lights. While it lasts each sweep also gathers `glowSeconds` of glow.
+ */
+export const MILKY = {
+  period: 1500, start: 300, length: 60, glowSeconds: 4,
+  word: 'a milky sea (sweeps gather glow)',
+  float: 'glow',
+} as const;
+
 export const RISING = {
   start: 900, length: 180, seconds: 240,
   word: 'the rising',
