@@ -530,3 +530,4 @@ date, what landed, what is half-done, what's next.
 - The day's sea (events.ts DAYS; economy dayOf/setDay, meta.today; rates read it): set on load with the daily gift (never in bot/frozen sessions), a 'Today:' line in the water box.
 - Moonbow at the Breach (breach.ts drawMoonbow): a minute after each shower, if the moon is bright; a rare sight for the journal.
 - The Rasp elder shows on the slope (twilight.ts drawElder: pale, worn beak) while a riddle is asked.
+- Audio: 'upwell' (rising bubbles) and 'swell' (two long surges) as each begins.
