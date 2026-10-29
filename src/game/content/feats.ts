@@ -1,6 +1,7 @@
 // Feats: small goals across all runs. Each is earned once per lineage (meta.seen 'f:<id>') and
 // adds one lineage. Creatures touched are kept as 't:<id>'. Conditions are pure functions of the state.
 
+import { MEMORIES } from './act5.ts';
 import { SITES } from './expeditions.ts';
 import type { GameState } from '../sim/state.ts';
 import { CREATURES } from './creatures.ts';
@@ -38,7 +39,7 @@ export const FEATS: readonly Feat[] = [
   { id: 'spawned', name: 'Let go', text: 'Release the spawn under the Spawning Moon.', when: (s) => s.carried.length > 0 },
   { id: 'great-tide', name: 'Four memories', text: 'Release under a great tide.', when: (s) => s.carried.length >= 4 },
   { id: 'lesser', name: 'Children', text: 'Release a lesser spawning.', when: (s) => s.meta.spawnings >= 1 },
-  { id: 'everything', name: 'Nothing lost, nothing kept', text: 'Across your endings, carry every memory there is.', when: (s) => s.meta.carriedEver.length >= 17 },
+  { id: 'everything', name: 'Nothing lost, nothing kept', text: 'Across your endings, carry every memory there is.', when: (s) => s.meta.carriedEver.length >= MEMORIES.length },
   { id: 'endings', name: 'Many endings', text: 'Reach the ending three times.', when: (s) => s.meta.endings >= 3 },
   { id: 'seamounts', name: 'Far settled', text: 'Grow a reef on a cold or a warm seamount.', when: (s) => s.seamount === 'cold' || s.seamount === 'warm' },
   { id: 'every-seamount', name: 'Every kind of stone', text: 'Grow reefs on warm, cold and crowded seamounts.',
