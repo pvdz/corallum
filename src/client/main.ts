@@ -789,7 +789,22 @@ photoBtn.type = 'button';
 photoBtn.title = 'Save a picture of the reef';
 photoBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
 photoBtn.addEventListener('click', () => {
-  canvas.toBlob((blob) => {
+  // A copy of the scene with a small caption in the corner: name, height, zone.
+  const shot = document.createElement('canvas');
+  shot.width = canvas.width;
+  shot.height = canvas.height;
+  const sc = shot.getContext('2d')!;
+  sc.drawImage(canvas, 0, 0);
+  const caption = `${reefName(state) || 'Corallum'} · ${metres(state.height)} · ${act(actAt(state.height)).name}`;
+  const fs = Math.round(16 * dpr);
+  sc.font = `${fs}px Georgia, 'Times New Roman', serif`;
+  sc.textBaseline = 'bottom';
+  sc.fillStyle = 'rgba(0,0,0,0.45)';
+  const tw = sc.measureText(caption).width;
+  sc.fillRect(fs * 0.8, shot.height - fs * 2.6, tw + fs * 1.2, fs * 1.8);
+  sc.fillStyle = 'rgba(240,248,255,0.92)';
+  sc.fillText(caption, fs * 1.4, shot.height - fs * 1.15);
+  shot.toBlob((blob) => {
     if (!blob) return;
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);

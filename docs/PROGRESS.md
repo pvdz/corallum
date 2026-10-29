@@ -243,3 +243,4 @@ date, what landed, what is half-done, what's next.
 - Reading a band makes every light in the drowned towers flare for ~2 s before settling to the new level.
 - Reef effects for story moments: a truce or dialect choice sends two rose-gold rings out from the reef; a Reading sends blue light climbing the reef from foot to crown.
 - Silt Floor: squat lobsters clinging to the vent chimney (more per vent tier); journal: 38. Choice rings verified rose.
+- Reef photos carry a caption in the corner: name, height, zone.
