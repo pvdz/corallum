@@ -86,6 +86,8 @@ export type PanelHooks = {
   closeUp(closed: boolean): void;
   dream(): void;
   flare(): void;
+  /** Every riddle of the elder answered rightly. */
+  blessed(): boolean;
   signalStreak(): number;
   answerOssel(id: QuestionId, i: 0 | 1): void;
   feedRising(): void;

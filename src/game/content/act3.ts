@@ -174,7 +174,9 @@ export const RIDDLES: readonly { id: RiddleId; after: string; ask: string; optio
   { id: 'children', after: 'other-children', ask: 'While the silt fell, was the whole sea dead?', options: ['All of it, everywhere', 'Only the deep, and only for a while', 'None of it: the silt was alive'], right: 1 },
   { id: 'shallows', after: 'sun-gate', ask: 'Where did the city first grow?', options: ['In the dark, as it ended', 'In the shallows, open to the sun', 'On a beach, in the air'], right: 1 },
 ];
-export const RIDDLE = { kicker: 'The Rasp elder asks', lineage: 2, right: 'The elder grinds its beak, pleased.', wrong: 'The elder turns away. Not this time.' } as const;
+export const RIDDLE = { kicker: 'The Rasp elder asks', lineage: 2, right: 'The elder grinds its beak, pleased.', wrong: 'The elder turns away. Not this time.',
+  /** Every riddle answered rightly on one reef: the elder's blessing. */
+  blessing: 'The elder bows its old head to you. Its herd grinds ×1.2 sand for the rest of this reef.', blessed: 1.2 } as const;
 
 // Favours: once the first meeting is settled, the Rasp can be asked for things, paid in sand.
 // Each is dearer every time it is asked (cost × growth^times).

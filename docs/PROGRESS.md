@@ -556,3 +556,4 @@ date, what landed, what is half-done, what's next.
 - Whisper 'flare' when the glow first sits full.
 - Zone guides (guide.ts ZONE_GUIDE): the first time the line enters zones 2–5, a short card of what is new there (meta.seen 'zone:n'), five seconds after the zone's title.
 - The Reef tab's guide covers rhythms, glow (flare), shoal jobs, Ossel's questions, the sky and the daily things.
+- The elder's blessing: every riddle right on one reef → sand ×1.2 for the run (economy elderBlessed), said after the last answer; feat 'The elder's blessing'.

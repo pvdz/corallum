@@ -244,7 +244,7 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
         rd.options.forEach((o, i) => {
           const b = button('choice', '', () => {
             const ok = hooks.answerRiddle(rd.id, i);
-            riddleResult.textContent = ok ? `${RIDDLE.right} +${RIDDLE.lineage} lineage` : RIDDLE.wrong;
+            riddleResult.textContent = ok ? `${RIDDLE.right} +${RIDDLE.lineage} lineage${hooks.blessed() ? ` ${RIDDLE.blessing}` : ''}` : RIDDLE.wrong;
             for (const x of riddleChoices.children) (x as HTMLButtonElement).disabled = true;
             riddleLinger = performance.now() + 4000;
           });
