@@ -161,6 +161,35 @@ export function createAbyssScene(seed: number): Scene {
     }
   }
 
+  /** A warm seamount: a field of small black smokers along the floor, each trailing dark smoke. */
+  function drawSmokers(ctx: CanvasRenderingContext2D, t: number): void {
+    const s = scale();
+    sight('smokers');
+    for (const [k, u] of [0.06, 0.12, 0.62, 0.7, 0.94].entries()) {
+      const x = focus.x + focus.w * u, base = baseY() + 6 * s;
+      const hgt = (34 + (k % 3) * 12) * s, wid = (7 + (k % 2) * 3) * s;
+      ctx.fillStyle = '#3a2a2e';
+      ctx.beginPath();
+      ctx.moveTo(x - wid, base);
+      ctx.lineTo(x - wid * 0.5, base - hgt);
+      ctx.lineTo(x + wid * 0.5, base - hgt);
+      ctx.lineTo(x + wid, base);
+      ctx.fill();
+      // Smoke: dark puffs rising and spreading.
+      for (let p = 0; p < 8; p++) {
+        const q = ((t * 0.12 + p / 8 + k * 0.3) % 1);
+        ctx.fillStyle = `rgba(70,60,72,${0.5 * (1 - q)})`;
+        ctx.beginPath();
+        ctx.arc(x + Math.sin(t + p + k) * 4 * s * q, base - hgt - q * 70 * s, (3 + q * 9) * s, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      glow(ctx, x, base - hgt, 10 * s, '255,120,60', 0.3 + 0.1 * Math.sin(t * 2 + k));
+      ctx.restore();
+    }
+  }
+
   /**
    * A cold seamount: a brine pool on the floor, a little lake of heavy salt water with a
    * shimmering surface, edged with a ring of dark mussels.
@@ -313,6 +342,7 @@ export function createAbyssScene(seed: number): Scene {
       const vent = v.vent > 0 ? life.drawVent(ctx, st, v.vent, t) : null;
       drawRidge(ctx, ridges[2]!);
       if (v.seamount === 'cold') drawBrinePool(ctx, t);
+      if (v.seamount === 'warm') drawSmokers(ctx, t);
       life.drawFloor(ctx, st, t);
       const L = layout(v);
       if (v.shoals > 0) shoals.drawBack(ctx, focus, reef, L, v, t);

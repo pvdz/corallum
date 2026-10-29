@@ -2,7 +2,7 @@
 // actually seen on screen (kept across lesser spawnings, in meta.seen as 'c:<id>').
 
 export type CreatureId =
-  | 'jelly' | 'brittle-star' | 'rattail' | 'sea-pig' | 'brine-pool' | 'sea-lily' | 'glass-sponge' | 'tube-worm'
+  | 'jelly' | 'brittle-star' | 'rattail' | 'sea-pig' | 'brine-pool' | 'smokers' | 'sea-lily' | 'glass-sponge' | 'tube-worm'
   | 'lanternfish' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall'
   | 'rasp' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch'
   | 'reef-fish' | 'whale' | 'turtle' | 'clownfish'
@@ -16,6 +16,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'rattail', name: 'Rattail', zone: 'The Silt Floor', note: 'A big head and a long tail, nosing along the bottom.' },
   { id: 'sea-pig', name: 'Sea pigs', zone: 'The Silt Floor', note: 'A herd of pink loaves on legs, eating their way across the silt.' },
   { id: 'brine-pool', name: 'A brine pool', zone: 'The Silt Floor', note: 'A lake under the sea, ringed with mussels. Only on a cold seamount.' },
+  { id: 'smokers', name: 'Black smokers', zone: 'The Silt Floor', note: 'Chimneys breathing hot dark water. Only on a warm seamount.' },
   { id: 'sea-lily', name: 'Sea lilies', zone: 'The Silt Floor', note: 'Feathered arms held open to the current on a stalk.' },
   { id: 'glass-sponge', name: 'Glass sponges', zone: 'The Silt Floor', note: 'Vases of silica lattice, older than anything near them.' },
   { id: 'tube-worm', name: 'Tube worms', zone: 'The Silt Floor', note: 'Red plumes in white tubes, crowding the warm water of the vent.' },

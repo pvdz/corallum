@@ -203,3 +203,4 @@ date, what landed, what is half-done, what's next.
 - Feats already earned when a reef loads (older saves) are granted together with one note instead of a long queue of toasts.
 - Crowded seamount: half-buried old reefs (humps with dead branches and faint lights) around the Silt Floor.
 - Cold seamount: a brine pool on the Silt Floor (shimmering surface, ring of mussels); in the journal (27).
+- Warm seamount: a field of five black smokers on the Silt Floor, smoking, hot at the mouth; in the journal (28).
