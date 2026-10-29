@@ -348,6 +348,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const waterLine = el('span', 'water-line');
   const waterNext = el('span', 'water-next');
   const waterSoon = el('span', 'water-soon');
+  // The next twenty minutes as a strip: a mark for each thing coming, labels above and below.
+  const almanac = el('div', 'almanac');
+  let almanacKey = '';
   // Warm spells in the Sunlit Crown: open to the sun, or closed against the heat.
   const heatRow = el('div', 'heat-row');
   heatRow.hidden = true;
@@ -364,7 +367,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const riseButton = button('heat-toggle', RISING.send, () => hooks.feedRising());
   riseRow.append(riseText, riseButton, riseWhat);
   const todayLine = el('span', 'water-today');
-  waterBox.append(waterName, waterLine, waterNext, waterSoon, todayLine, heatRow, riseRow);
+  waterBox.append(waterName, waterLine, waterNext, waterSoon, almanac, todayLine, heatRow, riseRow);
   grow.prepend(waterBox);
   let waterShown = '';
   // Ossel's request: one small thing to do, with its progress.
@@ -1668,6 +1671,24 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         }
         if (s.height >= 1) soon.push([moonFull(s.t) ? 0 : untilFullMoon(s.t), WATER.moon]);
         soon.sort((a, b) => a[0] - b[0]);
+        // Redrawn when the marks move by a whole percent of the strip.
+        const marks = soon.filter(([t]) => t < 1200);
+        const key = marks.map(([t, w]) => `${Math.round(t / 12)}${w}`).join('|');
+        if (key !== almanacKey) {
+          almanacKey = key;
+          almanac.innerHTML = '';
+          almanac.hidden = marks.length === 0;
+          marks.forEach(([t, w], i) => {
+            const m = el('span', `mark${i % 2 ? ' low' : ''}${t <= 0 ? ' now' : ''}`);
+            m.style.left = `${(Math.max(0, t) / 1200) * 100}%`;
+            // Labels at the ends keep inside the card.
+            const f = Math.max(0, t) / 1200;
+            m.style.transform = f < 0.08 ? 'translateX(-4px)' : f > 0.92 ? 'translateX(calc(-100% + 4px))' : '';
+            m.title = `${w} ${t > 0 ? `in ${duration(t)}` : WATER.now}`;
+            m.append(el('i'), el('b', '', w.replace(/^(a|an|the) /, '').split(' (')[0]!));
+            almanac.append(m);
+          });
+        }
         waterSoon.textContent = soon.length ? `${WATER.soon}: ${soon.map(([t, w]) => `${w} ${t > 0 ? `in ${duration(t)}` : WATER.now}`).join(' · ')}` : '';
         if (waterShown && waterShown !== water.id) { waterBox.classList.remove('turned'); void waterBox.offsetWidth; waterBox.classList.add('turned'); }
         waterShown = water.id;

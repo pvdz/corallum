@@ -630,3 +630,4 @@ date, what landed, what is half-done, what's next.
 - Time-lapse (T, or the Reef tab): the reef regrows from the start of its zone to now in 8 s (main.ts lapseHeight overrides the view height).
 - The dark beyond the reef's light (draw.ts drawDarkness): in the Silt Floor and Midnight Water the water dims away from the crown; the lit circle widens with the glow lure.
 - Calmer motion (setting or system reduced motion) reaches the renderers (ReefView calm): lightning becomes a slow soft glow with no flicker.
+- The next twenty minutes as a strip under the water's forecast (panel almanac): a mark for each thing coming, labelled above and below, its full text as a tooltip.
