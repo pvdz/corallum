@@ -438,7 +438,7 @@ window.corallum = {
 let dpr = 1;
 let focusNow: Focus = { x: 0, y: 0, w: 1, h: 1 };
 function resize(): void {
-  dpr = sharpOn ? Math.min(window.devicePixelRatio || 1, 2) : 1;
+  dpr = sharpOn && !autoLowRes ? Math.min(window.devicePixelRatio || 1, 2) : 1;
   const w = Math.round(window.innerWidth * dpr);
   const h = Math.round(window.innerHeight * dpr);
   const r = panel.element.getBoundingClientRect();
@@ -737,10 +737,19 @@ canvas.addEventListener('pointerdown', (e) => {
 
 // Quality: if frames run slow for a while, drop the bloom pass.
 let slowFrames = 0;
+/** Slow frames for a while: first the glow pass goes, then (still slow) the resolution drops to 1×. */
+let autoLowRes = false;
 function qualityCheck(dt: number): void {
-  if (scene.bloomStrength === 0 || frozenT !== null) return;
-  slowFrames = dt > 1 / 40 && dt < 0.5 ? slowFrames + 1 : Math.max(0, slowFrames - 1);
-  if (slowFrames > 90) scene.bloomStrength = 0;
+  if (frozenT !== null || autoLowRes) return;
+  // Seconds spent in slow frames (fast frames pay it back): the slower the device, the sooner it acts.
+  slowFrames = dt > 1 / 40 && dt < 1 ? slowFrames + dt : Math.max(0, slowFrames - dt);
+  if (slowFrames <= 3) return;
+  slowFrames = 0;
+  if (scene.bloomStrength > 0) scene.bloomStrength = 0;
+  else if (sharpOn && dpr > 1) {
+    autoLowRes = true;
+    relayout();
+  }
 }
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -874,7 +883,7 @@ function fpsTick(now: number, dt: number): void {
   fpsSince += dt;
   if (fpsSince < 0.5) return;
   fpsBox!.textContent = `${Math.round(fpsFrames / fpsSince)} fps · draw ${prof.draw.toFixed(1)} ms · panel ${prof.panel.toFixed(1)} ms` +
-    `${scene.bloomStrength > 0 ? '' : ' · bloom off'} · ${canvas.width}×${canvas.height}`;
+    `${scene.bloomStrength > 0 ? '' : ' · bloom off'}${autoLowRes ? ' · auto 1×' : ''} · ${canvas.width}×${canvas.height}`;
   fpsFrames = 0;
   fpsSince = 0;
 }
