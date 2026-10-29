@@ -431,6 +431,38 @@ export function createSunlitScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** The shark pups the reef sheltered (a moment): two small blacktips circling low among the branches. */
+  function drawPups(ctx: CanvasRenderingContext2D, t: number, L: ReefLayout): void {
+    const s = scale() * 1.8;
+    for (let k = 0; k < 2; k++) {
+      const a = t * (0.35 + k * 0.08) + k * Math.PI;
+      const x = L.cx + Math.cos(a) * L.unit * 0.3, y = L.baseY - L.unit * (0.36 + 0.07 * k) + Math.sin(a) * L.unit * 0.04;
+      const dir = -Math.sin(a) > 0 ? 1 : -1;
+      // Behind the reef on the far side of the circle: drawn fainter.
+      ctx.save();
+      ctx.globalAlpha = Math.sin(a) > 0 ? 0.9 : 0.45;
+      ctx.translate(x, y);
+      ctx.scale(dir, 1);
+      ctx.fillStyle = '#8a97a6';
+      ctx.beginPath();
+      ctx.moveTo(14 * s, 0);
+      ctx.quadraticCurveTo(4 * s, -4 * s, -10 * s, -1 * s);
+      ctx.lineTo(-16 * s, -5 * s);
+      ctx.lineTo(-14 * s, 0);
+      ctx.lineTo(-16 * s, 4 * s);
+      ctx.lineTo(-10 * s, 1 * s);
+      ctx.quadraticCurveTo(4 * s, 4 * s, 14 * s, 0);
+      ctx.fill();
+      // Dorsal fin with its black tip.
+      ctx.beginPath();
+      ctx.moveTo(2 * s, -3 * s); ctx.lineTo(-2 * s, -8 * s); ctx.lineTo(-4 * s, -2.5 * s); ctx.fill();
+      ctx.fillStyle = '#1b1f26';
+      ctx.beginPath();
+      ctx.moveTo(-1 * s, -6.5 * s); ctx.lineTo(-2 * s, -8 * s); ctx.lineTo(-2.6 * s, -6.2 * s); ctx.fill();
+      ctx.restore();
+    }
+  }
+
   /** Warm water: an amber haze from the surface down and slow shimmering bands of heat. */
   function drawHeat(ctx: CanvasRenderingContext2D, t: number, warm: number): void {
     ctx.save();
@@ -1280,6 +1312,7 @@ export function createSunlitScene(seed: number): Scene {
       drawSleepers(ctx, t, v.rasp, night);
       reef.draw(ctx, L, v, t);
       drawRelics(ctx, reef, L, v.relics, t, v.moments['old-lamp'] === 'a');
+      if (v.moments.pups === 'a') drawPups(ctx, t, L);
       if (v.thorn?.kind === 'thorn-star') drawThorn(ctx, reef, L, v.thorn.u, v.thorn.side, t);
       if (turtleRests) {
         const [tx, ty] = reef.crown(L);
