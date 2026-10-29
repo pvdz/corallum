@@ -3,6 +3,7 @@
 // wandering tracks of sea cucumbers. Static, so it is painted once per size into a cropped canvas.
 
 import { mulberry32, range } from '../sim/rng.ts';
+import { zoom } from './scene.ts';
 
 export type GroundStyle = {
   /** Light marks (ripple crests, pebble tops, shells): an "r,g,b" triple. */
@@ -27,6 +28,11 @@ export function createGround(seed: number) {
      */
     draw(ctx: CanvasRenderingContext2D, w: number, h: number, s: number, surf: (x: number) => number,
       style: GroundStyle, k: string): void {
+      // Zoomed in, the 1× cache would look soft: paint straight onto the scene.
+      if (zoom.k > 1) {
+        paint(ctx, w, h, s, surf, style, seed);
+        return;
+      }
       if (k !== key || !canvas) {
         let minY = h;
         for (let x = 0; x <= w; x += 8) minY = Math.min(minY, surf(x));
