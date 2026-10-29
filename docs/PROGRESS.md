@@ -460,3 +460,4 @@ date, what landed, what is half-done, what's next.
 - Ossel's tap lines turn humbler once two mistakes have been found (OSSEL_LINES_TRUE).
 - The ending: a page of this reef's numbers before the last line.
 - Journal: a progress ring per zone.
+- Trip to the whale fall (once per reef after the whale-fall moment): 10 min, 5 minutes of calcite; bones drawn in the far water.

@@ -191,6 +191,17 @@ export function createShoals(seed: number) {
       ctx.closePath();
       ctx.fillStyle = '#b8b2a2';
       ctx.fill();
+    } else if (site === 'carcass') {
+      // The whale fall: a long spine and a row of ribs.
+      ctx.moveTo(x - 36 * k, y + 8 * k);
+      ctx.lineTo(x + 36 * k, y + 6 * k);
+      for (let i = 0; i < 8; i++) {
+        const rx = x - 26 * k + i * 7.5 * k;
+        ctx.moveTo(rx, y + 7 * k);
+        ctx.quadraticCurveTo(rx + 3 * k, y - 8 * k, rx + 1 * k, y - 14 * k + Math.abs(i - 3.5) * 1.5 * k);
+      }
+      ctx.strokeStyle = '#c8c0b0';
+      ctx.stroke();
     } else {
       // Roaming: only the dark.
       ctx.restore();

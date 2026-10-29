@@ -121,7 +121,8 @@ best timed before going away. When no ruin is in reach (the next too high, or al
 shoals can **roam**: a quarter of them (at least 4) for 10 minutes, murmurs and a 35% shard chance,
 repeatable. Halfway to a ruin the shoals find a fork: press on (trip ×1.5, a sure shard) or come straight
 home (the default if unanswered). When the sister reef is near your depth the shoals can **visit** it instead (once per zone,
-8 minutes, +1 lineage). Shoals come back **seasoned**: feeding and light ×(1 + 0.02 per trip, at most 20 trips).
+8 minutes, +1 lineage). Once the whale has come down (a moment) they can feed at the **whale fall** once
+(10 minutes, 5 minutes of calcite). Shoals come back **seasoned**: feeding and light ×(1 + 0.02 per trip, at most 20 trips).
 Shown in the world as a stream of shoal lights leaving for the
 edge of the water and hanging far off as a flicker.
 

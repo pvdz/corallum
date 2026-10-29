@@ -5,7 +5,7 @@
 
 export type SiteId = 'gate' | 'terraces' | 'lamp-hall' | 'wells' | 'midden';
 /** A ruin, or a roam through the dark (repeatable, no relic). */
-export type TripId = SiteId | 'roam' | 'visit';
+export type TripId = SiteId | 'roam' | 'visit' | 'carcass';
 
 export type Site = {
   id: SiteId;
@@ -108,6 +108,13 @@ export const ROAM_TALES: readonly { text: string; pay: 'calcite' | 'glow' | 'mur
   { text: 'They met another shoal, and traded lights.', pay: 'glow' },
   { text: 'Nothing at all, for a long time, and then the stars of a far vent.', pay: 'calcite' },
 ];
+
+/** The whale fall: once the whale has come down (a moment), one trip to feed at it. */
+export const CARCASS = {
+  seconds: 10 * 60, pay: 300,
+  name: 'The whale fall', hint: 'The whale that came down is still feeding half the slope. The shoals could go and take their share.',
+  effect: 'five minutes of calcite when they return', back: 'Back from the whale fall',
+} as const;
 
 /** Visiting the sister reef: when it is near your depth, once per zone, a short trip for lineage. */
 export const VISIT = {

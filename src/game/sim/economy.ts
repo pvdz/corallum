@@ -31,7 +31,7 @@ import { DIARY_TEXT } from '../content/diary.ts';
 import { SHARD, SHARD_LINES, type ShardSource } from '../content/shards.ts';
 import { REQUEST, REQUESTS, type RequestKind } from '../content/requests.ts';
 import { MOMENTS, type MomentId } from '../content/moments.ts';
-import { EXPEDITION, ROAM, ROAM_TALES, SITES, VISIT, type Site, type SiteId } from '../content/expeditions.ts';
+import { CARCASS, EXPEDITION, ROAM, ROAM_TALES, SITES, VISIT, type Site, type SiteId } from '../content/expeditions.ts';
 import type { Band, Currency, UpgradeDef, UpgradeId } from '../content/types.ts';
 import { UPGRADES } from '../content/upgrades.ts';
 import { equilibrium, relax } from './ode.ts';
@@ -633,6 +633,7 @@ export function tripSite(s: GameState): Site | undefined {
   const ex = s.expedition;
   if (!ex.site) return undefined;
   if (ex.site === 'roam') return { ...roamSite(s), shoals: ex.n };
+  if (ex.site === 'carcass') return { ...roamSite(s), id: 'carcass' as SiteId, name: CARCASS.name, hint: CARCASS.hint, effect: CARCASS.effect, seconds: CARCASS.seconds, shoals: ex.n };
   if (ex.site === 'visit') return { ...roamSite(s), id: 'visit' as SiteId, name: VISIT.name, hint: VISIT.hint, effect: VISIT.effect, seconds: VISIT.seconds, shoals: ex.n };
   return SITES.find((v) => v.id === ex.site);
 }
@@ -647,6 +648,10 @@ export function nextSite(s: GameState): Site | undefined {
   // The sister reef near your depth: a visit, once per zone.
   if (s.levels.shoal >= ROAM.minShoals * 2 && Math.abs(sisterAt(s.t) - gaugeAt(s.height)) < VISIT.near && !s.visits.includes(actAt(s.height))) {
     return { ...roamSite(s), id: 'visit' as SiteId, name: VISIT.name, hint: VISIT.hint, effect: VISIT.effect, seconds: VISIT.seconds };
+  }
+  // The whale fall, once it has come down: one trip.
+  if (s.moments['whale-fall'] && !s.tally.carcass && s.levels.shoal >= ROAM.minShoals * 2) {
+    return { ...roamSite(s), id: 'carcass' as SiteId, name: CARCASS.name, hint: CARCASS.hint, effect: CARCASS.effect, seconds: CARCASS.seconds };
   }
   return s.height >= ROAM.from && s.levels.shoal >= ROAM.minShoals * 2 ? roamSite(s) : undefined;
 }
@@ -710,9 +715,9 @@ export function takeFork(s: GameState, how: 'press' | 'home'): boolean {
 function homecoming(s: GameState): void {
   const ex = s.expedition;
   const x = SITES.find((v) => v.id === ex.site);
-  const roam = ex.site === 'roam', visit = ex.site === 'visit';
+  const roam = ex.site === 'roam', visit = ex.site === 'visit', carcass = ex.site === 'carcass';
   const pressed = ex.fork === 'press';
-  const seconds = (roam ? ROAM.seconds : visit ? VISIT.seconds : x?.seconds ?? 0) * tripFactor(s);
+  const seconds = (roam ? ROAM.seconds : visit ? VISIT.seconds : carcass ? CARCASS.seconds : x?.seconds ?? 0) * tripFactor(s);
   const heard = EXPEDITION.heard * ex.n * seconds;
   s.jobs.feed += ex.feed;
   s.jobs.light += ex.light;
@@ -732,6 +737,12 @@ function homecoming(s: GameState): void {
       else burst(s, 60);
     }
     remember(s, 'roam', tale.text);
+    return;
+  }
+  if (carcass) {
+    s.tally.carcass++;
+    burst(s, CARCASS.pay);
+    remember(s, 'carcass');
     return;
   }
   if (visit) {
