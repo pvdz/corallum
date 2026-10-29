@@ -6,7 +6,7 @@ import type { GameState } from '../sim/state.ts';
 import { actAt } from './acts.ts';
 import { OSSEL_MISTAKES } from './ossel.ts';
 import {
-  calciteHold, canSend, inFlurry, inHeat, inRising, currentUpwelling, currentSwell, grainsWaiting, skyOpen, waterAt, homes, workOpen, sisterAt, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
+  calciteHold, canSend, inFlurry, inHeat, inRising, currentUpwelling, currentSwell, grainsWaiting, skyOpen, canFlare, glowHold, waterAt, homes, workOpen, sisterAt, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
 } from '../sim/economy.ts';
 
 export type Whisper = { id: string; when: (s: GameState) => boolean; text: string };
@@ -80,6 +80,10 @@ export const WHISPERS: readonly Whisper[] = [
   {
     id: 'rising', when: (s) => inRising(s) && s.levels.shoal > 0 && s.rose < 0,
     text: 'Look down. The whole deep is coming up to eat. Put the shoals on feeding and send them in with it.',
+  },
+  {
+    id: 'flare', when: (s) => canFlare(s) && s.lastFlare < 0 && s.glow > 0.95 * glowHold(s) && s.height < 3000,
+    text: 'Our light is as full as it gets. Throw half of it out at once, a blaze, and see what comes to it.',
   },
   {
     id: 'upwell', when: (s) => !!currentUpwelling(s) && s.upwelled < 0,
