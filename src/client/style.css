@@ -310,6 +310,8 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 .residents[hidden], .resident[hidden] { display: none; }
 .residents header { display: flex; justify-content: space-between; align-items: baseline; }
 .residents h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 17px; color: #ffc9b8; }
+.pair-line { margin-top: 6px; color: #ffc9b8; }
+.pair-line:empty { display: none; }
 .resident { grid-template-columns: 1fr auto; }
 .resident.living .job-name { color: #ffc9b8; }
 .resident.living .job-name::after { content: ' · at home'; font-size: 11.5px; color: var(--ink-dim); }

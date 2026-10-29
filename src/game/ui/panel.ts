@@ -23,7 +23,7 @@ import { DIARY, DIARY_TEXT } from '../content/diary.ts';
 import { PALETTES, PALETTE_TEXT } from '../content/palettes.ts';
 import { SHARD, SHARD_LINES } from '../content/shards.ts';
 import { MOMENT, MOMENTS, type Moment, type MomentId } from '../content/moments.ts';
-import { RESIDENT, RESIDENTS, type ResidentId } from '../content/residents.ts';
+import { PAIRS, RESIDENT, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { CITY_MAP, EXPEDITION, SITES, site, type Site } from '../content/expeditions.ts';
 import { canSpawnLesser, lineageFor, traitCost, traitMaxed } from '../sim/prestige.ts';
 import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
@@ -369,6 +369,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     homeBox.append(row);
     homeRows.set(r.id, { row, btn });
   }
+  const pairLine = el('p', 'rasp-what pair-line');
+  homeBox.append(pairLine);
   grow.append(homeBox);
 
   // ---------- Expeditions ----------
@@ -1345,6 +1347,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       if (nHomes > 0) {
         const asking = residentsAsking(s);
         homeCount.textContent = `${s.residents.length} of ${nHomes} home${nHomes === 1 ? '' : 's'}`;
+        // Pairings: the ones living now, else a hint at those within reach.
+        const live = PAIRS.filter((p) => s.residents.includes(p.a) && s.residents.includes(p.b));
+        pairLine.textContent = live.length ? live.map((p) => `${p.name}: ${p.effect}`).join(' · ') : nHomes >= 2 ? RESIDENT.pairHint : '';
         for (const r of RESIDENTS) {
           const h = homeRows.get(r.id)!;
           h.row.hidden = !asking.includes(r);

@@ -371,3 +371,4 @@ date, what landed, what is half-done, what's next.
 - Requests can be swapped ('Ask another', ↻) once every five minutes.
 - First-minute tidy: works open at a height inside their zone (garden 30 m … pool 3982 m); the water line says only 'the deep does not change yet' before it turns; Ossel's first request comes at once and is always 'Bud 3 polyps' (no empty slot, no later shift).
 - Full-moon spawning choice in every zone below the Breach (texts per zone; feed pays the zone's currency via burst); first made for the Sunlit Crown: act4.ts OTHERS, economy othersSpawning/meetOthers, state.others; card with two choices; sunlit drawOthersSpawn (pink bundles rising).
+- Resident pairings (residents.ts PAIRS, economy paired()): three pairs with a bonus each; the Residents box names live pairings or hints at them.

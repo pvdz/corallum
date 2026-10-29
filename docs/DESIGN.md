@@ -121,7 +121,8 @@ the shelf, a second at 3400 m, a third at 3800 m. Six ask (guard crabs: Rasp eat
 silt swept +0.04/s; sea cucumbers: sand ×1.4; from 3400 m coral gobies: calcite ×1.15 and feather
 dusters: plankton ×1.3; from 3800 m farmer damselfish: bloom ×1.3). Taking one in or letting it go
 is free, so the verb is choosing a loadout that fits the zone (silt and Rasp on the shelf, bloom in
-the light). They live visibly on the coral and in the journal ("Residents"), each tappable.
+the light). Pairings that live together add a bonus (guard crabs + gobies: Rasp eat ×0.8; pistol shrimp + sea
+cucumbers: sand ×1.2; feather dusters + damselfish: bloom ×1.15). They live visibly on the coral and in the journal ("Residents"), each tappable.
 
 **Welcome back**: after an hour or more away, the away summary offers one of two gifts: a haul of
 stone (5% of each second away's calcite production, at most 8 h of it) or a search of the silt

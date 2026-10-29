@@ -24,6 +24,7 @@ export const RESIDENT = {
   release: 'Let go',
   full: 'No room',
   moved: '· moved in',
+  pairHint: 'Some of them live well together, and the reef feels it.',
 } as const;
 
 export const RESIDENTS: readonly Resident[] = [
@@ -51,6 +52,13 @@ export const RESIDENTS: readonly Resident[] = [
     id: 'damselfish', name: 'Farmer damselfish', metres: 3800, effect: 'bloom ×1.3',
     text: 'Fierce small fish that tend gardens of algae on the reef and chase off whatever comes near the crown.',
   },
+];
+
+/** Pairings: two residents that live well together add something of their own. */
+export const PAIRS: readonly { a: ResidentId; b: ResidentId; name: string; effect: string }[] = [
+  { a: 'guard-crab', b: 'goby', name: 'Watchful branches', effect: 'the Rasp eat ×0.8 more' },
+  { a: 'pistol-shrimp', b: 'sea-cucumber', name: 'The floor kept clean', effect: 'sand ×1.2' },
+  { a: 'feather-duster', b: 'damselfish', name: 'A garden in the light', effect: 'bloom ×1.15' },
 ];
 
 /** Homes the reef has at this height. */
