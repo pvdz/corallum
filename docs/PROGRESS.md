@@ -344,3 +344,4 @@ date, what landed, what is half-done, what's next.
 - Nurseries: upgrade 'daughter' (act2.ts; daughterCount moved there), +1 lineage each in lineageFor; held, not complete, while it waits for the next daughter (cards drop 'maxed' when buyable again; lonely seamount shoals use the same 'held' text). Tended daughters drawn larger with a glow.
 - Setting 'Larger text' (html.big: the panel, reader, whispers and notes at zoom 1.15; relayout on change). No overflow at 390 px.
 - Roaming: content/expeditions.ts ROAM; nextSite falls back to a roam; expedition state records its size n (save migration fills n for an old mid-trip ruin); tripSite() for the panel and the world view; tally.roams; shard source 'roam' (35%). Test: a roam home offline == online with jobs restored.
+- Audio cues 'water' (a slow swell when the water turns), 'depart' (shoals setting out), 'shard' (two struck notes a fourth apart).

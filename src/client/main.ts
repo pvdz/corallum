@@ -232,7 +232,7 @@ const panel = createPanel(ui, {
   },
   send() {
     if (!send(state)) return;
-    audio.cue('choice');
+    audio.cue('depart');
     buzz(20);
     save();
   },
@@ -404,6 +404,8 @@ let speed = Number(params.get('speed') ?? 1);
 let relicsSeen = state.relics.length;
 /** Shards the line had found (a new one is announced). */
 let shardsSeen = state.meta.shards.length;
+/** The water last heard (a turn to a new water gets its swell). */
+let waterHeard = '';
 /** Roams come home (announced while watching). */
 let roamsSeen = state.tally.roams;
 /** Requests kept so far (a kept one while watching is announced). */
@@ -1021,12 +1023,16 @@ function frame(now: number): void {
     else advance(state, dt * speed);
     if (state.meta.shards.length > shardsSeen) {
       showJournalNote(SHARD.found, SHARD_LINES[state.meta.shards.at(-1)!] ?? '');
-      audio.cue('shimmer');
+      audio.cue('shard');
       buzz([20, 40, 20]);
     }
     shardsSeen = state.meta.shards.length;
     if (state.tally.roams > roamsSeen) showJournalNote(ROAM.back, ROAM.effect);
     roamsSeen = state.tally.roams;
+    // The water turning: a soft swell (not for still water).
+    const wNow = waterAt(state).id;
+    if (wNow !== waterHeard && waterHeard !== '' && wNow !== 'still') audio.cue('water');
+    waterHeard = wNow;
     if (state.request.done > requestsSeen) {
       const [cx, cy] = scene.crownAt;
       floatText(cx / dpr, cy / dpr - 30, `+${num(state.request.paid)} ${feastPay(state)} ${REQUEST.float}`, 'feast-float');

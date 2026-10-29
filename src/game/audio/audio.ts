@@ -3,7 +3,7 @@
 // gesture before audio can start anyway).
 
 export type Zone = 1 | 2 | 3 | 4 | 5;
-export type Cue = 'buy' | 'sweep' | 'story' | 'choice' | 'release' | 'spawning' | 'whisper' | 'feast' | 'whale' | 'zone' | 'touch' | 'shimmer' | 'crunch' | 'dolphin';
+export type Cue = 'buy' | 'sweep' | 'story' | 'choice' | 'release' | 'spawning' | 'whisper' | 'feast' | 'whale' | 'zone' | 'touch' | 'shimmer' | 'crunch' | 'dolphin' | 'water' | 'depart' | 'shard';
 
 /** Per zone: root frequency of the pad, pad brightness, and how much surf noise. */
 const ZONES: Record<Zone, { root: number; bright: number; surf: number; notes: number[] }> = {
@@ -316,6 +316,19 @@ export function createAudio() {
           break;
         case 'crunch':
           crunch();
+          break;
+        case 'water':
+          // The water turns: a slow low swell, sliding up and back.
+          glide(root / 2, root * 0.75, 2.4, 0);
+          break;
+        case 'depart':
+          // Shoals setting out: a fading run of small lights going away, high to low.
+          for (const [i, n] of [19, 16, 12, 7, 4].entries()) setTimeout(() => bell(root * 4 * 2 ** (n / 12), 0.02 * (1 - i * 0.15), 0.9), i * 110);
+          break;
+        case 'shard':
+          // A shard of the tablet: two clear struck notes, a fourth apart, ringing long.
+          bell(root * 3, 0.06, 3);
+          setTimeout(() => bell(root * 3 * 2 ** (5 / 12), 0.05, 3.5), 160);
           break;
         case 'dolphin':
           // Two quick rising whistles.
