@@ -203,8 +203,11 @@ const volume = setting('volume', 0.9, (v) => audio.setVolume(v));
 const sharp = setting('sharp', true, (_, initial) => { if (!initial) relayout(); });
 /** Vibration on phones: a tick per purchase, a pulse for milestones and feats (on for touch screens). */
 const buzzing = setting('buzz', window.matchMedia('(pointer: coarse)').matches);
+// Phones only vibrate after a real touch on the page (the browser refuses, and complains, before it).
+let touched = false;
+window.addEventListener('touchstart', () => { touched = true; }, { once: true, passive: true });
 function buzz(ms: number | number[]): void {
-  if (buzzing.get() && 'vibrate' in navigator) navigator.vibrate(ms);
+  if (touched && buzzing.get() && 'vibrate' in navigator) navigator.vibrate(ms);
 }
 
 const portraits = createPortraits(!ephemeral);
