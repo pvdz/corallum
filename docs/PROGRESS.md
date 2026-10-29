@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended goal (user): add content, gameplay and graphics, keep going. Latest: grazing lawn + listening dome (works), today's visitor, decorator crab, ghost shark, breaching whale, Star-gazer, gleaming seamount, Ossel's sand, drawn shells, Moments met, almanac strip. Bot ~6h48; 7 browser tests + 81 sim tests green. Run e2e with `timeout 300` per test.
+NOW: Open-ended goal (user): add content, gameplay and graphics, keep going. Latest: rescues in every zone (tangle / pinned / stranded) + Gentle trait, Rasp herd, barracuda tornado, grazing lawn, listening dome, today's visitor, decorator crab, ghost shark, breaching whale, gleaming seamount. Bot ~6h48; 7 browser tests + 82 sim tests green. Run e2e with `timeout 300` per test.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
