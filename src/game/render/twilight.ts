@@ -81,6 +81,41 @@ export function createTwilightScene(seed: number): Scene {
   }
 
   /** The shelf surface: rises gently from left to right across the lower frame. */
+  /**
+   * The cold slide (once met, a moment): every seven minutes a river of cold, salt-heavy water pours
+   * down the slope for a while, a pale haze hugging the ground with streaks racing down it.
+   */
+  function drawColdSlide(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 420, length = 50;
+    const p = t % period;
+    if (p > length) return;
+    const k = Math.min(1, p / 6, (length - p) / 8);
+    const s = Math.min(focus.w, focus.h) / 700;
+    const x = (u: number) => focus.x - focus.w * 0.1 + u * focus.w * 1.2;
+    ctx.save();
+    // The haze: a band a little above the ground, thickest downhill where the cold pools.
+    ctx.beginPath();
+    for (let i = 0; i <= 40; i++) ctx.lineTo(x(i / 40), slopeY(i / 40) - (18 + 26 * (1 - i / 40)) * s);
+    for (let i = 40; i >= 0; i--) ctx.lineTo(x(i / 40), slopeY(i / 40) + 4 * s);
+    ctx.closePath();
+    ctx.fillStyle = `rgba(170,210,240,${0.22 * k})`;
+    ctx.fill();
+    // Streaks racing downhill along it.
+    ctx.strokeStyle = `rgba(210,235,255,${0.6 * k})`;
+    ctx.lineWidth = 1.8 * s;
+    ctx.lineCap = 'round';
+    for (let j = 0; j < 26; j++) {
+      const u = 1 - ((t * 0.09 + j * 0.381966) % 1);
+      const lift = (4 + (j % 5) * 6) * s;
+      const u2 = Math.min(1, u + 0.05);
+      ctx.beginPath();
+      ctx.moveTo(x(u), slopeY(u) - lift);
+      ctx.lineTo(x(u2), slopeY(u2) - lift);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
   function slopeY(u: number): number {
     const r = mulberry32(slopeSeed);
     const a = r() * 6, b = r() * 6;
@@ -1560,6 +1595,7 @@ export function createTwilightScene(seed: number): Scene {
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
       shoals.drawFront(ctx, focus, reef, L, v, t, '#1d3557');
+      if (v.moments['cold-slide']) drawColdSlide(ctx, t);
       if (night > 0) drawNight(ctx, t, night, 0.2);
       if (night > 0.4) drawFlashlightFish(ctx, t, night);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
