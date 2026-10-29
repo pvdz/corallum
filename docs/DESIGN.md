@@ -186,6 +186,9 @@ the release also sets the lineage for beginning again.
     when the page is left).
 - **Seamounts**: each spawning chooses where to settle: plain, warm (active-friendly), cold
   (idle-friendly), crowded (fast story, more silt). See ECONOMY.md for numbers.
+- **Nurseries**: from 100 polyps, *Tend a daughter colony* (calcite ×4 each, one per daughter at the
+  foot, at most 10) adds +1 lineage to the next spawning: a late calcite sink into prestige, drawn as
+  grown, lit colonies.
 - **Hard seamounts (trials)**, offered from the second reef on: hungry (polyps feed ×0.5, goal
   3000 m), silent (no Readings, goal 2800 m), lonely (at most 8 shoals, goal 3000 m), buried (silt
   ×3, goal 3600 m). Reaching the goal there (offline too; the sim records it) teaches the whole line

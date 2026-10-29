@@ -17,6 +17,8 @@ const ICONS: Record<UpgradeId, string> = {
   lure: '<circle cx="12" cy="12" r="1.8"/><path d="M7.8 7.8a6 6 0 0 0 0 8.4M16.2 7.8a6 6 0 0 1 0 8.4M5 5a10 10 0 0 0 0 14M19 5a10 10 0 0 1 0 14"/>',
   // A shoal: three small fish.
   shoal: '<path d="M4 8c2-2 5-2 7 0-2 2-5 2-7 0zM11 8l2-1.5v3zM10 16c2-2 5-2 7 0-2 2-5 2-7 0zM17 16l2-1.5v3zM6 12.5c1.4-1.4 3.6-1.4 5 0-1.4 1.4-3.6 1.4-5 0z"/>',
+  // A daughter colony: a small branching head beside a larger one.
+  daughter: '<path d="M8 21v-6M8 15l-3-4M8 15l3-4M8 11V7"/><path d="M17 21v-3M17 18l-2-2M17 18l2-2"/><path d="M3 21h18"/>',
   // Grazing grounds: a blunt beak over stone.
   grounds: '<path d="M4 11c3-4 9-5 13-2l3 2-3 1c-4 3-10 2-13-1z"/><path d="M3 19h18" /><circle cx="14" cy="10" r=".8"/>',
   // A sand bar: a long low ridge.

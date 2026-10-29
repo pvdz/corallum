@@ -15,6 +15,8 @@ export const GATE_TEXT = {
   wall: 'until you and the Rasp decide about Ossel’s wall',
   'spawn-dialect': 'until you choose a way of spawning',
   surface: 'As high as it goes',
+  daughter: 'until another daughter settles (one per 15 polyps)',
+  lonely: 'no more shoals come this far out',
 } as const;
 
 export function effectText(id: UpgradeId): string {
@@ -26,6 +28,7 @@ export function effectText(id: UpgradeId): string {
     case 'lure': return `glow can lure up to +${Math.round(ACT1.lureMaxPerPattern * 100)}% more calcite`;
     case 'vent': return `×${ACT1.ventBoost} calcite, but it dissolves ×${ACT1.ventAcid} faster`;
     case 'shoal': return 'a lanternfish shoal joins the reef';
+    case 'daughter': return '+1 lineage at your next spawning (one per daughter at your foot)';
     case 'grounds': return `room for ${ACT3.raspPerGround} more Rasp`;
     case 'sandbar': return `more current: sweeps silt, calcite ×${ACT3.sandbarCalcite}`;
     case 'channel': return `plankton ×${ACT3.channelPlankton}`;

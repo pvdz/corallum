@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended: adding features and gameplay (goal: repeat). Latest: reef colours, new memories, automation traits, Rasp favours, shards of Thousandfold, Ossel's requests, hard seamounts (trials), moments (eight two-way choices on the climb), the water's moods (timed price windows with a forecast), residents, expeditions. Ideas: an Act I verb; Breach detail; reef events with choices.
+NOW: Open-ended: adding features and gameplay (goal: repeat). Latest: nurseries (daughter colonies → lineage), reef colours, new memories, automation traits, Rasp favours, shards of Thousandfold, Ossel's requests, hard seamounts (trials), moments (eight two-way choices on the climb), the water's moods (timed price windows with a forecast), residents, expeditions. Ideas: an Act I verb; Breach detail; reef events with choices.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -341,3 +341,4 @@ date, what landed, what is half-done, what's next.
 - Automation traits Shoal sense and Rasp sense (lineage.ts; prestige.ts shoalSense/raspSense; balanceFeedLight moved from bot.ts to economy.ts). Client runs them every 30 s while watching and sets the dial for being away on visibilitychange; the habits toggle covers all three.
 - Five new memories for the finale, earned by the new systems: The fallen gate and The beak midden (relics), Forget us gently (the whole tablet), The eye in the dark (the squid moment), The sleeping turtle (letting it sleep). Memory needs gained relic/moment/shards.
 - Reef colours: content/palettes.ts (Reef, Lagoon, Violet, Ember, Pale moon), meta.palette kept by the line; recolours Sunlit pigments and polyps and the Breach's crust and polyps; swatches in the Reef tab from the first pigment.
+- Nurseries: upgrade 'daughter' (act2.ts; daughterCount moved there), +1 lineage each in lineageFor; held, not complete, while it waits for the next daughter (cards drop 'maxed' when buyable again; lonely seamount shoals use the same 'held' text). Tended daughters drawn larger with a glow.

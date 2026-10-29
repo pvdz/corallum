@@ -31,7 +31,17 @@ export const UPGRADES_ACT2: readonly UpgradeDef[] = [
     flavour: 'Pulse the glow slow and wide. Out in the black, a hundred small lamps turn toward you.',
     currency: 'glow', baseCost: 60, growth: 1.16, maxLevel: Infinity, reveal: { height: 60 },
   },
+  {
+    id: 'daughter', name: 'Tend a daughter colony',
+    flavour: 'Feed one of the small reefs at your foot until it could live without you. When you spawn, it goes too.',
+    currency: 'calcite', baseCost: 4e6, growth: 4, maxLevel: 10, reveal: { level: ['polyp', 100] },
+  },
 ];
+
+/** Daughter colonies: fragments that settle around the reef's foot from 100 polyps, one more per 15. */
+export function daughterCount(polyps: number): number {
+  return Math.max(0, Math.min(10, Math.floor((polyps - 100) / 15) + 1));
+}
 
 export type Job = 'feed' | 'light' | 'scout';
 export const JOBS: readonly { id: Job; name: string; verb: string }[] = [

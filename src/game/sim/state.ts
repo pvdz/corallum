@@ -154,7 +154,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     dialects: { form: '', craft: '', spawn: '' },
     height: 0,
     levels: {
-      polyp: 0, symbiont: 0, skeleton: 0, lattice: 0, vent: 0, lure: 0, shoal: 0,
+      polyp: 0, symbiont: 0, skeleton: 0, lattice: 0, vent: 0, lure: 0, shoal: 0, daughter: 0,
       grounds: 0, sandbar: 0, channel: 0, pigment: 0, canopy: 0, meadow: 0, ripen: 0,
     },
     jobs: { feed: 0, light: 0, scout: 0 },

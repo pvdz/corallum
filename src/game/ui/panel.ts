@@ -1280,17 +1280,20 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         if (maxed(s, u.id)) {
           // A band held by a story gate says which one, beside a short button.
           const gate = u.id === 'skeleton' ? capReason(s) : null;
-          c.cost.textContent = gate === null ? 'Complete' : gate === 'surface' ? GATE_TEXT.surface : 'Held';
+          // Held, not finished: a daughter colony waits for the next to settle, the shoals for a lonely seamount's cap.
+          const waiting = (u.id === 'daughter' || u.id === 'shoal') && s.levels[u.id] < u.maxLevel;
+          c.cost.textContent = waiting ? 'Held' : gate === null ? 'Complete' : gate === 'surface' ? GATE_TEXT.surface : 'Held';
           c.btn.disabled = true;
-          c.eta.textContent = gate && gate !== 'surface' ? GATE_TEXT[gate] : '';
+          c.eta.textContent = waiting ? (u.id === 'daughter' ? GATE_TEXT.daughter : GATE_TEXT.lonely) : gate && gate !== 'surface' ? GATE_TEXT[gate] : '';
           c.root.classList.add('maxed');
           // Finished for good (not just held back by a story gate): to the end of the list, one line.
-          if (u.id !== 'skeleton' && !c.root.classList.contains('done')) {
+          if (u.id !== 'skeleton' && !waiting && !c.root.classList.contains('done')) {
             c.root.classList.add('done');
             grow.append(c.root);
           }
           continue;
         }
+        c.root.classList.remove('maxed');
         const price = cost(s, u.id);
         c.root.classList.toggle('watered', water.upgrades.includes(u.id));
         const cur = upgrade(u.id).currency;

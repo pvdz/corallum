@@ -482,6 +482,7 @@ function view(): ReefView {
     residents: state.residents,
     relics: state.relics,
     palette: state.meta.palette,
+    nurseries: state.levels.daughter,
     planktonLevel: Math.min(1, (feeding(state.plankton) - 1) / 2),
     bands: state.bands,
     readings: state.readings.length,

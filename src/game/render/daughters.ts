@@ -2,12 +2,11 @@
 // around its foot and grow into small colonies of their own, one more for every fifteen polyps.
 // Drawn on the floor of the shallow scenes; each is a little seeded branching head.
 
+import { daughterCount } from '../content/act2.ts';
 import { mulberry32, range } from '../sim/rng.ts';
+import { glow } from './draw.ts';
 
-/** How many daughter colonies a reef of `polyps` polyps has. */
-export function daughterCount(polyps: number): number {
-  return Math.max(0, Math.min(10, Math.floor((polyps - 100) / 15) + 1));
-}
+export { daughterCount };
 
 /** Where along the floor (0..1) daughter k settles: alternating sides, spreading out from the foot. */
 function slot(k: number): number {
@@ -18,7 +17,7 @@ function slot(k: number): number {
 export type DaughterStyle = { branch: string; tip: string; polyp: string; alt?: DaughterStyle };
 
 export function drawDaughters(ctx: CanvasRenderingContext2D, polyps: number, floorAt: (u: number) => [number, number],
-  s: number, t: number, style: DaughterStyle, seed: number): void {
+  s: number, t: number, style: DaughterStyle, seed: number, tended = 0): void {
   const n = daughterCount(polyps);
   ctx.save();
   ctx.lineCap = 'round';
@@ -27,7 +26,15 @@ export function drawDaughters(ctx: CanvasRenderingContext2D, polyps: number, flo
     const r = mulberry32(seed + k * 7919);
     // The newest ones are still small.
     const grown = Math.min(1, (polyps - 100 - k * 15) / 30 + 0.35);
-    const size = range(r, 0.7, 1.15) * grown * s;
+    // Tended ones (nurseries) are grown out and lit, ready to go with the spawn.
+    const nursery = k < tended;
+    const size = range(r, 0.7, 1.15) * grown * s * (nursery ? 1.45 : 1);
+    if (nursery) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      glow(ctx, x, y - 14 * size, 34 * size, '255,220,180', 0.22 + 0.08 * Math.sin(t * 0.8 + k));
+      ctx.restore();
+    }
     const own = style.alt && k % 3 === 1 ? style.alt : style;
     branch(ctx, r, x, y, -Math.PI / 2 + range(r, -0.2, 0.2), 22 * size, 0, size, t + k, own);
   }

@@ -931,7 +931,7 @@ export function createTwilightScene(seed: number): Scene {
       drawShelf(ctx, v.sandBars, v.siltLevel);
       drawChannels(ctx, t, v.channels);
       drawDaughters(ctx, v.polyps, (u) => [focus.x - focus.w * 0.1 + u * focus.w * 1.2, slopeY(u) + 3 * scale()], scale(), t,
-        { branch: '#9a5a6c', tip: '#c98292', polyp: 'rgba(255,225,235,0.9)' }, slopeSeed);
+        { branch: '#9a5a6c', tip: '#c98292', polyp: 'rgba(255,225,235,0.9)' }, slopeSeed, v.nurseries);
       drawSeaFans(ctx, t);
       drawGardenEels(ctx, t);
       drawOctopus(ctx, t);

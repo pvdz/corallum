@@ -16,7 +16,7 @@
 // month offline costs a few hundred iterations and ends exactly where the dynamics settle.
 
 import { ACT1, BANDS_ACT1, MILESTONES, type Milestone } from '../content/act1.ts';
-import { ACT2, BANDS_ACT2, READINGS, type Job, type ReadingId } from '../content/act2.ts';
+import { ACT2, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
 import { ACT3, BANDS_ACT3, FAVOURS, MEETINGS, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { ACT4, BANDS_ACT4, DIALECTS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
 import { ACT5, BANDS_ACT5, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
@@ -560,6 +560,7 @@ export function maxed(s: GameState, id: UpgradeId): boolean {
     if (next > heightCap(s) || next <= heightForBands(s.levels.skeleton)) return true;
   }
   if (id === 'shoal' && s.levels.shoal >= (seamount(s).shoalCap ?? Infinity)) return true;
+  if (id === 'daughter' && s.levels.daughter >= daughterCount(s.levels.polyp)) return true;
   return s.levels[id] >= upgrade(id).maxLevel;
 }
 
