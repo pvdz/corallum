@@ -459,3 +459,4 @@ date, what landed, what is half-done, what's next.
 - Moment 'Hunters in the dark' (650 m): shoals cost ×0.9, or light shoals ×1.2 glow. Backlog in PLAN done.
 - Ossel's tap lines turn humbler once two mistakes have been found (OSSEL_LINES_TRUE).
 - The ending: a page of this reef's numbers before the last line.
+- Journal: a progress ring per zone.

@@ -724,7 +724,16 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     for (const zone of zones) {
       const inZone = CREATURES.filter((c) => c.zone === zone);
       const got = inZone.filter((c) => seen.includes(c)).length;
-      journalList.append(el('div', 'journal-zone', `${zone} · ${got} of ${inZone.length}`));
+      const head = el('div', 'journal-zone', `${zone} · ${got} of ${inZone.length}`);
+      // A small ring: how much of the zone has been seen.
+      const f = got / inZone.length, r = 6, c = 2 * Math.PI * r;
+      const ring = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      ring.setAttribute('viewBox', '0 0 16 16');
+      ring.classList.add('zone-ring');
+      ring.innerHTML = `<circle cx="8" cy="8" r="${r}" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="2.5"/>` +
+        `<circle cx="8" cy="8" r="${r}" fill="none" stroke="${f >= 1 ? '#ffd9a8' : '#a8dcff'}" stroke-width="2.5" stroke-dasharray="${(f * c).toFixed(2)} ${c.toFixed(2)}" transform="rotate(-90 8 8)" stroke-linecap="round"/>`;
+      head.prepend(ring);
+      journalList.append(head);
       for (const c of inZone) {
         const known = seen.includes(c);
         // Known: a portrait (when one was taken), the name and the note. Unknown: a one-line hint.
