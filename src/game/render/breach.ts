@@ -999,6 +999,26 @@ export function createBreachScene(seed: number): Scene {
    * The sister reef on the next seamount: far off on the horizon once it nears the surface, a
    * small dark crown rising out of the haze, breaking the water when it arrives, lights on its tips.
    */
+  function drawSisterSpawn(ctx: CanvasRenderingContext2D, t: number, since: number): void {
+    const s = scale();
+    const wy = waterY();
+    const x = focus.x + focus.w * 0.12;
+    const fade = Math.max(0.2, 1 - since / 300);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < 60; i++) {
+      const u = (since * 0.05 + i * 0.137) % 1;
+      const px = x + Math.sin(i * 2.1 + t * 0.4) * 30 * s * u + (i % 2 ? 1 : -1) * u * 20 * s;
+      const py = wy + (1 - u) * focus.h * 0.25;
+      glow(ctx, px, py, 7 * s, '255,150,200', 0.5 * fade * Math.sin(u * Math.PI));
+    }
+    // The slick on the surface over her.
+    ctx.translate(x, wy);
+    ctx.scale(1, 0.12);
+    glow(ctx, 0, 0, focus.w * 0.12, '255,160,205', 0.4 * fade);
+    ctx.restore();
+  }
+
   function drawSister(ctx: CanvasRenderingContext2D, t: number, f: number): void {
     if (f < 0.85) return;
     const s = scale();
@@ -1367,6 +1387,8 @@ export function createBreachScene(seed: number): Scene {
       drawMeteors(ctx, t, dawn, v.meteor);
       drawSea(ctx, t, v.moonPhase, dawn);
       drawSister(ctx, t, v.sister);
+      // Her way lit, the sister reef spawns with you: a far pink plume rising from her seamount.
+      if (v.sisterLit && v.sinceBreach >= 0) drawSisterSpawn(ctx, t, v.sinceBreach);
       drawChildren(ctx, v, t);
       drawMoonJellies(ctx, t);
       drawWaitingFish(ctx, t, v, this.crownAt);
