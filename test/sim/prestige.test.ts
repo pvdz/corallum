@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { sweep, advance, calciteRate, carryAt, cost, ended, heightForBands, homes, rates, vowLineage } from '../../src/game/sim/economy.ts';
+import { plant, sweep, advance, calciteRate, carryAt, cost, ended, heightForBands, homes, rates, vowLineage } from '../../src/game/sim/economy.ts';
 import { LINEAGE } from '../../src/game/content/lineage.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { buyTrait, canSpawnLesser, lineageFor, spawnLesser, traitCost } from '../../src/game/sim/prestige.ts';
@@ -204,4 +204,20 @@ test('vows: taken only after an ending; kept ones pay at the next ending; lightn
   assert.equal(vowLineage(s), 8, 'haste broken');
   s.vows.push('still');
   assert.equal(sweep(s), 0, 'a still reef does not sweep');
+});
+
+test('the garden: each child planted is a kind, and the next reef gets a small gift for each', () => {
+  const s = newGame(21);
+  s.meta.endings = 1;
+  s.carried = ['vent'];
+  s.calcite = 1e30;
+  s.levels.polyp = 5;
+  assert.ok(plant(s, 'b') && plant(s, 'b') && plant(s, 'd'));
+  assert.equal(s.gardenKinds, 'bbd');
+  const next = spawnLesser(s)!;
+  assert.equal(next.nursed, 'bbd');
+  const plain = newGame(next.seed, next.meta);
+  plain.seamount = next.seamount;
+  next.levels.symbiont = plain.levels.symbiont = 5;
+  assert.ok(Math.abs(rates(next).glowP / rates(plain).glowP - 1.04 ** 2) < 1e-9);
 });

@@ -242,7 +242,15 @@ export const GARDEN = {
   text: 'The spawn is gone, and the morning is very quiet. Some of your children did not drift far. Help them take hold here, in the shallows around you.',
   plant: 'Plant a child',
   effect: '+1 lineage when you begin again',
+  /** What kind of child: each kind is a small gift to the next reef of the line, per child. */
+  kinds: [
+    { id: 'q', name: 'A quick one', effect: 'bands ×0.97 on the next reef', colours: { branch: '#c07a3e', tip: '#f0b070', polyp: 'rgba(255,235,200,0.95)' } },
+    { id: 'b', name: 'A bright one', effect: 'glow ×1.04 on the next reef', colours: { branch: '#3e8a9a', tip: '#80e0f0', polyp: 'rgba(210,250,255,0.95)' } },
+    { id: 'd', name: 'A deep one', effect: 'calcite dissolves ×0.97 on the next reef', colours: { branch: '#6a4a9a', tip: '#b090e0', polyp: 'rgba(235,220,255,0.95)' } },
+  ],
+  nursed: 'Nursed in the last garden',
 } as const;
+export type GardenKind = 'q' | 'b' | 'd';
 
 /** The line's title, from the memory its endings carried most often. */
 export const LINE_TITLES: Partial<Record<MemoryId, string>> = {

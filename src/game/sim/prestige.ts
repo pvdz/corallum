@@ -50,6 +50,8 @@ export function spawnLesser(s: GameState, where: SeamountId = 'plain', heirloom:
   next.seamount = where;
   // One relic this reef found may go with the spawn.
   if (heirloom && s.relics.includes(heirloom)) next.heirloom = heirloom;
+  // The garden's children, each a small gift to this new reef.
+  if (ended(s)) next.nursed = s.gardenKinds;
   // Vows only once the line has seen an ending.
   if (meta.endings > 0) next.vows = [...new Set(vows)];
   return next;

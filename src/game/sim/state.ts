@@ -166,6 +166,9 @@ export type GameState = {
   vows: VowId[];
   /** The shower (content/sky.ts WISH) last wished on, and how many wishes were for the line. */
   wished: number;
+  /** The kind of each child planted in the garden (content/act5.ts GARDEN.kinds), and the last garden's, carried into this reef. */
+  gardenKinds: string;
+  nursed: string;
   lineWishes: number;
   surfacedAt: number;
   /** The span of time (content/creatures.ts LUCKY) in which a lucky neighbour was last touched. */
@@ -277,6 +280,8 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     luckySpan: -1,
     vows: [],
     wished: -1,
+    gardenKinds: '',
+    nursed: '',
     lineWishes: 0,
     surfacedAt: -1,
     old: 0,

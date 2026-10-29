@@ -79,6 +79,8 @@ export type ReefView = {
   cays: number;
   /** Children planted in the epilogue garden. */
   garden: number;
+  /** The kind of each child planted (content/act5.ts GARDEN.kinds). */
+  gardenKinds: string;
   /** The Song dialect ('' none yet). */
   song: string;
   /** The current's setting on the shelf (−2 … +2). */

@@ -12,7 +12,7 @@ import { JOBS, READINGS, type Job, type Reading, type ReadingId, RISING, MILKY }
 import { ACT3, CURRENT, FAVOURS, FAVOUR_TEXT, MEETINGS, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId, FAN, GUARD, UPWELL } from '../content/act3.ts';
 import { DIALECTS, HEAT, TIERS, type DialectId } from '../content/act4.ts';
 import { BOONS, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId, FORGET, VOW, VOWS, type VowId } from '../content/lineage.ts';
-import { GARDEN, LINE_TITLES, MEMORIES, type MemoryId } from '../content/act5.ts';
+import { GARDEN, LINE_TITLES, MEMORIES, type MemoryId, type GardenKind } from '../content/act5.ts';
 import { COMPANION, CREATURES, TRUST, trustLevel, LUCKY } from '../content/creatures.ts';
 import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
 import { upgradeIcon } from './icons.ts';
@@ -76,7 +76,7 @@ export type PanelHooks = {
   /** Ask Ossel for a different request. */
   skipRequest(): void;
   /** Plant a child in the epilogue garden. */
-  plant(): void;
+  plant(kind: GardenKind): void;
   /** Build the next stage of a great work. */
   build(id: WorkId): void;
   /** Keep a creature close ('' for none). */
@@ -475,10 +475,17 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   gardenHead.append(el('h3', '', GARDEN.label), gardenLevel);
   const gardenFoot = el('footer');
   const gardenCost = el('span', 'cost');
-  const gardenBtn = button('buy calcite', '', () => hooks.plant());
-  gardenBtn.append(gardenCost);
-  gardenFoot.append(gardenBtn);
-  gardenCard.append(gardenHead, el('p', 'flavour', GARDEN.text), el('p', 'effect', `${GARDEN.plant}: ${GARDEN.effect}`), gardenFoot);
+  // One button per kind of child, all at the same price.
+  const gardenKinds = el('div', 'boon-choices garden-kinds');
+  const gardenBtns = GARDEN.kinds.map((k) => {
+    const b = button('choice', '', () => hooks.plant(k.id as GardenKind));
+    b.style.borderColor = k.colours.tip;
+    b.append(el('strong', '', k.name), el('span', '', k.effect));
+    gardenKinds.append(b);
+    return b;
+  });
+  gardenFoot.append(gardenCost);
+  gardenCard.append(gardenHead, el('p', 'flavour', GARDEN.text), el('p', 'effect', `${GARDEN.plant}: ${GARDEN.effect}`), gardenKinds, gardenFoot);
   grow.prepend(gardenCard);
 
   // ---------- Great works ----------
@@ -864,6 +871,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       s.lineWishes || s.wished >= 0 ? UI.tallyWished : '',
     ].filter(Boolean);
     if (small.length) codexRow(UI.smallThings, small.join(' · '));
+    if (s.nursed) codexRow(GARDEN.nursed, GARDEN.kinds.filter((k) => s.nursed.includes(k.id)).map((k) => `${[...s.nursed].filter((c) => c === k.id).length} × ${k.name.toLowerCase().replace(/^a /, '')} (${k.effect.replace(' on the next reef', '')})`).join(' · '));
     if (s.vows.length) codexRow(VOW.label, VOWS.filter((v) => s.vows.includes(v.id)).map((v) => `${v.name.toLowerCase()} (${vowKept(s, v.id) ? VOW.kept : VOW.broken})`).join(' · '));
     if (s.meta.endings > 0) codexRow(UI.theSea, `healing: the Long Silt falls ×${(0.95 ** Math.min(6, s.meta.endings)).toFixed(2)} for the endings your line has reached`);
     if (s.meta.endings > 0) codexRow('Endings', `${s.meta.endings} · ${s.meta.carriedEver.length} of ${MEMORIES.length} memories carried so far`);
@@ -1809,7 +1817,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         gardenLevel.textContent = `${s.garden}/${GARDEN.max}`;
         const full = s.garden >= GARDEN.max;
         gardenCost.textContent = full ? 'Complete' : `${num(plantCost(s))} calcite`;
-        gardenBtn.disabled = full || s.calcite < plantCost(s);
+        for (const b of gardenBtns) b.disabled = full || s.calcite < plantCost(s);
       }
 
       // Great works.

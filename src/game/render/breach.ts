@@ -8,6 +8,7 @@ import { drawColony } from './daughters.ts';
 import { drawSong } from './song.ts';
 import { drawPool } from './works.ts';
 import { palette } from '../content/palettes.ts';
+import { GARDEN } from '../content/act5.ts';
 import { drawRelics } from './relics.ts';
 import { sight, spot, startled } from './sightings.ts';
 import type { DialectId } from '../content/act4.ts';
@@ -1287,8 +1288,9 @@ export function createBreachScene(seed: number): Scene {
       for (let k = 0; k < v.garden; k++) {
         const side = k % 2 ? 1 : -1;
         const gx = L.cx + side * (110 + Math.floor(k / 2) * 46 + (k % 3) * 8) * scale();
+        const kind = GARDEN.kinds.find((x) => x.id === v.gardenKinds[k]);
         drawColony(ctx, gx, waterY() + (70 + (k % 4) * 14) * scale(), scale() * (0.8 + (k % 3) * 0.15), t,
-          { branch: '#b0607a', tip: '#e8a0b8', polyp: 'rgba(255,225,235,0.95)' }, seed + k * 131);
+          kind?.colours ?? { branch: '#b0607a', tip: '#e8a0b8', polyp: 'rgba(255,225,235,0.95)' }, seed + k * 131);
       }
       drawTop(ctx, v, reef.crown(L));
       reef.draw(ctx, L, v, t);

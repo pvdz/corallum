@@ -305,8 +305,8 @@ const panel = createPanel(ui, {
   skipRequest() {
     if (skipRequest(state)) save();
   },
-  plant() {
-    if (!plant(state)) return;
+  plant(kind) {
+    if (!plant(state, kind)) return;
     scene.effect('polyp');
     audio.cue('buy');
     save();
@@ -864,6 +864,7 @@ function view(): ReefView {
     current: state.current,
     song: state.dialects.song,
     garden: state.garden,
+    gardenKinds: state.gardenKinds,
     cays: state.levels.cay,
     strainRgb: SPORTS.find((x) => x.id === state.sport)?.rgb ?? STRAINS.find((x) => x.id === state.strain)?.rgb ?? '',
     ancestors: state.meta.ancestors.map((a) => Number(a.split('|')[0]) || 0),

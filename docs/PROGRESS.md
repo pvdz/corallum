@@ -631,3 +631,4 @@ date, what landed, what is half-done, what's next.
 - The dark beyond the reef's light (draw.ts drawDarkness): in the Silt Floor and Midnight Water the water dims away from the crown; the lit circle widens with the glow lure.
 - Calmer motion (setting or system reduced motion) reaches the renderers (ReefView calm): lightning becomes a slow soft glow with no flicker.
 - The next twenty minutes as a strip under the water's forecast (panel almanac): a mark for each thing coming, labelled above and below, its full text as a tooltip.
+- The garden: each child planted is quick, bright or deep (act5.ts GARDEN.kinds; state gardenKinds → next reef's nursed): per child, bands ×0.97, glow ×1.04 or dissolving ×0.97 on the next reef; children drawn in their kind's colours; codex row; prestige test.

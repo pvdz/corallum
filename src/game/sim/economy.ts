@@ -21,7 +21,7 @@ import { FAN, GUARD, UPWELL, ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDL
 import { FIGURES, SKY, type FigureId, WISH, type WishId } from '../content/sky.ts';
 import { QUESTIONS, type Question, type QuestionId } from '../content/ossel.ts';
 import { ACT4, HEAT, BANDS_ACT4, DIALECTS, OTHERS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
-import { ACT5, BANDS_ACT5, GARDEN, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
+import { ACT5, BANDS_ACT5, GARDEN, MEMORIES, type Memory, type MemoryId, type GardenKind } from '../content/act5.ts';
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, LUCKY, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
 import { BOONS, LINEAGE, SEAMOUNTS, type BoonId, type Seamount, type SeamountId, type TraitId, VOW, VOWS, type VowId } from '../content/lineage.ts';
@@ -202,7 +202,7 @@ export function rates(s: GameState): Rates {
   const onShelf = target >= ACT3.from;
   return {
     glowP: (ACT1.symbiontGlow * lv.symbiont * milestoneMult('symbiont', lv.symbiont) * (1 + ACT2.lightAmplify * s.jobs.light) +
-      lightGlow * s.jobs.light * seasoned(s) * (chose(s, 'hunters', 'b') ? 1.2 : 1)) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1) * (chose(s, 'vent-crack', 'b') ? 1.15 : 1) * (sm.glow ?? 1) * (passed(s, 'dark') ? 1.25 : 1) * (s.strain === 'blue' ? 1.3 : 1) * (boon(s, 'warm-heart') ? 1.3 : 1) * (chose(s, 'old-lamp', 'a') ? 1.1 : 1) * (chose(s, 'echo', 'b') ? 1.15 : 1) * grainMult(s, 'bright') * today(s, 'bright', 1.2) * (s.sport === 'ice' ? 1.25 : 1) * (chose(s, 'fire-body', 'a') ? 1.15 : 1),
+      lightGlow * s.jobs.light * seasoned(s) * (chose(s, 'hunters', 'b') ? 1.2 : 1)) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1) * (chose(s, 'vent-crack', 'b') ? 1.15 : 1) * (sm.glow ?? 1) * (passed(s, 'dark') ? 1.25 : 1) * (s.strain === 'blue' ? 1.3 : 1) * (boon(s, 'warm-heart') ? 1.3 : 1) * (chose(s, 'old-lamp', 'a') ? 1.1 : 1) * (chose(s, 'echo', 'b') ? 1.15 : 1) * grainMult(s, 'bright') * today(s, 'bright', 1.2) * (s.sport === 'ice' ? 1.25 : 1) * (chose(s, 'fire-body', 'a') ? 1.15 : 1) * 1.04 ** nursed(s, 'b'),
     glowK: ACT1.glowFade * (chose(s, 'squid', 'a') ? 0.8 : 1) * (chose(s, 'eyes', 'b') ? 0.8 : 1) * (chose(s, 'rising-stop', 'b') ? 0.85 : 1),
     planktonP: today(s, 'rich', 1.2) * (onShelf ? 1 - CURRENT.planktonPerStep * s.current : 1) * (chose(s, 'krill', 'b') ? 1.2 : 1) * (chose(s, 'seep', 'a') ? 1.15 : 1) * (paired(s, 'cleaner-wrasse', 'feather-duster') ? 1.15 : 1) * seasoned(s) * ACT2.feedRate * s.jobs.feed * ACT2.netPlankton ** lv.net * (chose(s, 'far-light', 'a') ? 1.15 : 1) * (chose(s, 'dust', 'b') ? 1.15 : 1) * (speaks(s, 'pillar') ? 1.5 : 1) * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
       (speaks(s, 'sweepers') ? 3 : 1) * (lives(s, 'feather-duster') ? 1.3 : 1),
@@ -236,7 +236,7 @@ export function rates(s: GameState): Rates {
       (boon(s, 'currents') ? 1.15 : 1) * today(s, 'calm', 1.1),
     calciteK:
       ACT1.dissolve * sm.dissolve * ACT1.latticeFactor ** lv.lattice * (ACT1.ventAcid * sm.ventAcid) ** vent * (vent > 0 && chose(s, 'vent-crack', 'a') ? 0.8 : 1) *
-      (has(s, 'lattice-songs') ? 0.7 : 1) * (chose(s, 'brittle', 'a') ? 0.9 : 1) * (chose(s, 'cleaners', 'b') ? 0.9 : 1) * (chose(s, 'snow', 'b') ? 0.95 : 1) * (chose(s, 'drifts', 'b') ? 0.9 : 1) * (chose(s, 'heavy-crown', 'b') ? 0.92 : 1) * (chose(s, 'bowed', 'a') ? 0.9 : 1) * (chose(s, 'seep', 'b') ? 0.95 : 1) * (chose(s, 'last-night', 'a') ? 0.9 : 1) * (boon(s, 'roots') ? 0.85 : 1) * (speaks(s, 'massive') ? 0.5 : 1) * grainMult(s, 'dense') +
+      (has(s, 'lattice-songs') ? 0.7 : 1) * (chose(s, 'brittle', 'a') ? 0.9 : 1) * (chose(s, 'cleaners', 'b') ? 0.9 : 1) * (chose(s, 'snow', 'b') ? 0.95 : 1) * (chose(s, 'drifts', 'b') ? 0.9 : 1) * (chose(s, 'heavy-crown', 'b') ? 0.92 : 1) * 0.97 ** nursed(s, 'd') * (chose(s, 'bowed', 'a') ? 0.9 : 1) * (chose(s, 'seep', 'b') ? 0.95 : 1) * (chose(s, 'last-night', 'a') ? 0.9 : 1) * (boon(s, 'roots') ? 0.85 : 1) * (speaks(s, 'massive') ? 0.5 : 1) * grainMult(s, 'dense') +
       (speaks(s, 'mucus') ? 0 : ACT3.raspEat * rasp * (s.truce.terms === 'b' ? ACT3.politeEat : 1) * (lives(s, 'guard-crab') ? 0.5 : 1) * (chose(s, 'young-rasp', 'a') ? 0.8 : 1) * (paired(s, 'guard-crab', 'goby') ? 0.8 : 1)),
     lureMax: ACT1.lureMax + ACT1.lureMaxPerPattern * lv.lure + (has(s, 'fear') ? 1 : 0) + (speaks(s, 'fluorescent') ? 2 : 0) +
       (relic(s, 'lamp-hall') ? 1 : 0) + 0.5 * s.works.spire + (chose(s, 'angler', 'a') ? 0.5 : 0) + (chose(s, 'eyes', 'a') ? 0.5 : 0) + (s.sport === 'lamp' ? 1 : 0),
@@ -526,7 +526,7 @@ export function cost(s: GameState, id: UpgradeId): number {
   const u = upgrade(id);
   const l = s.levels[id];
   if (id === 'skeleton') {
-    const discount = (has(s, 'walls') ? 0.75 : 1) * (speaks(s, 'branching') ? 0.6 : 1) * (relic(s, 'gate') ? 0.85 : 1);
+    const discount = 0.97 ** nursed(s, 'q') * (has(s, 'walls') ? 0.75 : 1) * (speaks(s, 'branching') ? 0.6 : 1) * (relic(s, 'gate') ? 0.85 : 1);
     return Math.ceil(u.baseCost * BAND_COST[Math.min(MAX_BANDS, l)]! * discount * waterFactor(s, id) * (boon(s, 'quick-stone') ? 0.9 : 1));
   }
   const discount = (id === 'polyp' ? 0.85 ** trait(s, 'quick-budding') : 1) * (id === 'shoal' && passed(s, 'lonely') ? 0.8 : 1) *
@@ -1739,11 +1739,19 @@ export function plantCost(s: GameState): number {
 }
 
 /** Plant a child in the dawn shallows (after the ending only). */
-export function plant(s: GameState): boolean {
+export function plant(s: GameState, kind: GardenKind = 'q'): boolean {
   if (!ended(s) || s.garden >= GARDEN.max || s.calcite < plantCost(s)) return false;
   s.calcite -= plantCost(s);
   s.garden++;
+  s.gardenKinds += kind;
   return true;
+}
+
+/** How many children of a kind the last garden nursed for this reef. */
+export function nursed(s: GameState, kind: GardenKind): number {
+  let n = 0;
+  for (const c of s.nursed) if (c === kind) n++;
+  return n;
 }
 
 // ---------- The glimmerseed strain ----------
