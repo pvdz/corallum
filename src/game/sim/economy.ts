@@ -755,6 +755,14 @@ export function sweep(s: GameState): number {
 // ---------- Falling feasts ----------
 
 export type Feast = { k: number; start: number; x: number; kind: number };
+export type FeastPay = 'calcite' | 'bloom' | 'spawn';
+
+/** What a feast is and pays, by zone: carrion feeds calcite; sargassum in the light feeds bloom;
+ * a swarm of moon plankton at the surface feeds the spawn. */
+export function feastPay(s: GameState): FeastPay {
+  const zone = actAt(s.height);
+  return zone >= 5 && !ended(s) ? 'spawn' : zone === 4 ? 'bloom' : 'calcite';
+}
 
 /** Feast slot k: when in it the feast starts, where it falls (0..1 across) and what it is. */
 function feastAt(seed: number, k: number): Feast {
@@ -771,13 +779,24 @@ export function currentFeast(s: GameState): Feast | null {
   return s.t >= f.start && s.t < f.start + FEAST.life ? f : null;
 }
 
-/** Eat the current feast: a burst of calcite. Returns the amount (0 if there is none). */
+/** Eat the current feast: a burst of the zone's currency (feastPay). Returns the amount (0 if none). */
 export function feast(s: GameState): number {
   const f = currentFeast(s);
   if (!f) return 0;
-  const gain = calciteRate(s) * FEAST.seconds;
-  s.calcite += gain;
-  s.earned.calcite += gain;
+  const pay = feastPay(s);
+  const r = rates(s);
+  let gain: number;
+  if (pay === 'bloom') {
+    gain = r.bloomP * FEAST.seconds;
+    s.bloom += gain;
+  } else if (pay === 'spawn') {
+    gain = r.spawnP * FEAST.seconds;
+    s.spawn += gain;
+  } else {
+    gain = calciteRate(s, r) * FEAST.seconds;
+    s.calcite += gain;
+    s.earned.calcite += gain;
+  }
   s.feasted = f.k;
   s.feasts++;
   return gain;

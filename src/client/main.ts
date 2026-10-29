@@ -23,7 +23,7 @@ import { createTaps } from '../game/render/taps.ts';
 import { drawFeast, feastPos, feastReach } from '../game/render/feast.ts';
 import type { Focus, ReefView, Scene } from '../game/render/scene.ts';
 import { runBot } from '../game/sim/bot.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, greatTide, calciteHold, choose, ended, moonFull, moonPhase, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { metres, num } from '../game/ui/format.ts';
@@ -332,7 +332,7 @@ window.corallum = {
   get feast() {
     const f = currentFeast(state);
     if (!f) return null;
-    const [x, y] = feastPos(f, state.t - f.start, focusNow);
+    const [x, y] = feastPos(f, state.t - f.start, focusNow, feastPay(state));
     return { x: x / dpr, y: y / dpr };
   },
 };
@@ -522,12 +522,12 @@ function floatText(x: number, y: number, text: string, cls = ''): void {
 function eatFeast(): boolean {
   const f = currentFeast(state);
   if (!f) return false;
-  const [x, y] = feastPos(f, state.t - f.start, focusNow);
+  const [x, y] = feastPos(f, state.t - f.start, focusNow, feastPay(state));
   const gain = feast(state);
   if (gain <= 0) return false;
   taps.push(x, y, animT, 16);
   audio.cue('feast');
-  floatText(x / dpr, y / dpr, `+${num(gain)} · a feast`, 'feast-float');
+  floatText(x / dpr, y / dpr, `+${num(gain)} ${feastPay(state) === 'calcite' ? '· a feast' : feastPay(state)}`, 'feast-float');
   save();
   return true;
 }
@@ -536,7 +536,7 @@ function eatFeast(): boolean {
 canvas.addEventListener('pointerdown', (e) => {
   const f = currentFeast(state);
   if (f) {
-    const [fx, fy] = feastPos(f, state.t - f.start, focusNow);
+    const [fx, fy] = feastPos(f, state.t - f.start, focusNow, feastPay(state));
     if (Math.hypot(e.clientX * dpr - fx, e.clientY * dpr - fy) < feastReach(focusNow, dpr) && eatFeast()) return;
   }
   const gain = sweep(state);
@@ -636,7 +636,7 @@ function frame(now: number): void {
     }
   }
   const fe = currentFeast(state);
-  if (fe) drawFeast(ctx, fe, state.t - fe.start, tNow, focusNow, dpr);
+  if (fe) drawFeast(ctx, fe, state.t - fe.start, tNow, focusNow, dpr, feastPay(state));
   taps.draw(ctx, tNow, scene.crownAt, dpr);
   const p2 = performance.now();
   panel.update(state);

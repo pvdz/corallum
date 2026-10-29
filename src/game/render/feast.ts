@@ -2,15 +2,18 @@
 // of scavengers. Drawn over whichever scene is showing; tap it to eat (see sim/economy.ts).
 
 import { FEAST } from '../content/events.ts';
-import type { Feast } from '../sim/economy.ts';
+import type { Feast, FeastPay } from '../sim/economy.ts';
 import { glow } from './draw.ts';
 import type { Focus } from './scene.ts';
 
 /** Where the feast is, in device pixels, `age` seconds after it started to fall. */
-export function feastPos(f: Feast, age: number, focus: Focus): [number, number] {
+export function feastPos(f: Feast, age: number, focus: Focus, pay: FeastPay = 'calcite'): [number, number] {
   const u = age / FEAST.life;
-  const x = focus.x + focus.w * (f.x + 0.03 * Math.sin(age * 0.35 + f.k));
-  const y = focus.y + focus.h * (-0.04 + 0.78 * u);
+  // The swarm keeps to the open water either side of the reef, where it can be seen.
+  const fx = pay === 'spawn' ? (f.x < 0.5 ? 0.06 + f.x * 0.3 : 0.79 + (f.x - 0.5) * 0.3) : f.x;
+  const x = focus.x + focus.w * (fx + 0.03 * Math.sin(age * 0.35 + f.k));
+  // Carrion and weed sink; moon plankton rise from the deep toward the moonlit surface.
+  const y = focus.y + focus.h * (pay === 'spawn' ? 0.95 - 0.6 * u : -0.04 + 0.78 * u);
   return [x, y];
 }
 
@@ -19,8 +22,9 @@ export function feastReach(focus: Focus, dpr: number): number {
   return Math.max(44 * dpr, Math.min(focus.w, focus.h) * 0.08);
 }
 
-export function drawFeast(ctx: CanvasRenderingContext2D, f: Feast, age: number, t: number, focus: Focus, dpr: number): void {
-  const [x, y] = feastPos(f, age, focus);
+export function drawFeast(ctx: CanvasRenderingContext2D, f: Feast, age: number, t: number, focus: Focus, dpr: number,
+  pay: FeastPay = 'calcite'): void {
+  const [x, y] = feastPos(f, age, focus, pay);
   const s = Math.min(focus.w, focus.h) / 700;
   // Fade in at the top, out as it sinks out of reach.
   const a = Math.min(1, age / 2, (FEAST.life - age) / 4);
@@ -33,7 +37,9 @@ export function drawFeast(ctx: CanvasRenderingContext2D, f: Feast, age: number, 
   ctx.globalCompositeOperation = 'source-over';
   ctx.translate(x, y);
   ctx.rotate(0.5 + 0.15 * Math.sin(age * 0.4 + f.k));
-  if (f.kind === 0) drawFish(ctx, s);
+  if (pay === 'bloom') drawSargassum(ctx, s, t, f.k);
+  else if (pay === 'spawn') drawMoonSwarm(ctx, s, t, f.k);
+  else if (f.kind === 0) drawFish(ctx, s);
   else if (f.kind === 1) drawSquid(ctx, s, t);
   else drawKrill(ctx, s, t, f.k);
   ctx.restore();
@@ -53,6 +59,39 @@ export function drawFeast(ctx: CanvasRenderingContext2D, f: Feast, age: number, 
   ctx.beginPath();
   ctx.arc(x, y, feastReach(focus, dpr) * (0.6 + 0.4 * pulse), 0, Math.PI * 2);
   ctx.stroke();
+  ctx.restore();
+}
+
+/** A drifting mat of sargassum weed: tangled golden fronds buoyed by little round floats. */
+function drawSargassum(ctx: CanvasRenderingContext2D, s: number, t: number, seed: number): void {
+  ctx.lineCap = 'round';
+  for (let i = 0; i < 14; i++) {
+    const a = i * 2.4 + seed;
+    const len = (14 + (i % 4) * 5) * s;
+    const sway = Math.sin(t * 0.9 + i) * 0.2;
+    const ex = Math.cos(a + sway) * len, ey = Math.sin(a + sway) * len * 0.55;
+    ctx.strokeStyle = i % 3 ? 'rgba(200,150,50,0.9)' : 'rgba(150,120,40,0.9)';
+    ctx.lineWidth = 2.2 * s;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.quadraticCurveTo(ex * 0.5 + Math.sin(a) * 4 * s, ey * 0.5, ex, ey);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(230,190,80,0.95)';
+    ctx.beginPath();
+    ctx.arc(ex, ey, 1.8 * s, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+/** A swarm of moon plankton: dozens of tiny silver-pink lights wheeling around one another. */
+function drawMoonSwarm(ctx: CanvasRenderingContext2D, s: number, t: number, seed: number): void {
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 46; i++) {
+    const a = i * 2.399 + seed + t * (0.4 + (i % 5) * 0.08);
+    const r = Math.sqrt(i / 46) * 26 * s;
+    glow(ctx, Math.cos(a) * r, Math.sin(a) * r * 0.7, 3.5 * s, i % 3 ? '255,200,230' : '220,230,255', 0.8);
+  }
   ctx.restore();
 }
 
