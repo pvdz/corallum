@@ -73,6 +73,15 @@ export function createZoom(canvas: HTMLCanvasElement, active: () => boolean, dpr
     reset(): void {
       zoom.k = 1;
     },
+    /** Ease the view a step toward zoom `k` centred on world point (wx, wy); `f` is how far (0..1). */
+    lookAt(k: number, wx: number, wy: number, f: number): void {
+      const W = canvas.width, H = canvas.height;
+      const kk = zoom.k + (Math.min(ZOOM_MAX, Math.max(1, k)) - zoom.k) * f;
+      const tx = zoom.k === 1 ? wx : cx + (wx - cx) * f, ty = zoom.k === 1 ? wy : cy + (wy - cy) * f;
+      zoom.k = kk;
+      cx = Math.min(W - W / (2 * kk), Math.max(W / (2 * kk), tx));
+      cy = Math.min(H - H / (2 * kk), Math.max(H / (2 * kk), ty));
+    },
     /** A finger went down; true when it starts a pinch (zoom active), which is not a tap. */
     pinchDown(e: PointerEvent): boolean {
       if (!active() || e.pointerType !== 'touch') return false;

@@ -668,3 +668,4 @@ date, what landed, what is half-done, what's next.
 - Moments jelly-bloom (1700 m: plankton ×1.1 or glow ×1.1) and last-dark (2900 m: scouts ×1.2 or bands ×0.95). Midnight band growth 1.195 → 1.2 to keep pacing margin (bot 6h28 → 7h28).
 - A blue moon (economy blueMoon: every seventh moon cycle): drawn washed in blue, named on the moon card; releasing under it brings +2 lineage (endingLineage); prestige test.
 - Vibration only after a real touch on the page (Chrome refused and logged an error when a key or a mouse click triggered it first; the feast test caught it on mobile).
+- Drift: in view mode, after 25 s without input, the camera wanders slowly round the reef, zooming in and out (zoom.ts lookAt; off under calmer motion).

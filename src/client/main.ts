@@ -1503,6 +1503,9 @@ function updateGauge(): void {
 
 // View mode: hide the panel and let the reef have the whole screen (button top-left, or H).
 let viewMode = false;
+/** When the player last did anything (performance.now): drift waits for a quiet spell. */
+let lastInput = 0;
+for (const type of ['pointerdown', 'pointermove', 'wheel', 'keydown'] as const) window.addEventListener(type, () => { lastInput = performance.now(); }, { passive: true });
 const viewBtn = document.createElement('button');
 viewBtn.id = 'view-mode';
 viewBtn.type = 'button';
@@ -1681,6 +1684,15 @@ function frame(now: number): void {
   if (needResize) { resize(); needResize = false; }
   const dt = Math.max(0, (now - last) / 1000);
   last = now;
+  // Drift: in view mode, left alone a while, the camera wanders slowly round the reef.
+  if (viewMode && now - lastInput > 25_000 && !(reducedMotion.matches || calm.get())) {
+    const [crx, cry] = scene.crownAt;
+    const tt = now / 1000;
+    const k = 1.5 + 0.45 * Math.sin(tt / 23);
+    const wx = crx + Math.sin(tt / 31) * canvas.width * 0.18;
+    const wy = cry + canvas.height * (0.15 + 0.12 * Math.sin(tt / 19));
+    zoomer.lookAt(k, wx, wy, Math.min(1, dt * 0.3));
+  }
   if (frozenT === null) {
     // A long gap means the tab slept; treat it like being away.
     if (dt > AWAY_NOTICE) catchUp(dt * speed);
