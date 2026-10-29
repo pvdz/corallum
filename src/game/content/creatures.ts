@@ -2,7 +2,7 @@
 // actually seen on screen (kept across lesser spawnings, in meta.seen as 'c:<id>').
 
 export type CreatureId =
-  | 'jelly' | 'brittle-star' | 'rattail' | 'sea-lily' | 'glass-sponge' | 'tube-worm'
+  | 'jelly' | 'brittle-star' | 'rattail' | 'sea-pig' | 'sea-lily' | 'glass-sponge' | 'tube-worm'
   | 'lanternfish' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish'
   | 'rasp' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch'
   | 'reef-fish' | 'whale' | 'turtle'
@@ -14,6 +14,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'jelly', name: 'Deep jellies', zone: 'The Silt Floor', note: 'Bells of violet light, pulsing without hurry.' },
   { id: 'brittle-star', name: 'Brittle stars', zone: 'The Silt Floor', note: 'Five thin arms, combing the silt for crumbs.' },
   { id: 'rattail', name: 'Rattail', zone: 'The Silt Floor', note: 'A big head and a long tail, nosing along the bottom.' },
+  { id: 'sea-pig', name: 'Sea pigs', zone: 'The Silt Floor', note: 'A herd of pink loaves on legs, eating their way across the silt.' },
   { id: 'sea-lily', name: 'Sea lilies', zone: 'The Silt Floor', note: 'Feathered arms held open to the current on a stalk.' },
   { id: 'glass-sponge', name: 'Glass sponges', zone: 'The Silt Floor', note: 'Vases of silica lattice, older than anything near them.' },
   { id: 'tube-worm', name: 'Tube worms', zone: 'The Silt Floor', note: 'Red plumes in white tubes, crowding the warm water of the vent.' },

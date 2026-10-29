@@ -222,6 +222,56 @@ export function createLife(seed: number) {
   }
 
   /**
+   * Sea pigs: a little herd of plump pink sea cucumbers walking along the silt on stubby tube
+   * feet, feelers waving on top, crossing the floor every few minutes.
+   */
+  function drawSeaPigs(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
+    const period = 190, crossing = 120;
+    const u = (t % period) / crossing;
+    if (u >= 1) return;
+    sight('sea-pig');
+    for (let k = 0; k < 4; k++) {
+      const s = st.s * (1.4 + (k % 2) * 0.35);
+      const x = st.cx + st.w * (0.75 - u * 1.5) + k * 34 * st.s - (k % 2) * 10 * st.s;
+      const y = st.baseY + (3 + (k % 3) * 2) * st.s;
+      const step = Math.sin(t * 2.5 + k);
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(-1, 1);
+      // Legs: a row of stubby tube feet paddling in turn.
+      ctx.strokeStyle = 'rgba(230,160,175,0.85)';
+      ctx.lineWidth = 1.6 * s;
+      ctx.lineCap = 'round';
+      for (let l = 0; l < 5; l++) {
+        const lx = -6 * s + l * 3 * s;
+        const kick = Math.sin(t * 2.5 + l * 1.2 + k) * 1.2 * s;
+        ctx.beginPath();
+        ctx.moveTo(lx, 1 * s);
+        ctx.lineTo(lx + kick, 4 * s);
+        ctx.stroke();
+      }
+      // Body: a translucent pink loaf.
+      const g = ctx.createLinearGradient(0, -6 * s, 0, 3 * s);
+      g.addColorStop(0, 'rgba(255,200,210,0.85)');
+      g.addColorStop(1, 'rgba(210,120,140,0.85)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.ellipse(0, -1.5 * s + step * 0.3 * s, 9 * s, 4.5 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // Feelers on the back.
+      ctx.strokeStyle = 'rgba(255,190,200,0.8)';
+      ctx.lineWidth = 1.1 * s;
+      for (const fx of [-2, 1, 4]) {
+        ctx.beginPath();
+        ctx.moveTo(fx * s, -5 * s);
+        ctx.quadraticCurveTo((fx + 1) * s, -9 * s, (fx + 2 + Math.sin(t + fx) * 1.5) * s, -10 * s);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+  }
+
+  /**
    * Glass sponges: tall pale vases of silica lattice standing in the silt, catching the faint
    * light along their seams. They do not move; only a few motes drift through their walls.
    */
@@ -473,6 +523,7 @@ export function createLife(seed: number) {
     },
     drawFloor(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
       for (const g of sponges) drawSponge(ctx, st, g, t);
+      drawSeaPigs(ctx, st, t);
       for (const c of lilies) drawLily(ctx, st, c, t);
       drawOssel(ctx, st, t);
       for (const star of stars) drawStar(ctx, st, star, t);
