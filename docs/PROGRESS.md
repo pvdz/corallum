@@ -669,3 +669,4 @@ date, what landed, what is half-done, what's next.
 - A blue moon (economy blueMoon: every seventh moon cycle): drawn washed in blue, named on the moon card; releasing under it brings +2 lineage (endingLineage); prestige test.
 - Vibration only after a real touch on the page (Chrome refused and logged an error when a key or a mouse click triggered it first; the feast test caught it on mobile).
 - Drift: in view mode, after 25 s without input, the camera wanders slowly round the reef, zooming in and out (zoom.ts lookAt; off under calmer motion).
+- The almanac strip waits until the water has started turning and two things are coming, so a new reef's first cards stay near the top.

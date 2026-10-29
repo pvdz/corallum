@@ -1735,7 +1735,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         if (key !== almanacKey) {
           almanacKey = key;
           almanac.innerHTML = '';
-          almanac.hidden = marks.length === 0;
+          // A new reef has little to plan: the strip waits until the water turns and two things are coming.
+          almanac.hidden = !turning || marks.length < 2;
           // Each label goes in the first of three rows where it does not run into the last one there.
           const W = almanac.clientWidth || 300;
           const rowEnd = [-1e9, -1e9, -1e9];
