@@ -225,6 +225,22 @@ export function createBreachScene(seed: number): Scene {
    * Rarely, a meteor shower: for forty seconds in every twenty minutes, streaks fall across the
    * sky from one point, thick for a while, then thinning out. Touched, a big bright fireball.
    */
+  /** Where the king tide reached (a moment): a line of dried weed and pale salt along the reef above the water. */
+  function drawWrack(ctx: CanvasRenderingContext2D, L: ReefLayout): void {
+    const s = scale();
+    const y = waterY() - 26 * s;
+    const r = mulberry32(seed ^ 0x71de);
+    ctx.save();
+    for (let i = 0; i < 40; i++) {
+      const x = L.cx + (r() - 0.5) * L.unit * 0.5;
+      ctx.fillStyle = i % 3 ? `rgba(120,95,50,${0.55 + r() * 0.3})` : 'rgba(235,235,225,0.7)';
+      ctx.beginPath();
+      ctx.ellipse(x, y + (r() - 0.5) * 6 * s, (2 + r() * 4) * s, (0.8 + r()) * s, r() - 0.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
   /** Shooting stars: the shower the reef can wish on (content/sky.ts WISH), on the reef's own clock. */
   function drawMeteors(ctx: CanvasRenderingContext2D, t: number, dawn: number, shower: { k: number; u: number } | null): void {
     const length = WISH.length;
@@ -1281,6 +1297,7 @@ export function createBreachScene(seed: number): Scene {
       drawCraft(ctx, v.craft, reef, L, t, 0.6);
       drawResidents(ctx, reef, L, v.residents, t, seed);
       this.crownAt = reef.crown(L);
+      if (v.moments['king-tide']) drawWrack(ctx, L);
       drawSong(ctx, v.song, this.crownAt[0], this.crownAt[1], t, scale());
       reef.drawEffects(ctx, L, v, effects.live(t));
       drawWaves(ctx, t);
