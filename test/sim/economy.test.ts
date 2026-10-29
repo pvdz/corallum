@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
+import { dayOf, catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { newGame, type GameState } from '../../src/game/sim/state.ts';
 import { GIFT } from '../../src/game/content/creatures.ts';
@@ -337,6 +337,18 @@ test('upwellings: caught once, only with the current turned toward them', () => 
   turnCurrent(s, up!.side * 2);
   assert.ok(catchUpwelling(s) > 0);
   assert.equal(catchUpwelling(s), 0, 'once');
+});
+
+test("the day's sea: the same for everyone on a day, and it changes the rates", () => {
+  const seen = new Set<string>();
+  for (let d = 20000; d < 20060; d++) seen.add(dayOf(d));
+  assert.ok(seen.size >= 5, 'the days vary');
+  assert.equal(dayOf(20391), dayOf(20391));
+  const s = midGame();
+  s.meta.today = '';
+  const base = rates(s).glowP;
+  s.meta.today = 'bright';
+  assert.ok(rel(rates(s).glowP, base * 1.2) < 1e-12);
 });
 
 test('dialects: one per tier, in order, after their band, paid in bloom', () => {

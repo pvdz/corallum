@@ -1,5 +1,6 @@
 // The whole game state. Plain JSON-able data so saving is a stringify.
 
+import type { DayId } from '../content/events.ts';
 import type { QuestionId } from '../content/ossel.ts';
 import type { ForkId } from '../content/expeditions.ts';
 import type { GrainId, SportId } from '../content/act1.ts';
@@ -60,6 +61,8 @@ export type Meta = {
   shards: number[];
   /** Dreams kept (each sleeps the reef DREAM.seconds forward). */
   dreams: number;
+  /** The day's sea (content/events.ts DAYS; '' before the first day is known). */
+  today: DayId | '';
 };
 
 export function newMeta(): Meta {
@@ -79,6 +82,7 @@ export function newMeta(): Meta {
     endings: 0,
     shards: [],
     dreams: 0,
+    today: '',
     palette: '',
     companion: '',
     lastDay: 0,

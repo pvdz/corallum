@@ -189,6 +189,10 @@ gets a skill to play.
 for, whether to tell the spawn all of Thousandfold, what it would keep, what is past the light). No
 effect on the numbers: Ossel answers back, the reef's own bands record it, and the ending carries it.
 
+**The day's sea**: each calendar day has one mild boon, the same for every reef that day (calm: calcite
+×1.1, bright: glow ×1.2, rich: plankton ×1.2, sandy: sand ×1.2, clear: bloom ×1.15, a long swell: spawn
+×1.1), set on load and shown in the water box. A small reason to look in each day.
+
 **Dreams**: each new calendar day brings one with the morning gift (at most three kept). A dream sleeps
 the reef a quarter of an hour forward at once (the exact offline advance) and shows the away summary.
 

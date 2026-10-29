@@ -21,7 +21,7 @@ import { button, el } from './dom.ts';
 import { createChoices } from './choices.ts';
 import { drawCity, drawTablet, drawSeaChart, SEAMOUNT_TINT } from './drawings.ts';
 import { FEATS } from '../content/feats.ts';
-import { AWAY_CYCLES, AWAY_PREP, DREAM, NOTIFY, SWELL, WELCOME, intruderOf } from '../content/events.ts';
+import { AWAY_CYCLES, AWAY_PREP, DAYS, DREAM, NOTIFY, SWELL, TODAY, WELCOME, intruderOf } from '../content/events.ts';
 import { WATER } from '../content/waters.ts';
 import { REQUEST } from '../content/requests.ts';
 import { WORKS, WORK_TEXT, type WorkId } from '../content/works.ts';
@@ -355,7 +355,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const riseWhat = el('span', 'heat-what');
   const riseButton = button('heat-toggle', RISING.send, () => hooks.feedRising());
   riseRow.append(riseText, riseButton, riseWhat);
-  waterBox.append(waterName, waterLine, waterNext, waterSoon, heatRow, riseRow);
+  const todayLine = el('span', 'water-today');
+  waterBox.append(waterName, waterLine, waterNext, waterSoon, todayLine, heatRow, riseRow);
   grow.prepend(waterBox);
   let waterShown = '';
   // Ossel's request: one small thing to do, with its progress.
@@ -1554,6 +1555,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const fl = untilFlurry(s);
         if (fl < 1200) soon.push([fl, FLURRY.word + ' (sweeps ×3)']);
         if (th < 1200 && kind) soon.push([th, WATER.intruder[kind]!]);
+        const day = DAYS.find((d) => d.id === s.meta.today);
+        todayLine.textContent = day ? `${TODAY.label}: ${day.name.toLowerCase()} · ${day.effect}` : '';
         const usw = untilSwell(s);
         if (usw < 1200) soon.push([usw, SWELL.word]);
         const ur = untilRising(s);

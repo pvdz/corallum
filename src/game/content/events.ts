@@ -44,6 +44,18 @@ export const SWELL = {
 /** A new day: the first visit of each calendar day brings a small gift. */
 export const DAILY = { seconds: 600, kicker: 'A new day', text: 'Ossel has been keeping something for you.' } as const;
 
+/** The day's sea: one mild boon for each calendar day, the same for every reef that day. */
+export type DayId = 'calm' | 'bright' | 'rich' | 'sandy' | 'clear' | 'long-swell';
+export const DAYS: readonly { id: DayId; name: string; effect: string }[] = [
+  { id: 'calm', name: 'A calm day', effect: 'calcite ×1.1' },
+  { id: 'bright', name: 'A bright day', effect: 'glow ×1.2' },
+  { id: 'rich', name: 'A rich day', effect: 'plankton ×1.2' },
+  { id: 'sandy', name: 'A sandy day', effect: 'sand ×1.2' },
+  { id: 'clear', name: 'A clear day', effect: 'bloom ×1.15' },
+  { id: 'long-swell', name: 'A long swell', effect: 'spawn ×1.1' },
+];
+export const TODAY = { label: 'Today' } as const;
+
 /** Dreams: the reef sleeps a quarter of an hour forward at once. One comes with each new day, at most `max` kept. */
 export const DREAM = {
   seconds: 900, max: 3,
