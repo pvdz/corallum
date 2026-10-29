@@ -21,6 +21,15 @@ export const AWAY_CYCLES = {
   risings: (n: number) => `came up past the reef ${n} time${n === 1 ? '' : 's'} while no one sent the feeders in`,
 } as const;
 
+/** Browser notifications while the tab is in the background (a setting, off by default). */
+export const NOTIFY = {
+  setting: 'Tell me when something waits while this tab is in the background (a rising, warm water, shoals home, the full moon)',
+  rising: 'The rising is passing your reef. Send the feeders in.',
+  heat: 'The water is running warm and your polyps are open.',
+  home: 'Your shoals are home from the ruin.',
+  moon: 'The moon is full and the spawn is ready.',
+} as const;
+
 /** A new day: the first visit of each calendar day brings a small gift. */
 export const DAILY = { seconds: 600, kicker: 'A new day', text: 'Ossel has been keeping something for you.' } as const;
 

@@ -20,7 +20,7 @@ import { button, el } from './dom.ts';
 import { createChoices } from './choices.ts';
 import { drawCity, drawTablet } from './drawings.ts';
 import { FEATS } from '../content/feats.ts';
-import { AWAY_CYCLES, AWAY_PREP, WELCOME, intruderOf } from '../content/events.ts';
+import { AWAY_CYCLES, AWAY_PREP, NOTIFY, WELCOME, intruderOf } from '../content/events.ts';
 import { WATER } from '../content/waters.ts';
 import { REQUEST } from '../content/requests.ts';
 import { WORKS, WORK_TEXT, type WorkId } from '../content/works.ts';
@@ -119,6 +119,7 @@ export type PanelHooks = {
   big: { get(): boolean; set(on: boolean): void };
   /** Fewer whispers (only story). */
   quiet: { get(): boolean; set(on: boolean): void };
+  notify: { get(): boolean; set(on: boolean): void };
   /** Old habits (a lineage trait): whether the reef buys cheap polyps and glimmerseed itself. */
   habits: { get(): boolean; set(on: boolean): void };
   /** A story card opened (for its sound). */
@@ -1144,6 +1145,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   quietBox.checked = hooks.quiet.get();
   quietBox.addEventListener('change', () => hooks.quiet.set(quietBox.checked));
   quietToggle.append(quietBox, el('span', '', 'Fewer words from Ossel (only what carries the story)'));
+  const notifyToggle = el('label', 'toggle');
+  const notifyBox = el('input') as HTMLInputElement;
+  notifyBox.type = 'checkbox';
+  notifyBox.checked = hooks.notify.get();
+  notifyBox.addEventListener('change', () => { hooks.notify.set(notifyBox.checked); notifyBox.checked = hooks.notify.get(); });
+  notifyToggle.append(notifyBox, el('span', '', NOTIFY.setting));
+  notifyToggle.hidden = !('Notification' in window);
   const habitToggle = el('label', 'toggle');
   const habitBox = el('input') as HTMLInputElement;
   habitBox.type = 'checkbox';
@@ -1195,7 +1203,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     group('Saves'),
     el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn,
     group('Sound'), volRow, buzzToggle,
-    group('Display'), glowToggle, sharpToggle, calmToggle, bigToggle, sciToggle, quietToggle, habitToggle,
+    group('Display'), glowToggle, sharpToggle, calmToggle, bigToggle, sciToggle, quietToggle, notifyToggle, habitToggle,
     el('p', 'hint', 'Hold a buy button to keep buying. Keys (? lists them): Space sweeps · 1–4 switch tabs · H hides the panel · F catches a falling feast · E sends an expedition · P buds a polyp · B lays a band · G hosts glimmerseed.'),
     group('Start over'), resetBtn,
   );

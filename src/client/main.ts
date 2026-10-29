@@ -32,12 +32,12 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio, type Cue } from '../game/audio/audio.ts';
-import { AWAY_CYCLES, AWAY_PREP, DAILY, FEAST, SIGNAL, THORN, WELCOME } from '../game/content/events.ts';
+import { AWAY_CYCLES, AWAY_PREP, DAILY, NOTIFY, FEAST, SIGNAL, THORN, WELCOME } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS, TRIAL_TEXT } from '../game/content/lineage.ts';
 import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf, TRUST, trustLevel, COMPANION, type CreatureId } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
@@ -183,6 +183,11 @@ const habits = setting('habits', true);
 const calm = setting('calm', false, (on) => document.documentElement.classList.toggle('calm', on));
 /** Fewer words from Ossel: only the whispers that carry story. */
 const quiet = setting('quiet', false);
+/** Browser notifications for what waits while the tab is hidden; asks for permission when turned on. */
+const notify = setting('notify', false, (on, initial) => {
+  if (!on || initial || !('Notification' in window) || Notification.permission === 'granted') return;
+  void Notification.requestPermission().then((p) => { if (p !== 'granted') notify.set(false); });
+});
 /** Larger text: the panel, the reader and Ossel's words a size up. */
 const big = setting('big', false, (on, initial) => { document.documentElement.classList.toggle('big', on); if (!initial) relayout(); });
 const sci = setting('sci', false, (on) => setScientific(on));
@@ -197,7 +202,7 @@ function buzz(ms: number | number[]): void {
 
 const portraits = createPortraits(!ephemeral);
 const panel = createPanel(ui, {
-  sharp, buzz: buzzing, volume, sci, calm, big, quiet, habits, glow,
+  sharp, buzz: buzzing, volume, sci, calm, big, quiet, habits, glow, notify,
   rename(name) {
     state.meta.name = name;
     showReefName();
@@ -653,6 +658,26 @@ function tripView(): ReefView['trip'] {
 function thornView(): ReefView['thorn'] {
   const th = currentThorn(state);
   return th ? { u: (state.t - th.start) / THORN.life, side: th.side, kind: th.kind } : null;
+}
+
+/** What was waiting at the last check, so each thing is announced once as it begins. */
+const announced = { rising: true, heat: true, away: false, moon: true };
+/** Background-tab notifications (a setting): a rising, warm water on an open reef, shoals home, the full moon. */
+function notifyWaiting(): void {
+  const now = {
+    rising: canFeedRising(state),
+    heat: inHeat(state) && !closedNow(state),
+    away: state.expedition.site !== '',
+    moon: canBreach(state),
+  };
+  const say: string[] = [];
+  if (now.rising && !announced.rising) say.push(NOTIFY.rising);
+  if (now.heat && !announced.heat) say.push(NOTIFY.heat);
+  if (!now.away && announced.away) say.push(NOTIFY.home);
+  if (now.moon && !announced.moon) say.push(NOTIFY.moon);
+  Object.assign(announced, now);
+  if (!say.length || !notify.get() || !document.hidden || !('Notification' in window) || Notification.permission !== 'granted') return;
+  try { new Notification(reefName(state) || 'Corallum', { body: say.join(' '), tag: 'corallum', icon: '/favicon.ico' }); } catch { /* not allowed here */ }
 }
 
 /** Send the feeding shoals into the rising (panel button or R). */
@@ -1628,6 +1653,7 @@ function frame(now: number): void {
   // The tab title carries the reef's height, so a background tab still shows progress.
   if (now - lastTitle > 1000) {
     lastTitle = now;
+    notifyWaiting();
     const who = reefName(state) || 'Corallum';
     const base = ended(state) ? `${who} · spawned` : state.height < 1 ? who : `${metres(state.height)} · ${who}`;
     // Something to do right now (a feast, an intruder, a choice waiting): a dot, for background tabs.
