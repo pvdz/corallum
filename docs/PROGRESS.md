@@ -397,3 +397,4 @@ date, what landed, what is half-done, what's next.
 - Palettes Violet, Ember and Pale moon are earned by feats (A friend in the deep, First to the light, Four memories); locked swatches dim with the feat's name.
 - The sister reef seen from the Midnight Water and the Twilight Shelf: when near your depth, its faint crown far off on the right, above or below by how far ahead it is (render/sister.ts; ReefView.gauge).
 - 'max' button on repeatable upgrade cards (polyps, glimmerseed, bands, shoals): buys as many as can be afforded.
+- Way 'Layering': while watching, the reef lays a band itself when it costs under a tenth of its calcite (habitPurchase).

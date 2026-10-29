@@ -986,7 +986,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   habitBox.type = 'checkbox';
   habitBox.checked = hooks.habits.get();
   habitBox.addEventListener('change', () => hooks.habits.set(habitBox.checked));
-  habitToggle.append(habitBox, el('span', '', 'The line’s habits (Old habits, Shoal sense, Rasp sense): let the reef do these on its own'));
+  habitToggle.append(habitBox, el('span', '', 'The line’s habits (Old habits, Layering, Shoal sense, Rasp sense): let the reef do these on its own'));
   habitToggle.hidden = true;
   const group = (title: string) => el('h4', 'settings-group', title);
   const guide = el('article', 'card codex guide');
@@ -1661,7 +1661,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       renderCity(s);
       renderFeats(s);
       renderLine(s);
-      habitToggle.hidden = !s.meta.traits['old-habits'] && !s.meta.traits['shoal-sense'] && !s.meta.traits['rasp-sense'];
+      habitToggle.hidden = !s.meta.traits['old-habits'] && !s.meta.traits['shoal-sense'] && !s.meta.traits['rasp-sense'] && !s.meta.traits.layering;
       const hidden = UPGRADES.find((u) => !revealed(s, u.id));
       comingUp.textContent = hidden ? `Coming up: ${hidden.name} — ${revealText(s, hidden)}` : '';
       comingUp.hidden = !hidden;

@@ -20,7 +20,7 @@ export const LINEAGE = {
 
 export type TraitId =
   | 'deep-memory' | 'quick-budding' | 'old-bands' | 'remembered-shoals' | 'glimmer' | 'kept-readings' | 'settling'
-  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table' | 'shoal-sense' | 'rasp-sense' | 'old-maps' | 'open-house' | 'water-wise' | 'thorn-wise' | 'moon-born';
+  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table' | 'shoal-sense' | 'rasp-sense' | 'old-maps' | 'open-house' | 'water-wise' | 'thorn-wise' | 'moon-born' | 'layering';
 
 export type Trait = {
   id: TraitId;
@@ -181,6 +181,11 @@ export const TRAITS: readonly Trait[] = [
     id: 'thorn-wise', name: 'Thorn-wise', effect: 'thorn stars and dragonfish are driven off for half even with no crabs or lamps',
     flavour: 'Your children grow spines of their own where the starfish like to climb.',
     cost: 8, growth: 1, max: 1, kind: 'way',
+  },
+  {
+    id: 'layering', name: 'Layering', effect: 'while you watch, the reef lays down a band itself when one costs under a tenth of its calcite',
+    flavour: 'Laying stone is a habit now, like breathing.',
+    cost: 12, growth: 1, max: 1, kind: 'way',
   },
   {
     id: 'moon-born', name: 'Moon-born', effect: 'the full-moon spawning can bring up to 5 lineage on a reef, not 3',
