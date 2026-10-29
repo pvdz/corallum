@@ -219,25 +219,102 @@ export function createTwilightScene(seed: number): Scene {
     }
     const r = mulberry32(seed ^ 0xa11);
     const hgt = 150 * s, half = 46 * s;
-    ctx.fillStyle = wall === 'b' ? '#4a3542' : '#2c2c36';
-    ctx.beginPath();
-    ctx.moveTo(bx - half, by);
+    // The outline: a slumped mound with knobbly flanks and a broken crest.
+    const left: [number, number][] = [], right: [number, number][] = [], top: [number, number][] = [];
+    for (let i = 0; i <= 8; i++) {
+      const f = i / 8;
+      left.push([bx - half * (1.05 - 0.25 * f) + range(r, -5, 5) * s, by - f * hgt * 0.78]);
+      right.push([bx + half * (1.05 - 0.2 * f) + range(r, -5, 5) * s, by - f * hgt * 0.74]);
+    }
     for (let i = 0; i <= 12; i++) {
       const f = i / 12;
-      ctx.lineTo(bx - half + f * half * 2, by - hgt * (0.75 + 0.25 * Math.sin(f * Math.PI)) + range(r, -10, 10) * s);
+      top.push([bx - half * 0.8 + f * half * 1.6, by - hgt * (0.78 + 0.22 * Math.sin(f * Math.PI)) + range(r, -10, 10) * s]);
     }
-    ctx.lineTo(bx + half, by);
-    ctx.closePath();
-    ctx.fill();
-    // Old bands in the dead stone.
-    ctx.strokeStyle = 'rgba(200,200,215,0.10)';
-    ctx.lineWidth = 1 * dpr;
-    for (let i = 1; i < 9; i++) {
-      const yy = by - (i / 9) * hgt * 0.8;
+    const outline = () => {
       ctx.beginPath();
-      ctx.moveTo(bx - half * 0.95, yy);
-      ctx.quadraticCurveTo(bx, yy - 4 * s, bx + half * 0.95, yy + 2 * s);
+      ctx.moveTo(left[0]![0], by + 2 * s);
+      for (const [x, y] of left) ctx.lineTo(x, y);
+      for (const [x, y] of top) ctx.lineTo(x, y);
+      for (let i = right.length - 1; i >= 0; i--) ctx.lineTo(right[i]![0], right[i]![1]);
+      ctx.lineTo(right[0]![0], by + 2 * s);
+      ctx.closePath();
+    };
+    // Broken branch stumps standing off the crest.
+    ctx.strokeStyle = wall === 'b' ? '#4a3542' : '#2c2c36';
+    ctx.lineCap = 'round';
+    for (let k = 0; k < 4; k++) {
+      const [x, y] = top[2 + k * 3]!;
+      const len = range(r, 14, 30) * s, lean = range(r, -0.5, 0.5);
+      ctx.lineWidth = range(r, 4, 7) * s;
+      ctx.beginPath();
+      ctx.moveTo(x, y + 4 * s);
+      ctx.lineTo(x + Math.sin(lean) * len, y - Math.cos(lean) * len);
       ctx.stroke();
+    }
+    // Body: lit from above, dark at the foot.
+    const g = ctx.createLinearGradient(0, by - hgt, 0, by);
+    g.addColorStop(0, wall === 'b' ? '#5e4552' : '#40404c');
+    g.addColorStop(1, wall === 'b' ? '#2e2029' : '#1c1c25');
+    ctx.fillStyle = g;
+    outline();
+    ctx.fill();
+    ctx.save();
+    outline();
+    ctx.clip();
+    // Old bands in the dead stone, each with a line of silt settled on its ledge.
+    for (let i = 1; i < 9; i++) {
+      const yy = by - (i / 9 + range(r, -0.025, 0.025)) * hgt * 0.8;
+      const tilt = range(r, -4, 4) * s;
+      ctx.strokeStyle = 'rgba(10,10,18,0.35)';
+      ctx.lineWidth = 1.4 * s;
+      ctx.beginPath();
+      ctx.moveTo(bx - half * 1.1, yy + 1.5 * s - tilt);
+      ctx.quadraticCurveTo(bx, yy - 2.5 * s, bx + half * 1.1, yy + 3.5 * s + tilt);
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(200,195,180,0.16)';
+      ctx.lineWidth = 1 * s;
+      ctx.beginPath();
+      ctx.moveTo(bx - half * 1.1, yy - tilt);
+      ctx.quadraticCurveTo(bx, yy - 4 * s, bx + half * 1.1, yy + 2 * s + tilt);
+      ctx.stroke();
+    }
+    // Holes where borers have been: dark, with a lit lower lip.
+    for (let k = 0; k < 9; k++) {
+      const hx = bx + range(r, -0.8, 0.8) * half, hy = by - range(r, 0.08, 0.7) * hgt, hr = range(r, 1.5, 4) * s;
+      ctx.fillStyle = 'rgba(5,5,12,0.75)';
+      ctx.beginPath();
+      ctx.ellipse(hx, hy, hr, hr * 0.8, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(190,190,200,0.15)';
+      ctx.lineWidth = 0.8 * s;
+      ctx.beginPath();
+      ctx.arc(hx, hy, hr, 0.3, Math.PI - 0.3);
+      ctx.stroke();
+    }
+    // Dull crusts of sponge, the only colour left on it.
+    for (let k = 0; k < 5; k++) {
+      ctx.fillStyle = ['rgba(150,110,70,0.35)', 'rgba(110,120,90,0.3)', 'rgba(140,90,110,0.3)'][k % 3]!;
+      ctx.beginPath();
+      ctx.ellipse(bx + range(r, -0.9, 0.9) * half, by - range(r, 0.05, 0.6) * hgt, range(r, 4, 9) * s, range(r, 2, 4) * s, range(r, -0.4, 0.4), 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // The light from above lies along the left shoulder.
+    const side = ctx.createLinearGradient(bx - half, 0, bx + half, 0);
+    side.addColorStop(0, 'rgba(150,180,230,0.12)');
+    side.addColorStop(0.5, 'rgba(0,0,0,0)');
+    side.addColorStop(1, 'rgba(0,0,10,0.25)');
+    ctx.fillStyle = side;
+    ctx.fillRect(bx - half * 1.2, by - hgt * 1.1, half * 2.4, hgt * 1.1);
+    ctx.restore();
+    // Ossel, still alive near the crest: one pale polyp, breathing.
+    if (wall === '') {
+      const [ox, oy] = top[7]!;
+      const breathe = 0.5 + 0.5 * Math.sin(t * 0.6);
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      glow(ctx, ox, oy + 6 * s, 26 * s, '200,210,255', 0.08 + 0.06 * breathe);
+      glow(ctx, ox, oy + 6 * s, 4 * s, '225,230,255', 0.4 + 0.25 * breathe);
+      ctx.restore();
     }
     if (wall === 'b') {
       // The reef has grown a living branch around it.
