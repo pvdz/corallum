@@ -691,3 +691,4 @@ date, what landed, what is half-done, what's next.
 - Hard seamount 'tidal': great tides every other moon, spawn ×0.85; trial: reach the surface → Moon-tied (a blue moon brings +4 instead of +2); moment two-seas (3900 m).
 - Two more days' seas: a lucky day (lucky neighbours ×2) and a kind day (freed creatures ×2).
 - Memory The small ones (needs 5 creatures freed; line title 'the line of small kindnesses').
+- With each far whale call in the Midnight Water, a vast dim whale crosses high overhead (midnight.ts drawFarWhale).

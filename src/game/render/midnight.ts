@@ -1057,6 +1057,37 @@ export function createMidnightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** A whale far above, the one whose call carries down (the call sounds 40 s into each 170 s): a vast dim shape crossing. */
+  function drawFarWhale(ctx: CanvasRenderingContext2D, t: number): void {
+    const p = t % 170;
+    if (p < 25 || p > 95) return;
+    const k = (p - 25) / 70;
+    const s = scale() * 3.2;
+    const x = focus.x + focus.w * (1.2 - k * 1.4), y = focus.y + focus.h * 0.08;
+    const a = Math.sin(k * Math.PI) * 0.45;
+    ctx.save();
+    ctx.globalAlpha = a;
+    ctx.fillStyle = '#2a3a66';
+    ctx.translate(x, y);
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 70 * s, 14 * s, -0.04, 0, Math.PI * 2);
+    ctx.fill();
+    // Tail flukes and a long pectoral fin.
+    ctx.beginPath();
+    ctx.moveTo(66 * s, -2 * s);
+    ctx.lineTo(92 * s, -14 * s + Math.sin(t * 0.6) * 4 * s);
+    ctx.lineTo(86 * s, 0);
+    ctx.lineTo(92 * s, 12 * s + Math.sin(t * 0.6) * 4 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(-20 * s, 8 * s);
+    ctx.quadraticCurveTo(-5 * s, 30 * s, 12 * s, 34 * s);
+    ctx.quadraticCurveTo(0, 18 * s, -6 * s, 9 * s);
+    ctx.fill();
+    ctx.restore();
+  }
+
   /** The jelly bloom (a moment, once met): small pale bells drifting through the water, pulsing together. */
   function drawJellyBloom(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
@@ -1201,6 +1232,7 @@ export function createMidnightScene(seed: number): Scene {
       drawDome(ctx, focus, v.works.dome, scale(), t, focus.y + focus.h * 0.99);
       if (v.moments.seep) drawSeep(ctx, t, L, v.moments.seep === 'b');
       if (v.milky) drawMilky(ctx, t);
+      drawFarWhale(ctx, t);
       drawGulper(ctx, t);
       drawFireflySquid(ctx, t);
       {
