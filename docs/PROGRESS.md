@@ -244,3 +244,4 @@ date, what landed, what is half-done, what's next.
 - Reef effects for story moments: a truce or dialect choice sends two rose-gold rings out from the reef; a Reading sends blue light climbing the reef from foot to crown.
 - Silt Floor: squat lobsters clinging to the vent chimney (more per vent tier); journal: 38. Choice rings verified rose.
 - Reef photos carry a caption in the corner: name, height, zone.
+- Polyp and glimmerseed cards show a thin bar toward the next milestone.

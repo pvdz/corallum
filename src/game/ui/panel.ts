@@ -2,7 +2,7 @@
 // reader and the away summary. Built once; `update()` only rewrites text and classes, so it
 // is cheap to call every frame.
 
-import { ACT1 } from '../content/act1.ts';
+import { ACT1, MILESTONES } from '../content/act1.ts';
 import type { Band, UpgradeId } from '../content/types.ts';
 import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
@@ -231,6 +231,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
 
   // ---------- Upgrade cards ----------
   const cards = new Map<UpgradeId, Card>();
+  const milestoneBars = new Map<UpgradeId, HTMLElement>();
   for (const u of UPGRADES) {
     const root = el('article', 'card');
     root.hidden = true;
@@ -253,6 +254,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const eta = el('span', 'eta');
     foot.append(btn, eta);
     root.append(head, flavour, effect, foot);
+    // Polyps and glimmerseed: a thin bar toward the next milestone.
+    if (u.id === 'polyp' || u.id === 'symbiont') {
+      const bar = el('div', 'milestone-bar');
+      bar.append(el('div', 'milestone-fill'));
+      root.insertBefore(bar, foot);
+      milestoneBars.set(u.id, bar);
+    }
     flavour.addEventListener('click', () => root.classList.toggle('open'));
     grow.append(root);
     cards.set(u.id, { root, cost: costEl, level, effect, eta, btn });
@@ -848,6 +856,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         // What one more would really add, after every multiplier (refreshed on the card's turn).
         if ((u.id === 'polyp' || u.id === 'symbiont') && (etaSlot === etaTurn || !c.effect.dataset.live)) {
           c.effect.textContent = marginalText(s, u.id);
+          const bar = milestoneBars.get(u.id);
+          if (bar) {
+            const lv = s.levels[u.id];
+            const next = nextMilestone(u.id, lv);
+            const prev = [...MILESTONES[u.id]].reverse().find((m) => m.level <= lv)?.level ?? 0;
+            bar.hidden = !next;
+            if (next) (bar.firstChild as HTMLElement).style.width = `${((lv - prev) / (next.level - prev)) * 100}%`;
+          }
           c.effect.dataset.live = '1';
         }
         // For multipliers: what the next level is worth to this reef now, once things settle.

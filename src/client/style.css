@@ -549,3 +549,7 @@ html.view-mode #photo { display: grid; }
 }
 @keyframes send-dark { from { background: rgba(2, 2, 10, 0); } to { background: rgba(2, 2, 10, 1); } }
 @keyframes send-rise { from { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } to { transform: translateY(-105vh); opacity: 0.6; } }
+.milestone-bar { height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.07); margin: 2px 0 8px; overflow: hidden; }
+.milestone-bar[hidden] { display: none; }
+.milestone-fill { height: 100%; background: linear-gradient(90deg, rgba(255, 194, 176, 0.5), #ffc2b0); transition: width 0.4s ease; }
+@media (max-width: 799px) { .milestone-bar { grid-column: 1 / -1; margin: 4px 0 2px; } }
