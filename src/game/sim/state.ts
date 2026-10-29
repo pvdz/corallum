@@ -240,7 +240,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     strain: '',
     sport: '',
     closed: false,
-    asked: { silt: '', tell: '', keep: '', surface: '' },
+    asked: { silt: '', tell: '', keep: '', surface: '', remember: '' },
     grains: [],
     rose: -1,
     roseN: 0,

@@ -48,7 +48,7 @@ export const OSSEL_MISTAKES: readonly OsselMistake[] = [
 
 // Ossel's questions: four times on the way up Ossel asks the reef something. The answer changes
 // nothing in the numbers; Ossel remembers it, answers back, and the ending carries it.
-export type QuestionId = 'silt' | 'tell' | 'keep' | 'surface';
+export type QuestionId = 'silt' | 'tell' | 'keep' | 'surface' | 'remember';
 export type Question = {
   id: QuestionId; metres: number; ask: string;
   answers: readonly [{ label: string; reply: string; ending: string }, { label: string; reply: string; ending: string }];
@@ -89,6 +89,15 @@ export const QUESTIONS: readonly Question[] = [
         ending: 'You told Ossel there was air up there, and the moon, and you were right.' },
       { label: 'More sea, the other way up.', reply: '“A sea of nothing,” Ossel says. “How strange to be so near nothing.”',
         ending: 'You told Ossel that the surface was a sea the other way up. You were not wrong.' },
+    ],
+  },
+  {
+    id: 'remember', metres: 3990, ask: '“When they ask about me, out there, what will you tell them?”',
+    answers: [
+      { label: 'That you were a wall, and then you were more.', reply: '“More,” says Ossel. “I would like that to be true.”',
+        ending: 'You promised Ossel the spawn would know it had been a wall, and then more than a wall.' },
+      { label: 'That you kept me company.', reply: 'Ossel does not answer, but the stone around your foot is warm for a long time.',
+        ending: 'You told Ossel the spawn would know only that it kept you company. It was the right thing to say.' },
     ],
   },
 ];

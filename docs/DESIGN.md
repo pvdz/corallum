@@ -188,7 +188,7 @@ swells rolls in; tap the crown (or S) as each crests (±SWELL.slack, 0.5 s) to s
 crest caught. A ring closes on the crown toward each crest; a caught one flashes gold. Act V's waiting
 gets a skill to play.
 
-**Ossel's questions** (at 200, 1500, 3100 and 3850 m): Ossel asks the reef something (what the silt is
+**Ossel’s questions** (at 200, 1500, 3100, 3850 and 3990 m): Ossel asks the reef something (what the silt is
 for, whether to tell the spawn all of Thousandfold, what it would keep, what is past the light). No
 effect on the numbers: Ossel answers back, the reef's own bands record it, and the ending carries it.
 
