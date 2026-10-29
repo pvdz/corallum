@@ -611,7 +611,8 @@ creatureLabel.setAttribute('aria-live', 'polite');
 ui.append(creatureLabel);
 let labelTimer = 0;
 /** A small label beside a tapped creature: its name and the journal's note. */
-function showCreatureLabel(id: string, x: number, y: number): void {
+/** Name a creature beside where it was tapped: above it, clear of its body (`r`), or below if there is no room. */
+function showCreatureLabel(id: string, x: number, y: number, r = 20): void {
   const c = CREATURES.find((k) => k.id === id);
   if (!c) return;
   creatureLabel.innerHTML = '';
@@ -620,9 +621,12 @@ function showCreatureLabel(id: string, x: number, y: number): void {
   const t = document.createElement('span');
   t.textContent = c.note;
   creatureLabel.append(n, t);
-  const left = Math.min(window.innerWidth - 230, Math.max(8, x + 18));
+  const reach = Math.min(r, 90);
+  const lw = creatureLabel.offsetWidth || 220, lh = creatureLabel.offsetHeight || 56;
+  const left = Math.min(window.innerWidth - lw - 8, Math.max(8, x - lw / 2));
+  const above = y - reach - 10 - lh;
   creatureLabel.style.left = `${left}px`;
-  creatureLabel.style.top = `${Math.max(8, y - 30)}px`;
+  creatureLabel.style.top = `${above >= 8 ? above : y + reach + 10}px`;
   creatureLabel.classList.add('show');
   clearTimeout(labelTimer);
   labelTimer = window.setTimeout(() => creatureLabel.classList.remove('show'), 3500);
@@ -662,7 +666,7 @@ canvas.addEventListener('pointerdown', (e) => {
   // Tapping a creature names it (the sweep still happens).
   const who = creatureAt(e.clientX * dpr, e.clientY * dpr);
   if (who?.id === 'ossel') sayOssel();
-  else if (who) showCreatureLabel(who.id, who.x / dpr, who.y / dpr);
+  else if (who) showCreatureLabel(who.id, who.x / dpr, who.y / dpr, who.r / dpr);
   if (who) {
     startle(who.id, frozenT ?? animT, e.clientX * dpr, e.clientY * dpr);
     if (who.id === 'whale') audio.cue('whale');

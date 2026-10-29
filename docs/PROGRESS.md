@@ -264,3 +264,4 @@ date, what landed, what is half-done, what's next.
 - Touch: the dolphins answer with an encore, a higher leap of the pod from where they were touched.
 - Silt Floor creatures are all tappable now (brittle stars, sea pigs, glass sponges, sea lilies, rattail, tube worms, squat lobsters). Tube worms snap their plumes in, nearest first; sea lilies fold their arms; brittle stars curl.
 - Tappable: comb jellies (combs beat bright and fast), glass shrimp (tail-flip backwards), the siphonophore (a flash runs down the chain), whale fall, nudibranchs, moon jellies, the shore bird.
+- The Rasp are tappable: the nearest turns to look and lets fall a trickle of white sand. Creature labels now sit above the creature, clear of its body (below when there is no room), so the reaction stays visible.

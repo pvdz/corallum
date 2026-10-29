@@ -686,6 +686,7 @@ export function createTwilightScene(seed: number): Scene {
   function drawRasp(ctx: CanvasRenderingContext2D, t: number, n: number, trust: boolean, polite: boolean): void {
     if (n > 0) sight('rasp');
     const s = scale();
+    const touch = startled('rasp', t);
     for (let i = 0; i < Math.min(n, MAX_RASP); i++) {
       const g = grazers[i]!;
       let u = (((g.phase + t * g.speed) % 1) + 1) % 1;
@@ -706,6 +707,21 @@ export function createTwilightScene(seed: number): Scene {
       const peck = Math.max(0, Math.sin(t * 2.2 + i * 1.7)) ** 8;
       const y = slopeY(u) - (14 + g.lane * 50) * s + peck * 8 * s;
       const len = 22 * s * g.size;
+      spot('rasp', x, y, Math.max(len * 1.3, 22 * dpr));
+      // Touched, the nearest Rasp turns to look, and lets fall a trickle of fine white sand:
+      // what is left of the stone it has eaten.
+      const met = touch && touch.age < 4 && Math.hypot(touch.x - x, touch.y - y) < len * 2.5 ? touch : null;
+      if (met) {
+        if (met.age < 2.5) dir = met.x >= x ? 1 : -1;
+        ctx.fillStyle = 'rgba(250,246,232,0.95)';
+        for (let j = 0; j < 16; j++) {
+          const f = (met.age * 1.6 - j * 0.06);
+          if (f < 0 || f > 1) continue;
+          ctx.beginPath();
+          ctx.arc(x - dir * len + Math.sin(j * 2.1) * 3 * s, y + len * 0.2 + f * 40 * s, 1.4 * s, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
       ctx.save();
       ctx.translate(x, y);
       ctx.scale(dir, 1);
