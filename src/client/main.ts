@@ -24,7 +24,7 @@ import { createTaps } from '../game/render/taps.ts';
 import { drawFeast, feastPos, feastReach } from '../game/render/feast.ts';
 import { zoom, type Focus, type ReefView, type Scene } from '../game/render/scene.ts';
 import { runBot } from '../game/sim/bot.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -34,6 +34,8 @@ import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS } from '../game/content/lineage.ts';
 import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
 import { createPortraits } from './portraits.ts';
+import { drawMoon } from '../game/render/draw.ts';
+import { GAUGE_MOON } from '../game/content/act5.ts';
 import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { ACT1, MILESTONES, type Milestone } from '../game/content/act1.ts';
 import { OSSEL_LINES, WHISPERS } from '../game/content/whispers.ts';
@@ -755,8 +757,22 @@ for (const a of ACTS) {
   seg.title = a.name;
   gauge.append(seg);
 }
-gauge.append(gaugeMarker, gaugeLabel);
+// Above the surface end of the gauge, the moon in its current phase (redrawn as it changes).
+const gaugeMoon = document.createElement('canvas');
+gaugeMoon.className = 'gauge-moon';
+gaugeMoon.width = gaugeMoon.height = 36;
+let gaugeMoonPhase = -1;
+gauge.append(gaugeMarker, gaugeLabel, gaugeMoon);
 ui.append(gauge);
+function updateGaugeMoon(): void {
+  const p = Math.round(moonPhase(state.t) * 48) / 48;
+  if (p === gaugeMoonPhase) return;
+  gaugeMoonPhase = p;
+  const c = gaugeMoon.getContext('2d')!;
+  c.clearRect(0, 0, 36, 36);
+  drawMoon(c, 18, 18, 14, p);
+  gaugeMoon.title = moonFull(state.t) ? GAUGE_MOON.full : `${GAUGE_MOON.until} ${duration(untilFullMoon(state.t))}`;
+}
 /** 0 (seamount) … 1 (surface) along the gauge. */
 function gaugeAt(h: number): number {
   const n = actAt(h);
@@ -765,6 +781,7 @@ function gaugeAt(h: number): number {
 }
 let gaugeShown = -1;
 function updateGauge(): void {
+  updateGaugeMoon();
   const h = Math.round(state.height * 10) / 10;
   if (h === gaugeShown) return;
   gaugeShown = h;

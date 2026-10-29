@@ -161,3 +161,6 @@ export const ENDING = {
   last: 'Far below, the Long Silt is still falling. It will fall for a long time yet. But it is ' +
     'falling on reefs again.',
 } as const;
+
+/** The little moon above the depth gauge: its tooltip. */
+export const GAUGE_MOON = { full: 'The Spawning Moon is full', until: 'Full moon in' } as const;

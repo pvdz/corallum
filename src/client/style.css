@@ -516,6 +516,7 @@ html.view-mode #depth-gauge { right: 18px; }
 /* View mode zooms the world itself: pinches belong to the game, not the page. */
 html.view-mode #world { touch-action: none; }
 #depth-gauge b { flex: 1; display: block; }
+#depth-gauge .gauge-moon { position: absolute; top: -26px; left: 50%; width: 18px; height: 18px; transform: translateX(-50%); pointer-events: auto; }
 #depth-gauge b.zone-1 { background: #121032; border-radius: 0 0 3px 3px; }
 #depth-gauge b.zone-2 { background: #0b1240; }
 #depth-gauge b.zone-3 { background: #1a3f7a; }
