@@ -365,6 +365,62 @@ export function createTwilightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * A cleaning station: a big grouper hangs still beside the reef, mouth open, while two small
+   * striped cleaner wrasse dart over it picking it clean.
+   */
+  function drawCleaningStation(ctx: CanvasRenderingContext2D, t: number): void {
+    const s = scale() * 1.6;
+    const x = focus.x + focus.w * 0.74, y = focus.y + focus.h * 0.6 + Math.sin(t * 0.3) * 3 * s;
+    sight('grouper');
+    spot('grouper', x, y, 40 * s);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(-1, 1);
+    // The grouper: heavy, mottled, fins spread.
+    const body = ctx.createLinearGradient(0, -14 * s, 0, 14 * s);
+    body.addColorStop(0, '#6b5a48');
+    body.addColorStop(1, '#3d3128');
+    ctx.fillStyle = body;
+    ctx.beginPath();
+    ctx.moveTo(30 * s, 2 * s);
+    ctx.bezierCurveTo(26 * s, -14 * s, -10 * s, -16 * s, -24 * s, -4 * s);
+    ctx.lineTo(-36 * s, -12 * s + Math.sin(t) * 2 * s);
+    ctx.lineTo(-34 * s, 10 * s + Math.sin(t) * 2 * s);
+    ctx.lineTo(-24 * s, 6 * s);
+    ctx.bezierCurveTo(-8 * s, 16 * s, 24 * s, 14 * s, 30 * s, 2 * s);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(30,22,18,0.5)';
+    // Mottling: irregular blotches over the flank.
+    for (let k = 0; k < 14; k++) {
+      const mx = ((k * 0.618) % 1) * 46 - 22, my = ((k * 0.382) % 1) * 16 - 8;
+      ctx.beginPath();
+      ctx.ellipse(mx * s, my * s, (1.6 + (k % 3) * 0.7) * s, (1.2 + (k % 2) * 0.6) * s, k, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.fillStyle = '#e8d8b0';
+    ctx.beginPath();
+    ctx.arc(20 * s, -4 * s, 2.2 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    // The cleaners: tiny blue fish with a black stripe, darting about the grouper.
+    for (let k = 0; k < 2; k++) {
+      const a = t * (1.3 + k * 0.4) + k * 3;
+      const cx = x + Math.cos(a) * (18 + 8 * Math.sin(a * 1.7)) * s, cy = y + Math.sin(a * 1.3) * 10 * s;
+      const dir = -Math.sin(a) >= 0 ? 1 : -1;
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.scale(dir, 1);
+      ctx.fillStyle = '#5ab8ff';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 5 * s, 1.6 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#111';
+      ctx.fillRect(-4 * s, -0.4 * s, 8 * s, 0.8 * s);
+      ctx.restore();
+    }
+  }
+
   /** A manta gliding through the light shafts every few minutes, wings rising and falling slowly. */
   function drawManta(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 230, crossing = 75;
@@ -538,6 +594,7 @@ export function createTwilightScene(seed: number): Scene {
       drawSeaFans(ctx, t);
       drawGardenEels(ctx, t);
       drawOctopus(ctx, t);
+      drawCleaningStation(ctx, t);
       drawWall(ctx, t, v.wall);
       drawRasp(ctx, t, v.rasp, v.raspTrust, v.raspPolite);
       if (v.gardeners) drawGardeners(ctx, t);

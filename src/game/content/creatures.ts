@@ -4,7 +4,7 @@
 export type CreatureId =
   | 'jelly' | 'brittle-star' | 'rattail' | 'sea-pig' | 'brine-pool' | 'smokers' | 'sea-lily' | 'glass-sponge' | 'tube-worm'
   | 'lanternfish' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall'
-  | 'rasp' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch'
+  | 'rasp' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper'
   | 'reef-fish' | 'whale' | 'turtle' | 'clownfish'
   | 'shore-bird' | 'dolphin' | 'moon-jelly';
 
@@ -32,6 +32,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'garden-eel', name: 'Garden eels', zone: 'The Twilight Shelf', note: 'A colony standing out of the sand, ducking all at once.' },
   { id: 'octopus', name: 'Octopus', zone: 'The Twilight Shelf', note: 'The colour of sand until it moves, and then of fire.' },
   { id: 'nudibranch', name: 'Nudibranchs', zone: 'The Twilight Shelf', note: 'Slugs in colours meant as warnings, creeping along your branches.' },
+  { id: 'grouper', name: 'Grouper and cleaners', zone: 'The Twilight Shelf', note: 'A big fish holding still while two small ones pick it clean.' },
   { id: 'reef-fish', name: 'Reef fish', zone: 'The Sunlit Crown', note: 'Colours you had no words for, darting between the branches.' },
   { id: 'whale', name: 'Whale', zone: 'The Sunlit Crown', note: 'A long shadow in the haze, calling as it passes.' },
   { id: 'turtle', name: 'Green turtle', zone: 'The Sunlit Crown', note: 'It comes for the seagrass and stays for the meadows.' },

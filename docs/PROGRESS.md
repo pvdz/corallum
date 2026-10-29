@@ -209,3 +209,4 @@ date, what landed, what is half-done, what's next.
 - Accessibility: zone titles, milestones, journal/feat notes, whispers and creature labels are polite live regions; the story reader is a labelled modal dialog.
 - Escape closes the story card, the away summary or the memory choice.
 - Opening screen: journal notes wait until the title has faded, and the depth gauge appears with the first metre of stone (both collided with the title/hint on phones).
+- Twilight Shelf: a cleaning station, a mottled grouper hanging beside the reef with two cleaner wrasse darting over it (tappable; journal: 29).
