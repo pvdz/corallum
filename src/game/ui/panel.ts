@@ -819,6 +819,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (s.race.decided > 0) codexRow('Sister reef', `first to ${s.race.won} of ${s.race.decided} marks` + (s.meta.endings > 0 ? ` · ahead of the quick cousin at ${s.race.cousin}` : ''));
     const recs = s.meta.records.map((t, i) => t > 0 ? `${metres(SISTER.marks[i]!)} in ${duration(t)}` : '').filter(Boolean);
     if (recs.length) codexRow('Line’s best', recs.join(' · '));
+    const did: string[] = [];
+    if (s.feasts) did.push(`${s.feasts} feast${s.feasts === 1 ? '' : 's'} caught`);
+    if (s.tally.intruders) did.push(`${s.tally.intruders} intruder${s.tally.intruders === 1 ? '' : 's'} driven off`);
+    if (s.signal.answered) did.push(`${s.signal.answered} signal${s.signal.answered === 1 ? '' : 's'} answered`);
+    if (s.relics.length + s.tally.roams) did.push(`${s.relics.length + s.tally.roams} trip${s.relics.length + s.tally.roams === 1 ? '' : 's'}`);
+    if (s.request.done) did.push(`${s.request.done} request${s.request.done === 1 ? '' : 's'} kept`);
+    if (did.length) codexRow('This reef', did.join(' · '));
     codexRow('Grown', `${metres(s.height)} up the seamount, ${Math.round(Math.max(0, SURFACE - s.height)).toLocaleString('en-US')} m down`);
     codexRow('Bands read', `${s.bands.length} of your own, ${s.readings.length} of Thousandfold’s`);
     const truce = MEETINGS.filter((m) => s.truce[m.id]).map((m) => `${m.title}: ${m[s.truce[m.id] as Choice].label}`);
