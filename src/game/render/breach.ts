@@ -16,6 +16,7 @@ import { createBloom, type Bloom } from './bloom.ts';
 import type { CoralForm } from './coral.ts';
 import { drawMoon, glow } from './draw.ts';
 import { FIGURES, type Figure } from '../content/sky.ts';
+import { SWELL } from '../content/events.ts';
 import { drawPetrels, drawSailors, drawSeaSparkle, type Surface } from './surface.ts';
 import { createLayerCache } from './layer.ts';
 import { drawCraft, FLUORESCENT_POLYP } from './craft.ts';
@@ -152,6 +153,56 @@ export function createBreachScene(seed: number): Scene {
     if (great) glow(ctx, mx, my, r * 2.2, '255,200,150', 0.18 * lit);
     ctx.restore();
     drawMoonFace(ctx, phase, great, dawn);
+  }
+
+  /**
+   * A set of swells: each a long hump of water rolling in from the left and passing under the
+   * crown at its crest. Around the crown, a ring closes in on each crest still to catch; a caught
+   * crest flashes gold.
+   */
+  function drawSwell(ctx: CanvasRenderingContext2D, sw: { since: number; caught: number }, crown: readonly [number, number]): void {
+    const s = scale(), wy = waterY();
+    const speed = focus.w * 0.11;
+    ctx.save();
+    for (let i = 0; i < SWELL.waves; i++) {
+      const d = sw.since - (SWELL.lead + i * SWELL.gap);
+      if (d < -4 || d > 3) continue;
+      // The hump: a raised band of water centred where this swell is now.
+      const hx = crown[0] + d * speed, hw = 90 * s, hh = 26 * s;
+      const g = ctx.createLinearGradient(0, wy - hh, 0, wy + 4 * s);
+      g.addColorStop(0, 'rgba(60,120,170,0.9)');
+      g.addColorStop(1, 'rgba(16,58,90,0.95)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.moveTo(hx - hw * 2, wy + 2 * s);
+      for (let x = -2; x <= 2; x += 0.1) ctx.lineTo(hx + x * hw, wy - hh * Math.exp(-x * x * 1.6));
+      ctx.lineTo(hx + hw * 2, wy + 2 * s);
+      ctx.closePath();
+      ctx.fill();
+      // Foam on the crest.
+      ctx.strokeStyle = 'rgba(230,240,255,0.55)';
+      ctx.lineWidth = 1.5 * s;
+      ctx.beginPath();
+      for (let x = -0.6; x <= 0.6; x += 0.1) ctx.lineTo(hx + x * hw, wy - hh * Math.exp(-x * x * 1.6) - 1 * s);
+      ctx.stroke();
+      // The timing ring: closing in on the crown, meeting it at the crest.
+      const caught = (sw.caught & (1 << i)) !== 0;
+      if (caught && d >= 0 && d < 1) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        glow(ctx, crown[0], crown[1], (30 + 40 * d) * s, '255,215,140', 0.6 * (1 - d));
+        ctx.restore();
+      } else if (!caught && d > -2.5 && d < SWELL.window) {
+        const r = (24 + Math.max(0, -d) * 34) * s;
+        const near = Math.abs(d) <= SWELL.window;
+        ctx.strokeStyle = near ? 'rgba(255,225,160,0.95)' : 'rgba(200,225,255,0.55)';
+        ctx.lineWidth = (near ? 3 : 1.5) * s;
+        ctx.beginPath();
+        ctx.arc(crown[0], crown[1], r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
   }
 
   /** A figure's star i, in device pixels: placed in the focus's share of the sky. */
@@ -1043,6 +1094,7 @@ export function createBreachScene(seed: number): Scene {
       drawSong(ctx, v.song, this.crownAt[0], this.crownAt[1], t, scale());
       reef.drawEffects(ctx, L, v, effects.live(t));
       drawWaves(ctx, t);
+      if (v.swell) drawSwell(ctx, v.swell, this.crownAt);
       drawSparkle(ctx, t, dawn);
       if (v.bands.includes('air')) drawGlowSurf(ctx, t, this.crownAt);
       drawSpawn(ctx, t, v, L, reef);

@@ -515,3 +515,4 @@ date, what landed, what is half-done, what's next.
 - Rare oarfish in the Twilight (twilight.ts drawOarfish: every 25 min for 90 s, head-up silver ribbon with a rippling red crest; touched it hurries off). Note: tools/screenshot `--t` freezes the clock and overrides `at`.
 - Night on the Twilight Shelf (twilight.ts nightAt, same 10-minute day as the Sunlit Crown): a veil behind and lightly in front of the reef, polyps open wider and glow, plankton sparks blue.
 - Twilight nights: garden eels sleep in their burrows (a few stay half out); flashlight fish (night only) wander left of the reef, lamps shuttering; touched, they all go dark and relight one by one.
+- Swells at the Breach (events.ts SWELL; economy currentSwell/untilSwell/rideSwell; state.swell): breach.ts drawSwell (humps + timing ring), tap near the crown or S, Soon line, tab dot.

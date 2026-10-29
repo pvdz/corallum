@@ -32,12 +32,12 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio, type Cue } from '../game/audio/audio.ts';
-import { AWAY_CYCLES, AWAY_PREP, DAILY, DREAM, NOTIFY, FEAST, SIGNAL, THORN, WELCOME } from '../game/content/events.ts';
+import { AWAY_CYCLES, AWAY_PREP, DAILY, DREAM, NOTIFY, SWELL, FEAST, SIGNAL, THORN, WELCOME } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS, TRIAL_TEXT } from '../game/content/lineage.ts';
 import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf, TRUST, trustLevel, COMPANION, type CreatureId } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
@@ -744,6 +744,25 @@ function risingView(): number {
   return Math.min(1, u / 30, (RISING.length - u) / 30);
 }
 
+/** The set of swells rolling in, as the Breach scene shows it. */
+function swellView(): ReefView['swell'] {
+  const sw = currentSwell(state);
+  return sw ? { since: state.t - sw.start, caught: state.swell.k === sw.k ? state.swell.caught : 0 } : null;
+}
+
+/** Try to ride the swell (a tap near the crown, or S): spawn on a caught crest, a word on a miss. */
+function trySwell(x: number, y: number): boolean {
+  const pay = rideSwell(state);
+  if (pay < 0) return false;
+  if (pay > 0) {
+    floatText(x, y - 20, `+${num(pay)} spawn ${SWELL.hit}`, 'feast-float');
+    audio.cue('feast');
+    buzz([10, 20, 10]);
+    save();
+  } else floatText(x, y - 20, SWELL.miss, 'feast-float');
+  return true;
+}
+
 /** The warm spell as the Sunlit scene shows it: warmth eases in and out, an open reef pales and recovers. */
 function heatView(): ReefView['heat'] {
   const closed = closedNow(state);
@@ -789,6 +808,7 @@ function view(): ReefView {
     shell: currentShell(state),
     flurry: inFlurry(state),
     heat: heatView(),
+    swell: swellView(),
     grains: state.grains.map((g) => GRAINS.find((x) => x.id === g)!.rgb),
     rising: risingView(),
     sky: { named: FIGURES.filter((f) => state.sky[f.id]).map((f) => f.id), tracing,
@@ -1125,6 +1145,11 @@ canvas.addEventListener('pointerdown', (e) => {
   // Tapping a creature names it (the sweep still happens).
   const hit = creatureAt(wx, wy);
   // A shell on the sand: picked up for the line's shelf (no label, no gift).
+  // Swells at the Breach: a tap near the crown rides the swell.
+  if (currentSwell(state) && frozenT === null) {
+    const [cx, cy] = scene.crownAt;
+    if (Math.hypot(wx - cx, wy - cy) < 120 * dpr && trySwell(e.clientX, e.clientY)) return;
+  }
   if (hit?.id === 'star') {
     tapStar(hit.n ?? -1, e.clientX, e.clientY);
     return;
@@ -1345,7 +1370,7 @@ window.addEventListener('keydown', (e) => {
   }
   if (e.key === '?') {
     panel.story('Keys', 'Shortcuts',
-      'Space sweeps your tentacles. 1–4 switch the panel tabs. F catches a falling feast. E sends the shoals on the next expedition. R sends the feeders into the rising. C closes the polyps against warm water (or opens them). 7–0 answer the shoals’ signal. P buds a polyp, B lays a band, G hosts ' +
+      'Space sweeps your tentacles. 1–4 switch the panel tabs. F catches a falling feast. E sends the shoals on the next expedition. R sends the feeders into the rising. S rides a swell at the Breach. C closes the polyps against warm water (or opens them). 7–0 answer the shoals’ signal. P buds a polyp, B lays a band, G hosts ' +
       'glimmerseed. H hides the panel to see the whole reef. Hold any buy button to keep buying. ' +
       'Tap a creature to learn its name; tap Ossel and it will answer.');
     return;
@@ -1357,6 +1382,11 @@ window.addEventListener('keydown', (e) => {
   if (viewMode && (e.key === '+' || e.key === '=' || e.key === '-' || e.key === '0')) {
     const k = e.key === '0' ? 1 : zoom.k * (e.key === '-' ? 1 / 1.25 : 1.25);
     zoomer.zoomAt(k, canvas.width / 2, canvas.height / 2);
+    return;
+  }
+  if (e.key.toLowerCase() === 's' && currentSwell(state)) {
+    const [cx, cy] = toScreen(scene.crownAt[0], scene.crownAt[1]);
+    trySwell(cx / dpr, cy / dpr);
     return;
   }
   if (e.key.toLowerCase() === 'r' && canFeedRising(state)) {
@@ -1673,7 +1703,7 @@ function frame(now: number): void {
     const base = ended(state) ? `${who} · spawned` : state.height < 1 ? who : `${metres(state.height)} · ${who}`;
     // Something to do right now (a feast, an intruder, a choice waiting): a dot, for background tabs.
     const waiting = !!currentFeast(state) || !!currentThorn(state) || !!nextMoment(state) || othersSpawning(state) || boonsOffered(state).length > 0 ||
-      forkOpen(state) || strainOpen(state) || sportOpen(state) || !!currentSignal(state) || !!currentShell(state) || canFeedRising(state);
+      forkOpen(state) || strainOpen(state) || sportOpen(state) || !!currentSignal(state) || !!currentShell(state) || canFeedRising(state) || !!currentSwell(state);
     const pin = panel.pinnedText();
     const t = (waiting ? `● ${base}` : base) + (pin ? ` · ${pin}` : '');
     if (document.title !== t) document.title = t;

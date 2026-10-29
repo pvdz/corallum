@@ -30,6 +30,17 @@ export const NOTIFY = {
   moon: 'The moon is full and the spawn is ready.',
 } as const;
 
+/**
+ * Swells at the Breach (while watching): now and then a set of big swells rolls in; tap the crown
+ * (or S) just as each crests to send spawn up on it.
+ */
+export const SWELL = {
+  period: 200, waves: 5, lead: 3, gap: 4, window: 0.5, seconds: 20,
+  word: 'swells',
+  hit: 'up on the swell',
+  miss: 'too soon · too late',
+} as const;
+
 /** A new day: the first visit of each calendar day brings a small gift. */
 export const DAILY = { seconds: 600, kicker: 'A new day', text: 'Ossel has been keeping something for you.' } as const;
 

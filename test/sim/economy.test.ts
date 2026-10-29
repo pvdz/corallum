@@ -1,11 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
+import { currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { newGame, type GameState } from '../../src/game/sim/state.ts';
 import { GIFT } from '../../src/game/content/creatures.ts';
 import { HEAT } from '../../src/game/content/act4.ts';
 import { RISING } from '../../src/game/content/act2.ts';
+import { SWELL } from '../../src/game/content/events.ts';
 
 const rel = (a: number, b: number) => Math.abs(a - b) / Math.max(1, Math.abs(b));
 const clone = (s: GameState): GameState => structuredClone(s);
@@ -307,6 +308,23 @@ test('dreams: one with each new day, at most three kept, each spent once', () =>
   assert.equal(s.meta.dreams, 3);
   assert.ok(dream(s) && dream(s) && dream(s));
   assert.equal(dream(s), false);
+});
+
+test('swells: a tap on the crest pays once, a tap between crests misses', () => {
+  const s = newGame(3);
+  s.height = 3990;
+  let sw = null;
+  for (let i = 0; i < 400 && !sw; i++) { s.t += 1; sw = currentSwell(s); }
+  assert.ok(sw);
+  s.t = sw!.start + SWELL.lead + SWELL.gap; // the second crest
+  rideSwell(s);
+  assert.equal(s.swell.caught, 0b10);
+  rideSwell(s);
+  s.t += SWELL.gap / 2;
+  assert.equal(rideSwell(s), 0, 'between crests');
+  s.t = sw!.start + SWELL.lead + 4 * SWELL.gap + SWELL.window * 0.9;
+  rideSwell(s);
+  assert.equal(s.swell.caught, 0b10010, 'the last crest, just late');
 });
 
 test('dialects: one per tier, in order, after their band, paid in bloom', () => {

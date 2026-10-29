@@ -25,7 +25,7 @@ import { ACT5, BANDS_ACT5, GARDEN, MEMORIES, type Memory, type MemoryId } from '
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
 import { BOONS, LINEAGE, SEAMOUNTS, type BoonId, type Seamount, type SeamountId, type TraitId } from '../content/lineage.ts';
-import { DAILY, FEAST, SIGNAL, THORN, WELCOME, intruderOf, type Intruder, DREAM } from '../content/events.ts';
+import { DAILY, FEAST, SIGNAL, SWELL, THORN, WELCOME, intruderOf, type Intruder, DREAM } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { WORKS, type WorkId } from '../content/works.ts';
 import { COUSIN, SISTER } from '../content/sister.ts';
@@ -1833,6 +1833,43 @@ export function answerSignal(s: GameState, answer: readonly number[]): number {
 }
 
 // ---------- Shells ----------
+
+/** The set of swells rolling in now (the Breach, before the release), with when it began. */
+export function currentSwell(s: GameState): { k: number; start: number } | null {
+  if (actAt(s.height) !== 5 || ended(s)) return null;
+  const k = Math.floor(s.t / SWELL.period);
+  const len = SWELL.lead + SWELL.waves * SWELL.gap;
+  const start = k * SWELL.period + mulberry32((s.seed ^ 0x5e71) + Math.imul(k, 0x9e3779b1))() * (SWELL.period - len - 5);
+  return s.t >= start && s.t < start + len ? { k, start } : null;
+}
+
+/** Seconds until the next set of swells (0 while one rolls; Infinity away from the Breach). */
+export function untilSwell(s: GameState): number {
+  if (actAt(s.height) !== 5 || ended(s)) return Infinity;
+  if (currentSwell(s)) return 0;
+  for (let k = Math.floor(s.t / SWELL.period); k < Math.floor(s.t / SWELL.period) + 3; k++) {
+    const len = SWELL.lead + SWELL.waves * SWELL.gap;
+    const start = k * SWELL.period + mulberry32((s.seed ^ 0x5e71) + Math.imul(k, 0x9e3779b1))() * (SWELL.period - len - 5);
+    if (start > s.t) return start - s.t;
+  }
+  return Infinity;
+}
+
+/**
+ * Ride a swell: a tap judged against the nearest crest. Caught within the window (once per crest),
+ * it pays SWELL.seconds of spawn; returns the pay, 0 for a miss, -1 when no swells are rolling.
+ */
+export function rideSwell(s: GameState): number {
+  const sw = currentSwell(s);
+  if (!sw) return -1;
+  const i = Math.round((s.t - sw.start - SWELL.lead) / SWELL.gap);
+  if (i < 0 || i >= SWELL.waves) return 0;
+  if (Math.abs(s.t - (sw.start + SWELL.lead + i * SWELL.gap)) > SWELL.window) return 0;
+  if (s.swell.k !== sw.k) s.swell = { k: sw.k, caught: 0 };
+  if (s.swell.caught & (1 << i)) return 0;
+  s.swell.caught |= 1 << i;
+  return burst(s, SWELL.seconds);
+}
 
 /** The shell lying on the Sunlit sand now (slot, place 0..1, kind), if one is still to pick up. */
 export function currentShell(s: GameState): { k: number; x: number; id: string } | null {

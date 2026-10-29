@@ -200,6 +200,7 @@ Tick items as they land; keep this list honest. Add items freely.
   - [x] Sun-shy trait: an open reef closes itself in warm water
   - [x] the rising in the Midnight Water and Twilight Shelf: send the feeders in for a haul
   - [x] Breach creatures: sailors, storm petrels, sea sparkle
+  - [x] swells at the Breach: tap on the crest for spawn
   - [x] night on the Twilight Shelf: garden eels sleep, flashlight fish come out
   - [x] the reseeded sea chart in the chronicle; a rare oarfish on the Twilight Shelf
   - [x] Ossel's questions: four, remembered, answered back, carried into the ending

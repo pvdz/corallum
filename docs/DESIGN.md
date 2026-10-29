@@ -176,6 +176,11 @@ build leans one way. On the Silt Floor the grain bands show as coloured rings in
 **Flurries** (Silt Floor): every four minutes the Long Silt falls thick for 30 s; sweeps catch ×3 then
 (on the sim clock, so the snow and the pay agree; the Soon line counts down to the next).
 
+**Swells** (the Breach, while watching, before the release): every few minutes a set of five big
+swells rolls in; tap the crown (or S) as each crests (±0.5 s) to send spawn up on it: 20 s of spawn per
+crest caught. A ring closes on the crown toward each crest; a caught one flashes gold. Act V's waiting
+gets a skill to play.
+
 **Ossel's questions** (at 200, 1500, 3100 and 3850 m): Ossel asks the reef something (what the silt is
 for, whether to tell the spawn all of Thousandfold, what it would keep, what is past the light). No
 effect on the numbers: Ossel answers back, the reef's own bands record it, and the ending carries it.

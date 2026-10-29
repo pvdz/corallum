@@ -149,4 +149,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Ossel's questions (the silt's purpose, telling the spawn, what to keep, what is up there) | this game's own characters and theme | OK |
 | Oarfish (rare Twilight sight) | real animal | OK |
 | Flashlight fish (Twilight, night only) | real animal (Anomalopidae) | OK |
+| Riding the swells (tap on the crest) | a timing mini-game is a genre convention; framed by real swell over a reef crest | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |
