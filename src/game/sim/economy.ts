@@ -1927,6 +1927,8 @@ function requestCount(s: GameState, kind: RequestKind): number {
     case 'milky': return s.tally.milky;
     case 'lucky': return s.tally.lucky;
     case 'free': return s.tally.freed;
+    case 'stray': return s.tally.strays;
+    case 'fragment': return s.fragments;
     case 'visitor': return s.meta.seen.filter((k) => k.startsWith('v:')).length;
   }
 }
@@ -1944,6 +1946,8 @@ function requestOpen(s: GameState, kind: RequestKind): boolean {
     case 'milky': return untilMilky(s) < 600;
     case 'lucky': return s.tally.touches >= 5;
     case 'visitor': return !!visitor(s) && !visited(s);
+    case 'fragment': return s.fragments < fragmentMax(s);
+    case 'stray': return revealed(s, 'shoal') && s.levels.shoal < (seamount(s).shoalCap ?? Infinity);
     case 'shoals': return revealed(s, 'shoal') && !maxed(s, 'shoal');
     case 'sandbar': case 'pigment': case 'ripen': return revealed(s, kind) && !maxed(s, kind);
     case 'glimmer': return revealed(s, 'symbiont') && !maxed(s, 'symbiont');
@@ -2155,6 +2159,7 @@ export function callStray(s: GameState): boolean {
   const st = currentStray(s);
   if (!st) return false;
   s.strayed = st.k;
+  s.tally.strays++;
   s.levels.shoal += 1;
   s.jobs.feed += 1;
   return true;

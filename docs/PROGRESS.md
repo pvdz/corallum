@@ -696,3 +696,4 @@ date, what landed, what is half-done, what's next.
 - Trait Foster (way, 6): up to eight fragments (economy fragmentMax). Fragments are taken in small and grow to full size over an hour (state fragmentAt).
 - Glinting specks drift in the Sunlit sun shafts by day (sunlit.ts drawShaftMotes).
 - Lost shoals (events.ts STRAY; economy currentStray/callStray; tangle.ts drawStray): in the Midnight Water every 15 min a stray shoal's lights flicker far off for 40 s; tapped, it joins the reef (+1 shoal feeding, within the seamount's cap). Whisper, guide row, sim test.
+- Ossel's requests: stray (call home a lost shoal) and fragment (catch a drifting fragment); tally.strays.
