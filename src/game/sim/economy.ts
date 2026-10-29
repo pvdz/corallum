@@ -148,6 +148,14 @@ export function raspMax(s: GameState): number {
   return s.levels.grounds * ACT3.raspPerGround + (s.truce.terms === 'a' ? 4 : s.truce.terms === 'b' ? 2 : 0);
 }
 
+/** Every creature the lineage has ever seen adds a little calcite (the journal, meta.seen 'c:…'). */
+export const KNOWN_BONUS = 0.02;
+export function knownBonus(s: GameState): number {
+  let n = 0;
+  for (const k of s.meta.seen) if (k.startsWith('c:')) n++;
+  return 1 + KNOWN_BONUS * n;
+}
+
 /** This run's seamount and how it bends the numbers. */
 export function seamount(s: GameState): Seamount {
   return SEAMOUNTS.find((m) => m.id === s.seamount) ?? SEAMOUNTS[0]!;
@@ -191,7 +199,8 @@ export function rates(s: GameState): Rates {
       (s.truce.wall === 'b' ? 1.25 : 1) *
       ACT3.sandbarCalcite ** lv.sandbar *
       (speaks(s, 'massive') ? 1.5 : 1) *
-      1.5 ** trait(s, 'deep-memory'),
+      1.5 ** trait(s, 'deep-memory') *
+      knownBonus(s),
     calciteK:
       ACT1.dissolve * sm.dissolve * ACT1.latticeFactor ** lv.lattice * (ACT1.ventAcid * sm.ventAcid) ** vent *
       (has(s, 'lattice-songs') ? 0.7 : 1) * (speaks(s, 'massive') ? 0.5 : 1) +

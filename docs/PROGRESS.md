@@ -173,3 +173,4 @@ date, what landed, what is half-done, what's next.
 - Reef: encrusting life on the older stone (sponges, breathing tunicate cups, crusts), sparse in the Midnight Water, colourful and thick in the Sunlit Crown.
 - View mode (eye button top-left, or H): hides the panel; the scene reframes to the whole screen (a full-height portrait of the reef on phones). Frozen ?t pages redraw on layout changes.
 - Silt Floor: a herd of four sea pigs walks across the silt every ~3 min (journal: 21 creatures).
+- Journal pays: every creature the lineage has seen adds +2% calcite (knownBonus, constant between purchases so offline stays exact); shown on the journal card.
