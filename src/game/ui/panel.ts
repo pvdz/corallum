@@ -15,7 +15,7 @@ import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
 import { upgradeIcon } from './icons.ts';
 import { drawCity, drawTablet } from './drawings.ts';
 import { FEATS } from '../content/feats.ts';
-import { WELCOME, intruderOf } from '../content/events.ts';
+import { AWAY_PREP, WELCOME, intruderOf } from '../content/events.ts';
 import { WATER } from '../content/waters.ts';
 import { REQUEST } from '../content/requests.ts';
 import { WORKS, WORK_TEXT, type WorkId } from '../content/works.ts';
@@ -48,6 +48,8 @@ export type PanelHooks = {
   chooseBoon(id: BoonId): void;
   /** Meet the other reefs' spawning. */
   meetOthers(how: 'feed' | 'join'): void;
+  /** Ready the reef for an absence; returns what was done, in words. */
+  prepareAway(): string;
   /** Ask Ossel for a different request. */
   skipRequest(): void;
   /** Build the next stage of a great work. */
@@ -338,6 +340,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   askSkip.setAttribute('aria-label', REQUEST.skip);
   askBox.append(el('em', '', REQUEST.kicker), askText, askBar, askCount, askSkip);
   waterBox.after(askBox);
+  // Before you go: one tap to ready the reef for an absence (shown once there is something to set).
+  const prepBtn = button('plain prep-away', AWAY_PREP.label, () => { prepNote.textContent = hooks.prepareAway(); });
+  prepBtn.title = AWAY_PREP.title;
+  const prepNote = el('span', 'hint prep-note');
+  const prepRow = el('div', 'prep-row');
+  prepRow.append(prepBtn, prepNote);
+  prepRow.hidden = true;
+  askBox.after(prepRow);
 
   // ---------- Shoals ----------
   const shoalBox = el('section', 'shoals');
@@ -1413,6 +1423,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         storyCount++;
         if (primed) showStory(st);
       }
+
+      prepRow.hidden = !(raspMax(s) > 0 || s.levels.shoal > 0);
 
       // Residents: who may move in, and who has.
       const nHomes = homes(s);

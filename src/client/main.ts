@@ -31,12 +31,12 @@ import { PALETTES } from '../game/content/palettes.ts';
 import { REQUEST } from '../game/content/requests.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio } from '../game/audio/audio.ts';
-import { FEAST, THORN, WELCOME } from '../game/content/events.ts';
+import { AWAY_PREP, FEAST, THORN, WELCOME } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS, TRIAL_TEXT } from '../game/content/lineage.ts';
 import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf, TRUST, trustLevel } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
@@ -225,6 +225,12 @@ const panel = createPanel(ui, {
     audio.cue(how === 'join' ? 'release' : 'feast');
     buzz(25);
     save();
+  },
+  prepareAway() {
+    const done = prepareAway(state);
+    if (done.includes('trip')) audio.cue('depart');
+    save();
+    return done.length ? done.map((d) => (d === 'rasp' ? AWAY_PREP.rasp : AWAY_PREP.trip)).join(', ') : AWAY_PREP.nothing;
   },
   skipRequest() {
     if (skipRequest(state)) save();

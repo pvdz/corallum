@@ -1293,6 +1293,22 @@ function boon(s: GameState, id: BoonId): boolean {
   return s.boon === id;
 }
 
+// ---------- Before you go ----------
+
+/** Ready the reef for an absence: the Rasp dial at its best for holding, a trip sent if one is open. */
+export function prepareAway(s: GameState): ('rasp' | 'trip')[] {
+  const done: ('rasp' | 'trip')[] = [];
+  if (raspMax(s) > 0) {
+    const hold = raspSettings(s).forHold;
+    if (hold !== s.rasp) {
+      setRasp(s, hold);
+      done.push('rasp');
+    }
+  }
+  if (canSend(s) && send(s)) done.push('trip');
+  return done;
+}
+
 // ---------- Welcome back ----------
 
 /** The haul of stone offered after `away` seconds: a share of what the reef makes, capped. */

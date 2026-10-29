@@ -2,6 +2,15 @@
 // for a burst of calcite. Only while you watch: offline time has no feasts.
 
 /** Coming back after a long time away: Ossel kept watch, and offers one of two gifts. */
+/** Before you go: one tap to ready the reef for an absence. */
+export const AWAY_PREP = {
+  label: 'Before you go',
+  title: 'Set the Rasp for holding stone, and send the shoals off if a trip is open',
+  rasp: 'the Rasp set for holding',
+  trip: 'the shoals sent off',
+  nothing: 'nothing to change: the reef is ready',
+} as const;
+
 export const WELCOME = {
   /** Offered after this long away (sim seconds). */
   after: 3600,

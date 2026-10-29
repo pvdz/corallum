@@ -316,6 +316,9 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 .truce.moment.boon .truce-kicker { color: #ffd9a8; }
 .buy-max { min-width: 0; padding: 0 9px; font-size: 11px; height: 30px; align-self: center; }
 .buy-max[hidden] { display: none; }
+.prep-row { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
+.prep-row[hidden] { display: none; }
+.prep-note { margin: 0; }
 .residents { background: rgba(255, 140, 120, 0.03); border: 1px solid rgba(255, 150, 130, 0.2); border-radius: var(--radius); padding: 10px 12px; }
 .residents[hidden], .resident[hidden] { display: none; }
 .residents header { display: flex; justify-content: space-between; align-items: baseline; }
