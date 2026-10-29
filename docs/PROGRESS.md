@@ -223,3 +223,4 @@ date, what landed, what is half-done, what's next.
 - Journal grouped by zone with per-zone counts; unseen entries hint 'Rare: watch for it.' or 'Only on a cold/warm seamount.'
 - First sighting of a rare creature: note reads 'A rare sighting' with its own chime.
 - Debug ?at=<sec> starts the live scene clock at a time; verified the rare-sighting note with the giant squid (?bot=4000&at=612).
+- Breach perf: layer-skip timings were noise (whole scene 4.7 ms this run vs 11.6 earlier; skipping layers measured slower). No clear target; left as is.
