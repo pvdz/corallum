@@ -1520,7 +1520,8 @@ function frame(now: number): void {
     // Something to do right now (a feast, an intruder, a choice waiting): a dot, for background tabs.
     const waiting = !!currentFeast(state) || !!currentThorn(state) || !!nextMoment(state) || othersSpawning(state) || boonsOffered(state).length > 0 ||
       forkOpen(state) || strainOpen(state) || !!currentSignal(state) || !!currentShell(state);
-    const t = waiting ? `● ${base}` : base;
+    const pin = panel.pinnedText();
+    const t = (waiting ? `● ${base}` : base) + (pin ? ` · ${pin}` : '');
     if (document.title !== t) document.title = t;
   }
   if (frozenT === null) requestAnimationFrame(frame);

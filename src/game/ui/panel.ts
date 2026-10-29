@@ -467,6 +467,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const level = el('span', 'level');
     const title = el('h3');
     title.append(upgradeIcon(u.id), u.name);
+    // A pin: this card's wait shows in the tab title.
+    const pin = button('pin', '📌', () => { pinned = pinned === u.id ? '' : u.id; for (const [id, c] of cards) c.root.classList.toggle('pinned', id === pinned); });
+    pin.title = 'Pin: show its wait in the tab title';
+    pin.setAttribute('aria-label', `Pin ${u.name}`);
+    title.append(pin);
     head.append(title, level);
     const flavour = el('p', 'flavour', u.flavour);
     const effect = el('p', 'effect', effectText(u.id));
@@ -1263,6 +1268,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   }
 
   let primed = false;
+  /** The pinned upgrade ('' none) and its wait, for the tab title. */
+  let pinned = '';
+  let pinnedText = '';
   /** Show or hide a section; one appearing during play rises in with a brief glow. */
   function setShown(e: HTMLElement, show: boolean): void {
     if (show && e.hidden && primed) {
@@ -1279,6 +1287,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let tickZone = -1;
   return {
     setBackupDue,
+    /** The pinned card's wait ('' if nothing is pinned). */
+    pinnedText(): string {
+      return pinned ? pinnedText : '';
+    },
     /** Press signal lamp i (keys 7–0), when the signal card is up. */
     pressLamp(i: number): boolean {
       return choices.pressLamp(i);
@@ -1672,6 +1684,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const due = etaSlot++ === etaTurn || !c.eta.textContent;
         if (ok) setEta(c.eta, 0);
         else if (due) setEta(c.eta, timeUntil(s, cur, price));
+        if (u.id === pinned) pinnedText = ok ? `${u.name} ready` : `${u.name} ${c.eta.textContent}`;
       }
 
       // Readings.

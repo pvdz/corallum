@@ -481,3 +481,4 @@ date, what landed, what is half-done, what's next.
 - The vent-crack moment shown: a glowing fissure down the chimney (left open) or a pale patch (grown over).
 - A companion shows as a small warm light circling the crown.
 - The drifting lamp, taken in (moment), hangs lit in the branches.
+- Pin a card (📌): its wait shows in the tab title.
