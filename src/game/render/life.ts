@@ -9,9 +9,15 @@ export type Stage = { cx: number; baseY: number; w: number; h: number; s: number
 type Jelly = { x: number; y: number; size: number; period: number; phase: number; hue: number; drift: number };
 type Star = { x: number; size: number; phase: number; rot: number };
 type Lily = { x: number; size: number; phase: number; hue: string };
+type Sponge = { x: number; size: number };
 
 export function createLife(seed: number) {
   const rng = mulberry32(seed);
+  const sponges: Sponge[] = [
+    { x: -0.47, size: 1.1 },
+    { x: 0.15, size: 0.7 },
+    { x: 0.46, size: 0.9 },
+  ];
   const lilies: Lily[] = [
     { x: -0.42, size: 1.0, phase: 0, hue: '230,200,215' },
     { x: -0.06, size: 0.75, phase: 2.1, hue: '215,215,240' },
@@ -213,6 +219,56 @@ export function createLife(seed: number) {
   }
 
   /**
+   * Glass sponges: tall pale vases of silica lattice standing in the silt, catching the faint
+   * light along their seams. They do not move; only a few motes drift through their walls.
+   */
+  function drawSponge(ctx: CanvasRenderingContext2D, st: Stage, g: Sponge, t: number): void {
+    const s = st.s * g.size;
+    const x = st.cx + st.w * g.x, base = st.baseY + 5 * st.s;
+    const hgt = 70 * s, wid = 12 * s;
+    const edge = (u: number) => wid * (0.55 + 0.45 * Math.sin(Math.PI * Math.min(1, u * 1.15)) + 0.12 * u);
+    ctx.save();
+    // The vase outline, filled faintly.
+    ctx.beginPath();
+    ctx.moveTo(x - edge(0), base);
+    for (let i = 1; i <= 16; i++) { const u = i / 16; ctx.lineTo(x - edge(u), base - u * hgt); }
+    for (let i = 16; i >= 0; i--) { const u = i / 16; ctx.lineTo(x + edge(u), base - u * hgt); }
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(200,215,240,0.07)';
+    ctx.fill();
+    ctx.clip();
+    // The lattice: a diagonal net of fine silica strands.
+    ctx.strokeStyle = 'rgba(215,228,255,0.28)';
+    ctx.lineWidth = 0.7 * s;
+    for (let k = -8; k <= 8; k++) {
+      ctx.beginPath();
+      ctx.moveTo(x + k * 4 * s - wid * 2, base);
+      ctx.lineTo(x + k * 4 * s + wid * 2, base - hgt);
+      ctx.moveTo(x + k * 4 * s + wid * 2, base);
+      ctx.lineTo(x + k * 4 * s - wid * 2, base - hgt);
+      ctx.stroke();
+    }
+    for (let i = 1; i < 9; i++) {
+      const y = base - (i / 9) * hgt;
+      ctx.beginPath();
+      ctx.moveTo(x - wid * 2, y);
+      ctx.lineTo(x + wid * 2, y);
+      ctx.stroke();
+    }
+    ctx.restore();
+    // The rim, and its seams catching light.
+    ctx.strokeStyle = 'rgba(230,238,255,0.5)';
+    ctx.lineWidth = 1 * s;
+    ctx.beginPath();
+    ctx.ellipse(x, base - hgt, edge(1), 2.5 * s, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, x, base - hgt * (0.4 + 0.3 * Math.sin(t * 0.2 + g.x * 9)), 10 * s, '180,210,255', 0.12);
+    ctx.restore();
+  }
+
+  /**
    * Sea lilies: stalked crinoids rooted in the silt, their feathery arms held open into the
    * current and swaying slowly with it. Half-lit, pale, very old.
    */
@@ -409,6 +465,7 @@ export function createLife(seed: number) {
       drawJelly(ctx, st, jellies[1]!, t);
     },
     drawFloor(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
+      for (const g of sponges) drawSponge(ctx, st, g, t);
       for (const c of lilies) drawLily(ctx, st, c, t);
       drawOssel(ctx, st, t);
       for (const star of stars) drawStar(ctx, st, star, t);
