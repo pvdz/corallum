@@ -255,7 +255,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     sky: { cup: false, beak: false, sister: false, whale: false, sleeper: false, lamp: false },
     levels: {
       polyp: 0, symbiont: 0, skeleton: 0, lattice: 0, vent: 0, lure: 0, shoal: 0, daughter: 0, net: 0,
-      grounds: 0, sandbar: 0, channel: 0, pigment: 0, canopy: 0, meadow: 0, ripen: 0, cay: 0, sweeten: 0,
+      grounds: 0, sandbar: 0, channel: 0, grotto: 0, pigment: 0, canopy: 0, meadow: 0, ripen: 0, cay: 0, sweeten: 0,
     },
     jobs: { feed: 0, light: 0, scout: 0, fan: 0 },
     lastJob: 'feed',

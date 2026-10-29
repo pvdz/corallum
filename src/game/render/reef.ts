@@ -382,6 +382,7 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     if (form === 'plating') drawTables(ctx, L, t);
     drawBranchesCached(ctx, L);
     if (L.encrust && L.encrust > 0) drawEncrusting(ctx, L, t);
+    if (v.grotto > 0) drawGrottoes(ctx, L, v.grotto, t);
     if (v.lattice > 0) drawGlints(ctx, L, v.lattice, t);
 
     const nodes = polypNodes(L, shownPolyps(L, v));
@@ -478,6 +479,48 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     const i = oldTips(L)[slot];
     if (i === undefined || i < 0) return null;
     return nodePx(L, i);
+  }
+
+  /** Grottoes: arched dark hollows in a mound of stone at the reef's foot; a resident's eyes glint inside. */
+  function drawGrottoes(ctx: CanvasRenderingContext2D, L: ReefLayout, n: number, t: number): void {
+    const s = L.s;
+    const [shadow, flesh] = L.palette ?? DEFAULT_PALETTE;
+    for (let k = 0; k < n; k++) {
+      const side = k === 0 ? -1 : 1;
+      const x = L.cx + side * (34 + 10 * k) * s, y = L.baseY + 2 * s;
+      const rw = 22 * s, rh = 20 * s;
+      ctx.save();
+      // The mound.
+      ctx.fillStyle = flesh;
+      ctx.beginPath();
+      ctx.ellipse(x, y, rw * 1.25, rh * 1.15, 0, Math.PI, 0);
+      ctx.fill();
+      ctx.fillStyle = shadow;
+      ctx.globalAlpha = 0.5;
+      ctx.beginPath();
+      ctx.ellipse(x + rw * 0.3, y, rw * 0.9, rh * 0.95, 0, Math.PI, 0);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      // The hollow, deep dark.
+      const g = ctx.createRadialGradient(x, y - rh * 0.2, 0, x, y - rh * 0.2, rw * 0.7);
+      g.addColorStop(0, '#020308');
+      g.addColorStop(1, '#0c0f1a');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.ellipse(x, y, rw * 0.55, rh * 0.75, 0, Math.PI, 0);
+      ctx.fill();
+      // Two small eyes, now and then.
+      const blink = Math.sin(t * 0.7 + k * 2.4);
+      if (blink > -0.2) {
+        ctx.fillStyle = `rgba(255,236,170,${Math.min(1, (blink + 0.2) * 2)})`;
+        for (const ex of [-3.2, 3.2]) {
+          ctx.beginPath();
+          ctx.arc(x + ex * s + Math.sin(t * 0.3 + k) * 3 * s, y - rh * 0.35, 1.5 * s, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      ctx.restore();
+    }
   }
 
   /** Grey knobs of old stone on the tips (tappable), and the last one broken off tumbling down. */

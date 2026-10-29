@@ -25,6 +25,8 @@ const ICONS: Record<UpgradeId, string> = {
   sandbar: '<path d="M2 17c3-5 7-7 10-7s7 2 10 7"/><path d="M5 19h14"/>',
   // A feeding channel: a groove leading in.
   channel: '<path d="M3 8c5 1 7 4 9 9M21 8c-5 1-7 4-9 9"/><path d="M8 20l4-3 4 3"/>',
+  // A grotto: an arch of stone over a dark hollow.
+  grotto: '<path d="M3 20V12a9 9 0 0118 0v8"/><path d="M8 20v-6a4 4 0 018 0v6"/>',
   // A pigment: three drops of colour.
   pigment: '<path d="M7 5c2 3 3 4.5 3 6a3 3 0 0 1-6 0c0-1.5 1-3 3-6zM17 9c2 3 3 4.5 3 6a3 3 0 0 1-6 0c0-1.5 1-3 3-6zM10 14c1.5 2.2 2.2 3.4 2.2 4.5a2.2 2.2 0 0 1-4.4 0c0-1.1.7-2.3 2.2-4.5z"/>',
   // The canopy: branches leaning open to the light.

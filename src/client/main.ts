@@ -860,6 +860,7 @@ function view(): ReefView {
     milky: inMilky(state),
     heat: heatView(),
     sisterLit: state.race.lit > 0,
+    grotto: state.levels.grotto,
     old: { slots: state.oldSlots.slice(0, oldKnobs(state)), slot: state.pruned.slot, since: state.t - state.pruned.t },
     sweeten: state.levels.sweeten,
     endings: state.meta.endings,

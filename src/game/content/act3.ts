@@ -44,6 +44,11 @@ export const UPGRADES_ACT3: readonly UpgradeDef[] = [
     flavour: 'A groove in the sand that the current likes to follow, straight into your mouths.',
     currency: 'sand', baseCost: 600, growth: 2.2, maxLevel: 6, reveal: { band: 'first-words' },
   },
+  {
+    id: 'grotto', name: 'Hollow a grotto',
+    flavour: 'Leave a hollow in the stone as you grow round it: dark, sheltered, and someone’s to live in.',
+    currency: 'sand', baseCost: 3000, growth: 5, maxLevel: 2, reveal: { band: 'twilight' },
+  },
 ];
 
 export type MeetingId = 'terms' | 'story' | 'wall';

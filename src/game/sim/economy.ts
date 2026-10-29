@@ -829,7 +829,7 @@ function homecoming(s: GameState): void {
 /** Homes in the reef (by height), and the animals that may ask for one by now. */
 export function homes(s: GameState): number {
   const n = homesAt(s.height);
-  return n > 0 ? n + (chose(s, 'cleaners', 'a') ? 1 : 0) + trait(s, 'open-house') : 0;
+  return n > 0 ? n + (chose(s, 'cleaners', 'a') ? 1 : 0) + trait(s, 'open-house') + s.levels.grotto : 0;
 }
 export function residentsAsking(s: GameState) {
   return homes(s) > 0 ? RESIDENTS.filter((r) => s.height >= r.metres) : [];
