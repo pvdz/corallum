@@ -181,6 +181,62 @@ export function createSunlitScene(seed: number): Scene {
     }
   }
 
+  /**
+   * A green turtle comes to graze once there are meadows: it paddles slowly over the seagrass,
+   * dips to crop it, and drifts on.
+   */
+  function drawTurtle(ctx: CanvasRenderingContext2D, t: number, meadows: number): void {
+    if (meadows < 2) return;
+    const s = scale() * 1.4;
+    const period = 140;
+    const u = (t % period) / period;
+    const dir = Math.floor(t / period) % 2 ? 1 : -1;
+    const x = focus.x + focus.w * (dir > 0 ? -0.1 + u * 1.2 : 1.1 - u * 1.2);
+    const dip = Math.max(0, Math.sin(t * 0.5)) ** 4;
+    const y = focus.y + focus.h * 0.8 + dip * 14 * s + Math.sin(t * 0.8) * 3 * s;
+    const stroke = Math.sin(t * 1.6);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(dir, 1);
+    ctx.rotate(dip * 0.25);
+    // Flippers behind the shell, then the shell, then the head.
+    ctx.fillStyle = '#5c7a4a';
+    for (const [fx, fy, a] of [[8, 6, 0.6 + stroke * 0.5], [-10, 6, -0.4 - stroke * 0.3]] as const) {
+      ctx.save();
+      ctx.translate(fx * s, fy * s);
+      ctx.rotate(a);
+      ctx.beginPath();
+      ctx.ellipse(0, 6 * s, 3 * s, 9 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+    const shell = ctx.createLinearGradient(0, -12 * s, 0, 8 * s);
+    shell.addColorStop(0, '#8a6a3c');
+    shell.addColorStop(1, '#4f3c22');
+    ctx.fillStyle = shell;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 18 * s, 9 * s, 0, Math.PI, 0);
+    ctx.quadraticCurveTo(0, 6 * s, -18 * s, 0);
+    ctx.fill();
+    // Scutes.
+    ctx.strokeStyle = 'rgba(40,28,14,0.6)';
+    ctx.lineWidth = 0.8 * s;
+    for (const sx of [-8, 0, 8]) {
+      ctx.beginPath();
+      ctx.ellipse(sx * s, -4 * s, 4 * s, 3 * s, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.fillStyle = '#6b8a55';
+    ctx.beginPath();
+    ctx.ellipse(21 * s, -1 * s, 5 * s, 3.5 * s, 0.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#1a1a1a';
+    ctx.beginPath();
+    ctx.arc(23 * s, -2 * s, 0.9 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
   /** Other young reefs on the sand, each in one of the three Form shapes. */
   function drawClumps(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
@@ -330,6 +386,7 @@ export function createSunlitScene(seed: number): Scene {
       shoals.drawBack(ctx, focus, reef, L, v, t, '#5d7d96');
       drawFloor(ctx, t);
       drawMeadows(ctx, t, v.meadows);
+      drawTurtle(ctx, t, v.meadows);
       drawClumps(ctx, t);
       reef.draw(ctx, L, v, t);
       drawCraft(ctx, v.craft, reef, L, t, 1);
