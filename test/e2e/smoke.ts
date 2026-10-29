@@ -19,8 +19,10 @@ await withGame(async (open) => {
     await page.locator('#sound').click();
     await page.waitForTimeout(3000);
     const sound = await page.locator('#sound').getAttribute('aria-pressed');
-    const ok = errors.length === 0 && lit > 0 && sound === 'true';
-    console.log(`${ok ? 'ok  ' : 'FAIL'} ${vp.name}${errors.length ? ': ' + errors.join(' | ') : ''}${lit > 0 ? '' : ' (blank canvas)'}${sound === 'true' ? '' : ' (sound did not turn on)'}`);
+    // A fresh reef's journal lists everything still to find (it once rendered empty until the first sighting).
+    const journalRows = await page.evaluate(() => document.querySelectorAll('.journal dl dt').length);
+    const ok = errors.length === 0 && lit > 0 && sound === 'true' && journalRows > 0;
+    console.log(`${ok ? 'ok  ' : 'FAIL'} ${vp.name}${errors.length ? ': ' + errors.join(' | ') : ''}${lit > 0 ? '' : ' (blank canvas)'}${sound === 'true' ? '' : ' (sound did not turn on)'}${journalRows > 0 ? '' : ' (journal empty)'}`);
     failed ||= !ok;
   }
 });
