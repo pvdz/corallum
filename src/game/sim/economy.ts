@@ -15,7 +15,7 @@
 // settled the production is constant and the rest of any span is a single exact step — so a
 // month offline costs a few hundred iterations and ends exactly where the dynamics settle.
 
-import { ACT1, BANDS_ACT1, MILESTONES, STRAIN, type Milestone, type StrainId } from '../content/act1.ts';
+import { ACT1, BANDS_ACT1, FLURRY, MILESTONES, STRAIN, type Milestone, type StrainId } from '../content/act1.ts';
 import { ACT2, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
 import { ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDLE, RIDDLES, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { ACT4, BANDS_ACT4, DIALECTS, OTHERS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
@@ -1206,9 +1206,21 @@ export function canSweep(s: GameState): boolean {
 }
 
 /** Sweep the tentacles by hand: a small burst that matters early and fades into noise later. */
+/** A flurry of the Long Silt is falling (Silt Floor only): sweeps catch more. */
+export function inFlurry(s: GameState): boolean {
+  return actAt(s.height) === 1 && s.t % FLURRY.period < FLURRY.length;
+}
+
+/** Seconds until the next flurry (0 while one falls; Infinity off the Silt Floor). */
+export function untilFlurry(s: GameState): number {
+  if (actAt(s.height) !== 1) return Infinity;
+  const u = s.t % FLURRY.period;
+  return u < FLURRY.length ? 0 : FLURRY.period - u;
+}
+
 export function sweep(s: GameState): number {
   if (!canSweep(s)) return 0;
-  const gain = ACT1.sweepFlat + calciteRate(s) * ACT1.sweepSeconds;
+  const gain = (ACT1.sweepFlat + calciteRate(s) * ACT1.sweepSeconds) * (inFlurry(s) ? FLURRY.sweep : 1);
   s.calcite += gain;
   s.earned.calcite += gain;
   s.lastSweep = s.t;

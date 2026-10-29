@@ -370,12 +370,11 @@ export function createAbyssScene(seed: number): Scene {
    * A flurry of the Long Silt: for half a minute in every four the snow thickens, a dense second
    * fall slanting through the water (the same flakes, drawn again offset and faster).
    */
-  function drawFlurry(ctx: CanvasRenderingContext2D, t: number): void {
-    const period = 240, length = 30;
-    const u = (t % period) / length;
+  /** `on`: a flurry is falling now (the sim's clock, so sweeps and snow agree). */
+  function drawFlurry(ctx: CanvasRenderingContext2D, t: number, on: boolean): void {
     // On a buried seamount the Long Silt never stops: the flurry is always falling.
-    if (u >= 1 && sm !== 'buried') return;
-    const k = sm === 'buried' ? 0.75 : Math.min(1, u * 4, (1 - u) * 4);
+    if (!on && sm !== 'buried') return;
+    const k = sm === 'buried' && !on ? 0.75 : 1;
     ctx.save();
     ctx.globalAlpha = 0.7 * k;
     ctx.fillStyle = 'rgba(210,220,245,0.6)';
@@ -499,7 +498,7 @@ export function createAbyssScene(seed: number): Scene {
       if (v.shoals > 0) shoals.drawFront(ctx, focus, reef, L, v, t);
       life.drawFront(ctx, st, t);
       drawSnow(ctx, t, 2);
-      drawFlurry(ctx, t);
+      drawFlurry(ctx, t, v.flurry);
       // A warm seamount reddens the water near the floor; a cold one leaves a faint ice-blue.
       // Hungry water is pale and washed out; silent water darker, dark water darker still.
       const tint = { warm: 'rgba(255,90,40,0.10)', cold: 'rgba(150,210,255,0.09)', hungry: 'rgba(120,130,140,0.10)' }[v.seamount as 'warm'];

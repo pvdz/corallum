@@ -16,6 +16,9 @@ export const STRAINS: readonly { id: StrainId; name: string; effect: string; fla
   { id: 'violet', name: 'Violet', effect: 'scouts hear ×1.4 (later)', flavour: 'A colour almost no one can see. The old bands answer to it.', rgb: '200,150,255' },
 ];
 
+/** Flurries of the Long Silt on the Silt Floor: a thick fall for `length` s every `period` s; sweeps catch ×`sweep`. */
+export const FLURRY = { period: 240, length: 30, sweep: 3, word: 'a flurry' } as const;
+
 export const ACT1 = {
   /** Calcite/s from the seamount's mineral seep before any polyp is budded. */
   trickle: 0.2,

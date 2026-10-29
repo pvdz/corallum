@@ -26,6 +26,8 @@ export type ReefView = {
   shoals: number;
   jobs: Record<Job, number>;
   /** Shoals away at a ruin: how many, sim seconds since they left and until they are back, which side they went. */
+  /** A flurry of the Long Silt is falling (Silt Floor). */
+  flurry: boolean;
   /** A shell on the Sunlit sand (place 0..1 and kind), if one lies there now. */
   shell: { x: number; id: string } | null;
   /** A thorn star climbing the reef: how far through its climb (0..1), and on which side. */

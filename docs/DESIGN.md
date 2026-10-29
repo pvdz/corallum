@@ -158,6 +158,9 @@ stone (5% of each second away's calcite production, at most 8 h of it) or a sear
 **The glimmerseed strain** (Act I's choice, at 15 m): blue (glow ×1.3), gold (polyps ×1.15) or violet
 (scouts ×1.4 later); kept for the run and seen in the colour of the symbiont specks.
 
+**Flurries** (Silt Floor): every four minutes the Long Silt falls thick for 30 s; sweeps catch ×3 then
+(on the sim clock, so the snow and the pay agree; the Soon line counts down to the next).
+
 Falling feasts (from 42 m, late in the Silt Floor where buying slows): something dead sinks past the reef every few minutes; tap it (or F)
 for 90 s of calcite. A reward for watching (principle 6: never needed, never lost offline), and the
 "What falls" band made playable.

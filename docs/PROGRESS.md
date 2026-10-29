@@ -482,3 +482,4 @@ date, what landed, what is half-done, what's next.
 - A companion shows as a small warm light circling the crown.
 - The drifting lamp, taken in (moment), hangs lit in the branches.
 - Pin a card (📌): its wait shows in the tab title.
+- Flurries on the Silt Floor drive sweeps ×3 (act1.ts FLURRY, economy inFlurry/untilFlurry; abyss drawFlurry on the sim clock; Soon line).

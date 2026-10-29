@@ -2,7 +2,7 @@
 // reader and the away summary. Built once; `update()` only rewrites text and classes, so it
 // is cheap to call every frame.
 
-import { ACT1, MILESTONES, type StrainId } from '../content/act1.ts';
+import { ACT1, FLURRY, MILESTONES, type StrainId } from '../content/act1.ts';
 import type { Band, Currency, UpgradeId } from '../content/types.ts';
 import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
@@ -35,7 +35,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilThorn, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilThorn, untilFlurry, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -1486,6 +1486,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const soon: [number, string][] = [];
         const fe = untilFeast(s), th = untilThorn(s), kind = intruderOf(actAt(s.height));
         if (fe < 1200) soon.push([fe, WATER.feast]);
+        const fl = untilFlurry(s);
+        if (fl < 1200) soon.push([fl, FLURRY.word + ' (sweeps ×3)']);
         if (th < 1200 && kind) soon.push([th, WATER.intruder[kind]!]);
         if (s.height >= 1) soon.push([moonFull(s.t) ? 0 : untilFullMoon(s.t), WATER.moon]);
         soon.sort((a, b) => a[0] - b[0]);
