@@ -251,6 +251,55 @@ export function createLife(seed: number) {
    * Rarely, a dumbo octopus: once in fifteen minutes a pale little octopus hovers across the
    * floor, flapping the two ear-like fins on its head.
    */
+  /**
+   * Rarely (every twelve minutes), a ghost shark glides low over the silt, right to left, its wide
+   * fins beating slowly. Touched, it turns its shining eye toward you and slips away faster.
+   */
+  function drawChimaera(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
+    const period = 720, crossing = 45;
+    const touch = startled('chimaera', t);
+    const hurry = touch && touch.age < 6 ? 1 : 0;
+    const u = (((t + 520) % period) / crossing) * (1 + hurry * 0.6);
+    if (u >= 1) return;
+    sight('chimaera');
+    const s = st.s * 1.8;
+    const x = st.cx + st.w * (0.6 - u * 1.2), y = st.baseY - 40 * st.s + Math.sin(t * 0.8) * 5 * st.s;
+    spot('chimaera', x, y, 30 * s);
+    const beat = Math.sin(t * 2.2);
+    ctx.save();
+    ctx.translate(x, y);
+    // Body: a blunt head tapering to a long whip of a tail (it swims left).
+    const g = ctx.createLinearGradient(0, -6 * s, 0, 6 * s);
+    g.addColorStop(0, 'rgba(200,195,215,0.9)');
+    g.addColorStop(1, 'rgba(140,130,160,0.9)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(-16 * s, 0);
+    ctx.quadraticCurveTo(-14 * s, -6 * s, -4 * s, -5 * s);
+    ctx.quadraticCurveTo(14 * s, -3 * s, 40 * s, Math.sin(t * 2) * 2 * s);
+    ctx.quadraticCurveTo(14 * s, 3 * s, -4 * s, 5 * s);
+    ctx.quadraticCurveTo(-14 * s, 5 * s, -16 * s, 0);
+    ctx.fill();
+    // The tail thread.
+    ctx.strokeStyle = 'rgba(180,170,200,0.7)';
+    ctx.lineWidth = 0.8 * s;
+    ctx.beginPath();
+    ctx.moveTo(40 * s, Math.sin(t * 2) * 2 * s);
+    ctx.quadraticCurveTo(52 * s, Math.sin(t * 2 + 1) * 4 * s, 64 * s, Math.sin(t * 2 + 2) * 3 * s);
+    ctx.stroke();
+    // A wide pectoral fin, beating slowly.
+    ctx.fillStyle = 'rgba(170,160,190,0.75)';
+    ctx.beginPath();
+    ctx.moveTo(-6 * s, 2 * s);
+    ctx.quadraticCurveTo(0, (14 + beat * 6) * s, 10 * s, (10 + beat * 5) * s);
+    ctx.quadraticCurveTo(4 * s, 4 * s, 2 * s, 2 * s);
+    ctx.fill();
+    // Its big eye shines green.
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, -11 * s, -1.5 * s, (4 + 3 * hurry) * s, '120,255,170', 0.8);
+    ctx.restore();
+  }
+
   function drawDumbo(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
     const period = 900, crossing = 40;
     const u = ((t + 300) % period) / crossing;
@@ -838,6 +887,7 @@ export function createLife(seed: number) {
     },
     drawFront(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
       drawDumbo(ctx, st, t);
+      drawChimaera(ctx, st, t);
       drawJelly(ctx, st, jellies[0]!, t);
       drawJelly(ctx, st, jellies[1]!, t);
     },

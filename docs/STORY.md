@@ -196,4 +196,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Trait Star-gazer | this game's own systems | OK |
 | Decorator crab resident | real animal | OK |
 | A whale breaching at the Breach | real behaviour | OK |
+| Ghost shark (chimaera) on the Silt Floor | real animal | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

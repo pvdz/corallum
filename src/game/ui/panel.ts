@@ -1740,17 +1740,20 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           const rowEnd = [-1e9, -1e9, -1e9];
           marks.forEach(([t, w]) => {
             const label = w.replace(/^(a|an|the) /, '').split(' (')[0]!;
-            const cx = (Math.max(0, t) / 1200) * W, half = label.length * 2.9 + 4;
-            let row = rowEnd.findIndex((end) => cx - half > end);
-            if (row < 0) row = rowEnd.indexOf(Math.min(...rowEnd));
-            rowEnd[row] = cx + half;
+            const f0 = Math.max(0, t) / 1200, cx = f0 * W, wide = label.length * 5.8 + 8;
+            // Where the label really sits: anchored at the ends, centred elsewhere.
+            const left = f0 < 0.08 ? cx - 4 : f0 > 0.92 ? cx + 4 - wide : cx - wide / 2;
+            // No room in any row: the mark keeps its dot and tooltip, without a label.
+            const row = rowEnd.findIndex((end) => left > end);
+            if (row >= 0) rowEnd[row] = left + wide;
             const m = el('span', `mark row${row}${t <= 0 ? ' now' : ''}`);
             m.style.left = `${(Math.max(0, t) / 1200) * 100}%`;
             // Labels at the ends keep inside the card.
             const f = Math.max(0, t) / 1200;
             m.style.transform = f < 0.08 ? 'translateX(-4px)' : f > 0.92 ? 'translateX(calc(-100% + 4px))' : '';
             m.title = `${w} ${t > 0 ? `in ${duration(t)}` : WATER.now}`;
-            m.append(el('i'), el('b', '', label));
+            m.append(el('i'));
+            if (row >= 0) m.append(el('b', '', label));
             almanac.append(m);
           });
         }
