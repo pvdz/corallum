@@ -744,6 +744,70 @@ export function createTwilightScene(seed: number): Scene {
    * Garden eels: a colony of thin eels standing out of their burrows in the sand, all leaning into
    * the current to catch drifting food, and ducking down in waves when something passes.
    */
+  /**
+   * A mantis shrimp at the mouth of its burrow on the slope: a bright banded head and forelimbs out
+   * of the hole, stalked eyes swivelling on their own. Touched, it strikes: a white flash and a ring.
+   */
+  function drawMantis(ctx: CanvasRenderingContext2D, t: number): void {
+    sight('mantis-shrimp');
+    const s = scale() * 2.2;
+    const u = 0.2;
+    const x = focus.x - focus.w * 0.1 + u * focus.w * 1.2, base = slopeY(u) + 2 * s;
+    spot('mantis-shrimp', x, base - 6 * s, Math.max(20 * s, 22 * dpr));
+    const touch = startled('mantis-shrimp', t);
+    const strike = touch && touch.age < 0.6 ? touch.age / 0.6 : -1;
+    ctx.save();
+    // The burrow: a dark mouth in the sand.
+    ctx.fillStyle = 'rgba(10,14,20,0.8)';
+    ctx.beginPath();
+    ctx.ellipse(x, base, 10 * s, 3 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Body out of the hole: green and orange bands.
+    const bands = ['#2fae6a', '#e0702a', '#2fae6a', '#e3c33a'];
+    bands.forEach((c, i) => {
+      ctx.fillStyle = c;
+      ctx.beginPath();
+      ctx.ellipse(x, base - (2 + i * 2.6) * s, (4.5 - i * 0.4) * s, 1.6 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    // Forelimbs folded like a mantis, flicked out in a strike.
+    const reach = strike >= 0 ? Math.sin(strike * Math.PI) * 10 * s : 0;
+    ctx.strokeStyle = '#ff5a8a';
+    ctx.lineWidth = 1.6 * s;
+    for (const side of [-1, 1]) {
+      ctx.beginPath();
+      ctx.moveTo(x + side * 2 * s, base - 9 * s);
+      ctx.lineTo(x + side * (4 * s + reach), base - 7 * s);
+      ctx.lineTo(x + side * (3 * s + reach * 0.6), base - 4 * s);
+      ctx.stroke();
+    }
+    // Eyes on stalks, each looking its own way.
+    for (const [k, side] of [[0, -1], [1, 1]] as const) {
+      const a = -Math.PI / 2 + side * 0.4 + Math.sin(t * (0.9 + k * 0.6) + k * 2) * 0.5;
+      const ex = x + side * 1.5 * s + Math.cos(a) * 6 * s, ey = base - 12 * s + Math.sin(a) * 6 * s;
+      ctx.strokeStyle = '#d8b34a';
+      ctx.lineWidth = 0.9 * s;
+      ctx.beginPath();
+      ctx.moveTo(x + side * 1.5 * s, base - 12 * s);
+      ctx.lineTo(ex, ey);
+      ctx.stroke();
+      ctx.fillStyle = '#7ad0ff';
+      ctx.beginPath();
+      ctx.ellipse(ex, ey, 1.8 * s, 1.2 * s, a, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    if (strike >= 0) {
+      ctx.globalCompositeOperation = 'lighter';
+      glow(ctx, x + reach, base - 7 * s, (6 + 20 * strike) * s, '255,250,230', 0.8 * (1 - strike));
+      ctx.strokeStyle = `rgba(230,245,255,${0.6 * (1 - strike)})`;
+      ctx.lineWidth = 1 * s;
+      ctx.beginPath();
+      ctx.arc(x + reach, base - 7 * s, 18 * strike * s, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
   function drawGardenEels(ctx: CanvasRenderingContext2D, t: number): void {
     sight('garden-eel');
     const s = scale();
@@ -1377,6 +1441,7 @@ export function createTwilightScene(seed: number): Scene {
         { branch: '#9a5a6c', tip: '#c98292', polyp: 'rgba(255,225,235,0.9)' }, slopeSeed, v.nurseries);
       drawSeaFans(ctx, t);
       drawGardenEels(ctx, t);
+      drawMantis(ctx, t);
       drawMoray(ctx, t);
       drawCurrent(ctx, t, v.current);
       if (v.upwell) drawUpwell(ctx, t, v.upwell);

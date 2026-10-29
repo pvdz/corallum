@@ -158,4 +158,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | A moonbow after rain at the Breach | real lunar rainbow | OK |
 | Boons Clear voices, Kind shallows | plain descriptions | OK |
 | The harbour (seventh ruin: where the city once let its spawn go; a mooring ring) | this game's own city and theme | OK |
+| Mantis shrimp (Twilight burrow) | real animal | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |
