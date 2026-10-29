@@ -2,8 +2,8 @@
 // reader and the away summary. Built once; `update()` only rewrites text and classes, so it
 // is cheap to call every frame.
 
-import type { FigureId } from '../content/sky.ts';
-import { ACT1, FLURRY, MILESTONES, type GrainId, type SportId, type StrainId } from '../content/act1.ts';
+import { FIGURES, type FigureId } from '../content/sky.ts';
+import { ACT1, FLURRY, GRAINS, MILESTONES, SPORTS, STRAINS, type GrainId, type SportId, type StrainId } from '../content/act1.ts';
 import type { Band, Currency, UpgradeId } from '../content/types.ts';
 import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId, RISING } from '../content/act2.ts';
@@ -769,7 +769,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     codexList.append(el('dt', '', term), el('dd', '', value));
   }
   function renderCodex(s: GameState): void {
-    const key = JSON.stringify([s.meta.name, Math.floor(s.height), Math.floor(s.t / 60), s.feasts, s.truce, s.dialects, s.carried, s.meta.spawnings, s.meta.endings, s.readings.length]);
+    const key = JSON.stringify([s.meta.name, Math.floor(s.height), Math.floor(s.t / 60), s.feasts, s.truce, s.dialects, s.carried, s.meta.spawnings, s.meta.endings, s.readings.length, s.strain, s.sport, s.grains.length, s.sky, s.tally.risings]);
     if (key === codexKey) return;
     codexKey = key;
     codexList.innerHTML = '';
@@ -786,7 +786,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (s.signal.answered) did.push(`${s.signal.answered} signal${s.signal.answered === 1 ? '' : 's'} answered`);
     if (s.relics.length + s.tally.roams) did.push(`${s.relics.length + s.tally.roams} trip${s.relics.length + s.tally.roams === 1 ? '' : 's'}`);
     if (s.request.done) did.push(`${s.request.done} request${s.request.done === 1 ? '' : 's'} kept`);
+    if (s.tally.risings) did.push(`${s.tally.risings} rising${s.tally.risings === 1 ? '' : 's'} fed on`);
     if (did.length) codexRow('This reef', did.join(' · '));
+    const strain = STRAINS.find((x) => x.id === s.strain), sport = SPORTS.find((x) => x.id === s.sport);
+    if (strain) codexRow('Glimmerseed', sport ? `${strain.name}, sported ${sport.name.toLowerCase()} (${sport.effect})` : `${strain.name} (${strain.effect})`);
+    const grains = GRAINS.map((g) => [g.name, s.grains.filter((x) => x === g.id).length] as const).filter(([, n]) => n > 0);
+    if (grains.length) codexRow('The grain', grains.map(([n, c]) => `${c} ${n.toLowerCase()}`).join(' · '));
+    const stars = FIGURES.filter((f) => s.sky[f.id]).map((f) => f.name);
+    if (stars.length) codexRow('Stars named', stars.join(' · '));
     codexRow('Grown', `${metres(s.height)} up the seamount, ${Math.round(Math.max(0, SURFACE - s.height)).toLocaleString('en-US')} m down`);
     codexRow('Bands read', `${s.bands.length} of your own, ${s.readings.length} of Thousandfold’s`);
     const truce = MEETINGS.filter((m) => s.truce[m.id]).map((m) => `${m.title}: ${m[s.truce[m.id] as Choice].label}`);
