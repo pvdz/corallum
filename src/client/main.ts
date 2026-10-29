@@ -627,12 +627,17 @@ let labelTimer = 0;
 /** The journal's portraits: the first creature on screen without one, if it is well inside the scene. */
 let lastPortrait = 0;
 function takePortrait(): void {
+  // Zoomed in (2× or more), a creature large in view earns a sharper close-up, once.
+  const closeUp = zoom.k >= 2;
   for (const p of tappable()) {
-    if (p.id === 'ossel' || portraits.has(p.id)) continue;
-    const side = Math.min(280 * dpr, Math.max(70 * dpr, p.r * 2.4));
-    const f = focusNow;
-    if (p.x - side / 2 < f.x || p.x + side / 2 > f.x + f.w || p.y - side / 2 < f.y || p.y + side / 2 > f.y + f.h) continue;
-    portraits.capture(p.id, canvas, p.x, p.y, side);
+    if (p.id === 'ossel' || !portraits.wants(p.id, closeUp)) continue;
+    const [x, y] = toScreen(p.x, p.y);
+    const r = p.r * zoom.k;
+    if (closeUp && r < 60 * dpr) continue;
+    const side = closeUp ? Math.min(canvas.height * 0.8, r * 2.4) : Math.min(280 * dpr, Math.max(70 * dpr, r * 2.4));
+    const f = closeUp ? { x: 0, y: 0, w: canvas.width, h: canvas.height } : focusNow;
+    if (x - side / 2 < f.x || x + side / 2 > f.x + f.w || y - side / 2 < f.y || y + side / 2 > f.y + f.h) continue;
+    portraits.capture(p.id, canvas, x, y, side, closeUp);
     return;
   }
 }
@@ -1037,7 +1042,7 @@ function frame(now: number): void {
   taps.draw(ctx, tNow, scene.crownAt, dpr, (x, y) => actAt(state.height) <= 2 || !!scene.darkAt?.(x, y));
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   endFrameSpots();
-  if (now - lastPortrait > 1000 && frozenT === null && !fadingFrom && zoom.k === 1) {
+  if (now - lastPortrait > 1000 && frozenT === null && !fadingFrom && (zoom.k === 1 || zoom.k >= 2)) {
     lastPortrait = now;
     takePortrait();
   }

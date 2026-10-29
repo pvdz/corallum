@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended polish (features, UI, graphics). Recent: neighbours (every creature tappable, reactions, gifts, touch bonus, rare-visitor notes), photo journal + lightbox, view-mode zoom, Sunlit night (sea fireflies, sleeping Rasp), moon everywhere (gauge moon, full-moon bundles), upgrade visuals (channels, pigments, lattice). Ideas: zoomed draw cost, more Breach detail.
+NOW: Open-ended polish (features, UI, graphics). Recent: neighbours (every creature tappable, reactions, gifts, touch bonus, rare-visitor notes), photo journal + lightbox, view-mode zoom, Sunlit night (sea fireflies, sleeping Rasp), moon everywhere (gauge moon, full-moon bundles), upgrade visuals (channels, pigments, lattice). Ideas: more Breach detail.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -314,3 +314,4 @@ date, what landed, what is half-done, what's next.
 - The Breach: after 'The waiting fish' band, bright reef fish crowd under the crown turning slow circles, and spread out to feed after the release.
 - Midnight marine snow thins to a third after the band 'Above the snowline'.
 - Gauge moon has a faint rim so a new moon reads as a shape. Fixed the series' sunlit-night shots (were day).
+- Close-up portraits: zoomed 2× or more in view mode, a creature large in view (radius ≥ 60 px) gets a sharper portrait, once per creature (corallum.portraits.close). Measured zoom cost: steady ~2.6 ms at 1× view, ~3.6 ms zoomed (the 20 ms readings were a post-relayout transient).
