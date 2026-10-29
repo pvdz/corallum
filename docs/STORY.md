@@ -188,4 +188,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Memory: The weight let go (line title 'the line that let go') | this game's own theme | OK |
 | Great work: the listening dome (Midnight Water) | this game's own world | OK |
 | Elder riddles about the kept stone and the burning sea | this game's own lore | OK |
+| Trait Lucky line | this game's own systems | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

@@ -626,3 +626,4 @@ date, what landed, what is half-done, what's next.
 - Moment visuals: the slope that gave way leaves a pale rubble fan (scoured: a channel); the young Rasp fed sleeps by the reef's foot; the big-eyed fish lit up stays by the crown (dark seamount).
 - Two more of the elder's riddles (burning, weight), after the new Readings.
 - The king tide leaves a wrack line of dried weed and salt across the crown above the water (breach.ts drawWrack).
+- Trait Lucky line (way, 8): lucky neighbours twice as often.

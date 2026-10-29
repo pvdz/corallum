@@ -1603,7 +1603,7 @@ export function lucky(s: GameState, id: string): boolean {
   let h = 2166136261;
   for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 16777619);
   const win = Math.floor(s.t / LUCKY.span);
-  return s.luckySpan !== win && mulberry32((h ^ s.seed ^ Math.imul(win, 0x9e3779b1)) >>> 0)() < LUCKY.chance;
+  return s.luckySpan !== win && mulberry32((h ^ s.seed ^ Math.imul(win, 0x9e3779b1)) >>> 0)() < LUCKY.chance * (trait(s, 'lucky-line') ? 2 : 1);
 }
 
 /**
