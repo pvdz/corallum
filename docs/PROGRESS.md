@@ -282,3 +282,4 @@ date, what landed, what is half-done, what's next.
 - Growth chart (Your reef): zone bands in their colours with names, a soft fill under the height line, a dot for now; 90 px tall.
 - Touch: sunlit reef fish near the touch dart away and ease back; sea pigs pull their feelers in.
 - Daughter colonies (render/daughters.ts): from 100 polyps, one small seeded branching colony per 15 polyps (up to 10) settles on the floor around the reef's foot in the Twilight and Sunlit scenes, newest smallest.
+- The vertical migration is tappable while it passes.

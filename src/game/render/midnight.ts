@@ -432,6 +432,7 @@ export function createMidnightScene(seed: number): Scene {
     sight('migration');
     const s = scale();
     const swell = Math.min(1, u * 4, (1 - u) * 4);
+    if (swell > 0.5) spot('migration', focus.x + focus.w * 0.3, focus.y + focus.h * 0.45, focus.h * 0.12);
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     const n = Math.round(260 * swell);
