@@ -96,4 +96,4 @@ most settled calcite/s among settings whose hold covers the next band twice. Tha
 game ~2 h; band growth for zones 3–5 retuned to 1.24 / 1.16 / 1.035 (bot 8h08 again).
 
 ## Rebalance (2026-10-29)
-After expeditions, residents, moments, the water, requests, shards, works and the sister race the bot finished in ~4h. Band cost growth per zone raised (Midnight 1.155→1.18, later 1.19, Twilight 1.24→1.28, Sunlit 1.16→1.2): bot 7h28 (3000 m at 1h50, 3800 m at 4h29, surface 7h16).
+After expeditions, residents, moments, the water, requests, shards, works and the sister race the bot finished in ~4h. Band cost growth per zone raised (Midnight 1.155→1.18, later 1.19; Twilight later 1.31, Sunlit 1.22; Twilight 1.24→1.28, Sunlit 1.16→1.2): bot 7h28 (3000 m at 1h50, 3800 m at 4h29, surface 7h16).
