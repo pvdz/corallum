@@ -236,10 +236,20 @@ export const BANDS_ACT2: readonly Band[] = [
       'of black water, and in it, here and there, a light that is not a fish.',
   },
   {
+    id: 'grey-tips', metres: 900, title: 'Grey on the tips',
+    text: 'Your oldest tips have gone grey and heavy, the colour of the Long Silt. Ossel looks at them a ' +
+      'long time. “That is how it starts,” it says. “That is how it started with us.” It does not say what.',
+  },
+  {
     id: 'siphon', metres: 1200, title: 'The long animal',
     text: 'Something passes that is a single animal and also a colony: a chain of glassy bells ' +
       'longer than your whole reef, every bell pulsing in turn. It does not notice you. You feel ' +
       'small, and also, for the first time, part of something.',
+  },
+  {
+    id: 'cold-light', metres: 1550, title: 'Cold light',
+    text: 'You learn that every light down here is cold: the lanterns of the fish, the bells of the jellies, ' +
+      'your own glimmerseed. Not one of them warms anything. They are only for being seen, and for seeing.',
   },
   {
     id: 'disagree', metres: 1900, title: 'A disagreement',
@@ -247,9 +257,19 @@ export const BANDS_ACT2: readonly Band[] = [
       'bands. You say so. Ossel goes quiet in the way stone goes quiet, which is completely.',
   },
   {
+    id: 'passing', metres: 2200, title: 'Something passing',
+    text: 'For a whole night the lanternfish will not leave your branches. Something enormous passes above ' +
+      'in the dark, slow, without a light of its own, and the water it pushes rocks you. Then it is gone.',
+  },
+  {
     id: 'pressure', metres: 2500, title: 'Lighter water',
     text: 'The weight of the sea lifts a little every band. Your polyps open wider. Far above, ' +
       'the ripple has become a faint grey sheet, and it moves.',
+  },
+  {
+    id: 'old-light', metres: 2750, title: 'Old light',
+    text: 'In a band of Thousandfold’s you find a colour you have never seen, kept in the stone like a ' +
+      'pressed leaf: the city laid it down in the light, long ago. You are almost high enough to see it yourself.',
   },
   {
     id: 'twilight', metres: 3000, title: 'The first grey',

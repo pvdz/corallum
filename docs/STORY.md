@@ -190,4 +190,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Elder riddles about the kept stone and the burning sea | this game's own lore | OK |
 | Trait Lucky line | this game's own systems | OK |
 | Garden children of three kinds (quick, bright, deep) carried as gifts to the next reef | this game's own systems | OK |
+| Midnight bands: Grey on the tips (900), Cold light (1550), Something passing (2200), Old light (2750) | this game's own lore | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |
