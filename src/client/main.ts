@@ -53,7 +53,7 @@ import { ACT1, GRAINS, MILESTONES, SPORTS, STRAINS, type Milestone } from '../ga
 import { OSSEL_LINES, OSSEL_LINES_TRUE, OSSEL_NOW, WHISPERS } from '../game/content/whispers.ts';
 import { NEWS } from '../game/content/guide.ts';
 import { OSSEL_MISTAKE, OSSEL_MISTAKES } from '../game/content/ossel.ts';
-import { buyTrait, habitPurchase, raspSense, shoalSense, spawnLesser } from '../game/sim/prestige.ts';
+import { buyTrait, grainSense, habitPurchase, raspSense, shoalSense, spawnLesser } from '../game/sim/prestige.ts';
 import { createFinale } from '../game/ui/finale.ts';
 import { createPanel, reefName } from '../game/ui/panel.ts';
 import { setting } from './settings.ts';
@@ -1602,6 +1602,7 @@ function frame(now: number): void {
     lastHabit = now;
     const id = habitPurchase(state);
     if (id) purchase(id);
+    if (grainSense(state)) audio.cue('shimmer');
   }
   // Shoal sense and Rasp sense: the line's settled habits, every half minute while watching.
   if (habits.get() && frozenT === null && now - lastSense > 30_000) {

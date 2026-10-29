@@ -263,6 +263,11 @@ test('the rising: the feeders go in once per rising, for a haul by the share fee
   assert.ok(feedRising(s) > 0, 'the next one comes');
   s.t += RISING.length;
   assert.equal(canFeedRising(s), false);
+  // Deep larder: twice into the same rising, not three times.
+  s.meta.traits['deep-larder'] = 1;
+  s.t += HEAT.period - RISING.length;
+  assert.ok(feedRising(s) > 0 && feedRising(s) > 0);
+  assert.equal(feedRising(s), 0);
 });
 
 test('the sport: only at the Twilight Shelf, only of the strain kept, once', () => {

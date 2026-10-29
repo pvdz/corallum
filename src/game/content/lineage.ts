@@ -20,7 +20,7 @@ export const LINEAGE = {
 
 export type TraitId =
   | 'deep-memory' | 'quick-budding' | 'old-bands' | 'remembered-shoals' | 'glimmer' | 'kept-readings' | 'settling'
-  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table' | 'shoal-sense' | 'rasp-sense' | 'old-maps' | 'open-house' | 'water-wise' | 'thorn-wise' | 'moon-born' | 'layering' | 'shell-finder' | 'signal-wise' | 'sun-shy';
+  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table' | 'shoal-sense' | 'rasp-sense' | 'old-maps' | 'open-house' | 'water-wise' | 'thorn-wise' | 'moon-born' | 'layering' | 'shell-finder' | 'signal-wise' | 'sun-shy' | 'deep-larder' | 'grain-sense';
 
 export type Trait = {
   id: TraitId;
@@ -207,6 +207,16 @@ export const TRAITS: readonly Trait[] = [
     id: 'sun-shy', name: 'Sun-shy', effect: 'an open reef closes by itself while the water runs warm, and opens again after (away too)',
     flavour: 'Your children feel the warmth coming in their skins, and fold before it reaches them.',
     cost: 8, growth: 1, max: 1, kind: 'habit',
+  },
+  {
+    id: 'deep-larder', name: 'Deep larder', effect: 'the feeders can go into each rising twice',
+    flavour: 'Your shoals learned to eat, rest in the branches, and go back for more.',
+    cost: 10, growth: 1, max: 1, kind: 'way',
+  },
+  {
+    id: 'grain-sense', name: 'Grain-sense', effect: 'while you watch, a band waiting for its grain sets like the last one you chose',
+    flavour: 'Your stone remembers how it likes to set.',
+    cost: 6, growth: 1, max: 1, kind: 'habit',
   },
 ];
 

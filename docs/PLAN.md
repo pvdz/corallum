@@ -200,6 +200,7 @@ Tick items as they land; keep this list honest. Add items freely.
   - [x] Sun-shy trait: an open reef closes itself in warm water
   - [x] the rising in the Midnight Water and Twilight Shelf: send the feeders in for a haul
   - [x] Breach creatures: sailors, storm petrels, sea sparkle
+  - [x] traits Deep larder (two risings' worth) and Grain-sense (habit)
   - [x] the strain's sport at 3000 m: two variants per strain
   - [x] the grain of the stone: every tenth band, dense / quick / bright
   - [x] calcite step made fourth order (decay-weighted Simpson)

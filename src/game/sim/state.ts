@@ -63,7 +63,7 @@ export function newMeta(): Meta {
     lineage: 0,
     traits: {
       'deep-memory': 0, 'quick-budding': 0, 'old-bands': 0, 'remembered-shoals': 0, glimmer: 0,
-      'kept-readings': 0, settling: 0, 'early-shoals': 0, 'rasp-kin': 0, 'glass-gardeners': 0, 'old-habits': 0, 'tide-reader': 0, 'shared-table': 0, 'shoal-sense': 0, 'rasp-sense': 0, 'old-maps': 0, 'open-house': 0, 'water-wise': 0, 'thorn-wise': 0, 'moon-born': 0, layering: 0, 'shell-finder': 0, 'signal-wise': 0, 'sun-shy': 0,
+      'kept-readings': 0, settling: 0, 'early-shoals': 0, 'rasp-kin': 0, 'glass-gardeners': 0, 'old-habits': 0, 'tide-reader': 0, 'shared-table': 0, 'shoal-sense': 0, 'rasp-sense': 0, 'old-maps': 0, 'open-house': 0, 'water-wise': 0, 'thorn-wise': 0, 'moon-born': 0, layering: 0, 'shell-finder': 0, 'signal-wise': 0, 'sun-shy': 0, 'deep-larder': 0, 'grain-sense': 0,
     },
     spawnings: 0,
     seen: [],
@@ -124,6 +124,8 @@ export type GameState = {
   sky: Record<FigureId, boolean>;
   /** The half-hour cycle whose rising the feeders were last sent into (−1: never). */
   rose: number;
+  /** How many times the feeders have gone into that rising. */
+  roseN: number;
   /** Grains chosen, in the order the bands set (every tenth band: content/act1.ts GRAIN). */
   grains: GrainId[];
   /** The polyps are closed against warm water (Sunlit Crown). */
@@ -224,6 +226,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     closed: false,
     grains: [],
     rose: -1,
+    roseN: 0,
     sky: { cup: false, beak: false, sister: false, whale: false, sleeper: false, lamp: false },
     levels: {
       polyp: 0, symbiont: 0, skeleton: 0, lattice: 0, vent: 0, lure: 0, shoal: 0, daughter: 0,

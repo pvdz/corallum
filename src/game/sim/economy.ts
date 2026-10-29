@@ -1320,9 +1320,10 @@ export function risingLeft(s: GameState): number {
   return inRising(s) ? RISING.start + RISING.length - s.t % HEAT.period : 0;
 }
 
-/** The feeders can still be sent into this rising (once each, and only with feeders on the job). */
+/** The feeders can still be sent into this rising (once each, twice with Deep larder; only with feeders on the job). */
 export function canFeedRising(s: GameState): boolean {
-  return inRising(s) && s.jobs.feed > 0 && s.rose !== Math.floor(s.t / HEAT.period);
+  const fed = s.rose === Math.floor(s.t / HEAT.period) ? s.roseN : 0;
+  return inRising(s) && s.jobs.feed > 0 && fed < 1 + trait(s, 'deep-larder');
 }
 
 /** What sending the feeders into the rising would bring: minutes of calcite, by the share feeding. */
@@ -1334,7 +1335,9 @@ export function risingHaul(s: GameState): number {
 export function feedRising(s: GameState): number {
   if (!canFeedRising(s)) return 0;
   const gain = risingHaul(s);
-  s.rose = Math.floor(s.t / HEAT.period);
+  const k = Math.floor(s.t / HEAT.period);
+  s.roseN = s.rose === k ? s.roseN + 1 : 1;
+  s.rose = k;
   s.calcite += gain;
   s.earned.calcite += gain;
   s.tally.risings++;
