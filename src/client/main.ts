@@ -38,6 +38,7 @@ import { OSSEL_LINES, WHISPERS } from '../game/content/whispers.ts';
 import { buyTrait, habitPurchase, spawnLesser } from '../game/sim/prestige.ts';
 import { createFinale } from '../game/ui/finale.ts';
 import { createPanel, reefName } from '../game/ui/panel.ts';
+import { setting } from './settings.ts';
 
 declare global {
   interface Window {
@@ -140,107 +141,30 @@ if (soundWanted) {
   window.addEventListener('keydown', start, { once: true });
 }
 
-// Soft glow (the bloom pass): on unless the player turned it off; remembered per browser.
-const GLOW_KEY = 'corallum.glow';
+// Player settings (client/settings.ts), each remembered per browser.
 const bloomDefaults = scenes.map((sc) => sc.bloomStrength);
-let glowOn = true;
-try { glowOn = localStorage.getItem(GLOW_KEY) !== 'off'; } catch { /* no storage */ }
-function applyGlow(): void {
-  scenes.forEach((sc, i) => { sc.bloomStrength = glowOn ? bloomDefaults[i]! : 0; });
-}
-applyGlow();
-
-// Old habits (a lineage trait): on unless switched off; remembered per browser.
-const HABITS_KEY = 'corallum.habits';
-let habitsOn = true;
-try { habitsOn = localStorage.getItem(HABITS_KEY) !== 'off'; } catch { /* no storage */ }
-
-// Calmer motion: the system setting, or this switch (remembered per browser).
-const CALM_KEY = 'corallum.calm';
-let calmOn = false;
-try { calmOn = localStorage.getItem(CALM_KEY) === 'on'; } catch { /* no storage */ }
-document.documentElement.classList.toggle('calm', calmOn);
-
-const SCI_KEY = 'corallum.sci';
-let sciOn = false;
-try { sciOn = localStorage.getItem(SCI_KEY) === 'on'; } catch { /* no storage */ }
-setScientific(sciOn);
-
-const VOL_KEY = 'corallum.volume';
-try { const v = Number(localStorage.getItem(VOL_KEY)); if (localStorage.getItem(VOL_KEY) !== null && Number.isFinite(v)) audio.setVolume(v); } catch { /* no storage */ }
-
-// Full resolution: off renders at 1× (a quarter of the pixels on a 2× screen) for slow phones.
-const SHARP_KEY = 'corallum.sharp';
-let sharpOn = true;
-try { sharpOn = localStorage.getItem(SHARP_KEY) !== 'off'; } catch { /* no storage */ }
-
-// Vibration on phones (where the browser supports it): a tick per purchase, a longer pulse for
-// milestones and feats. On by default on touch devices; a Reef-tab switch turns it off.
-const BUZZ_KEY = 'corallum.buzz';
-let buzzOn = window.matchMedia('(pointer: coarse)').matches;
-try { const v = localStorage.getItem(BUZZ_KEY); if (v !== null) buzzOn = v === 'on'; } catch { /* no storage */ }
+/** Soft glow: the bloom pass, on unless turned off. */
+const glow = setting('glow', true, (on) => scenes.forEach((sc, i) => { sc.bloomStrength = on ? bloomDefaults[i]! : 0; }));
+/** Old habits (a lineage trait): the reef's own small purchases, while the page is open. */
+const habits = setting('habits', true);
+/** Calmer motion: as the system's reduced-motion setting, by choice. */
+const calm = setting('calm', false, (on) => document.documentElement.classList.toggle('calm', on));
+const sci = setting('sci', false, (on) => setScientific(on));
+const volume = setting('volume', 0.9, (v) => audio.setVolume(v));
+/** Full resolution: off renders at 1× (a quarter of the pixels on a 2× screen) for slow phones. */
+const sharp = setting('sharp', true, (_, initial) => { if (!initial) relayout(); });
+/** Vibration on phones: a tick per purchase, a pulse for milestones and feats (on for touch screens). */
+const buzzing = setting('buzz', window.matchMedia('(pointer: coarse)').matches);
 function buzz(ms: number | number[]): void {
-  if (buzzOn && 'vibrate' in navigator) navigator.vibrate(ms);
+  if (buzzing.get() && 'vibrate' in navigator) navigator.vibrate(ms);
 }
 
 const panel = createPanel(ui, {
-  sharp: {
-    get: () => sharpOn,
-    set(on) {
-      sharpOn = on;
-      try { localStorage.setItem(SHARP_KEY, on ? 'on' : 'off'); } catch { /* no storage */ }
-      relayout();
-    },
-  },
-  buzz: {
-    get: () => buzzOn,
-    set(on) {
-      buzzOn = on;
-      try { localStorage.setItem(BUZZ_KEY, on ? 'on' : 'off'); } catch { /* no storage */ }
-    },
-  },
-  volume: {
-    get: () => audio.volume,
-    set(v) {
-      audio.setVolume(v);
-      try { localStorage.setItem(VOL_KEY, String(v)); } catch { /* no storage */ }
-    },
-  },
-  sci: {
-    get: () => sciOn,
-    set(on) {
-      sciOn = on;
-      setScientific(on);
-      try { localStorage.setItem(SCI_KEY, on ? 'on' : 'off'); } catch { /* no storage */ }
-    },
-  },
+  sharp, buzz: buzzing, volume, sci, calm, habits, glow,
   rename(name) {
     state.meta.name = name;
     showReefName();
     save();
-  },
-  calm: {
-    get: () => calmOn,
-    set(on) {
-      calmOn = on;
-      document.documentElement.classList.toggle('calm', on);
-      try { localStorage.setItem(CALM_KEY, on ? 'on' : 'off'); } catch { /* no storage */ }
-    },
-  },
-  habits: {
-    get: () => habitsOn,
-    set(on) {
-      habitsOn = on;
-      try { localStorage.setItem(HABITS_KEY, on ? 'on' : 'off'); } catch { /* no storage */ }
-    },
-  },
-  glow: {
-    get: () => glowOn,
-    set(on) {
-      glowOn = on;
-      try { localStorage.setItem(GLOW_KEY, on ? 'on' : 'off'); } catch { /* no storage */ }
-      applyGlow();
-    },
   },
   storyShown() {
     audio.cue('story');
@@ -440,7 +364,7 @@ window.corallum = {
 let dpr = 1;
 let focusNow: Focus = { x: 0, y: 0, w: 1, h: 1 };
 function resize(): void {
-  dpr = sharpOn && !autoLowRes ? Math.min(window.devicePixelRatio || 1, 2) : 1;
+  dpr = sharp.get() && !autoLowRes ? Math.min(window.devicePixelRatio || 1, 2) : 1;
   const w = Math.round(window.innerWidth * dpr);
   const h = Math.round(window.innerHeight * dpr);
   const r = panel.element.getBoundingClientRect();
@@ -748,7 +672,7 @@ function qualityCheck(dt: number): void {
   if (slowFrames <= 3) return;
   slowFrames = 0;
   if (scene.bloomStrength > 0) scene.bloomStrength = 0;
-  else if (sharpOn && dpr > 1) {
+  else if (sharp.get() && dpr > 1) {
     autoLowRes = true;
     relayout();
   }
@@ -908,7 +832,7 @@ function frame(now: number): void {
     // A long gap means the tab slept; treat it like being away.
     if (dt > AWAY_NOTICE) catchUp(dt * speed);
     else advance(state, dt * speed);
-    animT += Math.min(dt, 0.1) * (reducedMotion.matches || calmOn ? 0.3 : 1);
+    animT += Math.min(dt, 0.1) * (reducedMotion.matches || calm.get() ? 0.3 : 1);
     qualityCheck(dt);
   }
   const tNow = frozenT ?? animT;
@@ -986,7 +910,7 @@ function frame(now: number): void {
     }
   }
   // Old habits: the reef's own small purchases, only while the page is open.
-  if (habitsOn && frozenT === null && now - lastHabit > 250) {
+  if (habits.get() && frozenT === null && now - lastHabit > 250) {
     lastHabit = now;
     const id = habitPurchase(state);
     if (id) purchase(id);
