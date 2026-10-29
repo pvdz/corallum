@@ -240,7 +240,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 @keyframes zone-title { 0% { opacity: 0; transform: translateY(8px); } 15%, 70% { opacity: 1; transform: none; } 100% { opacity: 0; } }
 
 #sweep-hint {
-  position: absolute; left: 0; right: 0; bottom: 56%; text-align: center; pointer-events: none;
+  position: absolute; left: 0; right: 0; bottom: 68%; text-align: center; pointer-events: none;
   font-family: var(--display); font-style: italic; font-size: 16px; color: var(--ink-dim);
   opacity: 0; transition: opacity 1.2s ease;
 }
