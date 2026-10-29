@@ -555,3 +555,4 @@ date, what landed, what is half-done, what's next.
 - Flare the lure (act1.ts FLARE; economy canFlare/flare; state.lastFlare): Flare button in the prep row with its cooldown, key L.
 - Whisper 'flare' when the glow first sits full.
 - Zone guides (guide.ts ZONE_GUIDE): the first time the line enters zones 2–5, a short card of what is new there (meta.seen 'zone:n'), five seconds after the zone's title.
+- The Reef tab's guide covers rhythms, glow (flare), shoal jobs, Ossel's questions, the sky and the daily things.
