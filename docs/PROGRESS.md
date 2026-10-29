@@ -261,3 +261,4 @@ date, what landed, what is half-done, what's next.
 - Moon (render/draw.ts drawMoon): soft grey seas, rimmed craters, limb darkening on the lit part, earthshine on the dark; the Breach redraws the disc after the glow pass so the seas show. Sweeper tentacles (craft.ts) taper, sag and weave, reach out and draw back, with beads of stinging cells and a lit knobbed tip.
 - Audio cue 'touch': a quiet high pair when a creature is touched.
 - Touch: the manta barrel-rolls showing its pale belly; the grouper shuts its mouth and its cleaners scatter; the dumbo octopus flaps hard and bobs up.
+- Touch: the dolphins answer with an encore, a higher leap of the pod from where they were touched.

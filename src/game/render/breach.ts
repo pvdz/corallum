@@ -2,7 +2,7 @@
 // path on the waves, the reef's crown breaking the water. Spawn bundles swell on the polyps;
 // at the release they rise in their millions through the moonlight and spread on the surface.
 
-import { sight, spot } from './sightings.ts';
+import { sight, spot, startled } from './sightings.ts';
 import type { DialectId } from '../content/act4.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
@@ -336,18 +336,26 @@ export function createBreachScene(seed: number): Scene {
   function drawDolphins(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 75;
     const u = (t % period) / 6;
-    if (u >= 1.6) return;
+    // Touched, the pod answers with a higher leap of its own, from where it was touched.
+    const touch = startled('dolphin', t);
+    const encore = touch && touch.age < 9.6 ? touch : null;
+    if (u >= 1.6 && !encore) return;
     sight('dolphin');
     const lap = Math.floor(t / period);
+    leaps(ctx, focus.x + focus.w * (lap % 2 ? 0.12 : 0.62), u, 1);
+    if (encore) leaps(ctx, encore.x - focus.w * 0.04, encore.age / 6, 1.5);
+  }
+
+  /** A pod of three leaping in turn: `u` runs 0..1.6 over the sequence, `lift` scales the arcs. */
+  function leaps(ctx: CanvasRenderingContext2D, x0: number, u: number, lift: number): void {
     const s = scale() * 1.6;
     const wy = waterY();
-    const x0 = focus.x + focus.w * (lap % 2 ? 0.12 : 0.62);
     for (let k = 0; k < 3; k++) {
       const p = u - k * 0.3;
       if (p < 0 || p > 1) continue;
       // A leap: a parabola from the water and back, body tilted along the arc.
       const x = x0 + (p + k * 0.25) * focus.w * 0.22;
-      const y = wy - Math.sin(Math.PI * p) * 46 * s;
+      const y = wy - Math.sin(Math.PI * p) * 46 * s * lift;
       const ang = -Math.cos(Math.PI * p) * 0.9;
       spot('dolphin', x, y, 26 * s);
       ctx.save();
