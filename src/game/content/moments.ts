@@ -5,7 +5,7 @@
 export type MomentId = 'brittle' | 'vent-crack' | 'snow' | 'lost-shoal' | 'hunters' | 'angler' | 'squid' | 'whale-fall' | 'old-lamp' | 'cleaners'
   | 'young-rasp' | 'slope' | 'eggs' | 'storm' | 'turtle' | 'first-light' | 'last-night' | 'bird'
   | 'fire-body' | 'seep' | 'rising-stop' | 'split-shoal' | 'heatwave' | 'pups' | 'king-tide' | 'outbreak'
-  | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes' | 'heavy-crown' | 'cold-slide' | 'dust' | 'bowed' | 'mirror' | 'jelly-bloom' | 'last-dark' | 'fry' | 'two-seas';
+  | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes' | 'heavy-crown' | 'cold-slide' | 'dust' | 'bowed' | 'mirror' | 'jelly-bloom' | 'last-dark' | 'fry' | 'two-seas' | 'egg-cases';
 
 export type MomentOption = { label: string; effect: string; text: string };
 export type Moment = { id: MomentId; metres: number; title: string; text: string; a: MomentOption; b: MomentOption;
@@ -46,6 +46,14 @@ export const MOMENTS: readonly Moment[] = [
       text: 'You loosen your hold, and the grey falls away in pieces. What is left grows lighter, and quicker.' },
     b: { label: 'Carry it', effect: 'calcite dissolves ×0.92',
       text: 'You hold it all. It is heavy, but it is yours, and the deep water finds less of you to take.' },
+  },
+  {
+    id: 'egg-cases', metres: 300, title: 'Egg cases',
+    text: 'A skate, flat and slow, has wedged four leathery egg cases into your foot, each with a curled tendril at its corners, and gone.',
+    a: { label: 'Keep them safe', effect: 'gifts from neighbours ×1.25',
+      text: 'You grow a little stone around them. When they hatch, the small skates stay near, and the floor learns you can be trusted.' },
+    b: { label: 'Let the current have them', effect: 'calcite ×1.05',
+      text: 'You let them go. The space they leave fills with your own stone, and you are a little heavier for it.' },
   },
   {
     id: 'lost-shoal', metres: 400, title: 'A lost shoal',

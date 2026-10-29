@@ -232,7 +232,7 @@ export function rates(s: GameState): Rates {
       (speaks(s, 'massive') ? 1.5 : 1) * (speaks(s, 'pillar') ? 1.25 : 1) *
       1.5 ** trait(s, 'deep-memory') *
       knownBonus(s) * shardBonus(s) *
-      (lives(s, 'goby') ? 1.15 : 1) * (has(s, 'scattered') ? 1.05 : FRAGMENT.each) ** s.fragments * (chose(s, 'whale-fall', 'a') ? 1.1 : 1) * (chose(s, 'snow', 'a') ? 1.05 : 1) * (chose(s, 'slope', 'a') ? 1.05 : 1) * (chose(s, 'krill', 'a') ? 1.1 : 1) * (chose(s, 'heatwave', 'b') ? 1.1 : 1) * (chose(s, 'outbreak', 'a') ? 1.1 : 1) * 1.05 ** s.works.garden *
+      (lives(s, 'goby') ? 1.15 : 1) * (chose(s, 'egg-cases', 'b') ? 1.05 : 1) * (has(s, 'scattered') ? 1.05 : FRAGMENT.each) ** s.fragments * (chose(s, 'whale-fall', 'a') ? 1.1 : 1) * (chose(s, 'snow', 'a') ? 1.05 : 1) * (chose(s, 'slope', 'a') ? 1.05 : 1) * (chose(s, 'krill', 'a') ? 1.1 : 1) * (chose(s, 'heatwave', 'b') ? 1.1 : 1) * (chose(s, 'outbreak', 'a') ? 1.1 : 1) * 1.05 ** s.works.garden *
       (boon(s, 'currents') ? 1.15 : 1) * today(s, 'calm', 1.1),
     calciteK:
       ACT1.dissolve * sm.dissolve * ACT1.latticeFactor ** lv.lattice * (ACT1.ventAcid * sm.ventAcid) ** vent * (vent > 0 && chose(s, 'vent-crack', 'a') ? 0.8 : 1) *
@@ -1652,7 +1652,7 @@ export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: 
   // Never more than a share of what the reef can hold of it (P/k), or it would only wash away.
   // Rare visitors give more: catching one is luck as well as attention.
   const rare = CREATURES.find((c) => c.id === id)?.note.startsWith('Rare.') ? GIFT.rare : 1;
-  const amount = (luck ? LUCKY.mult : 1) * (paired(s, 'decorator-crab', 'cleaner-wrasse') ? 1.3 : 1) * (close ? 2 : 1) * (lives(s, 'cleaner-wrasse') ? 2 : 1) * (boon(s, 'welcome') ? 2 : 1) * (speaks(s, 'chorus') ? 2 : 1) * TRUST.gift[trustLevel(s.meta.trust[id] ?? 0)]! * (chose(s, 'whale-fall', 'b') ? 2 : 1) * rare * (stock === 'calcite' ? calciteRate(s, r) * GIFT.seconds
+  const amount = (luck ? LUCKY.mult : 1) * (chose(s, 'egg-cases', 'a') ? 1.25 : 1) * (paired(s, 'decorator-crab', 'cleaner-wrasse') ? 1.3 : 1) * (close ? 2 : 1) * (lives(s, 'cleaner-wrasse') ? 2 : 1) * (boon(s, 'welcome') ? 2 : 1) * (speaks(s, 'chorus') ? 2 : 1) * TRUST.gift[trustLevel(s.meta.trust[id] ?? 0)]! * (chose(s, 'whale-fall', 'b') ? 2 : 1) * rare * (stock === 'calcite' ? calciteRate(s, r) * GIFT.seconds
     : stock === 'bloom' ? r.bloomP * GIFT.seconds : stock === 'spawn' ? r.spawnP * GIFT.seconds
     : Math.min(made * GIFT.seconds, GIFT.holdShare * made / k));
   if (!(amount > 0)) return null;

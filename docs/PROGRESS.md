@@ -705,3 +705,4 @@ date, what landed, what is half-done, what's next.
 - Reading The scattered city (36000, after first-words): fragments ×1.05 each instead of ×1.03.
 - Resident pair A tidy floor (hermit crab + sea cucumbers): sand ×1.2.
 - A man-o'-war drifts on the Breach surface, crest up, long blue tentacles below (touched, its sail sags).
+- Moment egg-cases (300 m: gifts ×1.25 or calcite ×1.05).
