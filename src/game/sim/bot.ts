@@ -94,8 +94,8 @@ export function botDecide(
       if (gap(under) < 1 || !reassign(s, over, under)) break;
     }
   }
-  // The bot cannot touch creatures: it asks Ossel for something else.
-  if (s.request.kind === 'touch') skipRequest(s);
+  // The bot cannot touch creatures or drive off intruders: it asks Ossel for something else.
+  if (s.request.kind === 'touch' || s.request.kind === 'intruder') skipRequest(s);
   const offered = boonsOffered(s);
   if (offered.length) chooseBoon(s, offered[0]!.id);
   const mo = nextMoment(s);
