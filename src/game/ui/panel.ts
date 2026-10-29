@@ -6,7 +6,7 @@ import { ACT1, MILESTONES } from '../content/act1.ts';
 import type { Band, UpgradeId } from '../content/types.ts';
 import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
-import { ACT3, MEETINGS, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
+import { ACT3, FAVOURS, FAVOUR_TEXT, MEETINGS, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { DIALECTS, TIERS, type DialectId } from '../content/act4.ts';
 import { SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { MEMORIES } from '../content/act5.ts';
@@ -25,7 +25,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -36,6 +36,8 @@ export type PanelHooks = {
   read(id: ReadingId): void;
   /** Send shoals to the next ruin. */
   send(): void;
+  /** Ask the Rasp a favour. */
+  favour(id: FavourId): void;
   /** Answer a moment. */
   meet(id: MomentId, c: 'a' | 'b'): void;
   /** Take a resident in, or let it go. */
@@ -253,7 +255,18 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const raspPlus = button('step', '+', () => hooks.setRasp((lastState?.rasp ?? 0) + 1));
   raspRow.append(raspMinus, raspSlider, raspPlus);
   const raspWhat = el('p', 'rasp-what');
-  raspBox.append(raspHead, raspRow, raspWhat);
+  // Favours: small asks paid in sand, once the truce has begun.
+  const favourRow = el('div', 'favours');
+  const favourButtons = FAVOURS.map((f) => {
+    const b = button('favour', '', () => hooks.favour(f.id));
+    const name = el('strong', '', f.name);
+    const what = el('span', '', f.effect);
+    const price = el('em');
+    b.append(name, what, price);
+    favourRow.append(b);
+    return { f, b, price };
+  });
+  raspBox.append(raspHead, raspRow, raspWhat, favourRow);
   grow.append(raspBox);
   let lastState: GameState | null = null;
 
@@ -1052,6 +1065,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const bestNote = raspBest === raspHold
           ? `Best setting: ${mark(raspBest)}`
           : `Best for income: ${mark(raspBest)} · best before going away: ${mark(raspHold)}`;
+        favourRow.hidden = !favourOpen(s);
+        for (const x of favourButtons) {
+          const done = favourMaxed(s, x.f.id);
+          const c = favourCost(s, x.f.id);
+          x.price.textContent = done ? FAVOUR_TEXT.done : `${num(c)} sand`;
+          x.b.disabled = done || s.sand < c;
+        }
         raspWhat.textContent = s.rasp === 0
           ? `No Rasp graze; the silt settles where it falls. ${bestNote}`
           : `${rate(r.sandP)} sand${eats > 0 ? ` · eat ${rate(eats).slice(1)} calcite` : ''} · holds ~${num(calciteHold(s, r))}\n${bestNote}`;

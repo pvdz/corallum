@@ -17,7 +17,7 @@
 
 import { ACT1, BANDS_ACT1, MILESTONES, type Milestone } from '../content/act1.ts';
 import { ACT2, BANDS_ACT2, READINGS, type Job, type ReadingId } from '../content/act2.ts';
-import { ACT3, BANDS_ACT3, MEETINGS, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
+import { ACT3, BANDS_ACT3, FAVOURS, MEETINGS, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { ACT4, BANDS_ACT4, DIALECTS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
 import { ACT5, BANDS_ACT5, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
 import { act, actAt, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
@@ -221,7 +221,7 @@ export function rates(s: GameState): Rates {
     siltP: onShelf
       ? ACT3.siltFall * (1 + (target - ACT3.from) / ACT3.siltGrowthPer) * (s.truce.wall === 'a' ? 0.6 : 1) * sm.silt * (passed(s, 'buried') ? 0.8 : 1)
       : 0,
-    siltK: ACT3.naturalSweep + (lives(s, 'pistol-shrimp') ? 0.04 : 0) + ACT3.flowSweep * lv.sandbar + LINEAGE.glassSweep * trait(s, 'glass-gardeners') + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
+    siltK: ACT3.naturalSweep + (lives(s, 'pistol-shrimp') ? 0.04 : 0) + 0.02 * s.favours.clear + ACT3.flowSweep * lv.sandbar + LINEAGE.glassSweep * trait(s, 'glass-gardeners') + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
     sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1) * (found(s, 'midden') ? 1.3 : 1) * (lives(s, 'sea-cucumber') ? 1.4 : 1) * (chose(s, 'turtle', 'b') ? 1.25 : 1),
     sandK: ACT3.sandSettle,
     bloomP: sunlight(s, target) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * ACT4.meadowBloom ** lv.meadow *
@@ -785,6 +785,37 @@ export function meet(s: GameState, id: MomentId, c: 'a' | 'b'): boolean {
     const n = Math.max(0, Math.min(3, (seamount(s).shoalCap ?? Infinity) - s.levels.shoal));
     s.levels.shoal += n;
     s.jobs[jobOpen(s, s.lastJob) ? s.lastJob : 'feed'] += n;
+  }
+  return true;
+}
+
+// ---------- Favours of the Rasp ----------
+
+export function favourOpen(s: GameState): boolean {
+  return !!s.truce.terms;
+}
+
+export function favourCost(s: GameState, id: FavourId): number {
+  const f = FAVOURS.find((x) => x.id === id)!;
+  return Math.ceil(f.cost * f.growth ** s.favours[id]);
+}
+
+export function favourMaxed(s: GameState, id: FavourId): boolean {
+  return s.favours[id] >= FAVOURS.find((x) => x.id === id)!.max || (id === 'path' && maxed(s, 'shoal'));
+}
+
+/** Ask a favour: paid in sand, done at once. */
+export function askFavour(s: GameState, id: FavourId): boolean {
+  if (!favourOpen(s) || favourMaxed(s, id) || s.sand < favourCost(s, id)) return false;
+  s.sand -= favourCost(s, id);
+  s.favours[id]++;
+  if (id === 'path') {
+    s.levels.shoal += 2;
+    s.jobs[jobOpen(s, s.lastJob) ? s.lastJob : 'feed'] += 2;
+  } else if (id === 'carry') {
+    const gain = calciteRate(s) * 180;
+    s.calcite += gain;
+    s.earned.calcite += gain;
   }
   return true;
 }

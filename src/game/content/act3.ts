@@ -158,3 +158,13 @@ export const BANDS_ACT3: readonly Band[] = [
       'gold, and a green you had no word for. The sun. You have never seen the sun.',
   },
 ];
+
+// Favours: once the first meeting is settled, the Rasp can be asked for things, paid in sand.
+// Each is dearer every time it is asked (cost × growth^times).
+export type FavourId = 'clear' | 'path' | 'carry';
+export const FAVOURS: readonly { id: FavourId; name: string; effect: string; cost: number; growth: number; max: number }[] = [
+  { id: 'clear', name: 'Turn the silt aside', effect: 'silt swept +0.02/s, for good', cost: 3000, growth: 1.6, max: 10 },
+  { id: 'path', name: 'Grind a path', effect: '+2 shoals', cost: 8000, growth: 2, max: 5 },
+  { id: 'carry', name: 'Carry stone up', effect: '3 minutes of calcite now', cost: 5000, growth: 1.5, max: Infinity },
+];
+export const FAVOUR_TEXT = { head: 'Ask the Rasp', done: 'done' } as const;

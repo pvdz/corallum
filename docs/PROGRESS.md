@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended: adding features and gameplay (goal: repeat). Latest: shards of Thousandfold, Ossel's requests, hard seamounts (trials), moments (eight two-way choices on the climb), the water's moods (timed price windows with a forecast), residents, expeditions. Ideas: an Act I verb; Breach detail; reef events with choices.
+NOW: Open-ended: adding features and gameplay (goal: repeat). Latest: Rasp favours, shards of Thousandfold, Ossel's requests, hard seamounts (trials), moments (eight two-way choices on the climb), the water's moods (timed price windows with a forecast), residents, expeditions. Ideas: an Act I verb; Breach detail; reef events with choices.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -336,3 +336,4 @@ date, what landed, what is half-done, what's next.
 - Shards of Thousandfold: content/shards.ts (12 lines), economy dig() on sweep/feast/touch/homecoming (seeded by tally.digs), meta.shards kept by the line, shardBonus in calcite; tablet card in Bands (canvas: cracked round stone, carved wedges) with the inscription; journal note on a find; feat 'The whole tablet'. Pacing bound now 4–11 h, rebalance item added to PLAN.
 - Hard seamounts drawn on the Silt Floor: hungry (a third of the snow, a pale wash), silent (no ruins, darker water), lonely (no ruins, one far light on the horizon), buried (the flurry never stops, pale silt drifts slumping along the floor).
 
+- Rasp favours: content/act3.ts FAVOURS, economy favourOpen/favourCost/favourMaxed/askFavour, state.favours; three buttons under the Rasp dial. 'Clear the silt now' was useless (silt resettles in ~10 s), so the favour turns silt aside for good instead.

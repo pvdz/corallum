@@ -121,6 +121,9 @@ Entry requires the last Act II Reading (*Inside the wall*): the story turn opens
   permanent choice between two terms, with economic and story consequences; the third is
   whether to give Ossel's wall to the Rasp. The choices colour the ending.
 - **Grazing grounds** (calcite): raise Rmax.
+- **Favours** (once the first meeting is settled): ask the Rasp, paid in sand, dearer each time:
+  turn the silt aside (silt swept +0.02/s for good, up to 10), grind a path (+2 shoals, up to 5),
+  carry stone up (3 minutes of calcite now). A sand sink with three different returns.
 
 ## Act IV — The Sunlit Crown (3800–3980 m)
 - **Sunlight** reaches the reef: `sun = base × (1 + (target − 3800)/60)` (rises toward the surface).
