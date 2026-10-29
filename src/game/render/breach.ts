@@ -19,6 +19,7 @@ import { FIGURES, type Figure } from '../content/sky.ts';
 import { SWELL } from '../content/events.ts';
 import { drawPetrels, drawSailors, drawSeaSparkle, type Surface } from './surface.ts';
 import { createLayerCache } from './layer.ts';
+import { createForeground } from './foreground.ts';
 import { drawCraft, FLUORESCENT_POLYP } from './craft.ts';
 import { createReef, type Reef, type ReefLayout } from './reef.ts';
 import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts';
@@ -67,6 +68,7 @@ export function createBreachScene(seed: number): Scene {
   const effects = createEffects();
   let bloom: Bloom | null = null;
   const galaxy = createLayerCache(1);
+  const fore = createForeground(seed);
   const stars: Star[] = Array.from({ length: 160 }, () => ({ x: rng(), y: rng(), r: range(rng, 0.4, 1.4), tw: rng() * 10 }));
   const bundles: Bundle[] = Array.from({ length: 420 }, () => ({
     x: range(rng, -0.32, 0.32), delay: rng() * 14, speed: range(rng, 0.05, 0.11), drift: range(rng, -1, 1), size: range(rng, 0.6, 1.3),
@@ -1282,6 +1284,7 @@ export function createBreachScene(seed: number): Scene {
       }
       // After the glow pass, so the crown's light does not swallow its silhouette.
       drawBird(ctx, t, v, this.crownAt);
+      fore.draw(ctx, focus, t, '6,24,44', 0.7);
     },
   };
 }
