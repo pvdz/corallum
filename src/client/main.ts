@@ -30,6 +30,7 @@ import { metres, num } from '../game/ui/format.ts';
 import { createAudio } from '../game/audio/audio.ts';
 import { LINEAGE_BANDS } from '../game/content/lineage.ts';
 import { CREATURES } from '../game/content/creatures.ts';
+import { newFeats } from '../game/content/feats.ts';
 import { takeSightings } from '../game/render/sightings.ts';
 import { ACT1, MILESTONES, type Milestone } from '../game/content/act1.ts';
 import { WHISPERS } from '../game/content/whispers.ts';
@@ -445,11 +446,11 @@ function showMilestone(ms: Milestone, what: string): void {
 const journalNote = document.createElement('div');
 journalNote.id = 'journal-note';
 ui.append(journalNote);
-let journalQueue: string[] = [];
+let journalQueue: [string, string][] = [];
 let journalBusy = false;
-/** "Seen for the first time: Anglerfish", one at a time. */
-function showJournalNote(name: string): void {
-  journalQueue.push(name);
+/** A small note top-left ("Seen for the first time · Anglerfish"), one at a time. */
+function showJournalNote(kicker: string, name: string): void {
+  journalQueue.push([kicker, name]);
   if (journalBusy) return;
   const next = () => {
     const n = journalQueue.shift();
@@ -457,9 +458,9 @@ function showJournalNote(name: string): void {
     journalBusy = true;
     journalNote.textContent = '';
     const k = document.createElement('span');
-    k.textContent = 'Seen for the first time';
+    k.textContent = n[0];
     const b = document.createElement('strong');
-    b.textContent = n;
+    b.textContent = n[1];
     journalNote.append(k, b);
     journalNote.classList.remove('show');
     void journalNote.offsetWidth;
@@ -694,7 +695,16 @@ function frame(now: number): void {
       if (frozenT !== null || state.meta.seen.includes(key)) continue;
       state.meta.seen.push(key);
       const c = CREATURES.find((x) => x.id === id);
-      if (c) showJournalNote(c.name);
+      if (c) showJournalNote('Seen for the first time', c.name);
+    }
+    // Feats: each earned once per lineage, worth one lineage.
+    if (frozenT === null && botT === null) {
+      for (const f of newFeats(state)) {
+        state.meta.seen.push(`f:${f.id}`);
+        state.meta.lineage += 1;
+        showJournalNote('Feat · +1 lineage', f.name);
+        audio.cue('buy');
+      }
     }
   }
   // Old habits: the reef's own small purchases, only while the page is open.

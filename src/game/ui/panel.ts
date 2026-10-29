@@ -11,6 +11,7 @@ import { DIALECTS, TIERS, type DialectId } from '../content/act4.ts';
 import { SEAMOUNTS, TRAIT_GROUPS, TRAITS, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { MEMORIES } from '../content/act5.ts';
 import { CREATURES } from '../content/creatures.ts';
+import { FEATS } from '../content/feats.ts';
 import { canSpawnLesser, lineageFor, traitCost, traitMaxed } from '../sim/prestige.ts';
 import { act, actAt, SURFACE } from '../content/acts.ts';
 import {
@@ -358,6 +359,24 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   spawnFoot.append(spawnBtn);
   const spawnBuys = el('p', 'effect');
   spawnCard.append(spawnTitle, spawnText, spawnBuys, el('p', 'stock-name', 'Where it settles'), whereBox, whereNote, spawnFoot);
+  // Feats: goals across all runs, one lineage each.
+  const featCard = el('article', 'card codex feats');
+  const featHead = el('h3', '', 'Feats');
+  const featList = el('dl', 'codex-list');
+  featCard.append(featHead, featList);
+  let featKey = '';
+  function renderFeats(s: GameState): void {
+    const done = FEATS.filter((f) => s.meta.seen.includes(`f:${f.id}`));
+    const key = done.map((f) => f.id).join();
+    if (key === featKey) return;
+    featKey = key;
+    featHead.textContent = `Feats · ${done.length} of ${FEATS.length} · one lineage each`;
+    featList.innerHTML = '';
+    for (const f of FEATS) {
+      const got = done.includes(f);
+      featList.append(el('dt', got ? '' : 'unknown', f.name), el('dd', got ? '' : 'unknown', f.text));
+    }
+  }
   lineagePage.append(lineageHead, spawnCard);
   const traitCards = new Map<TraitId, Card>();
   const groupHead = (g: keyof typeof TRAIT_GROUPS) =>
@@ -381,6 +400,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     lineagePage.append(root);
     traitCards.set(tr.id, { root, cost: costEl, level, effect, eta, btn });
   }
+  lineagePage.append(featCard);
 
   // ---------- Reef (settings) ----------
   const reefPage = tabPages.get('reef')!;
@@ -831,6 +851,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       }
       renderCodex(s);
       renderJournal(s);
+      renderFeats(s);
       habitToggle.hidden = !s.meta.traits['old-habits'];
       if (document.activeElement !== nameInput && nameInput.value !== s.meta.name) nameInput.value = s.meta.name;
       bandsDot.hidden = seenStories >= storyCount;

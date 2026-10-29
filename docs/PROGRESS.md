@@ -177,3 +177,4 @@ date, what landed, what is half-done, what's next.
 - The Breach: a pod of three dolphins arcs out of the moonlit water every ~75 s, with splash rings (journal: 22 creatures).
 - Sunlit Crown: an anemone with two clownfish weaving around it (journal: 23 creatures).
 - Midnight Water: a vampire squid drifts past, cloak of arms opening and closing, glowing fin tips (journal: 24 creatures).
+- Feats (content/feats.ts): 24 goals across runs (heights, polyps, feasts, readings, truce, meadows, seeing every creature of a zone, endings, seamounts), each +1 lineage once per lineage; toast top-left; list in the Lineage tab.
