@@ -10,7 +10,7 @@ import { ACT3, CURRENT, FAVOURS, FAVOUR_TEXT, MEETINGS, type FavourId, type Choi
 import { DIALECTS, OTHERS, TIERS, type DialectId } from '../content/act4.ts';
 import { BOONS, BOON_TEXT, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { MEMORIES } from '../content/act5.ts';
-import { CREATURES, TRUST, trustLevel } from '../content/creatures.ts';
+import { COMPANION, CREATURES, TRUST, trustLevel } from '../content/creatures.ts';
 import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
 import { upgradeIcon } from './icons.ts';
 import { drawCity, drawTablet } from './drawings.ts';
@@ -57,6 +57,8 @@ export type PanelHooks = {
   skipRequest(): void;
   /** Build the next stage of a great work. */
   build(id: WorkId): void;
+  /** Keep a creature close ('' for none). */
+  companion(id: string): void;
   /** Choose the line's colours. */
   recolour(id: string): void;
   /** Turn the current (−2 … +2). */
@@ -611,7 +613,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   function renderJournal(s: GameState): void {
     const seen = CREATURES.filter((c) => s.meta.seen.includes(`c:${c.id}`));
     const touched = s.meta.seen.filter((k) => k.startsWith('t:')).length;
-    const key = seen.map((c) => c.id).join() + `|${hooks.portraits ?? 0}|${touched}|` + Object.values(s.meta.trust).map(trustLevel).join('');
+    const key = seen.map((c) => c.id).join() + `|${hooks.portraits ?? 0}|${touched}|${s.meta.companion}|` + Object.values(s.meta.trust).map(trustLevel).join('');
     if (key === journalKey) return;
     journalKey = key;
     journalHead.textContent = `Creatures seen · ${seen.length} of ${CREATURES.length}${touched ? ` · ${touched} touched` : ''} · calcite +${Math.round((knownBonus(s) - 1) * 100)}%`;
@@ -641,6 +643,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const name = el('strong', '', known ? c.name : 'Not yet seen');
         const tl = trustLevel(s.meta.trust[c.id] ?? 0);
         if (known && tl > 0) name.append(el('em', `touched trust-${tl}`, ` · ${TRUST.names[tl]}`));
+        // A touched creature can be kept close as the line's companion.
+        if (known && s.meta.seen.includes(`t:${c.id}`)) {
+          const mine = s.meta.companion === c.id;
+          const star = button(`companion${mine ? ' on' : ''}`, mine ? '★' : '☆', () => hooks.companion(mine ? '' : c.id));
+          star.title = mine ? `${COMPANION.on} · ${COMPANION.note}` : `${COMPANION.label} (${COMPANION.note})`;
+          name.append(star);
+        }
         text.append(name,
           el('span', '', known ? c.note : c.note.startsWith('Rare.') ? 'Rare: watch for it.' : (/Only (?:on|after) [^.]*\./.exec(c.note)?.[0] ?? '')));
         row.append(text);

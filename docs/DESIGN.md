@@ -216,7 +216,8 @@ the release also sets the lineage for beginning again.
   of the creature's own stock (light from glowing ones, sand from the Rasp); touching eight, and twenty-five, are feats. Trust: the line remembers touches per creature (known at 1, familiar
   at 5, a friend at 15); gifts ×1.5 when familiar, ×2 from a friend; feats for one friend and ten.
   Trust grows at most once a minute per creature (no tapping it up); each new friend of the line
-  brings +1 lineage and +2% calcite. The journal keeps a portrait of
+  brings +1 lineage and +2% calcite. One touched creature can be kept close as the line's **companion**
+  (☆ in the journal): its gifts ×2, twice as often. The journal keeps a portrait of
   each, cropped from the world the first time it was in full view (an album that is your own).
 
 ## Prestige — Lesser Spawnings and Lineage

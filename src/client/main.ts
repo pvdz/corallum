@@ -38,7 +38,7 @@ import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio } from '../game/audio/audio.ts';
 import { AWAY_PREP, FEAST, THORN, WELCOME } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS, TRIAL_TEXT } from '../game/content/lineage.ts';
-import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf, TRUST, trustLevel } from '../game/content/creatures.ts';
+import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf, TRUST, trustLevel, COMPANION } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
 import { createPortraits } from './portraits.ts';
 import { createZoom } from './zoom.ts';
@@ -244,6 +244,11 @@ const panel = createPanel(ui, {
     scene.effect('grounds');
     audio.cue('zone');
     buzz([30, 40, 30]);
+    save();
+  },
+  companion(id) {
+    state.meta.companion = id;
+    audio.cue('touch');
     save();
   },
   recolour(id) {
@@ -839,6 +844,7 @@ function showCreatureLabel(id: string, x: number, y: number, r = 20): void {
   // How well the line knows it (touches remembered across reefs).
   const tl = trustLevel(state.meta.trust[c.id] ?? 0);
   if (tl > 1) n.append(Object.assign(document.createElement('small'), { textContent: ` · ${TRUST.names[tl]}` }));
+  if (state.meta.companion === c.id) n.append(Object.assign(document.createElement('small'), { textContent: ` · ${COMPANION.on.toLowerCase()} ★` }));
   const t = document.createElement('span');
   t.textContent = c.note;
   // What it gives when touched, and when it will give again.

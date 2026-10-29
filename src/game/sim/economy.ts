@@ -1167,7 +1167,8 @@ export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: 
     // A shard may turn up where a neighbour digs: once a minute per creature, like trust.
     dig(s, 'touch');
   }
-  if (s.t - s.gifts[id] < GIFT.cooldown) return null;
+  const close = s.meta.companion === id;
+  if (s.t - s.gifts[id] < GIFT.cooldown * (close ? 0.5 : 1)) return null;
   const r = rates(s);
   let stock = giftOf(id);
   const made = stock === 'glow' ? r.glowP : stock === 'plankton' ? r.planktonP : stock === 'sand' ? r.sandP : 0;
@@ -1179,7 +1180,7 @@ export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: 
   // Never more than a share of what the reef can hold of it (P/k), or it would only wash away.
   // Rare visitors give more: catching one is luck as well as attention.
   const rare = CREATURES.find((c) => c.id === id)?.note.startsWith('Rare.') ? GIFT.rare : 1;
-  const amount = (boon(s, 'welcome') ? 2 : 1) * (speaks(s, 'chorus') ? 2 : 1) * TRUST.gift[trustLevel(s.meta.trust[id] ?? 0)]! * (chose(s, 'whale-fall', 'b') ? 2 : 1) * rare * (stock === 'calcite' ? calciteRate(s, r) * GIFT.seconds
+  const amount = (close ? 2 : 1) * (boon(s, 'welcome') ? 2 : 1) * (speaks(s, 'chorus') ? 2 : 1) * TRUST.gift[trustLevel(s.meta.trust[id] ?? 0)]! * (chose(s, 'whale-fall', 'b') ? 2 : 1) * rare * (stock === 'calcite' ? calciteRate(s, r) * GIFT.seconds
     : stock === 'bloom' ? r.bloomP * GIFT.seconds : stock === 'spawn' ? r.spawnP * GIFT.seconds
     : Math.min(made * GIFT.seconds, GIFT.holdShare * made / k));
   if (!(amount > 0)) return null;

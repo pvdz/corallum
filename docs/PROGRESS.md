@@ -435,3 +435,4 @@ date, what landed, what is half-done, what's next.
 - The Song shown around the crown in the Sunlit Crown and the Breach (render/song.ts): lullaby glow, chorus lights, call rings.
 - Rain at the Breach (after the Rain band): a shower every five minutes, streaks and rings on the surface.
 - Rain sound at the Breach: soft low drops while a shower falls (audio.setRain).
+- Companion: meta.companion, ☆/★ in the journal on touched creatures; gifts ×2 at half the cooldown; shown on the touch label.
