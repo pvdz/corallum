@@ -1409,9 +1409,10 @@ function keepRequest(s: GameState): number {
   const prev = q.kind;
   if (q.kind && (requestCount(s, q.kind) - q.base >= q.n || !requestOpen(s, q.kind))) {
     if (requestCount(s, q.kind) - q.base >= q.n) {
-      paid = burst(s, REQUEST.seconds);
+      paid = burst(s, REQUEST.seconds * (1 + REQUEST.streakBonus * Math.min(REQUEST.streakMax, q.streak)));
       q.paid = paid;
       q.done++;
+      q.streak++;
       if (q.done % 5 === 0) remember(s, 'request', String(q.done));
     }
     q.kind = '';
@@ -1466,6 +1467,7 @@ export function skipRequest(s: GameState): boolean {
   const r = mulberry32((s.seed ^ 0x51c1) + Math.imul(Math.floor(s.t), 0x27d4eb2d));
   const pick = open[Math.floor(r() * open.length)]!;
   q.skipped = s.t;
+  q.streak = 0;
   q.kind = pick.kind;
   q.n = pick.n(q.done);
   q.base = requestCount(s, pick.kind);

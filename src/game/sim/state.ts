@@ -120,7 +120,7 @@ export type GameState = {
   /** Shoals away at a ruin: the site ('' for none), when they return, and the jobs they left. */
   expedition: { site: TripId | ''; back: number; feed: number; light: number; scout: number; n: number };
   /** Ossel's current request (kind '' for none yet), its count at the start, and how many are done; `paid` is what the last one brought. */
-  request: { kind: RequestKind | ''; n: number; base: number; done: number; paid: number; skipped: number };
+  request: { kind: RequestKind | ''; n: number; base: number; done: number; paid: number; skipped: number; streak: number };
   /** Counters the requests watch, and how many times the silt was searched for a shard. */
   tally: { touches: number; sweeps: number; digs: number; roams: number; intruders: number };
   /** Stages built of each great work (content/works.ts). */
@@ -199,7 +199,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     favours: { clear: 0, path: 0, carry: 0 },
     race: { decided: 0, won: 0 },
     works: { garden: 0, spire: 0, breakwater: 0, terrace: 0, pool: 0 },
-    request: { kind: '', n: 0, base: 0, done: 0, paid: 0, skipped: -1e9 },
+    request: { kind: '', n: 0, base: 0, done: 0, paid: 0, skipped: -1e9, streak: 0 },
     tally: { touches: 0, sweeps: 0, digs: 0, roams: 0, intruders: 0 },
     moments: {
       brittle: '', 'vent-crack': '', 'lost-shoal': '', angler: '', squid: '', 'whale-fall': '', cleaners: '', 'young-rasp': '',

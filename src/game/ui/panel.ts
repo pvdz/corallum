@@ -1394,7 +1394,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       if (rq) {
         askText.textContent = rq.def.ask.replace('{n}', String(rq.n));
         askFill.style.width = `${(rq.got / rq.n) * 100}%`;
-        askCount.textContent = `${rq.got}/${rq.n}`;
+        askCount.textContent = `${rq.got}/${rq.n}` + (s.request.streak > 1 ? ` · ${s.request.streak} ${REQUEST.streakWord}` : '');
         askSkip.disabled = !canSkipRequest(s);
       }
 
