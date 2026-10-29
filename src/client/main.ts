@@ -197,6 +197,11 @@ const panel = createPanel(ui, {
   buy(id: UpgradeId) {
     if (purchase(id)) save();
   },
+  buyMax(id: UpgradeId) {
+    let n = 0;
+    while (n < 1000 && purchase(id)) n++;
+    if (n) save();
+  },
   assign(job, delta) {
     if (assign(state, job, delta)) save();
   },

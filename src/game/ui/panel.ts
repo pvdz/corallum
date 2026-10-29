@@ -38,6 +38,8 @@ import { duration, metres, num, rate } from './format.ts';
 
 export type PanelHooks = {
   buy(id: UpgradeId): void;
+  /** Buy as many of one upgrade as can be afforded. */
+  buyMax(id: UpgradeId): void;
   assign(job: Job, delta: 1 | -1): void;
   read(id: ReadingId): void;
   /** Send shoals to the next ruin. */
@@ -92,7 +94,7 @@ export type PanelHooks = {
   readonly portraits?: number;
 };
 
-type Card = { root: HTMLElement; cost: HTMLElement; level: HTMLElement; effect: HTMLElement; eta: HTMLElement; btn: HTMLButtonElement };
+type Card = { root: HTMLElement; cost: HTMLElement; level: HTMLElement; effect: HTMLElement; eta: HTMLElement; btn: HTMLButtonElement; max: HTMLButtonElement | null };
 type Story = { kicker: string; title: string; text: string };
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls = '', text = ''): HTMLElementTagNameMap[K] {
@@ -455,7 +457,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const holdRepeat = repeatWhileHeld(btn, buyOnce);
     btn.append(costEl);
     const eta = el('span', 'eta');
-    foot.append(btn, eta);
+    // Repeatable upgrades: a small button that buys as many as can be afforded.
+    const max = u.maxLevel === Infinity ? button('step buy-max', 'max', () => hooks.buyMax(u.id)) : null;
+    if (max) max.title = 'Buy as many as you can afford';
+    foot.append(btn, ...(max ? [max] : []), eta);
     root.append(head, flavour, effect, foot);
     // Polyps and glimmerseed: a thin bar toward the next milestone.
     if (u.id === 'polyp' || u.id === 'symbiont') {
@@ -466,7 +471,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     }
     flavour.addEventListener('click', () => root.classList.toggle('open'));
     grow.append(root);
-    cards.set(u.id, { root, cost: costEl, level, effect, eta, btn });
+    cards.set(u.id, { root, cost: costEl, level, effect, eta, btn, max });
   }
 
   // ---------- Bands and Readings ----------
@@ -784,7 +789,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     foot.append(btn, eta);
     root.append(head, el('p', 'flavour', tr.flavour), effect, foot);
     lineagePage.append(root);
-    traitCards.set(tr.id, { root, cost: costEl, level, effect, eta, btn });
+    traitCards.set(tr.id, { root, cost: costEl, level, effect, eta, btn, max: null });
   }
   lineagePage.append(featCard);
   // Your line: every earlier reef, oldest first.
@@ -1537,6 +1542,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         c.cost.textContent = `${num(price)} ${cur}`;
         const ok = canAfford(s, u.id);
         c.btn.disabled = !ok;
+        if (c.max) c.max.hidden = !ok;
         c.root.classList.toggle('ready', ok);
         const due = etaSlot++ === etaTurn || !c.eta.textContent;
         if (ok) setEta(c.eta, 0);
