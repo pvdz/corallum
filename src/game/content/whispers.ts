@@ -6,7 +6,7 @@ import type { GameState } from '../sim/state.ts';
 import { actAt } from './acts.ts';
 import { OSSEL_MISTAKES } from './ossel.ts';
 import {
-  calciteHold, canSend, waterAt, homes, workOpen, sisterAt, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
+  calciteHold, canSend, inFlurry, waterAt, homes, workOpen, sisterAt, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
 } from '../sim/economy.ts';
 
 export type Whisper = { id: string; when: (s: GameState) => boolean; text: string };
@@ -72,6 +72,10 @@ export const WHISPERS: readonly Whisper[] = [
   {
     id: 'water', when: (s) => waterAt(s).id === 'rich' && s.levels.polyp > 10,
     text: 'Taste the water. It is rich today. Bud now, while it is easy; it will not last.',
+  },
+  {
+    id: 'flurry', when: (s) => inFlurry(s) && s.levels.polyp >= 3,
+    text: 'The snow is falling thick. Sweep now: there is more in it than silt.',
   },
   {
     id: 'work', when: (s) => (['spire', 'breakwater', 'terrace'] as const).some((w) => workOpen(s, w) && s.works[w] === 0),
