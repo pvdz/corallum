@@ -1631,7 +1631,7 @@ function frame(now: number): void {
     const base = ended(state) ? `${who} · spawned` : state.height < 1 ? who : `${metres(state.height)} · ${who}`;
     // Something to do right now (a feast, an intruder, a choice waiting): a dot, for background tabs.
     const waiting = !!currentFeast(state) || !!currentThorn(state) || !!nextMoment(state) || othersSpawning(state) || boonsOffered(state).length > 0 ||
-      forkOpen(state) || strainOpen(state) || sportOpen(state) || !!currentSignal(state) || !!currentShell(state);
+      forkOpen(state) || strainOpen(state) || sportOpen(state) || !!currentSignal(state) || !!currentShell(state) || canFeedRising(state);
     const pin = panel.pinnedText();
     const t = (waiting ? `● ${base}` : base) + (pin ? ` · ${pin}` : '');
     if (document.title !== t) document.title = t;
