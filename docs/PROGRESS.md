@@ -605,3 +605,4 @@ date, what landed, what is half-done, what's next.
 - The journal marks creatures touched while lucky with a golden ✦.
 - A fourth Form dialect, Pillars (calcite ×1.25, plankton ×1.5): coral.ts form 'pillar' (attractors in five upright columns from a shared foot), its looks in the Sunlit Crown and at the Breach. speak() ignores an unknown dialect (the bot param could pass fewer than four tiers).
 - Ossel's sixth mistake, strong (600 m: 'Strength is keeping'), corrected by the Reading The kept stone.
+- A fourth kind of falling feast: a jelly fall (feast.ts drawJellyFall; feastAt picks of four).

@@ -182,4 +182,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Gulper eel (Midnight), sixgill shark (Twilight) | real animals | OK |
 | Form dialect Pillars (columns from one foot, feeding by day: real pillar coral habit) | real biology | OK |
 | Ossel's mistake: strength is keeping (corrected by The kept stone) | this game's own theme | OK |
+| Jelly falls (a dead jellyfish sinking, a falling feast) | real phenomenon | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

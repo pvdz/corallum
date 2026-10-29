@@ -41,6 +41,7 @@ export function drawFeast(ctx: CanvasRenderingContext2D, f: Feast, age: number, 
   else if (pay === 'spawn') drawMoonSwarm(ctx, s, t, f.k);
   else if (f.kind === 0) drawFish(ctx, s);
   else if (f.kind === 1) drawSquid(ctx, s, t);
+  else if (f.kind === 3) drawJellyFall(ctx, s, t);
   else drawKrill(ctx, s, t, f.k);
   ctx.restore();
   // Scavengers: small lights circling and picking at it.
@@ -93,6 +94,43 @@ function drawMoonSwarm(ctx: CanvasRenderingContext2D, s: number, t: number, seed
     glow(ctx, Math.cos(a) * r, Math.sin(a) * r * 0.7, 3.5 * s, i % 3 ? '255,200,230' : '220,230,255', 0.8);
   }
   ctx.restore();
+}
+
+/** A jelly fall: a great dead jellyfish sinking, its bell slack and clouded, tentacles trailing up. */
+function drawJellyFall(ctx: CanvasRenderingContext2D, s: number, t: number): void {
+  // Undo the feast's tilt a little: a bell sinks mouth-down.
+  ctx.rotate(-0.4);
+  const R = 26 * s;
+  // Trailing tentacles, lifted by the sinking.
+  ctx.lineCap = 'round';
+  for (let i = 0; i < 9; i++) {
+    const x0 = (i / 8 - 0.5) * R * 1.6;
+    ctx.strokeStyle = `rgba(230,200,220,${0.35 + (i % 3) * 0.12})`;
+    ctx.lineWidth = (1 + (i % 2)) * s;
+    ctx.beginPath();
+    ctx.moveTo(x0, -R * 0.1);
+    ctx.bezierCurveTo(x0 + Math.sin(t * 1.1 + i) * 6 * s, -R * 0.8, x0 - Math.sin(t * 0.8 + i) * 8 * s, -R * 1.5, x0 + Math.sin(t + i * 2) * 5 * s, -R * (1.9 + (i % 3) * 0.3));
+    ctx.stroke();
+  }
+  // The bell, upside down: dome below, rim above.
+  const g = ctx.createRadialGradient(0, R * 0.2, 0, 0, R * 0.2, R);
+  g.addColorStop(0, 'rgba(250,225,235,0.75)');
+  g.addColorStop(1, 'rgba(210,170,200,0.35)');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.moveTo(-R, 0);
+  ctx.quadraticCurveTo(-R * 0.9, R * 0.95, 0, R * 0.95);
+  ctx.quadraticCurveTo(R * 0.9, R * 0.95, R, 0);
+  ctx.quadraticCurveTo(0, R * 0.18, -R, 0);
+  ctx.fill();
+  // Its four pale rings, still showing.
+  ctx.strokeStyle = 'rgba(255,240,245,0.6)';
+  ctx.lineWidth = 1.4 * s;
+  for (let k = 0; k < 4; k++) {
+    ctx.beginPath();
+    ctx.ellipse((k - 1.5) * R * 0.32, R * 0.5, R * 0.11, R * 0.08, 0, 0, Math.PI * 2);
+    ctx.stroke();
+  }
 }
 
 /** A dead fish: pale body, the ribs showing, a clouded eye. */

@@ -2132,7 +2132,7 @@ export function feastPay(s: GameState): FeastPay {
 /** Feast slot k: when in it the feast starts, where it falls (0..1 across) and what it is. */
 function feastAt(seed: number, k: number): Feast {
   const r = mulberry32((seed ^ 0x6fea57) + Math.imul(k, 0x9e3779b1));
-  return { k, start: k * FEAST.period + r() * (FEAST.period - FEAST.life), x: 0.15 + r() * 0.7, kind: Math.floor(r() * 3) };
+  return { k, start: k * FEAST.period + r() * (FEAST.period - FEAST.life), x: 0.15 + r() * 0.7, kind: Math.floor(r() * 4) };
 }
 
 /** The feast sinking past right now, if there is one still uneaten. */
