@@ -75,7 +75,7 @@ sand bar, grow a pigment, ripen), picked from the seed among the kinds that make
 a little more each time. Kept, it pays 120 s of the zone's currency (as a feast does) and the next
 comes. Short goals inside the long ones (principle 4); never needed. Feat: 20 in one reef.
 
-**Moments**: twenty-two small happenings on the way up (25 m to 3990 m, at least one per zone), plus one of its own on each
+**Moments**: twenty-four small happenings on the way up (25 m to 3990 m, at least one per zone), plus one of its own on each
 hard seamount (krill on the hungry one, an echo on the silent, the far light on the lonely, the drifts on the buried,
 the eyes on the dark), each a choice between two
 ways of meeting it, waiting in the Grow tab until answered and never blocking. Most pit active

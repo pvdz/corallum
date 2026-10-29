@@ -153,4 +153,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Giant larvacean (rare Midnight sight) | real animal (Bathochordaeus) | OK |
 | Lamp-nets (glimmerseed webs between branches) | plain description | OK |
 | Upwellings (cold water welling up; turn the current to it) | real oceanography | OK |
+| Moments: shark pups in the shallows, the king tide | real reef phenomena | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

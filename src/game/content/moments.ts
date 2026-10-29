@@ -4,7 +4,7 @@
 
 export type MomentId = 'brittle' | 'vent-crack' | 'snow' | 'lost-shoal' | 'hunters' | 'angler' | 'squid' | 'whale-fall' | 'old-lamp' | 'cleaners'
   | 'young-rasp' | 'slope' | 'eggs' | 'storm' | 'turtle' | 'first-light' | 'last-night' | 'bird'
-  | 'fire-body' | 'seep' | 'rising-stop' | 'split-shoal' | 'heatwave'
+  | 'fire-body' | 'seep' | 'rising-stop' | 'split-shoal' | 'heatwave' | 'pups' | 'king-tide'
   | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes';
 
 export type MomentOption = { label: string; effect: string; text: string };
@@ -152,6 +152,12 @@ export const MOMENTS: readonly Moment[] = [
       text: 'You seal the break in mucus and grow over it. The scar faces the light, and the light is good to it.' },
   },
   {
+    id: 'pups', metres: 3880, title: 'Shark pups in the shallows',
+    text: 'Small sharks no longer than a branch, born somewhere in the bay, are hunting in your shadow.',
+    a: { label: 'Shelter them in the branches', effect: 'thorn stars driven off for half, crabs or not', text: 'They grow up among your branches, and anything that climbs them meets a lot of small teeth.' },
+    b: { label: 'Let them hunt the reef fish', effect: 'bloom ×1.1', text: 'They thin the grazing fish, and the algae gardens on your crown grow thick and green.' },
+  },
+  {
     id: 'turtle', metres: 3920, title: 'A turtle asleep',
     text: 'A green turtle has wedged itself between your branches to sleep, its shell grazing the polyps.',
     a: { label: 'Let it sleep', effect: 'bloom fades ×0.8',
@@ -174,6 +180,12 @@ export const MOMENTS: readonly Moment[] = [
       text: 'You think of the vent, the dark, the snow. Your old stone hardens, as if to keep them.' },
     b: { label: 'Look only up', effect: 'spawn ×1.05',
       text: 'You turn everything toward the light that is coming. What you carry ripens toward it.' },
+  },
+  {
+    id: 'king-tide', metres: 3995, title: 'The king tide',
+    text: 'The highest tide of the year floods in under the moon and lifts the sea over your crown.',
+    a: { label: 'Rise with it', effect: 'spawn ×1.1', text: 'You open every polyp to the high water and ripen as fast as you can while it lasts.' },
+    b: { label: 'Hold the crown down', effect: 'spawn fades ×0.85', text: 'You keep what you have ripened close and tight under the water, and let the tide go over.' },
   },
   {
     id: 'bird', metres: 3990, title: 'A bird at low tide',

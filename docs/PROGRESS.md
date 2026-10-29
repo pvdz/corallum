@@ -522,3 +522,4 @@ date, what landed, what is half-done, what's next.
 - Lamp-nets (upgrade 'net', Midnight, glow): feeding ×1.05 each, max 6, drawn as glowing webs between branches. Pacing had already slipped under 6 h on some path before this (unnoticed: a commit chained on grep); band cost growth retuned, bot 7h28, all 61 sim tests green.
 - Feats: Every crest (all five of a swell set), Six in a row (signal streak), Ossel heard it all (four questions).
 - Upwellings (act3.ts UPWELL; economy currentUpwelling/catchUpwelling; state.upwelled): caught by setting the current toward it (main setCurrent hook), the line under the dial says so, twilight.ts drawUpwell plume, tab dot.
+- Moments pups (3880: thorn stars driven off for half / bloom ×1.1) and king-tide (3995: spawn ×1.1 / spawn fade ×0.85).
