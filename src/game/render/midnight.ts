@@ -140,7 +140,7 @@ export function createMidnightScene(seed: number): Scene {
    * The seamount's flank below the reef: a dark shoulder of rock along the bottom of the frame,
    * sinking away as the reef climbs (it is fully in view only early in the Midnight Water).
    */
-  function drawFlank(ctx: CanvasRenderingContext2D, p: number): void {
+  function drawFlank(ctx: CanvasRenderingContext2D, p: number, t: number): void {
     const sink = p * focus.h * 0.25;
     const base = focus.y + focus.h * 0.9 + sink;
     if (base > h + 20) return;
@@ -193,6 +193,55 @@ export function createMidnightScene(seed: number): Scene {
       ctx.beginPath();
       ctx.ellipse(wx + 74 * s, wy, 13 * s, 6 * s, 0.1, 0, Math.PI * 2);
       ctx.fill();
+      // White mats of bacteria spreading over the bones and the silt beside them.
+      ctx.fillStyle = 'rgba(235,240,245,0.16)';
+      for (let k = 0; k < 7; k++) {
+        ctx.beginPath();
+        ctx.ellipse(wx - 50 * s + k * 19 * s, wy + 3 * s, (8 + (k % 3) * 4) * s, 2.2 * s, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // Bone-eating worms: red fuzz along the spine and the rib bases, swaying.
+      ctx.strokeStyle = 'rgba(230,70,90,0.75)';
+      ctx.lineWidth = 0.8 * s;
+      for (let k = 0; k < 26; k++) {
+        const bx = wx - 56 * s + k * 4.6 * s;
+        const by = wy + 1 * s - Math.sin((k / 25) * Math.PI) * 2.5 * s;
+        const sw = Math.sin(t * 1.3 + k * 0.9) * 1.2 * s;
+        ctx.beginPath();
+        ctx.moveTo(bx, by);
+        ctx.lineTo(bx + sw, by - (2 + (k % 3)) * s);
+        ctx.stroke();
+      }
+      // A hagfish weaving slowly in and out of the ribs.
+      const hp = (t * 0.05) % 1;
+      const hx = wx - 60 * s + hp * 130 * s;
+      ctx.strokeStyle = 'rgba(150,120,140,0.7)';
+      ctx.lineWidth = 2.2 * s;
+      ctx.beginPath();
+      for (let q = 0; q <= 10; q++) {
+        const qx = hx - q * 2.6 * s;
+        const qy = wy - 6 * s + Math.sin(t * 2.4 - q * 0.7 + hx * 0.05 / s) * 2.2 * s;
+        if (q === 0) ctx.moveTo(qx, qy);
+        else ctx.lineTo(qx, qy);
+      }
+      ctx.stroke();
+      // A crab picking over the skull.
+      const cx2 = wx + 70 * s + Math.sin(t * 0.3) * 6 * s, cy2 = wy - 6 * s;
+      ctx.fillStyle = 'rgba(210,130,110,0.85)';
+      ctx.beginPath();
+      ctx.ellipse(cx2, cy2, 3.2 * s, 2 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(210,130,110,0.85)';
+      ctx.lineWidth = 0.7 * s;
+      for (const side of [-1, 1]) {
+        for (let l = 0; l < 3; l++) {
+          const kick = Math.sin(t * 5 + l * 2 + side) * 0.8 * s;
+          ctx.beginPath();
+          ctx.moveTo(cx2 + side * 2.5 * s, cy2 + 0.5 * s);
+          ctx.lineTo(cx2 + side * (5 + l) * s, cy2 + (2.5 + kick / s * 0.3) * s);
+          ctx.stroke();
+        }
+      }
       ctx.globalCompositeOperation = 'lighter';
       for (let k = 0; k < 6; k++) glow(ctx, wx - 40 * s + k * 20 * s, wy - 4 * s, 4 * s, '255,140,180', 0.4);
       ctx.restore();
@@ -596,7 +645,7 @@ export function createMidnightScene(seed: number): Scene {
       if (v.bands.includes('siphon')) drawSiphonophore(ctx, t);
       drawSnow(ctx, t);
       shoals.drawBack(ctx, focus, reef, L, v, t);
-      drawFlank(ctx, p);
+      drawFlank(ctx, p, t);
       reef.draw(ctx, L, v, t);
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));

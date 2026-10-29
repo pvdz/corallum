@@ -266,3 +266,4 @@ date, what landed, what is half-done, what's next.
 - Tappable: comb jellies (combs beat bright and fast), glass shrimp (tail-flip backwards), the siphonophore (a flash runs down the chain), whale fall, nudibranchs, moon jellies, the shore bird.
 - The Rasp are tappable: the nearest turns to look and lets fall a trickle of white sand. Creature labels now sit above the creature, clear of its body (below when there is no room), so the reaction stays visible.
 - Ossel's whisper 'touch': after four creatures are seen and none touched, a hint that most will answer a touch.
+- Whale fall alive: bacterial mats, red bone-eating worm fuzz swaying along the spine, a hagfish weaving through the ribs, a crab on the skull.
