@@ -416,3 +416,4 @@ date, what landed, what is half-done, what's next.
 - Setting 'Fewer words from Ossel': only story whispers (claims, the moon).
 - New creature: the barreleye (Midnight): clear dome head, green tube eyes looking up; touched they swing forward.
 - New creature: the nautilus (Twilight): striped spiral shell, trailing tentacles; touched it pulls in and sinks.
+- New creature: a blacktip reef shark patrolling the Sunlit Crown by day; touched it turns away fast.

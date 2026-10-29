@@ -730,6 +730,61 @@ export function createSunlitScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** A blacktip reef shark on its patrol: across the reef's edge every ninety seconds; touched, it turns away fast. */
+  function drawReefShark(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 90, pass = 26;
+    const lap = Math.floor(t / period);
+    const touch = startled('reef-shark', t);
+    const fled = touch && t - touch.age >= lap * period;
+    const u = (t - lap * period) / pass * (fled ? 1.8 : 1);
+    if (u < 0 || u > 1) return;
+    sight('reef-shark');
+    const s = scale() * 1.6;
+    const dir = lap % 2 ? 1 : -1;
+    const x = focus.x + focus.w * (dir > 0 ? -0.15 + u * 1.3 : 1.15 - u * 1.3);
+    const y = focus.y + focus.h * (0.6 + 0.04 * Math.sin(lap * 1.7)) + Math.sin(t * 0.6) * 6 * s;
+    spot('reef-shark', x, y, 32 * s);
+    const sway = Math.sin(t * 3) * 0.12;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(dir, 1);
+    const g = ctx.createLinearGradient(0, -8 * s, 0, 7 * s);
+    g.addColorStop(0, '#7a8c96');
+    g.addColorStop(0.55, '#a9b8c0');
+    g.addColorStop(1, '#e8eef0');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(30 * s, 1 * s);
+    ctx.quadraticCurveTo(18 * s, -8 * s, -8 * s, -5 * s);
+    ctx.quadraticCurveTo(-20 * s, -3 * s, -26 * s, 0);
+    ctx.quadraticCurveTo(-20 * s, 4 * s, -6 * s, 5 * s);
+    ctx.quadraticCurveTo(18 * s, 7 * s, 30 * s, 1 * s);
+    ctx.fill();
+    // Fins: dorsal and pectoral with their black tips, and the tail swinging.
+    const fin = (pts: number[][], tip: number[][]) => {
+      ctx.fillStyle = '#8a9ba4';
+      ctx.beginPath();
+      pts.forEach(([px, py], i) => (i ? ctx.lineTo(px! * s, py! * s) : ctx.moveTo(px! * s, py! * s)));
+      ctx.fill();
+      ctx.fillStyle = '#16191c';
+      ctx.beginPath();
+      tip.forEach(([px, py], i) => (i ? ctx.lineTo(px! * s, py! * s) : ctx.moveTo(px! * s, py! * s)));
+      ctx.fill();
+    };
+    fin([[4, -6], [-4, -16], [-8, -5]], [[-2, -13], [-4, -16], [-5, -12]]);
+    fin([[10, 4], [2, 14], [-2, 5]], [[3, 11], [2, 14], [0, 11]]);
+    ctx.save();
+    ctx.translate(-25 * s, 0);
+    ctx.rotate(sway);
+    fin([[0, 0], [-10, -11], [-6, 0], [-9, 7]], [[-8, -9], [-10, -11], [-7, -6]]);
+    ctx.restore();
+    ctx.fillStyle = '#101418';
+    ctx.beginPath();
+    ctx.arc(22 * s, -1.5 * s, 1 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
   /** The other reefs spawning at full moon: pink bundles rising everywhere from the floor. */
   function drawOthersSpawn(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
@@ -992,6 +1047,7 @@ export function createSunlitScene(seed: number): Scene {
       }
       drawAnemone(ctx, t);
       if (night < 0.5) drawCuttlefish(ctx, t);
+      if (night < 0.5) drawReefShark(ctx, t);
       drawClumps(ctx, t);
       drawDaughters(ctx, v.polyps, (u) => [focus.x - focus.w * 0.1 + u * focus.w * 1.2, floorY(u) + 2 * scale()], scale() * 1.2, t,
         { branch: '#c0703e', tip: '#e8a060', polyp: 'rgba(255,240,190,0.95)',
