@@ -524,6 +524,43 @@ export function createLife(seed: number) {
     }
   }
 
+  /** Squat lobsters crowding the vent's warm foot: pale little crabs waving long claws. */
+  function drawSquatLobsters(ctx: CanvasRenderingContext2D, x: number, base: number, count: number, s: number, t: number): void {
+    sight('squat-lobster');
+    for (let i = 0; i < count; i++) {
+      const side = i % 2 ? 1 : -1;
+      // Clinging to the chimney's sides, at different heights up it.
+      const cy = base - (14 + i * 9) * s, cx = x + side * (13 - i * 0.8) * s;
+      const wave = Math.sin(t * 1.5 + i * 2);
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.scale(-side * 1.4, 1.4);
+      ctx.fillStyle = 'rgba(245,235,220,0.95)';
+      ctx.strokeStyle = 'rgba(245,235,220,0.95)';
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.ellipse(0, -2 * s, 4 * s, 2.4 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // Long claws held out in front, opening and closing.
+      ctx.lineWidth = 1 * s;
+      for (const dy of [-1, 1]) {
+        ctx.beginPath();
+        ctx.moveTo(-3 * s, -2 * s);
+        ctx.lineTo(-11 * s, (-5 + dy * 1.5 + wave) * s);
+        ctx.lineTo(-14 * s, (-5 + dy * 2.5 + wave) * s);
+        ctx.stroke();
+      }
+      ctx.lineWidth = 0.7 * s;
+      for (let l = 0; l < 3; l++) {
+        ctx.beginPath();
+        ctx.moveTo(l * 1.5 * s, -1 * s);
+        ctx.lineTo((l * 1.5 + 2) * s, 2 * s);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+  }
+
   function drawVent(ctx: CanvasRenderingContext2D, st: Stage, tier: number, t: number): { x: number; y: number } {
     const s = st.s;
     const x = st.cx + st.w * 0.3;
@@ -536,6 +573,7 @@ export function createLife(seed: number) {
     if (tier >= 3) spires.push([28 * s, hgt * 0.4, 14 * s]);
     for (let i = spires.length - 1; i >= 0; i--) drawSpire(ctx, x + spires[i]![0], base, spires[i]![1], spires[i]![2], i, s);
     drawTubeWorms(ctx, x, base, 5 + tier * 3, s, t);
+    drawSquatLobsters(ctx, x, base, 2 + tier, s, t);
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     for (const [dx, h] of spires) {
