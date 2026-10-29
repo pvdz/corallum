@@ -163,4 +163,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | A thorny seamount (intruders twice as often; Spine-born); its moment: an outbreak | real crown-of-thorns outbreaks; plain names | OK |
 | Lantern shark (Midnight) | real animal (Etmopterus) | OK |
 | Again: Ossel remembers earlier endings when a new reef begins | this game's own character | OK |
+| Christmas tree worms (on the Sunlit reef) | real animals (Spirobranchus) | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

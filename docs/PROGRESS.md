@@ -548,3 +548,4 @@ date, what landed, what is half-done, what's next.
 - Sweetened spawn bundles turn from pink toward amber as they rise at the release.
 - Job 'fan' (act2.ts JOBS; act3.ts FAN; jobOpen needs the shelf; siltK + 0.003 × fanners; trips take fanners first, homecoming returns them; shoals drawn sand-coloured).
 - Ossel's fifth question at 3990 m ('remember': what will you tell them about me).
+- Christmas tree worms on the Sunlit reef (sunlit.ts drawTreeWorms, after the slugs so nothing covers them): touched, all vanish and come back one by one. Full browser suite green before this.

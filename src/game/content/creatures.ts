@@ -5,7 +5,7 @@ export type CreatureId =
   | 'jelly' | 'tripod-fish' | 'isopod' | 'brittle-star' | 'rattail' | 'sea-pig' | 'brine-pool' | 'smokers' | 'dumbo' | 'squat-lobster' | 'sea-lily' | 'glass-sponge' | 'tube-worm' | 'sea-pen' | 'vent-shrimp'
   | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'milky-sea' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration' | 'larvacean' | 'lantern-shark'
   | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'sardine-run' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark' | 'oarfish' | 'flashlight-fish' | 'mantis-shrimp'
-  | 'cuttlefish' | 'eagle-rays' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly'
+  | 'cuttlefish' | 'eagle-rays' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly' | 'tree-worms'
   | 'shore-bird' | 'pelican' | 'hatchlings' | 'green-flash' | 'flying-fish' | 'dolphin' | 'moon-jelly' | 'sailors' | 'petrel' | 'sea-sparkle' | 'moonbow'
   | 'thorn-star' | 'dragonfish' | 'drill-snail' | 'gull' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish' | 'host-anemone' | 'cleaner-wrasse';
 
@@ -70,6 +70,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'dugong', name: 'Dugong', zone: 'The Sunlit Crown', note: 'Only where meadows grow. It ploughs the seagrass slowly with its lip, all day.' },
   { id: 'cuttlefish', name: 'Cuttlefish', zone: 'The Sunlit Crown', note: 'Waves of colour run down its skin like thoughts. Startle it and it goes white.' },
   { id: 'bait-ball', name: 'A bait ball', zone: 'The Sunlit Crown', note: 'Small fish pressed into one turning shape, and hunters going through it.' },
+  { id: 'tree-worms', name: 'Christmas tree worms', zone: 'The Sunlit Crown', note: 'Tiny spirals of every colour set into the coral. Touch one and every one nearby is gone, back into its tube.' },
   { id: 'sea-firefly', name: 'Sea fireflies', zone: 'The Sunlit Crown', note: 'Only after dark. Specks that court in light, leaving strings of blue pearls as they rise.' },
   { id: 'green-flash', name: 'The green flash', zone: 'The Breach', note: 'Only after the release. The very first edge of the sun, green for one breath.' },
   { id: 'pelican', name: 'Pelican', zone: 'The Breach', note: 'Only after dawn. It glides along the swell, folds itself up, and drops like a stone.' },

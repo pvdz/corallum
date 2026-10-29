@@ -431,6 +431,44 @@ export function createSunlitScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * Christmas tree worms: small double spirals in bright colours set into the stone at fixed nodes.
+   * Touched, they all vanish into their tubes at once and come out again one by one.
+   */
+  function drawTreeWorms(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, t: number): void {
+    const c = reef.coral;
+    if (c.count < 20) return;
+    sight('tree-worms');
+    const touch = startled('tree-worms', t);
+    const colours = ['#ff5a5a', '#ffd23f', '#3fa7ff', '#ff8c2a', '#ffffff', '#b35aff'];
+    const s = scale() * 1.2;
+    ctx.save();
+    for (let k = 0; k < 9; k++) {
+      const i = (k * 7919 + 13) % c.count;
+      if (c.y[i]! > L.top * 0.8) continue;
+      const [x, y] = reef.nodePx(L, i);
+      if (k === 0) spot('tree-worms', x, y, Math.max(16 * s, 20 * dpr));
+      const out = touch && touch.age < 2 + k * 0.5 ? Math.max(0, (touch.age - 1.5 - k * 0.3) / 1.2) : 1;
+      if (out <= 0.05) continue;
+      for (const side of [-1, 1]) {
+        ctx.beginPath();
+        for (let q = 0; q <= 12; q++) {
+          const u = q / 12, r = (5 - 3.8 * u) * s * out;
+          const px = x + side * 4 * s + Math.cos(u * 10 + t * 0.5) * r, py = y - u * 15 * s * out + Math.sin(u * 10 + t * 0.5) * r * 0.35;
+          if (q === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        // A dark edge under the colour, so the spirals read against the bright reef.
+        ctx.strokeStyle = 'rgba(20,20,30,0.6)';
+        ctx.lineWidth = 3 * s;
+        ctx.stroke();
+        ctx.strokeStyle = colours[k % colours.length]!;
+        ctx.lineWidth = 1.6 * s;
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
   /** The shark pups the reef sheltered (a moment): two small blacktips circling low among the branches. */
   function drawPups(ctx: CanvasRenderingContext2D, t: number, L: ReefLayout): void {
     const s = scale() * 1.8;
@@ -1322,6 +1360,7 @@ export function createSunlitScene(seed: number): Scene {
       drawResidents(ctx, reef, L, v.residents, t, seed,
         (x) => floorY(Math.min(1, Math.max(0, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2)))));
       slugs.draw(ctx, reef, L, t);
+      drawTreeWorms(ctx, reef, L, t);
       this.crownAt = reef.crown(L);
       drawSong(ctx, v.song, this.crownAt[0], this.crownAt[1], t, scale());
       reef.drawEffects(ctx, L, v, effects.live(t));
