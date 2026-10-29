@@ -391,3 +391,4 @@ date, what landed, what is half-done, what's next.
 - New creature: hatchetfish in the Midnight Water (silver keel-bellied school, belly lights; touched they flare and scatter).
 - New creature: a moray eel in a hole in the Twilight slope (gaping as it breathes; touched it pulls back in).
 - New creature: flying fish in the Breach (a few burst out, glide on long ribbed wing-fins, drop back; tapped they glide farther).
+- Reef tab card 'What shapes this reef': every lasting effect in play (boon, relics, residents, pairings, moments, works, favours, hard places learned), one line each.

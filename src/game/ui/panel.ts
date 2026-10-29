@@ -8,7 +8,7 @@ import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
 import { ACT3, FAVOURS, FAVOUR_TEXT, MEETINGS, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { DIALECTS, OTHERS, TIERS, type DialectId } from '../content/act4.ts';
-import { BOON_TEXT, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId } from '../content/lineage.ts';
+import { BOONS, BOON_TEXT, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { MEMORIES } from '../content/act5.ts';
 import { CREATURES, TRUST, trustLevel } from '../content/creatures.ts';
 import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
@@ -989,9 +989,37 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   for (const [term, text] of GUIDE) guideList.append(el('dt', '', term), el('dd', '', text));
   guide.append(guideHead, guideList);
   collapsible(guide, guideHead);
+  // What shapes this reef: every lasting effect from boons, relics, residents, moments, works,
+  // favours and the line's hard places, one line each.
+  const shapes = el('article', 'card codex shapes');
+  const shapesHead = el('h3', '', 'What shapes this reef');
+  const shapesList = el('dl', 'codex-list');
+  shapes.append(shapesHead, shapesList);
+  collapsible(shapes, shapesHead);
+  let shapesKey = '';
+  function renderShapes(s: GameState): void {
+    const rows: [string, string][] = [];
+    const b = BOONS.find((x) => x.id === s.boon);
+    if (b) rows.push([b.name, b.effect]);
+    for (const id of s.relics) { const x = site(id); if (x) rows.push([x.relic, x.effect]); }
+    for (const id of s.residents) { const r = RESIDENTS.find((x) => x.id === id); if (r) rows.push([r.name, r.effect]); }
+    for (const p of PAIRS) if (s.residents.includes(p.a) && s.residents.includes(p.b)) rows.push([p.name, p.effect]);
+    for (const m of MOMENTS) { const c = s.moments[m.id]; if (c) rows.push([m[c].label, m[c].effect]); }
+    for (const w of WORKS) if (s.works[w.id] > 0) rows.push([`${w.name} (${s.works[w.id]}/${w.stages.length})`, w.effect]);
+    if (s.favours.clear > 0) rows.push([`${FAVOURS[0]!.name} ×${s.favours.clear}`, FAVOURS[0]!.effect]);
+    for (const m of SEAMOUNTS) if (m.trial && s.meta.seen.includes(`trial:${m.id}`)) rows.push(['Learned on ' + m.name.toLowerCase(), m.trial.reward.split(': ')[1] ?? m.trial.reward]);
+    shapes.hidden = rows.length === 0;
+    const key = rows.map((r) => r.join(':')).join('|');
+    if (key === shapesKey) return;
+    shapesKey = key;
+    shapesHead.textContent = `What shapes this reef · ${rows.length}`;
+    shapesList.innerHTML = '';
+    for (const [k, v] of rows) shapesList.append(el('dt', '', k), el('dd', '', v));
+  }
   reefPage.append(
     nameRow,
     paletteBox,
+    shapes,
     guide,
     group('Saves'),
     el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn,
@@ -1619,6 +1647,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       renderChart(s);
       renderTablet(s);
       renderDiary(s);
+      renderShapes(s);
       renderCity(s);
       renderFeats(s);
       renderLine(s);
