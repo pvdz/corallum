@@ -663,3 +663,4 @@ date, what landed, what is half-done, what's next.
 - Trait Gentle (way, 5): freed creatures pay ×2.
 - Rare on the Twilight Shelf: a great herd of Rasp streams along the shelf every 15 min (twilight.ts drawRaspHerd).
 - Rare in the Sunlit Crown by day: a barracuda tornado, a slow spiral column of silver fish (every 18 min).
+- Fix: floating '+n' texts swallowed taps for their whole rise (#ui > * gave them pointer-events back over .float's none); a quick second tap on the same spot (a sweep, a knob, a feast) now always lands.
