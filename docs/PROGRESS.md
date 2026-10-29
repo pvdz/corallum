@@ -545,3 +545,4 @@ date, what landed, what is half-done, what's next.
 - README brought up to date with the zone rhythms, run-long choices, Ossel's questions, the sky, the day's sea, dreams, notifications and keys.
 - Upgrade 'sweeten' (Breach, bloom): spawn ×1.1 each, max 6; the bot buys 4; bot 7h48.
 - Whispers for the upwelling, swells, the first grain, the unnamed stars and a kept dream.
+- Sweetened spawn bundles turn from pink toward amber as they rise at the release.

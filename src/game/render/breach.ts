@@ -380,6 +380,9 @@ export function createBreachScene(seed: number): Scene {
   /** Spawn: ripening dots on the reef before; a rising, spreading column after the release. */
   function drawSpawn(ctx: CanvasRenderingContext2D, t: number, v: ReefView, L: ReefLayout, reef: Reef): void {
     const s = scale();
+    // Sweetened spawn goes golden: pink toward amber with each level.
+    const g = Math.min(1, v.sweeten / 6);
+    const bundle = `255,${Math.round(150 + 60 * g)},${Math.round(200 - 90 * g)}`;
     const wy = waterY();
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
@@ -415,7 +418,7 @@ export function createBreachScene(seed: number): Scene {
         const y = y0 - u * (y0 - wy);
         const a = Math.min(1, u * 8) * (1 - u * 0.6);
         const size = b.size * (brooding ? 1.9 : 1);
-        glow(ctx, x, y, 13 * s * size, brooding ? '255,175,150' : '255,150,200', 0.85 * a);
+        glow(ctx, x, y, 13 * s * size, brooding ? '255,175,150' : bundle, 0.85 * a);
         glow(ctx, x, y, 2.5 * s * size, '255,235,245', 0.9 * a);
       }
       // The slick spreading on the surface.
