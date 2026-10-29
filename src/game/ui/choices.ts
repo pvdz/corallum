@@ -2,7 +2,7 @@
 // the fork on a trip, the shoals' signal and the full-moon spawning. Built once; update() shows
 // whichever is open now.
 
-import { STRAIN, STRAINS } from '../content/act1.ts';
+import { GRAIN, GRAINS, STRAIN, STRAINS } from '../content/act1.ts';
 import { RIDDLE } from '../content/act3.ts';
 import { OTHERS } from '../content/act4.ts';
 import { actAt } from '../content/acts.ts';
@@ -10,7 +10,7 @@ import { SIGNAL } from '../content/events.ts';
 import { EXPEDITION } from '../content/expeditions.ts';
 import { BOON_TEXT } from '../content/lineage.ts';
 import { FIGURES, SKY } from '../content/sky.ts';
-import { boonsOffered, figureOpen, skyOpen, currentRiddle, currentSignal, forkOpen, othersCap, othersSpawning, strainOpen } from '../sim/economy.ts';
+import { grainsWaiting, boonsOffered, figureOpen, skyOpen, currentRiddle, currentSignal, forkOpen, othersCap, othersSpawning, strainOpen } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { button, el } from './dom.ts';
 import { num } from './format.ts';
@@ -29,6 +29,21 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
   }
   strainBox.append(el('p', 'truce-kicker', STRAIN.kicker), el('p', 'truce-text', STRAIN.text), strainChoices);
   grow.prepend(strainBox);
+
+  // ---------- The grain of the stone (every tenth band) ----------
+  const grainBox = el('section', 'truce moment grain');
+  grainBox.hidden = true;
+  const grainText = el('p', 'truce-text');
+  const grainChoices = el('div', 'boon-choices');
+  for (const g of GRAINS) {
+    const b = button('choice', '', () => hooks.chooseGrain(g.id));
+    b.style.borderColor = `rgba(${g.rgb},0.5)`;
+    b.append(el('strong', '', g.name), el('em', '', g.flavour), el('span', '', g.effect));
+    grainChoices.append(b);
+  }
+  const grainSoFar = el('p', 'truce-words');
+  grainBox.append(el('p', 'truce-kicker', GRAIN.kicker), grainText, grainChoices, grainSoFar);
+  grow.prepend(grainBox);
 
   // ---------- A boon for a new seamount ----------
   const boonBox = el('section', 'truce moment boon');
@@ -138,6 +153,13 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
 
   return {
     update(s: GameState): void {
+      const waiting = grainsWaiting(s);
+      setShown(grainBox, waiting > 0);
+      if (waiting > 0) {
+        grainText.textContent = GRAIN.text((s.grains.length + 1) * GRAIN.every) + (waiting > 1 ? ` (${GRAIN.more(waiting - 1)})` : '');
+        const counts = GRAINS.map((g) => [g.name, s.grains.filter((x) => x === g.id).length] as const).filter(([, n]) => n > 0);
+        grainSoFar.textContent = counts.length ? `${GRAIN.sofar}: ${counts.map(([n, c]) => `${n.toLowerCase()} ${c}`).join(' · ')}` : '';
+      }
       setShown(skyBox, skyOpen(s));
       if (skyOpen(s)) {
         const now = hooks.tracing();

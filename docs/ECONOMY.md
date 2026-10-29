@@ -27,8 +27,11 @@
 - plankton: P = feed shoals × rate, k fast (eaten). Multiplier on calcite: 1 + √plankton/8.
 - glow: + light shoals × rate.
 - murmurs: P = scout shoals × rate, k slow (voices fade back into the stone).
-Calcite's production is f(glow(t), plankton(t)); advance() takes Simpson's mean of f over
-each sub-step while upstream stocks relax, then one exact step once they have settled.
+Calcite's production is f(glow(t), plankton(t), height, silt, bloom); while upstream stocks relax,
+advance() takes Simpson's rule over each sub-step of both f and f·e^{−k(h−τ)} (what is made early
+decays for the rest of the step), so the calcite update is fourth order; then one exact step once
+everything upstream has settled. (Relaxing with the plain mean of f was only second order: with
+the photo term √bloom swinging calcite ×200 that gave 1e-5 offline/online gaps.)
 
 (Tables of costs and rates get filled in as content is written.)
 

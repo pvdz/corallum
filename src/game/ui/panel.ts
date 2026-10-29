@@ -3,7 +3,7 @@
 // is cheap to call every frame.
 
 import type { FigureId } from '../content/sky.ts';
-import { ACT1, FLURRY, MILESTONES, type StrainId } from '../content/act1.ts';
+import { ACT1, FLURRY, MILESTONES, type GrainId, type StrainId } from '../content/act1.ts';
 import type { Band, Currency, UpgradeId } from '../content/types.ts';
 import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId, RISING } from '../content/act2.ts';
@@ -57,6 +57,7 @@ export type PanelHooks = {
   takeFork(how: 'press' | 'home'): void;
   /** Choose the glimmerseed strain. */
   chooseStrain(id: StrainId): void;
+  chooseGrain(id: GrainId): void;
   /** Choose this seamount's boon. */
   chooseBoon(id: BoonId): void;
   /** Meet the other reefs' spawning. */

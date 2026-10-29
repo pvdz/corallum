@@ -160,6 +160,11 @@ stone (5% of each second away's calcite production, at most 8 h of it) or a sear
 **The glimmerseed strain** (Act I's choice, at 15 m): blue (glow ×1.3), gold (polyps ×1.15) or violet
 (scouts ×1.4 later); kept for the run and seen in the colour of the symbiont specks.
 
+**The grain of the stone** (all run): every tenth band laid waits for its grain: dense (calcite
+dissolves ×0.98 each), quick (the reef rises ×1.05 as fast after a band, each) or bright (glow
+×1.04 each). Unset grains wait without blocking; the choices stack over the run, so the reef's
+build leans one way. On the Silt Floor the grain bands show as coloured rings in the stone.
+
 **Flurries** (Silt Floor): every four minutes the Long Silt falls thick for 30 s; sweeps catch ×3 then
 (on the sim clock, so the snow and the pay agree; the Soon line counts down to the next).
 

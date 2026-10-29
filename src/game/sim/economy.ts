@@ -15,7 +15,7 @@
 // settled the production is constant and the rest of any span is a single exact step — so a
 // month offline costs a few hundred iterations and ends exactly where the dynamics settle.
 
-import { ACT1, BANDS_ACT1, FLURRY, MILESTONES, STRAIN, type Milestone, type StrainId } from '../content/act1.ts';
+import { ACT1, BANDS_ACT1, FLURRY, GRAIN, GRAINS, type GrainId, MILESTONES, STRAIN, type Milestone, type StrainId } from '../content/act1.ts';
 import { ACT2, RISING, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
 import { ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDLE, RIDDLES, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { FIGURES, SKY, type FigureId } from '../content/sky.ts';
@@ -140,7 +140,7 @@ export function nextMilestone(id: 'polyp' | 'symbiont', level: number): Mileston
 
 /** Reef settling rate (1/s): how fast height follows the laid bands. */
 export function settleRate(s: GameState): number {
-  return ACT1.settleRate * (trait(s, 'settling') ? 2 : 1);
+  return ACT1.settleRate * (trait(s, 'settling') ? 2 : 1) * grainMult(s, 'quick');
 }
 
 /** Meet this seamount's trial once the reef has grown to its goal. Returns true the moment it is met. */
@@ -201,7 +201,7 @@ export function rates(s: GameState): Rates {
   const onShelf = target >= ACT3.from;
   return {
     glowP: (ACT1.symbiontGlow * lv.symbiont * milestoneMult('symbiont', lv.symbiont) * (1 + ACT2.lightAmplify * s.jobs.light) +
-      lightGlow * s.jobs.light * seasoned(s) * (chose(s, 'hunters', 'b') ? 1.2 : 1)) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1) * (chose(s, 'vent-crack', 'b') ? 1.15 : 1) * (sm.glow ?? 1) * (passed(s, 'dark') ? 1.25 : 1) * (s.strain === 'blue' ? 1.3 : 1) * (boon(s, 'warm-heart') ? 1.3 : 1) * (chose(s, 'old-lamp', 'a') ? 1.1 : 1) * (chose(s, 'echo', 'b') ? 1.15 : 1),
+      lightGlow * s.jobs.light * seasoned(s) * (chose(s, 'hunters', 'b') ? 1.2 : 1)) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1) * (chose(s, 'vent-crack', 'b') ? 1.15 : 1) * (sm.glow ?? 1) * (passed(s, 'dark') ? 1.25 : 1) * (s.strain === 'blue' ? 1.3 : 1) * (boon(s, 'warm-heart') ? 1.3 : 1) * (chose(s, 'old-lamp', 'a') ? 1.1 : 1) * (chose(s, 'echo', 'b') ? 1.15 : 1) * grainMult(s, 'bright'),
     glowK: ACT1.glowFade * (chose(s, 'squid', 'a') ? 0.8 : 1) * (chose(s, 'eyes', 'b') ? 0.8 : 1),
     planktonP: (onShelf ? 1 - CURRENT.planktonPerStep * s.current : 1) * (chose(s, 'krill', 'b') ? 1.2 : 1) * seasoned(s) * ACT2.feedRate * s.jobs.feed * (chose(s, 'far-light', 'a') ? 1.15 : 1) * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
       (speaks(s, 'sweepers') ? 3 : 1) * (lives(s, 'feather-duster') ? 1.3 : 1),
@@ -235,7 +235,7 @@ export function rates(s: GameState): Rates {
       (boon(s, 'currents') ? 1.15 : 1),
     calciteK:
       ACT1.dissolve * sm.dissolve * ACT1.latticeFactor ** lv.lattice * (ACT1.ventAcid * sm.ventAcid) ** vent * (vent > 0 && chose(s, 'vent-crack', 'a') ? 0.8 : 1) *
-      (has(s, 'lattice-songs') ? 0.7 : 1) * (chose(s, 'brittle', 'a') ? 0.9 : 1) * (chose(s, 'cleaners', 'b') ? 0.9 : 1) * (chose(s, 'snow', 'b') ? 0.95 : 1) * (chose(s, 'drifts', 'b') ? 0.9 : 1) * (chose(s, 'last-night', 'a') ? 0.9 : 1) * (boon(s, 'roots') ? 0.85 : 1) * (speaks(s, 'massive') ? 0.5 : 1) +
+      (has(s, 'lattice-songs') ? 0.7 : 1) * (chose(s, 'brittle', 'a') ? 0.9 : 1) * (chose(s, 'cleaners', 'b') ? 0.9 : 1) * (chose(s, 'snow', 'b') ? 0.95 : 1) * (chose(s, 'drifts', 'b') ? 0.9 : 1) * (chose(s, 'last-night', 'a') ? 0.9 : 1) * (boon(s, 'roots') ? 0.85 : 1) * (speaks(s, 'massive') ? 0.5 : 1) * grainMult(s, 'dense') +
       (speaks(s, 'mucus') ? 0 : ACT3.raspEat * rasp * (s.truce.terms === 'b' ? ACT3.politeEat : 1) * (lives(s, 'guard-crab') ? 0.5 : 1) * (chose(s, 'young-rasp', 'a') ? 0.8 : 1) * (paired(s, 'guard-crab', 'goby') ? 0.8 : 1)),
     lureMax: ACT1.lureMax + ACT1.lureMaxPerPattern * lv.lure + (has(s, 'fear') ? 1 : 0) + (speaks(s, 'fluorescent') ? 2 : 0) +
       (relic(s, 'lamp-hall') ? 1 : 0) + 0.5 * s.works.spire + (chose(s, 'angler', 'a') ? 0.5 : 0) + (chose(s, 'eyes', 'a') ? 0.5 : 0),
@@ -463,10 +463,11 @@ function flow(s: GameState, dt: number, stepFraction: number): GameState {
     for (const u of up) if (!settledAt(s[u.key], u.eq)) kMax = Math.max(kMax, u.k);
     const settled = kMax === 0;
     const h = settled ? left : Math.min(left, stepFraction / kMax);
-    let p: number;
     if (settled) {
       for (const u of up) s[u.key] = u.eq;
-      p = at(s);
+      const p = at(s);
+      s.calcite = relax(s.calcite, p, r.calciteK, h);
+      s.earned.calcite += p * h;
     } else {
       const x0 = { glow: s.glow, plankton: s.plankton, height: s.height, silt: s.silt, bloom: s.bloom };
       const xm = { ...x0 }, x1 = { ...x0 };
@@ -474,12 +475,14 @@ function flow(s: GameState, dt: number, stepFraction: number): GameState {
         xm[u.key] = relax(x0[u.key], u.P, u.k, h / 2);
         x1[u.key] = relax(x0[u.key], u.P, u.k, h);
       }
-      // Simpson's mean of the production curve over the step.
-      p = (at(x0) + 4 * at(xm) + at(x1)) / 6;
+      // Simpson over the step, of the production and of the production as the calcite still holds
+      // it at the step's end (what is made early decays for the rest of the step).
+      const p0 = at(x0), pm = at(xm), p1 = at(x1);
+      const e1 = Math.exp(-r.calciteK * h), eh = Math.exp(-r.calciteK * h / 2);
       for (const u of up) s[u.key] = x1[u.key];
+      s.calcite = s.calcite * e1 + (h / 6) * (p0 * e1 + 4 * pm * eh + p1);
+      s.earned.calcite += (h / 6) * (p0 + 4 * pm + p1);
     }
-    s.calcite = relax(s.calcite, p, r.calciteK, h);
-    s.earned.calcite += p * h;
     left -= h;
   }
   s.earned.glow += r.glowP * dt;
@@ -1520,6 +1523,27 @@ export function plant(s: GameState): boolean {
 
 export function strainOpen(s: GameState): boolean {
   return !s.strain && s.height >= STRAIN.metres;
+}
+
+// ---------- The grain of the stone ----------
+
+/** Bands laid that are still waiting for their grain (one every GRAIN.every bands). */
+export function grainsWaiting(s: GameState): number {
+  return Math.max(0, Math.floor(s.levels.skeleton / GRAIN.every) - s.grains.length);
+}
+
+/** Set the next waiting band's grain. */
+export function chooseGrain(s: GameState, id: GrainId): boolean {
+  if (grainsWaiting(s) <= 0 || !GRAINS.some((g) => g.id === id)) return false;
+  s.grains.push(id);
+  return true;
+}
+
+/** A grain's multiplier: its factor once per band of it in the stone. */
+export function grainMult(s: GameState, id: GrainId): number {
+  let n = 0;
+  for (const g of s.grains) if (g === id) n++;
+  return n ? GRAINS.find((g) => g.id === id)!.each ** n : 1;
 }
 
 export function chooseStrain(s: GameState, id: StrainId): boolean {

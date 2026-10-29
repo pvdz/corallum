@@ -58,6 +58,13 @@ await withGame(async (open) => {
   await page.locator('.rise-row button').click();
   check((await st()).rose >= 0 && (await st()).calcite > c0, 'feeders sent into the rising');
 
+  // The grain of the stone: unset the last band's grain, then set it again on the card.
+  const g0 = (await st()).grains.length;
+  await page.evaluate(() => { window.corallum!.state.grains.pop(); });
+  await page.waitForTimeout(400);
+  await page.locator('section.grain button').first().click();
+  check((await st()).grains.length === g0 && (await st()).grains.at(-1) === 'dense', 'a band set with its grain');
+
   // The shoals' signal: repeat the pattern.
   const pattern = await page.evaluate(() => window.corallum!.signal());
   check(!!pattern, 'a signal comes');

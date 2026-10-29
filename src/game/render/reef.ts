@@ -19,6 +19,8 @@ export type ReefLayout = {
   top: number;
   /** Fraction of the coral between growth-band lines. */
   bandStep: number;
+  /** Colours (r,g,b) of the grains chosen for every tenth band, in order: those rings are tinted. */
+  grains?: readonly string[];
   /** Colours of the stone: shadow, flesh, highlight. */
   palette?: [string, string, string];
   /** Polyp stalk and tentacle colours. */
@@ -67,7 +69,7 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
   let steady = 0;
   function drawBranchesCached(ctx: CanvasRenderingContext2D, L: ReefLayout): void {
     const w = ctx.canvas.width, h = ctx.canvas.height;
-    const key = `${w}x${h} ${L.cx} ${L.baseY} ${L.unit} ${L.top.toFixed(3)} ${L.bandStep} ${(L.palette ?? DEFAULT_PALETTE).join()}`;
+    const key = `${w}x${h} ${L.cx} ${L.baseY} ${L.unit} ${L.top.toFixed(3)} ${L.bandStep} ${(L.palette ?? DEFAULT_PALETTE).join()} ${L.grains?.join('/') ?? ''}`;
     // While the reef is still moving (settling after a band) the cache would be redrawn every
     // frame at extra cost: draw straight to the screen until it has held still for 30 frames.
     if (key !== branchKey) {
@@ -171,10 +173,19 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
         const r = radii[i]!;
         const p = coral.parent[i]!;
         if (r <= 0 || p < 0) continue;
-        if (Math.floor(coral.y[i]! / L.bandStep) === Math.floor(coral.y[p]! / L.bandStep)) continue;
+        const ring = Math.floor(coral.y[i]! / L.bandStep);
+        if (ring === Math.floor(coral.y[p]! / L.bandStep)) continue;
         const [x, y] = nodePx(L, i);
         const rw = Math.max(minW, r * u * 1.1);
-        ctx.fillRect(x - rw, y, rw * 2, Math.max(1, L.dpr * 0.7));
+        // Every tenth band carries the grain it set with, as a stronger coloured ring.
+        const grain = ring % 10 === 0 && ring > 0 ? L.grains?.[ring / 10 - 1] : undefined;
+        if (grain) {
+          ctx.fillStyle = 'rgba(30,14,24,0.55)';
+          ctx.fillRect(x - rw * 1.15, y + L.dpr * 1.4, rw * 2.3, Math.max(1, L.dpr));
+          ctx.fillStyle = `rgba(${grain},0.95)`;
+          ctx.fillRect(x - rw * 1.15, y - L.dpr * 1.2, rw * 2.3, Math.max(2, L.dpr * 2.6));
+          ctx.fillStyle = 'rgba(255,215,200,0.16)';
+        } else ctx.fillRect(x - rw, y, rw * 2, Math.max(1, L.dpr * 0.7));
       }
     }
   }

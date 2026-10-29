@@ -1,5 +1,6 @@
 // The whole game state. Plain JSON-able data so saving is a stringify.
 
+import type { GrainId } from '../content/act1.ts';
 import type { FigureId } from '../content/sky.ts';
 import type { Job, ReadingId } from '../content/act2.ts';
 import type { StrainId } from '../content/act1.ts';
@@ -121,6 +122,8 @@ export type GameState = {
   sky: Record<FigureId, boolean>;
   /** The half-hour cycle whose rising the feeders were last sent into (−1: never). */
   rose: number;
+  /** Grains chosen, in the order the bands set (every tenth band: content/act1.ts GRAIN). */
+  grains: GrainId[];
   /** The polyps are closed against warm water (Sunlit Crown). */
   closed: boolean;
   /** Reef height up the seamount, metres. */
@@ -216,6 +219,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     height: 0,
     strain: '',
     closed: false,
+    grains: [],
     rose: -1,
     sky: { cup: false, beak: false, sister: false, whale: false, sleeper: false, lamp: false },
     levels: {

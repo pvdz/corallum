@@ -5,6 +5,24 @@ import type { Band, UpgradeDef } from './types.ts';
 
 /** The glimmerseed's strain: chosen once, at 15 m, for the whole run. */
 export type StrainId = 'blue' | 'gold' | 'violet';
+/**
+ * The grain of the stone: every tenth band laid, the reef chooses how that band sets. Chosen grains
+ * stack for the whole run (and show as coloured rings in the stone).
+ */
+export type GrainId = 'dense' | 'quick' | 'bright';
+export const GRAIN = {
+  every: 10,
+  kicker: 'A band is setting',
+  text: (n: number) => `Band ${n} is still soft. How should it set?`,
+  more: (n: number) => `${n} more bands waiting to set`,
+  sofar: 'In your stone so far',
+} as const;
+export const GRAINS: readonly { id: GrainId; name: string; effect: string; flavour: string; rgb: string; each: number }[] = [
+  { id: 'dense', name: 'Dense', effect: 'calcite dissolves ×0.98 (each)', flavour: 'Packed tight, slow to give anything back to the water.', rgb: '255,250,240', each: 0.98 },
+  { id: 'quick', name: 'Quick', effect: 'the reef rises ×1.05 as fast after a band (each)', flavour: 'Laid loose and fast, so the next can start sooner.', rgb: '150,230,190', each: 1.05 },
+  { id: 'bright', name: 'Bright', effect: 'glow ×1.04 (each)', flavour: 'Glimmerseed sealed into the stone, still faintly lit.', rgb: '140,200,255', each: 1.04 },
+];
+
 export const STRAIN = {
   metres: 15,
   kicker: 'Your glimmerseed are settling',
