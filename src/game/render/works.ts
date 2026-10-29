@@ -14,15 +14,30 @@ export function drawGarden(ctx: CanvasRenderingContext2D, cx: number, stage: num
     const side = k % 2 ? 1 : -1;
     const x = cx + side * (70 + Math.floor(k / 2) * 34 + (k % 3) * 6) * s;
     const y = floor(x) + 3 * s;
-    const hgt = (18 + (k % 3) * 8) * s;
-    ctx.fillStyle = '#2b2236';
+    const hgt = (26 + (k % 3) * 12) * s;
+    const g = ctx.createLinearGradient(x - 8 * s, 0, x + 8 * s, 0);
+    g.addColorStop(0, '#1d1622');
+    g.addColorStop(0.5, '#4a3640');
+    g.addColorStop(1, '#170f1a');
+    ctx.fillStyle = g;
     ctx.beginPath();
-    ctx.moveTo(x - 6 * s, y);
-    ctx.lineTo(x - 2.5 * s, y - hgt);
-    ctx.lineTo(x + 2.5 * s, y - hgt);
-    ctx.lineTo(x + 6 * s, y);
+    ctx.moveTo(x - 8 * s, y);
+    ctx.quadraticCurveTo(x - 6 * s, y - hgt * 0.6, x - 3 * s, y - hgt);
+    ctx.lineTo(x + 3 * s, y - hgt);
+    ctx.quadraticCurveTo(x + 6 * s, y - hgt * 0.6, x + 8 * s, y);
     ctx.closePath();
     ctx.fill();
+    // Mineral bands, rust and pale, where the warm water has laid them down.
+    ctx.strokeStyle = 'rgba(200,120,80,0.35)';
+    ctx.lineWidth = 1.2 * s;
+    for (let b = 1; b < 4; b++) {
+      const by = y - hgt * (b / 4);
+      const hw = 8 * s - 5 * s * (b / 4);
+      ctx.beginPath();
+      ctx.moveTo(x - hw, by);
+      ctx.lineTo(x + hw, by + 1 * s);
+      ctx.stroke();
+    }
     // A thread of warm water above each.
     for (let q = 0; q < 4; q++) {
       const ph = (t * 0.4 + q * 0.25 + k * 0.17) % 1;
@@ -32,7 +47,7 @@ export function drawGarden(ctx: CanvasRenderingContext2D, cx: number, stage: num
       ctx.fill();
     }
     ctx.globalCompositeOperation = 'lighter';
-    glow(ctx, x, y - hgt, 10 * s, '255,140,90', 0.3);
+    glow(ctx, x, y - hgt, 18 * s, '255,140,90', 0.5 + 0.15 * Math.sin(t * 1.3 + k));
     ctx.globalCompositeOperation = 'source-over';
   }
   ctx.restore();

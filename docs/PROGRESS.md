@@ -379,3 +379,4 @@ date, what landed, what is half-done, what's next.
 - Perf (6× CPU throttle, mobile, Sunlit): everything on (residents, relics, works, water overlay, spawning) 20.1 ms vs 17.4 ms draw; perch/relic node lookups cached per grown height (no measurable change: the cost is drawing).
 - The lantern spire redrawn: lumpy stacked-block shaft with staggered joints, shell lamps hung on threads, a lit crown.
 - The sun terrace redrawn: shaded fronts, stone seams, algae tufts swaying on top.
+- The vent garden's chimneys: larger, banded, glowing at the mouth.
