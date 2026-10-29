@@ -26,6 +26,8 @@ export type Meta = {
   name: string;
   /** Earlier reefs of this line, one string each: "height|seamount|form|ended" (oldest first). */
   ancestors: string[];
+  /** Fewest sim seconds any reef of this line took to reach the surface (0 for none yet). */
+  fastest: number;
   /** Every memory any spawn has carried, and how many times the reef has reached the ending. */
   carriedEver: string[];
   endings: number;
@@ -43,6 +45,7 @@ export function newMeta(): Meta {
     best: 0,
     name: '',
     ancestors: [],
+    fastest: 0,
     carriedEver: [],
     endings: 0,
   };

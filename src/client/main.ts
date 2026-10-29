@@ -14,7 +14,7 @@
 // Console: corallum.skip(seconds), corallum.state, corallum.speed = x, corallum.feast
 
 import type { UpgradeId } from '../game/content/types.ts';
-import { ACTS, act, actAt } from '../game/content/acts.ts';
+import { ACTS, SURFACE, act, actAt } from '../game/content/acts.ts';
 import { createAbyssScene } from '../game/render/abyss.ts';
 import { createMidnightScene } from '../game/render/midnight.ts';
 import { createBreachScene } from '../game/render/breach.ts';
@@ -27,7 +27,7 @@ import { runBot } from '../game/sim/bot.ts';
 import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, greatTide, calciteHold, choose, ended, moonFull, moonPhase, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
-import { metres, num, setScientific } from '../game/ui/format.ts';
+import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio } from '../game/audio/audio.ts';
 import { LINEAGE_BANDS, SEAMOUNTS } from '../game/content/lineage.ts';
 import { CREATURES } from '../game/content/creatures.ts';
@@ -908,6 +908,12 @@ function frame(now: number): void {
       buzz(25);
       audio.cue('buy');
     }
+  }
+  // The line's record: the fastest climb to the surface (set the first time this reef gets there).
+  if (state.height >= SURFACE && (state.meta.fastest === 0 || state.t < state.meta.fastest)) {
+    const beat = state.meta.fastest > 0;
+    state.meta.fastest = state.t;
+    if (beat && frozenT === null) showJournalNote('A new record', `The surface in ${duration(state.t)}`);
   }
   // Old habits: the reef's own small purchases, only while the page is open.
   if (habits.get() && frozenT === null && now - lastHabit > 250) {

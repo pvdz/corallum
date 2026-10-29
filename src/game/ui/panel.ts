@@ -469,11 +469,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   lineagePage.append(lineCard);
   let lineKey: string | null = null;
   function renderLine(s: GameState): void {
-    const key = s.meta.ancestors.join() + s.meta.name;
-    lineCard.hidden = s.meta.ancestors.length === 0;
+    const key = s.meta.ancestors.join() + s.meta.name + s.meta.fastest;
+    lineCard.hidden = s.meta.ancestors.length === 0 && s.meta.fastest === 0;
     if (key === lineKey) return;
     lineKey = key;
     lineList.innerHTML = '';
+    if (s.meta.fastest > 0) lineList.append(el('dt', '', 'Record'), el('dd', '', `The surface in ${duration(s.meta.fastest)} of reef time`));
     s.meta.ancestors.forEach((a, i) => {
       const [h, sm, form, end] = a.split('|');
       const gen = s.meta.name ? reefName({ ...s, meta: { ...s.meta, spawnings: i } }) : `Reef ${i + 1}`;
