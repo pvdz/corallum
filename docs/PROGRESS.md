@@ -215,3 +215,4 @@ date, what landed, what is half-done, what's next.
 - Feats: 27 (+ Every kind of stone, A name, A picture).
 - Fix: feats were checked inside the journal's title-faded gate, so none could be earned in a new reef's first 25 s; they now have their own once-a-second check. Verified in the browser: naming and a photo earn their feats; Every kind of stone counts earlier reefs on other seamounts.
 - Soak (not kept as a test, ~1 min): 15 s at 400× from four points of the playthrough (Silt Floor, Twilight, Sunlit, Breach), tapping and closing stories: no console errors across hours of sim time.
+- Zone-crossing check (manual, not kept): buying bands at speed through Silt→Midnight, Twilight→Sunlit and Sunlit→Breach with crossfades and title cards: no console errors; at 3000 m the Reading gate held as it should.
