@@ -1275,6 +1275,40 @@ export function createTwilightScene(seed: number): Scene {
    * A sixgill shark, rarely (once in thirteen minutes): long, dark and slow, gliding low along the
    * slope from one side to the other, its eye glinting green. Touched, it turns down and away.
    */
+  /** Rarely (every fifteen minutes), a great herd of Rasp streams along the shelf from right to left, far off. */
+  function drawRaspHerd(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 900, length = 60;
+    const p = (t + 450) % period;
+    if (p > length) return;
+    sight('rasp-herd');
+    const s = scale();
+    const fade = Math.min(1, p / 6, (length - p) / 6);
+    const r = mulberry32(seed ^ 0x4e2d);
+    let first = true;
+    ctx.save();
+    ctx.globalAlpha = 0.85 * fade;
+    ctx.fillStyle = '#5a8a9c';
+    for (let i = 0; i < 70; i++) {
+      const lag = r() * 0.5, lane = r(), size = 0.6 + r() * 0.6;
+      const u = (p / length) * 1.6 - lag;
+      if (u < -0.1 || u > 1.1) continue;
+      const x = focus.x + focus.w * (1.05 - u * 1.1);
+      const y = focus.y + focus.h * (0.45 + lane * 0.2) + Math.sin(t * 1.3 + i) * 3 * s;
+      if (first) { spot('rasp-herd', x, y, 60 * s); first = false; }
+      const len = 11 * s * size;
+      ctx.beginPath();
+      ctx.ellipse(x, y, len, len * 0.42, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(x + len * 0.8, y);
+      ctx.lineTo(x + len * 1.4, y - len * 0.4 + Math.sin(t * 6 + i) * len * 0.15);
+      ctx.lineTo(x + len * 1.4, y + len * 0.4 + Math.sin(t * 6 + i) * len * 0.15);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
   function drawSixgill(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 780, pass = 90;
     const u = (t % period) / pass;
@@ -1697,6 +1731,7 @@ export function createTwilightScene(seed: number): Scene {
       drawWhaleShark(ctx, t);
       drawOarfish(ctx, t);
       drawSixgill(ctx, t);
+      drawRaspHerd(ctx, t);
       drawMotes(ctx, t, v.siltLevel);
       drawRising(ctx, t, w, h, focus, dpr, v.rising, false);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#1d3557');
