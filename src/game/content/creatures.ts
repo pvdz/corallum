@@ -6,7 +6,7 @@ export type CreatureId =
   | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration'
   | 'rasp' | 'moray' | 'nautilus' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark'
   | 'cuttlefish' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly'
-  | 'shore-bird' | 'flying-fish' | 'dolphin' | 'moon-jelly'
+  | 'shore-bird' | 'hatchlings' | 'flying-fish' | 'dolphin' | 'moon-jelly'
   | 'thorn-star' | 'dragonfish' | 'drill-snail' | 'gull' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish';
 
 export type Creature = { id: CreatureId; name: string; zone: string; note: string };
@@ -58,6 +58,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'cuttlefish', name: 'Cuttlefish', zone: 'The Sunlit Crown', note: 'Waves of colour run down its skin like thoughts. Startle it and it goes white.' },
   { id: 'bait-ball', name: 'A bait ball', zone: 'The Sunlit Crown', note: 'Small fish pressed into one turning shape, and hunters going through it.' },
   { id: 'sea-firefly', name: 'Sea fireflies', zone: 'The Sunlit Crown', note: 'Only after dark. Specks that court in light, leaving strings of blue pearls as they rise.' },
+  { id: 'hatchlings', name: 'Turtle hatchlings', zone: 'The Breach', note: 'Only after the release, at dawn. A beach somewhere let them go the same night you did.' },
   { id: 'flying-fish', name: 'Flying fish', zone: 'The Breach', note: 'They leave the sea entirely, for a few seconds at a time, on fins like wings.' },
   { id: 'shore-bird', name: 'Shore bird', zone: 'The Breach', note: 'It walks on your crown at low tide, as if it owned it.' },
   { id: 'gull', name: 'Gull', zone: 'The Breach', note: 'It has learned that reefs ripen pink before a full moon. Wave it off.' },

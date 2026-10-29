@@ -371,6 +371,42 @@ export function createBreachScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** Turtle hatchlings at dawn after the release: tiny turtles paddling along the surface; touched, they dive. */
+  function drawHatchlings(ctx: CanvasRenderingContext2D, t: number, since: number): void {
+    if (since < 60) return;
+    sight('hatchlings');
+    const s = scale() * 2;
+    const wy = waterY();
+    const touch = startled('hatchlings', t);
+    const dive = touch && touch.age < 5 ? Math.sin(Math.min(1, touch.age / 5) * Math.PI) : 0;
+    for (let k = 0; k < 7; k++) {
+      const u = ((t * 0.012 + k * 0.11) % 1.2) - 0.1;
+      const x = focus.x + u * focus.w;
+      const y = wy + 3 * s + Math.sin(t * 2 + k) * 1.2 * s + dive * (12 + k * 3) * s;
+      if (k === 0) spot('hatchlings', x, y, 26 * s);
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.globalAlpha = 1 - dive * 0.6;
+      ctx.fillStyle = '#3a3a2a';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 3.6 * s, 2.4 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(4 * s, -0.4 * s, 1.2 * s, 0, Math.PI * 2);
+      ctx.fill();
+      const paddle = Math.sin(t * 6 + k) * 0.6;
+      ctx.strokeStyle = '#3a3a2a';
+      ctx.lineWidth = 1 * s;
+      ctx.beginPath();
+      ctx.moveTo(1 * s, 1 * s);
+      ctx.lineTo(3 * s, (3 + paddle) * s);
+      ctx.moveTo(-1 * s, 1 * s);
+      ctx.lineTo(-3 * s, (3 - paddle) * s);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
   /**
    * Flying fish: every so often a few burst from the water, glide low over the surface on spread
    * wing-fins, and drop back in. Tapped in the air, they glide on farther.
@@ -817,6 +853,7 @@ export function createBreachScene(seed: number): Scene {
       drawWaitingFish(ctx, t, v, this.crownAt);
       drawDolphins(ctx, t);
       drawFlyingFish(ctx, t);
+      if (v.sinceBreach >= 0) drawHatchlings(ctx, t, v.sinceBreach);
       if (v.thorn?.kind === 'gull') drawGull(ctx, this.crownAt[0], waterY(), v.thorn.u, v.thorn.side, t, scale());
       if (v.bands.includes('rain')) drawRain(ctx, t);
       drawPool(ctx, L.cx, waterY(), v.works.pool, scale(), t);
