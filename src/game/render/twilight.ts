@@ -698,6 +698,8 @@ export function createTwilightScene(seed: number): Scene {
       // Every so often a wave of ducking runs through the colony.
       const wave = Math.max(0, Math.sin(t * 0.25 - e.u * 6));
       let out = 1 - Math.pow(wave, 6) * 0.85;
+      // They sleep in their burrows at night, a few of the bravest still half out.
+      out *= 1 - nightAt(t) * (k % 5 === 0 ? 0.5 : 0.97);
       if (touch && touch.age < 12 && Math.abs(touch.x - x) < focus.w * 0.25) {
         const a = touch.age - Math.abs(touch.x - x) / (600 * s);
         const hide = a < 0 ? 0 : a < 0.25 ? a / 0.25 : Math.max(0, 1 - (a - 3 - (k % 4) * 1.5) / 3);
