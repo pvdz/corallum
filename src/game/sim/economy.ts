@@ -17,7 +17,7 @@
 
 import { ACT1, BANDS_ACT1, FLURRY, GRAIN, GRAINS, SPORT, SPORTS, type GrainId, type SportId, MILESTONES, STRAIN, type Milestone, type StrainId } from '../content/act1.ts';
 import { ACT2, RISING, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
-import { UPWELL, ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDLE, RIDDLES, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
+import { FAN, UPWELL, ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDLE, RIDDLES, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { FIGURES, SKY, type FigureId } from '../content/sky.ts';
 import { QUESTIONS, type Question, type QuestionId } from '../content/ossel.ts';
 import { ACT4, HEAT, BANDS_ACT4, DIALECTS, OTHERS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
@@ -212,7 +212,7 @@ export function rates(s: GameState): Rates {
     siltP: onShelf
       ? ACT3.siltFall * 0.95 ** Math.min(6, s.meta.endings) * (1 + (target - ACT3.from) / ACT3.siltGrowthPer) * (s.truce.wall === 'a' ? 0.6 : 1) * sm.silt * (passed(s, 'buried') ? 0.8 : 1) * 0.85 ** s.works.breakwater
       : 0,
-    siltK: Math.max(0.02, ACT3.naturalSweep + (s.current > 0 ? CURRENT.siltPerStep : CURRENT.siltPerStep / 2) * s.current) + (lives(s, 'pistol-shrimp') ? 0.04 : 0) + 0.02 * s.favours.clear + (chose(s, 'eggs', 'b') ? 0.02 : 0) + (chose(s, 'slope', 'b') ? 0.03 : 0) + (chose(s, 'drifts', 'a') ? 0.03 : 0) + ACT3.flowSweep * lv.sandbar + LINEAGE.glassSweep * trait(s, 'glass-gardeners') + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
+    siltK: Math.max(0.02, ACT3.naturalSweep + (s.current > 0 ? CURRENT.siltPerStep : CURRENT.siltPerStep / 2) * s.current) + (lives(s, 'pistol-shrimp') ? 0.04 : 0) + 0.02 * s.favours.clear + (chose(s, 'eggs', 'b') ? 0.02 : 0) + (chose(s, 'slope', 'b') ? 0.03 : 0) + (chose(s, 'drifts', 'a') ? 0.03 : 0) + FAN.sweep * s.jobs.fan + ACT3.flowSweep * lv.sandbar + LINEAGE.glassSweep * trait(s, 'glass-gardeners') + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
     sandP: today(s, 'sandy', 1.2) * ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1) * (relic(s, 'midden') ? 1.3 : 1) * (lives(s, 'sea-cucumber') ? 1.4 : 1) * (chose(s, 'turtle', 'b') ? 1.25 : 1) * (has(s, 'rasp-song') ? 1.3 : 1) * (chose(s, 'young-rasp', 'b') ? 1.15 : 1) * (paired(s, 'pistol-shrimp', 'sea-cucumber') ? 1.2 : 1),
     sandK: ACT3.sandSettle,
     bloomP: today(s, 'clear', 1.15) * sunlight(s, target) * heatSun(s) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * ACT4.meadowBloom ** lv.meadow *
@@ -596,11 +596,12 @@ export function buy(s: GameState, id: UpgradeId): boolean {
 // ---------- Shoals ----------
 
 export function idleShoals(s: GameState): number {
-  return s.levels.shoal - s.jobs.feed - s.jobs.light - s.jobs.scout - awayShoals(s);
+  return s.levels.shoal - s.jobs.feed - s.jobs.light - s.jobs.scout - s.jobs.fan - awayShoals(s);
 }
 
 /** Move one shoal into (delta +1, from the idle pool) or out of (delta -1) a job. */
 export function jobOpen(s: GameState, job: Job): boolean {
+  if (job === 'fan') return heightForBands(s.levels.skeleton) >= ACT3.from;
   return job !== 'scout' || readingsRevealed(s);
 }
 
@@ -636,12 +637,12 @@ export function seasoned(s: GameState): number {
 /** Shoals away at a ruin. */
 export function awayShoals(s: GameState): number {
   const ex = s.expedition;
-  return ex.site ? ex.feed + ex.light + ex.scout + idleAway(s) : 0;
+  return ex.site ? ex.feed + ex.light + ex.scout + ex.fan + idleAway(s) : 0;
 }
 /** Idle shoals that went along (they come back idle): the trip's size minus the ones taken from jobs. */
 function idleAway(s: GameState): number {
   const ex = s.expedition;
-  return Math.max(0, ex.n - ex.feed - ex.light - ex.scout);
+  return Math.max(0, ex.n - ex.feed - ex.light - ex.scout - ex.fan);
 }
 
 /** A roam: a quarter of the shoals, ten minutes, no relic. */
@@ -701,8 +702,8 @@ export function send(s: GameState): boolean {
   const x = nextSite(s);
   if (!x || !canSend(s)) return false;
   let need = x.shoals - Math.min(x.shoals, idleShoals(s));
-  const took = { feed: 0, light: 0, scout: 0 };
-  for (const j of ['scout', 'light', 'feed'] as const) {
+  const took = { feed: 0, light: 0, scout: 0, fan: 0 };
+  for (const j of ['fan', 'scout', 'light', 'feed'] as const) {
     const n = Math.min(need, s.jobs[j]);
     s.jobs[j] -= n;
     took[j] = n;
@@ -765,7 +766,8 @@ function homecoming(s: GameState): void {
   s.jobs.feed += ex.feed;
   s.jobs.light += ex.light;
   s.jobs.scout += ex.scout;
-  s.expedition = { site: '', back: 0, feed: 0, light: 0, scout: 0, n: 0, fork: '' };
+  s.jobs.fan += ex.fan;
+  s.expedition = { site: '', back: 0, feed: 0, light: 0, scout: 0, fan: 0, n: 0, fork: '' };
   s.murmurs += heard;
   s.earned.murmurs += heard;
   if (roam) {

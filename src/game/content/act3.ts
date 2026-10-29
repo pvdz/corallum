@@ -190,6 +190,9 @@ export const FAVOUR_TEXT = { head: 'Ask the Rasp', done: 'done' } as const;
  * Upwellings (Twilight Shelf, while watching): now and then cold water wells up on one side of the
  * reef for a minute; turning the current toward it (or setting it that way again) catches a haul.
  */
+/** Fanning shoals (a job on the shelf): silt swept per shoal per second. */
+export const FAN = { sweep: 0.003, locked: 'only where silt falls, on the shelf', what: (each: string) => `silt swept +${each}/s each` } as const;
+
 export const UPWELL = {
   period: 480, life: 60, seconds: 90,
   word: 'an upwelling',

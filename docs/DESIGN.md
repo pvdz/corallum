@@ -176,6 +176,9 @@ build leans one way. On the Silt Floor the grain bands show as coloured rings in
 **Flurries** (Silt Floor): every four minutes the Long Silt falls thick for 30 s; sweeps catch ×3 then
 (on the sim clock, so the snow and the pay agree; the Soon line counts down to the next).
 
+**Fanning shoals** (a fourth shoal job, on the shelf): each fanner sweeps +0.003 silt/s. Trips take fanners first
+and bring them back to fanning.
+
 **Upwellings** (Twilight Shelf, while watching): every eight minutes cold water wells up for a minute on
 one side (out toward the open water, or along the shelf); setting the current that way while it lasts
 catches it once: 90 s of calcite. The dial gets a reason to move.

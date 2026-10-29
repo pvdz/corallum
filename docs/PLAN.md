@@ -200,6 +200,8 @@ Tick items as they land; keep this list honest. Add items freely.
   - [x] Sun-shy trait: an open reef closes itself in warm water
   - [x] the rising in the Midnight Water and Twilight Shelf: send the feeders in for a haul
   - [x] Breach creatures: sailors, storm petrels, sea sparkle
+  - [x] a fourth shoal job on the shelf: fan (silt +0.003/s each)
+  - [x] sweeten the spawn (bloom sink); whispers for the new systems; Again (Ossel remembers endings); the sea heals
   - [x] chips at the top of the Grow tab for open choices (two or more), tap to scroll to them
   - [x] a seventh hard seamount: thorny (intruders ×2 often), trial Spine-born, moment outbreak
   - [x] a seventh ruin, the harbour (3982 m, spawn ×1.15), and its memory

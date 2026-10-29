@@ -368,6 +368,20 @@ test('a thorny seamount: intruders twice as often', () => {
   assert.ok(thorny >= plain * 1.8 && thorny <= plain * 2.2, `${plain} vs ${thorny}`);
 });
 
+test('fanning shoals: only on the shelf, they sweep silt, and a trip takes them first and brings them back', () => {
+  const low = act2Game();
+  assert.equal(assign(low, 'fan', 1), false, 'not below the shelf');
+  const s = act3Game();
+  const k0 = rates(s).siltK;
+  while (idleShoals(s) < 2 && (s.jobs.feed > 0)) reassign(s, 'feed', 'light');
+  s.jobs.feed -= 2; // two shoals free
+  assert.ok(assign(s, 'fan', 1) && assign(s, 'fan', 1));
+  assert.ok(rel(rates(s).siltK - k0, 0.006) < 1e-9);
+  const total = s.levels.shoal;
+  const idle = idleShoals(s);
+  assert.equal(idle + s.jobs.feed + s.jobs.light + s.jobs.scout + s.jobs.fan, total);
+});
+
 test('dialects: one per tier, in order, after their band, paid in bloom', () => {
   const s = newGame(1);
   s.bloom = 1e9;

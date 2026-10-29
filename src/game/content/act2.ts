@@ -67,11 +67,12 @@ export function daughterCount(polyps: number): number {
   return Math.max(0, Math.min(10, Math.floor((polyps - 100) / 15) + 1));
 }
 
-export type Job = 'feed' | 'light' | 'scout';
+export type Job = 'feed' | 'light' | 'scout' | 'fan';
 export const JOBS: readonly { id: Job; name: string; verb: string }[] = [
   { id: 'feed', name: 'Feed', verb: 'herding plankton to the polyps' },
   { id: 'light', name: 'Light', verb: 'swimming the glow pattern' },
   { id: 'scout', name: 'Scout', verb: 'listening at buried bands' },
+  { id: 'fan', name: 'Fan', verb: 'beating the water to carry silt off the stone (on the shelf)' },
 ];
 
 export type ReadingId =
