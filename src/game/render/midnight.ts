@@ -374,6 +374,32 @@ export function createMidnightScene(seed: number): Scene {
   }
 
   /**
+   * The fire-body the reef kept (a moment): a shorter glowing tube hung across the branches below
+   * the crown, rippling slowly, still alive.
+   */
+  function drawKeptFireBody(ctx: CanvasRenderingContext2D, t: number, x: number, y: number): void {
+    const s = scale() * 1.2;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(0.5 + Math.sin(t * 0.3) * 0.04);
+    const len = 46 * s, rad = 6 * s;
+    ctx.fillStyle = 'rgba(160,180,255,0.1)';
+    ctx.strokeStyle = 'rgba(180,200,255,0.3)';
+    ctx.lineWidth = 0.8 * s;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, len / 2, rad, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let k = 0; k < 16; k++) {
+      const f = k / 15;
+      const wave = Math.max(0, Math.sin(t * 1.4 - f * 7));
+      glow(ctx, (f - 0.5) * len * 0.9, Math.sin(k * 2.3) * rad * 0.6, 4 * s, '120,170,255', Math.min(1, 0.18 + 0.6 * wave * wave));
+    }
+    ctx.restore();
+  }
+
+  /**
    * Rarely, a giant squid: once in every twenty minutes a huge dim shape slides through the deep
    * background, arms trailing, one eye the size of a dinner plate catching the reef's light.
    */
@@ -813,6 +839,10 @@ export function createMidnightScene(seed: number): Scene {
       drawSpire(ctx, focus, v.works.spire, scale(), t, focus.y + focus.h * 0.99);
       reef.draw(ctx, L, v, t);
       drawRelics(ctx, reef, L, v.relics, t, v.moments['old-lamp'] === 'a');
+      if (v.moments['fire-body'] === 'a') {
+        const [crx, cry] = reef.crown(L);
+        drawKeptFireBody(ctx, t, L.cx + (crx - L.cx) * 0.5 - 30 * scale(), cry + (L.baseY - cry) * 0.3);
+      }
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
       shoals.drawFront(ctx, focus, reef, L, v, t);
