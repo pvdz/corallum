@@ -114,6 +114,10 @@ the release also sets the lineage for beginning again.
   shoal is worth, the Rasp dial its two good settings (income vs hold for being away).
 - **Falling feasts** (active only), **seagrass meadows** (Act IV sand sink), **great tides**
   (Act V wait-or-go: four memories every third moon).
+- **Neighbours**: every creature drawn on screen is tappable: it is named, and most answer in
+  their own way (eels duck, octopus inks, lure goes dark, manta rolls, tube worms withdraw...).
+  Seen creatures add +2% calcite each; touching eight is a feat. The journal keeps a portrait of
+  each, cropped from the world the first time it was in full view (an album that is your own).
 
 ## Prestige — Lesser Spawnings and Lineage
 - Available once the reef has reached 150 m (the Midnight Water, band *Eyes in the dark*) and
