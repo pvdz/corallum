@@ -1275,6 +1275,29 @@ export function createTwilightScene(seed: number): Scene {
    * A sixgill shark, rarely (once in thirteen minutes): long, dark and slow, gliding low along the
    * slope from one side to the other, its eye glinting green. Touched, it turns down and away.
    */
+  /** Fireworms: on nights after a full moon, small green rings of light spiral up from the sand to spawn. */
+  function drawFireworms(ctx: CanvasRenderingContext2D, t: number, night: number): void {
+    sight('fireworms');
+    const s = scale();
+    const a = Math.min(1, (night - 0.5) * 4);
+    const x = (u: number) => focus.x - focus.w * 0.1 + u * focus.w * 1.2;
+    let first = true;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < 14; i++) {
+      const u0 = 0.08 + ((i * 0.618) % 1) * 0.84;
+      const rise = (t * 0.05 + i * 0.29) % 1;
+      const cx0 = x(u0), cy0 = slopeY(u0) - rise * focus.h * 0.45;
+      if (first) { spot('fireworms', cx0, cy0, 50 * s); first = false; }
+      const r = (10 + 5 * Math.sin(i)) * s;
+      for (let k = 0; k < 8; k++) {
+        const ang = t * 4 + i + k * (Math.PI / 4);
+        glow(ctx, cx0 + Math.cos(ang) * r, cy0 + Math.sin(ang) * r * 0.6, 5 * s, '120,255,150', 0.8 * a * Math.sin(rise * Math.PI) * (0.4 + 0.6 * (k / 8)));
+      }
+    }
+    ctx.restore();
+  }
+
   /** Rarely (every fifteen minutes), a great herd of Rasp streams along the shelf from right to left, far off. */
   function drawRaspHerd(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 900, length = 60;
@@ -1784,6 +1807,7 @@ export function createTwilightScene(seed: number): Scene {
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
       shoals.drawFront(ctx, focus, reef, L, v, t, '#1d3557');
+      if (night > 0.5 && v.moonPhase > 0.5 && v.moonPhase < 0.75) drawFireworms(ctx, t, night);
       if (v.moments['cold-slide']) drawColdSlide(ctx, t);
       if (night > 0) drawNight(ctx, t, night, 0.2);
       if (night > 0.4) drawFlashlightFish(ctx, t, night);
