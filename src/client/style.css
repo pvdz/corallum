@@ -524,3 +524,6 @@ html.view-mode #photo { display: grid; }
 .growth-chart[hidden] { display: none; }
 .toggle input[type="range"] { width: auto; flex: 1; height: auto; accent-color: #8ffff0; }
 #depth-gauge[hidden] { display: none; }
+.codex-list .journal-zone {
+  grid-column: 1 / -1; margin-top: 8px; font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--glowc);
+}

@@ -326,9 +326,17 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     journalKey = key;
     journalHead.textContent = `Creatures seen · ${seen.length} of ${CREATURES.length} · calcite +${Math.round((knownBonus(s) - 1) * 100)}%`;
     journalList.innerHTML = '';
-    for (const c of CREATURES) {
-      const known = seen.includes(c);
-      journalList.append(el('dt', known ? '' : 'unknown', known ? c.name : 'Not yet seen'), el('dd', known ? '' : 'unknown', known ? c.note : c.zone));
+    // Grouped by zone, with how many of each zone's creatures have been seen.
+    const zones = [...new Set(CREATURES.map((c) => c.zone))];
+    for (const zone of zones) {
+      const inZone = CREATURES.filter((c) => c.zone === zone);
+      const got = inZone.filter((c) => seen.includes(c)).length;
+      journalList.append(el('div', 'journal-zone', `${zone} · ${got} of ${inZone.length}`));
+      for (const c of inZone) {
+        const known = seen.includes(c);
+        journalList.append(el('dt', known ? '' : 'unknown', known ? c.name : 'Not yet seen'),
+          el('dd', known ? '' : 'unknown', known ? c.note : c.note.startsWith('Rare.') ? 'Rare: watch for it.' : (/Only on [^.]*\./.exec(c.note)?.[0] ?? '—')));
+      }
     }
   }
   bandsPage.append(codex, journal, readingCard, bandsIntro, bandList);
