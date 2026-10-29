@@ -53,6 +53,19 @@ export function creatureAt(x: number, y: number): Spot | null {
 /** The last time each creature was touched (scene time) and where (device pixels). */
 const touched = new Map<CreatureId | 'ossel' | 'shell', { t: number; x: number; y: number }>();
 
+/** When Ossel last spoke (scene time): its light flickers as it talks. */
+let lastSpoke = -1e9;
+export function spoke(t: number): void {
+  lastSpoke = t;
+}
+/** 0 when quiet; up to 1 while Ossel is speaking (a few seconds after a whisper), in a talking flicker. */
+export function speaking(t: number): number {
+  const age = t - lastSpoke;
+  if (age < 0 || age > 6) return 0;
+  const fade = Math.min(1, age * 3, (6 - age) / 1.5);
+  return fade * (0.55 + 0.45 * Math.abs(Math.sin(t * 7.3) * Math.sin(t * 3.1 + 1)));
+}
+
 /** The last sweep of the tentacles (device pixels, scene time): small fish nearby dart away from it. */
 let lastPoke = { x: 0, y: 0, t: -1e9 };
 export function poke(x: number, y: number, t: number): void {

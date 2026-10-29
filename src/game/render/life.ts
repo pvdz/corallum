@@ -1,7 +1,7 @@
 // The small life of the Silt Floor: drifting jellies, brittle stars on the silt, and the vent
 // chimney with its plume. Pure functions of time and a seed.
 
-import { sight, spot, startled } from './sightings.ts';
+import { sight, speaking, spot, startled } from './sightings.ts';
 import type { CreatureId } from '../content/creatures.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { glow } from './draw.ts';
@@ -238,6 +238,12 @@ export function createLife(seed: number) {
     ctx.globalCompositeOperation = 'lighter';
     glow(ctx, ox, oy - 3 * s, 40 * s, '200,210,255', 0.10 + 0.10 * breathe);
     glow(ctx, ox, oy - 2 * s, 7 * s, '225,230,255', 0.45 + 0.3 * breathe);
+    // Speaking: its light rises and flickers with the words.
+    const talk = speaking(t);
+    if (talk > 0) {
+      glow(ctx, ox, oy - 3 * s, 60 * s, '210,220,255', 0.25 * talk);
+      glow(ctx, ox, oy - 2 * s, 12 * s, '240,245,255', 0.6 * talk);
+    }
     ctx.restore();
   }
 

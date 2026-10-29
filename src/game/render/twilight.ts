@@ -10,7 +10,7 @@ import { drawThorn } from './thorn.ts';
 import { drawBreakwater } from './works.ts';
 import { drawRelics } from './relics.ts';
 import { drawResidents } from './residents.ts';
-import { sight, spot, startled } from './sightings.ts';
+import { sight, speaking, spot, startled } from './sightings.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow, speck } from './draw.ts';
@@ -367,7 +367,7 @@ export function createTwilightScene(seed: number): Scene {
       ctx.fill();
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
-      glow(ctx, bx, by - 20 * s, 90 * s, '255,210,150', 0.12 + 0.04 * Math.sin(t * 0.8));
+      glow(ctx, bx, by - 20 * s, 90 * s, '255,210,150', 0.12 + 0.04 * Math.sin(t * 0.8) + 0.25 * speaking(t));
       ctx.restore();
       return;
     }
@@ -468,6 +468,8 @@ export function createTwilightScene(seed: number): Scene {
       ctx.globalCompositeOperation = 'lighter';
       glow(ctx, ox, oy + 6 * s, 26 * s, '200,210,255', 0.08 + 0.06 * breathe);
       glow(ctx, ox, oy + 6 * s, 4 * s, '225,230,255', 0.4 + 0.25 * breathe);
+      const talk = speaking(t);
+      if (talk > 0) glow(ctx, ox, oy + 6 * s, 50 * s, '210,220,255', 0.25 * talk);
       ctx.restore();
     }
     if (wall === 'b') {

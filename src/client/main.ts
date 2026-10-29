@@ -45,7 +45,7 @@ import { createPortraits } from './portraits.ts';
 import { createZoom } from './zoom.ts';
 import { drawMoon, glow as glowAt } from '../game/render/draw.ts';
 import { GAUGE_MOON } from '../game/content/act5.ts';
-import { creatureAt, endFrameSpots, poke, startle, tappable, takeSightings } from '../game/render/sightings.ts';
+import { creatureAt, endFrameSpots, poke, spoke, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { HEAT } from '../game/content/act4.ts';
 import { AGAIN, QUESTION, QUESTIONS } from '../game/content/ossel.ts';
 import { MILKY, RISING } from '../game/content/act2.ts';
@@ -1098,6 +1098,7 @@ function whisperCheck(now: number): void {
 
 /** A line from Ossel (or, once its wall is ground down, the sand) over the water. */
 function showWhisperText(text: string): void {
+  spoke(frozenT ?? animT);
   const speaker = state.truce.wall === 'a' ? WHISPER_BY.sand : WHISPER_BY.ossel;
   whisper.innerHTML = '';
   const q = document.createElement('q');
