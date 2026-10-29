@@ -8,7 +8,7 @@ import { sight, spot, startled } from './sightings.ts';
 import { drawGhosts } from './ghosts.ts';
 import { drawSisterFar } from './sister.ts';
 import { drawDragonfish } from './thorn.ts';
-import { drawSpire } from './works.ts';
+import { drawDome, drawSpire } from './works.ts';
 import { drawRelics } from './relics.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
@@ -1117,6 +1117,7 @@ export function createMidnightScene(seed: number): Scene {
       drawGhosts(ctx, focus, v.ancestors, v.height, t, scale(), 'rgba(170,180,230,1)');
       drawSisterFar(ctx, focus, v.sister - v.gauge, t, scale(), false);
       drawSpire(ctx, focus, v.works.spire, scale(), t, focus.y + focus.h * 0.99);
+      drawDome(ctx, focus, v.works.dome, scale(), t, focus.y + focus.h * 0.99);
       if (v.moments.seep) drawSeep(ctx, t, L, v.moments.seep === 'b');
       if (v.milky) drawMilky(ctx, t);
       drawGulper(ctx, t);

@@ -298,7 +298,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     favours: { clear: 0, path: 0, carry: 0 },
     riddles: { silt: '', wall: '', walls: '', song: '', beaks: '', shallows: '', rule: '', ripple: '', end: '', children: '' },
     race: { decided: 0, won: 0, cousin: 0, lit: 0, declined: false },
-    works: { garden: 0, spire: 0, breakwater: 0, terrace: 0, pool: 0 },
+    works: { garden: 0, spire: 0, dome: 0, breakwater: 0, terrace: 0, pool: 0 },
     request: { kind: '', n: 0, base: 0, done: 0, paid: 0, skipped: -1e9, streak: 0 },
     tally: { touches: 0, sweeps: 0, digs: 0, roams: 0, intruders: 0, carcass: 0, shells: 0, risings: 0, pruned: 0, milky: 0, lucky: 0 },
     moments: {

@@ -1,9 +1,9 @@
-// Great works: one large thing to build in each of the middle zones, in three stages, each stage
+// Great works: large things to build in each zone (two in the long Midnight Water), in three stages, each stage
 // paid in two currencies at once. Built for good (kept for this reef), and seen in the world.
 
 import type { Currency } from './types.ts';
 
-export type WorkId = 'garden' | 'spire' | 'breakwater' | 'terrace' | 'pool';
+export type WorkId = 'garden' | 'spire' | 'dome' | 'breakwater' | 'terrace' | 'pool';
 
 export type Work = {
   id: WorkId;
@@ -36,6 +36,13 @@ export const WORKS: readonly Work[] = [
     effect: 'lure +0.5 per stage',
     stages: [{ calcite: 2e6, glow: 1500 }, { calcite: 2e7, glow: 3000 }, { calcite: 2e8, glow: 6000 }],
     stageNames: ['A footing', 'A shaft', 'The lamps'],
+  },
+  {
+    id: 'dome', name: 'The listening dome', zone: 2, from: 1500,
+    flavour: 'A thin shell of stone over the ground where the scouts listen, so every murmur of the buried bands rings twice.',
+    effect: 'scouts hear ×1.25 per stage',
+    stages: [{ calcite: 5e7, glow: 3000 }, { calcite: 5e8, glow: 6000 }, { calcite: 5e9, glow: 12000 }],
+    stageNames: ['A ring of stones', 'Half a shell', 'The dome'],
   },
   {
     id: 'breakwater', name: 'The breakwater', zone: 3, from: 3100,

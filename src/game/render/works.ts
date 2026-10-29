@@ -73,6 +73,54 @@ export function drawPool(ctx: CanvasRenderingContext2D, cx: number, waterY: numb
 }
 
 /** The lantern spire: a rough shaft of stacked stone from the floor, lamps hung along it. */
+/** The listening dome: a pale shell of thin stone on the floor to the right, rising by stages; murmurs ripple off it. */
+export function drawDome(ctx: CanvasRenderingContext2D, F: Focus, stage: number, s: number, t: number, floorY: number): void {
+  if (stage <= 0) return;
+  const x = F.x + F.w * 0.8, r = 110 * s;
+  const arc = [0, 0.35, 0.7, 1][stage]!;
+  ctx.save();
+  // Stones of the ring, then as much of the shell as is built (from both sides up toward the top).
+  ctx.fillStyle = '#1c2440';
+  for (let i = 0; i < 9; i++) {
+    const a = Math.PI + (i / 8) * Math.PI;
+    ctx.beginPath();
+    ctx.ellipse(x + Math.cos(a) * r, floorY - 2 * s, 7 * s, 4 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  if (stage >= 2) {
+    const g = ctx.createRadialGradient(x - r * 0.3, floorY - r * 0.7, 0, x, floorY, r * 1.1);
+    g.addColorStop(0, 'rgba(120,140,200,0.95)');
+    g.addColorStop(1, 'rgba(40,52,90,0.95)');
+    ctx.strokeStyle = g;
+    ctx.lineWidth = 9 * s;
+    ctx.lineCap = 'round';
+    for (const side of [-1, 1]) {
+      ctx.beginPath();
+      const a0 = side < 0 ? Math.PI : 0, a1 = a0 - side * (Math.PI / 2) * arc;
+      ctx.arc(x, floorY, r, Math.min(a0, a1), Math.max(a0, a1));
+      ctx.stroke();
+    }
+    // Ribs across the shell.
+    ctx.lineWidth = 2 * s;
+    for (let k = 1; k < 4; k++) {
+      ctx.beginPath();
+      ctx.ellipse(x, floorY, r * (k / 4), r * arc, 0, Math.PI, 0);
+      ctx.stroke();
+    }
+  }
+  // Murmurs: rings of faint violet light spreading from it while scouts listen.
+  ctx.globalCompositeOperation = 'lighter';
+  for (let k = 0; k < stage; k++) {
+    const u = (t * 0.25 + k / stage) % 1;
+    ctx.strokeStyle = `rgba(190,170,255,${0.35 * (1 - u)})`;
+    ctx.lineWidth = 1.5 * s;
+    ctx.beginPath();
+    ctx.ellipse(x, floorY - r * 0.4 * arc, r * (0.6 + u * 1.4), r * (0.3 + u * 0.7), 0, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
 export function drawSpire(ctx: CanvasRenderingContext2D, F: Focus, stage: number, s: number, t: number, floorY: number): void {
   if (stage <= 0) return;
   const x = F.x + F.w * 0.17;
