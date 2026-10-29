@@ -499,3 +499,4 @@ date, what landed, what is half-done, what's next.
 - The fire-body kept (moment 'a') hangs glowing below the crown in the Midnight scene.
 - Away summary: warm spells (open → bleached, with the advice; closed; sun-shy) and risings missed while away (economy cyclesBetween; events.ts AWAY_CYCLES).
 - Resident cleaner wrasse (3400 m): neighbours' touch gifts ×2 and their cooldown ×0.5; drawn as a dancing pair at a station on a mid branch, darting round when touched.
+- systems e2e: the Sunlit page is bot=17000 (the bot now reaches the Breach by 19000 s), and story cards are closed after moving the clock to a shell.

@@ -85,11 +85,17 @@ await withGame(async (open) => {
 });
 
 await withGame(async (open) => {
-  const { page, errors } = await open(VIEWPORTS[0]!, '?bot=19000&at=150');
+  const { page, errors } = await open(VIEWPORTS[0]!, '?bot=17000&at=150');
   page.setDefaultTimeout(4000);
   await page.waitForTimeout(2000);
+  for (let i = 0; i < 12 && (await page.locator('.reader:not([hidden])').count()); i++)
+    await page.locator('.reader:not([hidden]) button').first().click().catch(() => {});
   await page.evaluate(() => { window.corallum!.state.meta.shells = []; window.corallum!.shell(); });
   await page.waitForTimeout(600);
+  // Moving the clock can bring a story (a trip coming home): close it so the tap reaches the sand.
+  for (let i = 0; i < 12 && (await page.locator('.reader:not([hidden])').count()); i++)
+    await page.locator('.reader:not([hidden]) button').first().click().catch(() => {});
+  await page.waitForTimeout(200);
   const p = await page.evaluate(() => window.corallum!.spots.find((q) => q.id === 'shell'));
   if (p) await page.mouse.click(p.x, p.y);
   await page.waitForTimeout(300);
