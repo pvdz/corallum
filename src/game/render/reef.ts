@@ -473,13 +473,32 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
           break;
         }
         case 'pigment': {
-          // A new colour washes up through the reef from the foot, in sparks of rose, gold and green.
+          // A new colour washes up through the reef from the foot: a band of rose, gold and green
+          // light climbing the branches, and sparks of it left behind.
           const top = Math.min(1, L.top);
-          for (let i = 0; i < 18; i++) {
+          const by = L.baseY - Math.min(1, k * 1.3) * top * u;
+          const band = ctx.createLinearGradient(L.cx - u * 0.3, 0, L.cx + u * 0.3, 0);
+          const a = 0.55 * Math.sin(Math.PI * Math.min(1, k * 1.3));
+          band.addColorStop(0, 'rgba(255,110,170,0)');
+          band.addColorStop(0.25, `rgba(255,110,170,${a})`);
+          band.addColorStop(0.5, `rgba(255,215,90,${a})`);
+          band.addColorStop(0.75, `rgba(120,240,170,${a})`);
+          band.addColorStop(1, 'rgba(120,240,170,0)');
+          ctx.fillStyle = band;
+          ctx.fillRect(L.cx - u * 0.3, by - 12 * s, u * 0.6, 24 * s);
+          for (let i = 0; i < 48; i++) {
             const node = (i * 4513 + Math.floor(fx.start * 7)) % coral.count;
             if (coral.y[node]! > Math.min(top, k * 1.3 * top)) continue;
             const [tx, ty] = nodePx(L, node);
-            glow(ctx, tx, ty, 9 * s, ['255,110,170', '255,215,90', '120,240,170'][i % 3]!, 0.8 * (1 - k));
+            const col = ['255,110,170', '255,215,90', '120,240,170'][i % 3]!;
+            glow(ctx, tx, ty, 16 * s, col, 0.8 * (1 - k));
+            // Painted as well as lit, so it shows in daylight too.
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.fillStyle = `rgba(${col},${0.85 * (1 - k)})`;
+            ctx.beginPath();
+            ctx.arc(tx, ty, 6 * s * (1 + k), 0, Math.PI * 2);
+            ctx.fill();
+            ctx.globalCompositeOperation = 'lighter';
           }
           break;
         }
@@ -503,10 +522,17 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
         case 'channel':
         case 'grounds': {
           // Work on the floor: a puff of pale sand spreading at the reef's foot.
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.fillStyle = fx.kind === 'meadow' ? `rgba(120,200,110,${0.45 * (1 - k)})` : `rgba(235,215,170,${0.55 * (1 - k)})`;
           for (const side of [-1, 1]) {
-            glow(ctx, L.cx + side * (40 + 140 * k) * s, L.baseY - 6 * s, (30 + 40 * k) * s,
-              fx.kind === 'meadow' ? '150,230,140' : '235,215,170', 0.35 * (1 - k));
+            for (let p = 0; p < 5; p++) {
+              const x = L.cx + side * (30 + (60 + p * 25) * k) * s, y = L.baseY - (4 + p * 5 * k) * s;
+              ctx.beginPath();
+              ctx.ellipse(x, y, (10 + 18 * k) * s, (5 + 6 * k) * s, 0, 0, Math.PI * 2);
+              ctx.fill();
+            }
           }
+          ctx.globalCompositeOperation = 'lighter';
           break;
         }
         default:

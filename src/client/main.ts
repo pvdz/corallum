@@ -22,7 +22,7 @@ import { createSunlitScene } from '../game/render/sunlit.ts';
 import { createTwilightScene } from '../game/render/twilight.ts';
 import { createTaps } from '../game/render/taps.ts';
 import { drawFeast, feastPos, feastReach } from '../game/render/feast.ts';
-import { zoom, type Focus, type ReefView, type Scene } from '../game/render/scene.ts';
+import { zoom, type EffectKind, type Focus, type ReefView, type Scene } from '../game/render/scene.ts';
 import { runBot } from '../game/sim/bot.ts';
 import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
@@ -51,6 +51,8 @@ declare global {
       state: GameState; skip(seconds: number): void; speed: number; prof: { draw: number; panel: number };
       /** Where the falling feast is, in CSS pixels (null when there is none). */
       readonly feast: { x: number; y: number } | null;
+      /** Play a purchase flourish on the reef (for checking effects). */
+      flourish(kind: string): void;
       /** View-mode zoom factor (1 = none). */
       readonly zoom: number;
       /** The tappable creatures on screen, in CSS pixels. */
@@ -371,6 +373,7 @@ window.corallum = {
     return { x: x / dpr, y: y / dpr };
   },
   get zoom() { return zoom.k; },
+  flourish: (kind: string) => scene.effect(kind as EffectKind),
   get spots() {
     return tappable().map((p) => ({ id: p.id, x: p.x / dpr, y: p.y / dpr }));
   },
