@@ -69,6 +69,7 @@ export const FEATS: readonly Feat[] = [
   { id: 'talker', name: 'Old friends talking', text: 'Tap Ossel ten times.', hidden: true, when: (s) => s.meta.seen.includes('did:ossel10') },
   { id: 'dark-picture', name: 'A picture in the dark', text: 'Save a picture of your reef in the Midnight Water.', hidden: true, when: (s) => s.meta.seen.includes('did:photo-dark') },
   { id: 'watcher', name: 'Just watching', text: 'Watch the reef in view mode for five minutes.', hidden: true, when: (s) => s.meta.seen.includes('did:watch') },
+  { id: 'full-sweep', name: 'Eleven in a row', text: 'Sweep fast enough to reach a double combo.', when: (s) => s.combo >= 11 },
   { id: 'every-crest', name: 'Every crest', text: 'Catch all five crests of one set of swells.', when: (s) => s.swell.caught === 0b11111 },
   { id: 'six-in-a-row', name: 'Six in a row', text: 'Answer the shoals’ signal six times in a row.', when: (s) => s.signal.streak >= 6, progress: (s) => [s.signal.streak, 6] },
   { id: 'heard-it-all', name: 'Ossel heard it all', text: 'Answer all of Ossel’s questions on one reef.', when: (s) => Object.values(s.asked).every((a) => a !== '') },
