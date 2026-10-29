@@ -191,7 +191,7 @@ export const RIDDLES: readonly { id: RiddleId; after: string; ask: string; optio
   { id: 'weight', after: 'kept-stone', ask: 'The grey on the city’s tips. Why did it never let it go?', options: ['It could not reach its own tips', 'It thought keeping was strength', 'We would not eat it'], right: 1 },
   { id: 'shallows', after: 'sun-gate', ask: 'Where did the city first grow?', options: ['In the dark, as it ended', 'In the shallows, open to the sun', 'On a beach, in the air'], right: 1 },
 ];
-export const RIDDLE = { kicker: 'The Rasp elder asks', lineage: 2, right: 'The elder grinds its beak, pleased.', wrong: 'The elder turns away. Not this time.',
+export const RIDDLE = { kicker: 'The Rasp elder asks', againKicker: 'The Rasp elder asks again', againFrom: 3800, lineage: 2, right: 'The elder grinds its beak, pleased.', wrong: 'The elder turns away. Not this time.',
   /** Every riddle answered rightly on one reef: the elder's blessing. */
   blessing: 'The elder bows its old head to you. Its herd grinds ×1.2 sand for the rest of this reef.', blessed: 1.2 } as const;
 

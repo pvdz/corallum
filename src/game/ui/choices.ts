@@ -11,7 +11,7 @@ import { BOON_TEXT } from '../content/lineage.ts';
 import { FIGURES, SKY, WISH } from '../content/sky.ts';
 import { QUESTION, type Question } from '../content/ossel.ts';
 import { SISTER } from '../content/sister.ts';
-import { wishOpen, lightOpen, osselAsks, currentEncounter, grainsWaiting, sportOpen, boonsOffered, figureOpen, skyOpen, currentRiddle, currentSignal, forkOpen, othersCap, othersSpawning, strainOpen } from '../sim/economy.ts';
+import { wishOpen, lightOpen, osselAsks, currentEncounter, grainsWaiting, sportOpen, boonsOffered, figureOpen, skyOpen, currentRiddle, riddleAgain, currentSignal, forkOpen, othersCap, othersSpawning, strainOpen } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { button, el } from './dom.ts';
 import { num } from './format.ts';
@@ -118,7 +118,8 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
   const riddleAsk = el('p', 'truce-text');
   const riddleChoices = el('div', 'boon-choices');
   const riddleResult = el('p', 'truce-words');
-  riddleBox.append(el('p', 'truce-kicker', RIDDLE.kicker), riddleAsk, riddleChoices, riddleResult);
+  const riddleKicker = el('p', 'truce-kicker', RIDDLE.kicker);
+  riddleBox.append(riddleKicker, riddleAsk, riddleChoices, riddleResult);
   grow.prepend(riddleBox);
   let riddleShown = '', riddleLinger = 0;
 
@@ -266,6 +267,7 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
         }
       }
       const rd = currentRiddle(s);
+      riddleKicker.textContent = riddleAgain(s) ? RIDDLE.againKicker : RIDDLE.kicker;
       if (rd && rd.id !== riddleShown) {
         riddleShown = rd.id;
         riddleAsk.textContent = rd.ask;

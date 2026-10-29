@@ -178,6 +178,8 @@ export type GameState = {
   fragments: number;
   /** When each fragment was taken in (reef time), for its growing. */
   fragmentAt: number[];
+  /** Riddles the elder has asked a second time. */
+  riddlesAgain: string[];
   /** The last lost shoal's slot called in (content/events.ts STRAY). */
   strayed: number;
   fragmentSlot: number;
@@ -293,6 +295,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     untangled: -1,
     fragments: 0,
     fragmentAt: [],
+    riddlesAgain: [],
     strayed: -1,
     fragmentSlot: -1,
     vows: [],

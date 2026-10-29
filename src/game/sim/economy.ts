@@ -1097,8 +1097,17 @@ export function setCurrent(s: GameState, c: number): void {
 /** The riddle the elder is asking now, if any (truce begun, its band read, not yet answered). */
 export function currentRiddle(s: GameState) {
   if (!s.truce.terms) return undefined;
-  return RIDDLES.find((r) => !s.riddles[r.id] &&
+  const fresh = RIDDLES.find((r) => !s.riddles[r.id] &&
     (s.bands.includes(r.after) || s.readings.includes(r.after as ReadingId) || s.relics.includes(r.after as SiteId)));
+  if (fresh) return fresh;
+  // In the light, the elder asks once more what it was answered wrongly.
+  return s.height >= RIDDLE.againFrom ? RIDDLES.find((r) => s.riddles[r.id] === 'wrong' && !s.riddlesAgain.includes(r.id)) : undefined;
+}
+
+/** The current riddle is one asked a second time. */
+export function riddleAgain(s: GameState): boolean {
+  const r = currentRiddle(s);
+  return !!r && s.riddles[r.id] === 'wrong';
 }
 
 /** Answer the elder: true if right (+lineage). */
@@ -1106,8 +1115,10 @@ export function answerRiddle(s: GameState, id: RiddleId, choice: number): boolea
   const r = currentRiddle(s);
   if (!r || r.id !== id) return false;
   const right = choice === r.right;
+  const again = s.riddles[id] === 'wrong';
+  if (again) s.riddlesAgain.push(id);
   s.riddles[id] = right ? 'right' : 'wrong';
-  if (right) s.meta.lineage += RIDDLE.lineage;
+  if (right) s.meta.lineage += again ? Math.ceil(RIDDLE.lineage / 2) : RIDDLE.lineage;
   return right;
 }
 

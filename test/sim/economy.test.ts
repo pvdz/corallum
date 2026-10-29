@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { currentStray, callStray, currentFragment, takeFragment, currentTangle, freeTangle, visitor, visited, setDay, currentFeast, wishOpen, makeWish, flare, prune, oldKnobs, inMilky, guarding, lucky, currentThorn, dayOf, catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
+import { currentRiddle, answerRiddle, currentStray, callStray, currentFragment, takeFragment, currentTangle, freeTangle, visitor, visited, setDay, currentFeast, wishOpen, makeWish, flare, prune, oldKnobs, inMilky, guarding, lucky, currentThorn, dayOf, catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { newGame, type GameState } from '../../src/game/sim/state.ts';
 import { GIFT, LUCKY } from '../../src/game/content/creatures.ts';
@@ -706,4 +706,20 @@ test('a lost shoal: in the Midnight Water, called in once per slot, one more sho
   assert.equal(s.levels.shoal, 5);
   assert.equal(s.jobs.feed, feed + 1);
   assert.equal(callStray(s), false);
+});
+
+test('the elder asks a wrongly answered riddle once more in the light, for half the lineage', () => {
+  const s = newGame(101);
+  s.truce.terms = 'a';
+  s.bands.push('truth');
+  const r = currentRiddle(s)!;
+  assert.equal(r.id, 'silt');
+  answerRiddle(s, 'silt', (r.right + 1) % r.options.length);
+  assert.equal(currentRiddle(s), undefined, 'not again below the light');
+  s.height = 3850;
+  assert.equal(currentRiddle(s)?.id, 'silt');
+  const l0 = s.meta.lineage;
+  assert.ok(answerRiddle(s, 'silt', r.right));
+  assert.equal(s.meta.lineage, l0 + 1);
+  assert.equal(currentRiddle(s), undefined, 'only once more');
 });

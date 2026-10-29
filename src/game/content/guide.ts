@@ -18,7 +18,7 @@ export const GUIDE: readonly [string, string][] = [
   ['Tangles', 'Now and then a small fish gets caught in a jelly’s threads near the reef (on the floor, a brittle star under a stone; at the Breach, a fish stranded on your crown). Tap it free for a burst.'],
   ['Intruders', 'Something comes to eat the reef in every zone: a snail, a dragonfish, a thorn star, a gull. Tap it away for a burst.'],
   ['The signal', 'The shoals sometimes flash a pattern of lights. Watch, then press the same lamps (or keys 7–0).'],
-  ['The elder', 'Once the truce begins, the Rasp elder asks about what the bands told. Answer rightly for lineage.'],
+  ['The elder', 'Once the truce begins, the Rasp elder asks about what the bands told. Answer rightly for lineage; in the light it asks a wrong one once more.'],
   ['Shells', 'In the Sunlit Crown a shell washes up now and then. Tap it to keep it on the line’s shelf.'],
   ['Choices', 'The glimmerseed strain at 15 m and its sport at 3000 m, the grain of every tenth band, the current on the shelf, four tiers of dialects: each shapes the reef.'],
   ['Rhythms', 'Each zone has something to catch while you watch: flurries (sweep), the rising (send the feeders in), upwellings (turn the current), warm water (open or close), swells (tap on the crest). The water box says when.'],
