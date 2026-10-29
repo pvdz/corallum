@@ -8,7 +8,7 @@ import type { MemoryId } from '../content/act5.ts';
 import type { RequestKind } from '../content/requests.ts';
 import type { MomentId } from '../content/moments.ts';
 import type { ResidentId } from '../content/residents.ts';
-import type { SiteId } from '../content/expeditions.ts';
+import type { SiteId, TripId } from '../content/expeditions.ts';
 import type { SeamountId, TraitId } from '../content/lineage.ts';
 import type { UpgradeId } from '../content/types.ts';
 
@@ -109,11 +109,11 @@ export type GameState = {
   /** The reef's height sampled every HISTORY_STEP sim seconds (for the growth chart). */
   history: number[];
   /** Shoals away at a ruin: the site ('' for none), when they return, and the jobs they left. */
-  expedition: { site: SiteId | ''; back: number; feed: number; light: number; scout: number };
+  expedition: { site: TripId | ''; back: number; feed: number; light: number; scout: number; n: number };
   /** Ossel's current request (kind '' for none yet), its count at the start, and how many are done; `paid` is what the last one brought. */
   request: { kind: RequestKind | ''; n: number; base: number; done: number; paid: number };
   /** Counters the requests watch, and how many times the silt was searched for a shard. */
-  tally: { touches: number; sweeps: number; digs: number };
+  tally: { touches: number; sweeps: number; digs: number; roams: number };
   /** Favours asked of the Rasp, by kind (content/act3.ts FAVOURS). */
   favours: Record<FavourId, number>;
   /** Moments answered ('' until then): content/moments.ts. */
@@ -165,12 +165,12 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     feasted: -1,
     feasts: 0,
     history: [],
-    expedition: { site: '', back: 0, feed: 0, light: 0, scout: 0 },
+    expedition: { site: '', back: 0, feed: 0, light: 0, scout: 0, n: 0 },
     relics: [],
     residents: [],
     favours: { clear: 0, path: 0, carry: 0 },
     request: { kind: '', n: 0, base: 0, done: 0, paid: 0 },
-    tally: { touches: 0, sweeps: 0, digs: 0 },
+    tally: { touches: 0, sweeps: 0, digs: 0, roams: 0 },
     moments: { brittle: '', 'lost-shoal': '', squid: '', 'whale-fall': '', cleaners: '', storm: '', turtle: '', bird: '' },
     gifts: Object.fromEntries(CREATURES.map((c) => [c.id, -1e9])) as Record<CreatureId, number>,
     seamount: 'plain',

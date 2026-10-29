@@ -24,12 +24,12 @@ import { createTaps } from '../game/render/taps.ts';
 import { drawFeast, feastPos, feastReach } from '../game/render/feast.ts';
 import { zoom, type EffectKind, type Focus, type ReefView, type Scene } from '../game/render/scene.ts';
 import { runBot } from '../game/sim/bot.ts';
-import { SITES } from '../game/content/expeditions.ts';
+import { ROAM, SITES } from '../game/content/expeditions.ts';
 import { WATER } from '../game/content/waters.ts';
 import { REQUEST } from '../game/content/requests.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -404,6 +404,8 @@ let speed = Number(params.get('speed') ?? 1);
 let relicsSeen = state.relics.length;
 /** Shards the line had found (a new one is announced). */
 let shardsSeen = state.meta.shards.length;
+/** Roams come home (announced while watching). */
+let roamsSeen = state.tally.roams;
 /** Requests kept so far (a kept one while watching is announced). */
 let requestsSeen = state.request.done;
 /** Whether this reef's trial was already met when the page loaded (no announcement then). */
@@ -461,9 +463,9 @@ function resize(): void {
 
 function tripView(): ReefView['trip'] {
   const ex = state.expedition;
-  const x = ex.site ? SITES.find((v) => v.id === ex.site) : undefined;
+  const x = tripSite(state);
   if (!x) return null;
-  const i = SITES.indexOf(x);
+  const i = SITES.indexOf(x) + state.tally.roams;
   return { shoals: x.shoals, since: x.seconds - (ex.back - state.t), left: ex.back - state.t, side: i % 2 ? -1 : 1 };
 }
 
@@ -1023,6 +1025,8 @@ function frame(now: number): void {
       buzz([20, 40, 20]);
     }
     shardsSeen = state.meta.shards.length;
+    if (state.tally.roams > roamsSeen) showJournalNote(ROAM.back, ROAM.effect);
+    roamsSeen = state.tally.roams;
     if (state.request.done > requestsSeen) {
       const [cx, cy] = scene.crownAt;
       floatText(cx / dpr, cy / dpr - 30, `+${num(state.request.paid)} ${feastPay(state)} ${REQUEST.float}`, 'feast-float');

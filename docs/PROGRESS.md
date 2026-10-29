@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended: adding features and gameplay (goal: repeat). Latest: nurseries (daughter colonies → lineage), reef colours, new memories, automation traits, Rasp favours, shards of Thousandfold, Ossel's requests, hard seamounts (trials), moments (eight two-way choices on the climb), the water's moods (timed price windows with a forecast), residents, expeditions. Ideas: an Act I verb; Breach detail; reef events with choices.
+NOW: Open-ended: adding features and gameplay (goal: repeat). Latest: roaming expeditions, nurseries (daughter colonies → lineage), reef colours, new memories, automation traits, Rasp favours, shards of Thousandfold, Ossel's requests, hard seamounts (trials), moments (eight two-way choices on the climb), the water's moods (timed price windows with a forecast), residents, expeditions. Ideas: an Act I verb; Breach detail; reef events with choices.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -343,3 +343,4 @@ date, what landed, what is half-done, what's next.
 - Reef colours: content/palettes.ts (Reef, Lagoon, Violet, Ember, Pale moon), meta.palette kept by the line; recolours Sunlit pigments and polyps and the Breach's crust and polyps; swatches in the Reef tab from the first pigment.
 - Nurseries: upgrade 'daughter' (act2.ts; daughterCount moved there), +1 lineage each in lineageFor; held, not complete, while it waits for the next daughter (cards drop 'maxed' when buyable again; lonely seamount shoals use the same 'held' text). Tended daughters drawn larger with a glow.
 - Setting 'Larger text' (html.big: the panel, reader, whispers and notes at zoom 1.15; relayout on change). No overflow at 390 px.
+- Roaming: content/expeditions.ts ROAM; nextSite falls back to a roam; expedition state records its size n (save migration fills n for an old mid-trip ruin); tripSite() for the panel and the world view; tally.roams; shard source 'roam' (35%). Test: a roam home offline == online with jobs restored.

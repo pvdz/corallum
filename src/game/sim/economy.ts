@@ -29,7 +29,7 @@ import { SHARD, SHARD_LINES, type ShardSource } from '../content/shards.ts';
 import { REQUEST, REQUESTS, type RequestKind } from '../content/requests.ts';
 import { MOMENTS, type MomentId } from '../content/moments.ts';
 import { WATER, WATERS, type Water } from '../content/waters.ts';
-import { EXPEDITION, SITES, type Site, type SiteId } from '../content/expeditions.ts';
+import { EXPEDITION, ROAM, SITES, type Site, type SiteId } from '../content/expeditions.ts';
 import type { Band, Currency, UpgradeDef, UpgradeId } from '../content/types.ts';
 import { UPGRADES } from '../content/upgrades.ts';
 import { equilibrium, relax } from './ode.ts';
@@ -634,14 +634,33 @@ export function awayShoals(s: GameState): number {
 /** Idle shoals that went along (they come back idle): the trip's size minus the ones taken from jobs. */
 function idleAway(s: GameState): number {
   const ex = s.expedition;
-  const sz = SITES.find((x) => x.id === ex.site)?.shoals ?? 0;
-  return Math.max(0, sz - ex.feed - ex.light - ex.scout);
+  return Math.max(0, ex.n - ex.feed - ex.light - ex.scout);
 }
 
-/** The next ruin the shoals could search: the first not yet found, once the reef has reached it. */
+/** A roam: a quarter of the shoals, ten minutes, no relic. */
+function roamSite(s: GameState): Site {
+  return {
+    id: 'roam' as SiteId, name: ROAM.name, metres: ROAM.from, hint: ROAM.hint, relic: '', effect: ROAM.effect, text: '',
+    shoals: Math.max(ROAM.minShoals, Math.floor(s.levels.shoal * ROAM.share)), seconds: ROAM.seconds,
+  };
+}
+
+/** The trip the shoals are on now (a ruin, or a roam of the size that left), if any. */
+export function tripSite(s: GameState): Site | undefined {
+  const ex = s.expedition;
+  if (!ex.site) return undefined;
+  if (ex.site === 'roam') return { ...roamSite(s), shoals: ex.n };
+  return SITES.find((v) => v.id === ex.site);
+}
+
+/**
+ * Where the shoals could go next: the first ruin not yet found once the reef has reached it, else
+ * a roam through the dark (from 150 m, with shoals enough to spare).
+ */
 export function nextSite(s: GameState): Site | undefined {
   const x = SITES.find((v) => !found(s, v.id));
-  return x && s.height >= x.metres && s.levels.shoal > 0 ? x : undefined;
+  if (x && s.height >= x.metres && s.levels.shoal > 0) return x;
+  return s.height >= ROAM.from && s.levels.shoal >= ROAM.minShoals * 2 ? roamSite(s) : undefined;
 }
 
 /** Whether the shoals can set out for the next ruin now. */
@@ -662,7 +681,7 @@ export function send(s: GameState): boolean {
     took[j] = n;
     need -= n;
   }
-  s.expedition = { site: x.id, back: s.t + x.seconds, ...took };
+  s.expedition = { site: x.id, back: s.t + x.seconds, ...took, n: x.shoals };
   return true;
 }
 
@@ -670,14 +689,21 @@ export function send(s: GameState): boolean {
 function homecoming(s: GameState): void {
   const ex = s.expedition;
   const x = SITES.find((v) => v.id === ex.site);
+  const roam = ex.site === 'roam';
+  const seconds = roam ? ROAM.seconds : x?.seconds ?? 0;
+  const heard = EXPEDITION.heard * ex.n * seconds;
   s.jobs.feed += ex.feed;
   s.jobs.light += ex.light;
   s.jobs.scout += ex.scout;
-  s.expedition = { site: '', back: 0, feed: 0, light: 0, scout: 0 };
-  if (!x) return;
-  const heard = EXPEDITION.heard * x.shoals * x.seconds;
+  s.expedition = { site: '', back: 0, feed: 0, light: 0, scout: 0, n: 0 };
   s.murmurs += heard;
   s.earned.murmurs += heard;
+  if (roam) {
+    s.tally.roams++;
+    dig(s, 'roam');
+    return;
+  }
+  if (!x) return;
   if (!found(s, x.id)) s.relics.push(x.id);
   dig(s, 'expedition');
 }

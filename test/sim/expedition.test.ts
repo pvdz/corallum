@@ -44,3 +44,22 @@ test('the gate’s relic makes bands cheaper, and the next ruin waits for its he
   assert.ok(cost(s, 'skeleton') < cost(without, 'skeleton'));
   assert.equal(nextSite(s)?.id === 'terraces', s.height >= 500);
 });
+
+test('a roam when no ruin is in reach: a quarter of the shoals, home at the same moment offline or not', () => {
+  const a = atGate();
+  a.relics = ['gate', 'terraces', 'lamp-hall', 'wells', 'midden'];
+  const jobs = { ...a.jobs };
+  const idle = idleShoals(a);
+  assert.equal(nextSite(a)?.id, 'roam');
+  assert.ok(send(a));
+  assert.equal(a.expedition.n, Math.max(4, Math.floor(a.levels.shoal / 4)));
+  const b = structuredClone(a);
+  advance(a, 900);
+  for (let i = 0; i < 900 * 30; i++) advance(b, 1 / 30);
+  for (const s of [a, b]) {
+    assert.deepEqual(s.jobs, jobs);
+    assert.equal(idleShoals(s), idle);
+    assert.equal(s.tally.roams, 1);
+  }
+  assert.ok(rel(a.murmurs, b.murmurs) < 1e-6 && rel(a.calcite, b.calcite) < 1e-6);
+});

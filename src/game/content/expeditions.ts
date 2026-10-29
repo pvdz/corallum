@@ -4,6 +4,8 @@
 // One site at a time, in order, each found once per reef.
 
 export type SiteId = 'gate' | 'terraces' | 'lamp-hall' | 'wells' | 'midden';
+/** A ruin, or a roam through the dark (repeatable, no relic). */
+export type TripId = SiteId | 'roam';
 
 export type Site = {
   id: SiteId;
@@ -79,6 +81,13 @@ export const SITES: readonly Site[] = [
       'set into your reef grind harder, as if for someone.',
   },
 ];
+
+/** Roaming: when no ruin is in reach, a quarter of the shoals can wander for a while. */
+export const ROAM = {
+  from: 150, minShoals: 4, share: 0.25, seconds: 10 * 60,
+  name: 'Roam the dark', hint: 'No ruin in reach. The shoals could wander, and listen, and see what turns up.',
+  effect: 'murmurs, and perhaps a shard', back: 'Back from roaming',
+} as const;
 
 export function site(id: string): Site | undefined {
   return SITES.find((x) => x.id === id);

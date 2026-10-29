@@ -2,6 +2,7 @@
 // caller (the sim itself never reads a clock). Loading fills any missing fields from a fresh
 // game, so older saves keep working as the state grows; `migrate` handles real renames.
 
+import { SITES } from '../content/expeditions.ts';
 import { newGame, SAVE_VERSION, type GameState } from './state.ts';
 
 export type SaveFile = { state: GameState; savedAt: number };
@@ -45,6 +46,9 @@ function fill<T>(base: T, src: unknown): T {
 
 function migrate(s: GameState): GameState {
   s.version = SAVE_VERSION;
+  // A trip saved before trips recorded their size: a ruin's size is fixed.
+  const ex = s.expedition;
+  if (ex.site && ex.site !== 'roam' && ex.n === 0) ex.n = SITES.find((x) => x.id === ex.site)?.shoals ?? 0;
   return s;
 }
 

@@ -92,7 +92,9 @@ then scouts, light-swimmers, feeders; while away they work no job, and at a fixe
 come home to the jobs they left, with half a scout's murmurs for the trip and a relic: a story card
 and a lasting effect for this reef (bands ×0.85, plankton eaten ×0.75, lure +1, scouts ×1.25 and
 murmurs fade ×0.5, Rasp sand ×1.3). The verb is committing: a costly pause for something lasting,
-best timed before going away. Shown in the world as a stream of shoal lights leaving for the
+best timed before going away. When no ruin is in reach (the next too high, or all five found) the
+shoals can **roam**: a quarter of them (at least 4) for 10 minutes, murmurs and a 35% shard chance,
+repeatable. Shown in the world as a stream of shoal lights leaving for the
 edge of the water and hanging far off as a flicker.
 
 **Residents** (from 3000 m): the reef has homes for small animals that live with corals: one on
