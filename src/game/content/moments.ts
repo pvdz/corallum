@@ -5,7 +5,7 @@
 export type MomentId = 'brittle' | 'vent-crack' | 'snow' | 'lost-shoal' | 'hunters' | 'angler' | 'squid' | 'whale-fall' | 'old-lamp' | 'cleaners'
   | 'young-rasp' | 'slope' | 'eggs' | 'storm' | 'turtle' | 'first-light' | 'last-night' | 'bird'
   | 'fire-body' | 'seep' | 'rising-stop' | 'split-shoal' | 'heatwave' | 'pups' | 'king-tide' | 'outbreak'
-  | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes' | 'heavy-crown' | 'cold-slide' | 'dust' | 'bowed' | 'mirror' | 'jelly-bloom' | 'last-dark';
+  | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes' | 'heavy-crown' | 'cold-slide' | 'dust' | 'bowed' | 'mirror' | 'jelly-bloom' | 'last-dark' | 'fry';
 
 export type MomentOption = { label: string; effect: string; text: string };
 export type Moment = { id: MomentId; metres: number; title: string; text: string; a: MomentOption; b: MomentOption;
@@ -182,6 +182,14 @@ export const MOMENTS: readonly Moment[] = [
       text: 'Your symbionts take the iron in it and turn greener than you have ever seen them.' },
     b: { label: 'Let the shoals have it', effect: 'plankton ×1.15',
       text: 'The water itself blooms with it, and the shoals feed for days on what grows.' },
+  },
+  {
+    id: 'fry', metres: 3820, title: 'A cloud of fry',
+    text: 'Ten thousand tiny fish, newly hatched and nearly clear, pour into your branches all at once and will not leave.',
+    a: { label: 'Shelter them', effect: 'bloom ×1.1',
+      text: 'You let them hide in every gap. Their small lives keep your gardens clean, and your symbionts thrive for it.' },
+    b: { label: 'Shake them loose', effect: 'plankton ×1.1',
+      text: 'You shiver, and they scatter into the open water, where the shoals follow them and grow fat.' },
   },
   {
     id: 'storm', metres: 3850, title: 'A storm takes a branch',

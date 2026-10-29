@@ -207,4 +207,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | A blue moon (every seventh full moon) | real-world term, no game lore | OK |
 | Trait Helping habit | this game's own systems | OK |
 | Ossel remembering your answers in later whispers | this game's own characters | OK |
+| Moment: a cloud of fry (3820 m) | real behaviour | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

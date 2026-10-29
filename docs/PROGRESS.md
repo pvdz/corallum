@@ -679,3 +679,4 @@ date, what landed, what is half-done, what's next.
 - Ossel remembers answers in later whispers (asked-silt at 2000 m, asked-keep at 3600 m, asked-sister once her way is lit).
 - Feeding: with plankton in the water, pale motes drift in to the polyps' tentacle tips and vanish there (reef.ts).
 - Feat An album: a picture in every zone (did:photo-z<n>).
+- Moment fry (3820 m: bloom ×1.1 or plankton ×1.1); sheltered, little clouds of clear fry swirl among the branches.
