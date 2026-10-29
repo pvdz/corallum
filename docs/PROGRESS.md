@@ -367,3 +367,4 @@ date, what landed, what is half-done, what's next.
 - A map of Thousandfold in the Bands tab (content CITY_MAP, panel drawCity): wall rings from above, searched ruins lit and named, roam paths, the roam count.
 - Feats: Wanderers, Builder, Met them all, First to the light, Every hard place.
 - Welcome back: events.ts WELCOME, economy welcomeHaul/welcome; two gift buttons in the away summary after ≥1 h away.
+- Screenshot series 2026-10-29-10-38: all zones, three viewports, after today's features.
