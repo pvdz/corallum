@@ -405,3 +405,4 @@ date, what landed, what is half-done, what's next.
 - Seasoned shoals: each trip (relic or roam) makes feeding and light-swimming 2% stronger, up to +40%; shown in the Shoals header.
 - 'Before you go' button (under the request line): sets the Rasp dial for holding and sends a trip if one is open (economy prepareAway); says what it did.
 - Visiting the sister reef: a trip offered when it is near your depth, once per zone, +1 lineage on return (expeditions.ts VISIT, state.visits, diary line).
+- Audio cues 'intruder' (two low notes a tritone apart) and 'moment' (a soft rising third) when one appears.

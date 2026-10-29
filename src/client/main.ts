@@ -451,6 +451,8 @@ let speed = Number(params.get('speed') ?? 1);
 let relicsSeen = state.relics.length;
 /** Shards the line had found (a new one is announced). */
 let shardsSeen = state.meta.shards.length;
+/** The intruder and the waiting choice last announced. */
+let thornHeard = -1, choiceHeard = '|false';
 /** The water last heard (a turn to a new water gets its swell). */
 let waterHeard = '';
 /** Sister race marks decided and won (a new one is announced). */
@@ -1130,6 +1132,13 @@ function frame(now: number): void {
     shardsSeen = state.meta.shards.length;
     if (state.tally.roams > roamsSeen) showJournalNote(ROAM.back, ROAM.effect);
     roamsSeen = state.tally.roams;
+    // An intruder arriving, a moment or a full-moon choice appearing: a cue each.
+    const th = currentThorn(state);
+    if (th && th.k !== thornHeard) audio.cue('intruder');
+    thornHeard = th ? th.k : thornHeard;
+    const waitingChoice = `${nextMoment(state)?.id ?? ''}|${othersSpawning(state)}`;
+    if (waitingChoice !== choiceHeard && waitingChoice !== '|false') audio.cue('moment');
+    choiceHeard = waitingChoice;
     // The water turning: a soft swell (not for still water).
     const wNow = waterAt(state).id;
     if (wNow !== waterHeard && waterHeard !== '' && wNow !== 'still') audio.cue('water');
