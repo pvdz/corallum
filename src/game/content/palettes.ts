@@ -1,7 +1,7 @@
 // The reef's colours: once pigments grow in the Sunlit Crown, the line can choose the palette its
 // reefs wear in the light and at the surface. Purely how it looks; kept by the whole line.
 
-export type PaletteId = '' | 'lagoon' | 'violet' | 'ember' | 'moon';
+export type PaletteId = '' | 'lagoon' | 'violet' | 'ember' | 'moon' | 'elder' | 'surf';
 
 export type Palette = {
   id: PaletteId;
@@ -29,6 +29,10 @@ export const PALETTES: readonly Palette[] = [
     polyp: ['#ffd6a5', 'rgba(255,220,140,0.95)'], night: ['#8a4a3a', '#8a6a2a', '#7a3a2a', '#9a5a3a'] },
   { id: 'moon', feat: 'great-tide', name: 'Pale moon', pigments: ['#f1f1f1', '#ffd6e0', '#e2ece9', '#fde2e4', '#dfe7fd', '#fff1e6', '#cddafd'],
     polyp: ['#ffffff', 'rgba(240,240,255,0.95)'], night: ['#6a6a7a', '#7a7080', '#5a6070', '#8a8a96'] },
+  { id: 'elder', feat: 'blessed', name: 'Old beak', pigments: ['#c9b48c', '#8fb3a8', '#d8c3a5', '#7f9c96', '#b9a27a', '#a8c0b8', '#e6dccb'],
+    polyp: ['#e8e0cc', 'rgba(240,235,215,0.95)'], night: ['#6a6050', '#4a6058', '#7a6a58', '#58706a'] },
+  { id: 'surf', feat: 'every-crest', name: 'Surf', pigments: ['#48cae4', '#ffffff', '#90e0ef', '#00b4d8', '#caf0f8', '#0096c7', '#ade8f4'],
+    polyp: ['#e0fbff', 'rgba(230,250,255,0.95)'], night: ['#2a5a7a', '#5a7a8a', '#2a6a8a', '#4a8a9a'] },
 ];
 
 export function palette(id: string): Palette {

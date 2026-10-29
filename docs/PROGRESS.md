@@ -558,3 +558,4 @@ date, what landed, what is half-done, what's next.
 - The Reef tab's guide covers rhythms, glow (flare), shoal jobs, Ossel's questions, the sky and the daily things.
 - The elder's blessing: every riddle right on one reef → sand ×1.2 for the run (economy elderBlessed), said after the last answer; feat 'The elder's blessing'.
 - A turtle surfaces to breathe beside the Breach crown every three minutes (breach.ts drawBreathingTurtle).
+- Palettes Old beak (feat: the elder's blessing) and Surf (feat: every crest).
