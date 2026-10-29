@@ -1864,7 +1864,7 @@ export function rideSwell(s: GameState): number {
   if (!sw) return -1;
   const i = Math.round((s.t - sw.start - SWELL.lead) / SWELL.gap);
   if (i < 0 || i >= SWELL.waves) return 0;
-  if (Math.abs(s.t - (sw.start + SWELL.lead + i * SWELL.gap)) > SWELL.window) return 0;
+  if (Math.abs(s.t - (sw.start + SWELL.lead + i * SWELL.gap)) > SWELL.slack) return 0;
   if (s.swell.k !== sw.k) s.swell = { k: sw.k, caught: 0 };
   if (s.swell.caught & (1 << i)) return 0;
   s.swell.caught |= 1 << i;

@@ -322,7 +322,7 @@ test('swells: a tap on the crest pays once, a tap between crests misses', () => 
   rideSwell(s);
   s.t += SWELL.gap / 2;
   assert.equal(rideSwell(s), 0, 'between crests');
-  s.t = sw!.start + SWELL.lead + 4 * SWELL.gap + SWELL.window * 0.9;
+  s.t = sw!.start + SWELL.lead + 4 * SWELL.gap + SWELL.slack * 0.9;
   rideSwell(s);
   assert.equal(s.swell.caught, 0b10010, 'the last crest, just late');
 });

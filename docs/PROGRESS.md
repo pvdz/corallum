@@ -516,3 +516,4 @@ date, what landed, what is half-done, what's next.
 - Night on the Twilight Shelf (twilight.ts nightAt, same 10-minute day as the Sunlit Crown): a veil behind and lightly in front of the reef, polyps open wider and glow, plankton sparks blue.
 - Twilight nights: garden eels sleep in their burrows (a few stay half out); flashlight fish (night only) wander left of the reef, lamps shuttering; touched, they all go dark and relight one by one.
 - Swells at the Breach (events.ts SWELL; economy currentSwell/untilSwell/rideSwell; state.swell): breach.ts drawSwell (humps + timing ring), tap near the crown or S, Soon line, tab dot.
+- SWELL's tolerance is `slack` (the determinism lint rejects the other word in sim/content). Two commits went in with that lint red: chain commits on `node --test` itself, not on a grep of it.

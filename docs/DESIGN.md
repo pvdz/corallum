@@ -177,7 +177,7 @@ build leans one way. On the Silt Floor the grain bands show as coloured rings in
 (on the sim clock, so the snow and the pay agree; the Soon line counts down to the next).
 
 **Swells** (the Breach, while watching, before the release): every few minutes a set of five big
-swells rolls in; tap the crown (or S) as each crests (±0.5 s) to send spawn up on it: 20 s of spawn per
+swells rolls in; tap the crown (or S) as each crests (±SWELL.slack, 0.5 s) to send spawn up on it: 20 s of spawn per
 crest caught. A ring closes on the crown toward each crest; a caught one flashes gold. Act V's waiting
 gets a skill to play.
 

@@ -35,7 +35,7 @@ export const NOTIFY = {
  * (or S) just as each crests to send spawn up on it.
  */
 export const SWELL = {
-  period: 200, waves: 5, lead: 3, gap: 4, window: 0.5, seconds: 20,
+  period: 200, waves: 5, lead: 3, gap: 4, slack: 0.5, seconds: 20,
   word: 'swells',
   hit: 'up on the swell',
   miss: 'too soon · too late',

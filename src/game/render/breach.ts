@@ -192,9 +192,9 @@ export function createBreachScene(seed: number): Scene {
         ctx.globalCompositeOperation = 'lighter';
         glow(ctx, crown[0], crown[1], (30 + 40 * d) * s, '255,215,140', 0.6 * (1 - d));
         ctx.restore();
-      } else if (!caught && d > -2.5 && d < SWELL.window) {
+      } else if (!caught && d > -2.5 && d < SWELL.slack) {
         const r = (24 + Math.max(0, -d) * 34) * s;
-        const near = Math.abs(d) <= SWELL.window;
+        const near = Math.abs(d) <= SWELL.slack;
         ctx.strokeStyle = near ? 'rgba(255,225,160,0.95)' : 'rgba(200,225,255,0.55)';
         ctx.lineWidth = (near ? 3 : 1.5) * s;
         ctx.beginPath();
