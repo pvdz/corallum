@@ -414,6 +414,44 @@ export function createMidnightScene(seed: number): Scene {
   }
 
   /**
+   * The anglerfish the reef shared the dark with (a moment): it hangs beside the crown, a dark
+   * round shape barely seen, its lure bobbing close to your own light.
+   */
+  function drawKeptAngler(ctx: CanvasRenderingContext2D, t: number, x: number, y: number): void {
+    const s = scale() * 1.3;
+    const bob = Math.sin(t * 0.7) * 3 * s;
+    ctx.save();
+    ctx.translate(x, y + bob);
+    ctx.fillStyle = 'rgba(20,22,34,0.92)';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 14 * s, 10 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(-12 * s, 0); ctx.lineTo(-22 * s, -6 * s); ctx.lineTo(-22 * s, 6 * s); ctx.closePath();
+    ctx.fill();
+    // Teeth, faintly.
+    ctx.strokeStyle = 'rgba(220,225,235,0.5)';
+    ctx.lineWidth = 0.6 * s;
+    for (let k = 0; k < 5; k++) {
+      ctx.beginPath();
+      ctx.moveTo(8 * s + k * 1.4 * s, 3 * s);
+      ctx.lineTo(8.5 * s + k * 1.4 * s, 5.5 * s);
+      ctx.stroke();
+    }
+    // The stalk and its lure.
+    const lx = 22 * s + Math.sin(t * 1.3) * 2 * s, ly = -16 * s + Math.cos(t * 1.1) * 2 * s;
+    ctx.strokeStyle = 'rgba(60,64,80,0.9)';
+    ctx.lineWidth = 1 * s;
+    ctx.beginPath();
+    ctx.moveTo(6 * s, -8 * s);
+    ctx.quadraticCurveTo(16 * s, -22 * s, lx, ly);
+    ctx.stroke();
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, lx, ly, 9 * s, '160,240,255', 0.55 + 0.25 * Math.sin(t * 2));
+    ctx.restore();
+  }
+
+  /**
    * The cold seep beside the reef (a moment): a crack at the bottom of the frame ringed with white
    * mats, a slow stream of bubbles going up; built over, it is crusted chalk-white instead.
    */
@@ -1004,6 +1042,10 @@ export function createMidnightScene(seed: number): Scene {
       reef.draw(ctx, L, v, t);
       drawRelics(ctx, reef, L, v.relics, t, v.moments['old-lamp'] === 'a');
       if (v.nets > 0) drawNets(ctx, reef, L, v.nets, t);
+      if (v.moments.angler === 'b') {
+        const [crx, cry] = reef.crown(L);
+        drawKeptAngler(ctx, t, crx + 70 * scale(), cry + (L.baseY - cry) * 0.18);
+      }
       if (v.moments['fire-body'] === 'a') {
         const [crx, cry] = reef.crown(L);
         drawKeptFireBody(ctx, t, L.cx + (crx - L.cx) * 0.5 - 30 * scale(), cry + (L.baseY - cry) * 0.3);

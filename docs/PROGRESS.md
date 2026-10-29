@@ -560,3 +560,4 @@ date, what landed, what is half-done, what's next.
 - A turtle surfaces to breathe beside the Breach crown every three minutes (breach.ts drawBreathingTurtle).
 - Palettes Old beak (feat: the elder's blessing) and Surf (feat: every crest).
 - The cold seep (moment) stays in the Midnight scene: white mats and rising bubbles, or chalk-crusted once built over.
+- The anglerfish the reef shared the dark with (moment 'b') hangs beside the crown in the Midnight scene.
