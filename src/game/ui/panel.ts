@@ -797,14 +797,16 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let featKey: string | null = null;
   function renderFeats(s: GameState): void {
     const done = FEATS.filter((f) => s.meta.seen.includes(`f:${f.id}`));
-    const key = done.map((f) => f.id).join();
+    // Progress toward the counted ones changes the key too (refreshed when a number moves).
+    const key = done.map((f) => f.id).join() + '|' + FEATS.map((f) => (f.progress && !done.includes(f) ? f.progress(s)[0] : '')).join();
     if (key === featKey) return;
     featKey = key;
     featHead.textContent = `Feats · ${done.length} of ${FEATS.length} · one lineage each`;
     featList.innerHTML = '';
     for (const f of FEATS) {
       const got = done.includes(f);
-      featList.append(el('dt', got ? '' : 'unknown', f.name), el('dd', got ? '' : 'unknown', f.text));
+      const pr = !got && f.progress ? f.progress(s) : null;
+      featList.append(el('dt', got ? '' : 'unknown', f.name), el('dd', got ? '' : 'unknown', pr ? `${f.text} (${Math.min(pr[0], pr[1])} of ${pr[1]})` : f.text));
     }
   }
   lineagePage.append(lineageHead, spawnCard);

@@ -6,7 +6,7 @@ import { SITES } from './expeditions.ts';
 import type { GameState } from '../sim/state.ts';
 import { CREATURES } from './creatures.ts';
 
-export type Feat = { id: string; name: string; text: string; when: (s: GameState) => boolean };
+export type Feat = { id: string; name: string; text: string; when: (s: GameState) => boolean; progress?: (s: GameState) => [number, number] };
 
 const seenCount = (s: GameState, prefix: string) => s.meta.seen.filter((k) => k.startsWith(prefix)).length;
 const zoneSeen = (s: GameState, zone: string) =>
@@ -22,18 +22,18 @@ export const FEATS: readonly Feat[] = [
   { id: 'light', name: 'Into the light', text: 'Reach the Sunlit Crown.', when: (s) => s.height >= 3800 },
   { id: 'air', name: 'Air', text: 'Reach the surface.', when: (s) => s.height >= 4000 },
   { id: 'feast', name: 'Something fell', text: 'Catch a falling feast.', when: (s) => s.feasts >= 1 },
-  { id: 'feasts', name: 'Scavenger', text: 'Catch 20 feasts in one reef.', when: (s) => s.feasts >= 20 },
-  { id: 'shoals', name: 'A city of lamps', text: 'Call 30 lanternfish shoals.', when: (s) => s.levels.shoal >= 30 },
+  { id: 'feasts', name: 'Scavenger', text: 'Catch 20 feasts in one reef.', when: (s) => s.feasts >= 20, progress: (s) => [s.feasts, 20] },
+  { id: 'shoals', name: 'A city of lamps', text: 'Call 30 lanternfish shoals.', when: (s) => s.levels.shoal >= 30, progress: (s) => [s.levels.shoal, 30] },
   { id: 'ruins', name: 'Out in the black', text: 'Bring back a relic from every ruin.', when: (s) => s.relics.length >= SITES.length },
   { id: 'full-house', name: 'A full house', text: 'Give all three homes in the reef to residents.', when: (s) => s.residents.length >= 3 },
-  { id: 'requests', name: 'Asked and done', text: 'Keep 20 of Ossel’s requests in one reef.', when: (s) => s.request.done >= 20 },
-  { id: 'tablet', name: 'The whole tablet', text: 'Find every shard of Thousandfold’s tablet.', when: (s) => s.meta.shards.length >= 12 },
-  { id: 'roamer', name: 'Wanderers', text: 'Send the shoals roaming ten times in one reef.', when: (s) => s.tally.roams >= 10 },
+  { id: 'requests', name: 'Asked and done', text: 'Keep 20 of Ossel’s requests in one reef.', when: (s) => s.request.done >= 20, progress: (s) => [s.request.done, 20] },
+  { id: 'tablet', name: 'The whole tablet', text: 'Find every shard of Thousandfold’s tablet.', when: (s) => s.meta.shards.length >= 12, progress: (s) => [s.meta.shards.length, 12] },
+  { id: 'roamer', name: 'Wanderers', text: 'Send the shoals roaming ten times in one reef.', when: (s) => s.tally.roams >= 10, progress: (s) => [s.tally.roams, 10] },
   { id: 'works', name: 'Builder', text: 'Finish every great work in one reef.', when: (s) => Object.values(s.works).every((n) => n >= 3) },
   { id: 'moments', name: 'Met them all', text: 'Answer every moment in one reef.', when: (s) => Object.values(s.moments).every((c) => c !== '') },
   { id: 'sister', name: 'First to the light', text: 'Reach the surface before the sister reef.', when: (s) => s.race.decided >= 5 && s.race.won >= 1 && s.diary.some((d) => d.includes('|ahead|the surface')) },
   { id: 'trials', name: 'Every hard place', text: 'Meet the trial of every hard seamount.', when: (s) => ['hungry', 'silent', 'lonely', 'buried', 'dark'].every((m) => s.meta.seen.includes(`trial:${m}`)) },
-  { id: 'readings', name: 'Every band read', text: 'Read every band the scouts can find.', when: (s) => s.readings.length >= 12 },
+  { id: 'readings', name: 'Every band read', text: 'Read every band the scouts can find.', when: (s) => s.readings.length >= 12, progress: (s) => [s.readings.length, 12] },
   { id: 'truce', name: 'Terms', text: 'Settle all three truce meetings.', when: (s) => !!s.truce.wall },
   { id: 'meadows', name: 'Gardener', text: 'Sow 6 seagrass meadows.', when: (s) => s.levels.meadow >= 6 },
   { id: 'deep-known', name: 'Deep things', text: 'See every creature of the Silt Floor.', when: (s) => zoneSeen(s, 'The Silt Floor') },
@@ -45,15 +45,15 @@ export const FEATS: readonly Feat[] = [
   { id: 'great-tide', name: 'Four memories', text: 'Release under a great tide.', when: (s) => s.carried.length >= 4 },
   { id: 'lesser', name: 'Children', text: 'Release a lesser spawning.', when: (s) => s.meta.spawnings >= 1 },
   { id: 'everything', name: 'Nothing lost, nothing kept', text: 'Across your endings, carry every memory there is.', when: (s) => s.meta.carriedEver.length >= MEMORIES.length },
-  { id: 'endings', name: 'Many endings', text: 'Reach the ending three times.', when: (s) => s.meta.endings >= 3 },
+  { id: 'endings', name: 'Many endings', text: 'Reach the ending three times.', when: (s) => s.meta.endings >= 3, progress: (s) => [s.meta.endings, 3] },
   { id: 'seamounts', name: 'Far settled', text: 'Grow a reef on a cold or a warm seamount.', when: (s) => s.seamount === 'cold' || s.seamount === 'warm' },
   { id: 'every-seamount', name: 'Every kind of stone', text: 'Grow reefs on warm, cold and crowded seamounts.',
     when: (s) => ['warm', 'cold', 'crowded'].every((m) => s.seamount === m || s.meta.ancestors.some((a) => a.split('|')[1] === m)) },
   { id: 'named', name: 'A name', text: 'Give your reef a name.', when: (s) => s.meta.name !== '' },
-  { id: 'touch', name: 'A light touch', text: 'Touch eight different creatures.', when: (s) => seenCount(s, 't:') >= 8 },
+  { id: 'touch', name: 'A light touch', text: 'Touch eight different creatures.', when: (s) => seenCount(s, 't:') >= 8, progress: (s) => [seenCount(s, 't:'), 8] },
   { id: 'friend', name: 'A friend in the deep', text: 'Touch one creature fifteen times.', when: (s) => Object.values(s.meta.trust).some((n) => n >= 15) },
-  { id: 'friends', name: 'Old friends', text: 'Be a friend to ten creatures.', when: (s) => Object.values(s.meta.trust).filter((n) => n >= 15).length >= 10 },
-  { id: 'touch-many', name: 'Known to all', text: 'Touch twenty-five different creatures.', when: (s) => seenCount(s, 't:') >= 25 },
+  { id: 'friends', name: 'Old friends', text: 'Be a friend to ten creatures.', when: (s) => Object.values(s.meta.trust).filter((n) => n >= 15).length >= 10, progress: (s) => [Object.values(s.meta.trust).filter((n) => n >= 15).length, 10] },
+  { id: 'touch-many', name: 'Known to all', text: 'Touch twenty-five different creatures.', when: (s) => seenCount(s, 't:') >= 25, progress: (s) => [seenCount(s, 't:'), 25] },
   { id: 'closer', name: 'A closer look', text: 'Zoom in close on a creature (view mode).', when: (s) => s.meta.seen.includes('did:closeup') },
   { id: 'picture', name: 'A picture', text: 'Save a picture of your reef.', when: (s) => s.meta.seen.includes('did:photo') },
 ];
