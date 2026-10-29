@@ -663,7 +663,10 @@ canvas.addEventListener('pointerdown', (e) => {
   const who = creatureAt(e.clientX * dpr, e.clientY * dpr);
   if (who?.id === 'ossel') sayOssel();
   else if (who) showCreatureLabel(who.id, who.x / dpr, who.y / dpr);
-  if (who) startle(who.id, frozenT ?? animT, e.clientX * dpr, e.clientY * dpr);
+  if (who) {
+    startle(who.id, frozenT ?? animT, e.clientX * dpr, e.clientY * dpr);
+    if (frozenT === null && !state.meta.seen.includes(`t:${who.id}`)) state.meta.seen.push(`t:${who.id}`);
+  }
   const f = currentFeast(state);
   if (f) {
     const [fx, fy] = feastPos(f, state.t - f.start, focusNow, feastPay(state));

@@ -1,5 +1,5 @@
 // Feats: small goals across all runs. Each is earned once per lineage (meta.seen 'f:<id>') and
-// adds one lineage. Conditions are pure functions of the state.
+// adds one lineage. Creatures touched are kept as 't:<id>'. Conditions are pure functions of the state.
 
 import type { GameState } from '../sim/state.ts';
 import { CREATURES } from './creatures.ts';
@@ -38,6 +38,7 @@ export const FEATS: readonly Feat[] = [
   { id: 'every-seamount', name: 'Every kind of stone', text: 'Grow reefs on warm, cold and crowded seamounts.',
     when: (s) => ['warm', 'cold', 'crowded'].every((m) => s.seamount === m || s.meta.ancestors.some((a) => a.split('|')[1] === m)) },
   { id: 'named', name: 'A name', text: 'Give your reef a name.', when: (s) => s.meta.name !== '' },
+  { id: 'touch', name: 'A light touch', text: 'Touch eight different creatures.', when: (s) => seenCount(s, 't:') >= 8 },
   { id: 'picture', name: 'A picture', text: 'Save a picture of your reef.', when: (s) => s.meta.seen.includes('did:photo') },
 ];
 
