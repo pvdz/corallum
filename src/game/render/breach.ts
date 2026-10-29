@@ -110,7 +110,7 @@ export function createBreachScene(seed: number): Scene {
     return [focus.x + focus.w * 0.72, focus.y + focus.h * 0.11];
   }
 
-  function drawSky(ctx: CanvasRenderingContext2D, t: number, phase: number, great: boolean, dawn: number): void {
+  function drawSky(ctx: CanvasRenderingContext2D, t: number, phase: number, great: boolean, dawn: number, blue = false): void {
     const wy = waterY();
     const g = ctx.createLinearGradient(0, 0, 0, wy);
     g.addColorStop(0, '#05061a');
@@ -169,7 +169,7 @@ export function createBreachScene(seed: number): Scene {
     glow(ctx, mx, my, r * 5, great ? '255,215,160' : '230,230,200', (great ? 0.22 : 0.15) * lit + 0.03);
     if (great) glow(ctx, mx, my, r * 2.2, '255,200,150', 0.18 * lit);
     ctx.restore();
-    drawMoonFace(ctx, phase, great, dawn);
+    drawMoonFace(ctx, phase, great, dawn, blue);
   }
 
   /**
@@ -444,11 +444,23 @@ export function createBreachScene(seed: number): Scene {
   }
 
   /** The moon's disc itself; drawn again after the glow pass, which would wash out its seas. */
-  function drawMoonFace(ctx: CanvasRenderingContext2D, phase: number, great: boolean, dawn: number): void {
+  function drawMoonFace(ctx: CanvasRenderingContext2D, phase: number, great: boolean, dawn: number, blue = false): void {
     const [mx, my] = moonPos();
     ctx.save();
     ctx.globalAlpha = 1 - 0.65 * dawn;
-    drawMoon(ctx, mx, my, 26 * scale() * (great ? 1.3 : 1), phase);
+    const r = 26 * scale() * (great ? 1.3 : 1);
+    drawMoon(ctx, mx, my, r, phase);
+    // A blue moon: the same moon, washed in cold blue light.
+    if (blue) {
+      ctx.globalCompositeOperation = 'lighter';
+      glow(ctx, mx, my, r * 2.6, '110,160,255', 0.35);
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.beginPath();
+      ctx.arc(mx, my, r, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.fillStyle = 'rgba(120,170,255,0.3)';
+      ctx.fillRect(mx - r, my - r, r * 2, r * 2);
+    }
     ctx.restore();
   }
 
@@ -1350,7 +1362,7 @@ export function createBreachScene(seed: number): Scene {
       // Dawn comes up over the three minutes after the release, then holds.
       const dawn = v.sinceBreach > 30 ? Math.min(1, (v.sinceBreach - 30) / 180) : 0;
       lastDawn = dawn;
-      drawSky(ctx, t, v.moonPhase, v.greatMoon, dawn);
+      drawSky(ctx, t, v.moonPhase, v.greatMoon, dawn, v.blueMoon);
       drawFigures(ctx, t, v, dawn);
       drawMeteors(ctx, t, dawn, v.meteor);
       drawSea(ctx, t, v.moonPhase, dawn);
@@ -1418,7 +1430,7 @@ export function createBreachScene(seed: number): Scene {
       drawSpawn(ctx, t, v, L, reef);
       if (this.bloomStrength > 0) {
         (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
-        drawMoonFace(ctx, v.moonPhase, v.greatMoon, dawn);
+        drawMoonFace(ctx, v.moonPhase, v.greatMoon, dawn, v.blueMoon);
       }
       // After the glow pass, so the crown's light does not swallow its silhouette.
       drawBird(ctx, t, v, this.crownAt);

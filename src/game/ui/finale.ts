@@ -11,7 +11,7 @@ import { SHARD_LINES } from '../content/shards.ts';
 import { SURFACE } from '../content/acts.ts';
 import {
   breachReady, canBreach, ended, memoriesAvailable, moonFull, moonPhase, rates, spawnHold, spawnNet, spawnTarget,
-  untilFullMoon, carryAt, greatTide, untilGreatMoon, vowKept,
+  untilFullMoon, carryAt, greatTide, untilGreatMoon, vowKept, blueMoon,
 } from '../sim/economy.ts';
 import { drawMoon } from '../render/draw.ts';
 import type { GameState } from '../sim/state.ts';
@@ -205,9 +205,10 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
       const full = moonFull(s.t);
       const wait = untilFullMoon(s.t);
       const great = greatTide(s, s.t + wait);
-      status.textContent = full
+      const blue = blueMoon(s.t + wait);
+      status.textContent = (full
         ? (great ? UI.greatFull : UI.moonFull)
-        : `${phase < 0.5 ? 'Waxing' : 'Waning'} · full in ${duration(wait)}${great ? ' · a great tide' : ''}`;
+        : `${phase < 0.5 ? 'Waxing' : 'Waning'} · full in ${duration(wait)}${great ? ' · a great tide' : ''}`) + (blue ? ` · ${UI.blueMoon}` : '');
       const r = rates(s);
       const target = spawnTarget(s);
       const parts: string[] = [];

@@ -1198,6 +1198,11 @@ export function greatMoon(t: number): boolean {
   return Math.floor(t / ACT5.moonPeriod) % ACT5.greatEvery === ACT5.greatEvery - 1;
 }
 
+/** Every seventh full moon is a blue moon: a release under it brings the line more lineage. */
+export function blueMoon(t: number): boolean {
+  return Math.floor(t / ACT5.moonPeriod) % 7 === 6;
+}
+
 /** Whether a release at time t rides a great tide (always, for a Tide-reader lineage). */
 export function greatTide(s: GameState, t = s.t): boolean {
   return trait(s, 'tide-reader') > 0 || greatMoon(t);

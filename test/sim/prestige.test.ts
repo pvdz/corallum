@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { plant, sweep, advance, calciteRate, carryAt, cost, ended, heightForBands, homes, rates, vowLineage } from '../../src/game/sim/economy.ts';
 import { LINEAGE } from '../../src/game/content/lineage.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
-import { buyTrait, canSpawnLesser, lineageFor, spawnLesser, traitCost } from '../../src/game/sim/prestige.ts';
+import { endingLineage, buyTrait, canSpawnLesser, lineageFor, spawnLesser, traitCost } from '../../src/game/sim/prestige.ts';
 import { deserialize, serialize } from '../../src/game/sim/save.ts';
 import { newGame } from '../../src/game/sim/state.ts';
 
@@ -220,4 +220,13 @@ test('the garden: each child planted is a kind, and the next reef gets a small g
   plain.seamount = next.seamount;
   next.levels.symbiont = plain.levels.symbiont = 5;
   assert.ok(Math.abs(rates(next).glowP / rates(plain).glowP - 1.04 ** 2) < 1e-9);
+});
+
+test('a release under a blue moon (every seventh) brings two more lineage', () => {
+  const s = newGame(71);
+  s.released = 1;
+  s.breachedAt = 6 * 1200 + 600;
+  const blue = endingLineage(s, 1);
+  s.breachedAt = 5 * 1200 + 600;
+  assert.equal(blue - endingLineage(s, 1), 2);
 });

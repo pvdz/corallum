@@ -666,3 +666,4 @@ date, what landed, what is half-done, what's next.
 - Fix: floating '+n' texts swallowed taps for their whole rise (#ui > * gave them pointer-events back over .float's none); a quick second tap on the same spot (a sweep, a knob, a feast) now always lands.
 - Rare in the Midnight Water: a rising river of firefly squid, blue sparks (every 16 min). Every zone now has a rare spectacle besides its creatures.
 - Moments jelly-bloom (1700 m: plankton ×1.1 or glow ×1.1) and last-dark (2900 m: scouts ×1.2 or bands ×0.95). Midnight band growth 1.195 → 1.2 to keep pacing margin (bot 6h28 → 7h28).
+- A blue moon (economy blueMoon: every seventh moon cycle): drawn washed in blue, named on the moon card; releasing under it brings +2 lineage (endingLineage); prestige test.
