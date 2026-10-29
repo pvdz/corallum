@@ -41,6 +41,7 @@ export function spawnLesser(s: GameState, where: SeamountId = 'plain'): GameStat
   meta.spawnings += 1;
   meta.best = Math.max(meta.best, s.height);
   meta.seen = [...new Set([...meta.seen, ...storiesOf(s)])];
+  meta.ancestors = [...meta.ancestors, `${Math.round(s.height)}|${s.seamount}|${s.dialects.form}|${ended(s) ? 1 : 0}`].slice(-40);
   // A new seamount: a new world seed derived from the old one.
   const seed = (Math.imul(s.seed ^ 0x9e3779b9, 2654435761) + meta.spawnings) >>> 0;
   const next = newGame(seed, meta);

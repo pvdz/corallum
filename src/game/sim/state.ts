@@ -24,6 +24,8 @@ export type Meta = {
   best: number;
   /** The name the player gave their reef ('' for none); kept across spawnings. */
   name: string;
+  /** Earlier reefs of this line, one string each: "height|seamount|form|ended" (oldest first). */
+  ancestors: string[];
   /** Every memory any spawn has carried, and how many times the reef has reached the ending. */
   carriedEver: string[];
   endings: number;
@@ -40,6 +42,7 @@ export function newMeta(): Meta {
     seen: [],
     best: 0,
     name: '',
+    ancestors: [],
     carriedEver: [],
     endings: 0,
   };

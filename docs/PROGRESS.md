@@ -197,3 +197,4 @@ date, what landed, what is half-done, what's next.
 - "Your reef" growth chart: height sampled every 5 min of sim time (state.history, thinned to ≤240 points), zones as equal bands. Fix: saves dropped numbers inside arrays (loader kept only strings); now keeps finite numbers too.
 - Tried folding the bloom pass's two full-screen composites into one (combine at quarter size): Twilight −2.5 ms but Silt Floor/Midnight +13 ms, reproducibly (headless software raster); reverted. Bloom is ~6–7 ms of the Twilight frame; the Soft glow switch remains the lever for slow phones.
 - Silt Floor: a flurry of the Long Silt for 30 s in every 4 min (a second, faster, slanting fall). ? key shows all shortcuts.
+- Lineage tab "Your line": each earlier reef (name and generation, height let go at or spawned, seamount, Form dialect), kept in meta.ancestors.

@@ -437,6 +437,27 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     traitCards.set(tr.id, { root, cost: costEl, level, effect, eta, btn });
   }
   lineagePage.append(featCard);
+  // Your line: every earlier reef, oldest first.
+  const lineCard = el('article', 'card codex line');
+  const lineList = el('dl', 'codex-list');
+  lineCard.append(el('h3', '', 'Your line'), lineList);
+  lineagePage.append(lineCard);
+  let lineKey = '';
+  function renderLine(s: GameState): void {
+    const key = s.meta.ancestors.join() + s.meta.name;
+    lineCard.hidden = s.meta.ancestors.length === 0;
+    if (key === lineKey) return;
+    lineKey = key;
+    lineList.innerHTML = '';
+    s.meta.ancestors.forEach((a, i) => {
+      const [h, sm, form, end] = a.split('|');
+      const gen = s.meta.name ? reefName({ ...s, meta: { ...s.meta, spawnings: i } }) : `Reef ${i + 1}`;
+      const where = SEAMOUNTS.find((m) => m.id === sm)?.name.replace(/^A /, '') ?? 'seamount';
+      const shape = DIALECTS.find((d) => d.id === form)?.name;
+      lineList.append(el('dt', '', gen), el('dd', '',
+        `${end === '1' ? 'reached the surface and spawned' : `let go at ${metres(Number(h))}`} · ${where}${shape ? ` · ${shape}` : ''}`));
+    });
+  }
   // The next upgrade still hidden, and what opens it.
   const comingUp = el('p', 'hint coming-up');
   grow.append(comingUp);
@@ -898,6 +919,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       renderJournal(s);
       renderChart(s);
       renderFeats(s);
+      renderLine(s);
       habitToggle.hidden = !s.meta.traits['old-habits'];
       const hidden = UPGRADES.find((u) => !revealed(s, u.id));
       comingUp.textContent = hidden ? `Coming up: ${hidden.name} — ${revealText(s, hidden)}` : '';
