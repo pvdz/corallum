@@ -1224,6 +1224,7 @@ function frame(now: number): void {
       panel.keepStory('Ossel', OSSEL_MISTAKE.kicker, m.title, m.correction, true);
     }
     // Rain at the Breach (the same five-minute shower the scene draws).
+    audio.setSong(state.dialects.song);
     audio.setRain(state.bands.includes('rain') && actAt(state.height) === 5 && animT % 300 < 70);
     // The water turning: a soft swell (not for still water).
     const wNow = waterAt(state).id;

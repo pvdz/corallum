@@ -146,15 +146,21 @@ export function createAudio() {
         step = Math.max(0, Math.min(th.scale.length - 1, step + move));
         if (Math.random() < 0.15) step = 0;
         const f = ZONES[zone].root * th.octave * 2 ** (th.scale[step]! / 12);
-        bell(f, 0.035, th.length, nextBeat);
+        bell(f, 0.035, th.length * (song === 'lullaby' ? 1.6 : 1), nextBeat);
+        // The reef's Song in the shallows: a chorus doubles each note a third above; a call answers
+        // a phrase now and then with the root, high and clear.
+        if (zone >= 4 && song === 'chorus') bell(f * 2 ** (4 / 12), 0.018, th.length, nextBeat + 0.03);
+        if (zone >= 4 && song === 'call' && step === 0) bell(ZONES[zone].root * th.octave * 2, 0.025, th.length * 1.4, nextBeat + th.beat * 0.5);
       }
-      nextBeat += th.beat * (Math.random() < 0.2 ? 1.5 : 1);
+      nextBeat += th.beat * (Math.random() < 0.2 ? 1.5 : 1) * (zone >= 4 && song === 'lullaby' ? 1.4 : 1);
     }
   }
   setInterval(scheduleMelody, 500);
 
   // The Sunlit Crown crackles: snapping shrimp, thousands of tiny clicks, quiet under everything.
   let clickBuf: AudioBuffer | null = null;
+  /** The reef's Song dialect, which colours the melody in the shallows. */
+  let song = '';
   /** Rain on the water (set by the game while a shower falls at the Breach). */
   let raining = false;
   function crackle(): void {
@@ -279,6 +285,9 @@ export function createAudio() {
     },
     get volume() {
       return volume;
+    },
+    setSong(s: string): void {
+      song = s;
     },
     setRain(on: boolean): void {
       raining = on;
