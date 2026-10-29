@@ -6,7 +6,7 @@ import type { GameState } from '../sim/state.ts';
 import { actAt } from './acts.ts';
 import { OSSEL_MISTAKES } from './ossel.ts';
 import {
-  calciteHold, canSend, oldKnobs, inMilky, inFlurry, inHeat, inRising, currentUpwelling, currentSwell, grainsWaiting, skyOpen, canFlare, glowHold, waterAt, homes, workOpen, sisterNow, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
+  calciteHold, canSend, oldKnobs, inMilky, currentThorn, guarding, inFlurry, inHeat, inRising, currentUpwelling, currentSwell, grainsWaiting, skyOpen, canFlare, glowHold, waterAt, homes, workOpen, sisterNow, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
 } from '../sim/economy.ts';
 
 export type Whisper = { id: string; when: (s: GameState) => boolean; text: string };
@@ -112,6 +112,10 @@ export const WHISPERS: readonly Whisper[] = [
   {
     id: 'dream', when: (s) => s.meta.dreams > 0 && s.t > 600,
     text: 'You have a dream kept. I dream all the time. A quarter of an hour, gone, and everything grown.',
+  },
+  {
+    id: 'guard', when: (s) => s.height >= 3800 && s.levels.shoal >= 8 && !guarding(s) && !!currentThorn(s),
+    text: 'Something is at the reef again. Up here the shoals could stand guard: four of them, circling, and nothing gets close.',
   },
   {
     id: 'heat', when: (s) => inHeat(s) && !s.closed && s.bloom > 1,
