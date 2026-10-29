@@ -120,6 +120,8 @@ export type GameState = {
   tally: { touches: number; sweeps: number; digs: number; roams: number };
   /** Stages built of each great work (content/works.ts). */
   works: Record<WorkId, number>;
+  /** The race with the sister reef: marks decided so far (content/sister.ts), and how many were won. */
+  race: { decided: number; won: number };
   /** Favours asked of the Rasp, by kind (content/act3.ts FAVOURS). */
   favours: Record<FavourId, number>;
   /** Moments answered ('' until then): content/moments.ts. */
@@ -175,6 +177,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     relics: [],
     residents: [],
     favours: { clear: 0, path: 0, carry: 0 },
+    race: { decided: 0, won: 0 },
     works: { spire: 0, breakwater: 0, terrace: 0 },
     request: { kind: '', n: 0, base: 0, done: 0, paid: 0 },
     tally: { touches: 0, sweeps: 0, digs: 0, roams: 0 },

@@ -600,6 +600,8 @@ html.view-mode #world { touch-action: none; }
   position: absolute; left: 50%; width: 12px; height: 12px; margin: 0 0 -6px -6px; border-radius: 50%;
   background: #ffd9c8; box-shadow: 0 0 10px rgba(255, 190, 160, 0.9); transition: bottom 1s ease;
 }
+#depth-gauge i.sister { width: 8px; height: 8px; margin: 0 0 -4px -4px; background: #9fd8ff; box-shadow: 0 0 8px rgba(140, 200, 255, 0.8); opacity: 0.8; }
+#depth-gauge i.sister[hidden] { display: none; }
 #depth-gauge span {
   position: absolute; right: 14px; margin-bottom: -7px; font-size: 11px; color: var(--ink-dim); white-space: nowrap;
   transition: bottom 1s ease; font-variant-numeric: tabular-nums;

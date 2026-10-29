@@ -92,6 +92,11 @@ kind of purchase: both stocks must be ready). The lantern spire (Midnight; calci
 (Sunlit; bloom + sand; bloom ×1.15 a stage). Offered in their zone; begun ones stay. Each is drawn
 growing by stage: a lamp-hung spire, courses of stone upslope, stepped slabs at the reef's foot.
 
+**The sister reef**: another child of Ossel's wall on the next seamount grows on a fixed schedule
+(the surface at 8 h) and shows as a small cool mark on the depth gauge. Each zone reached before
+it brings +1 lineage (the surface +2), judged at the exact crossing moment so offline and stepped
+agree. A pacer: something to race inside every run.
+
 **Expeditions** (from 150 m): shoals can be sent to a buried ruin of Thousandfold, one trip at a
 time, five sites in order (150 m → 3300 m, 6 → 24 shoals, 6 → 30 minutes). Idle shoals go first,
 then scouts, light-swimmers, feeders; while away they work no job, and at a fixed sim moment they

@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended: adding features and gameplay (goal: repeat). Latest: great works, roaming expeditions, nurseries (daughter colonies → lineage), reef colours, new memories, automation traits, Rasp favours, shards of Thousandfold, Ossel's requests, hard seamounts (trials), moments (eight two-way choices on the climb), the water's moods (timed price windows with a forecast), residents, expeditions. Ideas: an Act I verb; Breach detail; reef events with choices.
+NOW: Open-ended: adding features and gameplay (goal: repeat). Latest: the sister reef, trust, great works, roaming expeditions, nurseries (daughter colonies → lineage), reef colours, new memories, automation traits, Rasp favours, shards of Thousandfold, Ossel's requests, hard seamounts (trials), moments (eight two-way choices on the climb), the water's moods (timed price windows with a forecast), residents, expeditions. Ideas: an Act I verb; Breach detail; reef events with choices.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -349,3 +349,4 @@ date, what landed, what is half-done, what's next.
 - Guide (Reef tab) explains the water, Ossel's requests, moments, expeditions, shards, residents, great works and hard seamounts.
 - Away summary lists relics brought home, roams and shards found while away.
 - Trust with neighbours: meta.trust per creature (gift() counts every touch), TRUST levels in creatures.ts, gifts ×1/1.5/2; journal and touch label show the level; feats 'A friend in the deep', 'Old friends'.
+- The sister reef: content/sister.ts schedule; economy sisterAt/gaugeAt/judgeMark (marks judged at the closed-form crossing time inside flow); state.race; gauge marker; note per mark; codex row. Test race.test.ts (offline == stepped, a win and a loss). Spire glow prices lowered (stage 2 was above the glow hold at ~800 m).

@@ -26,10 +26,11 @@ import { zoom, type EffectKind, type Focus, type ReefView, type Scene } from '..
 import { runBot } from '../game/sim/bot.ts';
 import { ROAM, SITES } from '../game/content/expeditions.ts';
 import { WATER } from '../game/content/waters.ts';
+import { SISTER } from '../game/content/sister.ts';
 import { REQUEST } from '../game/content/requests.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, sisterAt, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -417,6 +418,8 @@ let relicsSeen = state.relics.length;
 let shardsSeen = state.meta.shards.length;
 /** The water last heard (a turn to a new water gets its swell). */
 let waterHeard = '';
+/** Sister race marks decided and won (a new one is announced). */
+let raceSeen = state.race.decided, raceWon = state.race.won;
 /** Roams come home (announced while watching). */
 let roamsSeen = state.tally.roams;
 /** Requests kept so far (a kept one while watching is announced). */
@@ -866,7 +869,11 @@ const gaugeMoon = document.createElement('canvas');
 gaugeMoon.className = 'gauge-moon';
 gaugeMoon.width = gaugeMoon.height = 36;
 let gaugeMoonPhase = -1;
-gauge.append(gaugeMarker, gaugeLabel, gaugeMoon);
+// The sister reef's place on the same column: a smaller, cooler mark.
+const gaugeSister = document.createElement('i');
+gaugeSister.className = 'sister';
+gaugeSister.title = SISTER.title;
+gauge.append(gaugeSister, gaugeMarker, gaugeLabel, gaugeMoon);
 ui.append(gauge);
 function updateGaugeMoon(): void {
   const p = Math.round(moonPhase(state.t) * 48) / 48;
@@ -892,6 +899,8 @@ function gaugeAt(h: number): number {
 let gaugeShown = -1;
 function updateGauge(): void {
   updateGaugeMoon();
+  gaugeSister.style.bottom = `${sisterAt(state.t) * 100}%`;
+  gaugeSister.hidden = ended(state);
   const h = Math.round(state.height * 10) / 10;
   if (h === gaugeShown) return;
   gaugeShown = h;
@@ -1048,6 +1057,12 @@ function frame(now: number): void {
     const wNow = waterAt(state).id;
     if (wNow !== waterHeard && waterHeard !== '' && wNow !== 'still') audio.cue('water');
     waterHeard = wNow;
+    if (state.race.decided > raceSeen) {
+      const won = state.race.won > raceWon;
+      showJournalNote(won ? SISTER.ahead : SISTER.behind, won ? `+${SISTER.lineage[state.race.decided - 1]} lineage` : '');
+    }
+    raceSeen = state.race.decided;
+    raceWon = state.race.won;
     if (state.request.done > requestsSeen) {
       const [cx, cy] = scene.crownAt;
       floatText(cx / dpr, cy / dpr - 30, `+${num(state.request.paid)} ${feastPay(state)} ${REQUEST.float}`, 'feast-float');

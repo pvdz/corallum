@@ -20,12 +20,13 @@ import { ACT2, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } f
 import { ACT3, BANDS_ACT3, FAVOURS, MEETINGS, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { ACT4, BANDS_ACT4, DIALECTS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
 import { ACT5, BANDS_ACT5, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
-import { act, actAt, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
+import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
 import { LINEAGE, SEAMOUNTS, type Seamount, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { FEAST } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { WORKS, type WorkId } from '../content/works.ts';
+import { SISTER } from '../content/sister.ts';
 import { SHARD, SHARD_LINES, type ShardSource } from '../content/shards.ts';
 import { REQUEST, REQUESTS, type RequestKind } from '../content/requests.ts';
 import { MOMENTS, type MomentId } from '../content/moments.ts';
@@ -418,6 +419,19 @@ function flow(s: GameState, dt: number, stepFraction: number): GameState {
   const surfaceAt = r.heightTarget >= SURFACE && s.height < SURFACE - 1e-3 && kH > 0
     ? s.t + Math.log((r.heightTarget - s.height) / (r.heightTarget - (SURFACE - 1e-3))) / kH
     : Infinity;
+  // The race with the sister reef: each mark this step crosses is judged at its exact moment.
+  while (s.race.decided < SISTER.marks.length) {
+    const B = SISTER.marks[s.race.decided]!;
+    const target = Math.min(r.heightTarget, SURFACE);
+    if (s.height >= B - 1e-3) {
+      judgeMark(s, s.t);
+      continue;
+    }
+    if (!(kH > 0) || target < B - 1e-3) break;
+    const at = s.t + Math.log((r.heightTarget - s.height) / (r.heightTarget - (B - 1e-3))) / kH;
+    if (!(at <= s.t + dt)) break;
+    judgeMark(s, at);
+  }
   const up: { key: Upstream; P: number; k: number; eq: number }[] = [
     { key: 'glow', P: r.glowP, k: r.glowK, eq: equilibrium(r.glowP, r.glowK) },
     { key: 'plankton', P: r.planktonP, k: r.planktonK, eq: equilibrium(r.planktonP, r.planktonK) },
@@ -833,6 +847,36 @@ export function meet(s: GameState, id: MomentId, c: 'a' | 'b'): boolean {
     s.jobs[jobOpen(s, s.lastJob) ? s.lastJob : 'feed'] += n;
   }
   return true;
+}
+
+// ---------- The sister reef ----------
+
+/** The sister reef's place on the gauge (0 seamount … 1 surface) at sim time t. */
+export function sisterAt(t: number): number {
+  const sc = SISTER.schedule;
+  for (let i = 1; i < sc.length; i++) {
+    const [t1, f1] = sc[i]!, [t0, f0] = sc[i - 1]!;
+    if (t <= t1) return f0 + ((f1 - f0) * (t - t0)) / (t1 - t0);
+  }
+  return 1;
+}
+
+/** 0 (seamount) … 1 (surface): each zone an equal share, linear within it (as the gauge draws it). */
+export function gaugeAt(h: number): number {
+  const n = actAt(Math.min(h, SURFACE));
+  const a = ACTS[n - 1]!;
+  return (n - 1 + Math.min(1, Math.max(0, (h - a.from) / (a.to - a.from)))) / ACTS.length;
+}
+
+/** Judge the next mark, reached at sim time `at`: won if the sister is still below it then. */
+function judgeMark(s: GameState, at: number): void {
+  const i = s.race.decided;
+  const mark = SISTER.marks[i]!;
+  s.race.decided++;
+  if (sisterAt(at) < gaugeAt(mark) - 1e-9) {
+    s.race.won++;
+    s.meta.lineage += SISTER.lineage[i]!;
+  }
 }
 
 // ---------- Great works ----------

@@ -22,7 +22,7 @@ test('a spawning keeps the meta and resets the run', () => {
   const { state } = runBot((s) => s.height >= 1000, 6 * 3600);
   const gain = lineageFor(state);
   const next = spawnLesser(state)!;
-  assert.equal(next.meta.lineage, gain);
+  assert.equal(next.meta.lineage, state.meta.lineage + gain);
   assert.equal(next.meta.spawnings, 1);
   assert.equal(next.height, 0);
   assert.equal(next.calcite, 0);

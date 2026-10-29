@@ -26,7 +26,7 @@ export const WORKS: readonly Work[] = [
     id: 'spire', name: 'The lantern spire', zone: 2,
     flavour: 'A tower of stone beside the reef, hung with lamps, so the shoals can see you from twice as far.',
     effect: 'lure +0.5 per stage',
-    stages: [{ calcite: 2e6, glow: 2000 }, { calcite: 2e7, glow: 4000 }, { calcite: 2e8, glow: 8000 }],
+    stages: [{ calcite: 2e6, glow: 1500 }, { calcite: 2e7, glow: 3000 }, { calcite: 2e8, glow: 6000 }],
     stageNames: ['A footing', 'A shaft', 'The lamps'],
   },
   {
