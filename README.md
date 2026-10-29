@@ -52,7 +52,7 @@ decide which three memories your children carry into a new sea.
   optional notifications when something waits while the tab is in the background.
 - The line remembers: moments marked with the way an earlier reef went, stars it named, a chart of
   every reef it has seeded, and the Long Silt thinning with each ending.
-- Keys: Space sweeps, 1–4 tabs, F feast, E expedition, R the rising, C close up, S ride a swell,
+- Keys: Space sweeps, 1–4 tabs, F feast, E expedition, L flare the lure, R the rising, C close up, S ride a swell,
   7–0 the signal, P / B / G buy, H view mode, ? for the list.
 - Desktop, phone portrait and phone landscape. Sound is procedural and off by default.
 

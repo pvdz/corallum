@@ -5,7 +5,7 @@
 import type { QuestionId } from '../content/ossel.ts';
 import type { ForkId } from '../content/expeditions.ts';
 import { FIGURES, type FigureId } from '../content/sky.ts';
-import { ACT1, FLURRY, GRAINS, MILESTONES, SPORTS, STRAINS, type GrainId, type SportId, type StrainId } from '../content/act1.ts';
+import { ACT1, FLARE, FLURRY, GRAINS, MILESTONES, SPORTS, STRAINS, type GrainId, type SportId, type StrainId } from '../content/act1.ts';
 import type { Band, Currency, UpgradeId } from '../content/types.ts';
 import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId, RISING } from '../content/act2.ts';
@@ -38,7 +38,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilThorn, untilFlurry, untilHeat, heatLeft, closedNow, untilRising, untilSwell, currentUpwelling, risingLeft, canFeedRising, risingHaul, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilThorn, untilFlurry, untilHeat, heatLeft, closedNow, untilRising, untilSwell, currentUpwelling, canFlare, risingLeft, canFeedRising, risingHaul, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -85,6 +85,7 @@ export type PanelHooks = {
   setCurrent(c: number): void;
   closeUp(closed: boolean): void;
   dream(): void;
+  flare(): void;
   signalStreak(): number;
   answerOssel(id: QuestionId, i: 0 | 1): void;
   feedRising(): void;
@@ -378,10 +379,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   prepBtn.title = AWAY_PREP.title;
   const prepNote = el('span', 'hint prep-note');
   // Dreams: sleep the reef forward, one kept dream at a time.
+  const flareBtn = button('plain flare', FLARE.label, () => hooks.flare());
+  flareBtn.title = FLARE.title;
   const dreamBtn = button('plain dream', '', () => hooks.dream());
   dreamBtn.title = DREAM.title;
   const prepRow = el('div', 'prep-row');
-  prepRow.append(prepBtn, dreamBtn, prepNote);
+  prepRow.append(prepBtn, flareBtn, dreamBtn, prepNote);
   prepRow.hidden = true;
   askBox.after(prepRow);
 
@@ -1650,7 +1653,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         if (primed) showStory(st);
       }
 
-      prepRow.hidden = !(raspMax(s) > 0 || s.levels.shoal > 0 || s.meta.dreams > 0);
+      prepRow.hidden = !(raspMax(s) > 0 || s.levels.shoal > 0 || s.meta.dreams > 0 || s.height >= FLARE.fromHeight);
+      flareBtn.hidden = s.height < FLARE.fromHeight || ended(s);
+      flareBtn.disabled = !canFlare(s);
+      flareBtn.textContent = canFlare(s) ? FLARE.label : `${FLARE.label} ${Math.ceil(FLARE.cooldown - (s.t - s.lastFlare))}s`;
       prepBtn.hidden = !(raspMax(s) > 0 || s.levels.shoal > 0);
       dreamBtn.hidden = s.meta.dreams <= 0 || ended(s);
       dreamBtn.textContent = DREAM.label(s.meta.dreams);

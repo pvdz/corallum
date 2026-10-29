@@ -552,3 +552,4 @@ date, what landed, what is half-done, what's next.
 - Rare meteor shower over the Breach (breach.ts drawMeteors: 40 s every 20 min, streaks from the moon's side; touched, a fireball).
 - Sweep combos (ACT1.comboGap/Step/Max; state.combo): the float shows the multiplier.
 - Sweep combo: more motes per sweep in a run; feat 'Eleven in a row'.
+- Flare the lure (act1.ts FLARE; economy canFlare/flare; state.lastFlare): Flare button in the prep row with its cooldown, key L.

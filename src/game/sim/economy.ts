@@ -15,7 +15,7 @@
 // settled the production is constant and the rest of any span is a single exact step — so a
 // month offline costs a few hundred iterations and ends exactly where the dynamics settle.
 
-import { ACT1, BANDS_ACT1, FLURRY, GRAIN, GRAINS, SPORT, SPORTS, type GrainId, type SportId, MILESTONES, STRAIN, type Milestone, type StrainId } from '../content/act1.ts';
+import { ACT1, BANDS_ACT1, FLARE, FLURRY, GRAIN, GRAINS, SPORT, SPORTS, type GrainId, type SportId, MILESTONES, STRAIN, type Milestone, type StrainId } from '../content/act1.ts';
 import { ACT2, RISING, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
 import { FAN, UPWELL, ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDLE, RIDDLES, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { FIGURES, SKY, type FigureId } from '../content/sky.ts';
@@ -1311,6 +1311,20 @@ function advanceStocks(s: GameState, dt: number): void {
 }
 
 // ---------- Hand sweep ----------
+
+/** The lure can be flared: tall enough, glow to spend, and the last flare long enough ago. */
+export function canFlare(s: GameState): boolean {
+  return s.height >= FLARE.fromHeight && s.glow > 1 && s.t - s.lastFlare >= FLARE.cooldown;
+}
+
+/** Flare the lure: half the glow held goes into one blaze, and the light draws in calcite. */
+export function flare(s: GameState): number {
+  if (!canFlare(s)) return 0;
+  const full = Math.min(1, s.glow / Math.max(1, glowHold(s)));
+  s.glow /= 2;
+  s.lastFlare = s.t;
+  return burst(s, FLARE.seconds * full);
+}
 
 export function canSweep(s: GameState): boolean {
   return s.t - s.lastSweep >= ACT1.sweepCooldown;

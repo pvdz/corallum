@@ -173,6 +173,10 @@ dissolves ×0.98 each), quick (the reef rises ×1.05 as fast after a band, each)
 ×1.04 each). Unset grains wait without blocking; the choices stack over the run, so the reef's
 build leans one way. On the Silt Floor the grain bands show as coloured rings in the stone.
 
+**Flaring the lure** (from 20 m, while watching): spend half the glow held for a burst of up to 30 s of
+calcite (by how full the glow was), once a minute (button in the prep row, or L). Glow that sits full has
+an active use.
+
 **Sweep combos**: sweeps within 1.2 s of the last build a combo, +10% each up to ×2; a pause resets it.
 It matters early and in flurries; later sweeps fade into noise anyway.
 

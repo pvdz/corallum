@@ -153,6 +153,8 @@ export type GameState = {
   bands: string[];
   /** Sim time of the last hand sweep. */
   lastSweep: number;
+  /** Sim time of the last flare of the lure. */
+  lastFlare: number;
   /** Index of the last feast slot eaten (see content/events.ts). */
   feasted: number;
   /** The shoals' signals: last slot tried, and how many answered right. */
@@ -256,6 +258,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     readings: [],
     bands: [],
     lastSweep: -1e9,
+    lastFlare: -1e9,
     feasted: -1,
     thorned: -1,
     shelled: -1,

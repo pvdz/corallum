@@ -32,7 +32,7 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -51,7 +51,7 @@ import { AGAIN, QUESTION, QUESTIONS } from '../game/content/ossel.ts';
 import { RISING } from '../game/content/act2.ts';
 import { UPWELL } from '../game/content/act3.ts';
 import { FIGURES, SKY, type FigureId } from '../game/content/sky.ts';
-import { ACT1, GRAINS, MILESTONES, SPORTS, STRAINS, type Milestone } from '../game/content/act1.ts';
+import { ACT1, FLARE, GRAINS, MILESTONES, SPORTS, STRAINS, type Milestone } from '../game/content/act1.ts';
 import { OSSEL_LINES, OSSEL_LINES_TRUE, OSSEL_NOW, WHISPERS } from '../game/content/whispers.ts';
 import { NEWS } from '../game/content/guide.ts';
 import { OSSEL_MISTAKE, OSSEL_MISTAKES } from '../game/content/ossel.ts';
@@ -325,6 +325,7 @@ const panel = createPanel(ui, {
     if (tracing) audio.cue('shimmer');
   },
   feedRising: sendFeeders,
+  flare: flareLure,
   signalStreak: () => state.signal.streak,
   answerOssel(id, i) {
     const q = QUESTIONS.find((x) => x.id === id);
@@ -713,6 +714,17 @@ function notifyWaiting(): void {
   Object.assign(announced, now);
   if (!say.length || !notify.get() || !document.hidden || !('Notification' in window) || Notification.permission !== 'granted') return;
   try { new Notification(reefName(state) || 'Corallum', { body: say.join(' '), tag: 'corallum', icon: '/favicon.ico' }); } catch { /* not allowed here */ }
+}
+
+/** Flare the lure (panel button or L): half the glow for a burst of calcite. */
+function flareLure(): void {
+  const gain = flare(state);
+  if (gain <= 0) return;
+  scene.effect('lure');
+  audio.cue('shimmer');
+  const [x, y] = toScreen(scene.crownAt[0], scene.crownAt[1]);
+  floatText(x / dpr, y / dpr, `+${num(gain)} ${feastPay(state)} · ${FLARE.float}`, 'feast-float');
+  save();
 }
 
 /** Send the feeding shoals into the rising (panel button or R). */
@@ -1405,7 +1417,7 @@ window.addEventListener('keydown', (e) => {
   }
   if (e.key === '?') {
     panel.story('Keys', 'Shortcuts',
-      'Space sweeps your tentacles. 1–4 switch the panel tabs. F catches a falling feast. E sends the shoals on the next expedition. R sends the feeders into the rising. S rides a swell at the Breach. C closes the polyps against warm water (or opens them). 7–0 answer the shoals’ signal. P buds a polyp, B lays a band, G hosts ' +
+      'Space sweeps your tentacles. 1–4 switch the panel tabs. F catches a falling feast. E sends the shoals on the next expedition. L flares the lure. R sends the feeders into the rising. S rides a swell at the Breach. C closes the polyps against warm water (or opens them). 7–0 answer the shoals’ signal. P buds a polyp, B lays a band, G hosts ' +
       'glimmerseed. H hides the panel to see the whole reef. Hold any buy button to keep buying. ' +
       'Tap a creature to learn its name; tap Ossel and it will answer.');
     return;
@@ -1422,6 +1434,10 @@ window.addEventListener('keydown', (e) => {
   if (e.key.toLowerCase() === 's' && currentSwell(state)) {
     const [cx, cy] = toScreen(scene.crownAt[0], scene.crownAt[1]);
     trySwell(cx / dpr, cy / dpr);
+    return;
+  }
+  if (e.key.toLowerCase() === 'l') {
+    flareLure();
     return;
   }
   if (e.key.toLowerCase() === 'r' && canFeedRising(state)) {
