@@ -1130,7 +1130,7 @@ function frame(now: number): void {
       buzz([20, 40, 20]);
     }
     shardsSeen = state.meta.shards.length;
-    if (state.tally.roams > roamsSeen) showJournalNote(ROAM.back, ROAM.effect);
+    if (state.tally.roams > roamsSeen) showJournalNote(ROAM.back, state.diary.at(-1)?.split('|')[3] ?? ROAM.effect);
     roamsSeen = state.tally.roams;
     // An intruder arriving, a moment or a full-moon choice appearing: a cue each.
     const th = currentThorn(state);

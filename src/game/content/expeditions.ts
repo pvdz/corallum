@@ -87,6 +87,18 @@ export const SITES: readonly Site[] = [
 ];
 
 /** Roaming: when no ruin is in reach, a quarter of the shoals can wander for a while. */
+/** What the shoals bring back from a roam: a tale and a little of something (seeded per roam). */
+export const ROAM_TALES: readonly { text: string; pay: 'calcite' | 'glow' | 'murmurs' | 'shard' }[] = [
+  { text: 'They found a wreck full of crabs, and a seam of old stone under it.', pay: 'calcite' },
+  { text: 'A whale sang to them for an hour. They hum it now.', pay: 'murmurs' },
+  { text: 'They swam through a cloud of glowing larvae and came back brighter.', pay: 'glow' },
+  { text: 'In a crack in the silt, they saw writing.', pay: 'shard' },
+  { text: 'They chased a squid’s ink cloud for a long way. It was worth it, they say.', pay: 'calcite' },
+  { text: 'A dead reef, like Thousandfold but small, still murmuring to itself.', pay: 'murmurs' },
+  { text: 'They met another shoal, and traded lights.', pay: 'glow' },
+  { text: 'Nothing at all, for a long time, and then the stars of a far vent.', pay: 'calcite' },
+];
+
 /** Visiting the sister reef: when it is near your depth, once per zone, a short trip for lineage. */
 export const VISIT = {
   near: 0.06, seconds: 8 * 60, lineage: 1,

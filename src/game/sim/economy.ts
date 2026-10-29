@@ -32,7 +32,7 @@ import { SHARD, SHARD_LINES, type ShardSource } from '../content/shards.ts';
 import { REQUEST, REQUESTS, type RequestKind } from '../content/requests.ts';
 import { MOMENTS, type MomentId } from '../content/moments.ts';
 import { WATER, WATERS, type Water } from '../content/waters.ts';
-import { EXPEDITION, ROAM, SITES, VISIT, type Site, type SiteId } from '../content/expeditions.ts';
+import { EXPEDITION, ROAM, ROAM_TALES, SITES, VISIT, type Site, type SiteId } from '../content/expeditions.ts';
 import type { Band, Currency, UpgradeDef, UpgradeId } from '../content/types.ts';
 import { UPGRADES } from '../content/upgrades.ts';
 import { equilibrium, relax } from './ode.ts';
@@ -744,7 +744,16 @@ function homecoming(s: GameState): void {
   s.earned.murmurs += heard;
   if (roam) {
     s.tally.roams++;
-    dig(s, 'roam');
+    // A tale from the dark, and a little of what it brought (seeded by the reef and the roam).
+    const tale = ROAM_TALES[mulberry32((s.seed ^ 0x7a1e) + Math.imul(s.tally.roams, 0x9e3779b1))() * ROAM_TALES.length | 0]!;
+    if (tale.pay === 'shard') dig(s, 'expedition');
+    else {
+      dig(s, 'roam');
+      if (tale.pay === 'murmurs') s.murmurs += heard * 0.5;
+      else if (tale.pay === 'glow') s.glow += rates(s).glowP * 60;
+      else burst(s, 60);
+    }
+    remember(s, 'roam', tale.text);
     return;
   }
   if (visit) {
