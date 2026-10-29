@@ -371,6 +371,60 @@ export function createBreachScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** A pelican after dawn: glides low across, then plunges; touched, it climbs away. */
+  function drawPelican(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 45, u = (t % period) / period;
+    if (u > 0.6) return;
+    sight('pelican');
+    const s = scale() * 1.6;
+    const wy = waterY();
+    const touch = startled('pelican', t);
+    const climb = touch && touch.age < 6 ? Math.min(1, touch.age / 3) : 0;
+    const k = u / 0.6;
+    const dir = Math.floor(t / period) % 2 ? 1 : -1;
+    const x = focus.x + focus.w * (dir > 0 ? -0.05 + k * 1.1 : 1.05 - k * 1.1);
+    // Gliding, then (after 70% of the pass) a plunge, unless it was startled.
+    const plunge = k > 0.7 && !climb ? (k - 0.7) / 0.3 : 0;
+    const y = wy - (55 - plunge * 60 + climb * 80) * s;
+    if (plunge >= 1) return;
+    spot('pelican', x, y, 26 * s);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(dir, 1);
+    ctx.rotate(plunge * 1.2);
+    const fold = plunge;
+    const flap = Math.sin(t * 2.2) * 0.25 * (1 - fold);
+    const span = 22 * s * (1 - fold * 0.75);
+    // Wings bent at the wrist, dark against the dawn.
+    ctx.strokeStyle = '#3e3a38';
+    ctx.lineWidth = 3 * s;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-span, (-2 - flap * 10) * s);
+    ctx.lineTo(-span * 0.45, (-7 - flap * 6) * s);
+    ctx.lineTo(0, 0);
+    ctx.lineTo(span * 0.45, (-7 - flap * 6) * s);
+    ctx.lineTo(span, (-2 - flap * 10) * s);
+    ctx.stroke();
+    // Body, neck tucked in an S, the head and the long pouched bill.
+    ctx.fillStyle = '#5a5450';
+    ctx.beginPath();
+    ctx.ellipse(-2 * s, 1 * s, 8 * s, 3 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(7 * s, -1 * s, 2.4 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#b08840';
+    ctx.beginPath();
+    ctx.moveTo(8.5 * s, -1.5 * s);
+    ctx.lineTo(20 * s, 0);
+    ctx.lineTo(9 * s, 2.5 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
   /** Turtle hatchlings at dawn after the release: tiny turtles paddling along the surface; touched, they dive. */
   function drawHatchlings(ctx: CanvasRenderingContext2D, t: number, since: number): void {
     if (since < 60) return;
@@ -854,6 +908,7 @@ export function createBreachScene(seed: number): Scene {
       drawDolphins(ctx, t);
       drawFlyingFish(ctx, t);
       if (v.sinceBreach >= 0) drawHatchlings(ctx, t, v.sinceBreach);
+      if (v.sinceBreach >= 60) drawPelican(ctx, t);
       if (v.thorn?.kind === 'gull') drawGull(ctx, this.crownAt[0], waterY(), v.thorn.u, v.thorn.side, t, scale());
       if (v.bands.includes('rain')) drawRain(ctx, t);
       drawPool(ctx, L.cx, waterY(), v.works.pool, scale(), t);
