@@ -213,6 +213,7 @@ Tick items as they land; keep this list honest. Add items freely.
   - [x] swells at the Breach: tap on the crest for spawn
   - [x] night on the Twilight Shelf: garden eels sleep, flashlight fish come out
   - [x] the reseeded sea chart in the chronicle; a rare oarfish on the Twilight Shelf
+  - [x] old stone: grey knobs fill the tips (max 6, away too), tap to break off for a burst
   - [x] Ossel's questions: four, remembered, answered back, carried into the ending
   - [x] Ossel asks for the rising, the signal and the stars
   - [x] sea pens on the Silt Floor

@@ -111,3 +111,8 @@ game ~2 h; band growth for zones 3–5 retuned to 1.24 / 1.16 / 1.035 (bot 8h08 
 
 ## Rebalance (2026-10-29)
 After expeditions, residents, moments, the water, requests, shards, works and the sister race the bot finished in ~4h. Band cost growth per zone raised (Midnight 1.155→1.18, later 1.19; Twilight later 1.31, Sunlit 1.22; Twilight 1.24→1.28, Sunlit 1.16→1.2): bot 7h28 (3000 m at 1h50, 3800 m at 4h29, surface 7h16).
+
+## Old stone
+`old` follows dx/dt = P − k·old with k = 1/1500 s⁻¹, P = 6k (cap six knobs; closed form, also
+over skipped warm-spell cycles). Each whole unit is a knob on a branch tip; breaking one off pays
+`burst(25 s)` of the zone's currency. Away, at most six knobs wait: the cap is the dynamics.

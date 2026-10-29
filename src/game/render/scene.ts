@@ -31,6 +31,8 @@ export type ReefView = {
   flurry: boolean;
   /** The reef lit the way for the sister reef. */
   sisterLit: boolean;
+  /** Old growth: the slots holding a grey knob now, and the last one broken off (`since` seconds ago). */
+  old: { slots: number[]; slot: number; since: number };
   /** Levels of Sweeten the spawn: the bundles turn golden. */
   sweeten: number;
   /** Endings the line has reached (the sea heals a little with each). */

@@ -16,6 +16,16 @@ export const FLARE = {
   float: 'the lure flared',
 } as const;
 
+/**
+ * Old growth: stone the reef has kept too long grows heavy on its branch tips (grey knobs, up to
+ * `max`, filling toward it as dx/dt = P − kx). Break one off by tapping it: a burst of the zone's
+ * currency. Left alone, they just wait.
+ */
+export const OLD = {
+  max: 6, k: 1 / 1500, seconds: 25,
+  float: '· old stone let go',
+} as const;
+
 export type GrainId = 'dense' | 'quick' | 'bright';
 export const GRAIN = {
   every: 10,

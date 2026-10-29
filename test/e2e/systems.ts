@@ -1,5 +1,5 @@
 // The newer systems through their cards, on one page: send an expedition and call it home, take a
-// resident in, answer a riddle and the shoals' signal, pick up a shell, close up against warm water, send the feeders into the rising. Each must change the state.
+// resident in, answer a riddle and the shoals' signal, pick up a shell, break off old stone, close up against warm water, send the feeders into the rising. Each must change the state.
 
 import { withGame, VIEWPORTS } from '../../tools/browser.ts';
 import { RIDDLES } from '../../src/game/content/act3.ts';
@@ -114,6 +114,11 @@ await withGame(async (open) => {
   if (p) await page.mouse.click(p.x, p.y);
   await page.waitForTimeout(300);
   check((await page.evaluate(() => window.corallum!.state.meta.shells.length)) === 1, 'shell picked up');
+  // Old stone on the tips: tap a knob to break it off.
+  const k = await page.evaluate(() => window.corallum!.spots.find((q) => q.id === 'old'));
+  if (k) await page.mouse.click(k.x, k.y);
+  await page.waitForTimeout(200);
+  check((await page.evaluate(() => window.corallum!.state.tally.pruned)) === 1, 'a knob of old stone broken off');
   // Warm water: close the polyps, then open them again.
   await page.locator('.heat-row:not(.rise-row) .heat-toggle').click();
   check((await page.evaluate(() => window.corallum!.state.closed)) === true, 'polyps closed against warm water');

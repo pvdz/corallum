@@ -32,7 +32,7 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, sisterNow, lightSister, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, prune, oldKnobs, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, sisterNow, lightSister, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -51,7 +51,7 @@ import { AGAIN, QUESTION, QUESTIONS } from '../game/content/ossel.ts';
 import { RISING } from '../game/content/act2.ts';
 import { UPWELL } from '../game/content/act3.ts';
 import { FIGURES, SKY, type FigureId } from '../game/content/sky.ts';
-import { ACT1, FLARE, GRAINS, MILESTONES, SPORTS, STRAINS, type Milestone } from '../game/content/act1.ts';
+import { ACT1, FLARE, GRAINS, OLD, MILESTONES, SPORTS, STRAINS, type Milestone } from '../game/content/act1.ts';
 import { OSSEL_LINES, OSSEL_LINES_TRUE, OSSEL_NOW, WHISPERS } from '../game/content/whispers.ts';
 import { NEWS, ZONE_GUIDE } from '../game/content/guide.ts';
 import { OSSEL_MISTAKE, OSSEL_MISTAKES } from '../game/content/ossel.ts';
@@ -858,6 +858,7 @@ function view(): ReefView {
     flurry: inFlurry(state),
     heat: heatView(),
     sisterLit: state.race.lit > 0,
+    old: { slots: state.oldSlots.slice(0, oldKnobs(state)), slot: state.pruned.slot, since: state.t - state.pruned.t },
     sweeten: state.levels.sweeten,
     endings: state.meta.endings,
     elder: !!currentRiddle(state),
@@ -1103,7 +1104,7 @@ function takePortrait(): void {
   // Zoomed in (2× or more), a creature large in view earns a sharper close-up, once.
   const closeUp = zoom.k >= 2;
   for (const p of tappable()) {
-    if (p.id === 'ossel' || p.id === 'shell' || p.id === 'star' || !portraits.wants(p.id, closeUp)) continue;
+    if (p.id === 'ossel' || p.id === 'shell' || p.id === 'star' || p.id === 'old' || !portraits.wants(p.id, closeUp)) continue;
     const [x, y] = toScreen(p.x, p.y);
     const r = p.r * zoom.k;
     if (closeUp && r < 60 * dpr) continue;
@@ -1207,6 +1208,18 @@ canvas.addEventListener('pointerdown', (e) => {
   }
   if (hit?.id === 'star') {
     tapStar(hit.n ?? -1, e.clientX, e.clientY);
+    return;
+  }
+  if (hit?.id === 'old') {
+    if (frozenT === null) {
+      const gain = prune(state, hit.n ?? -1);
+      if (gain > 0) {
+        floatText(e.clientX, e.clientY - 20, `+${num(gain)} ${feastPay(state)} ${OLD.float}`, 'feast-float');
+        audio.cue('crunch');
+        buzz([12, 20, 12]);
+        save();
+      }
+    }
     return;
   }
   if (hit?.id === 'shell') {

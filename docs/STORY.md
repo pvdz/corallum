@@ -167,4 +167,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | A meteor shower over the Breach | real sky | OK |
 | Dream vignettes (eight short dreams of the reef) | this game's own world | OK |
 | Lighting the way for the sister reef; both spawning under one moon | this game's own characters | OK |
+| Old stone: grey knobs of over-kept stone broken off the tips ("let it go"); feat "Light stone" | real coral senescence, this game's remembering/forgetting theme; no game known | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

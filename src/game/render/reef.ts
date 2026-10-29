@@ -4,6 +4,7 @@
 
 import { generateCoral, thickness, type CoralForm } from './coral.ts';
 import { glow, ring } from './draw.ts';
+import { spot } from './sightings.ts';
 import { zoom, type EffectKind, type ReefView } from './scene.ts';
 
 /** Where and how big the reef is drawn. */
@@ -407,6 +408,106 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
       }
     }
     ctx.restore();
+    if (v.old && (v.old.slots.length || v.old.since < 2)) drawOld(ctx, L, v.old, t);
+  }
+
+  /** Branch tips (no child) on screen, in a fixed scattered order: where old stone gathers. */
+  let tipsTop = -1;
+  let tipNodes: number[] = [];
+  function oldTips(L: ReefLayout): number[] {
+    if (L.top === tipsTop) return tipNodes;
+    tipsTop = L.top;
+    const hasChild = new Uint8Array(coral.count);
+    for (let i = 0; i < coral.count; i++) {
+      const p = coral.parent[i]!;
+      if (p >= 0 && coral.y[i]! <= L.top) hasChild[p] = 1;
+    }
+    const tips: number[] = [];
+    for (let i = 0; i < coral.count; i++) if (!hasChild[i] && coral.y[i]! <= L.top && coral.parent[i]! >= 0) tips.push(i);
+    // Spread over the reef: below the crown, highest first, each well apart from those taken.
+    tips.sort((a, b) => coral.y[b]! - coral.y[a]!);
+    const top = coral.y[tips[0] ?? 0] ?? 0;
+    tipNodes = [];
+    for (const gap of [0.12, 0.07, 0.03, 0]) {
+      for (const i of tips) {
+        if (tipNodes.length >= 6 || tipNodes.includes(i) || coral.y[i]! > top * 0.97) continue;
+        if (tipNodes.every((j) => Math.hypot(coral.x[i]! - coral.x[j]!, coral.y[i]! - coral.y[j]!) >= gap * Math.max(0.3, top))) tipNodes.push(i);
+      }
+    }
+    while (tipNodes.length < 6) tipNodes.push(-1);
+    return tipNodes;
+  }
+
+  /** Where the old-stone knob in `slot` sits (device pixels), or null if the reef has no tip for it. */
+  function oldAt(L: ReefLayout, slot: number): [number, number] | null {
+    const i = oldTips(L)[slot];
+    if (i === undefined || i < 0) return null;
+    return nodePx(L, i);
+  }
+
+  /** Grey knobs of old stone on the tips (tappable), and the last one broken off tumbling down. */
+  function drawOld(ctx: CanvasRenderingContext2D, L: ReefLayout, old: { slots: number[]; slot: number; since: number }, t: number): void {
+    const s = L.s;
+    const knob = (x: number, y: number, r: number, rot: number, a: number) => {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rot);
+      ctx.globalAlpha = a;
+      // A lumpy cluster: three or four rounded lumps, darker below, a pale cap on top.
+      const lumps: [number, number, number][] = [[0, 0, 1], [-0.7, 0.35, 0.72], [0.65, 0.4, 0.66], [0.1, -0.6, 0.6]];
+      for (const [lx, ly, lr] of lumps) {
+        const g = ctx.createRadialGradient(lx * r - lr * r * 0.3, ly * r - lr * r * 0.4, 0, lx * r, ly * r, lr * r);
+        g.addColorStop(0, '#b9b6af');
+        g.addColorStop(0.55, '#7d7a74');
+        g.addColorStop(1, '#45433f');
+        ctx.fillStyle = g;
+        ctx.strokeStyle = 'rgba(20,20,24,0.7)';
+        ctx.lineWidth = Math.max(1, 1.2 * s);
+        ctx.beginPath();
+        ctx.arc(lx * r, ly * r, lr * r, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fill();
+      }
+      // Growth lines: the years it kept.
+      ctx.strokeStyle = 'rgba(60,56,50,0.55)';
+      ctx.lineWidth = Math.max(1, 0.9 * s);
+      for (let k = 1; k <= 3; k++) {
+        ctx.beginPath();
+        ctx.arc(0, r * 0.9, r * (0.4 + k * 0.32), Math.PI * 1.15, Math.PI * 1.85);
+        ctx.stroke();
+      }
+      ctx.restore();
+    };
+    for (const slot of old.slots) {
+      const p = oldAt(L, slot);
+      if (!p) continue;
+      const r = 13 * s;
+      // A slow shimmer of dust shows it is ready to fall.
+      const wob = Math.sin(t * 1.7 + slot * 2.1) * 0.08;
+      knob(p[0], p[1] - r * 0.5, r, wob, 1);
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      glow(ctx, p[0], p[1] - r * 0.5, r * 2.4, '200,190,170', 0.06 + 0.04 * Math.sin(t * 2 + slot));
+      ctx.restore();
+      spot('old', p[0], p[1] - r * 0.5, Math.max(22 * s, 18), slot);
+    }
+    if (old.since >= 0 && old.since < 2 && old.slot >= 0) {
+      const p = oldAt(L, old.slot);
+      if (p) {
+        const u = old.since;
+        const fall = 0.5 * 900 * s * u * u;
+        const x = p[0] + 40 * s * u, y = p[1] + fall;
+        knob(x, Math.min(y, L.baseY), 13 * s, u * 5, Math.max(0, 1 - u / 2));
+        // A puff of pale dust where it broke.
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        for (let k = 0; k < 7; k++) {
+          const a = k * 0.9 + old.slot;
+          glow(ctx, p[0] + Math.cos(a) * 30 * s * u, p[1] - 4 * s + Math.sin(a) * 20 * s * u, 6 * s, '230,220,200', 0.45 * Math.max(0, 1 - u));
+        }
+        ctx.restore();
+      }
+    }
   }
 
   /** Purchase flourishes on the reef. Returns kinds it did not handle (scene-specific). */

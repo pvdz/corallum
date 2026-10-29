@@ -20,12 +20,12 @@ export function takeSightings(): CreatureId[] {
 
 /** Where creatures were drawn this frame, for tapping them (device pixels). */
 /** `n`: which star, for a star of a figure being traced in the night sky. */
-export type Spot = { id: CreatureId | 'ossel' | 'shell' | 'star'; x: number; y: number; r: number; n?: number };
+export type Spot = { id: CreatureId | 'ossel' | 'shell' | 'star' | 'old'; x: number; y: number; r: number; n?: number };
 let spots: Spot[] = [];
 let nextSpots: Spot[] = [];
 
 /** A creature was drawn at (x, y) with roughly radius r (device pixels). */
-export function spot(id: CreatureId | 'ossel' | 'shell' | 'star', x: number, y: number, r: number, n?: number): void {
+export function spot(id: CreatureId | 'ossel' | 'shell' | 'star' | 'old', x: number, y: number, r: number, n?: number): void {
   nextSpots.push(n === undefined ? { id, x, y, r } : { id, x, y, r, n });
 }
 

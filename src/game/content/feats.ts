@@ -75,6 +75,7 @@ export const FEATS: readonly Feat[] = [
   { id: 'six-in-a-row', name: 'Six in a row', text: 'Answer the shoals’ signal six times in a row.', when: (s) => s.signal.streak >= 6, progress: (s) => [s.signal.streak, 6] },
   { id: 'heard-it-all', name: 'Ossel heard it all', text: 'Answer all of Ossel’s questions on one reef.', when: (s) => Object.values(s.asked).every((a) => a !== '') },
   { id: 'both-ways', name: 'Both ways', text: 'Across the line, meet every moment both ways.', when: (s) => MOMENTS.every((m) => s.meta.seen.includes(`m:${m.id}:a`) && s.meta.seen.includes(`m:${m.id}:b`)), progress: (s) => [s.meta.seen.filter((k) => k.startsWith('m:')).length, MOMENTS.length * 2] },
+  { id: 'pruned', name: 'Light stone', text: 'Let 50 knobs of old stone go in one reef.', when: (s) => s.tally.pruned >= 50, progress: (s) => [s.tally.pruned, 50] },
   { id: 'risings', name: 'Into the rising', text: 'Send the feeders into ten risings.', when: (s) => s.tally.risings >= 10, progress: (s) => [s.tally.risings, 10] },
   { id: 'stars', name: 'Every star a name', text: 'Name all six figures in the night sky over one Breach.', when: (s) => FIGURES.every((f) => s.sky[f.id]), progress: (s) => [FIGURES.filter((f) => s.sky[f.id]).length, FIGURES.length] },
   { id: 'picture', name: 'A picture', text: 'Save a picture of your reef.', when: (s) => s.meta.seen.includes('did:photo') },

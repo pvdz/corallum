@@ -6,7 +6,7 @@ import type { GameState } from '../sim/state.ts';
 import { actAt } from './acts.ts';
 import { OSSEL_MISTAKES } from './ossel.ts';
 import {
-  calciteHold, canSend, inFlurry, inHeat, inRising, currentUpwelling, currentSwell, grainsWaiting, skyOpen, canFlare, glowHold, waterAt, homes, workOpen, sisterNow, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
+  calciteHold, canSend, oldKnobs, inFlurry, inHeat, inRising, currentUpwelling, currentSwell, grainsWaiting, skyOpen, canFlare, glowHold, waterAt, homes, workOpen, sisterNow, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
 } from '../sim/economy.ts';
 
 export type Whisper = { id: string; when: (s: GameState) => boolean; text: string };
@@ -80,6 +80,10 @@ export const WHISPERS: readonly Whisper[] = [
   {
     id: 'rising', when: (s) => inRising(s) && s.levels.shoal > 0 && s.rose < 0,
     text: 'Look down. The whole deep is coming up to eat. Put the shoals on feeding and send them in with it.',
+  },
+  {
+    id: 'old', when: (s) => oldKnobs(s) >= 1 && s.tally.pruned === 0,
+    text: 'See the grey on the tips? Stone we kept too long. It is heavy. Tap it, and let it go.',
   },
   {
     id: 'flare', when: (s) => canFlare(s) && s.lastFlare < 0 && s.glow > 0.95 * glowHold(s) && s.height < 3000,

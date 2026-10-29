@@ -1,12 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { flare, currentThorn, dayOf, catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
+import { flare, prune, oldKnobs, currentThorn, dayOf, catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { newGame, type GameState } from '../../src/game/sim/state.ts';
 import { GIFT } from '../../src/game/content/creatures.ts';
 import { HEAT } from '../../src/game/content/act4.ts';
 import { RISING } from '../../src/game/content/act2.ts';
 import { SWELL } from '../../src/game/content/events.ts';
+import { OLD } from '../../src/game/content/act1.ts';
 
 const rel = (a: number, b: number) => Math.abs(a - b) / Math.max(1, Math.abs(b));
 const clone = (s: GameState): GameState => structuredClone(s);
@@ -532,4 +533,21 @@ test('gifts: a touched neighbour gives its own stock once per cooldown, calcite 
   // A rare visitor gives several times a common one's calcite.
   const common = gift(s, 'rattail')!.amount;
   assert.ok(Math.abs(gift(s, 'giant-squid')!.amount / common - GIFT.rare) < 1e-9);
+});
+
+test('old stone: fills toward its cap the same away as stepped (across skipped warm spells); a knob breaks off in place', () => {
+  const away = newGame(3), stepped = newGame(3);
+  for (const s of [away, stepped]) s.height = 3850;
+  advance(away, 6 * HEAT.period);
+  for (let i = 0; i < 6 * HEAT.period / 60; i++) advance(stepped, 60);
+  assert.ok(Math.abs(away.old - stepped.old) < 1e-9, `${away.old} vs ${stepped.old}`);
+  assert.ok(Math.abs(away.old - OLD.max * (1 - Math.exp(-OLD.k * 6 * HEAT.period))) < 1e-9);
+  assert.ok(away.old < OLD.max);
+  const s = away;
+  const n = oldKnobs(s);
+  const before = s.oldSlots.slice(0, n);
+  assert.ok(prune(s, before[1]!) > 0);
+  assert.deepEqual(s.oldSlots.slice(0, n - 1).sort(), before.filter((x) => x !== before[1]).sort(), 'the others stay where they were');
+  assert.equal(prune(s, before[1]!), 0, 'gone');
+  assert.equal(s.tally.pruned, 1);
 });

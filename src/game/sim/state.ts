@@ -162,6 +162,10 @@ export type GameState = {
   signal: { last: number; answered: number; right: number; streak: number };
   /** Index of the last shell slot picked up. */
   shelled: number;
+  /** Old growth on the tips (content/act1.ts OLD): the stock, the knobs' slot order, and the last one broken off. */
+  old: number;
+  oldSlots: number[];
+  pruned: { t: number; slot: number };
   /** Sweeps in a row, each soon after the last (the combo). */
   combo: number;
   /** The upwelling slot last caught (−1 none). */
@@ -181,7 +185,7 @@ export type GameState = {
   /** Ossel's current request (kind '' for none yet), its count at the start, and how many are done; `paid` is what the last one brought. */
   request: { kind: RequestKind | ''; n: number; base: number; done: number; paid: number; skipped: number; streak: number };
   /** Counters the requests watch, and how many times the silt was searched for a shard. */
-  tally: { touches: number; sweeps: number; digs: number; roams: number; intruders: number; carcass: number; shells: number; risings: number };
+  tally: { touches: number; sweeps: number; digs: number; roams: number; intruders: number; carcass: number; shells: number; risings: number; pruned: number };
   /** Stages built of each great work (content/works.ts). */
   works: Record<WorkId, number>;
   /** The race with the sister reef: marks decided so far (content/sister.ts), and how many were won. */
@@ -262,6 +266,9 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     feasted: -1,
     thorned: -1,
     shelled: -1,
+    old: 0,
+    oldSlots: [0, 1, 2, 3, 4, 5],
+    pruned: { t: -1e9, slot: -1 },
     combo: 0,
     upwelled: -1,
     swell: { k: -1, caught: 0 },
@@ -280,7 +287,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     race: { decided: 0, won: 0, cousin: 0, lit: 0, declined: false },
     works: { garden: 0, spire: 0, breakwater: 0, terrace: 0, pool: 0 },
     request: { kind: '', n: 0, base: 0, done: 0, paid: 0, skipped: -1e9, streak: 0 },
-    tally: { touches: 0, sweeps: 0, digs: 0, roams: 0, intruders: 0, carcass: 0, shells: 0, risings: 0 },
+    tally: { touches: 0, sweeps: 0, digs: 0, roams: 0, intruders: 0, carcass: 0, shells: 0, risings: 0, pruned: 0 },
     moments: {
       brittle: '', 'vent-crack': '', snow: '', 'lost-shoal': '', hunters: '', angler: '', squid: '', 'whale-fall': '', 'old-lamp': '', cleaners: '',
       'young-rasp': '', slope: '', eggs: '', storm: '', turtle: '', 'first-light': '', 'last-night': '', bird: '',

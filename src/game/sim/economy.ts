@@ -15,7 +15,7 @@
 // settled the production is constant and the rest of any span is a single exact step — so a
 // month offline costs a few hundred iterations and ends exactly where the dynamics settle.
 
-import { ACT1, BANDS_ACT1, FLARE, FLURRY, GRAIN, GRAINS, SPORT, SPORTS, type GrainId, type SportId, MILESTONES, STRAIN, type Milestone, type StrainId } from '../content/act1.ts';
+import { ACT1, BANDS_ACT1, FLARE, FLURRY, OLD, GRAIN, GRAINS, SPORT, SPORTS, type GrainId, type SportId, MILESTONES, STRAIN, type Milestone, type StrainId } from '../content/act1.ts';
 import { ACT2, RISING, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
 import { FAN, UPWELL, ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDLE, RIDDLES, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { FIGURES, SKY, type FigureId } from '../content/sky.ts';
@@ -420,6 +420,7 @@ function skipCycles(s: GameState, end: number, stepFraction: number): void {
   for (const k of ['calcite', 'glow', 'murmurs'] as const) s.earned[k] += n * (s.earned[k] - e0[k]);
   const before = Math.floor(s.t / HISTORY_STEP);
   s.t += n * HEAT.period;
+  s.old = relax(s.old, OLD.max * OLD.k, OLD.k, n * HEAT.period);
   for (let k = before, after = Math.floor(s.t / HISTORY_STEP); k < after && k - before < HISTORY_MAX; k++) {
     s.history.push(Math.round(s.height * 10) / 10);
     if (s.history.length > HISTORY_MAX) s.history = s.history.filter((_, i) => i % 2 === 0);
@@ -428,6 +429,7 @@ function skipCycles(s: GameState, end: number, stepFraction: number): void {
 
 function flow(s: GameState, dt: number, stepFraction: number): GameState {
   if (!(dt > 0)) return s;
+  s.old = relax(s.old, OLD.max * OLD.k, OLD.k, dt);
   const r = rates(s);
   const kH = settleRate(s);
   // The line's record: the exact moment this reef reaches the surface, if it happens in this step.
@@ -1775,6 +1777,7 @@ function requestCount(s: GameState, kind: RequestKind): number {
     case 'rising': return s.tally.risings;
     case 'signal': return s.signal.answered;
     case 'star': return named(s);
+    case 'prune': return s.tally.pruned;
   }
 }
 
@@ -1977,6 +1980,26 @@ export function pickShell(s: GameState): string {
   s.tally.shells++;
   if (!s.meta.shells.includes(sh.id)) s.meta.shells.push(sh.id);
   return sh.id;
+}
+
+// ---------- Old growth ----------
+
+/** Knobs of old stone on the tips now. */
+export function oldKnobs(s: GameState): number {
+  return Math.min(OLD.max, Math.floor(s.old + 1e-9));
+}
+
+/** Break off the knob shown in `slot`: the zone's burst. Its slot moves to the end, so the others stay put. */
+export function prune(s: GameState, slot: number): number {
+  const n = oldKnobs(s);
+  const at = s.oldSlots.indexOf(slot);
+  if (n < 1 || at < 0 || at >= n) return 0;
+  s.oldSlots[at] = s.oldSlots[n - 1]!;
+  s.oldSlots[n - 1] = slot;
+  s.old -= 1;
+  s.pruned = { t: s.t, slot };
+  s.tally.pruned++;
+  return burst(s, OLD.seconds);
 }
 
 // ---------- Thorn stars ----------

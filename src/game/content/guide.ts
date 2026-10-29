@@ -19,6 +19,7 @@ export const GUIDE: readonly [string, string][] = [
   ['Shells', 'In the Sunlit Crown a shell washes up now and then. Tap it to keep it on the line’s shelf.'],
   ['Choices', 'The glimmerseed strain at 15 m and its sport at 3000 m, the grain of every tenth band, the current on the shelf, four tiers of dialects: each shapes the reef.'],
   ['Rhythms', 'Each zone has something to catch while you watch: flurries (sweep), the rising (send the feeders in), upwellings (turn the current), warm water (open or close), swells (tap on the crest). The water box says when.'],
+  ['Old stone', 'Stone kept too long grows grey and heavy on the branch tips, up to six knobs, away or not. Tap one to break it off for a burst.'],
   ['Glow', 'Glow lures more calcite, calls shoals and weaves lamp-nets. When it sits full, flare it (L) for a burst of calcite.'],
   ['Shoals', 'Feed, light, scout, and on the shelf fan the silt. Trips take shoals away and bring them back seasoned.'],
   ['Ossel', 'Ossel asks five questions on the way up and remembers your answers to the end. Ossel is also wrong about some things.'],
