@@ -449,3 +449,4 @@ date, what landed, what is half-done, what's next.
 - New creature: a dugong grazing the Sunlit meadows (four or more); touched it rises to breathe.
 - Secret ending page 'remembered' (all Ossel's mistakes found + whole tablet) and a hidden feat.
 - A new day's gift: first visit each local calendar day pays 10 minutes of the zone's currency and a shard roll (economy dailyGift; meta.lastDay; client passes the day).
+- Sunlit night: the sun terrace is drawn under the night overlay (it stayed daylight-bright).
