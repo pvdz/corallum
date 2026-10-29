@@ -127,7 +127,8 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
       const wrong = sigAnswer.some((a, j) => a !== sigPattern[j]);
       if (wrong || sigAnswer.length === sigPattern.length) {
         const pay = hooks.answerSignal(sigAnswer);
-        signalState.textContent = pay > 0 ? `${SIGNAL.right} · +${num(pay)}` : SIGNAL.wrong;
+        const streak = hooks.signalStreak();
+        signalState.textContent = pay > 0 ? `${SIGNAL.right} · +${num(pay)}${streak > 1 ? ` · ${streak} ${SIGNAL.streakWord}` : ''}` : SIGNAL.wrong;
         sigDone = sigK;
         sigK = -1;
         sigLinger = performance.now() + 4000;

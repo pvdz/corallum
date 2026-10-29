@@ -152,7 +152,8 @@ export type GameState = {
   /** Index of the last feast slot eaten (see content/events.ts). */
   feasted: number;
   /** The shoals' signals: last slot tried, and how many answered right. */
-  signal: { last: number; answered: number };
+  /** `right`: the slot last answered rightly; `streak`: how many slots in a row were. */
+  signal: { last: number; answered: number; right: number; streak: number };
   /** Index of the last shell slot picked up. */
   shelled: number;
   /** The swell set ridden last (its slot) and which of its crests were caught (bits). */
@@ -251,7 +252,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     thorned: -1,
     shelled: -1,
     swell: { k: -1, caught: 0 },
-    signal: { last: -1, answered: 0 },
+    signal: { last: -1, answered: 0, right: -2, streak: 0 },
     feasts: 0,
     history: [],
     expedition: { site: '', back: 0, feed: 0, light: 0, scout: 0, n: 0, fork: '' },

@@ -324,6 +324,7 @@ const panel = createPanel(ui, {
     if (tracing) audio.cue('shimmer');
   },
   feedRising: sendFeeders,
+  signalStreak: () => state.signal.streak,
   answerOssel(id, i) {
     const q = QUESTIONS.find((x) => x.id === id);
     if (!q || !answerOssel(state, id, i)) return;

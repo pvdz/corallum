@@ -1827,9 +1827,16 @@ export function answerSignal(s: GameState, answer: readonly number[]): number {
   const sig = currentSignal(s);
   if (!sig) return 0;
   s.signal.last = sig.k;
-  if (answer.length !== sig.pattern.length || answer.some((a, i) => a !== sig.pattern[i])) return 0;
+  if (answer.length !== sig.pattern.length || answer.some((a, i) => a !== sig.pattern[i])) {
+    s.signal.streak = 0;
+    return 0;
+  }
   s.signal.answered++;
-  return burst(s, SIGNAL.secondsPerLight * sig.pattern.length);
+  // Answered in the very next slot after the last right answer: the streak grows.
+  s.signal.streak = s.signal.right === sig.k - 1 ? s.signal.streak + 1 : 1;
+  s.signal.right = sig.k;
+  const bonus = 1 + SIGNAL.streakBonus * Math.min(SIGNAL.streakMax, s.signal.streak - 1);
+  return burst(s, SIGNAL.secondsPerLight * sig.pattern.length * bonus);
 }
 
 // ---------- Shells ----------

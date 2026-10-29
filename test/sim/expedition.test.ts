@@ -93,8 +93,15 @@ test('the shoals’ signal: one try per slot, the right pattern pays, a wrong on
   assert.equal(currentSignal(s), null);
   sig = null;
   for (let i = 0; i < 2000 && !sig; i++) { advance(s, 5); sig = currentSignal(s); }
-  assert.ok(answerSignal(s, sig!.pattern) > 0);
+  const first = answerSignal(s, sig!.pattern);
+  assert.ok(first > 0);
   assert.equal(s.signal.answered, 1);
+  // The very next signal, answered too: the streak pays more.
+  let next = null;
+  for (let i = 0; i < 2000 && !next; i++) { advance(s, 5); next = currentSignal(s); }
+  assert.equal(next!.k, sig!.k + 1);
+  answerSignal(s, next!.pattern);
+  assert.equal(s.signal.streak, 2);
 });
 
 test('the fork: pressing on makes the trip half again as long and brings a shard home', async () => {

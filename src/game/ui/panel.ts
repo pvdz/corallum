@@ -85,6 +85,7 @@ export type PanelHooks = {
   setCurrent(c: number): void;
   closeUp(closed: boolean): void;
   dream(): void;
+  signalStreak(): number;
   answerOssel(id: QuestionId, i: 0 | 1): void;
   feedRising(): void;
   /** Trace a figure of the night sky (again: stop). */

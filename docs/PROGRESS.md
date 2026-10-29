@@ -518,3 +518,4 @@ date, what landed, what is half-done, what's next.
 - Swells at the Breach (events.ts SWELL; economy currentSwell/untilSwell/rideSwell; state.swell): breach.ts drawSwell (humps + timing ring), tap near the crown or S, Soon line, tab dot.
 - SWELL's tolerance is `slack` (the determinism lint rejects the other word in sim/content). Two commits went in with that lint red: chain commits on `node --test` itself, not on a grep of it.
 - Rare giant larvacean in the Midnight Water (every 22 min for 110 s, high in the open water); touched, the tadpole bolts and the empty house sags. Frame costs checked across zones: 2–7 ms draw headless.
+- The shoals' signal keeps a streak (state.signal.right/streak): answered in the very next slot, each pays +15% more, up to +90%; a wrong answer breaks it. Shown after the answer.

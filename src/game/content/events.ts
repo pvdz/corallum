@@ -99,6 +99,8 @@ export const SIGNAL = {
   length: (answered: number) => Math.min(8, 3 + Math.floor(answered / 2)),
   /** Pay: this many seconds of production per light in the pattern. */
   secondsPerLight: 20,
+  /** Answered in consecutive slots, each pays this much more, up to `streakMax` in a row. */
+  streakBonus: 0.15, streakMax: 6, streakWord: 'in a row',
   kicker: 'The shoals are signalling',
   text: 'Watch the lights, then answer with the same.',
   watch: 'Watch…',
