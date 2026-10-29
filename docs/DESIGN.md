@@ -162,9 +162,10 @@ Entry requires the last Act II Reading (*Inside the wall*): the story turn opens
   - Tier 2 *Craft*: Fluorescent (lure +2, glow ×2) · Sweeper tentacles (plankton ×3) ·
     Mucus nets (silt swept ×2, Rasp eat nothing)
   - Tier 3 *Spawn*: Broadcast · Brooding · Fragmenting — each shapes Act V's spawning.
-- **Other reefs spawning**: at each full moon in the Sunlit Crown, while watching, the other reefs
-  spawn (pink bundles rising everywhere) and a card offers: feed on their spawn (5 minutes of bloom)
-  or add your own (+1 lineage, at most 3 per reef). Once per moon; instant, so offline is untouched.
+- **Full-moon spawning** (every zone below the Breach): at each full moon, while watching, a card:
+  take it back in / feed on it (5 minutes of the zone's currency) or let it drift / add your own
+  (+1 lineage, at most 3 per reef). In the Sunlit Crown the other reefs spawn around you (pink
+  bundles rising everywhere). Once per moon; instant, so offline is untouched.
 - The Form dialect changes the coral's silhouette in the Sunlit scene (tall branches, a domed
   boulder, or stacked tables): the choice is visible.
 
