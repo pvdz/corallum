@@ -190,3 +190,4 @@ date, what landed, what is half-done, what's next.
 - Reef tab: scientific number notation switch (1.23e9).
 - View mode has a camera button: saves the scene as a PNG named after the reef and its height.
 - Twilight Shelf: three swaying sea fans (gorgonians) on the slope.
+- Grow tab ends with "Coming up: <next hidden upgrade> — <what opens it>".

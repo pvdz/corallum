@@ -403,6 +403,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     traitCards.set(tr.id, { root, cost: costEl, level, effect, eta, btn });
   }
   lineagePage.append(featCard);
+  // The next upgrade still hidden, and what opens it.
+  const comingUp = el('p', 'hint coming-up');
+  grow.append(comingUp);
 
   // ---------- Reef (settings) ----------
   const reefPage = tabPages.get('reef')!;
@@ -861,6 +864,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       renderJournal(s);
       renderFeats(s);
       habitToggle.hidden = !s.meta.traits['old-habits'];
+      const hidden = UPGRADES.find((u) => !revealed(s, u.id));
+      comingUp.textContent = hidden ? `Coming up: ${hidden.name} — ${revealText(s, hidden)}` : '';
+      comingUp.hidden = !hidden;
+      if (comingUp !== grow.lastElementChild) grow.append(comingUp);
       if (document.activeElement !== nameInput && nameInput.value !== s.meta.name) nameInput.value = s.meta.name;
       bandsDot.hidden = seenStories >= storyCount;
       primed = true;
@@ -949,6 +956,22 @@ export function reefName(s: GameState): string {
 
 function seamountDef(id: SeamountId) {
   return SEAMOUNTS.find((m) => m.id === id)!;
+}
+
+/** What opens a hidden upgrade, in words. */
+function revealText(s: GameState, u: (typeof UPGRADES)[number]): string {
+  const r = u.reveal;
+  if (r.band) {
+    const b = BANDS.find((x) => x.id === r.band);
+    return b ? `when the reef reaches ${metres(b.metres)}` : 'later in the story';
+  }
+  if (r.height !== undefined) return `when the reef reaches ${metres(r.height)}`;
+  if (r.level) {
+    const [id, n] = r.level;
+    return `after ${n} × ${UPGRADES.find((x) => x.id === id)?.name.toLowerCase() ?? id}`;
+  }
+  if (r.earned !== undefined) return `after ${num(r.earned)} calcite gathered`;
+  return 'soon';
 }
 
 /** Names of traits the given lineage would buy, taking the cheapest step each time. */
