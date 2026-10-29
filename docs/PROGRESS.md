@@ -684,3 +684,4 @@ date, what landed, what is half-done, what's next.
 - systems e2e makes a wish at the Breach.
 - Her way lit, the sister reef spawns with you at the release: a far pink plume over her seamount (breach.ts drawSisterSpawn).
 - finale e2e plants a child of a kind in the garden.
+- Ossel can be heard in the Midnight Water too: the old wall's one pale light far below, tappable, flickering as it speaks.

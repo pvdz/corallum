@@ -4,7 +4,7 @@
 // the dark below. Glass shrimp and a passing siphonophore appear once their bands are laid.
 
 import { drawRising } from './rising.ts';
-import { sight, spot, startled, pushed } from './sightings.ts';
+import { sight, speaking, spot, startled, pushed } from './sightings.ts';
 import { drawGhosts } from './ghosts.ts';
 import { drawSisterFar } from './sister.ts';
 import { drawDragonfish } from './thorn.ts';
@@ -1203,6 +1203,17 @@ export function createMidnightScene(seed: number): Scene {
       if (v.milky) drawMilky(ctx, t);
       drawGulper(ctx, t);
       drawFireflySquid(ctx, t);
+      {
+        // Ossel, far below now: the old wall's one pale light at the bottom of the dark. Tap to hear it.
+        const ox = focus.x + focus.w * 0.2, oy = focus.y + focus.h * 0.96, s = scale();
+        const talk = speaking(t);
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        glow(ctx, ox, oy, (24 + 30 * talk) * s, '200,210,255', 0.12 + 0.05 * Math.sin(t * 0.45) + 0.25 * talk);
+        glow(ctx, ox, oy, 3.5 * s, '230,235,255', 0.6 + 0.3 * Math.sin(t * 0.45) + 0.4 * talk);
+        ctx.restore();
+        spot('ossel', ox, oy, 30 * s);
+      }
       if (v.moments['jelly-bloom']) drawJellyBloom(ctx, t);
       reef.draw(ctx, L, v, t);
       if (v.moments.eyes === 'a') {
