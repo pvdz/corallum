@@ -24,6 +24,8 @@ export type ReefView = {
   shoals: number;
   jobs: Record<Job, number>;
   /** Shoals away at a ruin: how many, sim seconds since they left and until they are back, which side they went. */
+  /** The line's chosen colours (content/palettes.ts). */
+  palette: string;
   /** Relics brought home from the ruins. */
   relics: readonly SiteId[];
   /** Animals living in the reef's homes. */

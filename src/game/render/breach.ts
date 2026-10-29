@@ -3,6 +3,7 @@
 // at the release they rise in their millions through the moonlight and spread on the surface.
 
 import { drawResidents } from './residents.ts';
+import { palette } from '../content/palettes.ts';
 import { drawRelics } from './relics.ts';
 import { sight, spot, startled } from './sightings.ts';
 import type { DialectId } from '../content/act4.ts';
@@ -74,8 +75,8 @@ export function createBreachScene(seed: number): Scene {
     const crownY = stillY() + focus.h * (0.12 - 0.16 * progress(v.height));
     return {
       cx: cx(), baseY: crownY + unit, unit, s: scale(), dpr, top: 1, bandStep: 0,
-      encrust: 1, encrustColours: ['#8a4a3a', '#5a3c7a', '#8a7a3a', '#2a6a60'],
-      palette: NIGHT_LOOK[form].palette, polyp: v.craft === 'fluorescent' ? FLUORESCENT_POLYP : NIGHT_LOOK[form].polyp,
+      encrust: 1, encrustColours: [...palette(v.palette).night],
+      palette: NIGHT_LOOK[form].palette, polyp: v.craft === 'fluorescent' ? FLUORESCENT_POLYP : (palette(v.palette).polyp as [string, string] | null) ?? NIGHT_LOOK[form].polyp,
       // The dome's many lit nodes add up: it glows at a lower scale so the night stays a night.
       glowScale: (form === 'massive' ? 0.3 : 0.6) * (v.craft === 'fluorescent' ? 1.5 : 1), polypScale: 1.1,
     };

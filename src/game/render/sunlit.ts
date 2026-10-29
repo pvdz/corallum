@@ -5,6 +5,7 @@
 import { createSlugs } from './slugs.ts';
 import { drawRelics } from './relics.ts';
 import { drawResidents } from './residents.ts';
+import { palette } from '../content/palettes.ts';
 import { sight, spot, startled } from './sightings.ts';
 import type { DialectId } from '../content/act4.ts';
 import { mulberry32, range } from '../sim/rng.ts';
@@ -28,9 +29,6 @@ type Larva = { x: number; y: number; phase: number; speed: number };
 /** Each form's reef, its girth and its stone colours (shadow, flesh, highlight). */
 /** Length of a sunlit day, in seconds of scene time. */
 const DAY = 600;
-
-/** Encrusting colours, in the order pigments bring them. */
-const PIGMENTS = ['#ff4f8b', '#ffd23f', '#2ec4b6', '#ff6b3d', '#a35cff', '#9ef01a', '#3a86ff'];
 
 const FORM_LOOK: Record<CoralForm, { girth: number; palette: [string, string, string]; polyp: [string, string] }> = {
   fan: { girth: 1, palette: ['#3a1d33', '#c25a76', 'rgba(255,225,210,0.35)'], polyp: ['#ffd2c4', 'rgba(255,240,170,0.95)'] },
@@ -80,13 +78,14 @@ export function createSunlitScene(seed: number): Scene {
 
   function layout(v: ReefView, form: CoralForm): ReefLayout {
     const tall = form === 'massive' ? 0.7 : form === 'plating' ? 0.75 : 0.8;
+    const pal = palette(v.palette);
     return {
       cx: cx(), baseY: focus.y + focus.h * 0.97, unit: focus.h * tall, s: scale(), dpr,
       top: 0.35 + 0.65 * progress(v.height), bandStep: 0, palette: FORM_LOOK[form].palette,
       // Each pigment grown adds colour: more of the reef crusted, in more hues (rose, gold, green…).
       encrust: (0.3 + 0.7 * Math.min(1, v.pigments / 6)) * (0.8 + 0.2 * progress(v.height)),
-      encrustColours: PIGMENTS.slice(0, 2 + Math.min(PIGMENTS.length - 2, Math.floor(v.pigments / 2))),
-      polyp: v.craft === 'fluorescent' ? FLUORESCENT_POLYP : FORM_LOOK[form].polyp,
+      encrustColours: pal.pigments.slice(0, 2 + Math.min(pal.pigments.length - 2, Math.floor(v.pigments / 2))),
+      polyp: v.craft === 'fluorescent' ? FLUORESCENT_POLYP : (pal.polyp as [string, string] | null) ?? FORM_LOOK[form].polyp,
       // By night the reef's own light comes back (fluorescent reefs glow brighter still).
       glowScale: (v.craft === 'fluorescent' ? 0.25 : 0) + 0.8 * nightAt(lastT),
       // Polyps pull in against the noon light and open wide to feed at night, as real corals do.

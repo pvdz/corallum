@@ -202,6 +202,12 @@ const panel = createPanel(ui, {
   setRasp(n) {
     setRasp(state, n);
   },
+  recolour(id) {
+    state.meta.palette = id;
+    scene.effect('pigment');
+    audio.cue('shimmer');
+    save();
+  },
   favour(id) {
     if (!askFavour(state, id)) return;
     scene.effect('grounds');
@@ -475,6 +481,7 @@ function view(): ReefView {
     trip: tripView(),
     residents: state.residents,
     relics: state.relics,
+    palette: state.meta.palette,
     planktonLevel: Math.min(1, (feeding(state.plankton) - 1) / 2),
     bands: state.bands,
     readings: state.readings.length,

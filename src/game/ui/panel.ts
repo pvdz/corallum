@@ -16,6 +16,7 @@ import { upgradeIcon } from './icons.ts';
 import { FEATS } from '../content/feats.ts';
 import { WATER } from '../content/waters.ts';
 import { REQUEST } from '../content/requests.ts';
+import { PALETTES, PALETTE_TEXT } from '../content/palettes.ts';
 import { SHARD, SHARD_LINES } from '../content/shards.ts';
 import { MOMENT, MOMENTS, type Moment, type MomentId } from '../content/moments.ts';
 import { RESIDENT, RESIDENTS, type ResidentId } from '../content/residents.ts';
@@ -36,6 +37,8 @@ export type PanelHooks = {
   read(id: ReadingId): void;
   /** Send shoals to the next ruin. */
   send(): void;
+  /** Choose the line's colours. */
+  recolour(id: string): void;
   /** Ask the Rasp a favour. */
   favour(id: FavourId): void;
   /** Answer a moment. */
@@ -809,6 +812,21 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   nameInput.placeholder = 'Name your reef';
   nameInput.addEventListener('change', () => hooks.rename(nameInput.value.trim()));
   nameRow.append(el('span', 'stock-name', 'Name'), nameInput);
+  // The line's colours: a swatch per palette, open once the reef has known pigment.
+  const paletteRow = el('div', 'palette-row');
+  paletteRow.hidden = true;
+  const swatches = PALETTES.map((p) => {
+    const b = button('swatch', '', () => hooks.recolour(p.id));
+    b.title = p.name;
+    b.setAttribute('aria-label', p.name);
+    b.style.background = `linear-gradient(135deg, ${p.pigments.slice(0, 4).join(', ')})`;
+    b.append(el('span', '', p.name));
+    paletteRow.append(b);
+    return { p, b };
+  });
+  const paletteBox = el('div', 'palette-box');
+  paletteBox.hidden = true;
+  paletteBox.append(el('span', 'stock-name', PALETTE_TEXT.label), paletteRow);
   const volRow = el('label', 'toggle');
   const volInput = el('input') as HTMLInputElement;
   volInput.type = 'range';
@@ -858,6 +876,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   collapsible(guide, guideHead);
   reefPage.append(
     nameRow,
+    paletteBox,
     guide,
     group('Saves'),
     el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn,
@@ -1399,6 +1418,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       comingUp.hidden = !hidden;
       if (comingUp !== grow.lastElementChild) grow.append(comingUp);
       if (document.activeElement !== nameInput && nameInput.value !== s.meta.name) nameInput.value = s.meta.name;
+      const coloured = s.levels.pigment > 0 || s.meta.best >= 3800 || s.meta.palette !== '';
+      paletteBox.hidden = !coloured;
+      paletteRow.hidden = !coloured;
+      for (const x of swatches) x.b.classList.toggle('on', x.p.id === s.meta.palette);
       bandsDot.hidden = seenStories >= storyCount;
       primed = true;
     },

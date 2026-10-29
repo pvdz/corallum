@@ -36,6 +36,8 @@ export type Meta = {
   /** Every memory any spawn has carried, and how many times the reef has reached the ending. */
   carriedEver: string[];
   endings: number;
+  /** The colours the line's reefs wear in the light (content/palettes.ts; '' for the reef's own). */
+  palette: string;
   /** Shards of Thousandfold's tablet found by the line (indices into content/shards.ts). */
   shards: number[];
 };
@@ -56,6 +58,7 @@ export function newMeta(): Meta {
     carriedEver: [],
     endings: 0,
     shards: [],
+    palette: '',
   };
 }
 
