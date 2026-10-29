@@ -131,10 +131,13 @@ export function createBreachScene(seed: number): Scene {
     glow(ctx, mx, my, r * 5, great ? '255,215,160' : '230,230,200', (great ? 0.22 : 0.15) * lit + 0.03);
     if (great) glow(ctx, mx, my, r * 2.2, '255,200,150', 0.18 * lit);
     ctx.restore();
+    ctx.save();
+    ctx.globalAlpha = 1 - 0.65 * dawn;
     drawMoon(ctx, mx, my, r, phase);
+    ctx.restore();
   }
 
-  function drawSea(ctx: CanvasRenderingContext2D, t: number, phase: number): void {
+  function drawSea(ctx: CanvasRenderingContext2D, t: number, phase: number, dawn = 0): void {
     const wy = waterY();
     const g = ctx.createLinearGradient(0, wy, 0, h);
     g.addColorStop(0, '#103a5a');
@@ -142,6 +145,14 @@ export function createBreachScene(seed: number): Scene {
     g.addColorStop(1, '#030a18');
     ctx.fillStyle = g;
     ctx.fillRect(0, wy, w, h - wy);
+    // At dawn the surface water takes the sky's warm colour, fading with depth.
+    if (dawn > 0) {
+      const d = ctx.createLinearGradient(0, wy, 0, wy + focus.h * 0.25);
+      d.addColorStop(0, `rgba(255,170,140,${0.35 * dawn})`);
+      d.addColorStop(1, 'rgba(255,170,140,0)');
+      ctx.fillStyle = d;
+      ctx.fillRect(0, wy, w, focus.h * 0.25);
+    }
     const lit = 1 - Math.abs(phase - 0.5) * 2;
     const [mx] = moonPos();
     ctx.save();
@@ -554,7 +565,7 @@ export function createBreachScene(seed: number): Scene {
       // Dawn comes up over the three minutes after the release, then holds.
       const dawn = v.sinceBreach > 30 ? Math.min(1, (v.sinceBreach - 30) / 180) : 0;
       drawSky(ctx, t, v.moonPhase, v.greatMoon, dawn);
-      drawSea(ctx, t, v.moonPhase);
+      drawSea(ctx, t, v.moonPhase, dawn);
       drawChildren(ctx, v, t);
       drawMoonJellies(ctx, t);
       drawDolphins(ctx, t);
