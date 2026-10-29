@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended polish (features, UI, graphics). Recent: neighbours (every creature tappable, most react), photo journal, floor detail, Shared table trait, moon. Ideas: more reactions (turtle, mola, whale shark, giant squid), Breach draw cost (~9 ms headless), portraits for transient creatures.
+NOW: Open-ended polish (features, UI, graphics). Recent: neighbours (every creature tappable and answering, touch bonus), photo journal, view-mode zoom, Sunlit night, floor detail, daughter colonies, stock notes. Ideas: zoomed draw cost (caches bypassed), more night life, portraits retake.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
