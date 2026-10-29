@@ -186,6 +186,17 @@ export const FAVOURS: readonly { id: FavourId; name: string; effect: string; cos
 ];
 export const FAVOUR_TEXT = { head: 'Ask the Rasp', done: 'done' } as const;
 
+/**
+ * Upwellings (Twilight Shelf, while watching): now and then cold water wells up on one side of the
+ * reef for a minute; turning the current toward it (or setting it that way again) catches a haul.
+ */
+export const UPWELL = {
+  period: 480, life: 60, seconds: 90,
+  word: 'an upwelling',
+  now: (side: number, left: string) => `Cold water welling up ${side < 0 ? 'out toward the open water' : 'along the shelf'} (${left}): turn the current that way.`,
+  caught: 'from the upwelling',
+} as const;
+
 /** The current (Twilight verb): turned toward the shelf (+) it sweeps silt, toward the open water (−) it brings plankton. */
 export const CURRENT = {
   steps: 2,

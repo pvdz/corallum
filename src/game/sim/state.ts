@@ -156,6 +156,8 @@ export type GameState = {
   signal: { last: number; answered: number; right: number; streak: number };
   /** Index of the last shell slot picked up. */
   shelled: number;
+  /** The upwelling slot last caught (−1 none). */
+  upwelled: number;
   /** The swell set ridden last (its slot) and which of its crests were caught (bits). */
   swell: { k: number; caught: number };
   /** Index of the last thorn-star slot driven off. */
@@ -251,6 +253,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     feasted: -1,
     thorned: -1,
     shelled: -1,
+    upwelled: -1,
     swell: { k: -1, caught: 0 },
     signal: { last: -1, answered: 0, right: -2, streak: 0 },
     feasts: 0,

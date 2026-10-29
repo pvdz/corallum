@@ -176,6 +176,10 @@ build leans one way. On the Silt Floor the grain bands show as coloured rings in
 **Flurries** (Silt Floor): every four minutes the Long Silt falls thick for 30 s; sweeps catch ×3 then
 (on the sim clock, so the snow and the pay agree; the Soon line counts down to the next).
 
+**Upwellings** (Twilight Shelf, while watching): every eight minutes cold water wells up for a minute on
+one side (out toward the open water, or along the shelf); setting the current that way while it lasts
+catches it once: 90 s of calcite. The dial gets a reason to move.
+
 **Swells** (the Breach, while watching, before the release): every few minutes a set of five big
 swells rolls in; tap the crown (or S) as each crests (±SWELL.slack, 0.5 s) to send spawn up on it: 20 s of spawn per
 crest caught. A ring closes on the crown toward each crest; a caught one flashes gold. Act V's waiting

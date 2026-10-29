@@ -265,6 +265,8 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   background: rgba(200, 210, 255, 0.07); color: #e6ebff; }
 .sky-row.now .sky-trace { border-color: rgba(255, 220, 160, 0.7); box-shadow: 0 0 10px rgba(255, 220, 160, 0.3); }
 .sky-trace[hidden] { display: none; }
+
+.current-row.upwelling .current-what { grid-column: 1 / -1; color: #bfe6ff; animation: heat-pulse 2.4s ease-in-out infinite; }
 .heat-row { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; margin-top: 3px; padding-top: 5px;
   border-top: 1px solid rgba(255, 200, 140, 0.14); }
 .heat-row[hidden] { display: none; }

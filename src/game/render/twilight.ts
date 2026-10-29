@@ -586,6 +586,31 @@ export function createTwilightScene(seed: number): Scene {
   }
 
   /** The current made visible: faint streaks running toward the shelf (+) or the open water (−). */
+  /**
+   * An upwelling: a column of cold, pale water rising from the deep on one side of the reef,
+   * carrying a swirl of plankton motes up with it; brighter while it waits to be caught.
+   */
+  function drawUpwell(ctx: CanvasRenderingContext2D, t: number, up: { side: number; strength: number; caught: boolean }): void {
+    const s = scale();
+    const x = focus.x + focus.w * (up.side < 0 ? 0.12 : 0.86);
+    const a = up.strength * (up.caught ? 0.4 : 1);
+    ctx.save();
+    const g = ctx.createLinearGradient(x - 60 * s, 0, x + 60 * s, 0);
+    g.addColorStop(0, 'rgba(170,220,255,0)');
+    g.addColorStop(0.5, `rgba(185,230,255,${0.3 * a})`);
+    g.addColorStop(1, 'rgba(170,220,255,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(x - 60 * s, focus.y, 120 * s, focus.h);
+    ctx.fillStyle = `rgba(225,245,255,${0.7 * a})`;
+    for (let i = 0; i < 40; i++) {
+      const u = ((i * 0.37 + t * (0.08 + (i % 5) * 0.01)) % 1);
+      const px = x + Math.sin(t * 1.2 + i * 2.1) * (20 + (i % 7) * 5) * s;
+      const py = focus.y + focus.h * (1 - u);
+      ctx.fillRect(px, py, 2.4 * s, 2.4 * s);
+    }
+    ctx.restore();
+  }
+
   function drawCurrent(ctx: CanvasRenderingContext2D, t: number, c: number): void {
     if (c === 0) return;
     const s = scale();
@@ -1299,6 +1324,7 @@ export function createTwilightScene(seed: number): Scene {
       drawGardenEels(ctx, t);
       drawMoray(ctx, t);
       drawCurrent(ctx, t, v.current);
+      if (v.upwell) drawUpwell(ctx, t, v.upwell);
       drawNautilus(ctx, t);
       drawFrogfish(ctx, t);
       drawSardineRun(ctx, t);

@@ -17,7 +17,7 @@
 
 import { ACT1, BANDS_ACT1, FLURRY, GRAIN, GRAINS, SPORT, SPORTS, type GrainId, type SportId, MILESTONES, STRAIN, type Milestone, type StrainId } from '../content/act1.ts';
 import { ACT2, RISING, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
-import { ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDLE, RIDDLES, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
+import { UPWELL, ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDLE, RIDDLES, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { FIGURES, SKY, type FigureId } from '../content/sky.ts';
 import { QUESTIONS, type Question, type QuestionId } from '../content/ossel.ts';
 import { ACT4, HEAT, BANDS_ACT4, DIALECTS, OTHERS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
@@ -1031,6 +1031,23 @@ export function build(s: GameState, id: WorkId): boolean {
 }
 
 // ---------- The current ----------
+
+/** The upwelling now (Twilight Shelf): its slot, when it began, and its side (−1 open water, +1 shelf). */
+export function currentUpwelling(s: GameState): { k: number; start: number; side: number } | null {
+  if (actAt(s.height) !== 3) return null;
+  const k = Math.floor(s.t / UPWELL.period);
+  const r = mulberry32((s.seed ^ 0x0b11) + Math.imul(k, 0x9e3779b1));
+  const start = k * UPWELL.period + r() * (UPWELL.period - UPWELL.life);
+  return s.t >= start && s.t < start + UPWELL.life ? { k, start, side: r() < 0.5 ? -1 : 1 } : null;
+}
+
+/** The current turned toward an upwelling while it lasts catches it, once: a haul. Returns the pay. */
+export function catchUpwelling(s: GameState): number {
+  const up = currentUpwelling(s);
+  if (!up || s.upwelled === up.k || Math.sign(s.current) !== up.side) return 0;
+  s.upwelled = up.k;
+  return burst(s, UPWELL.seconds);
+}
 
 export function setCurrent(s: GameState, c: number): void {
   s.current = Math.max(-CURRENT.steps, Math.min(CURRENT.steps, Math.round(c)));
