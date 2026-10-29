@@ -645,3 +645,4 @@ date, what landed, what is half-done, what's next.
 - Full browser suite green. A suite run once stalled at browser launch for 35 min: run e2e loops with `timeout 300` per test.
 - Trait Star-gazer (way, 7): shooting-star showers twice as often.
 - Today's visitor (economy visitor/visited; meta.day): one non-rare creature of the reef's zone each calendar day; its first touch that day brings +1 lineage; named on the Today line, a journal note when touched; sim test.
+- Today's visitor wears a slow silver halo in the world until touched.

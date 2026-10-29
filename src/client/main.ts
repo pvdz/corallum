@@ -1024,6 +1024,20 @@ function lapseHeight(): number | null {
 function drawLucky(t: number): void {
   ctx.save();
   ctx.globalCompositeOperation = 'lighter';
+  // Today's visitor, untouched yet: a slow silver halo.
+  const vis = visited(state) ? null : visitor(state);
+  if (vis) {
+    const p = tappable().find((q) => q.id === vis);
+    if (p) {
+      const r = Math.min(Math.max(p.r, 22 * dpr), 70 * dpr) * (1.1 + 0.08 * Math.sin(t * 1.5));
+      glowAt(ctx, p.x, p.y, r * 1.3, '220,230,255', 0.12);
+      ctx.strokeStyle = 'rgba(225,235,255,0.45)';
+      ctx.lineWidth = 1.5 * dpr;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+  }
   // One of its kind is the lucky one: the first drawn.
   const done = new Set<string>();
   for (const p of tappable()) {
