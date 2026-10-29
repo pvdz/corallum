@@ -5,7 +5,7 @@ import { UPGRADES } from '../content/upgrades.ts';
 import type { Job } from '../content/act2.ts';
 import type { ResidentId } from '../content/residents.ts';
 import { WORKS } from '../content/works.ts';
-import { assign, BANDS, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil, readingCost, meetingWords, jobGain, steadyCalciteRate, bestRasp, carryAt, balanceFeedLight, canSend, send, build, homes, house, residentsAsking, nextMoment, meet as meetMoment, skipRequest, boonsOffered, chooseBoon } from './economy.ts';
+import { assign, BANDS, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil, readingCost, meetingWords, jobGain, steadyCalciteRate, bestRasp, carryAt, balanceFeedLight, canSend, send, build, homes, house, residentsAsking, nextMoment, meet as meetMoment, skipRequest, boonsOffered, chooseBoon, setCurrent } from './economy.ts';
 import type { Choice, MeetingId } from '../content/act3.ts';
 import type { DialectId, DialectTier } from '../content/act4.ts';
 import { newGame, type GameState } from './state.ts';
@@ -108,6 +108,16 @@ export function botDecide(
   if (ventures && want.join() !== s.residents.join()) {
     s.residents = [];
     for (const id of want) house(s, id);
+  }
+  // The current: whichever setting makes the most calcite, judged twice a minute on the shelf and above.
+  if (s.height >= 3000 && s.t % 30 < 1) {
+    let best = 0, bestRate = -Infinity;
+    for (const c of [-2, -1, 0, 1, 2]) {
+      setCurrent(s, c);
+      const r = steadyCalciteRate(s);
+      if (r > bestRate) { bestRate = r; best = c; }
+    }
+    setCurrent(s, best);
   }
   // The dial is re-judged twice a minute (judging it searches every setting).
   if (raspMax(s) > 0 && (s.t % 30 < 1 || s.rasp > raspMax(s))) setRasp(s, bestRasp(s));

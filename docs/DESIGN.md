@@ -162,6 +162,9 @@ Entry requires the last Act II Reading (*Inside the wall*): the story turn opens
   permanent choice between two terms, with economic and story consequences; the third is
   whether to give Ossel's wall to the Rasp. The choices colour the ending.
 - **Grazing grounds** (calcite): raise Rmax.
+- **The current** (verb 3): a five-step dial. Toward the shelf it sweeps silt (+0.025/s a step) and
+  brings less plankton (×0.88 a step); toward the open water it brings plankton (×1.12 a step) and
+  sweeps less. The best setting moves with how hard the silt falls.
 - **Favours** (once the first meeting is settled): ask the Rasp, paid in sand, dearer each time:
   turn the silt aside (silt swept +0.02/s for good, up to 10), grind a path (+2 shoals, up to 5),
   carry stone up (3 minutes of calcite now). A sand sink with three different returns.

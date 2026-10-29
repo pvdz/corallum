@@ -17,7 +17,7 @@
 
 import { ACT1, BANDS_ACT1, MILESTONES, type Milestone } from '../content/act1.ts';
 import { ACT2, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
-import { ACT3, BANDS_ACT3, FAVOURS, MEETINGS, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
+import { ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { ACT4, BANDS_ACT4, DIALECTS, OTHERS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
 import { ACT5, BANDS_ACT5, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
@@ -231,7 +231,7 @@ export function rates(s: GameState): Rates {
     glowP: (ACT1.symbiontGlow * lv.symbiont * milestoneMult('symbiont', lv.symbiont) * (1 + ACT2.lightAmplify * s.jobs.light) +
       lightGlow * s.jobs.light * seasoned(s)) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1) * (chose(s, 'vent-crack', 'b') ? 1.15 : 1) * (sm.glow ?? 1) * (passed(s, 'dark') ? 1.25 : 1) * (boon(s, 'warm-heart') ? 1.3 : 1) * (chose(s, 'old-lamp', 'a') ? 1.1 : 1),
     glowK: ACT1.glowFade * (chose(s, 'squid', 'a') ? 0.8 : 1),
-    planktonP: seasoned(s) * ACT2.feedRate * s.jobs.feed * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
+    planktonP: (onShelf ? 1 - CURRENT.planktonPerStep * s.current : 1) * seasoned(s) * ACT2.feedRate * s.jobs.feed * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
       (speaks(s, 'sweepers') ? 3 : 1) * (lives(s, 'feather-duster') ? 1.3 : 1),
     planktonK: ACT2.planktonEaten * (has(s, 'slow-currents') ? 0.6 : 1) * (relic(s, 'terraces') ? 0.75 : 1) * (chose(s, 'angler', 'b') ? 0.85 : 1),
     murmurP: ACT2.scoutRate * s.jobs.scout * (has(s, 'beaked') ? 1.5 : 1) * (relic(s, 'wells') ? 1.25 : 1) * (chose(s, 'lost-shoal', 'b') ? 1.2 : 1) * (passed(s, 'silent') ? 1.3 : 1),
@@ -239,7 +239,7 @@ export function rates(s: GameState): Rates {
     siltP: onShelf
       ? ACT3.siltFall * (1 + (target - ACT3.from) / ACT3.siltGrowthPer) * (s.truce.wall === 'a' ? 0.6 : 1) * sm.silt * (passed(s, 'buried') ? 0.8 : 1) * 0.85 ** s.works.breakwater
       : 0,
-    siltK: ACT3.naturalSweep + (lives(s, 'pistol-shrimp') ? 0.04 : 0) + 0.02 * s.favours.clear + (chose(s, 'eggs', 'b') ? 0.02 : 0) + ACT3.flowSweep * lv.sandbar + LINEAGE.glassSweep * trait(s, 'glass-gardeners') + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
+    siltK: Math.max(0.02, ACT3.naturalSweep + (s.current > 0 ? CURRENT.siltPerStep : CURRENT.siltPerStep / 2) * s.current) + (lives(s, 'pistol-shrimp') ? 0.04 : 0) + 0.02 * s.favours.clear + (chose(s, 'eggs', 'b') ? 0.02 : 0) + ACT3.flowSweep * lv.sandbar + LINEAGE.glassSweep * trait(s, 'glass-gardeners') + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
     sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1) * (relic(s, 'midden') ? 1.3 : 1) * (lives(s, 'sea-cucumber') ? 1.4 : 1) * (chose(s, 'turtle', 'b') ? 1.25 : 1) * (has(s, 'rasp-song') ? 1.3 : 1) * (chose(s, 'young-rasp', 'b') ? 1.15 : 1) * (paired(s, 'pistol-shrimp', 'sea-cucumber') ? 1.2 : 1),
     sandK: ACT3.sandSettle,
     bloomP: sunlight(s, target) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * ACT4.meadowBloom ** lv.meadow *
@@ -1008,6 +1008,12 @@ export function build(s: GameState, id: WorkId): boolean {
   const wk = WORKS.find((x) => x.id === id)!;
   remember(s, 'work', `${wk.stageNames[s.works[id] - 1]!.toLowerCase()} of ${wk.name.toLowerCase()}`);
   return true;
+}
+
+// ---------- The current ----------
+
+export function setCurrent(s: GameState, c: number): void {
+  s.current = Math.max(-CURRENT.steps, Math.min(CURRENT.steps, Math.round(c)));
 }
 
 // ---------- Favours of the Rasp ----------

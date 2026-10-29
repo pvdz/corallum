@@ -168,3 +168,14 @@ export const FAVOURS: readonly { id: FavourId; name: string; effect: string; cos
   { id: 'carry', name: 'Carry stone up', effect: '3 minutes of calcite now', cost: 5000, growth: 1.5, max: Infinity },
 ];
 export const FAVOUR_TEXT = { head: 'Ask the Rasp', done: 'done' } as const;
+
+/** The current (Twilight verb): turned toward the shelf (+) it sweeps silt, toward the open water (−) it brings plankton. */
+export const CURRENT = {
+  steps: 2,
+  siltPerStep: 0.025,
+  planktonPerStep: 0.12,
+  label: 'The current',
+  ends: ['toward the open water', 'toward the shelf'],
+  what: (c: number) => c === 0 ? 'straight along the reef' : c > 0 ? `silt swept +${(0.025 * c).toFixed(3)}/s · plankton ×${(1 - 0.12 * c).toFixed(2)}`
+    : `plankton ×${(1 - 0.12 * c).toFixed(2)} · silt swept −${(0.0125 * -c).toFixed(4)}/s`,
+} as const;

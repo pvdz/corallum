@@ -83,6 +83,8 @@ export type GameState = {
   sand: number;
   /** Rasp admitted to graze (the Act III dial). */
   rasp: number;
+  /** The current, −2 (toward the open water: plankton) … +2 (toward the shelf: silt swept). */
+  current: number;
   /** Photosynthetic sugar (Act IV). */
   bloom: number;
   /** Dialects chosen per tier ('' until chosen). */
@@ -170,6 +172,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     silt: 0,
     sand: 0,
     rasp: 0,
+    current: 0,
     truce: { terms: '', story: '', wall: '' },
     bloom: 0,
     spawn: 0,

@@ -6,7 +6,7 @@ import { ACT1, MILESTONES } from '../content/act1.ts';
 import type { Band, Currency, UpgradeId } from '../content/types.ts';
 import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
-import { ACT3, FAVOURS, FAVOUR_TEXT, MEETINGS, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
+import { ACT3, CURRENT, FAVOURS, FAVOUR_TEXT, MEETINGS, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { DIALECTS, OTHERS, TIERS, type DialectId } from '../content/act4.ts';
 import { BOONS, BOON_TEXT, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { MEMORIES } from '../content/act5.ts';
@@ -59,6 +59,8 @@ export type PanelHooks = {
   build(id: WorkId): void;
   /** Choose the line's colours. */
   recolour(id: string): void;
+  /** Turn the current (−2 … +2). */
+  setCurrent(c: number): void;
   /** Ask the Rasp a favour. */
   favour(id: FavourId): void;
   /** Answer a moment. */
@@ -318,7 +320,19 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     favourRow.append(b);
     return { f, b, price };
   });
-  raspBox.append(raspHead, raspRow, raspWhat, favourRow);
+  // The current: five steps from the open water to the shelf.
+  const currentRow = el('div', 'current-row');
+  const currentLabel = el('span', 'current-label', CURRENT.label);
+  const currentSteps = el('div', 'current-steps');
+  const currentWhat = el('span', 'current-what');
+  const currentButtons = [-2, -1, 0, 1, 2].map((c) => {
+    const b = button('current-step', c === 0 ? '·' : c < 0 ? '‹'.repeat(-c) : '›'.repeat(c), () => hooks.setCurrent(c));
+    b.title = c === 0 ? 'straight along the reef' : c < 0 ? CURRENT.ends[0] : CURRENT.ends[1];
+    currentSteps.append(b);
+    return { c, b };
+  });
+  currentRow.append(currentLabel, currentSteps, currentWhat);
+  raspBox.append(raspHead, raspRow, raspWhat, currentRow, favourRow);
   grow.append(raspBox);
   let lastState: GameState | null = null;
 
@@ -1297,6 +1311,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const bestNote = raspBest === raspHold
           ? `Best setting: ${mark(raspBest)}`
           : `Best for income: ${mark(raspBest)} · best before going away: ${mark(raspHold)}`;
+        currentRow.hidden = actAt(s.height) < 3;
+        for (const x of currentButtons) x.b.classList.toggle('on', x.c === s.current);
+        currentWhat.textContent = CURRENT.what(s.current);
         favourRow.hidden = !favourOpen(s);
         for (const x of favourButtons) {
           const done = favourMaxed(s, x.f.id);
