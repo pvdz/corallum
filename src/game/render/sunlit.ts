@@ -525,6 +525,25 @@ export function createSunlitScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** Dust from far away (the moment, once answered): rust-red motes drifting slowly down from the surface. */
+  function drawDust(ctx: CanvasRenderingContext2D, t: number, a: number): void {
+    const s = scale();
+    ctx.save();
+    const g = ctx.createLinearGradient(0, focus.y, 0, focus.y + focus.h * 0.3);
+    g.addColorStop(0, `rgba(200,110,70,${0.16 * a})`);
+    g.addColorStop(1, 'rgba(200,110,70,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(focus.x, focus.y, focus.w, focus.h * 0.3);
+    for (let i = 0; i < 90; i++) {
+      const u = (t * 0.012 + i * 0.6180339) % 1;
+      const x = focus.x + ((i * 0.3819 + Math.sin(t * 0.2 + i) * 0.01) % 1) * focus.w;
+      const y = focus.y + u * focus.h * 0.7;
+      ctx.fillStyle = `rgba(${i % 3 ? '214,120,72' : '235,170,110'},${0.55 * a * (1 - u)})`;
+      ctx.fillRect(x, y, (1 + (i % 3)) * s, (1 + (i % 3)) * s);
+    }
+    ctx.restore();
+  }
+
   /** Warm water: an amber haze from the surface down and slow shimmering bands of heat. */
   function drawHeat(ctx: CanvasRenderingContext2D, t: number, warm: number): void {
     ctx.save();
@@ -1398,6 +1417,7 @@ export function createSunlitScene(seed: number): Scene {
       if (v.bands.includes('storm')) drawStorm(ctx, t);
       if (v.heat.warm > 0) drawHeat(ctx, t, v.heat.warm);
       if (night < 0.5) drawCloudShadow(ctx, t, 1 - night * 2);
+      if (v.moments.dust) drawDust(ctx, t, 1 - night * 0.7);
       if (night > 0) drawNight(ctx, t, night, 0.3);
       drawPearls(ctx, t, night);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
