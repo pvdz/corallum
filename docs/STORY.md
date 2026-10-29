@@ -226,4 +226,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Ossel's own memories, one every tenth request kept | this game's own characters | OK |
 | Great work: the beacon (Breach) | this game's own world | OK |
 | Great work: the snow fence (Silt Floor) | this game's own world | OK |
+| Twilight bands: The blue hour (3125), Beak marks (3275) | this game's own lore | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

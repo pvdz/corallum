@@ -129,9 +129,19 @@ export const BANDS_ACT3: readonly Band[] = [
       'Ossel hisses. “Do not let them near you.” The silt is already thick on your lower branches.',
   },
   {
+    id: 'blue-hour', metres: 3125, title: 'The blue hour',
+    text: 'For a while each day the light from above and the dark from below are exactly even, and everything on ' +
+      'the shelf is the same deep blue, fish and stone and you. Ossel calls it the only fair hour.',
+  },
+  {
     id: 'first-words', metres: 3200, title: 'First words',
     text: 'Your scouts have been listening to the Rasp instead of the buried bands. It turns out the ' +
       'grinding has a grammar. Most of the words are about food. Some are about a wall.',
+  },
+  {
+    id: 'beak-marks', metres: 3275, title: 'Beak marks',
+    text: 'On a dead branch low on your stone you find the marks of a Rasp beak: neat, patient, curved. It took only ' +
+      'what was already dead. You did not even notice it happening.',
   },
   {
     id: 'sand', metres: 3350, title: 'Sand',

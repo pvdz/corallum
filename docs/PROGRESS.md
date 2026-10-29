@@ -717,3 +717,4 @@ date, what landed, what is half-done, what's next.
 - Moonlit sweeps: at the Breach under a full moon, each sweep also gathers two seconds of spawn (economy moonlitSpawn); a whisper says so.
 - A second Breach great work, the beacon (from 3985 m; calcite+bloom; spawn fades ×0.9 per stage): a stone spire above the water beside the crown, lit at the last stage. Every zone above the floor now has two great works. Bot 7h28.
 - A second Silt Floor great work, the snow fence (from 40 m; calcite+glow; dissolving ×0.95 per stage), stones stacked left of the foot. The combo glow on the tips is toned down (it bloomed into white blobs at a full combo).
+- Two more Twilight bands: The blue hour (3125 m), Beak marks (3275 m).
