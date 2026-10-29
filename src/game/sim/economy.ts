@@ -1907,6 +1907,7 @@ function requestOpen(s: GameState, kind: RequestKind): boolean {
     case 'feast': return s.bands.includes(FEAST.band);
     case 'prune': return s.old >= 0.5;
     case 'milky': return untilMilky(s) < 600;
+    case 'lucky': return s.tally.touches >= 5;
     case 'shoals': return revealed(s, 'shoal') && !maxed(s, 'shoal');
     case 'sandbar': case 'pigment': case 'ripen': return revealed(s, kind) && !maxed(s, kind);
     case 'glimmer': return revealed(s, 'symbiont') && !maxed(s, 'symbiont');
