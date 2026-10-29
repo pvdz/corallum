@@ -179,7 +179,7 @@ export type GameState = {
   /** The reef's height sampled every HISTORY_STEP sim seconds (for the growth chart). */
   history: number[];
   /** Shoals away at a ruin: the site ('' for none), when they return, and the jobs they left. */
-  expedition: { site: TripId | ''; back: number; feed: number; light: number; scout: number; fan: number; n: number;
+  expedition: { site: TripId | ''; back: number; feed: number; light: number; scout: number; fan: number; guard: number; n: number;
     /** The fork halfway: '' not met yet, 'press' went deeper, 'home' came straight back. */
     fork: '' | ForkId };
   /** Ossel's current request (kind '' for none yet), its count at the start, and how many are done; `paid` is what the last one brought. */
@@ -257,7 +257,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
       polyp: 0, symbiont: 0, skeleton: 0, lattice: 0, vent: 0, lure: 0, shoal: 0, daughter: 0, net: 0,
       grounds: 0, sandbar: 0, channel: 0, grotto: 0, pigment: 0, canopy: 0, meadow: 0, ripen: 0, cay: 0, sweeten: 0,
     },
-    jobs: { feed: 0, light: 0, scout: 0, fan: 0 },
+    jobs: { feed: 0, light: 0, scout: 0, fan: 0, guard: 0 },
     lastJob: 'feed',
     readings: [],
     bands: [],
@@ -275,7 +275,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     signal: { last: -1, answered: 0, right: -2, streak: 0 },
     feasts: 0,
     history: [],
-    expedition: { site: '', back: 0, feed: 0, light: 0, scout: 0, fan: 0, n: 0, fork: '' },
+    expedition: { site: '', back: 0, feed: 0, light: 0, scout: 0, fan: 0, guard: 0, n: 0, fork: '' },
     relics: [],
     heirloom: '',
     visits: [],

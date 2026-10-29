@@ -596,3 +596,4 @@ date, what landed, what is half-done, what's next.
 - Sweeps startle the small fish: lanternfish and Sunlit reef fish near a sweep dart away from it and drift back (sightings.ts poke/pushed).
 - Two more of Ossel's questions: grey (700 m, about letting old stone go) and sister (2600 m, race or company); guide says seven.
 - Golden hours in the Sunlit Crown: an amber wash at dusk and a rose one at dawn, strongest near the surface (sunlit.ts drawGoldenHour).
+- A fifth shoal job, guard (Sunlit Crown on, act3.ts GUARD): with 4 on guard any intruder is driven off in its last second, for half (economy guarding). Guard shoals ring the crown (shoals.ts); expeditions take guards too; sim test.

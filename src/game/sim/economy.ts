@@ -17,7 +17,7 @@
 
 import { ACT1, BANDS_ACT1, FLARE, FLURRY, OLD, GRAIN, GRAINS, SPORT, SPORTS, type GrainId, type SportId, MILESTONES, STRAIN, type Milestone, type StrainId } from '../content/act1.ts';
 import { ACT2, MILKY, RISING, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
-import { FAN, UPWELL, ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDLE, RIDDLES, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
+import { FAN, GUARD, UPWELL, ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDLE, RIDDLES, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { FIGURES, SKY, type FigureId } from '../content/sky.ts';
 import { QUESTIONS, type Question, type QuestionId } from '../content/ossel.ts';
 import { ACT4, HEAT, BANDS_ACT4, DIALECTS, OTHERS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
@@ -598,12 +598,18 @@ export function buy(s: GameState, id: UpgradeId): boolean {
 // ---------- Shoals ----------
 
 export function idleShoals(s: GameState): number {
-  return s.levels.shoal - s.jobs.feed - s.jobs.light - s.jobs.scout - s.jobs.fan - awayShoals(s);
+  return s.levels.shoal - s.jobs.feed - s.jobs.light - s.jobs.scout - s.jobs.fan - s.jobs.guard - awayShoals(s);
 }
 
 /** Move one shoal into (delta +1, from the idle pool) or out of (delta -1) a job. */
+/** Enough shoals on guard to drive intruders off on their own. */
+export function guarding(s: GameState): boolean {
+  return s.jobs.guard >= GUARD.need && s.height >= GUARD.from;
+}
+
 export function jobOpen(s: GameState, job: Job): boolean {
   if (job === 'fan') return heightForBands(s.levels.skeleton) >= ACT3.from;
+  if (job === 'guard') return s.height >= GUARD.from;
   return job !== 'scout' || readingsRevealed(s);
 }
 
@@ -639,12 +645,12 @@ export function seasoned(s: GameState): number {
 /** Shoals away at a ruin. */
 export function awayShoals(s: GameState): number {
   const ex = s.expedition;
-  return ex.site ? ex.feed + ex.light + ex.scout + ex.fan + idleAway(s) : 0;
+  return ex.site ? ex.feed + ex.light + ex.scout + ex.fan + ex.guard + idleAway(s) : 0;
 }
 /** Idle shoals that went along (they come back idle): the trip's size minus the ones taken from jobs. */
 function idleAway(s: GameState): number {
   const ex = s.expedition;
-  return Math.max(0, ex.n - ex.feed - ex.light - ex.scout - ex.fan);
+  return Math.max(0, ex.n - ex.feed - ex.light - ex.scout - ex.fan - ex.guard);
 }
 
 /** A roam: a quarter of the shoals, ten minutes, no relic. */
@@ -704,8 +710,8 @@ export function send(s: GameState): boolean {
   const x = nextSite(s);
   if (!x || !canSend(s)) return false;
   let need = x.shoals - Math.min(x.shoals, idleShoals(s));
-  const took = { feed: 0, light: 0, scout: 0, fan: 0 };
-  for (const j of ['fan', 'scout', 'light', 'feed'] as const) {
+  const took = { feed: 0, light: 0, scout: 0, fan: 0, guard: 0 };
+  for (const j of ['guard', 'fan', 'scout', 'light', 'feed'] as const) {
     const n = Math.min(need, s.jobs[j]);
     s.jobs[j] -= n;
     took[j] = n;
@@ -770,7 +776,8 @@ function homecoming(s: GameState): void {
   s.jobs.light += ex.light;
   s.jobs.scout += ex.scout;
   s.jobs.fan += ex.fan;
-  s.expedition = { site: '', back: 0, feed: 0, light: 0, scout: 0, fan: 0, n: 0, fork: '' };
+  s.jobs.guard += ex.guard;
+  s.expedition = { site: '', back: 0, feed: 0, light: 0, scout: 0, fan: 0, guard: 0, n: 0, fork: '' };
   s.murmurs += heard;
   s.earned.murmurs += heard;
   if (roam) {
@@ -2082,7 +2089,7 @@ export function untilThorn(s: GameState): number {
 /** Guard crabs (thorn stars) or a finished lantern spire (dragonfish) drive it off in its last second. */
 export function crabThorn(s: GameState): Thorn | null {
   const th = currentThorn(s);
-  const guarded = th && (trait(s, 'thorn-wise') > 0 || (th.kind === 'thorn-star' ? lives(s, 'guard-crab') || chose(s, 'pups', 'a') || chose(s, 'outbreak', 'b') : th.kind === 'dragonfish' ? s.works.spire >= 3 : false));
+  const guarded = th && (trait(s, 'thorn-wise') > 0 || guarding(s) || (th.kind === 'thorn-star' ? lives(s, 'guard-crab') || chose(s, 'pups', 'a') || chose(s, 'outbreak', 'b') : th.kind === 'dragonfish' ? s.works.spire >= 3 : false));
   return th && guarded && s.t >= th.start + THORN.life - 1 ? th : null;
 }
 

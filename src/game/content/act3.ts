@@ -198,6 +198,10 @@ export const FAVOUR_TEXT = { head: 'Ask the Rasp', done: 'done' } as const;
  * reef for a minute; turning the current toward it (or setting it that way again) catches a haul.
  */
 /** Fanning shoals (a job on the shelf): silt swept per shoal per second. */
+/** Guarding (Sunlit Crown on): with `need` shoals on guard, intruders are driven off in their last second, for half. */
+export const GUARD = { from: 3800, need: 4, locked: 'only in the light, where gulls and snakes hunt',
+  what: (n: number, need: number) => n >= need ? 'together they drive off intruders, for half' : `${need - n} more and they drive off intruders` } as const;
+
 export const FAN = { sweep: 0.003, locked: 'only where silt falls, on the shelf', what: (each: string) => `silt swept +${each}/s each` } as const;
 
 export const UPWELL = {

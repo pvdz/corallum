@@ -39,6 +39,14 @@ export function createShoals(seed: number) {
       const r = (70 + 40 * Math.sin(t * 0.21 + i)) * s;
       return [crx + Math.cos(a) * r * 1.5, cry - 60 * s + Math.sin(a) * r * 0.55];
     }
+    if (job === 'guard') {
+      // On guard: a tight, quick ring round the crown, some going each way.
+      const [crx, cry] = reef.crown(L);
+      const dir = i % 2 ? 1 : -1;
+      const a = dir * t * 0.9 + (i / Math.max(1, n)) * Math.PI * 2;
+      const r = (95 + 12 * (i % 3)) * s;
+      return [crx + Math.cos(a) * r, cry + 10 * s + Math.sin(a) * r * 0.45];
+    }
     // Scouts dive below the frame and come back.
     const period = 26;
     const u = ((t + i * 7.3) % period) / period;
@@ -95,7 +103,7 @@ export function createShoals(seed: number) {
     }
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    const rgb = job === 'light' ? '150,255,240' : job === 'scout' ? '190,170,255' : job === 'fan' ? '235,215,170' : '120,200,255';
+    const rgb = job === 'light' ? '150,255,240' : job === 'scout' ? '190,170,255' : job === 'fan' ? '235,215,170' : job === 'guard' ? '255,200,120' : '120,200,255';
     const a = job === 'light' ? 0.35 + 0.4 * flicker : 0.4;
     for (const [lx, ly] of lights) {
       const boost = wave ? Math.exp(-(((Math.hypot(lx - wave.x, ly - wave.y) - wave.age * 120 * s) / (14 * s)) ** 2)) * (1 - wave.age / 1.6) : 0;
@@ -227,7 +235,7 @@ export function createShoals(seed: number) {
 
   function counts(v: ReefView): Record<Job, number> {
     const k = Math.min(MAX_DRAWN_SHOALS, v.shoals) / Math.max(1, v.shoals);
-    return { feed: Math.round(v.jobs.feed * k), light: Math.round(v.jobs.light * k), scout: Math.round(v.jobs.scout * k), fan: Math.round(v.jobs.fan * k) };
+    return { feed: Math.round(v.jobs.feed * k), light: Math.round(v.jobs.light * k), scout: Math.round(v.jobs.scout * k), fan: Math.round(v.jobs.fan * k), guard: Math.round((v.jobs.guard ?? 0) * k) };
   }
 
   return {
@@ -236,6 +244,7 @@ export function createShoals(seed: number) {
       const c = counts(v);
       for (let i = 0; i < c.scout; i++) drawFishShoal(ctx, F, reef, 'scout', i, c.scout, t, L, body);
       for (let i = 0; i < c.fan; i++) drawFishShoal(ctx, F, reef, 'fan', i, c.fan, t, L, body);
+      for (let i = 0; i < c.guard; i++) drawFishShoal(ctx, F, reef, 'guard', i, c.guard, t, L, body);
       for (let i = 0; i < c.feed; i += 2) drawFishShoal(ctx, F, reef, 'feed', i, c.feed, t, L, body);
       drawPlankton(ctx, F, t, v, L);
       drawTrip(ctx, F, reef, L, v, t);

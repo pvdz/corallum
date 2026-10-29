@@ -10,7 +10,7 @@ const sweeps = !argv.includes('--no-sweep');
 const maxT = Number(opt('max') ?? 16 * 3600);
 const to = Number(opt('to') ?? Infinity);
 const sp = opt('split')?.split(',').map(Number);
-const split = sp ? { feed: sp[0]!, light: sp[1]!, scout: sp[2]!, fan: 0 } : undefined;
+const split = sp ? { feed: sp[0]!, light: sp[1]!, scout: sp[2]!, fan: 0, guard: 0 } : undefined;
 const fmt = (t: number) => `${Math.floor(t / 3600)}h${String(Math.floor((t % 3600) / 60)).padStart(2, '0')}m${String(Math.floor(t % 60)).padStart(2, '0')}s`;
 
 const tr = opt('truce');

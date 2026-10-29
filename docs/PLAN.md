@@ -217,6 +217,7 @@ Tick items as they land; keep this list honest. Add items freely.
   - [x] an eighth hard seamount, heavy (old stone ×3, polyps ×0.7; trial 3000 m → Stone-light, knobs pay ×2); its moment Bowed down
   - [x] a milky sea in the Midnight Water (every 25 min for a minute; sweeps gather 4 s of glow)
   - [x] grotto (Twilight sand sink: +1 home per level, max 2), drawn as hollows at the reef's foot
+  - [x] a fifth shoal job, guard (Sunlit on: 4 guards drive intruders off for half)
   - [x] old stone: grey knobs fill the tips (max 6, away too), tap to break off for a burst
   - [x] Ossel's questions: four, remembered, answered back, carried into the ending
   - [x] Ossel asks for the rising, the signal and the stars

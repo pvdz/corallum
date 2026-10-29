@@ -25,7 +25,7 @@ export type BotOptions = {
 };
 export type BotEvent = { t: number; what: string };
 
-const DEFAULT_SPLIT: Record<Job, number> = { feed: 0.5, light: 0.3, scout: 0.2, fan: 0 };
+const DEFAULT_SPLIT: Record<Job, number> = { feed: 0.5, light: 0.3, scout: 0.2, fan: 0, guard: 0 };
 
 /** One decision: read if possible, buy the cheapest affordable upgrades, place idle shoals. */
 const DEFAULT_TRUCE: Record<MeetingId, Choice> = { terms: 'a', story: 'a', wall: 'a' };
@@ -81,7 +81,7 @@ export function botDecide(
     if (s.t % 30 < 1) balanceFeedLight(s);
   } else {
     const rest = (1 - scoutShare) / (split.feed + split.light);
-    const share: Record<Job, number> = { feed: split.feed * rest, light: split.light * rest, scout: scoutShare, fan: 0 };
+    const share: Record<Job, number> = { feed: split.feed * rest, light: split.light * rest, scout: scoutShare, fan: 0, guard: 0 };
     const gap = (j: Job) => share[j] * total - s.jobs[j];
     while (idleShoals(s) > 0) {
       const best = (['feed', 'light', 'scout'] as const).reduce((a, b) => (gap(b) > gap(a) ? b : a));

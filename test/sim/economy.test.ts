@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { flare, prune, oldKnobs, inMilky, currentThorn, dayOf, catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
+import { flare, prune, oldKnobs, inMilky, guarding, currentThorn, dayOf, catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { newGame, type GameState } from '../../src/game/sim/state.ts';
 import { GIFT } from '../../src/game/content/creatures.ts';
@@ -582,4 +582,15 @@ test('a milky sea: in the Midnight Water, for a minute in each period, sweeps ga
   s.height = 10;
   s.t = MILKY.start + 10;
   assert.ok(!inMilky(s), 'not on the Silt Floor');
+});
+
+test('guard shoals: in the light, four on guard drive intruders off by themselves; not below it', () => {
+  const s = newGame(8);
+  s.levels.shoal = 6;
+  s.height = 3000;
+  assert.equal(assign(s, 'guard', 1), false, 'not on the shelf');
+  s.height = 3850;
+  for (let i = 0; i < 4; i++) assert.ok(assign(s, 'guard', 1));
+  assert.equal(idleShoals(s), 2);
+  assert.ok(guarding(s));
 });

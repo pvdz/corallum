@@ -9,7 +9,7 @@ import { ACT1, FLARE, FLURRY, GRAINS, MILESTONES, SPORTS, STRAINS, type GrainId,
 import type { Band, Currency, UpgradeId } from '../content/types.ts';
 import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId, RISING, MILKY } from '../content/act2.ts';
-import { ACT3, CURRENT, FAVOURS, FAVOUR_TEXT, MEETINGS, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId, FAN, UPWELL } from '../content/act3.ts';
+import { ACT3, CURRENT, FAVOURS, FAVOUR_TEXT, MEETINGS, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId, FAN, GUARD, UPWELL } from '../content/act3.ts';
 import { DIALECTS, HEAT, TIERS, type DialectId } from '../content/act4.ts';
 import { BOONS, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId, FORGET } from '../content/lineage.ts';
 import { GARDEN, LINE_TITLES, MEMORIES, type MemoryId } from '../content/act5.ts';
@@ -1546,7 +1546,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           const open = jobOpen(s, j.id);
           row.row.classList.toggle('locked', !open);
           // Fanning only exists on the shelf: no locked row before then.
-          row.row.hidden = j.id === 'fan' && !open;
+          row.row.hidden = (j.id === 'fan' || j.id === 'guard') && !open;
           row.count.textContent = String(s.jobs[j.id]);
           row.minus.disabled = s.jobs[j.id] <= 0;
           row.plus.disabled = !open || idle <= 0;
@@ -1554,6 +1554,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           row.row.title = j.verb;
           row.what.textContent = !open ? (j.id === 'fan' ? FAN.locked : 'they do not yet know how to listen')
             : j.id === 'fan' ? FAN.what(FAN.sweep.toFixed(3))
+            : j.id === 'guard' ? GUARD.what(s.jobs.guard, GUARD.need)
             : j.id === 'feed' ? (perFeed ? `${rate(perFeed)} plankton each` : 'herd plankton to the polyps') + gainText(jobGains.feed)
             : j.id === 'light' ? (perLight ? `${rate(perLight)} glow each` : 'swim the glow pattern') + gainText(jobGains.light)
             : perScout ? `${rate(perScout)} murmurs each` : 'listen at buried bands';
