@@ -44,16 +44,14 @@ export const STOCK_NOTES: Record<string, string> = {
 
 /** Shown once (per browser line) after an update with new things to find; `id` changes per update. */
 export const NEWS = {
-  id: 'news:2026-10-29b',
+  id: 'news:2026-10-29c',
   kicker: 'New in the sea',
-  title: 'The reef has neighbours, and plans',
-  text: 'The water turns every ten minutes and makes one kind of growing cheaper. Ossel asks for small things, ' +
-    'and moments ask how you meet what happens. Shoals can search the ruins of Thousandfold, roam the dark, or ' +
-    'visit the sister reef that races you to the surface. Residents move into your branches; each zone has a ' +
-    'great work to build; thorn stars and dragonfish come to eat and can be driven off; shards of an old tablet ' +
-    'turn up in the silt; the reef keeps its own bands. New seamounts bring boons, heirlooms and hard places, ' +
-    'and the line learns new ways. Since then: intruders in every zone, the shoals’ signal, the Rasp elder’s riddles, ' +
-    'shells on the sand, the glimmerseed strain, the current, a garden after the end. The Reef tab’s guide has a line on each.',
+  title: 'Old stone, and lucky neighbours',
+  text: 'Grey knobs of old stone now gather on the reef’s tips, even while you are away: tap one to let it go, and now and ' +
+    'then one held a memory. Some neighbours are lucky for a while (golden sparks): touch one then. The Midnight Water ' +
+    'sometimes turns to a milky sea, and sweeps gather light. In the light, shoals can stand guard; the shelf has grottoes ' +
+    'for more residents (a boxer crab among them); a fourth Form, Pillars; a heavy seamount; storms far off at the Breach; ' +
+    'new moments, Readings, trips and creatures. The Reef tab’s guide has a line on each.',
 } as const;
 
 /** The first time the line enters a zone: what is new there, in a few lines (zones 2–5). */
