@@ -1189,7 +1189,7 @@ function whisperCheck(now: number): void {
   lastWhisperCheck = now;
   // At the Breach only the moon speaks: the rest would talk over the spawning.
   // Fewer words: only the whispers that carry story (Ossel's claims, the moon).
-  const w = ended(state) ? undefined : WHISPERS.find((x) => !state.meta.seen.includes(`w:${x.id}`) && (state.height < 3980 || x.id === 'moon' || x.id === 'wish') &&
+  const w = ended(state) ? undefined : WHISPERS.find((x) => !state.meta.seen.includes(`w:${x.id}`) && (state.height < 3980 || x.id === 'moon' || x.id === 'wish' || x.id === 'moonlit') &&
     (!quiet.get() || x.id.startsWith('claim-') || x.id.startsWith('moon')) && x.when(state));
   if (!w) return;
   state.meta.seen.push(`w:${w.id}`);
