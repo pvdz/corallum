@@ -10,12 +10,12 @@ import { SHELLS } from '../content/shells.ts';
 import { drawRelics } from './relics.ts';
 import { drawResidents } from './residents.ts';
 import { palette } from '../content/palettes.ts';
-import { sight, spot, startled, pushed } from './sightings.ts';
+import { sight, speaking, spot, startled, pushed } from './sightings.ts';
 import type { DialectId } from '../content/act4.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import type { CoralForm } from './coral.ts';
-import { glow } from './draw.ts';
+import { glow, drawOsselSand } from './draw.ts';
 import { drawCraft, FLUORESCENT_POLYP } from './craft.ts';
 import { drawColony, drawDaughters } from './daughters.ts';
 import { createLayerCache } from './layer.ts';
@@ -1542,6 +1542,12 @@ export function createSunlitScene(seed: number): Scene {
           alt: { branch: '#8a5bb0', tip: '#b88ad8', polyp: 'rgba(240,220,255,0.95)' } }, larvaSeed, v.nurseries);
       drawTerrace(ctx, L.cx, L.unit, v.works.terrace, scale(), (x) => floorY(Math.min(1, Math.max(0, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2)))), t);
       drawClam(ctx, t);
+      {
+        // Ossel, as the glittering sand it became (or, kept, its wall's foot): tap to hear it.
+        const ox = focus.x - focus.w * 0.1 + 0.62 * focus.w * 1.2, oy = floorY(0.62) + 6 * scale();
+        drawOsselSand(ctx, ox, oy, scale() * 1.4, t, speaking(t));
+        spot('ossel', ox, oy, 30 * scale());
+      }
       drawFishShadows(ctx, t, 1 - night);
       if (night > 0) drawNight(ctx, t, night, 0.6);
       if (v.othersSpawn) drawOthersSpawn(ctx, t);

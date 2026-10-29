@@ -801,7 +801,7 @@ html.view-mode #photo { display: grid; }
 .trait .forget:hover { opacity: 1; }
 .trait .forget[hidden] { display: none; }
 /* The next twenty minutes as a strip of marks under the water's forecast. */
-.almanac { position: relative; display: block; flex: 1 0 100%; height: 40px; margin: 6px 4px 2px; border-top: 1px solid rgba(160, 200, 255, 0.25); }
+.almanac { position: relative; display: block; flex: 1 0 100%; height: 52px; margin: 6px 4px 2px; border-top: 1px solid rgba(160, 200, 255, 0.25); }
 .almanac[hidden] { display: none; }
 .almanac::before { content: ''; position: absolute; left: 0; right: 0; top: -1px; height: 1px;
   background: linear-gradient(90deg, rgba(160, 220, 255, 0.6), rgba(160, 220, 255, 0)); }
@@ -809,5 +809,6 @@ html.view-mode #photo { display: grid; }
 .almanac .mark i { width: 7px; height: 7px; border-radius: 50%; background: #9fd8ff; box-shadow: 0 0 6px rgba(160, 220, 255, 0.8); }
 .almanac .mark.now i { background: #ffd9a8; box-shadow: 0 0 8px rgba(255, 210, 160, 0.9); }
 .almanac .mark b { font-weight: normal; font-size: 10px; white-space: nowrap; color: rgba(210, 225, 245, 0.75); margin-top: 2px; }
-.almanac .mark.low b { margin-top: 16px; }
+.almanac .mark.row1 b { margin-top: 15px; }
+.almanac .mark.row2 b { margin-top: 28px; }
 .shell-chip .shell-pic { display: block; width: 44px; height: 30px; }

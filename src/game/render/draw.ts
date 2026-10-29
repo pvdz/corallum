@@ -149,3 +149,17 @@ export function drawDarkness(ctx: CanvasRenderingContext2D, cx: number, cy: numb
   ctx.fillRect(0, 0, w, h);
   ctx.restore();
 }
+
+/** The sand that was Ossel: a patch of glittering grains, brighter (and flickering) while it speaks. */
+export function drawOsselSand(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, t: number, talk: number): void {
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 26; i++) {
+    const a = i * 2.39996, r = Math.sqrt(i / 26) * 22 * s;
+    const tw = Math.max(0, Math.sin(t * (1.3 + (i % 5) * 0.4) + i * 1.7)) ** 6;
+    const px = x + Math.cos(a) * r, py = y + Math.sin(a) * r * 0.3;
+    glow(ctx, px, py, (2 + 3 * tw) * s, '255,245,215', 0.25 + 0.6 * tw + 0.5 * talk);
+  }
+  glow(ctx, x, y, 30 * s, '255,235,190', 0.08 + 0.25 * talk);
+  ctx.restore();
+}

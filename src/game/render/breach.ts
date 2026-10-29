@@ -10,12 +10,12 @@ import { drawPool } from './works.ts';
 import { palette } from '../content/palettes.ts';
 import { GARDEN } from '../content/act5.ts';
 import { drawRelics } from './relics.ts';
-import { sight, spot, startled } from './sightings.ts';
+import { sight, speaking, spot, startled } from './sightings.ts';
 import type { DialectId } from '../content/act4.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import type { CoralForm } from './coral.ts';
-import { drawMoon, glow } from './draw.ts';
+import { drawMoon, glow, drawOsselSand } from './draw.ts';
 import { FIGURES, WISH, type Figure } from '../content/sky.ts';
 import { SWELL } from '../content/events.ts';
 import { drawPetrels, drawSailors, drawSeaSparkle, type Surface } from './surface.ts';
@@ -1271,6 +1271,12 @@ export function createBreachScene(seed: number): Scene {
       if (v.thorn?.kind === 'gull') drawGull(ctx, this.crownAt[0], waterY(), v.thorn.u, v.thorn.side, t, scale());
       if (v.bands.includes('rain')) { drawLightning(ctx, t, v.calm); drawRain(ctx, t); drawMoonbow(ctx, t, v.moonPhase, lastDawn); }
       drawPool(ctx, L.cx, waterY(), v.works.pool, scale(), t);
+      {
+        // Ossel's sand in the shallows beside the crown: tap to hear it.
+        const ox = L.cx - 170 * scale(), oy = waterY() + 120 * scale();
+        drawOsselSand(ctx, ox, oy, scale() * 1.4, t, speaking(t));
+        spot('ossel', ox, oy, 30 * scale());
+      }
       // Sand cays the reef has raised: low pale islands breaking the surface beside it.
       for (let k = 0; k < v.cays; k++) {
         const side = k % 2 ? -1 : 1;

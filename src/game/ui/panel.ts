@@ -1732,14 +1732,22 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           almanacKey = key;
           almanac.innerHTML = '';
           almanac.hidden = marks.length === 0;
-          marks.forEach(([t, w], i) => {
-            const m = el('span', `mark${i % 2 ? ' low' : ''}${t <= 0 ? ' now' : ''}`);
+          // Each label goes in the first of three rows where it does not run into the last one there.
+          const W = almanac.clientWidth || 300;
+          const rowEnd = [-1e9, -1e9, -1e9];
+          marks.forEach(([t, w]) => {
+            const label = w.replace(/^(a|an|the) /, '').split(' (')[0]!;
+            const cx = (Math.max(0, t) / 1200) * W, half = label.length * 2.9 + 4;
+            let row = rowEnd.findIndex((end) => cx - half > end);
+            if (row < 0) row = rowEnd.indexOf(Math.min(...rowEnd));
+            rowEnd[row] = cx + half;
+            const m = el('span', `mark row${row}${t <= 0 ? ' now' : ''}`);
             m.style.left = `${(Math.max(0, t) / 1200) * 100}%`;
             // Labels at the ends keep inside the card.
             const f = Math.max(0, t) / 1200;
             m.style.transform = f < 0.08 ? 'translateX(-4px)' : f > 0.92 ? 'translateX(calc(-100% + 4px))' : '';
             m.title = `${w} ${t > 0 ? `in ${duration(t)}` : WATER.now}`;
-            m.append(el('i'), el('b', '', w.replace(/^(a|an|the) /, '').split(' (')[0]!));
+            m.append(el('i'), el('b', '', label));
             almanac.append(m);
           });
         }

@@ -640,3 +640,4 @@ date, what landed, what is half-done, what's next.
 - Bands tab: Moments met across the line (each moment and the ways the line has met it; unmet ones show their depth, hard places' stay hidden).
 - Keys K (let a knob of old stone go) and W (wish when stars fall).
 - The shelf of kept shells shows each shell drawn (render/shells.ts drawShellShape, shared with the sand), its name as the tooltip.
+- Ossel can be heard in the light too: the sand it became glitters on the Sunlit floor and in the Breach shallows (draw.ts drawOsselSand, tappable, flickers as it speaks), so its after-ending lines are reachable. Almanac labels stack in up to three rows without overlapping.
