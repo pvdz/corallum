@@ -57,6 +57,7 @@ export function drawResidents(ctx: CanvasRenderingContext2D, reef: Reef, L: Reef
     else if (id === 'damselfish') damsels(ctx, reef, L, s, t);
     else if (id === 'host-anemone') anemone(ctx, reef, L, s, t, seed);
     else if (id === 'cleaner-wrasse') wrasse(ctx, reef, L, s, t, seed);
+    else if (id === 'boxer-crab') { if (floor) boxer(ctx, L, s, t, floor); }
   }
   ctx.restore();
 }
@@ -203,6 +204,65 @@ function dusters(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s: nu
       ctx.quadraticCurveTo(tx + Math.cos(a - 0.2) * len * 0.6, ty + Math.sin(a - 0.2) * len * 0.6, tx + Math.cos(a) * len, ty + Math.sin(a) * len);
       ctx.stroke();
     }
+  }
+}
+
+/** A boxer crab at the reef's foot, an anemone in each claw, waving them; touched, it shakes them hard. */
+function boxer(ctx: CanvasRenderingContext2D, L: ReefLayout, s0: number, t: number, floor: (x: number) => number): void {
+  const s = s0 * 1.7;
+  const touch = startled('boxer-crab', t);
+  const x = L.cx + 0.14 * L.unit, y = floor(x) - 1 * s;
+  spot('boxer-crab', x, y - 4 * s, 12 * s);
+  const shake = touch && touch.age < 2 ? Math.sin(touch.age * 30) * (1 - touch.age / 2) : 0;
+  // Legs.
+  ctx.strokeStyle = '#b8865a';
+  ctx.lineWidth = 0.8 * s;
+  for (let l = -1; l <= 1; l += 2)
+    for (let q = 0; q < 3; q++) {
+      ctx.beginPath();
+      ctx.moveTo(x + l * 2 * s, y - 1.5 * s);
+      ctx.lineTo(x + l * (4.5 + q) * s, y + 1 * s);
+      ctx.stroke();
+    }
+  // A striped body.
+  ctx.fillStyle = '#f2d8a8';
+  ctx.beginPath();
+  ctx.ellipse(x, y - 2.5 * s, 3.4 * s, 2.4 * s, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(150,70,60,0.7)';
+  ctx.lineWidth = 0.5 * s;
+  for (let k = -1; k <= 1; k++) {
+    ctx.beginPath();
+    ctx.moveTo(x + k * 1.6 * s - 1 * s, y - 4.4 * s);
+    ctx.lineTo(x + k * 1.6 * s + 1 * s, y - 0.8 * s);
+    ctx.stroke();
+  }
+  // Arms up, each holding a little anemone that waves.
+  for (const side of [-1, 1]) {
+    const wave = Math.sin(t * 2.2 + side) * 0.25 + shake * 0.6;
+    const ax = x + side * (4 + Math.cos(wave) * 2) * s, ay = y - (6 + Math.sin(wave) * 2) * s;
+    ctx.strokeStyle = '#d8a878';
+    ctx.lineWidth = 0.9 * s;
+    ctx.beginPath();
+    ctx.moveTo(x + side * 2 * s, y - 3.5 * s);
+    ctx.lineTo(ax, ay);
+    ctx.stroke();
+    for (let k = 0; k < 7; k++) {
+      const a = -Math.PI / 2 + (k - 3) * 0.4 + Math.sin(t * 3 + k) * 0.1;
+      ctx.strokeStyle = 'rgba(245,200,230,0.95)';
+      ctx.lineWidth = 0.7 * s;
+      ctx.beginPath();
+      ctx.moveTo(ax, ay);
+      ctx.lineTo(ax + Math.cos(a) * 2.6 * s, ay + Math.sin(a) * 2.6 * s);
+      ctx.stroke();
+    }
+  }
+  // Eyes on stalks.
+  ctx.fillStyle = '#141010';
+  for (const ex of [-1, 1]) {
+    ctx.beginPath();
+    ctx.arc(x + ex * 1.2 * s, y - 5.2 * s, 0.6 * s, 0, Math.PI * 2);
+    ctx.fill();
   }
 }
 

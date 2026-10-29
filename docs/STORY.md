@@ -175,4 +175,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | A heavy seamount; trial Stone-light; moment Bowed down | this game's own theme (keeping vs letting go) | OK |
 | Trip encounters: a wall of bands, something hunting them (dragonfish), a sealed storehouse of Thousandfold | this game's own world | OK |
 | A milky sea (Midnight Water: the whole water glows) | real phenomenon (bioluminescent milky seas) | OK |
+| Boxer crab resident (holds anemones in its claws) | real animal | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |
