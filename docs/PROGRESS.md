@@ -317,3 +317,4 @@ date, what landed, what is half-done, what's next.
 - Close-up portraits: zoomed 2× or more in view mode, a creature large in view (radius ≥ 60 px) gets a sharper portrait, once per creature (corallum.portraits.close). Measured zoom cost: steady ~2.6 ms at 1× view, ~3.6 ms zoomed (the 20 ms readings were a post-relayout transient).
 - Refactor: view-mode zoom moved to client/zoom.ts (createZoom: apply, toWorld, toScreen, zoomAt, pinchDown, reset); main.ts 1132 → 1068 lines. Smoke, play, feast, pinch and wheel checks pass.
 - Touching a creature ticks the phone's vibration (double tick with a gift), when vibration is on.
+- Audio: the Sunlit Crown's ambience crackles quietly with snapping shrimp (random high-passed clicks).

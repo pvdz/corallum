@@ -153,6 +153,32 @@ export function createAudio() {
   }
   setInterval(scheduleMelody, 500);
 
+  // The Sunlit Crown crackles: snapping shrimp, thousands of tiny clicks, quiet under everything.
+  let clickBuf: AudioBuffer | null = null;
+  function crackle(): void {
+    if (!ctx || !master || !enabled || zone !== 4) return;
+    if (!clickBuf) {
+      const len = Math.floor(ctx.sampleRate * 0.004);
+      clickBuf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = clickBuf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 3;
+    }
+    const t = ctx.currentTime;
+    const n = 2 + Math.floor(Math.random() * 5);
+    for (let i = 0; i < n; i++) {
+      const src = ctx.createBufferSource();
+      src.buffer = clickBuf;
+      const f = ctx.createBiquadFilter();
+      f.type = 'highpass';
+      f.frequency.value = 2500 + Math.random() * 3000;
+      const g = ctx.createGain();
+      g.gain.value = 0.015 + Math.random() * 0.025;
+      src.connect(f).connect(g).connect(master);
+      src.start(t + Math.random() * 0.1);
+    }
+  }
+  setInterval(crackle, 100);
+
   /** A soft bell: a sine and its octave with a quick attack and long tail. */
   function bell(freq: number, gain: number, length = 1.6, at = 0): void {
     if (!ctx || !master || !enabled) return;
