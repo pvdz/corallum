@@ -816,6 +816,8 @@ function homecoming(s: GameState): void {
   }
   if (ex.fork === 'gather') burst(s, 60);
   if (ex.fork === 'open') burst(s, 300);
+  if (ex.fork === 'carry-lamp') s.glow += rates(s).glowP * 60;
+  if (ex.fork === 'feast-eggs') s.plankton += rates(s).planktonP * 60;
   if (ex.fork === 'feed') dig(s, 'roam');
   // Pressing on at the fork turns up a shard for sure, if any are left.
   if (pressed) {

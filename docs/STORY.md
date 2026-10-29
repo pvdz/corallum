@@ -197,4 +197,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Decorator crab resident | real animal | OK |
 | A whale breaching at the Breach | real behaviour | OK |
 | Ghost shark (chimaera) on the Silt Floor | real animal | OK |
+| Trip encounters: a lamp still burning, a cloud of eggs | this game's own world | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

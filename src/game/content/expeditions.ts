@@ -23,7 +23,7 @@ export type Site = {
 };
 
 /** What the shoals can meet halfway to a ruin: one per trip, seeded (the first trip always finds the passage). */
-export type ForkId = 'press' | 'home' | 'wait' | 'slip' | 'follow' | 'carry-on' | 'gather' | 'leave' | 'ride' | 'around' | 'feed' | 'pass' | 'read-wall' | 'pass-by' | 'scatter' | 'dazzle' | 'open' | 'leave-sealed';
+export type ForkId = 'press' | 'home' | 'wait' | 'slip' | 'follow' | 'carry-on' | 'gather' | 'leave' | 'ride' | 'around' | 'feed' | 'pass' | 'read-wall' | 'pass-by' | 'scatter' | 'dazzle' | 'open' | 'leave-sealed' | 'carry-lamp' | 'leave-lamp' | 'feast-eggs' | 'go-round';
 export type Encounter = {
   id: string; kicker: string; text: string;
   /** Each way: what it costs in time (a share of the trip, added; negative is quicker) and what it brings. */
@@ -100,6 +100,22 @@ export const ENCOUNTERS: readonly Encounter[] = [
     ways: [
       { id: 'open', label: 'Break it open', effect: 'the trip ×1.4 · five minutes of calcite when they are home', time: 0.4 },
       { id: 'leave-sealed', label: 'Leave it sealed', effect: 'as planned', time: 0 },
+    ],
+  },
+  {
+    id: 'lamp', kicker: 'A lamp still burning',
+    text: 'In a niche of the old wall, one of the city’s lamps is still alight: a knot of glimmerseed nobody has fed for four hundred years.',
+    ways: [
+      { id: 'carry-lamp', label: 'Carry it home', effect: 'the trip ×1.25 · a minute of glow when they are home', time: 0.25 },
+      { id: 'leave-lamp', label: 'Let it burn where it is', effect: 'as planned', time: 0 },
+    ],
+  },
+  {
+    id: 'eggs', kicker: 'A cloud of eggs',
+    text: 'Something has spawned in the ruin, and its eggs hang in the old streets like smoke, drifting, uneaten.',
+    ways: [
+      { id: 'feast-eggs', label: 'Feed among them', effect: 'the trip ×1.2 · a minute of plankton when they are home', time: 0.2 },
+      { id: 'go-round', label: 'Go round them', effect: 'as planned', time: 0 },
     ],
   },
 ];

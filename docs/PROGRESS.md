@@ -653,3 +653,4 @@ date, what landed, what is half-done, what's next.
 - With a mouse, polyps near the pointer pull their tentacles in (sightings.ts hover/shy; reef.ts).
 - Rare at the Breach: a humpback breaching far off every 15 min (leap, flipper out, a hill of spray and rings).
 - Rare on the Silt Floor: a ghost shark (chimaera) gliding low over the silt every 12 min. Almanac rows measure labels where they really sit; a label with no room keeps only its dot.
+- Two more trip encounters: a lamp still burning (carry it home: a minute of glow) and a cloud of eggs (feed: a minute of plankton).
