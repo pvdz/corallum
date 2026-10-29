@@ -176,3 +176,4 @@ date, what landed, what is half-done, what's next.
 - Journal pays: every creature the lineage has seen adds +2% calcite (knownBonus, constant between purchases so offline stays exact); shown on the journal card.
 - The Breach: a pod of three dolphins arcs out of the moonlit water every ~75 s, with splash rings (journal: 22 creatures).
 - Sunlit Crown: an anemone with two clownfish weaving around it (journal: 23 creatures).
+- Midnight Water: a vampire squid drifts past, cloak of arms opening and closing, glowing fin tips (journal: 24 creatures).

@@ -155,6 +155,67 @@ export function createMidnightScene(seed: number): Scene {
     ctx.stroke();
   }
 
+  /**
+   * A vampire squid drifting past: a small dark-red body with a webbed cloak of arms that opens
+   * and closes slowly, and glowing tips at the ends of its fins.
+   */
+  function drawVampireSquid(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 130, crossing = 60;
+    const u = ((t + 40) % period) / crossing;
+    if (u >= 1) return;
+    sight('vampire-squid');
+    const s = scale() * 2.6;
+    const lap = Math.floor((t + 40) / period);
+    const dir = lap % 2 ? 1 : -1;
+    const x = focus.x + focus.w * (dir > 0 ? -0.08 + u * 1.16 : 1.08 - u * 1.16);
+    const y = focus.y + focus.h * (0.34 + 0.06 * Math.sin(lap * 2.1)) + Math.sin(t * 0.7) * 10 * s;
+    const open = 0.5 + 0.5 * Math.sin(t * 1.4);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(dir, 1);
+    ctx.rotate(-Math.PI / 2 + 0.3);
+    // The cloak: a web between the arms, wider when it opens.
+    ctx.fillStyle = 'rgba(55,8,20,0.8)';
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    for (let a = 0; a <= 8; a++) {
+      const ang = Math.PI / 2 + (a / 8 - 0.5) * (0.8 + 1.4 * open);
+      ctx.lineTo(Math.cos(ang) * 16 * s, Math.sin(ang) * 16 * s);
+    }
+    ctx.closePath();
+    ctx.fill();
+    // Arm ribs through the web, curling at the tips.
+    ctx.strokeStyle = 'rgba(160,40,60,0.9)';
+    ctx.lineWidth = 1.1 * s;
+    for (let a = 0; a <= 8; a++) {
+      const ang = Math.PI / 2 + (a / 8 - 0.5) * (0.8 + 1.4 * open);
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.quadraticCurveTo(Math.cos(ang) * 12 * s, Math.sin(ang) * 12 * s, Math.cos(ang + 0.3) * 17 * s, Math.sin(ang + 0.3) * 17 * s);
+      ctx.stroke();
+    }
+    // The mantle, with its two fins.
+    ctx.fillStyle = 'rgba(130,25,45,0.95)';
+    ctx.beginPath();
+    ctx.ellipse(0, -9 * s, 5 * s, 9 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    for (const side of [-1, 1]) {
+      ctx.beginPath();
+      ctx.ellipse(side * 5 * s, -14 * s, 4 * s, 2 * s, side * 0.6 + Math.sin(t * 3) * 0.2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // Big blue eyes.
+    ctx.fillStyle = 'rgba(120,200,255,0.9)';
+    for (const side of [-1, 1]) {
+      ctx.beginPath();
+      ctx.arc(side * 2.6 * s, -3 * s, 1.5 * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalCompositeOperation = 'lighter';
+    for (const side of [-1, 1]) glow(ctx, side * 8.5 * s, -15 * s, 5 * s, '140,200,255', 0.5 + 0.4 * open);
+    ctx.restore();
+  }
+
   /** Comb jellies: glassy ovals whose eight comb rows ripple with travelling rainbow light. */
   function drawComb(ctx: CanvasRenderingContext2D, c: Comb, t: number): void {
     sight('comb-jelly');
@@ -322,6 +383,7 @@ export function createMidnightScene(seed: number): Scene {
       ruins.draw(ctx, w, h, focus, v.height, RUINS, t, [0, 1, 2], Math.min(1, v.jobs.scout / 8));
       drawAngler(ctx, t);
       for (const c of combs) drawComb(ctx, c, t);
+      drawVampireSquid(ctx, t);
       if (v.bands.includes('glass')) for (let i = 0; i < 4; i++) swimShrimp(ctx, t, i);
       if (v.bands.includes('siphon')) drawSiphonophore(ctx, t);
       drawSnow(ctx, t);
