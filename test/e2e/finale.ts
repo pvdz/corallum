@@ -71,6 +71,14 @@ await withGame(async (open) => {
       if (label === 'The reef lives on') break;
     }
     const endedFlag = await page.evaluate(() => document.documentElement.classList.contains('ended'));
+    // The garden after the ending: plant a bright child.
+    await page.evaluate(() => { window.corallum!.state.calcite = 1e30; });
+    await page.waitForTimeout(400);
+    await page.locator('.garden-kinds button', { hasText: 'A bright one' }).click().catch(() => {});
+    await page.waitForTimeout(200);
+    const kinds = await page.evaluate(() => window.corallum!.state.gardenKinds);
+    console.log(`${kinds === 'b' ? 'ok  ' : 'FAIL'} ${vp.name}: a bright child planted in the garden`);
+    if (kinds !== 'b') failed = true;
     // Release, one per memory, the stars named, the sister reef (once the race reached the surface), Ossel, the last line.
     const sister = await page.evaluate(() => window.corallum!.state.race.decided >= 5 ? 1 : 0);
     const friends = await page.evaluate(() => Object.values(window.corallum!.state.meta.trust).some((n) => n >= 5) ? 1 : 0);

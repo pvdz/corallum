@@ -683,3 +683,4 @@ date, what landed, what is half-done, what's next.
 - Reading The quick one (32000, after first-words): the sister reef grew from the city's other wall, Ossel's sister; visits bring +1 lineage more.
 - systems e2e makes a wish at the Breach.
 - Her way lit, the sister reef spawns with you at the release: a far pink plume over her seamount (breach.ts drawSisterSpawn).
+- finale e2e plants a child of a kind in the garden.
