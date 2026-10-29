@@ -228,3 +228,4 @@ date, what landed, what is half-done, what's next.
 - The Breach has a tide: the surface rises and falls over 3 min of scene time; the reef stays put (placed against the still level), so low water bares more of the crown and its stone, high water covers it.
 - Mobile stock grid: second lines wrap instead of being cut off with an ellipsis (the hold amount was hidden).
 - Rasp card text in two clear lines: what the Rasp do now, then 'Best for income: 48 ✓ · best before going away: 18'.
+- After the spawning, dawn comes up over the Breach (rose and gold from the horizon over 3 min, stars fading), matching the epilogue.

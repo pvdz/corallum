@@ -79,15 +79,24 @@ export function createBreachScene(seed: number): Scene {
     return [focus.x + focus.w * 0.72, focus.y + focus.h * 0.11];
   }
 
-  function drawSky(ctx: CanvasRenderingContext2D, t: number, phase: number, great: boolean): void {
+  function drawSky(ctx: CanvasRenderingContext2D, t: number, phase: number, great: boolean, dawn: number): void {
     const wy = waterY();
     const g = ctx.createLinearGradient(0, 0, 0, wy);
     g.addColorStop(0, '#05061a');
     g.addColorStop(1, '#1d2350');
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, w, wy + 2);
+    // After the spawning, dawn: rose and gold rising from the horizon, the stars going out.
+    if (dawn > 0) {
+      const d = ctx.createLinearGradient(0, 0, 0, wy);
+      d.addColorStop(0, `rgba(70,90,160,${0.5 * dawn})`);
+      d.addColorStop(0.65, `rgba(230,140,150,${0.45 * dawn})`);
+      d.addColorStop(1, `rgba(255,200,140,${0.75 * dawn})`);
+      ctx.fillStyle = d;
+      ctx.fillRect(0, 0, w, wy + 2);
+    }
     for (const st of stars) {
-      const a = 0.4 + 0.4 * Math.sin(t * 1.3 + st.tw);
+      const a = (0.4 + 0.4 * Math.sin(t * 1.3 + st.tw)) * (1 - dawn);
       ctx.fillStyle = `rgba(230,235,255,${a})`;
       ctx.fillRect(st.x * w, st.y * wy * 0.95, st.r * dpr, st.r * dpr);
     }
@@ -542,7 +551,9 @@ export function createBreachScene(seed: number): Scene {
       const form = formOf(v.form);
       const reef = reefFor(form);
       const L = layout(v, form);
-      drawSky(ctx, t, v.moonPhase, v.greatMoon);
+      // Dawn comes up over the three minutes after the release, then holds.
+      const dawn = v.sinceBreach > 30 ? Math.min(1, (v.sinceBreach - 30) / 180) : 0;
+      drawSky(ctx, t, v.moonPhase, v.greatMoon, dawn);
       drawSea(ctx, t, v.moonPhase);
       drawChildren(ctx, v, t);
       drawMoonJellies(ctx, t);
