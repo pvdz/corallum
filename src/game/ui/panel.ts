@@ -32,7 +32,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, othersSpawning, othersCap, boonsOffered, untilFeast, untilThorn, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, othersSpawning, othersCap, boonsOffered, untilFeast, untilThorn, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -45,6 +45,8 @@ export type PanelHooks = {
   read(id: ReadingId): void;
   /** Send shoals to the next ruin. */
   send(): void;
+  /** Call the shoals home early, for glow. */
+  callHome(): void;
   /** Choose this seamount's boon. */
   chooseBoon(id: BoonId): void;
   /** Meet the other reefs' spawning. */
@@ -413,7 +415,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   tripBar.append(el('div', 'milestone-fill'));
   const tripFoot = el('footer');
   const tripCost = el('span', 'cost');
-  const tripBtn = button('buy shoals', '', () => hooks.send());
+  const tripBtn = button('buy shoals', '', () => (lastState?.expedition.site ? hooks.callHome() : hooks.send()));
   tripBtn.append(tripCost);
   const tripEta = el('span', 'eta');
   tripFoot.append(tripBtn, tripEta);
@@ -1497,8 +1499,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           tripEffect.textContent = away.relic
             ? `${away.shoals} shoals ${EXPEDITION.away} · bringing ${away.relic.toLowerCase()} (${away.effect})`
             : `${away.shoals} shoals ${EXPEDITION.away} · ${away.effect}`;
-          tripCost.textContent = 'Away';
-          tripBtn.disabled = true;
+          // While away: they can be called home early, for glow.
+          const cc = callHomeCost(s);
+          tripCost.textContent = `↩ ${num(cc)} glow`;
+          tripBtn.title = EXPEDITION.call;
+          tripBtn.disabled = s.glow < cc;
           tripEta.textContent = `back in ${duration(left)}`;
           tripCard.classList.remove('ready');
         } else {

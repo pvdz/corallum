@@ -64,3 +64,20 @@ test('a roam when no ruin is in reach: a quarter of the shoals, home at the same
   }
   assert.ok(rel(a.murmurs, b.murmurs) < 1e-6 && rel(a.calcite, b.calcite) < 1e-6);
 });
+
+test('calling the shoals home early costs glow for the time left and brings them back with the relic', async () => {
+  const { callHome, callHomeCost } = await import('../../src/game/sim/economy.ts');
+  const s = atGate();
+  const jobs = { ...s.jobs };
+  send(s);
+  advance(s, 60);
+  const c = callHomeCost(s);
+  assert.ok(c > 0);
+  s.glow = c - 1;
+  assert.equal(callHome(s), false);
+  s.glow = c;
+  assert.ok(callHome(s));
+  assert.equal(s.glow, 0);
+  assert.deepEqual(s.jobs, jobs);
+  assert.deepEqual(s.relics, ['gate']);
+});

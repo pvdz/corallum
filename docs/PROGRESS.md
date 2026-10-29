@@ -423,3 +423,4 @@ date, what landed, what is half-done, what's next.
 - Feats with a count show progress (e.g. 'Send the shoals roaming ten times (3 of 10)').
 - The line's old reefs: on later seamounts, up to three pale silhouettes of earlier reefs that climbed past this height, in the Midnight and Twilight water (render/ghosts.ts; ReefView.ancestors).
 - Phone landscape: the water, request and before-you-go lines compact on short screens.
+- Calling the shoals home early: ↩ on the trip card, 5 glow per second left (economy callHome); test.

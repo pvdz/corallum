@@ -743,6 +743,20 @@ export function send(s: GameState): boolean {
   return true;
 }
 
+/** Glow it takes to call the shoals home now (0 if none are away). */
+export function callHomeCost(s: GameState): number {
+  return s.expedition.site ? Math.ceil(Math.max(0, s.expedition.back - s.t) * EXPEDITION.callPerSecond) : 0;
+}
+
+/** Call the shoals home now, paid in glow: they arrive at once, with all they would have found. */
+export function callHome(s: GameState): boolean {
+  const c = callHomeCost(s);
+  if (!s.expedition.site || s.glow < c) return false;
+  s.glow -= c;
+  homecoming(s);
+  return true;
+}
+
 /** The shoals come home: back to the jobs they left, with a relic and what they heard. */
 function homecoming(s: GameState): void {
   const ex = s.expedition;
