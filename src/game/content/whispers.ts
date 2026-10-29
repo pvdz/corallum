@@ -45,6 +45,10 @@ export const WHISPERS: readonly Whisper[] = [
     when: (s) => s.meta.seen.filter((k) => k.startsWith('c:')).length >= 4 && !s.meta.seen.some((k) => k.startsWith('t:')),
     text: 'We are not alone down here. Touch one of them, gently. Most will answer.',
   },
+  {
+    id: 'moon-deep', when: (s) => moonFull(s.t) && s.height > 20 && s.height < 3800,
+    text: 'Do you feel that? The moon is full, far above. Your polyps let a little go without asking you. One night it will be all of it.',
+  },
   // Neighbours worth meeting: once one is seen and not yet touched, Ossel points at it.
   {
     id: 'touch-lanternfish', when: (s) => metNot(s, 'lanternfish', [2, 3]) && s.levels.shoal >= 6,

@@ -307,3 +307,4 @@ date, what landed, what is half-done, what's next.
 - Rare visitors already in the journal are announced each time they come by ('Passing now' note, quiet whisper cue), once per visit.
 - Rare visitors' gifts are three times a common one's.
 - Every full moon, in every zone below the Breach, the reef 'remembers': pink bundles slip from the polyps and drift up into the dark (reef.ts, ReefView.moonFull).
+- Ossel's whisper 'moon-deep' at the first full moon below the light.
