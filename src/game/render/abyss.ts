@@ -160,6 +160,26 @@ export function createAbyssScene(seed: number): Scene {
     }
   }
 
+  /**
+   * A flurry of the Long Silt: for half a minute in every four the snow thickens, a dense second
+   * fall slanting through the water (the same flakes, drawn again offset and faster).
+   */
+  function drawFlurry(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 240, length = 30;
+    const u = (t % period) / length;
+    if (u >= 1) return;
+    const k = Math.min(1, u * 4, (1 - u) * 4);
+    ctx.save();
+    ctx.globalAlpha = 0.7 * k;
+    ctx.fillStyle = 'rgba(210,220,245,0.6)';
+    for (const f of flakes) {
+      const y = ((f.y + 0.5 + t * f.speed * 2.6) % 1) * (h + 20) - 10;
+      const x = ((((f.x + 0.37 + t * 0.012) % 1) + 1) % 1) * w;
+      ctx.fillRect(x, y, f.r * 1.4, f.r * 1.4);
+    }
+    ctx.restore();
+  }
+
   function layout(v: ReefView): ReefLayout {
     return {
       cx: centreX(), baseY: baseY(), unit: focus.h * 0.62, s: scale(), dpr,
@@ -237,6 +257,7 @@ export function createAbyssScene(seed: number): Scene {
       if (v.shoals > 0) shoals.drawFront(ctx, focus, reef, L, v, t);
       life.drawFront(ctx, st, t);
       drawSnow(ctx, t, 2);
+      drawFlurry(ctx, t);
       // A warm seamount reddens the water near the floor; a cold one leaves a faint ice-blue.
       if (v.seamount === 'warm' || v.seamount === 'cold') {
         const g = ctx.createLinearGradient(0, h * 0.45, 0, h);
