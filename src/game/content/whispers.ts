@@ -129,6 +129,10 @@ export const WHISPERS: readonly Whisper[] = [
     text: 'Something small is caught in a jelly’s threads, near us. Free it, little mouth.',
   },
   {
+    id: 'moonlit', when: (s) => s.height >= 3980 && moonFull(s.t) && s.carried.length === 0 && s.spawn > 0,
+    text: 'The moon is full. Sweep now, while it is: every reach of your tentacles ripens what you carry.',
+  },
+  {
     id: 'wish', when: (s) => wishOpen(s) && s.wished < 0,
     text: 'Look up. Stars are falling into the sea. You may ask for one thing while they fall. Only one.',
   },

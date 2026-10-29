@@ -107,4 +107,5 @@ export const UI = {
   raspBoth: (income: string, hold: string) => `Best for income: ${income} · best before going away: ${hold}`,
   awayText: (d: string) => `You were gone ${d}. The reef kept growing.`,
   chronBlue: 'a blue moon', chronVows: 'vows kept',
+  moonlit: 'spawn · by moonlight',
 } as const;

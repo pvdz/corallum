@@ -33,7 +33,7 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inMilky, milkyGlow, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, currentFragment, takeFragment, currentStray, callStray, blueMoon, helpTangle, currentTangle, freeTangle, lucky, visitor, visited, meteorShower, makeWish, prune, oldKnobs, oldHeld, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, sisterNow, lightSister, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inMilky, milkyGlow, moonlitSpawn, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, currentFragment, takeFragment, currentStray, callStray, blueMoon, helpTangle, currentTangle, freeTangle, lucky, visitor, visited, meteorShower, makeWish, prune, oldKnobs, oldHeld, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, sisterNow, lightSister, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -1451,6 +1451,8 @@ canvas.addEventListener('pointerdown', (e) => {
   poke(wx, wy, frozenT ?? animT);
   const lit = milkyGlow(state);
   if (lit > 0) floatText(e.clientX + 30, e.clientY - 18, `+${num(lit)} ${MILKY.float}`, 'feast-float');
+  const moonlit = moonlitSpawn(state);
+  if (moonlit > 0) floatText(e.clientX + 30, e.clientY - 18, `+${num(moonlit)} ${UI.moonlit}`, 'feast-float');
   floatText(e.clientX, e.clientY, state.combo > 1 ? `+${num(gain)} ×${(1 + ACT1.comboStep * (state.combo - 1)).toFixed(1)}` : `+${num(gain)}`);
 });
 

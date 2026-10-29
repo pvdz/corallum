@@ -1586,6 +1586,11 @@ export function untilMilky(s: GameState): number {
   return u < milkyLength(s) ? 0 : MILKY.period - u;
 }
 
+/** Spawn a sweep gathers at the Breach under a full moon (two seconds of ripening). */
+export function moonlitSpawn(s: GameState): number {
+  return actAt(s.height) === 5 && moonFull(s.t) && !ended(s) ? rates(s).spawnP * 2 : 0;
+}
+
 /** Glow a sweep gathers in a milky sea. */
 export function milkyGlow(s: GameState): number {
   return inMilky(s) ? rates(s).glowP * MILKY.glowSeconds * (has(s, 'burning-sea') ? 2 : 1) : 0;
@@ -1602,6 +1607,7 @@ export function sweep(s: GameState): number {
   if (lit > 0) s.tally.milky++;
   s.glow += lit;
   s.earned.glow += lit;
+  s.spawn += moonlitSpawn(s);
   s.lastSweep = s.t;
   s.tally.sweeps++;
   dig(s, 'sweep');
