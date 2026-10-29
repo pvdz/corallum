@@ -571,7 +571,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn,
     group('Sound'), volRow, buzzToggle,
     group('Display'), glowToggle, calmToggle, sciToggle, habitToggle,
-    el('p', 'hint', 'Hold a buy button to keep buying. Keys (? lists them): Space sweeps · H hides the panel · F catches a falling feast · P buds a polyp · B lays a band · G hosts glimmerseed.'),
+    el('p', 'hint', 'Hold a buy button to keep buying. Keys (? lists them): Space sweeps · 1–4 switch tabs · H hides the panel · F catches a falling feast · P buds a polyp · B lays a band · G hosts glimmerseed.'),
     group('Start over'), resetBtn,
   );
 
@@ -1016,6 +1016,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     /** Open a story card (or queue it behind the one showing). */
     story(kicker: string, title: string, text: string): void {
       showStory({ kicker, title, text });
+    },
+    /** Switch to the n-th visible tab (1-based); false if there is none. */
+    showTabAt(n: number): boolean {
+      const ids = [...tabButtons].filter(([, b]) => !b.hidden).map(([id]) => id);
+      const id = ids[n - 1];
+      if (!id) return false;
+      showTab(id);
+      return true;
     },
     element: panel,
     growPage: grow,
