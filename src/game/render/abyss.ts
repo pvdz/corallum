@@ -184,6 +184,8 @@ export function createAbyssScene(seed: number): Scene {
 
   /** The seamount being drawn (hard seamounts change the snow, the floor and the far water). */
   let sm = 'plain';
+  /** Endings the line has reached: the Long Silt falls thinner with each (up to six). */
+  let healed = 0;
 
   function drawSnow(ctx: CanvasRenderingContext2D, t: number, layer: number): void {
     ctx.fillStyle = ['rgba(170,190,230,0.35)', 'rgba(200,215,245,0.5)', 'rgba(225,235,255,0.6)'][layer]!;
@@ -191,6 +193,8 @@ export function createAbyssScene(seed: number): Scene {
     const thin = sm === 'hungry' ? 3 : 1;
     for (const [i, f] of flakes.entries()) {
       if (f.layer !== layer || i % thin) continue;
+      // Each ending of the line takes away a tenth of the flakes.
+      if ((i * 7) % 10 < Math.min(6, healed)) continue;
       const y = ((f.y + t * f.speed) % 1) * (h + 20) - 10;
       const x = ((((f.x + Math.sin(t * 0.3 + f.phase) * 0.004 + t * f.drift * 0.002) % 1) + 1) % 1) * w;
       ctx.beginPath();
@@ -438,6 +442,7 @@ export function createAbyssScene(seed: number): Scene {
     draw(ctx, t, v) {
       const st = stage();
       sm = v.seamount;
+      healed = v.endings;
       // Water, the far ripple and the faint shafts change slowly: a half-resolution cache.
       water.draw(ctx, w, h, t, 0.2, `${w}x${h}`, (c, tq) => drawWater(c, tq));
       // A silent seamount has no old reefs under it: no ruins in the far water.

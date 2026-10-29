@@ -829,6 +829,7 @@ function view(): ReefView {
     shell: currentShell(state),
     flurry: inFlurry(state),
     heat: heatView(),
+    endings: state.meta.endings,
     elder: !!currentRiddle(state),
     upwell: upwellView(),
     nets: state.levels.net,

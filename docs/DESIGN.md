@@ -189,6 +189,9 @@ gets a skill to play.
 for, whether to tell the spawn all of Thousandfold, what it would keep, what is past the light). No
 effect on the numbers: Ossel answers back, the reef's own bands record it, and the ending carries it.
 
+**The sea heals**: each ending the line reaches makes the Long Silt fall ×0.95 on every later reef (up to
+six), and the Silt Floor's snow visibly thins: the world itself shows the line's progress.
+
 **The day's sea**: each calendar day has one mild boon, the same for every reef that day (calm: calcite
 ×1.1, bright: glow ×1.2, rich: plankton ×1.2, sandy: sand ×1.2, clear: bloom ×1.15, a long swell: spawn
 ×1.1), set on load and shown in the water box. A small reason to look in each day.

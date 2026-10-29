@@ -540,3 +540,4 @@ date, what landed, what is half-done, what's next.
 - Grow tab: a strip of chips (panel.ts renderWaitBar) when two or more choice cards are open, named by their kickers; a tap scrolls to the card.
 - Trip encounters: six now (+ a fast current: ride ×0.7; a field of larvae: feed ×1.2, a shard chance).
 - Lantern shark in the Midnight Water (every ~4 min, low across; belly lights; touched, lights out and it slips away).
+- The sea heals: siltP × 0.95^min(6, endings); abyss snow loses a tenth of its flakes per ending; a 'The sea' row in Your reef.
