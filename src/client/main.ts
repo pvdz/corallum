@@ -704,6 +704,13 @@ window.addEventListener('keydown', (e) => {
     }
     return;
   }
+  if (e.key === '?') {
+    panel.story('Keys', 'Shortcuts',
+      'Space sweeps your tentacles. F catches a falling feast. P buds a polyp, B lays a band, G hosts ' +
+      'glimmerseed. H hides the panel to see the whole reef. Hold any buy button to keep buying. ' +
+      'Tap a creature to learn its name; tap Ossel and it will answer.');
+    return;
+  }
   if (e.key.toLowerCase() === 'h') {
     setViewMode(!viewMode);
     return;

@@ -517,7 +517,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   reefPage.append(
     nameRow,
     el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn, glowToggle, calmToggle, sciToggle, habitToggle, resetBtn,
-    el('p', 'hint', 'Hold a buy button to keep buying. Keys: Space sweeps · H hides the panel · F catches a falling feast · P buds a polyp · B lays a band · G hosts glimmerseed.'),
+    el('p', 'hint', 'Hold a buy button to keep buying. Keys (? lists them): Space sweeps · H hides the panel · F catches a falling feast · P buds a polyp · B lays a band · G hosts glimmerseed.'),
   );
 
   /** Nudge toward copying a save when the reef is worth keeping and no copy is recent. */
