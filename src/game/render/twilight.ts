@@ -38,6 +38,11 @@ export function createTwilightScene(seed: number): Scene {
   const reef = createReef(Math.floor(rng() * 1e9));
   const shoals = createShoals(seed ^ 0x3c);
   // A garden eel colony on the slope, away from the reef's foot.
+  const fans = [
+    { u: 0.08, size: 1.1, colour: 'rgba(150,70,170,0.9)' },
+    { u: 0.66, size: 0.8, colour: 'rgba(200,90,120,0.9)' },
+    { u: 0.82, size: 1.3, colour: 'rgba(130,80,190,0.9)' },
+  ];
   const eels = Array.from({ length: 22 }, (_, i) => ({
     u: (i < 11 ? 0.12 : 0.72) + rng() * 0.16, len: range(rng, 22, 36), light: rng() < 0.6,
   }));
@@ -238,6 +243,45 @@ export function createTwilightScene(seed: number): Scene {
       ctx.moveTo(bx + half, by - 10 * s);
       ctx.bezierCurveTo(bx + half * 1.4, by - hgt * 0.5, bx - half * 1.2, by - hgt * 0.6, bx - half * 0.3, by - hgt * 1.02);
       ctx.stroke();
+    }
+  }
+
+  /**
+   * Sea fans on the slope: flat purple gorgonians standing across the current, a lattice of fine
+   * branches swaying together.
+   */
+  function drawSeaFans(ctx: CanvasRenderingContext2D, t: number): void {
+    const s = scale();
+    for (const [k, f] of fans.entries()) {
+      const x = focus.x - focus.w * 0.1 + f.u * focus.w * 1.2;
+      const base = slopeY(f.u) + 2 * s;
+      const sway = Math.sin(t * 0.5 + k * 1.3) * 0.08;
+      const hgt = f.size * 60 * s;
+      ctx.save();
+      ctx.translate(x, base);
+      ctx.rotate(sway);
+      ctx.strokeStyle = f.colour;
+      ctx.lineCap = 'round';
+      // A short stem, then branches fanning out and forking twice.
+      const branch = (x0: number, y0: number, ang: number, len: number, depth: number) => {
+        const x1 = x0 + Math.sin(ang) * len, y1 = y0 - Math.cos(ang) * len;
+        ctx.lineWidth = Math.max(0.6, (3 - depth) * 0.9) * s;
+        ctx.beginPath();
+        ctx.moveTo(x0, y0);
+        ctx.lineTo(x1, y1);
+        ctx.stroke();
+        if (depth < 3) {
+          branch(x1, y1, ang - 0.32, len * 0.72, depth + 1);
+          branch(x1, y1, ang + 0.32, len * 0.72, depth + 1);
+        }
+      };
+      ctx.lineWidth = 3 * s;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(0, -hgt * 0.18);
+      ctx.stroke();
+      for (const a of [-0.7, -0.25, 0.25, 0.7]) branch(0, -hgt * 0.18, a, hgt * 0.32, 0);
+      ctx.restore();
     }
   }
 
@@ -491,6 +535,7 @@ export function createTwilightScene(seed: number): Scene {
       drawMotes(ctx, t, v.siltLevel);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#1d3557');
       drawShelf(ctx, v.sandBars, v.siltLevel);
+      drawSeaFans(ctx, t);
       drawGardenEels(ctx, t);
       drawOctopus(ctx, t);
       drawWall(ctx, t, v.wall);
