@@ -356,6 +356,9 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .choice.dialect span { color: var(--bloom); }
 .choice.dialect:not(:disabled):hover { background: rgba(255, 179, 209, 0.10); box-shadow: 0 0 18px rgba(255, 170, 210, 0.25); }
 .band.is-dialect .band-depth { color: var(--bloom); }
+.truce.moment { border-color: rgba(180, 220, 255, 0.35); }
+.truce.moment .truce-kicker { color: #a8dcff; }
+.band.is-moment .band-depth { color: #a8dcff; }
 
 /* ---------- Act V: spawn, the moon card, the finale ---------- */
 :root { --spawn: #ff9ec7; --moon: #f4f1dc; }

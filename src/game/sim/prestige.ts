@@ -1,5 +1,6 @@
 // Lesser Spawnings: let go early, start again on a new seamount, keep the Lineage.
 
+import { MOMENTS } from '../content/moments.ts';
 import { MEETINGS } from '../content/act3.ts';
 import { DIALECTS } from '../content/act4.ts';
 import { HABIT_SHARE, LINEAGE, TRAITS, type SeamountId, type Trait, type TraitId } from '../content/lineage.ts';
@@ -10,7 +11,7 @@ import { newGame, type GameState, type Meta } from './state.ts';
 export function lineageFor(s: GameState): number {
   const base = Math.floor(LINEAGE.perRoot * Math.sqrt(Math.max(0, s.height) / 60));
   const frag = s.dialects.spawn === 'fragmenting' ? LINEAGE.fragmentingBonus : 1;
-  return Math.floor(base * frag) + (ended(s) ? endingLineage(s, s.released) : 0);
+  return Math.floor(base * frag) + (s.moments.storm === 'a' ? 2 : 0) + (ended(s) ? endingLineage(s, s.released) : 0);
 }
 
 /** The ending's lineage for a release of this much spawn. */
@@ -24,7 +25,7 @@ export function canSpawnLesser(s: GameState): boolean {
 
 /** Every story id this run has seen, for the meta's memory of what not to pop again. */
 function storiesOf(s: GameState): string[] {
-  const out = [...s.bands, ...s.readings, ...s.relics.map((id) => `x:${id}`)];
+  const out = [...s.bands, ...s.readings, ...MOMENTS.filter((m) => s.moments[m.id]).map((m) => `m:${m.id}`), ...s.relics.map((id) => `x:${id}`)];
   for (const m of MEETINGS) if (s.truce[m.id]) out.push(`truce:${m.id}`);
   for (const d of DIALECTS) if (s.dialects[d.tier] === d.id) out.push(`dialect:${d.id}`);
   return out;

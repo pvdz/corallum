@@ -25,6 +25,7 @@ import { CREATURES, GIFT, giftOf, type CreatureId, type GiftStock } from '../con
 import { LINEAGE, SEAMOUNTS, type Seamount, type TraitId } from '../content/lineage.ts';
 import { FEAST } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
+import { MOMENTS, type MomentId } from '../content/moments.ts';
 import { WATER, WATERS, type Water } from '../content/waters.ts';
 import { EXPEDITION, SITES, type Site, type SiteId } from '../content/expeditions.ts';
 import type { Band, Currency, UpgradeDef, UpgradeId } from '../content/types.ts';
@@ -133,6 +134,11 @@ export function settleRate(s: GameState): number {
   return ACT1.settleRate * (trait(s, 'settling') ? 2 : 1);
 }
 
+/** How a moment was met ('a' or 'b'). */
+export function chose(s: GameState, id: MomentId, c: 'a' | 'b'): boolean {
+  return s.moments[id] === c;
+}
+
 function lives(s: GameState, id: ResidentId): boolean {
   return s.residents.includes(id);
 }
@@ -190,27 +196,27 @@ export function rates(s: GameState): Rates {
   const onShelf = target >= ACT3.from;
   return {
     glowP: (ACT1.symbiontGlow * lv.symbiont * milestoneMult('symbiont', lv.symbiont) * (1 + ACT2.lightAmplify * s.jobs.light) +
-      lightGlow * s.jobs.light) * 1.5 ** trait(s, 'glimmer'),
-    glowK: ACT1.glowFade,
+      lightGlow * s.jobs.light) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1),
+    glowK: ACT1.glowFade * (chose(s, 'squid', 'a') ? 0.8 : 1),
     planktonP: ACT2.feedRate * s.jobs.feed * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
       (speaks(s, 'sweepers') ? 3 : 1) * (lives(s, 'feather-duster') ? 1.3 : 1),
     planktonK: ACT2.planktonEaten * (has(s, 'slow-currents') ? 0.6 : 1) * (found(s, 'terraces') ? 0.75 : 1),
-    murmurP: ACT2.scoutRate * s.jobs.scout * (has(s, 'beaked') ? 1.5 : 1) * (found(s, 'wells') ? 1.25 : 1),
+    murmurP: ACT2.scoutRate * s.jobs.scout * (has(s, 'beaked') ? 1.5 : 1) * (found(s, 'wells') ? 1.25 : 1) * (chose(s, 'lost-shoal', 'b') ? 1.2 : 1),
     murmurK: ACT2.murmurFade * (found(s, 'wells') ? 0.5 : 1),
     siltP: onShelf
       ? ACT3.siltFall * (1 + (target - ACT3.from) / ACT3.siltGrowthPer) * (s.truce.wall === 'a' ? 0.6 : 1) * sm.silt
       : 0,
     siltK: ACT3.naturalSweep + (lives(s, 'pistol-shrimp') ? 0.04 : 0) + ACT3.flowSweep * lv.sandbar + LINEAGE.glassSweep * trait(s, 'glass-gardeners') + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
-    sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1) * (found(s, 'midden') ? 1.3 : 1) * (lives(s, 'sea-cucumber') ? 1.4 : 1),
+    sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1) * (found(s, 'midden') ? 1.3 : 1) * (lives(s, 'sea-cucumber') ? 1.4 : 1) * (chose(s, 'turtle', 'b') ? 1.25 : 1),
     sandK: ACT3.sandSettle,
     bloomP: sunlight(s, target) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * ACT4.meadowBloom ** lv.meadow *
-      (speaks(s, 'fluorescent') ? 1.5 : 1) * (lives(s, 'damselfish') ? 1.3 : 1),
-    bloomK: ACT4.bloomFade,
+      (speaks(s, 'fluorescent') ? 1.5 : 1) * (lives(s, 'damselfish') ? 1.3 : 1) * (chose(s, 'storm', 'b') ? 1.15 : 1),
+    bloomK: ACT4.bloomFade * (chose(s, 'turtle', 'a') ? 0.8 : 1),
     spawnP: target >= ACT5.from
       ? lv.polyp * ACT5.spawnRate * ACT5.ripenSpawn ** lv.ripen * (speaks(s, 'broadcast') ? 2 : 1) *
-        (1 + sunlight(s, target) * lv.symbiont / 100)
+        (1 + sunlight(s, target) * lv.symbiont / 100) * (chose(s, 'bird', 'b') ? 1.1 : 1)
       : 0,
-    spawnK: ACT5.spawnFade,
+    spawnK: ACT5.spawnFade * (chose(s, 'bird', 'a') ? 0.8 : 1),
     calciteBase:
       (ACT1.trickle + ACT1.polypRate * sm.polyp * lv.polyp * milestoneMult('polyp', lv.polyp) * (has(s, 'city') ? 1.5 : 1)) *
       (ACT1.ventBoost * sm.ventBoost) ** vent *
@@ -220,10 +226,10 @@ export function rates(s: GameState): Rates {
       (speaks(s, 'massive') ? 1.5 : 1) *
       1.5 ** trait(s, 'deep-memory') *
       knownBonus(s) *
-      (lives(s, 'goby') ? 1.15 : 1),
+      (lives(s, 'goby') ? 1.15 : 1) * (chose(s, 'whale-fall', 'a') ? 1.1 : 1),
     calciteK:
       ACT1.dissolve * sm.dissolve * ACT1.latticeFactor ** lv.lattice * (ACT1.ventAcid * sm.ventAcid) ** vent *
-      (has(s, 'lattice-songs') ? 0.7 : 1) * (speaks(s, 'massive') ? 0.5 : 1) +
+      (has(s, 'lattice-songs') ? 0.7 : 1) * (chose(s, 'brittle', 'a') ? 0.9 : 1) * (chose(s, 'cleaners', 'b') ? 0.9 : 1) * (speaks(s, 'massive') ? 0.5 : 1) +
       (speaks(s, 'mucus') ? 0 : ACT3.raspEat * rasp * (s.truce.terms === 'b' ? ACT3.politeEat : 1) * (lives(s, 'guard-crab') ? 0.5 : 1)),
     lureMax: ACT1.lureMax + ACT1.lureMaxPerPattern * lv.lure + (has(s, 'fear') ? 1 : 0) + (speaks(s, 'fluorescent') ? 2 : 0) +
       (found(s, 'lamp-hall') ? 1 : 0),
@@ -660,7 +666,8 @@ function homecoming(s: GameState): void {
 
 /** Homes in the reef (by height), and the animals that may ask for one by now. */
 export function homes(s: GameState): number {
-  return homesAt(s.height);
+  const n = homesAt(s.height);
+  return n > 0 && chose(s, 'cleaners', 'a') ? n + 1 : n;
 }
 export function residentsAsking(s: GameState) {
   return homes(s) > 0 ? RESIDENTS.filter((r) => s.height >= r.metres) : [];
@@ -739,6 +746,25 @@ export function choose(s: GameState, id: MeetingId, choice: Choice): boolean {
   // Ossel's wall, ground down: a flood of warm sand.
   if (id === 'wall' && choice === 'a') s.sand += 50000;
   setRasp(s, s.rasp);
+  return true;
+}
+
+// ---------- Moments ----------
+
+/** The first moment the reef has reached and not yet answered. */
+export function nextMoment(s: GameState) {
+  return MOMENTS.find((m) => !s.moments[m.id] && s.height >= m.metres);
+}
+
+/** Answer a moment. Permanent for this reef. */
+export function meet(s: GameState, id: MomentId, c: 'a' | 'b'): boolean {
+  const m = nextMoment(s);
+  if (!m || m.id !== id) return false;
+  s.moments[id] = c;
+  if (id === 'lost-shoal' && c === 'a') {
+    s.levels.shoal += 3;
+    s.jobs[jobOpen(s, s.lastJob) ? s.lastJob : 'feed'] += 3;
+  }
   return true;
 }
 
@@ -942,7 +968,7 @@ export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: 
   // Never more than a share of what the reef can hold of it (P/k), or it would only wash away.
   // Rare visitors give more: catching one is luck as well as attention.
   const rare = CREATURES.find((c) => c.id === id)?.note.startsWith('Rare.') ? GIFT.rare : 1;
-  const amount = rare * (stock === 'calcite' ? calciteRate(s, r) * GIFT.seconds : Math.min(made * GIFT.seconds, GIFT.holdShare * made / k));
+  const amount = (chose(s, 'whale-fall', 'b') ? 2 : 1) * rare * (stock === 'calcite' ? calciteRate(s, r) * GIFT.seconds : Math.min(made * GIFT.seconds, GIFT.holdShare * made / k));
   if (!(amount > 0)) return null;
   s.gifts[id] = s.t;
   if (stock === 'calcite') {
@@ -999,7 +1025,7 @@ export function feast(s: GameState, share = 1): number {
   if (!f) return 0;
   const pay = feastPay(s);
   const r = rates(s);
-  const secs = FEAST.seconds * share;
+  const secs = FEAST.seconds * share * (chose(s, 'brittle', 'b') ? 1.5 : 1);
   let gain: number;
   if (pay === 'bloom') {
     gain = r.bloomP * secs;

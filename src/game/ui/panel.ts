@@ -15,6 +15,7 @@ import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
 import { upgradeIcon } from './icons.ts';
 import { FEATS } from '../content/feats.ts';
 import { WATER } from '../content/waters.ts';
+import { MOMENT, MOMENTS, type Moment, type MomentId } from '../content/moments.ts';
 import { RESIDENT, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { EXPEDITION, site, type Site } from '../content/expeditions.ts';
 import { canSpawnLesser, lineageFor, traitCost, traitMaxed } from '../sim/prestige.ts';
@@ -22,7 +23,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, waterAt, untilWaterTurns, tierCost, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, waterAt, untilWaterTurns, tierCost, nextMoment, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -33,6 +34,8 @@ export type PanelHooks = {
   read(id: ReadingId): void;
   /** Send shoals to the next ruin. */
   send(): void;
+  /** Answer a moment. */
+  meet(id: MomentId, c: 'a' | 'b'): void;
   /** Take a resident in, or let it go. */
   house(id: ResidentId): void;
   setRasp(n: number): void;
@@ -194,6 +197,24 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   });
   truceBox.append(el('p', 'truce-kicker', 'The Rasp would talk'), truceTitle, truceText, truceWords, truceWordsLabel, truceChoices);
   grow.append(truceBox);
+
+  // ---------- A moment waiting for an answer ----------
+  const momentBox = el('section', 'truce moment');
+  momentBox.hidden = true;
+  const momentTitle = el('h3');
+  const momentText = el('p', 'truce-text');
+  const momentChoices = el('div', 'truce-choices');
+  let momentNow: Moment | undefined;
+  const momentButtons = (['a', 'b'] as const).map((c) => {
+    const b = button('choice', '', () => { if (momentNow) hooks.meet(momentNow.id, c); });
+    const label = el('strong');
+    const effect = el('span');
+    b.append(label, effect);
+    momentChoices.append(b);
+    return { b, label, effect, c };
+  });
+  momentBox.append(el('p', 'truce-kicker', MOMENT.kicker), momentTitle, momentText, momentChoices);
+  grow.prepend(momentBox);
 
   // ---------- Dialects (a tier waiting for a choice) ----------
   const dialectBox = el('section', 'dialects');
@@ -519,6 +540,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let lastBandCount = 0;
   let lastReadingCount = 0;
   let lastRelicCount = 0;
+  const momentSeen = new Set<MomentId>();
   const truceSeen = new Set<MeetingId>();
   const dialectSeen = new Set<DialectId>();
 
@@ -1070,6 +1092,30 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         waterNext.textContent = `${WATER.turns} ${duration(untilWaterTurns(s))} · ${WATER.next} ${next.name.toLowerCase()}`;
         if (waterShown && waterShown !== water.id) { waterBox.classList.remove('turned'); void waterBox.offsetWidth; waterBox.classList.add('turned'); }
         waterShown = water.id;
+      }
+
+      // A moment waiting for an answer, and answers given.
+      const mo = nextMoment(s);
+      if (mo !== momentNow) {
+        momentNow = mo;
+        momentBox.hidden = !mo;
+        if (mo) {
+          momentTitle.textContent = mo.title;
+          momentText.textContent = mo.text;
+          for (const x of momentButtons) {
+            x.label.textContent = mo[x.c].label;
+            x.effect.textContent = mo[x.c].effect;
+          }
+        }
+      }
+      for (const m of MOMENTS) {
+        const c = s.moments[m.id];
+        if (!c || momentSeen.has(m.id)) continue;
+        momentSeen.add(m.id);
+        const st = { kicker: `${MOMENT.kicker}: ${m.title}`, title: m[c].label, text: m[c].text };
+        bandList.prepend(storyItem('moment', m.title, st, 'is-moment'));
+        storyCount++;
+        if (primed) showStory(st);
       }
 
       // Residents: who may move in, and who has.

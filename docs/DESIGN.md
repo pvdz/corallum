@@ -59,6 +59,13 @@ the previous act's scene is gone below the frame.
 - Trade-off: plankton grows the economy, light buys more shoals, scouting buys knowledge and
   permanent effects. No allocation is right for the whole act.
 
+**Moments**: eight small happenings on the way up (25 m to 3990 m), each a choice between two
+ways of meeting it, waiting in the Grow tab until answered and never blocking. Most pit active
+play against being away or one route against another (e.g. the squid: dim your glow, glow
+fades ×0.8, or hold it, glow ×1.2; the storm: let the branch go for +2 lineage, or bind it for
+bloom ×1.15; the cleaners: a ledge for one more resident home, or calcite dissolves ×0.9).
+Answers go into the Bands list as stories.
+
 **The water's moods** (from 60 m): every 10 sim minutes the water turns, seeded per reef: still,
 rich (polyps and glimmerseed ×0.7), slack (bands ×0.8), lamp (shoals, lure ×0.7), carrying (Readings
 and truce words ×0.7), a gritty tide (sand works ×0.7), clear (pigments, canopy, dialects ×0.7),

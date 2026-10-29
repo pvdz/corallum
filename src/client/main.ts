@@ -27,7 +27,7 @@ import { runBot } from '../game/sim/bot.ts';
 import { SITES } from '../game/content/expeditions.ts';
 import { WATER } from '../game/content/waters.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, house, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, house, meet, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -199,6 +199,13 @@ const panel = createPanel(ui, {
   },
   setRasp(n) {
     setRasp(state, n);
+  },
+  meet(id, c) {
+    if (!meet(state, id, c)) return;
+    scene.effect('truce');
+    audio.cue('choice');
+    buzz(25);
+    save();
   },
   house(id) {
     if (!house(state, id)) return;
