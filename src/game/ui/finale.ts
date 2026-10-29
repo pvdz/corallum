@@ -1,6 +1,7 @@
 // Act V's UI: the moon card in the panel, the memory choice, and the ending sequence.
 
 import { QUESTIONS } from '../content/ossel.ts';
+import { UI } from '../content/ui.ts';
 import { FIGURES, SKY } from '../content/sky.ts';
 import { ACT5, ENDING, MEMORIES, type MemoryId } from '../content/act5.ts';
 import { CREATURES, trustLevel } from '../content/creatures.ts';
@@ -45,7 +46,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
   words.append(title, status);
   head.append(icon, words);
   const need = el('p', 'moon-need');
-  const release = el('button', 'release', 'Release the spawn');
+  const release = el('button', 'release', UI.release);
   release.type = 'button';
   release.addEventListener('click', () => openChoice());
   // The next few full moons, great tides marked: the wait-or-go choice at a glance.
@@ -61,12 +62,12 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
   const memoryGrid = el('div', 'memory-grid');
   const choiceFoot = el('div', 'finale-foot');
   const picked = el('span', 'picked');
-  const letGo = el('button', 'release', 'Let go');
+  const letGo = el('button', 'release', UI.letGo);
   letGo.type = 'button';
-  const back = el('button', 'plain', 'Not yet');
+  const back = el('button', 'plain', UI.notYet);
   back.type = 'button';
   choiceFoot.append(picked, back, letGo);
-  choiceInner.append(el('h2', '', 'What the spawn carries'), choiceText, memoryGrid, choiceFoot);
+  choiceInner.append(el('h2', '', UI.carries), choiceText, memoryGrid, choiceFoot);
   choice.append(choiceInner);
   host.append(choice);
   const chosen = new Set<MemoryId>();
@@ -113,7 +114,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
   ending.hidden = true;
   const endingInner = el('div', 'finale-inner');
   const endingText = el('p', 'finale-text');
-  const endingNext = el('button', 'plain', 'Continue');
+  const endingNext = el('button', 'plain', UI.continue);
   endingNext.type = 'button';
   endingInner.append(endingText, endingNext);
   ending.append(endingInner);
@@ -164,7 +165,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
     endingText.classList.remove('in');
     void endingText.offsetWidth;
     endingText.classList.add('in');
-    endingNext.textContent = page < pages.length - 1 ? 'Continue' : 'The reef lives on';
+    endingNext.textContent = page < pages.length - 1 ? UI.continue : UI.livesOn;
   }
   function playEnding(): void {
     if (!state) return;
@@ -199,7 +200,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
       const wait = untilFullMoon(s.t);
       const great = greatTide(s, s.t + wait);
       status.textContent = full
-        ? (great ? 'Full, and a great tide: four memories' : 'The moon is full.')
+        ? (great ? UI.greatFull : UI.moonFull)
         : `${phase < 0.5 ? 'Waxing' : 'Waning'} · full in ${duration(wait)}${great ? ' · a great tide' : ''}`;
       const r = rates(s);
       const target = spawnTarget(s);
@@ -210,7 +211,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
         parts.push(`Spawn ${num(s.spawn)} / ${num(target)} (${rate(spawnNet(s, r))}${hold < target ? ' — ripen it more: it will not hold enough' : ''}).`);
       }
       if (!parts.length) {
-        parts.push(full ? 'Everything is ready.' : 'Everything is ready. Wait for the moon.');
+        parts.push(full ? UI.ready : UI.readyWait);
         // Wait-or-release: a bigger spawn sends more of you out (lineage for beginning again).
         const nextIn = full ? ACT5.moonPeriod : wait;
         const later = relax(s.spawn, r.spawnP, r.spawnK, nextIn);
@@ -231,7 +232,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
           const great = greatTide(s, at);
           const wait = at - s.t;
           const item = el('span', great ? 'moon-day great' : 'moon-day', wait < 1 ? 'now' : duration(wait));
-          item.title = great ? 'A great tide: four memories' : 'Three memories';
+          item.title = great ? UI.greatTide : UI.threeMemories;
           calendar.append(item);
           at = (Math.floor(at / ACT5.moonPeriod) + 1 + 0.5 - ACT5.fullWindow) * ACT5.moonPeriod + 1e-6;
         }

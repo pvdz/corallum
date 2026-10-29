@@ -611,3 +611,4 @@ date, what landed, what is half-done, what's next.
 - NEWS updated (news:2026-10-29c) for the recent additions.
 - Your own bands as a cross-section of the stone (drawings.ts drawRings): one ring per diary entry (last 60), the first at the heart, tinted by kind; tap a ring to read it. Redrawn when the card opens.
 - Panel words moved into content/ui.ts (UI: headings, settings, saves, the away card; 54 strings); whisper speakers into whispers.ts.
+- Client and finale words moved into content/ui.ts as well (24 more).

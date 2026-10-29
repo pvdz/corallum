@@ -54,6 +54,7 @@ import { FIGURES, SKY, type FigureId } from '../game/content/sky.ts';
 import { ACT1, FLARE, GRAINS, OLD, MILESTONES, SPORTS, STRAINS, type Milestone } from '../game/content/act1.ts';
 import { diaryLine } from '../game/content/diary.ts';
 import { OSSEL_LINES, OSSEL_LINES_TRUE, OSSEL_NOW, WHISPERS, WHISPER_BY } from '../game/content/whispers.ts';
+import { UI } from '../game/content/ui.ts';
 import { NEWS, ZONE_GUIDE } from '../game/content/guide.ts';
 import { OSSEL_MISTAKE, OSSEL_MISTAKES } from '../game/content/ossel.ts';
 import { buyTrait, forgetTrait, grainSense, habitPurchase, raspSense, shoalSense, spawnLesser } from '../game/sim/prestige.ts';
@@ -161,7 +162,7 @@ function renderSound(): void {
     ? '<path d="M15 9a4 4 0 0 1 0 6M17.5 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>'
     : '<path d="M15.5 9.5l5 5M20.5 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>';
   soundBtn.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z" fill="currentColor"/>${waves}</svg>`;
-  soundBtn.title = audio.enabled ? 'Sound on (click to mute)' : 'Sound off (click for sound)';
+  soundBtn.title = audio.enabled ? UI.soundOn : UI.soundOff;
   soundBtn.setAttribute('aria-pressed', String(audio.enabled));
 }
 soundBtn.addEventListener('click', () => {
@@ -414,7 +415,7 @@ const panel = createPanel(ui, {
       send.append(m);
     }
     const line = document.createElement('p');
-    line.textContent = 'Your spawn drifts away to find a new seamount.';
+    line.textContent = UI.driftsAway;
     send.append(line);
     ui.append(send);
     audio.cue('release');
@@ -525,7 +526,7 @@ if (ended(state)) document.documentElement.classList.add('ended');
 }
 const replay = document.createElement('button');
 replay.className = 'plain';
-replay.textContent = 'Read the ending again';
+replay.textContent = UI.readAgain;
 replay.addEventListener('click', () => finale.replay());
 panel.reefPage.prepend(replay);
 
@@ -1113,7 +1114,7 @@ function showWhisperText(text: string): void {
 // Until the first sweep, a quiet hint over the water.
 const hint = document.createElement('div');
 hint.id = 'sweep-hint';
-hint.textContent = 'Tap the water to sweep your tentacles';
+hint.textContent = UI.tapHint;
 ui.append(hint);
 
 const taps = createTaps();
@@ -1404,7 +1405,7 @@ let viewMode = false;
 const viewBtn = document.createElement('button');
 viewBtn.id = 'view-mode';
 viewBtn.type = 'button';
-viewBtn.title = 'Hide the panel (H)';
+viewBtn.title = UI.hidePanel;
 viewBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>';
 let viewSince = 0;
 function setViewMode(on: boolean): void {
@@ -1413,7 +1414,7 @@ function setViewMode(on: boolean): void {
   if (!on) zoomer.reset();
   document.documentElement.classList.toggle('view-mode', on);
   viewBtn.setAttribute('aria-pressed', String(on));
-  viewBtn.title = on ? 'Show the panel (H) · scroll, pinch or + / − to look closer' : 'Hide the panel (H)';
+  viewBtn.title = on ? UI.showPanel : UI.hidePanel;
   relayout();
 }
 viewBtn.addEventListener('click', () => setViewMode(!viewMode));
@@ -1426,7 +1427,7 @@ ui.append(viewBtn);
 const photoBtn = document.createElement('button');
 photoBtn.id = 'photo';
 photoBtn.type = 'button';
-photoBtn.title = 'Save a picture of the reef';
+photoBtn.title = UI.photo;
 photoBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
 photoBtn.addEventListener('click', () => {
   // A copy of the scene with a small caption in the corner: name, height, zone.
@@ -1474,10 +1475,8 @@ window.addEventListener('keydown', (e) => {
     return;
   }
   if (e.key === '?') {
-    panel.story('Keys', 'Shortcuts',
-      'Space sweeps your tentacles. 1–4 switch the panel tabs. F catches a falling feast. E sends the shoals on the next expedition. L flares the lure. R sends the feeders into the rising. S rides a swell at the Breach. C closes the polyps against warm water (or opens them). 7–0 answer the shoals’ signal. P buds a polyp, B lays a band, G hosts ' +
-      'glimmerseed. H hides the panel to see the whole reef. Hold any buy button to keep buying. ' +
-      'Tap a creature to learn its name; tap Ossel and it will answer.');
+    panel.story(UI.keysKicker, UI.keysTitle,
+      UI.keysHelp);
     return;
   }
   if (/^[1-4]$/.test(e.key) && panel.showTabAt(Number(e.key))) return;
@@ -1765,7 +1764,7 @@ function frame(now: number): void {
       if (c?.note.startsWith('Rare.')) {
         showJournalNote('A rare sighting', c.name);
         audio.cue('feast');
-      } else if (c) showJournalNote('Seen for the first time', c.name);
+      } else if (c) showJournalNote(UI.seenFirst, c.name);
     }
   }
   // Watching in view mode for five minutes (a secret feat).
