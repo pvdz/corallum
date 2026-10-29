@@ -6,7 +6,9 @@ import { SITES } from './expeditions.ts';
 import type { GameState } from '../sim/state.ts';
 import { CREATURES } from './creatures.ts';
 
-export type Feat = { id: string; name: string; text: string; when: (s: GameState) => boolean; progress?: (s: GameState) => [number, number] };
+export type Feat = { id: string; name: string; text: string; when: (s: GameState) => boolean; progress?: (s: GameState) => [number, number];
+  /** A secret: shown as ??? until earned. */
+  hidden?: boolean };
 
 const seenCount = (s: GameState, prefix: string) => s.meta.seen.filter((k) => k.startsWith(prefix)).length;
 const zoneSeen = (s: GameState, zone: string) =>
@@ -55,6 +57,9 @@ export const FEATS: readonly Feat[] = [
   { id: 'friends', name: 'Old friends', text: 'Be a friend to ten creatures.', when: (s) => Object.values(s.meta.trust).filter((n) => n >= 15).length >= 10, progress: (s) => [Object.values(s.meta.trust).filter((n) => n >= 15).length, 10] },
   { id: 'touch-many', name: 'Known to all', text: 'Touch twenty-five different creatures.', when: (s) => seenCount(s, 't:') >= 25, progress: (s) => [seenCount(s, 't:'), 25] },
   { id: 'closer', name: 'A closer look', text: 'Zoom in close on a creature (view mode).', when: (s) => s.meta.seen.includes('did:closeup') },
+  { id: 'talker', name: 'Old friends talking', text: 'Tap Ossel ten times.', hidden: true, when: (s) => s.meta.seen.includes('did:ossel10') },
+  { id: 'dark-picture', name: 'A picture in the dark', text: 'Save a picture of your reef in the Midnight Water.', hidden: true, when: (s) => s.meta.seen.includes('did:photo-dark') },
+  { id: 'watcher', name: 'Just watching', text: 'Watch the reef in view mode for five minutes.', hidden: true, when: (s) => s.meta.seen.includes('did:watch') },
   { id: 'picture', name: 'A picture', text: 'Save a picture of your reef.', when: (s) => s.meta.seen.includes('did:photo') },
 ];
 

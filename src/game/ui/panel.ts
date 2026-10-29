@@ -823,7 +823,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     for (const f of FEATS) {
       const got = done.includes(f);
       const pr = !got && f.progress ? f.progress(s) : null;
-      featList.append(el('dt', got ? '' : 'unknown', f.name), el('dd', got ? '' : 'unknown', pr ? `${f.text} (${Math.min(pr[0], pr[1])} of ${pr[1]})` : f.text));
+      const secret = f.hidden && !got;
+      featList.append(el('dt', got ? '' : 'unknown', secret ? '???' : f.name), el('dd', got ? '' : 'unknown', secret ? 'A secret.' : pr ? `${f.text} (${Math.min(pr[0], pr[1])} of ${pr[1]})` : f.text));
     }
   }
   lineagePage.append(lineageHead, spawnCard);

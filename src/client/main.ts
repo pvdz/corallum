@@ -757,7 +757,9 @@ let lastWhisperCheck = 0;
 let osselLine = 0;
 /** Ossel's lines about what is going on, said once a session each. */
 const osselSaid = new Set<string>();
+let osselTaps = 0;
 function sayOssel(): void {
+  if (++osselTaps >= 10 && !state.meta.seen.includes('did:ossel10')) state.meta.seen.push('did:ossel10');
   // Something going on gets a word first (each once a session), then the old lines in turn.
   const now = OSSEL_NOW.find((l) => !osselSaid.has(l.text) && l.when(state));
   if (now) osselSaid.add(now.text);
@@ -1025,8 +1027,10 @@ viewBtn.id = 'view-mode';
 viewBtn.type = 'button';
 viewBtn.title = 'Hide the panel (H)';
 viewBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>';
+let viewSince = 0;
 function setViewMode(on: boolean): void {
   viewMode = on;
+  viewSince = on ? performance.now() : 0;
   if (!on) zoomer.reset();
   document.documentElement.classList.toggle('view-mode', on);
   viewBtn.setAttribute('aria-pressed', String(on));
@@ -1068,6 +1072,7 @@ photoBtn.addEventListener('click', () => {
     const who = (reefName(state) || 'corallum').toLowerCase().replace(/[^a-z0-9]+/g, '-');
     a.download = `${who}-${Math.round(state.height)}m.png`;
     if (!state.meta.seen.includes('did:photo')) state.meta.seen.push('did:photo');
+    if (actAt(state.height) === 2 && !state.meta.seen.includes('did:photo-dark')) state.meta.seen.push('did:photo-dark');
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
     audio.cue('buy');
@@ -1298,6 +1303,8 @@ function frame(now: number): void {
       } else if (c) showJournalNote('Seen for the first time', c.name);
     }
   }
+  // Watching in view mode for five minutes (a secret feat).
+  if (viewMode && viewSince && now - viewSince > 300_000 && !state.meta.seen.includes('did:watch')) state.meta.seen.push('did:watch');
   // Feats: each earned once per lineage, worth one lineage (checked once a second).
   if (now - lastFeatCheck > 1000 && frozenT === null && botT === null) {
     lastFeatCheck = now;
