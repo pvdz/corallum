@@ -3,7 +3,8 @@
 
 import { UPGRADES } from '../content/upgrades.ts';
 import type { Job } from '../content/act2.ts';
-import { assign, BANDS, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil, readingCost, meetingWords, jobGain, steadyCalciteRate, bestRasp, carryAt } from './economy.ts';
+import type { ResidentId } from '../content/residents.ts';
+import { assign, BANDS, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil, readingCost, meetingWords, jobGain, steadyCalciteRate, bestRasp, carryAt, canSend, send, homes, house, residentsAsking } from './economy.ts';
 import type { Choice, MeetingId } from '../content/act3.ts';
 import type { DialectId, DialectTier } from '../content/act4.ts';
 import { newGame, type GameState } from './state.ts';
@@ -18,6 +19,8 @@ export type BotOptions = {
   dialects?: Record<DialectTier, DialectId>;
   /** Release one lesser spawning when the reef first reaches this height. */
   spawnAt?: number;
+  /** Send expeditions and take in residents (default true; off to test other systems alone). */
+  ventures?: boolean;
 };
 export type BotEvent = { t: number; what: string };
 
@@ -31,7 +34,7 @@ const DEFAULT_DIALECTS: Record<DialectTier, DialectId> = { form: 'branching', cr
 export { bestRasp };
 
 export function botDecide(
-  s: GameState, sweeps: boolean, fixed?: Record<Job, number>, truce = DEFAULT_TRUCE, dialects = DEFAULT_DIALECTS,
+  s: GameState, sweeps: boolean, fixed?: Record<Job, number>, truce = DEFAULT_TRUCE, dialects = DEFAULT_DIALECTS, ventures = true,
 ): string[] {
   // Without a fixed split, feeders and light-swimmers go wherever they are worth most.
   const fixedSplit = fixed !== undefined;
@@ -90,6 +93,14 @@ export function botDecide(
       if (gap(under) < 1 || !reassign(s, over, under)) break;
     }
   }
+  // Expeditions whenever one is open; residents by zone: the shelf's silt and Rasp first, then light.
+  if (ventures && canSend(s) && send(s)) bought.push(`send:${s.expedition.site}`);
+  const prefer: ResidentId[] = s.height >= 3800 ? ['damselfish', 'goby', 'feather-duster'] : ['guard-crab', 'goby', 'pistol-shrimp'];
+  const want = prefer.filter((id) => residentsAsking(s).some((r) => r.id === id)).slice(0, homes(s));
+  if (ventures && want.join() !== s.residents.join()) {
+    s.residents = [];
+    for (const id of want) house(s, id);
+  }
   // The dial is re-judged twice a minute (judging it searches every setting).
   if (raspMax(s) > 0 && (s.t % 30 < 1 || s.rasp > raspMax(s))) setRasp(s, bestRasp(s));
   if (sweeps) sweep(s);
@@ -117,7 +128,7 @@ export function runBot(
   maxT: number,
   opts: BotOptions = {},
 ): { state: GameState; events: BotEvent[]; total: number } {
-  const { seed = 1, tick = 1, sweeps = true, split, truce, dialects, spawnAt, seamount = 'plain' } = opts;
+  const { seed = 1, tick = 1, sweeps = true, split, truce, dialects, spawnAt, seamount = 'plain', ventures = true } = opts;
   let s = newGame(seed);
   s.seamount = seamount;
   let t0 = 0;
@@ -136,7 +147,7 @@ export function runBot(
       }
       events.push({ t: t0, what: `lesser spawning → ${JSON.stringify(s.meta.traits)}` });
     }
-    const did = botDecide(s, sweeps, split, truce, dialects);
+    const did = botDecide(s, sweeps, split, truce, dialects, ventures);
     for (const d of did) if (d.startsWith('truce:') || d.startsWith('dialect:') || d.startsWith('breach:')) events.push({ t: t0 + s.t, what: d });
     // Coarser ticks later in the game keep long runs fast; the bot still decides often
     // relative to how fast things change.

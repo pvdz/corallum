@@ -69,7 +69,7 @@ test('band heights: zones end exactly at their boundaries', () => {
 
 /** A Twilight Shelf state: Rasp grazing, sand bars up, silt far from settled. */
 function act3Game(): GameState {
-  const { state } = runBot((s) => s.height >= 3350, 12 * 3600);
+  const { state } = runBot((s) => s.height >= 3350, 12 * 3600, { ventures: false });
   state.silt = 0;
   state.glow = 0;
   state.levels.skeleton += 1;
@@ -269,13 +269,13 @@ test('the Breach: needs the surface, the spawn, the full moon and exactly three 
   assert.deepEqual([...s.meta.carriedEver].sort(), ['ossel', 'rasp', 'vent']);
 });
 
-test('pacing: the whole game takes the bot 6–11 h whatever the path', () => {
+test('pacing: the whole game takes the bot 5–11 h whatever the path', () => {
   for (const opts of [
     {},
     { truce: { terms: 'b', story: 'b', wall: 'b' }, dialects: { form: 'massive', craft: 'fluorescent', spawn: 'brooding' } },
   ] as const) {
     const { state } = runBot(ended, 14 * 3600, opts);
-    assert.ok(ended(state) && state.t > 6 * 3600 && state.t < 11 * 3600, `${JSON.stringify(opts)}: ${state.t}s`);
+    assert.ok(ended(state) && state.t > 5 * 3600 && state.t < 11 * 3600, `${JSON.stringify(opts)}: ${state.t}s`);
   }
 });
 

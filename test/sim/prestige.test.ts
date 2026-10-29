@@ -90,7 +90,7 @@ test('strategy traits open things earlier', async () => {
 test('glass gardeners: a reef with no Rasp at all beats the best Rasp dial without them', async () => {
   const { calciteHold } = await import('../../src/game/sim/economy.ts');
   const { runBot, bestRasp } = await import('../../src/game/sim/bot.ts');
-  const { state: s } = runBot((x) => x.height >= 3400, 6 * 3600);
+  const { state: s } = runBot((x) => x.height >= 3400, 6 * 3600, { ventures: false });
   s.rasp = bestRasp(s);
   const best = calciteHold(s);
   s.meta.traits['glass-gardeners'] = 1;

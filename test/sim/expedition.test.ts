@@ -7,7 +7,7 @@ import type { GameState } from '../../src/game/sim/state.ts';
 const rel = (a: number, b: number) => Math.abs(a - b) / Math.max(1, Math.abs(b));
 
 function atGate(): GameState {
-  const { state } = runBot((s) => s.height >= 200 && s.jobs.scout > 0, 6 * 3600);
+  const { state } = runBot((s) => s.height >= 200 && s.jobs.scout > 0, 6 * 3600, { ventures: false });
   state.glow = 0;
   state.plankton = 0;
   state.levels.skeleton += 3;
