@@ -193,7 +193,7 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
           r.row.classList.toggle('named', named);
           r.row.classList.toggle('now', now === r.f.id);
           r.name.textContent = named || open ? r.f.name : SKY.locked;
-          r.note.textContent = named ? '✓' : open ? (now === r.f.id ? SKY.tracing : '') : r.f.hint;
+          r.note.textContent = named ? '✓' : open ? (now === r.f.id ? SKY.tracing : s.meta.seen.includes(`sky:${r.f.id}`) ? SKY.before : '') : r.f.hint;
           r.b.hidden = !open;
           r.b.textContent = now === r.f.id ? SKY.stop : SKY.trace;
         }

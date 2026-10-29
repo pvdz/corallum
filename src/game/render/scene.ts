@@ -34,7 +34,7 @@ export type ReefView = {
   /** The rising passing the reef (0..1, eased in and out; Midnight Water and Twilight Shelf). */
   rising: number;
   /** The night sky over the Breach: figures named, and the one being traced (stars joined so far). */
-  sky: { named: readonly FigureId[]; tracing: { id: FigureId; n: number } | null };
+  sky: { named: readonly FigureId[]; tracing: { id: FigureId; n: number } | null; known: readonly FigureId[] };
   /** Warm water in the Sunlit Crown: how warm (0..1), how bleached the reef is (0..1), polyps closed. */
   heat: { warm: number; bleach: number; closed: boolean };
   /** A shell on the Sunlit sand (place 0..1 and kind), if one lies there now. */

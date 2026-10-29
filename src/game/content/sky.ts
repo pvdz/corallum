@@ -74,6 +74,7 @@ export const SKY = {
   tracing: 'Tap its stars in order',
   stop: 'Stop',
   locked: 'a patch of stars',
+  before: 'named before',
   /** Spawn × this for every figure named. */
   spawnEach: 1.04,
   effect: 'spawn ×1.04 each',

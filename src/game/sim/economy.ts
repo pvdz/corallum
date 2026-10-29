@@ -1188,6 +1188,7 @@ export function figureOpen(s: GameState, id: FigureId): boolean {
 export function nameFigure(s: GameState, id: FigureId): boolean {
   if (!figureOpen(s, id)) return false;
   s.sky[id] = true;
+  if (!s.meta.seen.includes(`sky:${id}`)) s.meta.seen.push(`sky:${id}`);
   return true;
 }
 

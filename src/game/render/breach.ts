@@ -167,12 +167,25 @@ export function createBreachScene(seed: number): Scene {
    */
   function drawFigures(ctx: CanvasRenderingContext2D, t: number, v: ReefView, dawn: number): void {
     const tr = v.sky.tracing;
-    if (!v.sky.named.length && !tr) return;
+    if (!v.sky.named.length && !tr && !v.sky.known.length) return;
     ctx.save();
     ctx.lineCap = 'round';
     for (const f of FIGURES) {
       const isNamed = v.sky.named.includes(f.id);
       const tracing = tr?.id === f.id;
+      // Named by an earlier reef of the line: a faint dotted outline until this reef names it too.
+      if (!isNamed && !tracing && v.sky.known.includes(f.id)) {
+        const pts = f.stars.map((_, i) => starAt(f, i));
+        ctx.setLineDash([2 * dpr, 4 * dpr]);
+        ctx.strokeStyle = `rgba(200,215,255,${0.16 * (1 - 0.7 * dawn)})`;
+        ctx.lineWidth = dpr;
+        ctx.beginPath();
+        pts.forEach(([x, y], i) => (i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)));
+        if (f.close !== undefined) ctx.lineTo(pts[f.close]![0], pts[f.close]![1]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        continue;
+      }
       if (!isNamed && !tracing) continue;
       const n = isNamed ? f.stars.length : tr!.n;
       const pts = f.stars.map((_, i) => starAt(f, i));
