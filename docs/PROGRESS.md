@@ -321,3 +321,4 @@ date, what landed, what is half-done, what's next.
 - Audio: the Breach's dolphins whistle as each leap begins (cue 'dolphin').
 - Purchase flourishes for pigment (colour sparks washing up the reef), canopy (gold bloom over the crown), ripen (pink lights in the polyps) and floor works (meadow/sandbar/channel/grounds: a puff at the foot).
 - Flourishes made legible in daylight: pigment is a band of rose-gold-green light climbing the reef plus painted sparks; floor works paint puffs of sand (green for meadows). corallum.flourish(kind) plays one for checks.
+- Caustics moved into the reef (reef.drawCaustics(rgb, belowY)); the Breach gets silver moonlight caustics on the stone under the surface (by moon phase), warm ones after the dawn.

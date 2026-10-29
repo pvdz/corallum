@@ -542,7 +542,29 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     ctx.restore();
   }
 
-  return { draw, drawEffects, crown, nodePx, coral };
+  /**
+   * Caustics on the stone: two crossing wave trains make a moving net of light and only its bright
+   * crests light the branches. `strength` 0..1; only nodes below `belowY` (under the water).
+   */
+  function drawCaustics(ctx: CanvasRenderingContext2D, L: ReefLayout, t: number, strength: number, rgb: string, belowY = -Infinity): void {
+    if (strength <= 0.05) return;
+    const s = L.s;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < coral.count; i += 2) {
+      if (coral.y[i]! > L.top || coral.parent[i]! < 0) continue;
+      const [x, y] = nodePx(L, i);
+      if (y < belowY) continue;
+      const u = x / (14 * s), v = y / (14 * s);
+      const net = Math.sin(u + t * 0.9) * Math.sin(v * 0.8 - t * 0.7) + Math.sin((u + v) * 0.7 + t * 0.5);
+      const a = Math.max(0, net - 0.6) * 0.6 * strength;
+      if (a < 0.02) continue;
+      glow(ctx, x, y, 12 * s, rgb, Math.min(0.6, a));
+    }
+    ctx.restore();
+  }
+
+  return { draw, drawEffects, drawCaustics, crown, nodePx, coral };
 }
 
 export type Reef = ReturnType<typeof createReef>;
