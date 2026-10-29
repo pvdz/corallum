@@ -64,6 +64,7 @@ export function createBreachScene(seed: number): Scene {
     const crownY = waterY() + focus.h * (0.12 - 0.16 * progress(v.height));
     return {
       cx: cx(), baseY: crownY + unit, unit, s: scale(), dpr, top: 1, bandStep: 0,
+      encrust: 1, encrustColours: ['#8a4a3a', '#5a3c7a', '#8a7a3a', '#2a6a60'],
       palette: NIGHT_LOOK[form].palette, polyp: v.craft === 'fluorescent' ? FLUORESCENT_POLYP : NIGHT_LOOK[form].polyp,
       // The dome's many lit nodes add up: it glows at a lower scale so the night stays a night.
       glowScale: (form === 'massive' ? 0.3 : 0.6) * (v.craft === 'fluorescent' ? 1.5 : 1), polypScale: 1.1,

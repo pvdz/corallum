@@ -74,6 +74,7 @@ export function createTwilightScene(seed: number): Scene {
     return {
       cx: cx(), baseY: focus.y + focus.h * 1.02, unit: focus.h * 0.78, s: scale(), dpr,
       top: 0.45 + 0.55 * progress(v.height), bandStep: 0,
+      encrust: 0.4 + 0.3 * progress(v.height), encrustColours: ['#d0703c', '#8a4fb8', '#e0c050', '#3fa38c'],
       palette: ['#1e1328', '#7a4058', 'rgba(255,190,180,0.25)'],
     };
   }

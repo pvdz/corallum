@@ -27,6 +27,9 @@ export type ReefLayout = {
   glowScale?: number;
   /** Polyp size relative to the scene scale. */
   polypScale?: number;
+  /** Encrusting life on the older stone: how much (0..1) and in which colours. */
+  encrust?: number;
+  encrustColours?: readonly string[];
 };
 
 const MAX_POLYPS = 90;
@@ -124,6 +127,54 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     }
   }
 
+  /**
+   * Encrusting life on the older stone (the lower part of the reef): little sponges, tunicate
+   * cups and lichen-like crusts, more of them as `encrust` rises. Fixed places per node.
+   */
+  function drawEncrusting(ctx: CanvasRenderingContext2D, L: ReefLayout, t: number): void {
+    const colours = L.encrustColours ?? ['#c86a3c', '#7a4fb0', '#d9b44a'];
+    const s = L.s * 2;
+    const limit = L.top * 0.75;
+    const want = Math.floor(coral.count * 0.35 * Math.min(1, L.encrust!));
+    let drawn = 0;
+    for (let k = 0; k < coral.count && drawn < want; k++) {
+      // A fixed shuffle so the same nodes are always the encrusted ones.
+      const i = (k * 7919) % coral.count;
+      const y = coral.y[i]!;
+      if (y > limit || coral.parent[i]! < 0 || radii[i]! <= 0) continue;
+      drawn++;
+      const [x, py] = nodePx(L, i);
+      const side = (i * 0.618) % 1 < 0.5 ? -1 : 1;
+      const off = radii[i]! * L.unit * 0.9 * side;
+      const col = colours[i % colours.length]!;
+      const kind = i % 3;
+      ctx.fillStyle = col;
+      if (kind === 0) {
+        // A sponge: a little lumpy cushion.
+        ctx.beginPath();
+        ctx.ellipse(x + off, py, 3.2 * s, 2.2 * s, 0, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (kind === 1) {
+        // A tunicate: a small open cup that breathes.
+        const open = 1 + 0.15 * Math.sin(t * 0.8 + i);
+        ctx.beginPath();
+        ctx.ellipse(x + off, py - 1.5 * s, 1.8 * s, 3 * s * open, side * 0.4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(0,0,0,0.35)';
+        ctx.beginPath();
+        ctx.arc(x + off + side * 0.8 * s, py - 3.6 * s * open, 0.9 * s, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        // A crust: a flat smear of colour hugging the stone.
+        ctx.globalAlpha = 0.75;
+        ctx.beginPath();
+        ctx.ellipse(x + off * 0.6, py, 4.5 * s, 1.4 * s, side * 0.6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+    }
+  }
+
   /** Plating: each layer of growth is a wide flat table, seen nearly edge-on. */
   const TABLE_LAYERS = [0.3, 0.52, 0.74, 0.96];
   function drawTables(ctx: CanvasRenderingContext2D, L: ReefLayout, t: number): void {
@@ -202,6 +253,7 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
 
     if (form === 'plating') drawTables(ctx, L, t);
     drawBranches(ctx, L, t);
+    if (L.encrust && L.encrust > 0) drawEncrusting(ctx, L, t);
 
     const nodes = polypNodes(L, shownPolyps(L, v));
     // Before the stone has grown, new polyps cluster around its foot on the silt.

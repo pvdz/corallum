@@ -77,6 +77,7 @@ export function createSunlitScene(seed: number): Scene {
     return {
       cx: cx(), baseY: focus.y + focus.h * 0.97, unit: focus.h * tall, s: scale(), dpr,
       top: 0.35 + 0.65 * progress(v.height), bandStep: 0, palette: FORM_LOOK[form].palette,
+      encrust: 0.8 + 0.2 * progress(v.height), encrustColours: ['#ff6b3d', '#a35cff', '#ffd23f', '#2ec4b6', '#ff4f8b'],
       polyp: v.craft === 'fluorescent' ? FLUORESCENT_POLYP : FORM_LOOK[form].polyp,
       // By night the reef's own light comes back (fluorescent reefs glow brighter still).
       glowScale: (v.craft === 'fluorescent' ? 0.25 : 0) + 0.8 * nightAt(lastT), polypScale: 1.2,

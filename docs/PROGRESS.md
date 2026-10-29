@@ -170,3 +170,4 @@ date, what landed, what is half-done, what's next.
 - Feasts pay in the zone's currency: carrion → calcite (Acts I–III), a drifting sargassum mat → bloom (Sunlit Crown), a rising swarm of moon plankton → spawn (the Breach, kept to the open water beside the reef).
 - Nudibranchs (render/slugs.ts): seven bright sea slugs creep along the reef's own branch paths (tip toward trunk and back) in the Twilight Shelf and Sunlit Crown; one tip per reef column so they spread out. Journal: 20 creatures.
 - Name your reef (Reef tab): shown under the title, in the tab title and in "Your reef"; kept across spawnings with a generation numeral (Mara, Mara II, …).
+- Reef: encrusting life on the older stone (sponges, breathing tunicate cups, crusts), sparse in the Midnight Water, colourful and thick in the Sunlit Crown.
