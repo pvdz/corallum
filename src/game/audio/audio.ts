@@ -3,7 +3,7 @@
 // gesture before audio can start anyway).
 
 export type Zone = 1 | 2 | 3 | 4 | 5;
-export type Cue = 'buy' | 'sweep' | 'story' | 'choice' | 'release' | 'spawning' | 'whisper' | 'feast' | 'whale' | 'zone';
+export type Cue = 'buy' | 'sweep' | 'story' | 'choice' | 'release' | 'spawning' | 'whisper' | 'feast' | 'whale' | 'zone' | 'touch';
 
 /** Per zone: root frequency of the pad, pad brightness, and how much surf noise. */
 const ZONES: Record<Zone, { root: number; bright: number; surf: number; notes: number[] }> = {
@@ -263,6 +263,11 @@ export function createAudio() {
         case 'feast':
           // A quick rising run: something good came down.
           for (const [i, n] of [0, 4, 7, 12, 16].entries()) setTimeout(() => bell(root * 2 ** (n / 12), 0.05, 1.6), i * 70);
+          break;
+        case 'touch':
+          // A creature touched: a quiet high pair, like something answering.
+          bell(root * 4, 0.025, 0.6);
+          setTimeout(() => bell(root * 4 * 2 ** (4 / 12), 0.02, 0.8), 90);
           break;
         case 'whisper':
           // Ossel: low and close, a falling fourth.
