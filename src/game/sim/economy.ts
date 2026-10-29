@@ -801,6 +801,7 @@ function homecoming(s: GameState): void {
     s.jobs.feed += n;
   }
   if (ex.fork === 'gather') burst(s, 60);
+  if (ex.fork === 'feed') dig(s, 'roam');
   // Pressing on at the fork turns up a shard for sure, if any are left.
   if (pressed) {
     const left = SHARD_LINES.map((_, i) => i).filter((i) => !s.meta.shards.includes(i));

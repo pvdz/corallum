@@ -538,3 +538,4 @@ date, what landed, what is half-done, what's next.
 - Hard seamount 'thorny' (Seamount.thorns 0.5 → economy thornPeriod in currentThorn/untilThorn); trial to 3700 m → passed('thorny') pays intruders ×1.5; moment 'outbreak' (calcite ×1.1 / thorn stars off for half).
 - On a thorny seamount, thorn stars dot the Twilight slope all the time (twilight.ts drawSlopeThorns).
 - Grow tab: a strip of chips (panel.ts renderWaitBar) when two or more choice cards are open, named by their kickers; a tap scrolls to the card.
+- Trip encounters: six now (+ a fast current: ride ×0.7; a field of larvae: feed ×1.2, a shard chance).

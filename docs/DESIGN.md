@@ -125,7 +125,7 @@ repeatable. Halfway to a ruin the shoals meet something (seeded per trip; a reef
 finds the passage), with two ways, the second the default if unanswered: the passage (press on: trip
 ×1.5, a sure shard / home as planned), a sleeping squid (wait: ×1.3, hear ×1.5 / slip past: ×0.75, hear
 ×0.5), lost lights (follow: ×1.3, +2 shoals / carry on), a sponge garden (gather: ×1.2, a minute of
-calcite / leave it). When the sister reef is near your depth the shoals can **visit** it instead (once per zone,
+calcite / leave it), a fast current (ride: ×0.7 / around), a field of larvae (feed: ×1.2, a shard chance / pass). When the sister reef is near your depth the shoals can **visit** it instead (once per zone,
 8 minutes, +1 lineage). Once the whale has come down (a moment) they can feed at the **whale fall** once
 (10 minutes, 5 minutes of calcite). Shoals come back **seasoned**: feeding and light ×(1 + 0.02 per trip, at most 20 trips).
 Shown in the world as a stream of shoal lights leaving for the

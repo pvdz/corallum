@@ -23,7 +23,7 @@ export type Site = {
 };
 
 /** What the shoals can meet halfway to a ruin: one per trip, seeded (the first trip always finds the passage). */
-export type ForkId = 'press' | 'home' | 'wait' | 'slip' | 'follow' | 'carry-on' | 'gather' | 'leave';
+export type ForkId = 'press' | 'home' | 'wait' | 'slip' | 'follow' | 'carry-on' | 'gather' | 'leave' | 'ride' | 'around' | 'feed' | 'pass';
 export type Encounter = {
   id: string; kicker: string; text: string;
   /** Each way: what it costs in time (a share of the trip, added; negative is quicker) and what it brings. */
@@ -60,6 +60,22 @@ export const ENCOUNTERS: readonly Encounter[] = [
     ways: [
       { id: 'gather', label: 'Gather what lives there', effect: 'the trip ×1.2 · a minute of calcite when they are home', time: 0.2 },
       { id: 'leave', label: 'Leave it as it is', effect: 'as planned', time: 0 },
+    ],
+  },
+  {
+    id: 'current', kicker: 'A river in the sea',
+    text: 'A fast current runs through the old streets the way the shoals are going, cold and strong.',
+    ways: [
+      { id: 'ride', label: 'Ride it', effect: 'the trip ×0.7', time: -0.3 },
+      { id: 'around', label: 'Swim around it', effect: 'as planned', time: 0 },
+    ],
+  },
+  {
+    id: 'larvae', kicker: 'A field of small lights',
+    text: 'In an open square, a cloud of glowing larvae hangs in the water, too many to count, drifting nowhere.',
+    ways: [
+      { id: 'feed', label: 'Stop and feed among them', effect: 'the trip ×1.2 · a chance of a shard', time: 0.2 },
+      { id: 'pass', label: 'Pass through', effect: 'as planned', time: 0 },
     ],
   },
 ];
