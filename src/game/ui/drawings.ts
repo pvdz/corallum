@@ -3,8 +3,12 @@
 import { CITY_MAP, SITES } from '../content/expeditions.ts';
 import { SHARD_LINES } from '../content/shards.ts';
 
-/** The buried city from above: concentric wall rings, the five ruins (lit when searched), roam paths. */
-export function drawCity(c: HTMLCanvasElement, found: readonly string[], roams: number, seed: number): void {
+/**
+ * The buried city from above: concentric wall rings, the ruins (lit when searched), roam paths,
+ * and the shoals away on a trip: a dotted way to the ruin and their lights out along it and back.
+ */
+export function drawCity(c: HTMLCanvasElement, found: readonly string[], roams: number, seed: number,
+  trip: { site: string; done: number } | null = null): void {
   const dpr = Math.min(2, window.devicePixelRatio || 1);
   const W = c.clientWidth || 300, H = 150;
   c.width = W * dpr;
@@ -39,6 +43,34 @@ export function drawCity(c: HTMLCanvasElement, found: readonly string[], roams: 
       g.lineTo(x, y);
     }
     g.stroke();
+  }
+  // The trip under way.
+  const where = trip ? (CITY_MAP.where as Record<string, [number, number]>)[trip.site] : undefined;
+  if (trip && where) {
+    const hx = W * 0.5, hy = H - 4, tx = where[0] * W, ty = where[1] * H;
+    g.save();
+    g.setLineDash([2, 4]);
+    g.strokeStyle = 'rgba(140,220,255,0.55)';
+    g.beginPath();
+    g.moveTo(hx, hy);
+    g.quadraticCurveTo((hx + tx) / 2 + W * 0.08, (hy + ty) / 2, tx, ty);
+    g.stroke();
+    g.restore();
+    // Out to the ruin over the first half, home over the second.
+    const k = 1 - Math.abs(2 * trip.done - 1);
+    const qx = (hx + tx) / 2 + W * 0.08, qy = (hy + ty) / 2;
+    const px = (1 - k) ** 2 * hx + 2 * (1 - k) * k * qx + k * k * tx, py = (1 - k) ** 2 * hy + 2 * (1 - k) * k * qy + k * k * ty;
+    for (let i = 0; i < 5; i++) {
+      g.fillStyle = `rgba(160,235,255,${0.9 - i * 0.15})`;
+      g.beginPath();
+      g.arc(px + Math.cos(i * 1.3) * 3, py + Math.sin(i * 2.1) * 2, 1.6, 0, Math.PI * 2);
+      g.fill();
+    }
+    const halo = g.createRadialGradient(px, py, 0, px, py, 12);
+    halo.addColorStop(0, 'rgba(140,220,255,0.35)');
+    halo.addColorStop(1, 'rgba(140,220,255,0)');
+    g.fillStyle = halo;
+    g.fillRect(px - 12, py - 12, 24, 24);
   }
   // The ruins.
   g.font = '11px system-ui, sans-serif';

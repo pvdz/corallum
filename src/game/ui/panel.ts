@@ -755,11 +755,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let cityKey = '';
   function renderCity(s: GameState): void {
     cityCard.hidden = s.relics.length === 0 && s.tally.roams === 0;
-    const key = `${s.relics.join()}|${s.tally.roams}`;
+    const ex = s.expedition, site = tripSite(s);
+    const trip = site ? { site: site.id, done: Math.max(0, Math.min(1, 1 - (ex.back - s.t) / tripSeconds(s, site))) } : null;
+    const key = `${s.relics.join()}|${s.tally.roams}|${trip ? `${trip.site}:${Math.round(trip.done * 100)}` : ''}`;
     if (cityCard.hidden || key === cityKey) return;
     cityKey = key;
     cityNote.textContent = s.tally.roams ? `${s.tally.roams} ${CITY_MAP.roams}` : '';
-    drawCity(cityCanvas, s.relics, s.tally.roams, s.seed);
+    drawCity(cityCanvas, s.relics, s.tally.roams, s.seed, trip);
   }
   // The shelf: shells the line has kept.
   const shelf = el('article', 'card codex shelf');
