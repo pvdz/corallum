@@ -213,3 +213,4 @@ date, what landed, what is half-done, what's next.
 - Sunlit Crown: two seahorses holding on to the seagrass with 3+ meadows (tappable; journal: 30).
 - Midnight Water: a pyrosome drifts across, waves of light running along its tube (tappable; journal: 31).
 - Feats: 27 (+ Every kind of stone, A name, A picture).
+- Fix: feats were checked inside the journal's title-faded gate, so none could be earned in a new reef's first 25 s; they now have their own once-a-second check. Verified in the browser: naming and a photo earn their feats; Every kind of stone counts earlier reefs on other seamounts.

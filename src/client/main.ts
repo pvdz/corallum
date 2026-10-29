@@ -775,6 +775,7 @@ let lastSave = last;
 let lastTitle = 0;
 let lastHabit = 0;
 let lastJournal = 0;
+let lastFeatCheck = 0;
 let lastWhaleLap = -1;
 let animT = 40;
 let needResize = true;
@@ -841,14 +842,15 @@ function frame(now: number): void {
       const c = CREATURES.find((x) => x.id === id);
       if (c) showJournalNote('Seen for the first time', c.name);
     }
-    // Feats: each earned once per lineage, worth one lineage.
-    if (frozenT === null && botT === null) {
-      for (const f of newFeats(state)) {
-        state.meta.seen.push(`f:${f.id}`);
-        state.meta.lineage += 1;
-        showJournalNote('Feat · +1 lineage', f.name);
-        audio.cue('buy');
-      }
+  }
+  // Feats: each earned once per lineage, worth one lineage (checked once a second).
+  if (now - lastFeatCheck > 1000 && frozenT === null && botT === null) {
+    lastFeatCheck = now;
+    for (const f of newFeats(state)) {
+      state.meta.seen.push(`f:${f.id}`);
+      state.meta.lineage += 1;
+      showJournalNote('Feat · +1 lineage', f.name);
+      audio.cue('buy');
     }
   }
   // Old habits: the reef's own small purchases, only while the page is open.
