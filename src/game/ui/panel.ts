@@ -13,7 +13,7 @@ import { MEMORIES } from '../content/act5.ts';
 import { CREATURES } from '../content/creatures.ts';
 import { FEATS } from '../content/feats.ts';
 import { canSpawnLesser, lineageFor, traitCost, traitMaxed } from '../sim/prestige.ts';
-import { act, actAt, SURFACE } from '../content/acts.ts';
+import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
@@ -276,7 +276,41 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const bandList = el('ol', 'band-list');
   const codex = el('article', 'card codex');
   const codexList = el('dl', 'codex-list');
-  codex.append(el('h3', '', 'Your reef'), codexList);
+  const chart = el('canvas', 'growth-chart') as HTMLCanvasElement;
+  codex.append(el('h3', '', 'Your reef'), codexList, chart);
+  let chartLen = -1;
+  /** The reef's height over this run, one point per sample, with the zone bounds as faint lines. */
+  function renderChart(s: GameState): void {
+    const hist = s.history;
+    chart.hidden = hist.length < 2;
+    if (hist.length === chartLen || hist.length < 2) return;
+    chartLen = hist.length;
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const W = chart.clientWidth || 300, H = 70;
+    chart.width = W * dpr;
+    chart.height = H * dpr;
+    const c = chart.getContext('2d')!;
+    c.scale(dpr, dpr);
+    // Zones get equal bands, like the depth gauge, so the shallow zones are not squashed flat.
+    const y = (m: number) => H - 4 - (H - 8) * gaugeFraction(m);
+    c.strokeStyle = 'rgba(150,200,255,0.12)';
+    c.lineWidth = 1;
+    for (const a of ACTS) {
+      c.beginPath();
+      c.moveTo(0, y(a.from));
+      c.lineTo(W, y(a.from));
+      c.stroke();
+    }
+    c.strokeStyle = '#ffc2b0';
+    c.lineWidth = 1.5;
+    c.beginPath();
+    hist.forEach((m, i) => {
+      const x = (i / (hist.length - 1)) * W;
+      if (i) c.lineTo(x, y(m));
+      else c.moveTo(x, y(m));
+    });
+    c.stroke();
+  }
   // The journal of creatures seen (kept across spawnings).
   const journal = el('article', 'card codex journal');
   const journalHead = el('h3', '', 'Creatures seen');
@@ -862,6 +896,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       }
       renderCodex(s);
       renderJournal(s);
+      renderChart(s);
       renderFeats(s);
       habitToggle.hidden = !s.meta.traits['old-habits'];
       const hidden = UPGRADES.find((u) => !revealed(s, u.id));
@@ -956,6 +991,13 @@ export function reefName(s: GameState): string {
 
 function seamountDef(id: SeamountId) {
   return SEAMOUNTS.find((m) => m.id === id)!;
+}
+
+/** 0 (seamount) … 1 (surface), each zone an equal share. */
+function gaugeFraction(h: number): number {
+  const n = actAt(h);
+  const a = ACTS[n - 1]!;
+  return (n - 1 + Math.min(1, Math.max(0, (h - a.from) / (a.to - a.from)))) / ACTS.length;
 }
 
 /** What opens a hidden upgrade, in words. */

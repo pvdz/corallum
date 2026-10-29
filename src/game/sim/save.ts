@@ -27,7 +27,12 @@ export function deserialize(text: string): SaveFile | null {
 /** Deep-merge `src` over `base`, keeping base's shape and only accepting same-typed values. */
 function fill<T>(base: T, src: unknown): T {
   if (!isObject(base) || !isObject(src)) return base;
-  if (Array.isArray(base)) return (Array.isArray(src) ? src.filter((x) => typeof x === 'string') : base) as T;
+  // Arrays keep their entries' kind: strings (story ids, memories) or finite numbers (history).
+  if (Array.isArray(base)) {
+    return (Array.isArray(src)
+      ? src.filter((x) => typeof x === 'string' || (typeof x === 'number' && Number.isFinite(x)))
+      : base) as T;
+  }
   const out: Record<string, unknown> = { ...base };
   for (const [k, v] of Object.entries(base)) {
     const sv = src[k];

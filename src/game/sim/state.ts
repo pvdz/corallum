@@ -9,6 +9,10 @@ import type { UpgradeId } from '../content/types.ts';
 
 export const SAVE_VERSION = 1;
 
+/** Seconds of sim time between growth-chart samples; at most HISTORY_MAX are kept (thinned by half). */
+export const HISTORY_STEP = 300;
+export const HISTORY_MAX = 240;
+
 /** What survives a lesser spawning. */
 export type Meta = {
   lineage: number;
@@ -85,6 +89,8 @@ export type GameState = {
   feasted: number;
   /** Falling feasts caught this run. */
   feasts: number;
+  /** The reef's height sampled every HISTORY_STEP sim seconds (for the growth chart). */
+  history: number[];
   /** The seamount this run grows on (lesser spawnings choose; the first reef's is plain). */
   seamount: SeamountId;
   /** Lifetime totals. */
@@ -125,6 +131,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     lastSweep: -1e9,
     feasted: -1,
     feasts: 0,
+    history: [],
     seamount: 'plain',
     earned: { calcite: 0, glow: 0, murmurs: 0 },
     act: 1,

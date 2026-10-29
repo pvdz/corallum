@@ -27,7 +27,7 @@ import type { Band, Currency, UpgradeDef, UpgradeId } from '../content/types.ts'
 import { UPGRADES } from '../content/upgrades.ts';
 import { equilibrium, relax } from './ode.ts';
 import { mulberry32 } from './rng.ts';
-import type { GameState } from './state.ts';
+import { HISTORY_MAX, HISTORY_STEP, type GameState } from './state.ts';
 
 export const BANDS: readonly Band[] = [...BANDS_ACT1, ...BANDS_ACT2, ...BANDS_ACT3, ...BANDS_ACT4, ...BANDS_ACT5];
 
@@ -399,7 +399,15 @@ export function advance(s: GameState, dt: number, stepFraction = STEP_FRACTION):
   s.spawn = relax(s.spawn, r.spawnP, r.spawnK, dt);
   // Snap the last sliver so "reached the goal" is reachable in finite time.
   if (r.heightTarget - s.height < 1e-3) s.height = r.heightTarget;
+  // Growth chart: one height sample per HISTORY_STEP of sim time (offline catch-up included; the
+  // samples during a long absence all show the height at its end, which is what the reef was).
+  const before = Math.floor(s.t / HISTORY_STEP);
   s.t += dt;
+  const after = Math.floor(s.t / HISTORY_STEP);
+  for (let k = before; k < after && k - before < HISTORY_MAX; k++) {
+    s.history.push(Math.round(s.height * 10) / 10);
+    if (s.history.length > HISTORY_MAX) s.history = s.history.filter((_, i) => i % 2 === 0);
+  }
   s.act = Math.max(s.act, actAt(s.height));
   readBands(s);
   return s;
