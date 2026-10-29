@@ -294,3 +294,4 @@ date, what landed, what is half-done, what's next.
 - Marine snow specks (draw.ts speck) are squares at 1× and round when zoomed.
 - Zoomed in, the floor detail paints directly (its 1× cache would be soft). Zoomed draw is ~26 ms headless at 3× (caches bypassed); 1× unchanged.
 - Sunlit night: sea fireflies (ostracods) lay rising strings of blue pearls over the reef; a new journal creature (39), tappable: touched, every string flares.
+- Journal hint 'Only after dark.' for unseen night creatures. Error sweep: ?bot every 2500 s to 30000 on desktop and mobile, touching every creature on screen, zooming in view mode: no console errors.
