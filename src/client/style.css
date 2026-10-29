@@ -331,6 +331,11 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 .prep-note { margin: 0; }
 .companion { font: inherit; background: none; border: none; color: var(--ink-dim); cursor: pointer; padding: 0 4px; font-size: 14px; }
 .companion.on { color: #ffd9a8; }
+.truce.moment.signal { border-color: rgba(140, 205, 255, 0.4); }
+.signal-lamps { display: flex; gap: 12px; justify-content: center; margin: 6px 0; }
+.signal-lamp { width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: color-mix(in srgb, var(--lamp) 22%, transparent); cursor: pointer; }
+.signal-lamp.lit { animation: lamp-lit 0.5s ease; }
+@keyframes lamp-lit { 0% { background: var(--lamp); box-shadow: 0 0 22px var(--lamp); } 100% { background: color-mix(in srgb, var(--lamp) 22%, transparent); box-shadow: none; } }
 .residents { background: rgba(255, 140, 120, 0.03); border: 1px solid rgba(255, 150, 130, 0.2); border-radius: var(--radius); padding: 10px 12px; }
 .residents[hidden], .resident[hidden] { display: none; }
 .residents header { display: flex; justify-content: space-between; align-items: baseline; }

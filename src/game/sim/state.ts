@@ -116,6 +116,8 @@ export type GameState = {
   lastSweep: number;
   /** Index of the last feast slot eaten (see content/events.ts). */
   feasted: number;
+  /** The shoals' signals: last slot tried, and how many answered right. */
+  signal: { last: number; answered: number };
   /** Index of the last thorn-star slot driven off. */
   thorned: number;
   /** Falling feasts caught this run. */
@@ -195,6 +197,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     lastSweep: -1e9,
     feasted: -1,
     thorned: -1,
+    signal: { last: -1, answered: 0 },
     feasts: 0,
     history: [],
     expedition: { site: '', back: 0, feed: 0, light: 0, scout: 0, n: 0 },

@@ -31,7 +31,7 @@ import { PALETTES } from '../game/content/palettes.ts';
 import { REQUEST } from '../game/content/requests.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -68,6 +68,8 @@ declare global {
       readonly spots: { id: string; x: number; y: number }[];
       /** Move the clock to the next time slot with this water (for checking its look). */
       water(id: string): boolean;
+      /** Move the clock to the next shoal signal; returns its pattern (for checking it). */
+      signal(): number[] | null;
       /** Move the clock into the next thorn star's climb (for checking it). */
       thorn(): boolean;
     };
@@ -235,6 +237,13 @@ const panel = createPanel(ui, {
     if (done.includes('trip')) audio.cue('depart');
     save();
     return done.length ? done.map((d) => (d === 'rasp' ? AWAY_PREP.rasp : AWAY_PREP.trip)).join(', ') : AWAY_PREP.nothing;
+  },
+  answerSignal(answer) {
+    const pay = answerSignal(state, answer);
+    audio.cue(pay > 0 ? 'shimmer' : 'touch');
+    if (pay > 0) buzz([20, 30, 20]);
+    save();
+    return pay;
   },
   skipRequest() {
     if (skipRequest(state)) save();
@@ -507,6 +516,16 @@ window.corallum = {
   },
   get zoom() { return zoom.k; },
   flourish: (kind: string) => scene.effect(kind as EffectKind),
+  signal() {
+    const t0 = state.t;
+    for (let dt = 0; dt < 5000; dt += 5) {
+      state.t = t0 + dt;
+      const sg = currentSignal(state);
+      if (sg) return sg.pattern;
+    }
+    state.t = t0;
+    return null;
+  },
   thorn() {
     const t0 = state.t;
     for (let dt = 0; dt < 5000; dt += 5) {

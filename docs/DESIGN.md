@@ -139,6 +139,10 @@ corals from crown-of-thorns starfish).
 In the Midnight Water the intruder is a dragonfish stalking the feeding shoals; a finished lantern
 spire's lamps dazzle it away at the last moment, for half.
 
+**The shoals' signal** (Midnight Water and Twilight Shelf, while watching): every six minutes, for 75 s,
+the lanternfish flash a pattern on four lamps; repeat it for 20 s of production per light. Patterns
+grow from 3 to 8 lights as you answer right. One try per slot. A small memory game, never needed.
+
 **Welcome back**: after an hour or more away, the away summary offers one of two gifts: a haul of
 stone (5% of each second away's calcite production, at most 8 h of it) or a search of the silt
 (three shard chances). A small choice on return; absence costs nothing and earns a little.

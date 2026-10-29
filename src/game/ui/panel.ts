@@ -15,7 +15,7 @@ import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
 import { upgradeIcon } from './icons.ts';
 import { drawCity, drawTablet } from './drawings.ts';
 import { FEATS } from '../content/feats.ts';
-import { AWAY_PREP, WELCOME, intruderOf } from '../content/events.ts';
+import { AWAY_PREP, SIGNAL, WELCOME, intruderOf } from '../content/events.ts';
 import { WATER } from '../content/waters.ts';
 import { REQUEST } from '../content/requests.ts';
 import { WORKS, WORK_TEXT, type WorkId } from '../content/works.ts';
@@ -32,7 +32,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, othersSpawning, othersCap, boonsOffered, untilFeast, untilThorn, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, othersSpawning, othersCap, boonsOffered, currentSignal, untilFeast, untilThorn, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -53,6 +53,8 @@ export type PanelHooks = {
   meetOthers(how: 'feed' | 'join'): void;
   /** Ready the reef for an absence; returns what was done, in words. */
   prepareAway(): string;
+  /** Answer the shoals' signal; returns what it paid (0 if wrong). */
+  answerSignal(answer: number[]): number;
   /** Ask Ossel for a different request. */
   skipRequest(): void;
   /** Build the next stage of a great work. */
@@ -259,6 +261,45 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   boonBox.append(boonKicker, boonHead, boonChoices);
   grow.prepend(boonBox);
   let boonKey = '';
+
+  // ---------- The shoals' signal (a little memory game) ----------
+  const signalBox = el('section', 'truce moment signal');
+  signalBox.hidden = true;
+  const signalState = el('p', 'truce-words');
+  const signalLamps = el('div', 'signal-lamps');
+  let sigK = -1, sigDone = -1, sigLinger = 0, sigPattern: number[] = [], sigAnswer: number[] = [], sigPlaying = false;
+  const lampButtons = SIGNAL.lamps.map((rgb, i) => {
+    const b = button('signal-lamp', '', () => {
+      if (sigPlaying || sigK < 0) return;
+      flash(i);
+      sigAnswer.push(i);
+      const wrong = sigAnswer.some((a, j) => a !== sigPattern[j]);
+      if (wrong || sigAnswer.length === sigPattern.length) {
+        const pay = hooks.answerSignal(sigAnswer);
+        signalState.textContent = pay > 0 ? `${SIGNAL.right} · +${num(pay)}` : SIGNAL.wrong;
+        sigDone = sigK;
+        sigK = -1;
+        sigLinger = performance.now() + 4000;
+      }
+    });
+    b.style.setProperty('--lamp', `rgb(${rgb})`);
+    signalLamps.append(b);
+    return b;
+  });
+  function flash(i: number): void {
+    const b = lampButtons[i]!;
+    b.classList.remove('lit');
+    void b.offsetWidth;
+    b.classList.add('lit');
+  }
+  function playPattern(): void {
+    sigPlaying = true;
+    signalState.textContent = SIGNAL.watch;
+    sigPattern.forEach((i, n) => setTimeout(() => flash(i), 400 + n * 650));
+    setTimeout(() => { sigPlaying = false; signalState.textContent = SIGNAL.answer; }, 400 + sigPattern.length * 650 + 300);
+  }
+  signalBox.append(el('p', 'truce-kicker', SIGNAL.kicker), el('p', 'truce-text', SIGNAL.text), signalLamps, signalState);
+  grow.prepend(signalBox);
 
   // ---------- Other reefs spawning (Sunlit full moon) ----------
   const othersBox = el('section', 'truce moment others');
@@ -1457,6 +1498,16 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           boonChoices.append(btn);
         }
       }
+
+      // The shoals' signal: a new one plays its pattern when it appears; the card stays a moment after an answer.
+      const sig = currentSignal(s);
+      if (sig && sig.k !== sigK && sig.k !== sigDone) {
+        sigK = sig.k;
+        sigPattern = sig.pattern;
+        sigAnswer = [];
+        playPattern();
+      }
+      setShown(signalBox, (!!sig && sig.k !== sigDone) || performance.now() < sigLinger);
 
       // Other reefs spawning: this moon's choice.
       setShown(othersBox, othersSpawning(s));

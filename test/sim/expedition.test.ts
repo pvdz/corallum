@@ -81,3 +81,18 @@ test('calling the shoals home early costs glow for the time left and brings them
   assert.deepEqual(s.jobs, jobs);
   assert.deepEqual(s.relics, ['gate']);
 });
+
+test('the shoals’ signal: one try per slot, the right pattern pays, a wrong one spends the slot', async () => {
+  const { currentSignal, answerSignal } = await import('../../src/game/sim/economy.ts');
+  const s = atGate();
+  let sig = null;
+  for (let i = 0; i < 2000 && !sig; i++) { advance(s, 5); sig = currentSignal(s); }
+  assert.ok(sig);
+  const wrong = sig.pattern.map((x) => (x + 1) % 4);
+  assert.equal(answerSignal(s, wrong), 0);
+  assert.equal(currentSignal(s), null);
+  sig = null;
+  for (let i = 0; i < 2000 && !sig; i++) { advance(s, 5); sig = currentSignal(s); }
+  assert.ok(answerSignal(s, sig!.pattern) > 0);
+  assert.equal(s.signal.answered, 1);
+});

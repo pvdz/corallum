@@ -436,3 +436,4 @@ date, what landed, what is half-done, what's next.
 - Rain at the Breach (after the Rain band): a shower every five minutes, streaks and rings on the surface.
 - Rain sound at the Breach: soft low drops while a shower falls (audio.setRain).
 - Companion: meta.companion, ☆/★ in the journal on touched creatures; gifts ×2 at half the cooldown; shown on the touch label.
+- The shoals' signal: a little memory game (events.ts SIGNAL, economy currentSignal/answerSignal, state.signal); panel card with four lamps; corallum.signal() jumps to one; test.

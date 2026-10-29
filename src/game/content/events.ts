@@ -45,6 +45,23 @@ export function intruderOf(zone: number): 'thorn-star' | 'dragonfish' | null {
   return zone === 2 ? 'dragonfish' : zone === 3 || zone === 4 ? 'thorn-star' : null;
 }
 
+/** The shoals' signal: now and then the lanternfish flash a pattern; repeat it for a burst. Watching only. */
+export const SIGNAL = {
+  period: 360, life: 75, zones: [2, 3], minShoals: 5,
+  /** Lamps (colours) and pattern length (grows with signals answered, capped). */
+  lamps: ['120,200,255', '150,255,200', '255,210,140', '220,150,255'],
+  length: (answered: number) => Math.min(8, 3 + Math.floor(answered / 2)),
+  /** Pay: this many seconds of production per light in the pattern. */
+  secondsPerLight: 20,
+  kicker: 'The shoals are signalling',
+  text: 'Watch the lights, then answer with the same.',
+  watch: 'Watch…',
+  answer: 'Your turn',
+  right: 'They answer you',
+  wrong: 'They swim on, puzzled',
+  float: '· the shoals answered',
+} as const;
+
 export const FEAST = {
   /** The band after which they come (the late Silt Floor, where purchases slow down). Ossel's
    * whisper introduces the first; the "What falls" band tells what they are. */

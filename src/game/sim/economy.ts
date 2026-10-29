@@ -23,7 +23,7 @@ import { ACT5, BANDS_ACT5, MEMORIES, type Memory, type MemoryId } from '../conte
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
 import { BOONS, LINEAGE, SEAMOUNTS, type BoonId, type Seamount, type SeamountId, type TraitId } from '../content/lineage.ts';
-import { FEAST, THORN, WELCOME, intruderOf } from '../content/events.ts';
+import { FEAST, SIGNAL, THORN, WELCOME, intruderOf } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { WORKS, type WorkId } from '../content/works.ts';
 import { COUSIN, SISTER } from '../content/sister.ts';
@@ -1431,6 +1431,30 @@ export function skipRequest(s: GameState): boolean {
 /** Check the request right after a purchase or a touch (the game loop also checks every frame). */
 export function checkRequest(s: GameState): number {
   return keepRequest(s);
+}
+
+// ---------- The shoals' signal ----------
+
+/** The signal being flashed now (slot index and pattern of lamp indices), if one is open. */
+export function currentSignal(s: GameState): { k: number; pattern: number[] } | null {
+  if (!(SIGNAL.zones as readonly number[]).includes(actAt(s.height)) || s.levels.shoal < SIGNAL.minShoals) return null;
+  const k = Math.floor(s.t / SIGNAL.period);
+  if (k <= s.signal.last) return null;
+  const r = mulberry32((s.seed ^ 0x5191) + Math.imul(k, 0x9e3779b1));
+  const start = k * SIGNAL.period + r() * (SIGNAL.period - SIGNAL.life);
+  if (s.t < start || s.t >= start + SIGNAL.life) return null;
+  const pattern = Array.from({ length: SIGNAL.length(s.signal.answered) }, () => Math.floor(r() * SIGNAL.lamps.length));
+  return { k, pattern };
+}
+
+/** Answer the current signal: right pays a burst (more for longer patterns); either way the slot is spent. */
+export function answerSignal(s: GameState, answer: readonly number[]): number {
+  const sig = currentSignal(s);
+  if (!sig) return 0;
+  s.signal.last = sig.k;
+  if (answer.length !== sig.pattern.length || answer.some((a, i) => a !== sig.pattern[i])) return 0;
+  s.signal.answered++;
+  return burst(s, SIGNAL.secondsPerLight * sig.pattern.length);
 }
 
 // ---------- Thorn stars ----------
