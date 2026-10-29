@@ -373,3 +373,4 @@ date, what landed, what is half-done, what's next.
 - Full-moon spawning choice in every zone below the Breach (texts per zone; feed pays the zone's currency via burst); first made for the Sunlit Crown: act4.ts OTHERS, economy othersSpawning/meetOthers, state.others; card with two choices; sunlit drawOthersSpawn (pink bundles rising).
 - Resident pairings (residents.ts PAIRS, economy paired()): three pairs with a bonus each; the Residents box names live pairings or hints at them.
 - Midnight band cost growth 1.18 → 1.19 (pairings and the full-moon choice had pulled the bot to 6h08); bot 7h30 / 7h08.
+- The ending gains a page about the sister reef (ahead or behind at the surface).

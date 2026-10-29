@@ -122,6 +122,8 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
       const m = MEMORIES.find((x) => x.id === id);
       if (m) out.push(`${m.title}. ${m.epilogue}`);
     }
+    // The sister reef: ahead of it at the surface, or behind.
+    if (s.race.decided >= 5) out.push(s.diary.some((d) => d.includes('|ahead|the surface')) ? ENDING.sisterAhead : ENDING.sisterBehind);
     out.push(s.truce.wall === 'b' ? ENDING.closingKept : ENDING.closingLetGo);
     // The line has carried every memory there is, across its endings.
     if (MEMORIES.every((m) => s.meta.carriedEver.includes(m.id))) out.push(ENDING.everything);

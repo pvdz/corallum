@@ -186,6 +186,11 @@ export const ENDING = {
     'and asks you to let the Rasp have it after all. You do. It is the last thing you learn.',
   closingLetGo: 'At dawn the sand that was Ossel washes over your crown in the surf, warm, and for ' +
     'a moment you are sure it is laughing.',
+  /** The sister reef, by who reached the surface first. */
+  sisterAhead: 'On the next seamount the sister reef is still climbing, a few metres under the light. ' +
+    'Some of your spawn drifts over it on the way out. It will be there next moon. It will not be alone.',
+  sisterBehind: 'The sister reef spawned before you, a moon ago, on the next seamount. Its children are ' +
+    'out there already. When yours settle, some of them will settle beside its, and they will know each other.',
   /** Once the line has carried every memory there is, across all its endings. */
   everything: 'Over all your spawnings, every memory has gone somewhere: the vent and the city, the ' +
     'Rasp and the rain, the eye in the dark, the turtle, the tablet. Not one of your children carries ' +

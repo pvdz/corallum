@@ -60,7 +60,9 @@ await withGame(async (open) => {
       if (label === 'The reef lives on') break;
     }
     const endedFlag = await page.evaluate(() => document.documentElement.classList.contains('ended'));
-    const ok = endedFlag && pages.length === carry + 3 && errors.length === 0;
+    // Release, one per memory, the sister reef (once the race reached the surface), Ossel, the last line.
+    const sister = await page.evaluate(() => window.corallum!.state.race.decided >= 5 ? 1 : 0);
+    const ok = endedFlag && pages.length === carry + 3 + sister && errors.length === 0;
     console.log(`${ok ? 'ok  ' : 'FAIL'} ${vp.name}: ${pages.length} ending pages${errors.length ? ' · ' + errors.join(' | ') : ''}`);
     failed ||= !ok;
   }
