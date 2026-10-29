@@ -1,6 +1,7 @@
 // Act V's UI: the moon card in the panel, the memory choice, and the ending sequence.
 
 import { ACT5, ENDING, MEMORIES, type MemoryId } from '../content/act5.ts';
+import { CREATURES, trustLevel } from '../content/creatures.ts';
 import { SURFACE } from '../content/acts.ts';
 import {
   breachReady, canBreach, ended, memoriesAvailable, moonFull, moonPhase, rates, spawnHold, spawnNet, spawnTarget,
@@ -118,6 +119,12 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
 
   function endingPages(s: GameState): string[] {
     const out: string[] = [ENDING.release];
+    // The neighbours the line knows well (familiar or more) come to watch.
+    const known = CREATURES.filter((c) => trustLevel(s.meta.trust[c.id] ?? 0) >= 2).map((c) => c.name.toLowerCase());
+    if (known.length) {
+      const names = known.length > 1 ? `${known.slice(0, -1).slice(0, 7).join(', ')} and ${known.at(-1)}` : known[0]!;
+      out.push(ENDING.friends.replace('{names}', names));
+    }
     for (const id of s.carried) {
       const m = MEMORIES.find((x) => x.id === id);
       if (m) out.push(`${m.title}. ${m.epilogue}`);

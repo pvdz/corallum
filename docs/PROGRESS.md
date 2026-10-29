@@ -400,3 +400,4 @@ date, what landed, what is half-done, what's next.
 - Way 'Layering': while watching, the reef lays a band itself when it costs under a tenth of its calcite (habitPurchase).
 - Lineage tab: automation traits grouped as Habits (Old habits, Layering, Shoal sense, Rasp sense).
 - Requests can also ask to roam, raise a work stage, drive off an intruder or read a band (tally.intruders).
+- The ending names the neighbours the line knows well (familiar or more), come to watch.

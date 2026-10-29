@@ -186,6 +186,8 @@ export const ENDING = {
     'and asks you to let the Rasp have it after all. You do. It is the last thing you learn.',
   closingLetGo: 'At dawn the sand that was Ossel washes over your crown in the surf, warm, and for ' +
     'a moment you are sure it is laughing.',
+  /** The creatures that know you, come to see the spawn off ({names}). */
+  friends: 'They came to watch, the ones who knew you: {names}. They stay until the last bundle is out of sight.',
   /** The sister reef, by who reached the surface first. */
   sisterAhead: 'On the next seamount the sister reef is still climbing, a few metres under the light. ' +
     'Some of your spawn drifts over it on the way out. It will be there next moon. It will not be alone.',
