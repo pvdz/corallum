@@ -223,6 +223,46 @@ export function createLife(seed: number) {
   }
 
   /**
+   * Rarely, a dumbo octopus: once in fifteen minutes a pale little octopus hovers across the
+   * floor, flapping the two ear-like fins on its head.
+   */
+  function drawDumbo(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
+    const period = 900, crossing = 40;
+    const u = ((t + 300) % period) / crossing;
+    if (u >= 1) return;
+    sight('dumbo');
+    const s = st.s * 2;
+    const x = st.cx + st.w * (-0.6 + u * 1.2), y = st.baseY - 130 * st.s + Math.sin(t * 1.5) * 8 * st.s;
+    spot('dumbo', x, y, 24 * s);
+    const flap = Math.sin(t * 5);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.fillStyle = 'rgba(255,205,190,0.85)';
+    // Mantle and its two ear fins.
+    ctx.beginPath();
+    ctx.ellipse(0, -2 * s, 7 * s, 6 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    for (const side of [-1, 1]) {
+      ctx.beginPath();
+      ctx.ellipse(side * 7 * s, -5 * s, 4 * s, 2 * s, side * (0.5 + flap * 0.4), 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // A webbed skirt of arms below.
+    ctx.beginPath();
+    ctx.moveTo(-7 * s, 1 * s);
+    for (let k = 0; k <= 8; k++) ctx.lineTo(-7 * s + k * 1.75 * s, (5 + (k % 2) * 2 + Math.sin(t * 3 + k) * 0.6) * s);
+    ctx.lineTo(7 * s, 1 * s);
+    ctx.fill();
+    ctx.fillStyle = '#222';
+    for (const side of [-1, 1]) {
+      ctx.beginPath();
+      ctx.arc(side * 2.6 * s, -1.5 * s, 1 * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  /**
    * Sea pigs: a little herd of plump pink sea cucumbers walking along the silt on stubby tube
    * feet, feelers waving on top, crossing the floor every few minutes.
    */
@@ -525,6 +565,7 @@ export function createLife(seed: number) {
     drawFloor(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
       for (const g of sponges) drawSponge(ctx, st, g, t);
       drawSeaPigs(ctx, st, t);
+      drawDumbo(ctx, st, t);
       for (const c of lilies) drawLily(ctx, st, c, t);
       drawOssel(ctx, st, t);
       for (const star of stars) drawStar(ctx, st, star, t);

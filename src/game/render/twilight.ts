@@ -421,6 +421,52 @@ export function createTwilightScene(seed: number): Scene {
     }
   }
 
+  /**
+   * Rarely, a whale shark: once in eighteen minutes the biggest fish in the sea glides across the
+   * upper water, broad-headed and spotted, mouth open for plankton.
+   */
+  function drawWhaleShark(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 1080, crossing = 70;
+    const u = ((t + 500) % period) / crossing;
+    if (u >= 1) return;
+    sight('whale-shark');
+    const s = scale() * 2.4;
+    const x = focus.x + focus.w * (-0.3 + u * 1.6), y = focus.y + focus.h * 0.3 + Math.sin(t * 0.25) * 8 * s;
+    spot('whale-shark', x, y, 70 * s);
+    const sweep = Math.sin(t * 1.2);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.fillStyle = 'rgba(40,62,92,0.85)';
+    ctx.beginPath();
+    ctx.moveTo(60 * s, 0);
+    ctx.quadraticCurveTo(58 * s, -12 * s, 30 * s, -13 * s);
+    ctx.quadraticCurveTo(-20 * s, -12 * s, -50 * s, -2 * s + sweep * 2 * s);
+    ctx.lineTo(-72 * s, -18 * s + sweep * 6 * s);
+    ctx.lineTo(-64 * s, 0);
+    ctx.lineTo(-70 * s, 12 * s + sweep * 4 * s);
+    ctx.lineTo(-50 * s, 3 * s + sweep * 2 * s);
+    ctx.quadraticCurveTo(-10 * s, 12 * s, 30 * s, 11 * s);
+    ctx.quadraticCurveTo(58 * s, 10 * s, 60 * s, 0);
+    ctx.fill();
+    // Dorsal and pectoral fins.
+    ctx.beginPath();
+    ctx.moveTo(0, -12 * s); ctx.lineTo(-12 * s, -24 * s); ctx.lineTo(-16 * s, -11 * s); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(26 * s, 9 * s); ctx.lineTo(14 * s, 22 * s); ctx.lineTo(8 * s, 10 * s); ctx.fill();
+    // Pale spots and stripes.
+    ctx.fillStyle = 'rgba(220,235,255,0.55)';
+    const sr = mulberry32(0x5a7c);
+    for (let k = 0; k < 46; k++) {
+      const sx = 52 - sr() * 100, sy = (sr() * 2 - 1) * (10 - Math.abs(sx) * 0.08);
+      ctx.beginPath();
+      ctx.arc(sx * s, sy * s, 0.9 * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.fillStyle = 'rgba(10,20,35,0.8)';
+    ctx.fillRect(55 * s, -1 * s, 4 * s, 2 * s);
+    ctx.restore();
+  }
+
   /** A manta gliding through the light shafts every few minutes, wings rising and falling slowly. */
   function drawManta(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 230, crossing = 75;
@@ -588,6 +634,7 @@ export function createTwilightScene(seed: number): Scene {
       water.draw(ctx, w, h, t, 0.2, `${w}x${h} ${p.toFixed(3)}`, (c, tq) => drawWater(c, tq, p));
       ruins.draw(ctx, w, h, focus, v.height, RUINS, t);
       drawManta(ctx, t);
+      drawWhaleShark(ctx, t);
       drawMotes(ctx, t, v.siltLevel);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#1d3557');
       drawShelf(ctx, v.sandBars, v.siltLevel);
