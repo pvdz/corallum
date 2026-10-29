@@ -17,7 +17,7 @@ import { glow, speck } from './draw.ts';
 import { drawDaughters } from './daughters.ts';
 import { createGround } from './ground.ts';
 import { createLayerCache } from './layer.ts';
-import { createReef, type ReefLayout } from './reef.ts';
+import { createReef, type Reef, type ReefLayout } from './reef.ts';
 import { createRuins, type RuinStyle } from './ruins.ts';
 import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts';
 import { createShoals } from './shoals.ts';
@@ -744,6 +744,41 @@ export function createTwilightScene(seed: number): Scene {
    * Garden eels: a colony of thin eels standing out of their burrows in the sand, all leaning into
    * the current to catch drifting food, and ducking down in waves when something passes.
    */
+  /**
+   * The ledge the reef grew for the cleaner shrimp (a moment): a small shelf on a branch partway
+   * up, three striped shrimp on it waving their long white antennae for customers.
+   */
+  function drawLedge(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, t: number): void {
+    const c = reef.coral;
+    let node = -1;
+    for (let i = 0; i < c.count; i++) if (c.y[i]! > L.top * 0.38 && c.y[i]! < L.top * 0.45 && c.x[i]! > 0.05) { node = i; break; }
+    if (node < 0) return;
+    const [x, y] = reef.nodePx(L, node);
+    const s = scale() * 1.3;
+    ctx.save();
+    ctx.fillStyle = '#b89a8a';
+    ctx.beginPath();
+    ctx.ellipse(x + 10 * s, y + 2 * s, 14 * s, 3 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    for (let k = 0; k < 3; k++) {
+      const sx = x + (2 + k * 8) * s, sy = y - 1 * s;
+      ctx.fillStyle = k % 2 ? '#f2f2f2' : '#d8323a';
+      ctx.beginPath();
+      ctx.ellipse(sx, sy, 3 * s, 1.4 * s, -0.3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(250,250,250,0.8)';
+      ctx.lineWidth = 0.5 * s;
+      for (const side of [-1, 1]) {
+        const a = -Math.PI / 2 + side * 0.4 + Math.sin(t * 3 + k * 2 + side) * 0.35;
+        ctx.beginPath();
+        ctx.moveTo(sx + 2 * s, sy - 0.5 * s);
+        ctx.quadraticCurveTo(sx + 2 * s + Math.cos(a) * 5 * s, sy + Math.sin(a) * 5 * s, sx + 2 * s + Math.cos(a) * 11 * s, sy + Math.sin(a) * 11 * s);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
   /** On a thorny seamount, crown-of-thorns starfish dot the slope all the time, creeping slowly. */
   function drawSlopeThorns(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
@@ -1486,6 +1521,7 @@ export function createTwilightScene(seed: number): Scene {
       if (night > 0) drawNight(ctx, t, night, 0.5);
       reef.draw(ctx, L, v, t);
       drawRelics(ctx, reef, L, v.relics, t, v.moments['old-lamp'] === 'a');
+      if (v.moments.cleaners === 'a') drawLedge(ctx, reef, L, t);
       if (v.thorn?.kind === 'thorn-star') drawThorn(ctx, reef, L, v.thorn.u, v.thorn.side, t);
       slugs.draw(ctx, reef, L, t);
       drawResidents(ctx, reef, L, v.residents, t, seed,
