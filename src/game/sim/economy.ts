@@ -1260,9 +1260,13 @@ export function meetOthers(s: GameState, how: 'feed' | 'join'): boolean {
 
 // ---------- Boons ----------
 
+/** Requests a first reef keeps to be offered a boon (later reefs are offered one at once). */
+export const BOON_REQUESTS = 10;
+
 /** The three boons offered to this reef (seeded), while none is chosen; none for a first reef. */
 export function boonsOffered(s: GameState): typeof BOONS[number][] {
-  if (s.meta.spawnings === 0 || s.boon) return [];
+  // A first reef earns its boon by keeping ten of Ossel's requests.
+  if (s.boon || (s.meta.spawnings === 0 && s.request.done < BOON_REQUESTS)) return [];
   const r = mulberry32(s.seed ^ 0xb0b0);
   const pool = [...BOONS];
   const out: typeof BOONS[number][] = [];

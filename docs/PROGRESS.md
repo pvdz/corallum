@@ -393,3 +393,4 @@ date, what landed, what is half-done, what's next.
 - New creature: flying fish in the Breach (a few burst out, glide on long ribbed wing-fins, drop back; tapped they glide farther).
 - Reef tab card 'What shapes this reef': every lasting effect in play (boon, relics, residents, pairings, moments, works, favours, hard places learned), one line each.
 - Ways: Thorn-wise, Moon-born (othersCap); the full-moon card says how much lineage is left on this reef.
+- A first reef earns the boon offer by keeping ten requests ('Ossel is pleased').

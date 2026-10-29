@@ -251,4 +251,7 @@ export const BOONS: readonly { id: BoonId; name: string; effect: string }[] = [
   { id: 'welcome', name: 'A welcoming sea', effect: 'gifts from neighbours ×2 on this reef' },
   { id: 'near-ruins', name: 'Near ruins', effect: 'expeditions take half as long on this reef' },
 ];
-export const BOON_TEXT = { kicker: 'A new seamount', head: 'Something here is on your side. Choose one:' } as const;
+export const BOON_TEXT = {
+  kicker: 'A new seamount', head: 'Something here is on your side. Choose one:',
+  earnedKicker: 'Ossel is pleased', earnedHead: 'Ten things asked, ten things done. Something here is on your side now. Choose one:',
+} as const;

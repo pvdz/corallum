@@ -242,7 +242,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const boonBox = el('section', 'truce moment boon');
   boonBox.hidden = true;
   const boonChoices = el('div', 'boon-choices');
-  boonBox.append(el('p', 'truce-kicker', BOON_TEXT.kicker), el('p', 'truce-text', BOON_TEXT.head), boonChoices);
+  const boonKicker = el('p', 'truce-kicker', BOON_TEXT.kicker), boonHead = el('p', 'truce-text', BOON_TEXT.head);
+  boonBox.append(boonKicker, boonHead, boonChoices);
   grow.prepend(boonBox);
   let boonKey = '';
 
@@ -1358,6 +1359,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       const bk = offered.map((b) => b.id).join();
       if (bk !== boonKey) {
         boonKey = bk;
+        const earned = s.meta.spawnings === 0;
+        boonKicker.textContent = earned ? BOON_TEXT.earnedKicker : BOON_TEXT.kicker;
+        boonHead.textContent = earned ? BOON_TEXT.earnedHead : BOON_TEXT.head;
         boonChoices.innerHTML = '';
         for (const b of offered) {
           const btn = button('choice', '', () => hooks.chooseBoon(b.id));
