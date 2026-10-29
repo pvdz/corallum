@@ -1348,6 +1348,24 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let raspBest = -1;
   let raspHold = -1;
   let tickZone = -1;
+  // ---------- Choices waiting: a strip of chips at the top of the Grow tab ----------
+  // When two or more choice cards are open, each gets a chip named by its kicker; a tap scrolls to it.
+  const waitBar = el('div', 'wait-bar');
+  waitBar.hidden = true;
+  grow.prepend(waitBar);
+  let waitKey = '';
+  function renderWaitBar(): void {
+    const open = [...grow.querySelectorAll<HTMLElement>(':scope > section:not([hidden])')]
+      .map((sec) => ({ sec, label: sec.querySelector('.truce-kicker')?.textContent ?? '' }))
+      .filter((x) => x.label);
+    const key = open.map((x) => x.label).join('|');
+    if (key === waitKey) return;
+    waitKey = key;
+    waitBar.hidden = open.length < 2;
+    waitBar.innerHTML = '';
+    for (const x of open) waitBar.append(button('wait-chip', x.label, () => x.sec.scrollIntoView({ behavior: 'smooth', block: 'start' })));
+  }
+
   return {
     setBackupDue,
     /** The pinned card's wait ('' if nothing is pinned). */
@@ -1602,6 +1620,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       }
 
       choices.update(s);
+      renderWaitBar();
 
       // A moment waiting for an answer, and answers given.
       const mo = nextMoment(s);

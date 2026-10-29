@@ -537,3 +537,4 @@ date, what landed, what is half-done, what's next.
 - Vent shrimp crowd the vent chimney (life.ts drawVentShrimp, more per tier); touched, they scatter and drift back.
 - Hard seamount 'thorny' (Seamount.thorns 0.5 → economy thornPeriod in currentThorn/untilThorn); trial to 3700 m → passed('thorny') pays intruders ×1.5; moment 'outbreak' (calcite ×1.1 / thorn stars off for half).
 - On a thorny seamount, thorn stars dot the Twilight slope all the time (twilight.ts drawSlopeThorns).
+- Grow tab: a strip of chips (panel.ts renderWaitBar) when two or more choice cards are open, named by their kickers; a tap scrolls to the card.
