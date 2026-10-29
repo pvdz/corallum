@@ -18,7 +18,7 @@ import { ACTS, act, actAt } from '../game/content/acts.ts';
 import { createAbyssScene } from '../game/render/abyss.ts';
 import { createMidnightScene } from '../game/render/midnight.ts';
 import { drawPinned, drawTangle } from '../game/render/tangle.ts';
-import { createBreachScene, lightningAt } from '../game/render/breach.ts';
+import { createBreachScene, lightningAt, squallAt } from '../game/render/breach.ts';
 import { createSunlitScene } from '../game/render/sunlit.ts';
 import { createTwilightScene } from '../game/render/twilight.ts';
 import { createTaps } from '../game/render/taps.ts';
@@ -1724,7 +1724,7 @@ function frame(now: number): void {
     }
     // Rain at the Breach (the same five-minute shower the scene draws).
     audio.setSong(state.dialects.song);
-    audio.setRain(state.bands.includes('rain') && actAt(state.height) === 5 && animT % 300 < 70);
+    audio.setRain(actAt(state.height) === 5 && ((state.bands.includes('rain') && animT % 300 < 70) || squallAt(animT) > 0));
     // Thunder from the far storm, a couple of seconds after each flash.
     const strike = state.bands.includes('rain') && actAt(state.height) === 5 ? lightningAt(animT) : null;
     const strikeKey = strike && strike.since > 1.8 ? strike.lap * 10 + strike.k : -1;
