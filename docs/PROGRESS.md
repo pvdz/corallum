@@ -614,3 +614,4 @@ date, what landed, what is half-done, what's next.
 - Client and finale words moved into content/ui.ts as well (24 more).
 - Vows (lineage.ts VOWS; state vows/surfacedAt; economy vowKept/vowLineage): after the line's first ending, a new reef may take Haste (surface within 7 h: +6), Lightness (carry one fewer: +4), Solitude (no homes: +4); paid in lineageFor at the ending. Spawn card toggles, codex row (kept/broken), guide line; prestige test.
 - The ending has a page for the reef's vows, kept and broken.
+- Feat Every vow kept (hidden).
