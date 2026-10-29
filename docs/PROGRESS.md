@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended goal (user): add features and gameplay, repeat. Since 2026-10-29 morning: dozens of systems (see log) incl. the current dial, heirlooms, the quick cousin, Ossel's mistakes, call-home, roam tales, sister visits, request streaks, 10 new creatures. Bot ~8h. Next ideas: graphics per zone, more moments/creatures, code split of economy.ts (1500 lines), real-phone perf.
+NOW: Open-ended goal (user): add features and gameplay, repeat. Recent: signal minigame, intruders in every zone (snail, dragonfish, thorn star, gull), elder's riddles, glimmerseed strain, fork on trips, whale-fall trip, Song dialect, epilogue garden, chronicle, companion, daily gift, cays, secret ending page, many creatures. PLAN.md has a backlog list (all done so far; add more there). Bot ~7.5 h.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.

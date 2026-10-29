@@ -33,6 +33,10 @@ decide which three memories your children carry into a new sea.
   your branches (some pairs live well together); every zone has a great work to build in stages
   from two kinds of wealth; the Rasp grant favours for sand.
 - A sister reef climbs the next seamount on its own schedule: reach each zone first for lineage.
+- Little active things for those who watch: the shoals' signal (a memory game), intruders to drive off
+  in every zone, the Rasp elder's riddles, a fork halfway to each ruin, and the full-moon choice.
+- A choice in every act: the glimmerseed strain, the current, four tiers of dialects; and after the
+  ending, an epilogue garden and a chronicle of the line's endings.
 - Shards of an old tablet turn up in the silt; the reef keeps its own bands, a diary of the run.
 - Lesser spawnings: boons on each new seamount, hard seamounts that teach the whole line
   something, Ways that automate or bend the systems, and the line's best times.
