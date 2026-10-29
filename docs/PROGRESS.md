@@ -306,3 +306,4 @@ date, what landed, what is half-done, what's next.
 - Late Midnight Water (last quarter of the zone): the first grey light reaches down in faint shafts, foreshadowing the Twilight Shelf.
 - Rare visitors already in the journal are announced each time they come by ('Passing now' note, quiet whisper cue), once per visit.
 - Rare visitors' gifts are three times a common one's.
+- Every full moon, in every zone below the Breach, the reef 'remembers': pink bundles slip from the polyps and drift up into the dark (reef.ts, ReefView.moonFull).

@@ -381,6 +381,20 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
       const tw = 0.5 + 0.5 * Math.sin(t * (1.5 + (i % 7) * 0.2) + i);
       glow(ctx, x, y, 5 * s * (0.6 + (i % 5) * 0.2), '120,255,210', (0.25 + 0.6 * lit) * tw * gs);
     }
+    // Under every full moon, long before the surface, the reef remembers: a few pink bundles
+    // slip from the polyps and drift up into the dark (the Breach draws the real spawning).
+    if (v.moonFull && v.height < 3980) {
+      for (let k = 0; k < 16; k++) {
+        const i = nodes[(k * 7) % Math.max(1, nodes.length)];
+        if (i === undefined) break;
+        const [x, y] = nodePx(L, i);
+        const u = ((t * 0.06 + k * 0.173) % 1);
+        const a = Math.sin(u * Math.PI);
+        const bx = x + Math.sin(t * 0.8 + k) * 10 * s * u, by = y - u * 260 * s;
+        glow(ctx, bx, by, 12 * s, '255,120,190', a * 0.55);
+        glow(ctx, bx, by, 3.5 * s, '255,215,235', a);
+      }
+    }
     ctx.restore();
   }
 
