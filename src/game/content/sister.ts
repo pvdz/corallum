@@ -12,6 +12,7 @@ export const SISTER = {
   /** Lineage for reaching a mark first (the surface pays the last). */
   lineage: [1, 1, 1, 1, 2] as readonly number[],
   ahead: 'Ahead of the sister reef',
+  record: 'A new best for the line',
   behind: 'The sister reef got there first',
   title: 'The sister reef: another child of Ossel’s wall, on the next seamount. Reach each zone before it for lineage.',
 } as const;

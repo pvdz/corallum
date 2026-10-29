@@ -17,6 +17,7 @@ import { FEATS } from '../content/feats.ts';
 import { WATER } from '../content/waters.ts';
 import { REQUEST } from '../content/requests.ts';
 import { WORKS, WORK_TEXT, type WorkId } from '../content/works.ts';
+import { SISTER } from '../content/sister.ts';
 import { PALETTES, PALETTE_TEXT } from '../content/palettes.ts';
 import { SHARD, SHARD_LINES } from '../content/shards.ts';
 import { MOMENT, MOMENTS, type Moment, type MomentId } from '../content/moments.ts';
@@ -605,6 +606,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const tr = seamountDef(s.seamount).trial;
     if (tr) codexRow('Trial', `${seamountDef(s.seamount).name}: grow to ${metres(tr.goal)}${s.meta.seen.includes(`trial:${s.seamount}`) ? ` · ${TRIAL_TEXT.met}` : ''} · ${tr.reward}`);
     if (s.race.decided > 0) codexRow('Sister reef', `first to ${s.race.won} of ${s.race.decided} marks`);
+    const recs = s.meta.records.map((t, i) => t > 0 ? `${metres(SISTER.marks[i]!)} in ${duration(t)}` : '').filter(Boolean);
+    if (recs.length) codexRow('Line’s best', recs.join(' · '));
     codexRow('Grown', `${metres(s.height)} up the seamount, ${Math.round(Math.max(0, SURFACE - s.height)).toLocaleString('en-US')} m down`);
     codexRow('Bands read', `${s.bands.length} of your own, ${s.readings.length} of Thousandfold’s`);
     const truce = MEETINGS.filter((m) => s.truce[m.id]).map((m) => `${m.title}: ${m[s.truce[m.id] as Choice].label}`);

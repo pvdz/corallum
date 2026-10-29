@@ -37,6 +37,8 @@ export type Meta = {
   /** Every memory any spawn has carried, and how many times the reef has reached the ending. */
   carriedEver: string[];
   endings: number;
+  /** Fewest sim seconds any reef of the line took to reach each sister mark (0 for none yet). */
+  records: number[];
   /** How many times the line has touched each creature (content/creatures.ts TRUST). */
   trust: Record<CreatureId, number>;
   /** The colours the line's reefs wear in the light (content/palettes.ts; '' for the reef's own). */
@@ -62,6 +64,7 @@ export function newMeta(): Meta {
     endings: 0,
     shards: [],
     palette: '',
+    records: [0, 0, 0, 0, 0],
     trust: Object.fromEntries(CREATURES.map((c) => [c.id, 0])) as Record<CreatureId, number>,
   };
 }

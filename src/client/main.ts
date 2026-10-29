@@ -420,6 +420,8 @@ let shardsSeen = state.meta.shards.length;
 let waterHeard = '';
 /** Sister race marks decided and won (a new one is announced). */
 let raceSeen = state.race.decided, raceWon = state.race.won;
+/** The line's best times as last seen (a beaten one is announced). */
+let recordsSeen = [...state.meta.records];
 /** Roams come home (announced while watching). */
 let roamsSeen = state.tally.roams;
 /** Requests kept so far (a kept one while watching is announced). */
@@ -1059,7 +1061,11 @@ function frame(now: number): void {
     waterHeard = wNow;
     if (state.race.decided > raceSeen) {
       const won = state.race.won > raceWon;
-      showJournalNote(won ? SISTER.ahead : SISTER.behind, won ? `+${SISTER.lineage[state.race.decided - 1]} lineage` : '');
+      const i = state.race.decided - 1;
+      const was = recordsSeen[i] ?? 0, now = state.meta.records[i] ?? 0;
+      if (was > 0 && now < was) showJournalNote(SISTER.record, `${metres(SISTER.marks[i]!)} in ${duration(now)}`);
+      else showJournalNote(won ? SISTER.ahead : SISTER.behind, won ? `+${SISTER.lineage[i]} lineage` : '');
+      recordsSeen = [...state.meta.records];
     }
     raceSeen = state.race.decided;
     raceWon = state.race.won;

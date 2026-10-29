@@ -873,6 +873,9 @@ function judgeMark(s: GameState, at: number): void {
   const i = s.race.decided;
   const mark = SISTER.marks[i]!;
   s.race.decided++;
+  // The line's best time to this mark.
+  const best = s.meta.records[i] ?? 0;
+  if (!best || at < best) s.meta.records[i] = at;
   if (sisterAt(at) < gaugeAt(mark) - 1e-9) {
     s.race.won++;
     s.meta.lineage += SISTER.lineage[i]!;
