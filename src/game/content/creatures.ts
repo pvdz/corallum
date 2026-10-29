@@ -7,7 +7,7 @@ export type CreatureId =
   | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'sardine-run' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark' | 'oarfish' | 'flashlight-fish' | 'mantis-shrimp'
   | 'cuttlefish' | 'eagle-rays' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly' | 'tree-worms'
   | 'shore-bird' | 'pelican' | 'hatchlings' | 'green-flash' | 'flying-fish' | 'dolphin' | 'moon-jelly' | 'sailors' | 'petrel' | 'sea-sparkle' | 'moonbow' | 'far-storm' | 'giant-clam' | 'trumpetfish' | 'breaching' | 'chimaera' | 'rasp-herd' | 'barracuda' | 'firefly-squid' | 'fireworms' | 'sea-spider' | 'man-o-war' | 'star-march' | 'gulper' | 'sixgill' | 'meteors' | 'breathing-turtle'
-  | 'thorn-star' | 'dragonfish' | 'drill-snail' | 'gull' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish' | 'host-anemone' | 'cleaner-wrasse' | 'boxer-crab' | 'decorator-crab' | 'hermit-crab';
+  | 'thorn-star' | 'dragonfish' | 'drill-snail' | 'gull' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish' | 'host-anemone' | 'cleaner-wrasse' | 'boxer-crab' | 'decorator-crab' | 'hermit-crab' | 'sea-star';
 
 export type Creature = { id: CreatureId; name: string; zone: string; note: string };
 
@@ -106,6 +106,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'sea-cucumber', name: 'Sea cucumbers', zone: 'Residents', note: 'They eat the floor and leave it cleaner.' },
   { id: 'goby', name: 'Coral gobies', zone: 'Residents', note: 'Perched on the branches like birds, watching everything.' },
   { id: 'feather-duster', name: 'Feather dusters', zone: 'Residents', note: 'Crowns of feathers that vanish into their tubes at a shadow.' },
+  { id: 'sea-star', name: 'An ochre sea star', zone: 'Residents', note: 'Touched, it does nothing at all. It is very good at that.' },
   { id: 'hermit-crab', name: 'A hermit crab', zone: 'Residents', note: 'Touched, it vanishes into its borrowed shell and waits to be sure you have gone.' },
   { id: 'decorator-crab', name: 'A decorator crab', zone: 'Residents', note: 'Touched, it freezes and becomes a small heap of rubbish, very convincingly.' },
   { id: 'boxer-crab', name: 'A boxer crab', zone: 'Residents', note: 'Touched, it shakes its two anemones at you like a pair of small fists.' },

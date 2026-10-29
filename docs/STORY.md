@@ -227,4 +227,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Great work: the beacon (Breach) | this game's own world | OK |
 | Great work: the snow fence (Silt Floor) | this game's own world | OK |
 | Twilight bands: The blue hour (3125), Beak marks (3275) | this game's own lore | OK |
+| Ochre sea star resident (Breach) | real animal | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

@@ -60,6 +60,7 @@ export function drawResidents(ctx: CanvasRenderingContext2D, reef: Reef, L: Reef
     else if (id === 'boxer-crab') { if (floor) boxer(ctx, L, s, t, floor); }
     else if (id === 'decorator-crab') { if (floor) decorator(ctx, L, s, t, floor); }
     else if (id === 'hermit-crab') { if (floor) hermit(ctx, L, s, t, floor); }
+    else if (id === 'sea-star') seaStar(ctx, reef, L, s, t, seed);
   }
   ctx.restore();
 }
@@ -207,6 +208,36 @@ function dusters(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s: nu
       ctx.stroke();
     }
   }
+}
+
+/** An ochre sea star clamped to a branch high on the reef, arms slowly curling. */
+function seaStar(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s0: number, t: number, seed: number): void {
+  const p = perches(reef, L, 0.8, 0.97, seed ^ 0x57a, 1)[0];
+  if (p === undefined) return;
+  const s = s0 * 1.5;
+  const [x, y] = reef.nodePx(L, p);
+  spot('sea-star', x, y, 12 * s);
+  ctx.save();
+  ctx.fillStyle = '#d0702a';
+  ctx.strokeStyle = 'rgba(120,50,20,0.6)';
+  ctx.lineWidth = 0.7 * s;
+  ctx.beginPath();
+  for (let k = 0; k < 10; k++) {
+    const a = -Math.PI / 2 + (k / 10) * Math.PI * 2 + Math.sin(t * 0.3) * 0.05;
+    const r = (k % 2 ? 2.6 : 7.5 + Math.sin(t * 0.4 + k) * 0.6) * s;
+    const px = x + Math.cos(a) * r, py = y + Math.sin(a) * r;
+    if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(255,220,180,0.7)';
+  for (let k = 0; k < 6; k++) {
+    ctx.beginPath();
+    ctx.arc(x + Math.cos(k * 1.3) * 2.5 * s, y + Math.sin(k * 1.9) * 2.5 * s, 0.6 * s, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
 }
 
 /** A hermit crab walking the sand in a borrowed spiral shell; touched, it pulls inside. */
