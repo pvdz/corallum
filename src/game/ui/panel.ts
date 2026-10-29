@@ -27,6 +27,7 @@ import { REQUEST } from '../content/requests.ts';
 import { WORKS, WORK_TEXT, type WorkId } from '../content/works.ts';
 import { SISTER } from '../content/sister.ts';
 import { DIARY_TEXT, diaryLine } from '../content/diary.ts';
+import { drawShellShape } from '../render/shells.ts';
 import type { WishId } from '../content/sky.ts';
 import { UI } from '../content/ui.ts';
 import { OSSEL_MISTAKES } from '../content/ossel.ts';
@@ -820,8 +821,21 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     shelfRow.innerHTML = '';
     for (const sh of SHELLS) {
       const got = s.meta.shells.includes(sh.id);
-      const d = el('span', got ? 'shell-chip' : 'shell-chip missing', got ? sh.name : '?');
-      if (got) d.style.borderColor = sh.colour;
+      const d = el('span', got ? 'shell-chip' : 'shell-chip missing', got ? '' : '?');
+      if (got) {
+        // The shell itself, drawn small, with its name as the tooltip.
+        d.style.borderColor = sh.colour;
+        d.title = sh.name;
+        const c = el('canvas', 'shell-pic') as HTMLCanvasElement;
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        c.width = 44 * dpr;
+        c.height = 30 * dpr;
+        const g = c.getContext('2d')!;
+        g.scale(dpr, dpr);
+        g.translate(22, 24);
+        drawShellShape(g, sh.id, sh.colour, 2.6);
+        d.append(c);
+      }
       shelfRow.append(d);
     }
   }

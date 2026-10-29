@@ -639,3 +639,4 @@ date, what landed, what is half-done, what's next.
 - Twelve shells (murex, nautilus, tusk, top shell added); drawn larger, each kind its own shape (ribbed scallop, starred sand dollar, banded spires, spiral whorls, spotted cowrie).
 - Bands tab: Moments met across the line (each moment and the ways the line has met it; unmet ones show their depth, hard places' stay hidden).
 - Keys K (let a knob of old stone go) and W (wish when stars fall).
+- The shelf of kept shells shows each shell drawn (render/shells.ts drawShellShape, shared with the sand), its name as the tooltip.

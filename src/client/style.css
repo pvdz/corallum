@@ -810,3 +810,4 @@ html.view-mode #photo { display: grid; }
 .almanac .mark.now i { background: #ffd9a8; box-shadow: 0 0 8px rgba(255, 210, 160, 0.9); }
 .almanac .mark b { font-weight: normal; font-size: 10px; white-space: nowrap; color: rgba(210, 225, 245, 0.75); margin-top: 2px; }
 .almanac .mark.low b { margin-top: 16px; }
+.shell-chip .shell-pic { display: block; width: 44px; height: 30px; }
