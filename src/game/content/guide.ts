@@ -6,6 +6,14 @@ export const GUIDE: readonly [string, string][] = [
   ['Holding', 'Stores fill toward what the reef can hold, then stop. A denser lattice holds more while you are away.'],
   ['Neighbours', 'Tap a creature to learn its name; some of them answer a touch. Each one seen feeds the reef a little, and a little more once touched.'],
   ['Zones', 'Each zone of the sea brings a new way to grow: shoals, the Rasp, sunlight, the Spawning Moon.'],
+  ['The water', 'Every ten minutes the water turns, and each kind makes one kind of growing cheaper. The line above the shoals says what comes next: buy now, or wait for the right water.'],
+  ['Ossel asks', 'One small thing at a time. Do it while you watch, and the reef gets a burst of what it lives by.'],
+  ['Moments', 'Now and then something happens to the reef, and you choose how to meet it. Each choice lasts for this reef.'],
+  ['Expeditions', 'From the Midnight Water, shoals can go to Thousandfold’s ruins. They stop their work while away and come back with a relic; when no ruin is in reach, they can roam.'],
+  ['Shards', 'Sweeping, catching what falls, touching neighbours and the shoals’ journeys sometimes turn up a shard of an old tablet. The whole line keeps them.'],
+  ['Residents', 'From the Twilight Shelf, small animals ask for a home in your branches. Homes are few: choose who suits the water you are in.'],
+  ['Great works', 'One large thing to build in each middle zone, in stages, each paid in two kinds at once.'],
+  ['Spawning early', 'A lesser spawning starts again on a new seamount with lineage to spend. Hard seamounts, once offered, teach the whole line something if you grow far enough on them.'],
   ['The goal', 'Reach the surface and release your spawn under the full moon, carrying what you choose to remember.'],
 ];
 

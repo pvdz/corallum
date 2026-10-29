@@ -346,3 +346,4 @@ date, what landed, what is half-done, what's next.
 - Roaming: content/expeditions.ts ROAM; nextSite falls back to a roam; expedition state records its size n (save migration fills n for an old mid-trip ruin); tripSite() for the panel and the world view; tally.roams; shard source 'roam' (35%). Test: a roam home offline == online with jobs restored.
 - Audio cues 'water' (a slow swell when the water turns), 'depart' (shoals setting out), 'shard' (two struck notes a fourth apart).
 - Great works: content/works.ts, economy workOpen/workCost/canBuild/build, state.works; cards with two-currency price, stage pips and an eta for both; render/works.ts (spire in Midnight, breakwater in Twilight, terrace in Sunlit); the bot builds them.
+- Guide (Reef tab) explains the water, Ossel's requests, moments, expeditions, shards, residents, great works and hard seamounts.
