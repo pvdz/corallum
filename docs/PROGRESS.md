@@ -418,3 +418,4 @@ date, what landed, what is half-done, what's next.
 - New creature: the nautilus (Twilight): striped spiral shell, trailing tentacles; touched it pulls in and sinks.
 - New creature: a blacktip reef shark patrolling the Sunlit Crown by day; touched it turns away fast.
 - Trust grows at most once a minute per creature (state.trusted) — it was tappable up in seconds; a new friend of the line gives +1 lineage with a note.
+- The touch shard roll moved inside the once-a-minute trust growth (spam taps found shards).

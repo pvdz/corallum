@@ -1228,8 +1228,9 @@ export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: 
     s.trusted[id] = s.t;
     s.meta.trust[id] = (s.meta.trust[id] ?? 0) + 1;
     if (s.meta.trust[id] === TRUST.at[2]) s.meta.lineage += TRUST.friendLineage;
+    // A shard may turn up where a neighbour digs: once a minute per creature, like trust.
+    dig(s, 'touch');
   }
-  dig(s, 'touch');
   if (s.t - s.gifts[id] < GIFT.cooldown) return null;
   const r = rates(s);
   let stock = giftOf(id);
