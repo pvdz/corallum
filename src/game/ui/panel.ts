@@ -812,7 +812,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     lineChart.height = H * dpr;
     const c = lineChart.getContext('2d')!;
     c.scale(dpr, dpr);
-    const tint: Record<string, string> = { plain: '#c98a9a', warm: '#e0886a', cold: '#8ab8e0', crowded: '#b49ad8' };
+    const tint: Record<string, string> = { plain: '#c98a9a', warm: '#e0886a', cold: '#8ab8e0', crowded: '#b49ad8', hungry: '#b8ae96', silent: '#7f86a8', lonely: '#9fd8ff', buried: '#a9a49a', dark: '#6a6a90' };
     const step = Math.min(34, (W - 8) / gens.length);
     gens.forEach((g, i) => {
       const x = 4 + step * (i + 0.5);
