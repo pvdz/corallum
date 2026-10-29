@@ -1190,6 +1190,61 @@ export function createTwilightScene(seed: number): Scene {
   }
 
   /** The Rasp: blunt-beaked grazers with coin scales, nosing along the slope. */
+  /**
+   * The Rasp elder, while it asks its riddle: a big old grazer hanging still on the slope left of the
+   * reef, scales gone pale, its beak worn down to a stub, fins barely moving.
+   */
+  function drawElder(ctx: CanvasRenderingContext2D, t: number): void {
+    const s = scale();
+    const x = focus.x + focus.w * 0.22, y = slopeY(0.27) - 60 * s + Math.sin(t * 0.4) * 4 * s;
+    const len = 46 * s;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(Math.sin(t * 0.3) * 0.04);
+    const body = ctx.createLinearGradient(0, -len * 0.5, 0, len * 0.5);
+    body.addColorStop(0, 'hsl(195,14%,62%)');
+    body.addColorStop(1, 'hsl(205,12%,36%)');
+    ctx.fillStyle = body;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, len, len * 0.47, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Old scales, each edged pale.
+    ctx.strokeStyle = 'rgba(235,240,245,0.3)';
+    ctx.lineWidth = 1 * s;
+    for (let q = 0; q < 5; q++) for (let r = -1; r <= 1; r++) {
+      ctx.beginPath();
+      ctx.arc(-len * 0.55 + q * len * 0.24, r * len * 0.2, len * 0.12, -1.2, 1.2);
+      ctx.stroke();
+    }
+    // Tail, slow.
+    const tail = Math.sin(t * 1.5) * len * 0.08;
+    ctx.fillStyle = 'hsl(200,12%,40%)';
+    ctx.beginPath();
+    ctx.moveTo(-len * 0.9, 0);
+    ctx.lineTo(-len * 1.45, -len * 0.45 + tail);
+    ctx.lineTo(-len * 1.3, tail * 0.5);
+    ctx.lineTo(-len * 1.45, len * 0.45 + tail);
+    ctx.closePath();
+    ctx.fill();
+    // The worn beak: a short blunt stub, chipped.
+    ctx.fillStyle = 'hsl(45,20%,78%)';
+    ctx.beginPath();
+    ctx.moveTo(len * 0.86, -len * 0.14);
+    ctx.lineTo(len * 1.05, -len * 0.04);
+    ctx.lineTo(len * 1.02, len * 0.08);
+    ctx.lineTo(len * 0.86, len * 0.14);
+    ctx.closePath();
+    ctx.fill();
+    // A heavy, half-shut eye.
+    ctx.fillStyle = '#1c2026';
+    ctx.beginPath();
+    ctx.arc(len * 0.6, -len * 0.12, 3 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'hsl(200,12%,50%)';
+    ctx.fillRect(len * 0.6 - 3.5 * s, -len * 0.12 - 3.5 * s, 7 * s, 3.2 * s);
+    ctx.restore();
+  }
+
   function drawRasp(ctx: CanvasRenderingContext2D, t: number, n: number, trust: boolean, polite: boolean): void {
     if (n > 0) sight('rasp');
     const s = scale();
@@ -1332,6 +1387,7 @@ export function createTwilightScene(seed: number): Scene {
       drawCleaningStation(ctx, t);
       drawWall(ctx, t, v.wall);
       drawRasp(ctx, t, v.rasp, v.raspTrust, v.raspPolite);
+      if (v.elder) drawElder(ctx, t);
       if (v.gardeners) drawGardeners(ctx, t);
       drawSiltSlide(ctx, t, v.siltLevel);
       drawGhosts(ctx, focus, v.ancestors, v.height, t, scale(), 'rgba(190,210,240,1)');

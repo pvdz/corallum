@@ -29,6 +29,8 @@ export type ReefView = {
   /** Shoals away at a ruin: how many, sim seconds since they left and until they are back, which side they went. */
   /** A flurry of the Long Silt is falling (Silt Floor). */
   flurry: boolean;
+  /** The Rasp elder is asking a riddle now (Twilight Shelf). */
+  elder: boolean;
   /** An upwelling on the Twilight Shelf: which side, how strong (0..1), caught yet. */
   upwell: { side: number; strength: number; caught: boolean } | null;
   /** Lamp-nets woven between the branches (Midnight Water). */
