@@ -1097,6 +1097,33 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const lineChart = el('canvas', 'line-chart');
   lineCard.append(el('h3', '', UI.yourLine), lineChart, lineList);
   lineagePage.append(lineCard);
+  // The line in numbers: what every reef of it has gathered together.
+  const totalsCard = el('article', 'card codex totals');
+  const totalsHead = el('h3', '', UI.totalsLabel);
+  const totalsList = el('dl', 'codex-list');
+  totalsCard.append(totalsHead, totalsList);
+  collapsible(totalsCard, totalsHead);
+  lineagePage.append(totalsCard);
+  let totalsKey = '';
+  function renderTotals(s: GameState): void {
+    const m = s.meta;
+    const seen = CREATURES.filter((c) => m.seen.includes(`c:${c.id}`)).length;
+    const friends = Object.values(m.trust).filter((n) => trustLevel(n) >= 3).length;
+    const moments = MOMENTS.filter((x) => m.seen.includes(`m:${x.id}:a`) || m.seen.includes(`m:${x.id}:b`)).length;
+    const feats = m.seen.filter((k) => k.startsWith('f:')).length;
+    const rows: [string, string][] = [
+      [UI.totReefs, String(m.spawnings + 1)], [UI.totEndings, String(m.endings)],
+      [UI.totSeen, `${seen} of ${CREATURES.length}`], [UI.totFriends, String(friends)],
+      [UI.totShells, `${m.shells.length} of ${SHELLS.length}`], [UI.totShards, `${m.shards.length} of ${SHARD_LINES.length}`],
+      [UI.totMoments, `${moments} of ${MOMENTS.length}`], [UI.totFeats, String(feats)],
+    ];
+    const key = rows.map((r) => r[1]).join('|');
+    totalsCard.hidden = m.spawnings === 0 && m.endings === 0;
+    if (key === totalsKey) return;
+    totalsKey = key;
+    totalsList.innerHTML = '';
+    for (const [k, v] of rows) totalsList.append(el('dt', '', k), el('dd', '', v));
+  }
   let lineKey: string | null = null;
   function renderLine(s: GameState): void {
     const key = s.meta.ancestors.join() + s.meta.name + s.meta.fastest;
@@ -2119,6 +2146,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       renderCity(s);
       renderFeats(s);
       renderLine(s);
+      renderTotals(s);
       habitToggle.hidden = !s.meta.traits['old-habits'] && !s.meta.traits['shoal-sense'] && !s.meta.traits['rasp-sense'] && !s.meta.traits.layering;
       const hidden = UPGRADES.find((u) => !revealed(s, u.id));
       comingUp.textContent = hidden ? `Coming up: ${hidden.name} — ${revealText(s, hidden)}` : '';

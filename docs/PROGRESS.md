@@ -719,3 +719,4 @@ date, what landed, what is half-done, what's next.
 - A second Silt Floor great work, the snow fence (from 40 m; calcite+glow; dissolving ×0.95 per stage), stones stacked left of the foot. The combo glow on the tips is toned down (it bloomed into white blobs at a full combo).
 - Two more Twilight bands: The blue hour (3125 m), Beak marks (3275 m).
 - The blue hour on the Twilight Shelf: as dusk deepens, a short spell when the water and everything in it washes into one deep blue (colour blend; the reef keeps its colours).
+- Lineage tab: The line in numbers (reefs grown, endings, creatures seen, friends, shells, shards, moments met, feats), shown once the line has a second reef.

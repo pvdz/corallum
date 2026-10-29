@@ -108,4 +108,7 @@ export const UI = {
   awayText: (d: string) => `You were gone ${d}. The reef kept growing.`,
   chronBlue: 'a blue moon', chronVows: 'vows kept',
   moonlit: 'spawn · by moonlight',
+  totalsLabel: 'The line in numbers',
+  totReefs: 'Reefs grown', totEndings: 'Endings reached', totSeen: 'Creatures seen', totFriends: 'Friends',
+  totShells: 'Shells kept', totShards: 'Tablet shards', totMoments: 'Moments met', totFeats: 'Feats',
 } as const;
