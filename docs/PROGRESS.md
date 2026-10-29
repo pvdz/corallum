@@ -598,3 +598,4 @@ date, what landed, what is half-done, what's next.
 - Golden hours in the Sunlit Crown: an amber wash at dusk and a rose one at dawn, strongest near the surface (sunlit.ts drawGoldenHour).
 - A fifth shoal job, guard (Sunlit Crown on, act3.ts GUARD): with 4 on guard any intruder is driven off in its last second, for half (economy guarding). Guard shoals ring the crown (shoals.ts); expeditions take guards too; sim test.
 - Whisper 'guard': in the light, with an intruder at the reef and no guard set, Ossel suggests four shoals on guard.
+- Palettes Milky sea (feat Wading in light) and Light stone (feat Light stone).
