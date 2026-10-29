@@ -22,6 +22,9 @@ export const REQUEST = {
   fromPolyps: 3,
   kicker: 'Ossel asks',
   paid: 'A request kept',
+  /** Ask for something else: at most once per this many sim seconds. */
+  skipEvery: 300,
+  skip: 'Ask another',
   float: '· for Ossel',
 } as const;
 

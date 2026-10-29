@@ -264,6 +264,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .ask-text { flex: 1; font-family: var(--display); color: #f2e8d8; }
 .ask-bar { width: 54px; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
 .ask-fill { display: block; height: 100%; background: #ffd9a8; transition: width 0.3s ease; }
+.ask .ask-skip { width: 28px; height: 28px; min-width: 0; padding: 0; font-size: 14px; }
 .ask-count { font-variant-numeric: tabular-nums; color: var(--ink-dim); min-width: 2.6em; text-align: right; }
 .tablet[hidden] { display: none; }
 .tablet-stone { display: block; margin: 6px auto 8px; }

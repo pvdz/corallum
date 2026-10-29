@@ -1335,6 +1335,27 @@ function burst(s: GameState, seconds: number): number {
   return gain;
 }
 
+/** Whether Ossel can be asked for something else now. */
+export function canSkipRequest(s: GameState): boolean {
+  return !!s.request.kind && s.t - s.request.skipped >= REQUEST.skipEvery;
+}
+
+/** Ask for something else: the current request is dropped (unpaid) and another kind is picked. */
+export function skipRequest(s: GameState): boolean {
+  if (!canSkipRequest(s)) return false;
+  const q = s.request;
+  const open = REQUESTS.filter((r) => r.kind !== q.kind && requestOpen(s, r.kind));
+  if (!open.length) return false;
+  // Seeded by the moment of asking, so the same skip on the same reef picks the same.
+  const r = mulberry32((s.seed ^ 0x51c1) + Math.imul(Math.floor(s.t), 0x27d4eb2d));
+  const pick = open[Math.floor(r() * open.length)]!;
+  q.skipped = s.t;
+  q.kind = pick.kind;
+  q.n = pick.n(q.done);
+  q.base = requestCount(s, pick.kind);
+  return true;
+}
+
 /** Check the request right after a purchase or a touch (the game loop also checks every frame). */
 export function checkRequest(s: GameState): number {
   return keepRequest(s);

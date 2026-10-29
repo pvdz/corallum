@@ -30,7 +30,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -41,6 +41,8 @@ export type PanelHooks = {
   read(id: ReadingId): void;
   /** Send shoals to the next ruin. */
   send(): void;
+  /** Ask Ossel for a different request. */
+  skipRequest(): void;
   /** Build the next stage of a great work. */
   build(id: WorkId): void;
   /** Choose the line's colours. */
@@ -298,7 +300,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const askFill = el('span', 'ask-fill');
   askBar.append(askFill);
   const askCount = el('span', 'ask-count');
-  askBox.append(el('em', '', REQUEST.kicker), askText, askBar, askCount);
+  const askSkip = button('step ask-skip', '↻', () => hooks.skipRequest());
+  askSkip.title = REQUEST.skip;
+  askSkip.setAttribute('aria-label', REQUEST.skip);
+  askBox.append(el('em', '', REQUEST.kicker), askText, askBar, askCount, askSkip);
   waterBox.after(askBox);
 
   // ---------- Shoals ----------
@@ -1274,6 +1279,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         askText.textContent = rq.def.ask.replace('{n}', String(rq.n));
         askFill.style.width = `${(rq.got / rq.n) * 100}%`;
         askCount.textContent = `${rq.got}/${rq.n}`;
+        askSkip.disabled = !canSkipRequest(s);
       }
 
       // A moment waiting for an answer, and answers given.
