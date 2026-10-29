@@ -1194,6 +1194,67 @@ export function createTwilightScene(seed: number): Scene {
    * the open water head-up, its body barely moving while waves run down its red crest. Touched, it
    * coils away into the blue faster than it came.
    */
+  /**
+   * A sixgill shark, rarely (once in thirteen minutes): long, dark and slow, gliding low along the
+   * slope from one side to the other, its eye glinting green. Touched, it turns down and away.
+   */
+  function drawSixgill(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 780, pass = 90;
+    const u = (t % period) / pass;
+    if (u >= 1) return;
+    sight('sixgill');
+    const s = scale() * 2.2;
+    const touch = startled('sixgill', t);
+    const dive = touch && touch.age < 8 ? Math.min(1, touch.age / 3) : 0;
+    const su = 1 - u;
+    const x = focus.x - focus.w * 0.1 + su * focus.w * 1.2;
+    const y = slopeY(Math.max(0, Math.min(1, su))) - 75 * s + dive * 50 * s;
+    spot('sixgill', x, y, 45 * s);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(dive * 0.25);
+    ctx.scale(-1, 1);
+    const sway = Math.sin(t * 1.3) * 3 * s;
+    const g = ctx.createLinearGradient(0, -10 * s, 0, 10 * s);
+    g.addColorStop(0, '#3a4048');
+    g.addColorStop(1, '#6a7078');
+    ctx.fillStyle = g;
+    // Body: long, blunt-headed, with one dorsal fin far back and a long upper tail.
+    ctx.beginPath();
+    ctx.moveTo(40 * s, 0);
+    ctx.quadraticCurveTo(36 * s, -9 * s, 10 * s, -9 * s);
+    ctx.quadraticCurveTo(-30 * s, -7 * s, -50 * s, -2 * s + sway);
+    ctx.lineTo(-78 * s, -10 * s + sway * 1.6);
+    ctx.lineTo(-70 * s, 2 * s + sway * 1.4);
+    ctx.quadraticCurveTo(-30 * s, 7 * s, 10 * s, 8 * s);
+    ctx.quadraticCurveTo(36 * s, 8 * s, 40 * s, 0);
+    ctx.fill();
+    // The dorsal fin, set far back, and a pectoral.
+    ctx.beginPath();
+    ctx.moveTo(-26 * s, -7 * s);
+    ctx.lineTo(-34 * s, -16 * s);
+    ctx.lineTo(-40 * s, -6 * s);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(14 * s, 6 * s);
+    ctx.lineTo(4 * s, 16 * s);
+    ctx.lineTo(-2 * s, 7 * s);
+    ctx.fill();
+    // Six gill slits.
+    ctx.strokeStyle = 'rgba(20,24,30,0.7)';
+    ctx.lineWidth = 0.8 * s;
+    for (let k = 0; k < 6; k++) {
+      ctx.beginPath();
+      ctx.moveTo((24 - k * 2.6) * s, -4 * s);
+      ctx.lineTo((23 - k * 2.6) * s, 3 * s);
+      ctx.stroke();
+    }
+    // The green eye.
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, 32 * s, -3 * s, 5 * s, '120,255,160', 0.8);
+    ctx.restore();
+  }
+
   function drawOarfish(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 1500, pass = 90;
     const touch = startled('oarfish', t);
@@ -1558,6 +1619,7 @@ export function createTwilightScene(seed: number): Scene {
       drawManta(ctx, t);
       drawWhaleShark(ctx, t);
       drawOarfish(ctx, t);
+      drawSixgill(ctx, t);
       drawMotes(ctx, t, v.siltLevel);
       drawRising(ctx, t, w, h, focus, dpr, v.rising, false);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#1d3557');

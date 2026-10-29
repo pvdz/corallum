@@ -1002,6 +1002,59 @@ export function createMidnightScene(seed: number): Scene {
   }
 
 
+  /**
+   * A gulper eel, rarely (once in eleven minutes): a long dark thread drifting across with a pouch of
+   * a mouth and a pink light at its tail-tip. Touched, the mouth balloons open.
+   */
+  function drawGulper(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 660, pass = 70;
+    const u = (t % period) / pass;
+    if (u >= 1) return;
+    sight('gulper');
+    const s = scale() * 1.6;
+    const touch = startled('gulper', t);
+    const gape = touch && touch.age < 3 ? Math.sin(Math.min(1, touch.age / 3) * Math.PI) : 0;
+    const x = focus.x + focus.w * (1.1 - 1.2 * u), y = focus.y + focus.h * (0.3 + 0.05 * Math.sin(t * 0.4));
+    spot('gulper', x, y, 30 * s);
+    ctx.save();
+    // The whip of a body trailing behind (to the right, it swims left).
+    ctx.strokeStyle = '#120c14';
+    ctx.lineCap = 'round';
+    let px = x + 10 * s, py = y;
+    for (let i = 1; i <= 30; i++) {
+      const nx = x + 10 * s + i * 5 * s, ny = y + Math.sin(t * 2 - i * 0.35) * (2 + i * 0.25) * s;
+      ctx.lineWidth = Math.max(0.8, (5 - i * 0.15) * s);
+      ctx.beginPath();
+      ctx.moveTo(px, py);
+      ctx.lineTo(nx, ny);
+      ctx.stroke();
+      px = nx;
+      py = ny;
+    }
+    // The tail light.
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, px, py, 10 * s, '255,110,170', 0.5 + 0.4 * Math.sin(t * 3));
+    ctx.globalCompositeOperation = 'source-over';
+    // The mouth: a loose pouch, hinged far back; touched, it balloons.
+    const open = 0.25 + gape * 0.9;
+    ctx.fillStyle = '#1a121c';
+    ctx.beginPath();
+    ctx.moveTo(x + 12 * s, y);
+    ctx.quadraticCurveTo(x - 4 * s, y - (6 + 16 * open) * s, x - 18 * s, y - 10 * open * s);
+    ctx.lineTo(x - 18 * s, y + 10 * open * s);
+    ctx.quadraticCurveTo(x - 4 * s, y + (6 + 16 * open) * s, x + 12 * s, y);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(120,90,130,0.6)';
+    ctx.lineWidth = 0.8 * s;
+    ctx.stroke();
+    // A tiny eye near the snout.
+    ctx.fillStyle = 'rgba(200,220,255,0.8)';
+    ctx.beginPath();
+    ctx.arc(x - 12 * s, y - (2 + 6 * open) * s, 1 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
   /** A milky sea: the whole water glows a soft blue-white, flickering here and there with tiny lights. */
   function drawMilky(ctx: CanvasRenderingContext2D, t: number): void {
     const s = Math.min(focus.w, focus.h) / 700;
@@ -1066,6 +1119,7 @@ export function createMidnightScene(seed: number): Scene {
       drawSpire(ctx, focus, v.works.spire, scale(), t, focus.y + focus.h * 0.99);
       if (v.moments.seep) drawSeep(ctx, t, L, v.moments.seep === 'b');
       if (v.milky) drawMilky(ctx, t);
+      drawGulper(ctx, t);
       reef.draw(ctx, L, v, t);
       drawRelics(ctx, reef, L, v.relics, t, v.moments['old-lamp'] === 'a');
       if (v.nets > 0) drawNets(ctx, reef, L, v.nets, t);
