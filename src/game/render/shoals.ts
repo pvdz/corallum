@@ -2,7 +2,7 @@
 // Each shoal's path shows its job: feeders circle the reef, light-swimmers spiral above the
 // crown, scouts dive into the dark below the frame and come back.
 
-import { sight, spot, startled } from './sightings.ts';
+import { pushed, sight, spot, startled } from './sightings.ts';
 import type { Job } from '../content/act2.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { glow } from './draw.ts';
@@ -65,9 +65,12 @@ export function createShoals(seed: number) {
       const lag = k * 0.06;
       const [x0, y0] = shoalCentre(F, reef, job, i, n, t - lag, L);
       const [x1, y1] = shoalCentre(F, reef, job, i, n, t - lag + 0.08, L);
-      const x = x0 + f.ox * spread + Math.sin(t * 1.9 + f.ph) * 3 * s;
-      const y = y0 + f.oy * spread + Math.cos(t * 1.4 + f.ph) * 3 * s;
-      const ang = Math.atan2(y1 - y0, x1 - x0);
+      const fx = x0 + f.ox * spread + Math.sin(t * 1.9 + f.ph) * 3 * s;
+      const fy = y0 + f.oy * spread + Math.cos(t * 1.4 + f.ph) * 3 * s;
+      const [px, py] = pushed(fx, fy, t, 90 * s);
+      const x = fx + px, y = fy + py;
+      // A darting fish points the way it darts.
+      const ang = Math.hypot(px, py) > 6 * s ? Math.atan2(py, px) : Math.atan2(y1 - y0, x1 - x0);
       const len = 9 * s * f.size;
       ctx.save();
       ctx.translate(x, y);

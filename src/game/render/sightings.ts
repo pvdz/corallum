@@ -53,6 +53,22 @@ export function creatureAt(x: number, y: number): Spot | null {
 /** The last time each creature was touched (scene time) and where (device pixels). */
 const touched = new Map<CreatureId | 'ossel' | 'shell', { t: number; x: number; y: number }>();
 
+/** The last sweep of the tentacles (device pixels, scene time): small fish nearby dart away from it. */
+let lastPoke = { x: 0, y: 0, t: -1e9 };
+export function poke(x: number, y: number, t: number): void {
+  lastPoke = { x, y, t };
+}
+/** How far a fish at (x, y) is pushed from the last sweep now: [dx, dy] (zero once it has settled). */
+export function pushed(x: number, y: number, t: number, reach: number): [number, number] {
+  const age = t - lastPoke.t;
+  if (age < 0 || age > 2.5) return [0, 0];
+  const dx = x - lastPoke.x, dy = y - lastPoke.y, d = Math.hypot(dx, dy);
+  if (d > reach * 1.6 || d < 1e-6) return [0, 0];
+  // A quick dart out, then a slow drift back to where the shoal wants them.
+  const k = (1 - d / (reach * 1.6)) * Math.min(1, age * 8) * Math.exp(-age * 1.6) * reach * 0.9;
+  return [(dx / d) * k, (dy / d) * k];
+}
+
 /** A creature was tapped: its renderer may react (eels duck, an octopus inks, a jelly flashes). */
 export function startle(id: CreatureId | 'ossel' | 'shell', t: number, x: number, y: number): void {
   touched.set(id, { t, x, y });

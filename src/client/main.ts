@@ -45,7 +45,7 @@ import { createPortraits } from './portraits.ts';
 import { createZoom } from './zoom.ts';
 import { drawMoon, glow as glowAt } from '../game/render/draw.ts';
 import { GAUGE_MOON } from '../game/content/act5.ts';
-import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
+import { creatureAt, endFrameSpots, poke, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { HEAT } from '../game/content/act4.ts';
 import { AGAIN, QUESTION, QUESTIONS } from '../game/content/ossel.ts';
 import { MILKY, RISING } from '../game/content/act2.ts';
@@ -1283,6 +1283,7 @@ canvas.addEventListener('pointerdown', (e) => {
   audio.cue('sweep');
   // A combo throws up more motes with each sweep in the run.
   taps.push(wx, wy, animT, 6 + Math.min(10, state.combo - 1));
+  poke(wx, wy, frozenT ?? animT);
   const lit = milkyGlow(state);
   if (lit > 0) floatText(e.clientX + 30, e.clientY - 18, `+${num(lit)} ${MILKY.float}`, 'feast-float');
   floatText(e.clientX, e.clientY, state.combo > 1 ? `+${num(gain)} ×${(1 + ACT1.comboStep * (state.combo - 1)).toFixed(1)}` : `+${num(gain)}`);

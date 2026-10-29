@@ -10,7 +10,7 @@ import { SHELLS } from '../content/shells.ts';
 import { drawRelics } from './relics.ts';
 import { drawResidents } from './residents.ts';
 import { palette } from '../content/palettes.ts';
-import { sight, spot, startled } from './sightings.ts';
+import { sight, spot, startled, pushed } from './sightings.ts';
 import type { DialectId } from '../content/act4.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
@@ -1372,6 +1372,10 @@ export function createSunlitScene(seed: number): Scene {
           y += (dy / (d || 1)) * push;
         }
       }
+      // A sweep nearby makes them dart too.
+      const [px, py] = pushed(x, y, t, 110 * s);
+      x += px;
+      y += py;
       const len = 12 * s * f.size;
       spot('reef-fish', x, y, Math.max(len * 1.5, 22 * dpr));
       ctx.save();
