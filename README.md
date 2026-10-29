@@ -46,12 +46,19 @@ decide which three memories your children carry into a new sea.
   bleach), and swells at the Breach (tap the crown on each crest).
 - Build choices that run the length of a reef: the grain of every tenth band (dense, quick or
   bright), the glimmerseed's sport at the Twilight Shelf, lamp-nets for the shoals.
-- Ossel asks the reef four questions on the way up and remembers the answers to the end; at the
+- Ossel asks the reef seven questions on the way up and remembers the answers to the end; at the
   Breach the reef names the stars after its own life, tracing them star by star.
 - Each day brings a mild boon (the day's sea) and a dream (sleep the reef a quarter hour forward);
   optional notifications when something waits while the tab is in the background.
 - The line remembers: moments marked with the way an earlier reef went, stars it named, a chart of
   every reef it has seeded, and the Long Silt thinning with each ending.
+- Old stone: grey knobs gather on the tips (away too, up to six); tap one to let it go, and now and
+  then it held one of the reef's own memories. A heavy seamount, a trait and a Reading build on it.
+- Lucky neighbours (golden sparks) give five times as much when touched; milky seas in the Midnight
+  Water let sweeps gather light; shoals can stand guard in the light; a far storm at the Breach;
+  wishes on shooting stars; grottoes for more residents; a fourth Form, Pillars.
+- After an ending, a new reef may take vows (haste, lightness, solitude, stillness) for lineage.
+- The reef's own bands can be read as rings in a cross-section of its stone.
 - Keys: Space sweeps, 1–4 tabs, F feast, E expedition, L flare the lure, R the rising, C close up, S ride a swell,
   7–0 the signal, P / B / G buy, H view mode, ? for the list.
 - Desktop, phone portrait and phone landscape. Sound is procedural and off by default.
