@@ -355,3 +355,4 @@ date, what landed, what is half-done, what's next.
 - Late Readings: three more (act2.ts, `after` band gate in nextReading): sand ×1.3, bloom ×1.25, spawn ×1.25; feat 'Every band read' now needs 12.
 - Lineage ways for the new systems: Old maps (tripSeconds halves trips), Open house (+1 home), Water-wise (deep(): discounts 0.1 deeper; the water line shows the real factor).
 - Sections appearing during play (shoals, expedition, residents, works, a moment) rise in with a brief glow (panel setShown, CSS .fresh).
+- Every memory carried across the line's endings adds a closing page to the ending (ENDING.everything) and the feat 'Nothing lost, nothing kept'.

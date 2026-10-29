@@ -123,6 +123,8 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
       if (m) out.push(`${m.title}. ${m.epilogue}`);
     }
     out.push(s.truce.wall === 'b' ? ENDING.closingKept : ENDING.closingLetGo);
+    // The line has carried every memory there is, across its endings.
+    if (MEMORIES.every((m) => s.meta.carriedEver.includes(m.id))) out.push(ENDING.everything);
     out.push(ENDING.last);
     return out;
   }

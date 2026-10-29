@@ -186,6 +186,10 @@ export const ENDING = {
     'and asks you to let the Rasp have it after all. You do. It is the last thing you learn.',
   closingLetGo: 'At dawn the sand that was Ossel washes over your crown in the surf, warm, and for ' +
     'a moment you are sure it is laughing.',
+  /** Once the line has carried every memory there is, across all its endings. */
+  everything: 'Over all your spawnings, every memory has gone somewhere: the vent and the city, the ' +
+    'Rasp and the rain, the eye in the dark, the turtle, the tablet. Not one of your children carries ' +
+    'all of it. Together they carry everything, and none of them is heavy.',
   last: 'Far below, the Long Silt is still falling. It will fall for a long time yet. But it is ' +
     'falling on reefs again.',
 } as const;
