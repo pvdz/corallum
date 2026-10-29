@@ -2134,7 +2134,7 @@ export function freeTangle(s: GameState): number {
   if (!tg) return 0;
   s.untangled = tg.k;
   s.tally.freed++;
-  return burst(s, TANGLE.seconds);
+  return burst(s, TANGLE.seconds * (trait(s, 'gentle') ? 2 : 1));
 }
 
 /** Pick up the shell: kept by the line if new. Returns its id, or ''. */

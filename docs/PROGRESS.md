@@ -660,3 +660,4 @@ date, what landed, what is half-done, what's next.
 - At the Breach the tangle slot is a fish stranded on the crown at low water (breach.ts drawStranded; ReefView stranded): tap to toss it back.
 - systems e2e frees a tangled fish (debug hook corallum.tangle()).
 - On the Silt Floor the rescue slot is a brittle star pinned under a fallen stone (tangle.ts drawPinned): every zone now has a small creature to help.
+- Trait Gentle (way, 5): freed creatures pay ×2.

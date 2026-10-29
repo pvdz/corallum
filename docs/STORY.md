@@ -200,4 +200,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Trip encounters: a lamp still burning, a cloud of eggs | this game's own world | OK |
 | Great work: the grazing lawn (Twilight) | this game's own world | OK |
 | A fish tangled in a jelly's threads, freed by a tap | generic rescue beat, no game lore | OK |
+| Trait Gentle | this game's own systems | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |
