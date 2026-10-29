@@ -627,3 +627,4 @@ date, what landed, what is half-done, what's next.
 - Two more of the elder's riddles (burning, weight), after the new Readings.
 - The king tide leaves a wrack line of dried weed and salt across the crown above the water (breach.ts drawWrack).
 - Trait Lucky line (way, 8): lucky neighbours twice as often.
+- Time-lapse (T, or the Reef tab): the reef regrows from the start of its zone to now in 8 s (main.ts lapseHeight overrides the view height).

@@ -70,7 +70,7 @@ export const UI = {
   threeMemories: 'Three memories',
   keysKicker: 'Keys',
   keysTitle: 'Shortcuts',
-  keysHelp: 'Space sweeps your tentacles. 1–4 switch the panel tabs. F catches a falling feast. E sends the shoals on the next expedition. L flares the lure. R sends the feeders into the rising. S rides a swell at the Breach. C closes the polyps against warm water (or opens them). 7–0 answer the shoals’ signal. P buds a polyp, B lays a band, G hosts glimmerseed. H hides the panel to see the whole reef. Hold any buy button to keep buying. Tap a creature to learn its name; tap Ossel and it will answer.',
+  keysHelp: 'Space sweeps your tentacles. 1–4 switch the panel tabs. F catches a falling feast. E sends the shoals on the next expedition. L flares the lure. R sends the feeders into the rising. S rides a swell at the Breach. C closes the polyps against warm water (or opens them). 7–0 answer the shoals’ signal. P buds a polyp, B lays a band, G hosts glimmerseed. H hides the panel to see the whole reef. T replays this zone’s growth. Hold any buy button to keep buying. Tap a creature to learn its name; tap Ossel and it will answer.',
   soundOn: 'Sound on (click to mute)',
   soundOff: 'Sound off (click for sound)',
   driftsAway: 'Your spawn drifts away to find a new seamount.',
@@ -85,4 +85,5 @@ export const UI = {
   tallyLucky: (n: number) => `${n} lucky touch${n === 1 ? '' : 'es'}`,
   tallyMilky: (n: number) => `${n} sweep${n === 1 ? '' : 's'} through a milky sea`,
   tallyWished: 'a wish on falling stars',
+  timelapse: 'Watch this reef grow again (T)',
 } as const;

@@ -464,6 +464,7 @@ const panel = createPanel(ui, {
   },
   portrait: (id) => portraits.get(id),
   get portraits() { return portraits.count; },
+  timelapse() { startLapse(); },
   reset() {
     portraits.clear();
     state = newGame(seed);
@@ -845,7 +846,7 @@ function view(): ReefView {
     polypTier: MILESTONES.polyp.filter((m) => state.levels.polyp >= m.level).length,
     glowTier: MILESTONES.symbiont.filter((m) => state.levels.symbiont >= m.level).length,
     symbionts: state.levels.symbiont,
-    height: state.height,
+    height: lapseHeight() ?? state.height,
     glowLevel: r.lureMax > 0 ? (lure(r, state.glow, state.height) - 1) / r.lureMax : 0,
     sinceSweep: state.t - state.lastSweep,
     vent: state.levels.vent,
@@ -990,6 +991,26 @@ function showJournalNote(kicker: string, name: string, now = false): void {
     setTimeout(next, 3200);
   };
   next();
+}
+
+/** The time-lapse: the reef regrows from the start of this zone to now over LAPSE seconds of scene time. */
+const LAPSE = 8;
+let lapseStart = -1;
+function startLapse(): void {
+  if (actAt(state.height) === 5) return;
+  lapseStart = animT;
+  hint.classList.add('done');
+}
+function lapseHeight(): number | null {
+  if (lapseStart < 0) return null;
+  const k = (animT - lapseStart) / LAPSE;
+  if (k >= 1 || k < 0) {
+    lapseStart = -1;
+    return null;
+  }
+  const from = act(actAt(state.height)).from;
+  const e = k * k * (3 - 2 * k);
+  return from + (state.height - from) * e;
 }
 
 /** Lucky neighbours on screen: golden sparks circling each one (where it was drawn last frame). */
@@ -1485,6 +1506,10 @@ window.addEventListener('keydown', (e) => {
       const [x, y] = scene.crownAt;
       taps.push(x + (Math.sin(animT * 7) > 0 ? 1 : -1) * 160 * dpr, y - 60 * dpr, animT);
     }
+    return;
+  }
+  if (e.key === 't' || e.key === 'T') {
+    startLapse();
     return;
   }
   if (e.key === '?') {

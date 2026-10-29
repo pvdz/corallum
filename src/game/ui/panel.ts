@@ -112,6 +112,8 @@ export type PanelHooks = {
   exportSave(): string;
   importSave(text: string): boolean;
   reset(): void;
+  /** Replay this zone's growth of the reef in a few seconds. */
+  timelapse(): void;
   /** The soft glow (bloom) pass: read and set; off helps slow phones. */
   glow: { get(): boolean; set(on: boolean): void };
   /** The reef's name changed. */
@@ -1287,7 +1289,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     group(UI.saves),
     el('p', 'hint', UI.autosave), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn,
     group(UI.sound), volRow, buzzToggle,
-    group(UI.display), glowToggle, sharpToggle, calmToggle, bigToggle, sciToggle, quietToggle, notifyToggle, habitToggle,
+    group(UI.display), button('plain', UI.timelapse, () => hooks.timelapse()), glowToggle, sharpToggle, calmToggle, bigToggle, sciToggle, quietToggle, notifyToggle, habitToggle,
     el('p', 'hint', UI.keys),
     group(UI.startOver), resetBtn,
   );
