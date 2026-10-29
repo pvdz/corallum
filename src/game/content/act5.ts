@@ -60,13 +60,14 @@ export const BANDS_ACT5: readonly Band[] = [
 
 export type MemoryId =
   | 'vent' | 'ossel' | 'thousandfold' | 'slow-water' | 'lanternfish' | 'rasp'
-  | 'long-animal' | 'colour' | 'rain' | 'fear' | 'silt-truth' | 'dialect';
+  | 'long-animal' | 'colour' | 'rain' | 'fear' | 'silt-truth' | 'dialect'
+  | 'gate' | 'midden' | 'tablet' | 'eye' | 'turtle';
 
 export type Memory = {
   id: MemoryId;
   title: string;
   /** What has to have happened for this memory to exist. */
-  needs: { band?: string; reading?: string };
+  needs: { band?: string; reading?: string; relic?: string; moment?: string; momentChoice?: 'a' | 'b'; shards?: number };
   /** One line in the choosing screen. */
   hint: string;
   /** The epilogue paragraph if carried. */
@@ -143,6 +144,33 @@ export const MEMORIES: readonly Memory[] = [
     id: 'dialect', title: 'Your dialect', needs: { band: 'form' },
     hint: 'The shape you chose to be.',
     epilogue: 'They grow as you grew, in the shape you chose, and they never wonder about the others.',
+  },
+  {
+    id: 'gate', title: 'The fallen gate', needs: { relic: 'gate' },
+    hint: 'A door the city shut on itself.',
+    epilogue: 'They never build gates. Where the water wants to come in, they let it, and they grow around the way it goes.',
+  },
+  {
+    id: 'midden', title: 'The beak midden', needs: { relic: 'midden' },
+    hint: '“I was there, and I did not know.”',
+    epilogue: 'In the oldest stone of every reef there is one beak, set low. None of them could tell you why. ' +
+      'The Rasp who find it graze more gently there.',
+  },
+  {
+    id: 'tablet', title: 'Forget us gently', needs: { shards: 12 },
+    hint: 'The city’s last words, whole.',
+    epilogue: 'In the first band of every reef, carved very small: forget us gently, and live. They do both, ' +
+      'and they are not sorry.',
+  },
+  {
+    id: 'eye', title: 'The eye in the dark', needs: { moment: 'squid' },
+    hint: 'Something enormous looked at you.',
+    epilogue: 'When something vast passes in the dark, they neither hide nor flare. They let it look, and look back.',
+  },
+  {
+    id: 'turtle', title: 'The sleeping turtle', needs: { moment: 'turtle', momentChoice: 'a' },
+    hint: 'It slept in your branches, and kept you clean.',
+    epilogue: 'Turtles sleep in their branches, and they let them. In the morning the weed is gone and nobody says thank you.',
   },
 ];
 

@@ -925,6 +925,12 @@ export function spawnTarget(s: GameState): number {
 export function memoryAvailable(s: GameState, m: Memory): boolean {
   if (m.needs.band && !s.bands.includes(m.needs.band)) return false;
   if (m.needs.reading && !s.readings.includes(m.needs.reading as ReadingId)) return false;
+  if (m.needs.relic && !s.relics.includes(m.needs.relic as SiteId)) return false;
+  if (m.needs.moment) {
+    const c = s.moments[m.needs.moment as MomentId];
+    if (!c || (m.needs.momentChoice && c !== m.needs.momentChoice)) return false;
+  }
+  if (m.needs.shards && s.meta.shards.length < m.needs.shards) return false;
   return true;
 }
 

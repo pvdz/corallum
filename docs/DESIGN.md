@@ -146,7 +146,8 @@ Entry requires the last Act II Reading (*Inside the wall*): the story turn opens
 - **The Spawning Moon**: a 20-minute cycle in sim time, full for ±8% of it. The release is a
   player action and needs: the surface (4000 m), spawn ≥ target, and a full moon.
 - **What the spawn carries** (the final verb: letting go): choose exactly 3 of the memories the
-  run has earned (12 threads). The ending composes the release, one epilogue paragraph per
+  run has earned (17 threads: bands and Readings, plus the gate and midden relics, the whole
+  tablet, the squid moment and the sleeping turtle). The ending composes the release, one epilogue paragraph per
   memory, Ossel's closing (kept or let go), and the last line.
 
 Great tides: every third full moon carries four memories instead of three. Releasing at the

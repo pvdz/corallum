@@ -106,6 +106,7 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Ossel's requests (small rotating goals) | quests/daily goals are a genre convention | OK |
 | Favours asked of the Rasp, paid in sand | none known; follows the truce | OK |
 | Traits 'Shoal sense', 'Rasp sense' (automation) | auto-managers are a genre convention; names are plain | OK |
+| Memories 'The fallen gate', 'The beak midden', 'Forget us gently', 'The eye in the dark', 'The sleeping turtle' | our own epilogue lines | OK |
 | Hard seamounts (hungry, silent, lonely, buried) as challenge runs with a lasting reward | challenge runs are a genre convention (incremental 'challenges'); names are plain descriptions | OK |
 | Moments (a dying brittle star, a lost shoal, the giant squid's eye, a whale fall, cleaners asking for a ledge, a storm breaking a branch, a sleeping turtle, a shore bird at low tide) | real reef and deep-sea events; small choice events are a genre convention; beats written for Ossel | OK |
 | The water's moods (rich, slack, lamp, carrying, gritty, clear, warm water) changing prices on a forecast | timed price swings are a genre convention (markets); names are plain descriptions of real sea states | OK |
