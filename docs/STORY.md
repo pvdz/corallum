@@ -155,4 +155,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Upwellings (cold water welling up; turn the current to it) | real oceanography | OK |
 | Moments: shark pups in the shallows, the king tide | real reef phenomena | OK |
 | The day's sea (a daily boon) | daily modifiers are a genre convention; plain weather words | OK |
+| A moonbow after rain at the Breach | real lunar rainbow | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

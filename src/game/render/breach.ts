@@ -470,6 +470,35 @@ export function createBreachScene(seed: number): Scene {
    * Rain (once the reef has read the band): a shower every few minutes, streaks from the sky and
    * small rings spreading on the surface where the drops land.
    */
+  /**
+   * A moonbow: for a little while after each shower, with the moon bright enough, a pale arc
+   * stands over the sea on the side away from the moon, its colours barely there.
+   */
+  function drawMoonbow(ctx: CanvasRenderingContext2D, t: number, phase: number, dawn: number): void {
+    const since = (t % 300) - 70;
+    const lit = 1 - Math.abs(phase - 0.5) * 2;
+    if (since < 0 || since > 60 || lit < 0.4 || dawn > 0.5) return;
+    const a = Math.min(1, since / 8, (60 - since) / 15) * (lit - 0.4) / 0.6;
+    sight('moonbow');
+    const wy = waterY();
+    const cx0 = focus.x + focus.w * 0.25, r = focus.w * 0.3;
+    spot('moonbow', cx0, wy - r * 0.8, r * 0.3);
+    const bands = ['255,140,140', '255,210,140', '200,255,170', '150,200,255', '200,160,255'];
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, w, wy);
+    ctx.clip();
+    ctx.globalCompositeOperation = 'lighter';
+    bands.forEach((c, i) => {
+      ctx.strokeStyle = `rgba(${c},${0.07 * a})`;
+      ctx.lineWidth = 5 * scale();
+      ctx.beginPath();
+      ctx.arc(cx0, wy + r * 0.25, r - i * 5 * scale(), Math.PI, 0);
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
   function drawRain(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 300, length = 70;
     const u = (t % period) / length;
@@ -1061,7 +1090,7 @@ export function createBreachScene(seed: number): Scene {
       if (v.sinceBreach >= 60) drawPelican(ctx, t);
       if (v.sinceBreach >= 0) drawGreenFlash(ctx, v.sinceBreach);
       if (v.thorn?.kind === 'gull') drawGull(ctx, this.crownAt[0], waterY(), v.thorn.u, v.thorn.side, t, scale());
-      if (v.bands.includes('rain')) drawRain(ctx, t);
+      if (v.bands.includes('rain')) { drawRain(ctx, t); drawMoonbow(ctx, t, v.moonPhase, lastDawn); }
       drawPool(ctx, L.cx, waterY(), v.works.pool, scale(), t);
       // Sand cays the reef has raised: low pale islands breaking the surface beside it.
       for (let k = 0; k < v.cays; k++) {
