@@ -744,12 +744,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           raspHold = best.forHold;
         }
         // Two good settings: most income while you watch, most held for while you are away.
+        const mark = (n: number) => `${n}${n === s.rasp ? ' ✓' : ''}`;
         const bestNote = raspBest === raspHold
-          ? (raspBest === s.rasp ? ' · the best setting' : ` · best: ${raspBest}`)
-          : ` · most calcite/s at ${raspBest}${raspBest === s.rasp ? ' (now)' : ''}, most held (for being away) at ${raspHold}${raspHold === s.rasp ? ' (now)' : ''}`;
+          ? `Best setting: ${mark(raspBest)}`
+          : `Best for income: ${mark(raspBest)} · best before going away: ${mark(raspHold)}`;
         raspWhat.textContent = s.rasp === 0
-          ? `No Rasp graze. The silt settles where it falls.${raspBest > 0 ? ` Best now: ${raspBest}.` : ''}`
-          : `grinding ${rate(r.sandP)} sand · ${eats > 0 ? `eating ${rate(eats).slice(1)} calcite · ` : ''}calcite holds ~${num(calciteHold(s, r))}${bestNote}`;
+          ? `No Rasp graze; the silt settles where it falls. ${bestNote}`
+          : `${rate(r.sandP)} sand${eats > 0 ? ` · eat ${rate(eats).slice(1)} calcite` : ''} · holds ~${num(calciteHold(s, r))}\n${bestNote}`;
       }
 
       // Height: progress within the current act's zone, with depth.
