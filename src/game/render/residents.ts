@@ -56,8 +56,53 @@ export function drawResidents(ctx: CanvasRenderingContext2D, reef: Reef, L: Reef
     else if (id === 'sea-cucumber') { if (floor) cucumbers(ctx, L, s, t, floor); }
     else if (id === 'damselfish') damsels(ctx, reef, L, s, t);
     else if (id === 'host-anemone') anemone(ctx, reef, L, s, t, seed);
+    else if (id === 'cleaner-wrasse') wrasse(ctx, reef, L, s, t, seed);
   }
   ctx.restore();
+}
+
+/**
+ * Cleaner wrasse: a pair at their station on a branch, bobbing in the up-and-down dance that says
+ * the station is open. Touched, they dart round the branch once and come back.
+ */
+function wrasse(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s: number, t: number, seed: number): void {
+  const [i] = perches(reef, L, 0.35, 0.6, seed ^ 0xc1ea, 1);
+  if (i === undefined) return;
+  const [px, py] = reef.nodePx(L, i);
+  const touch = startled('cleaner-wrasse', t);
+  const dart = touch && touch.age < 2 ? touch.age / 2 : -1;
+  for (let k = 0; k < 2; k++) {
+    const a = dart >= 0 ? dart * Math.PI * 2 + k * Math.PI : 0;
+    const bob = Math.sin(t * 3.2 + k * 1.3) * 3 * s;
+    const x = px + (k ? 9 : -9) * s + (dart >= 0 ? Math.cos(a) * 14 * s : Math.sin(t * 0.7 + k) * 2 * s);
+    const y = py - 4 * s + bob + (dart >= 0 ? Math.sin(a) * 8 * s : 0);
+    if (k === 0) spot('cleaner-wrasse', x, y, 9 * s);
+    const dir = dart >= 0 ? (Math.cos(a + Math.PI / 2) > 0 ? 1 : -1) : k ? -1 : 1;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(dir, 1);
+    // Slim body: electric blue, a black stripe from snout to tail widening backward.
+    ctx.fillStyle = '#4fb3ff';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 6 * s, 1.6 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#10131c';
+    ctx.beginPath();
+    ctx.moveTo(5.5 * s, -0.2 * s);
+    ctx.lineTo(-6 * s, -0.8 * s);
+    ctx.lineTo(-6 * s, 0.8 * s);
+    ctx.lineTo(5.5 * s, 0.3 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#4fb3ff';
+    ctx.beginPath();
+    ctx.moveTo(-5.5 * s, 0);
+    ctx.lineTo(-8.5 * s, -1.8 * s);
+    ctx.lineTo(-8.5 * s, 1.8 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
 }
 
 function crabs(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s: number, t: number, seed: number): void {

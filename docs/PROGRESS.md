@@ -498,3 +498,4 @@ date, what landed, what is half-done, what's next.
 - Four Midnight moments filling 900–2800 m: fire-body (glow / murmurs), seep (plankton / dissolve), rising-stop (rising ×1.25 / glow fade), split-shoal (+2 shoals / +1 lineage).
 - The fire-body kept (moment 'a') hangs glowing below the crown in the Midnight scene.
 - Away summary: warm spells (open → bleached, with the advice; closed; sun-shy) and risings missed while away (economy cyclesBetween; events.ts AWAY_CYCLES).
+- Resident cleaner wrasse (3400 m): neighbours' touch gifts ×2 and their cooldown ×0.5; drawn as a dancing pair at a station on a mid branch, darting round when touched.

@@ -200,6 +200,7 @@ Tick items as they land; keep this list honest. Add items freely.
   - [x] Sun-shy trait: an open reef closes itself in warm water
   - [x] the rising in the Midnight Water and Twilight Shelf: send the feeders in for a haul
   - [x] Breach creatures: sailors, storm petrels, sea sparkle
+  - [x] an eighth resident: cleaner wrasse (gifts ×2, back twice as soon)
   - [x] four more Midnight moments (fire-body, seep, the rising stops, a shoal breaking up)
   - [x] traits Deep larder (two risings' worth) and Grain-sense (habit)
   - [x] the strain's sport at 3000 m: two variants per strain
