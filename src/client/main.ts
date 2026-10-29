@@ -1490,7 +1490,7 @@ function frame(now: number): void {
     const base = ended(state) ? `${who} · spawned` : state.height < 1 ? who : `${metres(state.height)} · ${who}`;
     // Something to do right now (a feast, an intruder, a choice waiting): a dot, for background tabs.
     const waiting = !!currentFeast(state) || !!currentThorn(state) || !!nextMoment(state) || othersSpawning(state) || boonsOffered(state).length > 0 ||
-      forkOpen(state) || strainOpen(state) || !!currentSignal(state);
+      forkOpen(state) || strainOpen(state) || !!currentSignal(state) || !!currentShell(state);
     const t = waiting ? `● ${base}` : base;
     if (document.title !== t) document.title = t;
   }

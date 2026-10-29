@@ -39,6 +39,7 @@ export const FEATS: readonly Feat[] = [
   { id: 'riddles', name: 'The elder’s respect', text: 'Answer all six of the elder’s riddles rightly in one reef.', when: (s) => Object.values(s.riddles).every((r) => r === 'right') },
   { id: 'signals', name: 'Fluent', text: 'Answer ten of the shoals’ signals in one reef.', when: (s) => s.signal.answered >= 10, progress: (s) => [s.signal.answered, 10] },
   { id: 'companion', name: 'Kept close', text: 'Keep a creature close as your companion.', when: (s) => s.meta.companion !== '' },
+  { id: 'shells', name: 'A full shelf', text: 'Keep all eight kinds of shell.', when: (s) => s.meta.shells.length >= 8, progress: (s) => [s.meta.shells.length, 8] },
   { id: 'readings', name: 'Every band read', text: 'Read every band the scouts can find.', when: (s) => s.readings.length >= 12, progress: (s) => [s.readings.length, 12] },
   { id: 'truce', name: 'Terms', text: 'Settle all three truce meetings.', when: (s) => !!s.truce.wall },
   { id: 'meadows', name: 'Gardener', text: 'Sow 6 seagrass meadows.', when: (s) => s.levels.meadow >= 6 },
