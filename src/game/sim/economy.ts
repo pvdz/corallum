@@ -216,7 +216,7 @@ export function rates(s: GameState): Rates {
     sandK: ACT3.sandSettle,
     bloomP: sunlight(s, target) * heatSun(s) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * ACT4.meadowBloom ** lv.meadow *
       (speaks(s, 'fluorescent') ? 1.5 : 1) * (lives(s, 'damselfish') ? 1.3 : 1) * (chose(s, 'storm', 'b') ? 1.15 : 1) * 1.15 ** s.works.terrace * (has(s, 'light-walls') ? 1.25 : 1) * (relic(s, 'sun-gate') ? 1.2 : 1) * (s.sport === 'sun' ? 1.2 : 1) * (chose(s, 'first-light', 'a') ? 1.15 : 1) * (paired(s, 'feather-duster', 'damselfish') ? 1.15 : 1),
-    bloomK: ACT4.bloomFade * (inHeat(s) && !closedNow(s) ? HEAT.openFade : 1) * (chose(s, 'turtle', 'a') ? 0.8 : 1) * (speaks(s, 'lullaby') ? 0.7 : 1),
+    bloomK: ACT4.bloomFade * (chose(s, 'heatwave', 'a') ? 0.85 : 1) * (inHeat(s) && !closedNow(s) ? HEAT.openFade * (passed(s, 'shallow') ? 0.5 : 1) : 1) * (chose(s, 'turtle', 'a') ? 0.8 : 1) * (speaks(s, 'lullaby') ? 0.7 : 1),
     spawnP: target >= ACT5.from
       ? lv.polyp * ACT5.spawnRate * ACT5.ripenSpawn ** lv.ripen * (speaks(s, 'broadcast') ? 2 : 1) *
         (1 + sunlight(s, target) * lv.symbiont / 100) * (chose(s, 'bird', 'b') ? 1.1 : 1) * (chose(s, 'last-night', 'b') ? 1.05 : 1) * (has(s, 'last-spawning') ? 1.25 : 1) * 1.15 ** s.works.pool * 1.1 ** lv.cay * (lives(s, 'host-anemone') ? 1.15 : 1) * SKY.spawnEach ** named(s)
@@ -231,7 +231,7 @@ export function rates(s: GameState): Rates {
       (speaks(s, 'massive') ? 1.5 : 1) *
       1.5 ** trait(s, 'deep-memory') *
       knownBonus(s) * shardBonus(s) *
-      (lives(s, 'goby') ? 1.15 : 1) * (chose(s, 'whale-fall', 'a') ? 1.1 : 1) * (chose(s, 'snow', 'a') ? 1.05 : 1) * (chose(s, 'slope', 'a') ? 1.05 : 1) * (chose(s, 'krill', 'a') ? 1.1 : 1) * 1.05 ** s.works.garden *
+      (lives(s, 'goby') ? 1.15 : 1) * (chose(s, 'whale-fall', 'a') ? 1.1 : 1) * (chose(s, 'snow', 'a') ? 1.05 : 1) * (chose(s, 'slope', 'a') ? 1.05 : 1) * (chose(s, 'krill', 'a') ? 1.1 : 1) * (chose(s, 'heatwave', 'b') ? 1.1 : 1) * 1.05 ** s.works.garden *
       (boon(s, 'currents') ? 1.15 : 1),
     calciteK:
       ACT1.dissolve * sm.dissolve * ACT1.latticeFactor ** lv.lattice * (ACT1.ventAcid * sm.ventAcid) ** vent * (vent > 0 && chose(s, 'vent-crack', 'a') ? 0.8 : 1) *
@@ -1268,28 +1268,34 @@ function heatZone(s: GameState): boolean {
   return heightForBands(s.levels.skeleton) >= ACT4.from;
 }
 
+/** How long each warm spell lasts here (a shallow seamount's last twice as long). */
+export function heatLength(s: GameState): number {
+  return HEAT.length * (seamount(s).heat ?? 1);
+}
+
 /** The shallow water runs warm now. */
 export function inHeat(s: GameState): boolean {
-  return heatZone(s) && s.t % HEAT.period < HEAT.length;
+  return heatZone(s) && s.t % HEAT.period < heatLength(s);
 }
 
 /** Seconds until the next warm spell (0 while one lasts; Infinity below the Sunlit Crown). */
 export function untilHeat(s: GameState): number {
   if (!heatZone(s)) return Infinity;
   const u = s.t % HEAT.period;
-  return u < HEAT.length ? 0 : HEAT.period - u;
+  return u < heatLength(s) ? 0 : HEAT.period - u;
 }
 
 /** Seconds a warm spell has left (0 when none). */
 export function heatLeft(s: GameState): number {
-  return inHeat(s) ? HEAT.length - s.t % HEAT.period : 0;
+  return inHeat(s) ? heatLength(s) - s.t % HEAT.period : 0;
 }
 
 /** Sim time of the next start or end of a warm spell: the rates change there, so time is split. */
 function heatEdge(s: GameState): number {
   if (!heatZone(s)) return Infinity;
   const base = Math.floor(s.t / HEAT.period) * HEAT.period;
-  for (const e of [base + HEAT.length, base + HEAT.period, base + HEAT.period + HEAT.length])
+  const len = heatLength(s);
+  for (const e of [base + len, base + HEAT.period, base + HEAT.period + len])
     if (e > s.t) return e;
   return Infinity;
 }
@@ -1330,7 +1336,7 @@ function spellsIn(t0: number, t1: number, offset: number, len: number): number {
 /** Warm spells and risings that passed between t0 and t1, where the reef is now (for the away summary). */
 export function cyclesBetween(s: GameState, t0: number, t1: number): { heat: number; risings: number } {
   return {
-    heat: heatZone(s) ? spellsIn(t0, t1, 0, HEAT.length) : 0,
+    heat: heatZone(s) ? spellsIn(t0, t1, 0, heatLength(s)) : 0,
     risings: risingZone(s) ? spellsIn(t0, t1, RISING.start, RISING.length) : 0,
   };
 }

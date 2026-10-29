@@ -185,6 +185,8 @@ not, and never bleach. Open is right while bloom is low (the sun outruns the los
 when a large bloom stock is at stake; whatever is set stays set while away. The scene shows an amber
 haze, an open reef paling to bone and recovering after, closed polyps pulled in. The **Sun-shy** trait (a habit)
 lets an open reef close itself for each spell and open after, away too: the stance only matters outside them.
+A **shallow seamount** (hard place) has spells twice as long; growing to 3950 m there earns Sun-hardened (open
+polyps bleach half as fast on every reef after). Its own moment: the water will not cool.
 
 Falling feasts (from 42 m, late in the Silt Floor where buying slows): something dead sinks past the reef every few minutes; tap it (or F)
 for 90 s of calcite. A reward for watching (principle 6: never needed, never lost offline), and the

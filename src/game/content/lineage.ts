@@ -38,7 +38,7 @@ export type Trait = {
  * Where a lesser spawning settles. Each seamount bends the economy one way; the plain one is the
  * first reef's. Multipliers are read by sim/economy.ts.
  */
-export type SeamountId = 'plain' | 'warm' | 'cold' | 'crowded' | 'hungry' | 'silent' | 'lonely' | 'buried' | 'dark';
+export type SeamountId = 'plain' | 'warm' | 'cold' | 'crowded' | 'hungry' | 'silent' | 'lonely' | 'buried' | 'dark' | 'shallow';
 export type Seamount = {
   id: SeamountId; name: string; text: string; effect: string;
   ventBoost: number; ventAcid: number; dissolve: number; polyp: number; readings: number; silt: number;
@@ -50,6 +50,8 @@ export type Seamount = {
   noReadings?: boolean;
   /** The glimmerseed's glow is multiplied by this (dark). */
   glow?: number;
+  /** Warm spells last this many times as long (shallow). */
+  heat?: number;
 };
 
 /** Hard seamounts are offered once the line has spawned this many times. */
@@ -79,6 +81,9 @@ export const SEAMOUNTS: readonly Seamount[] = [
   { id: 'dark', name: 'A dark seamount', text: 'Even the glimmerseed burn low here, as if the water drinks their light.', effect: 'glow ×0.3',
     ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 1, readings: 1, silt: 1, glow: 0.3,
     trial: { goal: 2500, reward: 'Lamp-born: glow ×1.25 on every reef after' } },
+  { id: 'shallow', name: 'A shallow seamount', text: 'Its top lies close under the sun, where the water warms early and stays warm.', effect: 'warm spells last twice as long',
+    ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 1, readings: 1, silt: 1, heat: 2,
+    trial: { goal: 3950, reward: 'Sun-hardened: open polyps bleach half as fast on every reef after' } },
 ];
 
 export const TRAIT_GROUPS = {

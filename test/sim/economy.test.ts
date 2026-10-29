@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
+import { heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { newGame, type GameState } from '../../src/game/sim/state.ts';
 import { GIFT } from '../../src/game/content/creatures.ts';
@@ -293,6 +293,11 @@ test('cyclesBetween counts every spell that overlaps the absence, partial ones i
   assert.deepEqual(cyclesBetween(s, k + 300, k + P - 1), { heat: 0, risings: 0 });
   assert.equal(cyclesBetween(s, k + 100, k + 300).heat, 1, 'left mid-spell');
   assert.equal(cyclesBetween(s, k + 300, k + 3 * P + 1).heat, 3);
+  // On a shallow seamount the spells last twice as long.
+  s.seamount = 'shallow';
+  assert.equal(cyclesBetween(s, k + 300, k + 400).heat, 1);
+  s.t = k + 300;
+  assert.ok(inHeat(s) && rel(heatLeft(s), 180) < 1e-12);
 });
 
 test('dialects: one per tier, in order, after their band, paid in bloom', () => {

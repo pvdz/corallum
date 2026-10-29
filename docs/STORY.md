@@ -142,4 +142,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Deep larder, Grain-sense (traits) | plain descriptions | OK |
 | Moments: a fire-body (pyrosome) snagging in the crown, a cold seep, the rising pausing at the reef, a shoal breaking up | real deep-sea phenomena; no game beat I know | OK |
 | Cleaner wrasse (resident: a cleaning station; gifts ×2, twice as often) | real cleaning-station behaviour (Labroides) | OK |
+| A shallow seamount (long warm spells; Sun-hardened reward); its moment: the water will not cool | real marine heatwaves; plain names | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

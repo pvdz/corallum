@@ -4,7 +4,7 @@
 
 export type MomentId = 'brittle' | 'vent-crack' | 'snow' | 'lost-shoal' | 'hunters' | 'angler' | 'squid' | 'whale-fall' | 'old-lamp' | 'cleaners'
   | 'young-rasp' | 'slope' | 'eggs' | 'storm' | 'turtle' | 'first-light' | 'last-night' | 'bird'
-  | 'fire-body' | 'seep' | 'rising-stop' | 'split-shoal'
+  | 'fire-body' | 'seep' | 'rising-stop' | 'split-shoal' | 'heatwave'
   | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes';
 
 export type MomentOption = { label: string; effect: string; text: string };
@@ -206,6 +206,12 @@ export const MOMENTS: readonly Moment[] = [
     text: 'The silt drifts heaped around your foot begin to slide, all of them at once, downslope.',
     a: { label: 'Let them go', effect: 'silt swept +0.03/s', text: 'They go, and the water clears behind them, and the way stays open.' },
     b: { label: 'Build on them', effect: 'calcite dissolves ×0.9', text: 'You lay stone over the shifting silt and make it hold. A wider foot, a steadier reef.' },
+  },
+  {
+    id: 'heatwave', metres: 3860, seamount: 'shallow', title: 'The water will not cool',
+    text: 'Days now, and the shallows have not cooled even at night. Your crown is pale at the tips.',
+    a: { label: 'Grow tougher symbionts', effect: 'bloom fades ×0.85', text: 'You let the weak ones go and keep the ones that can stand it. Fewer, but they stay.' },
+    b: { label: 'Reach down for cool water', effect: 'calcite ×1.1', text: 'You put your strength into the deep stone instead, where the water is cold and patient.' },
   },
   {
     id: 'eyes', metres: 700, seamount: 'dark', title: 'Eyes in the dark',
