@@ -1854,6 +1854,7 @@ function requestCount(s: GameState, kind: RequestKind): number {
 function requestOpen(s: GameState, kind: RequestKind): boolean {
   const zone = actAt(s.height);
   if (!REQUESTS.find((r) => r.kind === kind)!.zones.includes(zone)) return false;
+  if ((kind === 'sweep' || kind === 'milky') && s.vows.includes('still')) return false;
   switch (kind) {
     case 'bands': return !maxed(s, 'skeleton');
     case 'feast': return s.bands.includes(FEAST.band);
