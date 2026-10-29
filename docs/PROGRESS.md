@@ -217,3 +217,4 @@ date, what landed, what is half-done, what's next.
 - Soak (not kept as a test, ~1 min): 15 s at 400× from four points of the playthrough (Silt Floor, Twilight, Sunlit, Breach), tapping and closing stories: no console errors across hours of sim time.
 - Zone-crossing check (manual, not kept): buying bands at speed through Silt→Midnight, Twilight→Sunlit and Sunlit→Breach with crossfades and title cards: no console errors; at 3000 m the Reading gate held as it should.
 - Zone change as one moment: motes stream upward through the crossfade, a rising chord plays, any whisper clears, whispers wait out the fade, and the band's story opens 4 s later (title, story, whisper and notes all appeared at once before).
+- Midnight Water: a rare giant squid, once every 20 min of scene time, a long dim shape with trailing arms (tappable; journal: 32).

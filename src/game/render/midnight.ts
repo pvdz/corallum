@@ -282,6 +282,56 @@ export function createMidnightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * Rarely, a giant squid: once in every twenty minutes a huge dim shape slides through the deep
+   * background, arms trailing, one eye the size of a dinner plate catching the reef's light.
+   */
+  function drawGiantSquid(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 1200, crossing = 50;
+    const u = ((t + 600) % period) / crossing;
+    if (u >= 1) return;
+    sight('giant-squid');
+    const s = scale() * 3.2;
+    const x = focus.x + focus.w * (1.25 - u * 1.5), y = focus.y + focus.h * 0.4 + Math.sin(t * 0.2) * 10 * s;
+    spot('giant-squid', x, y, 60 * s);
+    const pulse = Math.sin(t * 0.9);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.globalAlpha = 0.55 * Math.min(1, u * 6, (1 - u) * 6);
+    ctx.fillStyle = '#3a1820';
+    // Mantle with its fins, pointing forward (left).
+    ctx.beginPath();
+    ctx.moveTo(-40 * s, 0);
+    ctx.quadraticCurveTo(-20 * s, -9 * s, 8 * s, -6 * s);
+    ctx.lineTo(8 * s, 6 * s);
+    ctx.quadraticCurveTo(-20 * s, 9 * s, -40 * s, 0);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(-40 * s, 0);
+    ctx.lineTo(-30 * s, -9 * s + pulse * 2 * s);
+    ctx.lineTo(-28 * s, 9 * s - pulse * 2 * s);
+    ctx.fill();
+    // Arms: long, slowly undulating, two much longer than the rest.
+    ctx.strokeStyle = '#3a1820';
+    ctx.lineCap = 'round';
+    for (let k = 0; k < 8; k++) {
+      const long = k < 2;
+      const len = (long ? 60 : 26) * s;
+      const off = (k - 3.5) * 1.3 * s;
+      ctx.lineWidth = (long ? 1.2 : 2) * s;
+      ctx.beginPath();
+      ctx.moveTo(8 * s, off);
+      ctx.bezierCurveTo(8 * s + len * 0.3, off + Math.sin(t + k) * 4 * s,
+        8 * s + len * 0.7, off * 2 + Math.sin(t * 0.8 + k) * 6 * s, 8 * s + len, off * 3 + Math.sin(t * 0.6 + k) * 8 * s);
+      ctx.stroke();
+    }
+    ctx.restore();
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, x + 4 * s, y - 2 * s, 3 * s, '180,200,255', 0.5 * Math.min(1, u * 6, (1 - u) * 6));
+    ctx.restore();
+  }
+
   /** Comb jellies: glassy ovals whose eight comb rows ripple with travelling rainbow light. */
   function drawComb(ctx: CanvasRenderingContext2D, c: Comb, t: number): void {
     sight('comb-jelly');
@@ -458,6 +508,7 @@ export function createMidnightScene(seed: number): Scene {
       const L = layout(v);
       water.draw(ctx, w, h, t, 0.2, `${w}x${h} ${p.toFixed(3)}`, (c, tq) => drawWater(c, tq, p));
       drawFlashes(ctx, t);
+      drawGiantSquid(ctx, t);
       // The old stone's lights answer the scouts listening at it.
       ruins.draw(ctx, w, h, focus, v.height, RUINS, t, [0, 1, 2], Math.min(1, v.jobs.scout / 8));
       drawAngler(ctx, t);
