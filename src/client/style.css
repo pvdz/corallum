@@ -535,3 +535,17 @@ html.view-mode #photo { display: grid; }
 .collapsible.folded > h3::after { content: ' ▸'; }
 .collapsible.folded > :not(h3) { display: none; }
 .settings-group { margin: 16px 2px 4px; font-family: var(--display); font-weight: 400; font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--ink-dim); border-top: 1px solid var(--edge); padding-top: 10px; }
+
+/* ---------- The send-off before a new seamount ---------- */
+#send-off { position: absolute; inset: 0; z-index: 40; overflow: hidden; pointer-events: all; animation: send-dark 3.4s ease-in forwards; }
+#send-off i {
+  position: absolute; bottom: -10px; width: 8px; height: 8px; border-radius: 50%;
+  background: #ffb3cf; box-shadow: 0 0 12px 3px rgba(255, 160, 205, 0.8); animation: send-rise 2.6s ease-in both;
+}
+#send-off p {
+  position: absolute; left: 0; right: 0; top: 42%; text-align: center; margin: 0; padding: 0 24px;
+  font-family: var(--display); font-style: italic; font-size: clamp(18px, 2.4vw, 26px); color: #ffe4f0;
+  animation: fade-in 1.2s 0.6s ease both;
+}
+@keyframes send-dark { from { background: rgba(2, 2, 10, 0); } to { background: rgba(2, 2, 10, 1); } }
+@keyframes send-rise { from { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } to { transform: translateY(-105vh); opacity: 0.6; } }

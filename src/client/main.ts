@@ -249,11 +249,29 @@ const panel = createPanel(ui, {
   spawnLesser(where) {
     const next = spawnLesser(state, where);
     if (!next) return;
-    state = next;
-    if (ephemeral) return;
+    if (ephemeral) {
+      state = next;
+      return;
+    }
+    // The new reef is saved now but shown only after the send-off, over the reef left behind.
     savedAt = Date.now();
-    storageSet(serialize(state, savedAt));
-    location.reload();
+    storageSet(serialize(next, savedAt));
+    // A short send-off before the new seamount: the spawn rises, the water darkens.
+    yielded = true;
+    const send = document.createElement('div');
+    send.id = 'send-off';
+    for (let i = 0; i < 60; i++) {
+      const m = document.createElement('i');
+      m.style.left = `${(i * 61.8) % 100}%`;
+      m.style.animationDelay = `${(i % 12) * 0.12}s`;
+      send.append(m);
+    }
+    const line = document.createElement('p');
+    line.textContent = 'Your spawn drifts away to find a new seamount.';
+    send.append(line);
+    ui.append(send);
+    audio.cue('release');
+    setTimeout(() => location.reload(), reducedMotion.matches ? 600 : 3400);
   },
   buyTrait(id) {
     if (buyTrait(state, id)) save();
