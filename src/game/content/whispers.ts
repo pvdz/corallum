@@ -3,11 +3,16 @@
 // early game). Conditions are pure functions of the state.
 
 import type { GameState } from '../sim/state.ts';
+import { actAt } from './acts.ts';
 import {
   calciteHold, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
 } from '../sim/economy.ts';
 
 export type Whisper = { id: string; when: (s: GameState) => boolean; text: string };
+
+/** Seen (in the journal) but never touched. */
+const metNot = (s: GameState, id: string, zones: readonly number[]) =>
+  zones.includes(actAt(s.height)) && s.meta.seen.includes(`c:${id}`) && !s.meta.seen.includes(`t:${id}`);
 
 export const WHISPERS: readonly Whisper[] = [
   {
@@ -39,6 +44,23 @@ export const WHISPERS: readonly Whisper[] = [
     id: 'touch',
     when: (s) => s.meta.seen.filter((k) => k.startsWith('c:')).length >= 4 && !s.meta.seen.some((k) => k.startsWith('t:')),
     text: 'We are not alone down here. Touch one of them, gently. Most will answer.',
+  },
+  // Neighbours worth meeting: once one is seen and not yet touched, Ossel points at it.
+  {
+    id: 'touch-lanternfish', when: (s) => metNot(s, 'lanternfish', [2, 3]) && s.levels.shoal >= 6,
+    text: 'Reach into the lanternfish when they pass. They answer with light.',
+  },
+  {
+    id: 'touch-octopus', when: (s) => metNot(s, 'octopus', [3]),
+    text: 'There is an octopus on the slope pretending to be sand. Touch it, and see how it takes that.',
+  },
+  {
+    id: 'touch-clownfish', when: (s) => metNot(s, 'clownfish', [4]),
+    text: 'The little striped ones live in the stinging flower. Reach for them and watch where they go.',
+  },
+  {
+    id: 'touch-dolphin', when: (s) => metNot(s, 'dolphin', [5]),
+    text: 'When the dolphins leap, reach for them. They like to be asked.',
   },
   {
     id: 'idle', when: (s) => idleShoals(s) > 0,
