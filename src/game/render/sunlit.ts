@@ -501,6 +501,26 @@ export function createSunlitScene(seed: number): Scene {
     }
   }
 
+  /**
+   * Clouds over the sun: every couple of minutes a soft shadow slides across the scene from one
+   * side to the other, the light dimming under it, as on a reef flat on a breezy day.
+   */
+  function drawCloudShadow(ctx: CanvasRenderingContext2D, t: number, day: number): void {
+    const period = 140, pass = 40;
+    const u = (t % period) / pass;
+    if (u >= 1) return;
+    const lap = Math.floor(t / period);
+    const r = mulberry32(lap * 4099 + 7);
+    const cxp = focus.x - focus.w * 0.4 + u * focus.w * 1.8, rw = focus.w * (0.35 + r() * 0.25);
+    const g = ctx.createRadialGradient(cxp, focus.y + focus.h * 0.6, 0, cxp, focus.y + focus.h * 0.6, rw);
+    g.addColorStop(0, `rgba(10,30,50,${0.34 * day})`);
+    g.addColorStop(1, 'rgba(10,30,50,0)');
+    ctx.save();
+    ctx.fillStyle = g;
+    ctx.fillRect(cxp - rw, 0, rw * 2, h);
+    ctx.restore();
+  }
+
   /** Warm water: an amber haze from the surface down and slow shimmering bands of heat. */
   function drawHeat(ctx: CanvasRenderingContext2D, t: number, warm: number): void {
     ctx.save();
@@ -1373,6 +1393,7 @@ export function createSunlitScene(seed: number): Scene {
       shoals.drawFront(ctx, focus, reef, L, v, t, '#5d7d96');
       if (v.bands.includes('storm')) drawStorm(ctx, t);
       if (v.heat.warm > 0) drawHeat(ctx, t, v.heat.warm);
+      if (night < 0.5) drawCloudShadow(ctx, t, 1 - night * 2);
       if (night > 0) drawNight(ctx, t, night, 0.3);
       drawPearls(ctx, t, night);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);

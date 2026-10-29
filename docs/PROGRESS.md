@@ -568,3 +568,4 @@ date, what landed, what is half-done, what's next.
 - A dream now shows one of eight short dreams (events.ts DREAM.dreams) with the away summary.
 - Lighting the way for the sister (sister.ts lightSpeed/lightLineage; economy sisterNow/lightOpen/lightSister; race.lit/declined): sisterNow replaces sisterAt for the sister everywhere (marks, gauge, visits, whispers); ending 'sisterLit'.
 - When lit, the far sister reef (when near on the gauge, Twilight) sends a thread of light up from her crown.
+- Cloud shadows slide over the Sunlit Crown by day (sunlit.ts drawCloudShadow, every 140 s for 40 s).
