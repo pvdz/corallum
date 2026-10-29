@@ -1057,6 +1057,30 @@ export function createMidnightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** Rarely (every sixteen minutes), a rising river of firefly squid, blue sparks drifting up through the dark. */
+  function drawFireflySquid(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 960, length = 80;
+    const p = (t + 300) % period;
+    if (p > length) return;
+    sight('firefly-squid');
+    const s = scale();
+    const fade = Math.min(1, p / 10, (length - p) / 10);
+    const cx = focus.x + focus.w * 0.25;
+    spot('firefly-squid', cx, focus.y + focus.h * 0.5, 90 * s);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < 160; i++) {
+      const lane = ((i * 0.618034) % 1) - 0.5;
+      const speed = 0.6 + ((i * 0.3819) % 1) * 0.8;
+      const y = focus.y + focus.h * (1.05 - ((p * 0.012 * speed + (i * 0.137) % 1) % 1.1));
+      const x = cx + lane * focus.w * 0.28 + Math.sin(t * 0.8 + i) * 8 * s;
+      const tw = 0.5 + 0.5 * Math.sin(t * 4 + i * 1.7);
+      glow(ctx, x, y, (5 + 4 * tw) * s, '90,170,255', 0.55 * fade * (0.5 + tw));
+      glow(ctx, x, y, 1.6 * s, '200,235,255', 0.9 * fade);
+    }
+    ctx.restore();
+  }
+
   /** The fish with very large eyes (a moment on the dark seamount), staying by the reef's light. */
   function drawBigeye(ctx: CanvasRenderingContext2D, t: number, x0: number, y0: number): void {
     const s = scale() * 1.4;
@@ -1155,6 +1179,7 @@ export function createMidnightScene(seed: number): Scene {
       if (v.moments.seep) drawSeep(ctx, t, L, v.moments.seep === 'b');
       if (v.milky) drawMilky(ctx, t);
       drawGulper(ctx, t);
+      drawFireflySquid(ctx, t);
       reef.draw(ctx, L, v, t);
       if (v.moments.eyes === 'a') {
         const [crx, cry] = reef.crown(L);
