@@ -731,6 +731,60 @@ export function createSunlitScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** A dugong grazing the meadows (four or more): nose down in the grass; touched, it rises to breathe and sinks back. */
+  function drawDugong(ctx: CanvasRenderingContext2D, t: number, meadows: number): void {
+    if (meadows < 4) return;
+    sight('dugong');
+    const s = scale() * 1.7;
+    const touch = startled('dugong', t);
+    const rise = touch && touch.age < 10 ? Math.sin(Math.min(1, touch.age / 10) * Math.PI) : 0;
+    const u = (t * 0.004) % 1;
+    const x = focus.x + focus.w * (0.12 + 0.76 * (0.5 - 0.5 * Math.cos(u * Math.PI * 2)));
+    const dir = Math.sin(u * Math.PI * 2) > 0 ? 1 : -1;
+    const y = floorY(Math.min(1, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2))) - 14 * s - rise * focus.h * 0.45;
+    spot('dugong', x, y, 30 * s);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(dir, 1);
+    ctx.rotate(0.12 * (1 - rise) - 0.3 * rise);
+    const g = ctx.createLinearGradient(0, -8 * s, 0, 8 * s);
+    g.addColorStop(0, '#8a8478');
+    g.addColorStop(1, '#bdb6a6');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(22 * s, 3 * s);
+    ctx.quadraticCurveTo(20 * s, -7 * s, 4 * s, -8 * s);
+    ctx.quadraticCurveTo(-14 * s, -8 * s, -20 * s, -1 * s);
+    ctx.quadraticCurveTo(-14 * s, 6 * s, 4 * s, 7 * s);
+    ctx.quadraticCurveTo(18 * s, 8 * s, 22 * s, 3 * s);
+    ctx.fill();
+    // The fluke, a whale-like tail.
+    const sw = Math.sin(t * 1.5) * 0.15;
+    ctx.save();
+    ctx.translate(-19 * s, -1 * s);
+    ctx.rotate(sw);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.quadraticCurveTo(-6 * s, -7 * s, -10 * s, -8 * s);
+    ctx.quadraticCurveTo(-7 * s, 0, -10 * s, 8 * s);
+    ctx.quadraticCurveTo(-6 * s, 7 * s, 0, 0);
+    ctx.fill();
+    ctx.restore();
+    // A flipper, the drooping snout and an eye.
+    ctx.fillStyle = '#7a7468';
+    ctx.beginPath();
+    ctx.ellipse(8 * s, 6 * s, 5 * s, 2 * s, 0.6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(21 * s, 4 * s, 3 * s, 3.5 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#2a2622';
+    ctx.beginPath();
+    ctx.arc(16 * s, -2 * s, 0.9 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
   /** A blacktip reef shark on its patrol: across the reef's edge every ninety seconds; touched, it turns away fast. */
   function drawReefShark(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 90, pass = 26;
@@ -1049,6 +1103,7 @@ export function createSunlitScene(seed: number): Scene {
       drawAnemone(ctx, t);
       if (night < 0.5) drawCuttlefish(ctx, t);
       if (night < 0.5) drawReefShark(ctx, t);
+      drawDugong(ctx, t, v.meadows);
       drawClumps(ctx, t);
       drawDaughters(ctx, v.polyps, (u) => [focus.x - focus.w * 0.1 + u * focus.w * 1.2, floorY(u) + 2 * scale()], scale() * 1.2, t,
         { branch: '#c0703e', tip: '#e8a060', polyp: 'rgba(255,240,190,0.95)',
