@@ -399,3 +399,4 @@ date, what landed, what is half-done, what's next.
 - 'max' button on repeatable upgrade cards (polyps, glimmerseed, bands, shoals): buys as many as can be afforded.
 - Way 'Layering': while watching, the reef lays a band itself when it costs under a tenth of its calcite (habitPurchase).
 - Lineage tab: automation traits grouped as Habits (Old habits, Layering, Shoal sense, Rasp sense).
+- Requests can also ask to roam, raise a work stage, drive off an intruder or read a band (tally.intruders).

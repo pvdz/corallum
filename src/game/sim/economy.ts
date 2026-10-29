@@ -1323,6 +1323,10 @@ function requestCount(s: GameState, kind: RequestKind): number {
     case 'sandbar': return s.levels.sandbar;
     case 'pigment': return s.levels.pigment;
     case 'ripen': return s.levels.ripen;
+    case 'roam': return s.tally.roams;
+    case 'work': return Object.values(s.works).reduce((a, b) => a + b, 0);
+    case 'intruder': return s.tally.intruders;
+    case 'read': return s.readings.length;
   }
 }
 
@@ -1336,6 +1340,10 @@ function requestOpen(s: GameState, kind: RequestKind): boolean {
     case 'shoals': return revealed(s, 'shoal') && !maxed(s, 'shoal');
     case 'sandbar': case 'pigment': case 'ripen': return revealed(s, kind) && !maxed(s, kind);
     case 'glimmer': return revealed(s, 'symbiont') && !maxed(s, 'symbiont');
+    case 'roam': return !s.expedition.site && nextSite(s)?.id === ('roam' as SiteId);
+    case 'work': return WORKS.some((w) => workOpen(s, w.id) && workCost(s, w.id) !== null);
+    case 'intruder': return untilThorn(s) < Infinity;
+    case 'read': return !!nextReading(s);
     default: return true;
   }
 }
@@ -1464,6 +1472,7 @@ export function pryThorn(s: GameState, share = 1): number {
   const th = currentThorn(s);
   if (!th) return 0;
   s.thorned = th.k;
+  s.tally.intruders++;
   return burst(s, THORN.seconds * share);
 }
 

@@ -3,7 +3,8 @@
 // from the reef's seed and the number already done, among the kinds that make sense where the
 // reef is. Never needed: the reef grows the same without them.
 
-export type RequestKind = 'bud' | 'glimmer' | 'bands' | 'feast' | 'touch' | 'sweep' | 'shoals' | 'sandbar' | 'pigment' | 'ripen';
+export type RequestKind = 'bud' | 'glimmer' | 'bands' | 'feast' | 'touch' | 'sweep' | 'shoals' | 'sandbar' | 'pigment' | 'ripen'
+  | 'roam' | 'work' | 'intruder' | 'read';
 
 export type RequestDef = {
   kind: RequestKind;
@@ -39,4 +40,8 @@ export const REQUESTS: readonly RequestDef[] = [
   { kind: 'sandbar', ask: 'Raise {n} sand bar.', n: () => 1, zones: [3] },
   { kind: 'pigment', ask: 'Grow {n} new pigment.', n: () => 1, zones: [4] },
   { kind: 'ripen', ask: 'Ripen the spawn {n} more time.', n: () => 1, zones: [5] },
+  { kind: 'roam', ask: 'Send the shoals out to roam.', n: () => 1, zones: [2, 3] },
+  { kind: 'work', ask: 'Raise a stage of the great work.', n: () => 1, zones: [1, 2, 3, 4, 5] },
+  { kind: 'intruder', ask: 'Drive off the next thing that comes to eat us.', n: () => 1, zones: [2, 3, 4] },
+  { kind: 'read', ask: 'Read a band.', n: () => 1, zones: [2, 3, 4, 5] },
 ];
