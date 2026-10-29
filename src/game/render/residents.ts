@@ -55,6 +55,7 @@ export function drawResidents(ctx: CanvasRenderingContext2D, reef: Reef, L: Reef
     else if (id === 'pistol-shrimp') { if (floor) shrimp(ctx, L, s, t, floor); }
     else if (id === 'sea-cucumber') { if (floor) cucumbers(ctx, L, s, t, floor); }
     else if (id === 'damselfish') damsels(ctx, reef, L, s, t);
+    else if (id === 'host-anemone') anemone(ctx, reef, L, s, t, seed);
   }
   ctx.restore();
 }
@@ -260,4 +261,42 @@ function damsels(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s: nu
     ctx.fill();
     ctx.restore();
   }
+}
+
+function anemone(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s: number, t: number, seed: number): void {
+  const touch = startled('host-anemone', t);
+  const shrink = touch && touch.age < 3 ? 1 - 0.5 * Math.sin(Math.min(1, touch.age / 3) * Math.PI) : 1;
+  const [i] = perches(reef, L, 0.7, 0.85, seed ^ 0xa2e, 1);
+  if (i === undefined) return;
+  const [x, y] = reef.nodePx(L, i);
+  spot('host-anemone', x, y - 6 * s, 14 * s);
+  ctx.save();
+  ctx.strokeStyle = 'rgba(200,120,170,0.9)';
+  ctx.lineWidth = 1.6 * s;
+  for (let k = 0; k < 16; k++) {
+    const a = -Math.PI + (k / 15) * Math.PI;
+    const len = (9 + (k % 3) * 2) * s * shrink;
+    const sway = Math.sin(t * 1.3 + k) * 0.15;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.quadraticCurveTo(x + Math.cos(a + sway) * len * 0.6, y + Math.sin(a + sway) * len * 0.6, x + Math.cos(a + sway * 2) * len, y + Math.sin(a + sway * 2) * len);
+    ctx.stroke();
+  }
+  // Two clownfish weaving in and out of the tentacles.
+  for (let k = 0; k < 2; k++) {
+    const a = t * (0.9 + k * 0.3) + k * 3;
+    const fx = x + Math.cos(a) * 8 * s, fy = y - 8 * s + Math.sin(a * 1.4) * 3 * s;
+    const dir = -Math.sin(a) > 0 ? 1 : -1;
+    ctx.save();
+    ctx.translate(fx, fy);
+    ctx.scale(dir, 1);
+    ctx.fillStyle = '#f07a20';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 3.4 * s, 1.8 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(-0.6 * s, -1.8 * s, 1 * s, 3.6 * s);
+    ctx.restore();
+  }
+  ctx.restore();
 }

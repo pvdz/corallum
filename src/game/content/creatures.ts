@@ -7,7 +7,7 @@ export type CreatureId =
   | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark'
   | 'cuttlefish' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly'
   | 'shore-bird' | 'pelican' | 'hatchlings' | 'flying-fish' | 'dolphin' | 'moon-jelly'
-  | 'thorn-star' | 'dragonfish' | 'drill-snail' | 'gull' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish';
+  | 'thorn-star' | 'dragonfish' | 'drill-snail' | 'gull' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish' | 'host-anemone';
 
 export type Creature = { id: CreatureId; name: string; zone: string; note: string };
 
@@ -74,6 +74,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'sea-cucumber', name: 'Sea cucumbers', zone: 'Residents', note: 'They eat the floor and leave it cleaner.' },
   { id: 'goby', name: 'Coral gobies', zone: 'Residents', note: 'Perched on the branches like birds, watching everything.' },
   { id: 'feather-duster', name: 'Feather dusters', zone: 'Residents', note: 'Crowns of feathers that vanish into their tubes at a shadow.' },
+  { id: 'host-anemone', name: 'A host anemone', zone: 'Residents', note: 'Its clownfish never leave it. It never leaves them.' },
   { id: 'damselfish', name: 'Farmer damselfish', zone: 'Residents', note: 'They keep gardens, and will fight a turtle over one.' },
 ];
 

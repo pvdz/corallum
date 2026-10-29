@@ -3,7 +3,7 @@
 // lives here; homes are few, so which to take in is a choice that changes with the zone.
 // Taking one in or letting it go is free and immediate.
 
-export type ResidentId = 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish';
+export type ResidentId = 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish' | 'host-anemone';
 
 export type Resident = {
   id: ResidentId;
@@ -51,6 +51,10 @@ export const RESIDENTS: readonly Resident[] = [
   {
     id: 'damselfish', name: 'Farmer damselfish', metres: 3800, effect: 'bloom ×1.3',
     text: 'Fierce small fish that tend gardens of algae on the reef and chase off whatever comes near the crown.',
+  },
+  {
+    id: 'host-anemone', name: 'A host anemone', metres: 3980, effect: 'spawn ×1.15',
+    text: 'A great soft anemone with a pair of clownfish living in it, who keep the crown clean for the spawning.',
   },
 ];
 
