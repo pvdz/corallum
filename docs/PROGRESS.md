@@ -284,3 +284,4 @@ date, what landed, what is half-done, what's next.
 - Daughter colonies (render/daughters.ts): from 100 polyps, one small seeded branching colony per 15 polyps (up to 10) settles on the floor around the reef's foot in the Twilight and Sunlit scenes, newest smallest.
 - The vertical migration is tappable while it passes.
 - Mobile: the lesser-spawning card stacks its parts (title, text, seamounts, button below) instead of squeezing them into the upgrade-card grid.
+- Touching pays a little: +1% calcite per creature touched (knownBonus), on top of +2% per creature seen; Ossel does not count. ECONOMY.md: journal and Shared table.

@@ -38,6 +38,11 @@ After the band at 42 m (late Silt Floor), each 300 s slot holds one feast at a s
 per window (`state.feasted`). Offline catch-up never eats feasts, and the bot ignores them, so the
 pacing targets and the offline cap are untouched; a watching player gets roughly +30% calcite.
 
+## The journal (lineage-wide)
+calcite × (1 + 0.02·seen + 0.01·touched), counting creatures in meta.seen ('c:' and 't:'). A
+constant within a run, so offline stays exact. Shared table (a way): a feast left to sink is
+eaten for 0.5 × its value in its last second in reach, while watching.
+
 ## Milestones (polyps and glimmerseed)
 Each milestone doubles everything its kind makes (`ACT1.milestoneFactor`, `MILESTONES` in content/act1.ts):
 polyps at 10, 25, 50, 100, 150, 200; glimmerseed at 10, 25, 50, 100. To keep the pacing, band cost

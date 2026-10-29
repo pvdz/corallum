@@ -688,7 +688,7 @@ canvas.addEventListener('pointerdown', (e) => {
     startle(who.id, frozenT ?? animT, e.clientX * dpr, e.clientY * dpr);
     if (who.id === 'whale') audio.cue('whale');
     else if (who.id !== 'ossel') audio.cue('touch');
-    if (frozenT === null && !state.meta.seen.includes(`t:${who.id}`)) state.meta.seen.push(`t:${who.id}`);
+    if (frozenT === null && who.id !== 'ossel' && !state.meta.seen.includes(`t:${who.id}`)) state.meta.seen.push(`t:${who.id}`);
   }
   const f = currentFeast(state);
   if (f) {

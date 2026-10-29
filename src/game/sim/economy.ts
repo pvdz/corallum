@@ -148,12 +148,19 @@ export function raspMax(s: GameState): number {
   return s.levels.grounds * ACT3.raspPerGround + (s.truce.terms === 'a' ? 4 : s.truce.terms === 'b' ? 2 : 0);
 }
 
-/** Every creature the lineage has ever seen adds a little calcite (the journal, meta.seen 'c:…'). */
+/**
+ * Every creature the lineage has ever seen adds a little calcite (the journal, meta.seen 'c:…'),
+ * and a little more once it has been touched ('t:…').
+ */
 export const KNOWN_BONUS = 0.02;
+export const TOUCH_BONUS = 0.01;
 export function knownBonus(s: GameState): number {
-  let n = 0;
-  for (const k of s.meta.seen) if (k.startsWith('c:')) n++;
-  return 1 + KNOWN_BONUS * n;
+  let seen = 0, touched = 0;
+  for (const k of s.meta.seen) {
+    if (k.startsWith('c:')) seen++;
+    else if (k.startsWith('t:')) touched++;
+  }
+  return 1 + KNOWN_BONUS * seen + TOUCH_BONUS * touched;
 }
 
 /** This run's seamount and how it bends the numbers. */

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { act1Done, advance, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
+import { act1Done, advance, calciteRate, knownBonus, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { newGame, type GameState } from '../../src/game/sim/state.ts';
 
@@ -316,4 +316,13 @@ test('great tide moons: every third full moon carries four memories', async () =
   s.t = 2 * P + P / 2;
   assert.equal(breach(s, ['vent', 'ossel', 'rasp']), false);
   assert.ok(breach(s, ['vent', 'ossel', 'rasp', 'thousandfold']));
+});
+
+test('the journal feeds the reef: +2% calcite per creature seen, +1% more once touched', () => {
+  const s = newGame(5);
+  s.levels.polyp = 10;
+  const base = calciteRate(s);
+  s.meta.seen.push('c:jelly', 'c:rattail', 't:jelly', 'f:feast', 'did:photo');
+  assert.ok(Math.abs(knownBonus(s) - 1.05) < 1e-12);
+  assert.ok(Math.abs(calciteRate(s) / base - 1.05) < 1e-9);
 });
