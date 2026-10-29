@@ -98,6 +98,40 @@ export function createTwilightScene(seed: number): Scene {
     return x * x * (3 - 2 * x);
   }
 
+  /**
+   * Flashlight fish, out only at night: a loose school of small dark fish wandering over the reef,
+   * each with a green-white lamp under its eye that it shutters off and on as it turns. Touched,
+   * they all go dark at once, then light again one by one.
+   */
+  function drawFlashlightFish(ctx: CanvasRenderingContext2D, t: number, night: number): void {
+    sight('flashlight-fish');
+    const s = scale() * 1.3;
+    const touch = startled('flashlight-fish', t);
+    const cx0 = focus.x + focus.w * (0.18 + 0.08 * Math.sin(t * 0.05)), cy0 = focus.y + focus.h * (0.4 + 0.1 * Math.sin(t * 0.07));
+    spot('flashlight-fish', cx0, cy0, Math.max(40 * s, focus.w * 0.08));
+    ctx.save();
+    for (let k = 0; k < 14; k++) {
+      const a = t * (0.3 + (k % 5) * 0.04) + k * 2.4;
+      const x = cx0 + Math.cos(a) * (30 + (k * 13) % 50) * s, y = cy0 + Math.sin(a * 1.3) * (18 + (k * 7) % 30) * s;
+      const dir = Math.cos(a + Math.PI / 2) > 0 ? -1 : 1;
+      // Shuttered now and then; all dark for a moment when touched, then back one by one.
+      const blink = Math.sin(t * 1.7 + k * 1.9) > 0.85;
+      const dark = touch && touch.age < 2 + k * 0.15;
+      ctx.fillStyle = `rgba(14,16,26,${0.9 * night})`;
+      ctx.beginPath();
+      ctx.ellipse(x, y, 4.5 * s, 2 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      if (blink || dark) continue;
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      glow(ctx, x + dir * 2.6 * s, y + 0.6 * s, 8 * s, '170,255,210', night);
+      ctx.restore();
+      ctx.fillStyle = `rgba(235,255,240,${night})`;
+      ctx.fillRect(x + dir * 2.6 * s - 1.1 * s, y - 0.5 * s, 2.2 * s, 1.6 * s);
+    }
+    ctx.restore();
+  }
+
   /** The night's veil (strong behind the reef, light in front) and, in front, plankton sparking blue. */
   function drawNight(ctx: CanvasRenderingContext2D, t: number, night: number, veil: number): void {
     ctx.save();
@@ -1288,6 +1322,7 @@ export function createTwilightScene(seed: number): Scene {
       reef.drawEffects(ctx, L, v, effects.live(t));
       shoals.drawFront(ctx, focus, reef, L, v, t, '#1d3557');
       if (night > 0) drawNight(ctx, t, night, 0.2);
+      if (night > 0.4) drawFlashlightFish(ctx, t, night);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
       vignette(ctx);
     },
