@@ -3,6 +3,7 @@
 import type { Job } from '../content/act2.ts';
 import type { DialectId } from '../content/act4.ts';
 import type { SiteId } from '../content/expeditions.ts';
+import type { WorkId } from '../content/works.ts';
 import type { ResidentId } from '../content/residents.ts';
 import type { UpgradeId } from '../content/types.ts';
 
@@ -24,6 +25,8 @@ export type ReefView = {
   shoals: number;
   jobs: Record<Job, number>;
   /** Shoals away at a ruin: how many, sim seconds since they left and until they are back, which side they went. */
+  /** Stages built of each great work. */
+  works: Record<WorkId, number>;
   /** Daughter colonies tended into nurseries. */
   nurseries: number;
   /** The line's chosen colours (content/palettes.ts). */

@@ -286,6 +286,10 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .palette-row { padding-bottom: 14px; }
 .swatch.on { border-color: #fff; box-shadow: 0 0 12px rgba(255, 255, 255, 0.35); }
 html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-note { zoom: 1.15; }
+.work-stages { display: flex; gap: 6px; margin: 2px 0 8px; flex-wrap: wrap; }
+.work-pip { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px dashed var(--edge); color: var(--ink-dim); }
+.work-pip.built { border-style: solid; border-color: rgba(255, 210, 160, 0.5); color: #ffd9a8; }
+.card.work { border-color: rgba(255, 210, 160, 0.25); }
 .residents { background: rgba(255, 140, 120, 0.03); border: 1px solid rgba(255, 150, 130, 0.2); border-radius: var(--radius); padding: 10px 12px; }
 .residents[hidden], .resident[hidden] { display: none; }
 .residents header { display: flex; justify-content: space-between; align-items: baseline; }

@@ -3,7 +3,7 @@
 // is cheap to call every frame.
 
 import { ACT1, MILESTONES } from '../content/act1.ts';
-import type { Band, UpgradeId } from '../content/types.ts';
+import type { Band, Currency, UpgradeId } from '../content/types.ts';
 import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
 import { ACT3, FAVOURS, FAVOUR_TEXT, MEETINGS, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
@@ -16,6 +16,7 @@ import { upgradeIcon } from './icons.ts';
 import { FEATS } from '../content/feats.ts';
 import { WATER } from '../content/waters.ts';
 import { REQUEST } from '../content/requests.ts';
+import { WORKS, WORK_TEXT, type WorkId } from '../content/works.ts';
 import { PALETTES, PALETTE_TEXT } from '../content/palettes.ts';
 import { SHARD, SHARD_LINES } from '../content/shards.ts';
 import { MOMENT, MOMENTS, type Moment, type MomentId } from '../content/moments.ts';
@@ -26,7 +27,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -37,6 +38,8 @@ export type PanelHooks = {
   read(id: ReadingId): void;
   /** Send shoals to the next ruin. */
   send(): void;
+  /** Build the next stage of a great work. */
+  build(id: WorkId): void;
   /** Choose the line's colours. */
   recolour(id: string): void;
   /** Ask the Rasp a favour. */
@@ -361,6 +364,30 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   tripCard.append(tripHead, tripHint, tripEffect, tripBar, tripFoot);
   tripCard.title = EXPEDITION.intro;
   grow.append(tripCard);
+
+  // ---------- Great works ----------
+  const workCards = WORKS.map((w) => {
+    const root = el('article', `card work work-${w.id}`);
+    root.hidden = true;
+    const head = el('header');
+    const level = el('span', 'level');
+    head.append(el('h3', '', w.name), level);
+    const stages = el('div', 'work-stages');
+    const pips = w.stageNames.map((n) => {
+      const p = el('span', 'work-pip', n);
+      stages.append(p);
+      return p;
+    });
+    const foot = el('footer');
+    const costEl = el('span', 'cost');
+    const btn = button('buy work', '', () => hooks.build(w.id));
+    btn.append(costEl);
+    const eta = el('span', 'eta');
+    foot.append(btn, eta);
+    root.append(head, el('p', 'flavour', w.flavour), el('p', 'effect', w.effect), stages, foot);
+    grow.append(root);
+    return { w, root, level, pips, costEl, btn, eta };
+  });
 
   // ---------- Upgrade cards ----------
   const cards = new Map<UpgradeId, Card>();
@@ -1255,6 +1282,31 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           tripCard.classList.toggle('ready', ok);
           tripEta.textContent = ok ? 'they stop their work while away' : `you have ${s.levels.shoal}`;
         }
+      }
+
+      // Great works.
+      for (const x of workCards) {
+        const open = workOpen(s, x.w.id);
+        x.root.hidden = !open;
+        if (!open) continue;
+        const n = s.works[x.w.id];
+        x.level.textContent = `${WORK_TEXT.stage} ${Math.min(n + 1, x.w.stages.length)}/${x.w.stages.length}`;
+        x.pips.forEach((p, i) => p.classList.toggle('built', i < n));
+        const c = workCost(s, x.w.id);
+        if (!c) {
+          x.costEl.textContent = WORK_TEXT.built;
+          x.btn.disabled = true;
+          x.eta.textContent = '';
+          x.root.classList.add('maxed');
+          continue;
+        }
+        const parts = Object.entries(c) as [Currency, number][];
+        x.costEl.textContent = parts.map(([k, v]) => `${num(v)} ${k}`).join(' + ');
+        const ok = canBuild(s, x.w.id);
+        x.btn.disabled = !ok;
+        x.root.classList.toggle('ready', ok);
+        if (ok) setEta(x.eta, 0);
+        else if (etaTurn === 0 || !x.eta.textContent) setEta(x.eta, Math.max(...parts.map(([k, v]) => timeUntil(s, k, v))));
       }
 
       // Upgrade cards.

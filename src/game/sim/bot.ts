@@ -4,7 +4,8 @@
 import { UPGRADES } from '../content/upgrades.ts';
 import type { Job } from '../content/act2.ts';
 import type { ResidentId } from '../content/residents.ts';
-import { assign, BANDS, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil, readingCost, meetingWords, jobGain, steadyCalciteRate, bestRasp, carryAt, balanceFeedLight, canSend, send, homes, house, residentsAsking, nextMoment, meet as meetMoment } from './economy.ts';
+import { WORKS } from '../content/works.ts';
+import { assign, BANDS, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil, readingCost, meetingWords, jobGain, steadyCalciteRate, bestRasp, carryAt, balanceFeedLight, canSend, send, build, homes, house, residentsAsking, nextMoment, meet as meetMoment } from './economy.ts';
 import type { Choice, MeetingId } from '../content/act3.ts';
 import type { DialectId, DialectTier } from '../content/act4.ts';
 import { newGame, type GameState } from './state.ts';
@@ -95,6 +96,7 @@ export function botDecide(
   }
   const mo = nextMoment(s);
   if (mo && meetMoment(s, mo.id, 'a')) bought.push(`moment:${mo.id}`);
+  for (const w of WORKS) if (build(s, w.id)) bought.push(`work:${w.id}`);
   // Expeditions whenever one is open; residents by zone: the shelf's silt and Rasp first, then light.
   if (ventures && canSend(s) && send(s)) bought.push(`send:${s.expedition.site}`);
   const prefer: ResidentId[] = s.height >= 3800 ? ['damselfish', 'goby', 'feather-duster'] : ['guard-crab', 'goby', 'pistol-shrimp'];

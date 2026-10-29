@@ -6,6 +6,7 @@ import type { FavourId, MeetingId } from '../content/act3.ts';
 import type { DialectId, DialectTier } from '../content/act4.ts';
 import type { MemoryId } from '../content/act5.ts';
 import type { RequestKind } from '../content/requests.ts';
+import type { WorkId } from '../content/works.ts';
 import type { MomentId } from '../content/moments.ts';
 import type { ResidentId } from '../content/residents.ts';
 import type { SiteId, TripId } from '../content/expeditions.ts';
@@ -114,6 +115,8 @@ export type GameState = {
   request: { kind: RequestKind | ''; n: number; base: number; done: number; paid: number };
   /** Counters the requests watch, and how many times the silt was searched for a shard. */
   tally: { touches: number; sweeps: number; digs: number; roams: number };
+  /** Stages built of each great work (content/works.ts). */
+  works: Record<WorkId, number>;
   /** Favours asked of the Rasp, by kind (content/act3.ts FAVOURS). */
   favours: Record<FavourId, number>;
   /** Moments answered ('' until then): content/moments.ts. */
@@ -169,6 +172,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     relics: [],
     residents: [],
     favours: { clear: 0, path: 0, carry: 0 },
+    works: { spire: 0, breakwater: 0, terrace: 0 },
     request: { kind: '', n: 0, base: 0, done: 0, paid: 0 },
     tally: { touches: 0, sweeps: 0, digs: 0, roams: 0 },
     moments: { brittle: '', 'lost-shoal': '', squid: '', 'whale-fall': '', cleaners: '', storm: '', turtle: '', bird: '' },

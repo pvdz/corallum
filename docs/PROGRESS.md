@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended: adding features and gameplay (goal: repeat). Latest: roaming expeditions, nurseries (daughter colonies → lineage), reef colours, new memories, automation traits, Rasp favours, shards of Thousandfold, Ossel's requests, hard seamounts (trials), moments (eight two-way choices on the climb), the water's moods (timed price windows with a forecast), residents, expeditions. Ideas: an Act I verb; Breach detail; reef events with choices.
+NOW: Open-ended: adding features and gameplay (goal: repeat). Latest: great works, roaming expeditions, nurseries (daughter colonies → lineage), reef colours, new memories, automation traits, Rasp favours, shards of Thousandfold, Ossel's requests, hard seamounts (trials), moments (eight two-way choices on the climb), the water's moods (timed price windows with a forecast), residents, expeditions. Ideas: an Act I verb; Breach detail; reef events with choices.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -345,3 +345,4 @@ date, what landed, what is half-done, what's next.
 - Setting 'Larger text' (html.big: the panel, reader, whispers and notes at zoom 1.15; relayout on change). No overflow at 390 px.
 - Roaming: content/expeditions.ts ROAM; nextSite falls back to a roam; expedition state records its size n (save migration fills n for an old mid-trip ruin); tripSite() for the panel and the world view; tally.roams; shard source 'roam' (35%). Test: a roam home offline == online with jobs restored.
 - Audio cues 'water' (a slow swell when the water turns), 'depart' (shoals setting out), 'shard' (two struck notes a fourth apart).
+- Great works: content/works.ts, economy workOpen/workCost/canBuild/build, state.works; cards with two-currency price, stage pips and an eta for both; render/works.ts (spire in Midnight, breakwater in Twilight, terrace in Sunlit); the bot builds them.

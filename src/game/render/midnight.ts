@@ -4,6 +4,7 @@
 // the dark below. Glass shrimp and a passing siphonophore appear once their bands are laid.
 
 import { sight, spot, startled } from './sightings.ts';
+import { drawSpire } from './works.ts';
 import { drawRelics } from './relics.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
@@ -671,6 +672,7 @@ export function createMidnightScene(seed: number): Scene {
       drawSnow(ctx, t, v.bands.includes('snowline'));
       shoals.drawBack(ctx, focus, reef, L, v, t);
       drawFlank(ctx, p, t);
+      drawSpire(ctx, focus, v.works.spire, scale(), t, focus.y + focus.h * 0.99);
       reef.draw(ctx, L, v, t);
       drawRelics(ctx, reef, L, v.relics, t);
       this.crownAt = reef.crown(L);

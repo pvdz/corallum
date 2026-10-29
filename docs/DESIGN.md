@@ -86,6 +86,12 @@ warm (ripening ×0.7), each only in the zones it suits. The panel shows the wate
 and what comes next; cards it lowers are marked. The verb is timing: buy now or save for the
 right water. Prices only, so stocks and offline are untouched. Each has a light overlay in the world.
 
+**Great works**: one per middle zone, three stages, each paid in two currencies at once (a new
+kind of purchase: both stocks must be ready). The lantern spire (Midnight; calcite + glow; lure
++0.5 a stage), the breakwater (Twilight; calcite + sand; silt ×0.85 a stage), the sun terrace
+(Sunlit; bloom + sand; bloom ×1.15 a stage). Offered in their zone; begun ones stay. Each is drawn
+growing by stage: a lamp-hung spire, courses of stone upslope, stepped slabs at the reef's foot.
+
 **Expeditions** (from 150 m): shoals can be sent to a buried ruin of Thousandfold, one trip at a
 time, five sites in order (150 m → 3300 m, 6 → 24 shoals, 6 → 30 minutes). Idle shoals go first,
 then scouts, light-swimmers, feeders; while away they work no job, and at a fixed sim moment they

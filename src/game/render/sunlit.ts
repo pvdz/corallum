@@ -3,6 +3,7 @@
 // follows its Form dialect: a fan until it chooses, then antlers, a dome, or stacked tables.
 
 import { createSlugs } from './slugs.ts';
+import { drawTerrace } from './works.ts';
 import { drawRelics } from './relics.ts';
 import { drawResidents } from './residents.ts';
 import { palette } from '../content/palettes.ts';
@@ -891,6 +892,7 @@ export function createSunlitScene(seed: number): Scene {
           alt: { branch: '#8a5bb0', tip: '#b88ad8', polyp: 'rgba(240,220,255,0.95)' } }, larvaSeed, v.nurseries);
       if (night > 0) drawNight(ctx, t, night, 0.6);
       drawSleepers(ctx, t, v.rasp, night);
+      drawTerrace(ctx, L.cx, L.unit, v.works.terrace, scale(), (x) => floorY(Math.min(1, Math.max(0, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2)))));
       reef.draw(ctx, L, v, t);
       drawRelics(ctx, reef, L, v.relics, t);
       drawCraft(ctx, v.craft, reef, L, t, 1);

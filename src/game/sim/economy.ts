@@ -25,6 +25,7 @@ import { CREATURES, GIFT, giftOf, type CreatureId, type GiftStock } from '../con
 import { LINEAGE, SEAMOUNTS, type Seamount, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { FEAST } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
+import { WORKS, type WorkId } from '../content/works.ts';
 import { SHARD, SHARD_LINES, type ShardSource } from '../content/shards.ts';
 import { REQUEST, REQUESTS, type RequestKind } from '../content/requests.ts';
 import { MOMENTS, type MomentId } from '../content/moments.ts';
@@ -219,13 +220,13 @@ export function rates(s: GameState): Rates {
     murmurP: ACT2.scoutRate * s.jobs.scout * (has(s, 'beaked') ? 1.5 : 1) * (found(s, 'wells') ? 1.25 : 1) * (chose(s, 'lost-shoal', 'b') ? 1.2 : 1) * (passed(s, 'silent') ? 1.3 : 1),
     murmurK: ACT2.murmurFade * (found(s, 'wells') ? 0.5 : 1),
     siltP: onShelf
-      ? ACT3.siltFall * (1 + (target - ACT3.from) / ACT3.siltGrowthPer) * (s.truce.wall === 'a' ? 0.6 : 1) * sm.silt * (passed(s, 'buried') ? 0.8 : 1)
+      ? ACT3.siltFall * (1 + (target - ACT3.from) / ACT3.siltGrowthPer) * (s.truce.wall === 'a' ? 0.6 : 1) * sm.silt * (passed(s, 'buried') ? 0.8 : 1) * 0.85 ** s.works.breakwater
       : 0,
     siltK: ACT3.naturalSweep + (lives(s, 'pistol-shrimp') ? 0.04 : 0) + 0.02 * s.favours.clear + ACT3.flowSweep * lv.sandbar + LINEAGE.glassSweep * trait(s, 'glass-gardeners') + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
     sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1) * (found(s, 'midden') ? 1.3 : 1) * (lives(s, 'sea-cucumber') ? 1.4 : 1) * (chose(s, 'turtle', 'b') ? 1.25 : 1),
     sandK: ACT3.sandSettle,
     bloomP: sunlight(s, target) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * ACT4.meadowBloom ** lv.meadow *
-      (speaks(s, 'fluorescent') ? 1.5 : 1) * (lives(s, 'damselfish') ? 1.3 : 1) * (chose(s, 'storm', 'b') ? 1.15 : 1),
+      (speaks(s, 'fluorescent') ? 1.5 : 1) * (lives(s, 'damselfish') ? 1.3 : 1) * (chose(s, 'storm', 'b') ? 1.15 : 1) * 1.15 ** s.works.terrace,
     bloomK: ACT4.bloomFade * (chose(s, 'turtle', 'a') ? 0.8 : 1),
     spawnP: target >= ACT5.from
       ? lv.polyp * ACT5.spawnRate * ACT5.ripenSpawn ** lv.ripen * (speaks(s, 'broadcast') ? 2 : 1) *
@@ -247,7 +248,7 @@ export function rates(s: GameState): Rates {
       (has(s, 'lattice-songs') ? 0.7 : 1) * (chose(s, 'brittle', 'a') ? 0.9 : 1) * (chose(s, 'cleaners', 'b') ? 0.9 : 1) * (speaks(s, 'massive') ? 0.5 : 1) +
       (speaks(s, 'mucus') ? 0 : ACT3.raspEat * rasp * (s.truce.terms === 'b' ? ACT3.politeEat : 1) * (lives(s, 'guard-crab') ? 0.5 : 1)),
     lureMax: ACT1.lureMax + ACT1.lureMaxPerPattern * lv.lure + (has(s, 'fear') ? 1 : 0) + (speaks(s, 'fluorescent') ? 2 : 0) +
-      (found(s, 'lamp-hall') ? 1 : 0),
+      (found(s, 'lamp-hall') ? 1 : 0) + 0.5 * s.works.spire,
     reachPower: ACT2.reachPower + (s.truce.story === 'b' ? 0.05 : 0),
     heightTarget: target,
   };
@@ -831,6 +832,32 @@ export function meet(s: GameState, id: MomentId, c: 'a' | 'b'): boolean {
     s.levels.shoal += n;
     s.jobs[jobOpen(s, s.lastJob) ? s.lastJob : 'feed'] += n;
   }
+  return true;
+}
+
+// ---------- Great works ----------
+
+/** A work the reef can see: built in its zone, or begun already. */
+export function workOpen(s: GameState, id: WorkId): boolean {
+  const w = WORKS.find((x) => x.id === id)!;
+  return s.works[id] > 0 || actAt(s.height) === w.zone;
+}
+
+/** The next stage's price (null once all are built). */
+export function workCost(s: GameState, id: WorkId): Partial<Record<Currency, number>> | null {
+  return WORKS.find((x) => x.id === id)!.stages[s.works[id]] ?? null;
+}
+
+export function canBuild(s: GameState, id: WorkId): boolean {
+  const c = workCost(s, id);
+  return !!c && workOpen(s, id) && (Object.entries(c) as [Currency, number][]).every(([k, v]) => s[k] >= v);
+}
+
+/** Build the next stage: pays both currencies. */
+export function build(s: GameState, id: WorkId): boolean {
+  if (!canBuild(s, id)) return false;
+  for (const [k, v] of Object.entries(workCost(s, id)!) as [Currency, number][]) s[k] -= v;
+  s.works[id]++;
   return true;
 }
 
