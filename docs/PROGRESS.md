@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended: adding features and gameplay (goal: repeat). Latest: hard seamounts (trials), moments (eight two-way choices on the climb), the water's moods (timed price windows with a forecast), residents, expeditions. Ideas: an Act I verb; Breach detail; reef events with choices.
+NOW: Open-ended: adding features and gameplay (goal: repeat). Latest: Ossel's requests, hard seamounts (trials), moments (eight two-way choices on the climb), the water's moods (timed price windows with a forecast), residents, expeditions. Ideas: an Act I verb; Breach detail; reef events with choices.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -332,3 +332,4 @@ date, what landed, what is half-done, what's next.
 - The water's moods: content/waters.ts, economy waterAt/untilWaterTurns/tierCost; prices of matching upgrades, Readings/truce words or dialects ×0.7–0.8 for a 10-minute slot. Panel line at the top of Grow (water, turns in, then next), marked cards, whisper 'water', overlay render/waters.ts (motes, sparks, sound rings, sand streaks, glints, shimmer). corallum.water(id) jumps the clock to a slot of that water.
 - Moments: content/moments.ts (8), economy nextMoment/meet/chose; effects wired into rates, feasts, gifts, homes and lineageFor (storm 'a' +2); panel card at the top of Grow, answers as stories in Bands; meta.seen 'm:<id>'; the bot answers 'a'. Pacing drift noted: bot now 5h08 default, ~4h50 on the b/massive path (bound 4.5–11 h); rebalance later.
 - Hard seamounts: four trial seamounts in content/lineage.ts (rule + goal + reward), enforced in economy (shoalCap in maxed, noReadings in nextReading, polyp/silt factors); trialCheck in advance records 'trial:<id>' in meta.seen; rewards via passed(). Panel: dashed buttons from the second spawning, ✓ when met, a Trial row in the codex; main announces a met trial. Test in prestige.test.ts.
+- Ossel's requests: content/requests.ts; economy keepRequest (in advance: pays a burst, asks the next), currentRequest; tally of touches and sweeps; panel line under the water; float + sound when kept; feat 'Asked and done'. The water and request lines keep their slot from the start (play.ts caught the request line pushing cards under a held buy button). Smoke's milestone check aims at the next milestone above the bot's level.

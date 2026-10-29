@@ -2,6 +2,7 @@
 // Also turns the sound on (over the opening story) and lets the zone music play a few notes.
 // Run with: node test/e2e/smoke.ts
 
+import { MILESTONES } from '../../src/game/content/act1.ts';
 import { VIEWPORTS, withGame } from '../../tools/browser.ts';
 
 let failed = false;
@@ -32,9 +33,10 @@ process.exitCode = failed ? 1 : 0;
 await withGame(async (open) => {
   const { page, errors } = await open(VIEWPORTS[0]!, '?bot=200');
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  const lv = await page.evaluate(() => { const s = window.corallum!.state; s.calcite = 1e7; return s.levels.polyp; });
+  const lv = await page.evaluate(() => { const s = window.corallum!.state; s.calcite = 1e12; return s.levels.polyp; });
   const polyp = page.locator('.card', { hasText: 'Bud a polyp' });
-  for (let i = lv; i < 25; i++) await polyp.locator('button.buy').click();
+  const goal = MILESTONES.polyp.find((m) => m.level > lv)!.level;
+  for (let i = lv; i < goal; i++) await polyp.locator('button.buy').click();
   await page.waitForTimeout(1500);
   const opacity = Number(await page.evaluate(() => getComputedStyle(document.getElementById('milestone')!).opacity));
   const ok = opacity > 0.5 && errors.length === 0;

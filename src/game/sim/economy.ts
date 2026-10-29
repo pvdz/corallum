@@ -25,6 +25,7 @@ import { CREATURES, GIFT, giftOf, type CreatureId, type GiftStock } from '../con
 import { LINEAGE, SEAMOUNTS, type Seamount, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { FEAST } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
+import { REQUEST, REQUESTS, type RequestKind } from '../content/requests.ts';
 import { MOMENTS, type MomentId } from '../content/moments.ts';
 import { WATER, WATERS, type Water } from '../content/waters.ts';
 import { EXPEDITION, SITES, type Site, type SiteId } from '../content/expeditions.ts';
@@ -470,6 +471,7 @@ function flow(s: GameState, dt: number, stepFraction: number): GameState {
   s.act = Math.max(s.act, actAt(s.height));
   readBands(s);
   trialCheck(s);
+  keepRequest(s);
   return s;
 }
 
@@ -966,6 +968,7 @@ export function sweep(s: GameState): number {
   s.calcite += gain;
   s.earned.calcite += gain;
   s.lastSweep = s.t;
+  s.tally.sweeps++;
   return gain;
 }
 
@@ -976,6 +979,7 @@ export function sweep(s: GameState): number {
  * reef makes none of it yet), once per GIFT.cooldown per creature. Null while it is cooling down.
  */
 export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: number } | null {
+  s.tally.touches++;
   if (s.t - s.gifts[id] < GIFT.cooldown) return null;
   const r = rates(s);
   let stock = giftOf(id);
@@ -997,6 +1001,98 @@ export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: 
   } else if (stock === 'plankton') s.plankton += amount;
   else s.sand += amount;
   return { stock, amount };
+}
+
+// ---------- Ossel's requests ----------
+
+/** The count a request kind watches. */
+function requestCount(s: GameState, kind: RequestKind): number {
+  switch (kind) {
+    case 'bud': return s.levels.polyp;
+    case 'glimmer': return s.levels.symbiont;
+    case 'bands': return s.levels.skeleton;
+    case 'feast': return s.feasts;
+    case 'touch': return s.tally.touches;
+    case 'sweep': return s.tally.sweeps;
+    case 'shoals': return s.levels.shoal;
+    case 'sandbar': return s.levels.sandbar;
+    case 'pigment': return s.levels.pigment;
+    case 'ripen': return s.levels.ripen;
+  }
+}
+
+/** Kinds that can be done here now (nothing held by a gate, maxed out or not yet open). */
+function requestOpen(s: GameState, kind: RequestKind): boolean {
+  const zone = actAt(s.height);
+  if (!REQUESTS.find((r) => r.kind === kind)!.zones.includes(zone)) return false;
+  switch (kind) {
+    case 'bands': return !maxed(s, 'skeleton');
+    case 'feast': return s.bands.includes(FEAST.band);
+    case 'shoals': return revealed(s, 'shoal') && !maxed(s, 'shoal');
+    case 'sandbar': case 'pigment': case 'ripen': return revealed(s, kind) && !maxed(s, kind);
+    case 'glimmer': return revealed(s, 'symbiont') && !maxed(s, 'symbiont');
+    default: return true;
+  }
+}
+
+/** The current request: what, how many, and how far along. */
+export function currentRequest(s: GameState) {
+  const q = s.request;
+  if (!q.kind) return null;
+  const def = REQUESTS.find((r) => r.kind === q.kind)!;
+  return { def, n: q.n, got: Math.min(q.n, requestCount(s, q.kind) - q.base) };
+}
+
+/** Pay a kept request and ask the next. Returns the pay (0 if nothing changed). */
+function keepRequest(s: GameState): number {
+  const q = s.request;
+  let paid = 0;
+  const prev = q.kind;
+  if (q.kind && (requestCount(s, q.kind) - q.base >= q.n || !requestOpen(s, q.kind))) {
+    if (requestCount(s, q.kind) - q.base >= q.n) {
+      paid = burst(s, REQUEST.seconds);
+      q.paid = paid;
+      q.done++;
+    }
+    q.kind = '';
+  }
+  if (!q.kind && s.levels.polyp >= REQUEST.fromPolyps) {
+    // Not the same kind twice running when there is a choice.
+    const all = REQUESTS.filter((r) => requestOpen(s, r.kind));
+    const open = all.length > 1 ? all.filter((r) => r.kind !== prev) : all;
+    if (open.length) {
+      const r = mulberry32((s.seed ^ 0x0a5e11) + Math.imul(q.done + 1, 0x27d4eb2d));
+      const pick = open[Math.floor(r() * open.length)]!;
+      q.kind = pick.kind;
+      q.n = pick.n(q.done);
+      q.base = requestCount(s, pick.kind);
+    }
+  }
+  return paid;
+}
+
+/** A burst of the zone's currency: `seconds` of its production. Returns the amount. */
+function burst(s: GameState, seconds: number): number {
+  const pay = feastPay(s);
+  const r = rates(s);
+  let gain: number;
+  if (pay === 'bloom') {
+    gain = r.bloomP * seconds;
+    s.bloom += gain;
+  } else if (pay === 'spawn') {
+    gain = r.spawnP * seconds;
+    s.spawn += gain;
+  } else {
+    gain = calciteRate(s, r) * seconds;
+    s.calcite += gain;
+    s.earned.calcite += gain;
+  }
+  return gain;
+}
+
+/** Check the request right after a purchase or a touch (the game loop also checks every frame). */
+export function checkRequest(s: GameState): number {
+  return keepRequest(s);
 }
 
 // ---------- Falling feasts ----------
@@ -1040,21 +1136,7 @@ export function tableFeast(s: GameState): Feast | null {
 export function feast(s: GameState, share = 1): number {
   const f = currentFeast(s);
   if (!f) return 0;
-  const pay = feastPay(s);
-  const r = rates(s);
-  const secs = FEAST.seconds * share * (chose(s, 'brittle', 'b') ? 1.5 : 1);
-  let gain: number;
-  if (pay === 'bloom') {
-    gain = r.bloomP * secs;
-    s.bloom += gain;
-  } else if (pay === 'spawn') {
-    gain = r.spawnP * secs;
-    s.spawn += gain;
-  } else {
-    gain = calciteRate(s, r) * secs;
-    s.calcite += gain;
-    s.earned.calcite += gain;
-  }
+  const gain = burst(s, FEAST.seconds * share * (chose(s, 'brittle', 'b') ? 1.5 : 1));
   s.feasted = f.k;
   s.feasts++;
   return gain;

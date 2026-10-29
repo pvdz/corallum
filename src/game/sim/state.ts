@@ -5,6 +5,7 @@ import { CREATURES, type CreatureId } from '../content/creatures.ts';
 import type { MeetingId } from '../content/act3.ts';
 import type { DialectId, DialectTier } from '../content/act4.ts';
 import type { MemoryId } from '../content/act5.ts';
+import type { RequestKind } from '../content/requests.ts';
 import type { MomentId } from '../content/moments.ts';
 import type { ResidentId } from '../content/residents.ts';
 import type { SiteId } from '../content/expeditions.ts';
@@ -103,6 +104,10 @@ export type GameState = {
   history: number[];
   /** Shoals away at a ruin: the site ('' for none), when they return, and the jobs they left. */
   expedition: { site: SiteId | ''; back: number; feed: number; light: number; scout: number };
+  /** Ossel's current request (kind '' for none yet), its count at the start, and how many are done; `paid` is what the last one brought. */
+  request: { kind: RequestKind | ''; n: number; base: number; done: number; paid: number };
+  /** Counters the requests watch. */
+  tally: { touches: number; sweeps: number };
   /** Moments answered ('' until then): content/moments.ts. */
   moments: Record<MomentId, '' | 'a' | 'b'>;
   /** Animals living in the reef's homes (content/residents.ts). */
@@ -155,6 +160,8 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     expedition: { site: '', back: 0, feed: 0, light: 0, scout: 0 },
     relics: [],
     residents: [],
+    request: { kind: '', n: 0, base: 0, done: 0, paid: 0 },
+    tally: { touches: 0, sweeps: 0 },
     moments: { brittle: '', 'lost-shoal': '', squid: '', 'whale-fall': '', cleaners: '', storm: '', turtle: '', bird: '' },
     gifts: Object.fromEntries(CREATURES.map((c) => [c.id, -1e9])) as Record<CreatureId, number>,
     seamount: 'plain',

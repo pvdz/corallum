@@ -59,6 +59,12 @@ the previous act's scene is gone below the frame.
 - Trade-off: plankton grows the economy, light buys more shoals, scouting buys knowledge and
   permanent effects. No allocation is right for the whole act.
 
+**Ossel's requests** (from 3 polyps): one small thing at a time to do while watching (bud n
+polyps, take in glimmerseed, lay bands, catch a feast, touch neighbours, sweep, call shoals, raise a
+sand bar, grow a pigment, ripen), picked from the seed among the kinds that make sense in the zone,
+a little more each time. Kept, it pays 120 s of the zone's currency (as a feast does) and the next
+comes. Short goals inside the long ones (principle 4); never needed. Feat: 20 in one reef.
+
 **Moments**: eight small happenings on the way up (25 m to 3990 m), each a choice between two
 ways of meeting it, waiting in the Grow tab until answered and never blocking. Most pit active
 play against being away or one route against another (e.g. the squid: dim your glow, glow

@@ -254,6 +254,15 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .card.watered:not(.maxed) { border-color: rgba(150, 210, 255, 0.45); }
 .card.watered:not(.maxed) .level::before { content: '≈ '; color: #a8dcff; }
 .card.watered:not(.maxed) .cost { color: #a8dcff; }
+.ask { display: flex; align-items: center; gap: 8px; padding: 6px 12px; font-size: 12.5px; border-radius: var(--radius);
+  border: 1px solid rgba(255, 220, 170, 0.14); background: rgba(255, 220, 170, 0.03); }
+.ask[hidden] { display: none; }
+.ask.waiting { visibility: hidden; }
+.ask em { font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #ffd9a8; font-style: normal; white-space: nowrap; }
+.ask-text { flex: 1; font-family: var(--display); color: #f2e8d8; }
+.ask-bar { width: 54px; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+.ask-fill { display: block; height: 100%; background: #ffd9a8; transition: width 0.3s ease; }
+.ask-count { font-variant-numeric: tabular-nums; color: var(--ink-dim); min-width: 2.6em; text-align: right; }
 .residents { background: rgba(255, 140, 120, 0.03); border: 1px solid rgba(255, 150, 130, 0.2); border-radius: var(--radius); padding: 10px 12px; }
 .residents[hidden], .resident[hidden] { display: none; }
 .residents header { display: flex; justify-content: space-between; align-items: baseline; }

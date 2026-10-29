@@ -25,6 +25,7 @@ export const FEATS: readonly Feat[] = [
   { id: 'shoals', name: 'A city of lamps', text: 'Call 30 lanternfish shoals.', when: (s) => s.levels.shoal >= 30 },
   { id: 'ruins', name: 'Out in the black', text: 'Bring back a relic from every ruin.', when: (s) => s.relics.length >= SITES.length },
   { id: 'full-house', name: 'A full house', text: 'Give all three homes in the reef to residents.', when: (s) => s.residents.length >= 3 },
+  { id: 'requests', name: 'Asked and done', text: 'Keep 20 of Ossel’s requests in one reef.', when: (s) => s.request.done >= 20 },
   { id: 'readings', name: 'Every band read', text: 'Read all of Thousandfold’s bands.', when: (s) => s.readings.length >= 9 },
   { id: 'truce', name: 'Terms', text: 'Settle all three truce meetings.', when: (s) => !!s.truce.wall },
   { id: 'meadows', name: 'Gardener', text: 'Sow 6 seagrass meadows.', when: (s) => s.levels.meadow >= 6 },

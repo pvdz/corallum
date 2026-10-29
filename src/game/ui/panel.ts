@@ -15,6 +15,7 @@ import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
 import { upgradeIcon } from './icons.ts';
 import { FEATS } from '../content/feats.ts';
 import { WATER } from '../content/waters.ts';
+import { REQUEST } from '../content/requests.ts';
 import { MOMENT, MOMENTS, type Moment, type MomentId } from '../content/moments.ts';
 import { RESIDENT, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { EXPEDITION, site, type Site } from '../content/expeditions.ts';
@@ -23,7 +24,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, waterAt, untilWaterTurns, tierCost, nextMoment, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -264,6 +265,16 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   waterBox.append(waterName, waterLine, waterNext);
   grow.prepend(waterBox);
   let waterShown = '';
+  // Ossel's request: one small thing to do, with its progress.
+  const askBox = el('div', 'ask');
+  askBox.hidden = true;
+  const askText = el('span', 'ask-text');
+  const askBar = el('span', 'ask-bar');
+  const askFill = el('span', 'ask-fill');
+  askBar.append(askFill);
+  const askCount = el('span', 'ask-count');
+  askBox.append(el('em', '', REQUEST.kicker), askText, askBar, askCount);
+  waterBox.after(askBox);
 
   // ---------- Shoals ----------
   const shoalBox = el('section', 'shoals');
@@ -1086,16 +1097,28 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
 
       // The water: what it lowers now, when it turns, and what comes next.
       const water = waterAt(s);
-      waterBox.hidden = !s.bands.includes(WATER.band);
-      if (!waterBox.hidden) {
+      // Always shown (still water at first), so its line never pushes the cards down mid-press.
+      waterBox.hidden = false;
+      {
         const k = Math.floor(s.t / WATER.period);
         const next = waterAt(s, k + 1);
         waterBox.dataset.water = water.id;
         waterName.textContent = water.name;
         waterLine.textContent = water.line;
-        waterNext.textContent = `${WATER.turns} ${duration(untilWaterTurns(s))} · ${WATER.next} ${next.name.toLowerCase()}`;
+        waterNext.textContent = `${WATER.turns} ${duration(untilWaterTurns(s))} · ${next.id === water.id ? WATER.same : `${WATER.next} ${next.name.toLowerCase()}`}`;
         if (waterShown && waterShown !== water.id) { waterBox.classList.remove('turned'); void waterBox.offsetWidth; waterBox.classList.add('turned'); }
         waterShown = water.id;
+      }
+
+      // Ossel's request.
+      const rq = currentRequest(s);
+      // Its slot is kept from the start for the same reason; empty until the first request.
+      askBox.hidden = false;
+      askBox.classList.toggle('waiting', !rq);
+      if (rq) {
+        askText.textContent = rq.def.ask.replace('{n}', String(rq.n));
+        askFill.style.width = `${(rq.got / rq.n) * 100}%`;
+        askCount.textContent = `${rq.got}/${rq.n}`;
       }
 
       // A moment waiting for an answer, and answers given.
