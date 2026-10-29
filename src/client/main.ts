@@ -437,6 +437,7 @@ function view(): ReefView {
     jobs: state.jobs,
     trip: tripView(),
     residents: state.residents,
+    relics: state.relics,
     planktonLevel: Math.min(1, (feeding(state.plankton) - 1) / 2),
     bands: state.bands,
     readings: state.readings.length,

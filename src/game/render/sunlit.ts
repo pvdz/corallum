@@ -3,6 +3,7 @@
 // follows its Form dialect: a fan until it chooses, then antlers, a dome, or stacked tables.
 
 import { createSlugs } from './slugs.ts';
+import { drawRelics } from './relics.ts';
 import { drawResidents } from './residents.ts';
 import { sight, spot, startled } from './sightings.ts';
 import type { DialectId } from '../content/act4.ts';
@@ -892,6 +893,7 @@ export function createSunlitScene(seed: number): Scene {
       if (night > 0) drawNight(ctx, t, night, 0.6);
       drawSleepers(ctx, t, v.rasp, night);
       reef.draw(ctx, L, v, t);
+      drawRelics(ctx, reef, L, v.relics, t);
       drawCraft(ctx, v.craft, reef, L, t, 1);
       drawResidents(ctx, reef, L, v.residents, t, seed,
         (x) => floorY(Math.min(1, Math.max(0, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2)))));

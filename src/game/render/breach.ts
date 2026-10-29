@@ -3,6 +3,7 @@
 // at the release they rise in their millions through the moonlight and spread on the surface.
 
 import { drawResidents } from './residents.ts';
+import { drawRelics } from './relics.ts';
 import { sight, spot, startled } from './sightings.ts';
 import type { DialectId } from '../content/act4.ts';
 import { mulberry32, range } from '../sim/rng.ts';
@@ -667,6 +668,7 @@ export function createBreachScene(seed: number): Scene {
       drawDolphins(ctx, t);
       drawTop(ctx, v, reef.crown(L));
       reef.draw(ctx, L, v, t);
+      drawRelics(ctx, reef, L, v.relics, t);
       // Moonlight through the moving surface, on the stone below it.
       reef.drawCaustics(ctx, L, t, 0.55 * (1 - Math.abs(v.moonPhase - 0.5) * 2) * (1 - dawn) + 0.6 * dawn, dawn > 0.5 ? '255,235,200' : '200,215,255', waterY());
       drawCraft(ctx, v.craft, reef, L, t, 0.6);
