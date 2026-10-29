@@ -215,4 +215,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Trait Foster | this game's own systems | OK |
 | A lost shoal's lights called home | this game's own world | OK |
 | Fireworms spawning after the full moon (Twilight) | real behaviour | OK |
+| Giant sea spider (Silt Floor) | real animal | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

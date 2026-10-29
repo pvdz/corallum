@@ -251,6 +251,40 @@ export function createLife(seed: number) {
    * Rarely, a dumbo octopus: once in fifteen minutes a pale little octopus hovers across the
    * floor, flapping the two ear-like fins on its head.
    */
+  /** A giant sea spider picking its way across the floor; touched, it freezes and folds its legs in. */
+  function drawSeaSpider(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
+    sight('sea-spider');
+    const s = st.s * 1.6;
+    const touch = startled('sea-spider', t);
+    const still = touch && touch.age < 5 ? 1 : 0;
+    const u = ((t * 0.006) % 1);
+    const x = st.cx - st.w * 0.42 + u * st.w * 0.3, y = st.baseY + 4 * st.s;
+    spot('sea-spider', x, y - 6 * s, 24 * s);
+    ctx.save();
+    ctx.strokeStyle = 'rgba(225,200,170,0.9)';
+    ctx.lineCap = 'round';
+    ctx.lineWidth = 1.2 * s;
+    for (let k = 0; k < 8; k++) {
+      const side = k < 4 ? -1 : 1, j = k % 4;
+      const step = still ? 0 : Math.sin(t * 1.2 + k * 1.3) * 0.25;
+      const reach = still ? 0.45 : 1;
+      // Each leg rises to a high knee and comes down well out to the side, fanned from front to back.
+      const a1 = -Math.PI / 2 + side * (0.35 + j * 0.3 + step);
+      const kx = x + Math.cos(a1) * 9 * s * reach + side * j * 2 * s, ky = y - 5 * s + Math.sin(a1) * 9 * s * reach;
+      const fx = kx + side * (6 + j * 2) * s * reach, fy = y + (j - 1.5) * 1.2 * s;
+      ctx.beginPath();
+      ctx.moveTo(x, y - 5 * s);
+      ctx.lineTo(kx, ky);
+      ctx.lineTo(fx, fy);
+      ctx.stroke();
+    }
+    ctx.fillStyle = 'rgba(235,210,180,0.95)';
+    ctx.beginPath();
+    ctx.ellipse(x, y - 5 * s, 2.6 * s, 1.6 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
   /**
    * Rarely (every twelve minutes), a ghost shark glides low over the silt, right to left, its wide
    * fins beating slowly. Touched, it turns its shining eye toward you and slips away faster.
@@ -888,6 +922,7 @@ export function createLife(seed: number) {
     drawFront(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
       drawDumbo(ctx, st, t);
       drawChimaera(ctx, st, t);
+      drawSeaSpider(ctx, st, t);
       drawJelly(ctx, st, jellies[0]!, t);
       drawJelly(ctx, st, jellies[1]!, t);
     },
