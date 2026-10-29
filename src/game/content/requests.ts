@@ -4,7 +4,7 @@
 // reef is. Never needed: the reef grows the same without them.
 
 export type RequestKind = 'bud' | 'glimmer' | 'bands' | 'feast' | 'touch' | 'sweep' | 'shoals' | 'sandbar' | 'pigment' | 'ripen'
-  | 'roam' | 'work' | 'intruder' | 'read' | 'shell';
+  | 'roam' | 'work' | 'intruder' | 'read' | 'shell' | 'rising' | 'signal' | 'star';
 
 export type RequestDef = {
   kind: RequestKind;
@@ -49,4 +49,7 @@ export const REQUESTS: readonly RequestDef[] = [
   { kind: 'intruder', ask: 'Drive off the next thing that comes to eat us.', n: () => 1, zones: [2, 3, 4] },
   { kind: 'read', ask: 'Read a band.', n: () => 1, zones: [2, 3, 4, 5] },
   { kind: 'shell', ask: 'Pick up a shell from the sand.', n: () => 1, zones: [4] },
+  { kind: 'rising', ask: 'Send the feeders into the next rising.', n: () => 1, zones: [2, 3] },
+  { kind: 'signal', ask: 'Answer the shoals when they next signal.', n: () => 1, zones: [2, 3, 4] },
+  { kind: 'star', ask: 'Give a name to some of the stars.', n: () => 1, zones: [5] },
 ];

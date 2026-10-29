@@ -94,8 +94,9 @@ export function botDecide(
       if (gap(under) < 1 || !reassign(s, over, under)) break;
     }
   }
-  // The bot cannot touch creatures or drive off intruders: it asks Ossel for something else.
-  if (s.request.kind === 'touch' || s.request.kind === 'intruder' || s.request.kind === 'shell') skipRequest(s);
+  // The bot does nothing that needs a hand on the screen (touches, intruders, shells, the rising, the
+  // signal, the stars): it asks Ossel for something else.
+  if (['touch', 'intruder', 'shell', 'rising', 'signal', 'star'].includes(s.request.kind)) skipRequest(s);
   if (strainOpen(s)) chooseStrain(s, 'gold');
   if (sportOpen(s)) chooseSport(s, s.strain === 'gold' ? 'amber' : s.strain === 'blue' ? 'ice' : 'ultraviolet');
   while (grainsWaiting(s) > 0) chooseGrain(s, s.grains.length % 3 === 2 ? 'quick' : 'dense');

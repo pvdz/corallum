@@ -1681,6 +1681,9 @@ function requestCount(s: GameState, kind: RequestKind): number {
     case 'intruder': return s.tally.intruders;
     case 'read': return s.readings.length;
     case 'shell': return s.tally.shells;
+    case 'rising': return s.tally.risings;
+    case 'signal': return s.signal.answered;
+    case 'star': return named(s);
   }
 }
 
@@ -1698,6 +1701,9 @@ function requestOpen(s: GameState, kind: RequestKind): boolean {
     case 'work': return WORKS.some((w) => workOpen(s, w.id) && workCost(s, w.id) !== null);
     case 'intruder': return untilThorn(s) < Infinity;
     case 'read': return !!nextReading(s);
+    case 'rising': return risingZone(s) && s.levels.shoal > 0;
+    case 'signal': return s.levels.shoal > 0;
+    case 'star': return FIGURES.some((f) => figureOpen(s, f.id));
     default: return true;
   }
 }
