@@ -48,6 +48,8 @@ declare global {
       state: GameState; skip(seconds: number): void; speed: number; prof: { draw: number; panel: number };
       /** Where the falling feast is, in CSS pixels (null when there is none). */
       readonly feast: { x: number; y: number } | null;
+      /** View-mode zoom factor (1 = none). */
+      readonly zoom: number;
       /** The tappable creatures on screen, in CSS pixels. */
       readonly spots: { id: string; x: number; y: number }[];
     };
@@ -365,6 +367,7 @@ window.corallum = {
     const [x, y] = feastPos(f, state.t - f.start, focusNow, feastPay(state));
     return { x: x / dpr, y: y / dpr };
   },
+  get zoom() { return zoom.k; },
   get spots() {
     return tappable().map((p) => ({ id: p.id, x: p.x / dpr, y: p.y / dpr }));
   },

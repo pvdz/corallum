@@ -290,3 +290,4 @@ date, what landed, what is half-done, what's next.
 - Touch: the warm seamount's smokers belch a burst of smoke with a flare; the brine pool rings out from the touch.
 - Touch: every lanternfish shoal is tappable; a wave of light runs out through the shoal's photophores from the touch.
 - View-mode zoom: wheel, two-finger pinch (midpoint pans) or + / − / 0, up to 3×. The scene is drawn under the transform so detail stays sharp (render/scene.ts zoom.k; the reef's branch cache is bypassed while zoomed; bloom draws in screen space). Taps, creature spots, feasts and labels map through toWorld/toScreen; portraits wait for 1×; leaving view mode resets the zoom.
+- corallum.zoom (debug); pinch verified by CDP two-point touch events on the mobile viewport (spread ×3 → zoom 3).
