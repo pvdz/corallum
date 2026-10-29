@@ -267,3 +267,4 @@ date, what landed, what is half-done, what's next.
 - The Rasp are tappable: the nearest turns to look and lets fall a trickle of white sand. Creature labels now sit above the creature, clear of its body (below when there is no room), so the reaction stays visible.
 - Ossel's whisper 'touch': after four creatures are seen and none touched, a hint that most will answer a touch.
 - Whale fall alive: bacterial mats, red bone-eating worm fuzz swaying along the spine, a hagfish weaving through the ribs, a crab on the skull.
+- Photo journal (client/portraits.ts): the first good look at each tappable creature is cropped from the canvas (112 px JPEG) and kept in localStorage 'corallum.portraits' (memory only in ephemeral sessions; cleared by reset). The journal is rows now: portrait, name, note; unknown entries are one-line hints.

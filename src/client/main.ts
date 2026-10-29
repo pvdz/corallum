@@ -33,6 +33,7 @@ import { FEAST } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS } from '../game/content/lineage.ts';
 import { CREATURES } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
+import { createPortraits } from './portraits.ts';
 import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { ACT1, MILESTONES, type Milestone } from '../game/content/act1.ts';
 import { OSSEL_LINES, WHISPERS } from '../game/content/whispers.ts';
@@ -162,6 +163,7 @@ function buzz(ms: number | number[]): void {
   if (buzzing.get() && 'vibrate' in navigator) navigator.vibrate(ms);
 }
 
+const portraits = createPortraits(!ephemeral);
 const panel = createPanel(ui, {
   sharp, buzz: buzzing, volume, sci, calm, habits, glow,
   rename(name) {
@@ -241,7 +243,10 @@ const panel = createPanel(ui, {
     location.reload();
     return true;
   },
+  portrait: (id) => portraits.get(id),
+  get portraits() { return portraits.count; },
   reset() {
+    portraits.clear();
     state = newGame(seed);
     save();
     location.reload();
@@ -610,7 +615,19 @@ creatureLabel.setAttribute('role', 'status');
 creatureLabel.setAttribute('aria-live', 'polite');
 ui.append(creatureLabel);
 let labelTimer = 0;
-/** A small label beside a tapped creature: its name and the journal's note. */
+/** The journal's portraits: the first creature on screen without one, if it is well inside the scene. */
+let lastPortrait = 0;
+function takePortrait(): void {
+  for (const p of tappable()) {
+    if (p.id === 'ossel' || portraits.has(p.id)) continue;
+    const side = Math.min(280 * dpr, Math.max(70 * dpr, p.r * 2.4));
+    const f = focusNow;
+    if (p.x - side / 2 < f.x || p.x + side / 2 > f.x + f.w || p.y - side / 2 < f.y || p.y + side / 2 > f.y + f.h) continue;
+    portraits.capture(p.id, canvas, p.x, p.y, side);
+    return;
+  }
+}
+
 /** Name a creature beside where it was tapped: above it, clear of its body (`r`), or below if there is no room. */
 function showCreatureLabel(id: string, x: number, y: number, r = 20): void {
   const c = CREATURES.find((k) => k.id === id);
@@ -895,6 +912,10 @@ function frame(now: number): void {
   if (fe) drawFeast(ctx, fe, state.t - fe.start, tNow, focusNow, dpr, feastPay(state));
   taps.draw(ctx, tNow, scene.crownAt, dpr, actAt(state.height) <= 2);
   endFrameSpots();
+  if (now - lastPortrait > 1000 && frozenT === null && !fadingFrom) {
+    lastPortrait = now;
+    takePortrait();
+  }
   const p2 = performance.now();
   panel.update(state);
   const p3 = performance.now();

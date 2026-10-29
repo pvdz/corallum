@@ -53,6 +53,10 @@ export type PanelHooks = {
   habits: { get(): boolean; set(on: boolean): void };
   /** A story card opened (for its sound). */
   storyShown?(): void;
+  /** The journal's portrait of a creature (a data URL), if one was taken. */
+  portrait?(id: string): string | null;
+  /** How many portraits there are (the journal redraws when it grows). */
+  readonly portraits?: number;
 };
 
 type Card = { root: HTMLElement; cost: HTMLElement; level: HTMLElement; effect: HTMLElement; eta: HTMLElement; btn: HTMLButtonElement };
@@ -329,13 +333,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   // The journal of creatures seen (kept across spawnings).
   const journal = el('article', 'card codex journal');
   const journalHead = el('h3', '', 'Creatures seen');
-  const journalList = el('dl', 'codex-list');
+  const journalList = el('div', 'journal-list');
   journal.append(journalHead, journalList);
   collapsible(journal, journalHead);
   let journalKey: string | null = null;
   function renderJournal(s: GameState): void {
     const seen = CREATURES.filter((c) => s.meta.seen.includes(`c:${c.id}`));
-    const key = seen.map((c) => c.id).join();
+    const key = seen.map((c) => c.id).join() + `|${hooks.portraits ?? 0}`;
     if (key === journalKey) return;
     journalKey = key;
     journalHead.textContent = `Creatures seen · ${seen.length} of ${CREATURES.length} · calcite +${Math.round((knownBonus(s) - 1) * 100)}%`;
@@ -348,8 +352,20 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       journalList.append(el('div', 'journal-zone', `${zone} · ${got} of ${inZone.length}`));
       for (const c of inZone) {
         const known = seen.includes(c);
-        journalList.append(el('dt', known ? '' : 'unknown', known ? c.name : 'Not yet seen'),
-          el('dd', known ? '' : 'unknown', known ? c.note : c.note.startsWith('Rare.') ? 'Rare: watch for it.' : (/Only on [^.]*\./.exec(c.note)?.[0] ?? '—')));
+        // Known: a portrait (when one was taken), the name and the note. Unknown: a one-line hint.
+        const row = el('div', known ? 'journal-entry' : 'journal-entry unknown');
+        const pic = known ? hooks.portrait?.(c.id) : null;
+        if (pic) {
+          const img = el('img', 'portrait');
+          img.src = pic;
+          img.alt = '';
+          row.append(img);
+        } else row.append(el('div', 'portrait none'));
+        const text = el('div', 'journal-text');
+        text.append(el('strong', '', known ? c.name : 'Not yet seen'),
+          el('span', '', known ? c.note : c.note.startsWith('Rare.') ? 'Rare: watch for it.' : (/Only on [^.]*\./.exec(c.note)?.[0] ?? '')));
+        row.append(text);
+        journalList.append(row);
       }
     }
   }
