@@ -27,6 +27,7 @@ import { REQUEST } from '../content/requests.ts';
 import { WORKS, WORK_TEXT, type WorkId } from '../content/works.ts';
 import { SISTER } from '../content/sister.ts';
 import { DIARY_TEXT, diaryLine } from '../content/diary.ts';
+import { UI } from '../content/ui.ts';
 import { OSSEL_MISTAKES } from '../content/ossel.ts';
 import { PALETTES, PALETTE_TEXT } from '../content/palettes.ts';
 import { SHARD, SHARD_LINES } from '../content/shards.ts';
@@ -150,7 +151,7 @@ function readingStory(r: Reading): Story {
 }
 function truceStory(m: Meeting, c: Choice): Story {
   const o = m[c];
-  return { kicker: 'The truce', title: `${m.title}: ${o.label}`, text: o.text };
+  return { kicker: UI.truceKicker, title: `${m.title}: ${o.label}`, text: o.text };
 }
 
 export function createPanel(host: HTMLElement, hooks: PanelHooks) {
@@ -305,7 +306,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   raspSlider.type = 'range';
   raspSlider.min = '0';
   raspSlider.step = '1';
-  raspSlider.setAttribute('aria-label', 'Rasp admitted to graze');
+  raspSlider.setAttribute('aria-label', UI.raspAria);
   raspSlider.addEventListener('input', () => hooks.setRasp(Number(raspSlider.value)));
   const raspPlus = button('step', '+', () => hooks.setRasp((lastState?.rasp ?? 0) + 1));
   raspRow.append(raspMinus, raspSlider, raspPlus);
@@ -530,7 +531,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const eta = el('span', 'eta');
     // Repeatable upgrades: a small button that buys as many as can be afforded.
     const max = u.maxLevel === Infinity ? button('step buy-max', 'max', () => hooks.buyMax(u.id)) : null;
-    if (max) max.title = 'Buy as many as you can afford';
+    if (max) max.title = UI.buyMax;
     foot.append(btn, ...(max ? [max] : []), eta);
     root.append(head, flavour, effect, foot);
     // Polyps and glimmerseed: a thin bar toward the next milestone.
@@ -552,7 +553,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const readingHead = el('header');
   const readingTitle = el('h3');
   readingHead.append(readingTitle, el('span', 'level', 'Reading'));
-  const readingHint = el('p', 'flavour', 'Scouting shoals listen at buried bands. Enough murmurs, and a band can be read.');
+  const readingHint = el('p', 'flavour', UI.readingHint);
   const readingEffect = el('p', 'effect');
   const readingFoot = el('footer');
   const readingCostEl = el('span', 'cost');
@@ -564,12 +565,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const readingEta = el('span', 'eta');
   readingFoot.append(readingBtn, readingEta);
   readingCard.append(readingHead, readingHint, readingEffect, readingFoot);
-  const bandsIntro = el('p', 'hint', 'Each band of stone keeps what the reef saw while laying it down. Newest first.');
+  const bandsIntro = el('p', 'hint', UI.bandsIntro);
   const bandList = el('ol', 'band-list');
   const codex = el('article', 'card codex');
   const codexList = el('dl', 'codex-list');
   const chart = el('canvas', 'growth-chart') as HTMLCanvasElement;
-  codex.append(el('h3', '', 'Your reef'), codexList, chart);
+  codex.append(el('h3', '', UI.yourReef), codexList, chart);
   let chartLen = -1;
   /** The reef's height over this run, one point per sample, with the zone bounds as faint lines. */
   function renderChart(s: GameState): void {
@@ -644,7 +645,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   }
   // The journal of creatures seen (kept across spawnings).
   const journal = el('article', 'card codex journal');
-  const journalHead = el('h3', '', 'Creatures seen');
+  const journalHead = el('h3', '', UI.creaturesSeen);
   const journalList = el('div', 'journal-list');
   journal.append(journalHead, journalList);
   collapsible(journal, journalHead);
@@ -689,7 +690,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           row.append(img);
         } else row.append(el('div', 'portrait none'));
         const text = el('div', 'journal-text');
-        const name = el('strong', '', known ? c.name : 'Not yet seen');
+        const name = el('strong', '', known ? c.name : UI.notYetSeen);
         const tl = trustLevel(s.meta.trust[c.id] ?? 0);
         if (known && tl > 0) name.append(el('em', `touched trust-${tl}`, ` · ${TRUST.names[tl]}`));
         if (s.meta.seen.includes(`g:${c.id}`)) {
@@ -825,7 +826,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (tr) codexRow('Trial', `${seamountDef(s.seamount).name}: grow to ${metres(tr.goal)}${s.meta.seen.includes(`trial:${s.seamount}`) ? ` · ${TRIAL_TEXT.met}` : ''} · ${tr.reward}`);
     const wrong = s.meta.seen.filter((k) => k.startsWith('o:')).length;
     if (wrong) codexRow('Ossel', `${wrong} of ${OSSEL_MISTAKES.length} mistakes found`);
-    if (s.race.decided > 0) codexRow('Sister reef', `first to ${s.race.won} of ${s.race.decided} marks` + (s.meta.endings > 0 ? ` · ahead of the quick cousin at ${s.race.cousin}` : ''));
+    if (s.race.decided > 0) codexRow(UI.sisterReef, `first to ${s.race.won} of ${s.race.decided} marks` + (s.meta.endings > 0 ? ` · ahead of the quick cousin at ${s.race.cousin}` : ''));
     const recs = s.meta.records.map((t, i) => t > 0 ? `${metres(SISTER.marks[i]!)} in ${duration(t)}` : '').filter(Boolean);
     if (recs.length) codexRow('Line’s best', recs.join(' · '));
     const did: string[] = [];
@@ -835,22 +836,22 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (s.relics.length + s.tally.roams) did.push(`${s.relics.length + s.tally.roams} trip${s.relics.length + s.tally.roams === 1 ? '' : 's'}`);
     if (s.request.done) did.push(`${s.request.done} request${s.request.done === 1 ? '' : 's'} kept`);
     if (s.tally.risings) did.push(`${s.tally.risings} rising${s.tally.risings === 1 ? '' : 's'} fed on`);
-    if (did.length) codexRow('This reef', did.join(' · '));
+    if (did.length) codexRow(UI.thisReef, did.join(' · '));
     const strain = STRAINS.find((x) => x.id === s.strain), sport = SPORTS.find((x) => x.id === s.sport);
     if (strain) codexRow('Glimmerseed', sport ? `${strain.name}, sported ${sport.name.toLowerCase()} (${sport.effect})` : `${strain.name} (${strain.effect})`);
     const grains = GRAINS.map((g) => [g.name, s.grains.filter((x) => x === g.id).length] as const).filter(([, n]) => n > 0);
-    if (grains.length) codexRow('The grain', grains.map(([n, c]) => `${c} ${n.toLowerCase()}`).join(' · '));
+    if (grains.length) codexRow(UI.theGrain, grains.map(([n, c]) => `${c} ${n.toLowerCase()}`).join(' · '));
     const stars = FIGURES.filter((f) => s.sky[f.id]).map((f) => f.name);
-    if (stars.length) codexRow('Stars named', stars.join(' · '));
+    if (stars.length) codexRow(UI.starsNamed, stars.join(' · '));
     codexRow('Grown', `${metres(s.height)} up the seamount, ${Math.round(Math.max(0, SURFACE - s.height)).toLocaleString('en-US')} m down`);
-    codexRow('Bands read', `${s.bands.length} of your own, ${s.readings.length} of Thousandfold’s`);
+    codexRow(UI.bandsRead, `${s.bands.length} of your own, ${s.readings.length} of Thousandfold’s`);
     const truce = MEETINGS.filter((m) => s.truce[m.id]).map((m) => `${m.title}: ${m[s.truce[m.id] as Choice].label}`);
-    if (truce.length) codexRow('The truce', truce.join(' · '));
+    if (truce.length) codexRow(UI.truceKicker, truce.join(' · '));
     const spoken = TIERS.filter((t) => s.dialects[t.tier]).map((t) => DIALECTS.find((d) => d.id === s.dialects[t.tier])!.name);
     if (spoken.length) codexRow('Dialects', spoken.join(' · '));
     if (s.meta.name) codexRow('Name', reefName(s));
-    codexRow('This reef', `${duration(s.t)} growing · ${num(s.earned.calcite)} calcite gathered${s.feasts ? ` · ${s.feasts} feast${s.feasts === 1 ? '' : 's'} caught` : ''}`);
-    if (s.meta.endings > 0) codexRow('The sea', `healing: the Long Silt falls ×${(0.95 ** Math.min(6, s.meta.endings)).toFixed(2)} for the endings your line has reached`);
+    codexRow(UI.thisReef, `${duration(s.t)} growing · ${num(s.earned.calcite)} calcite gathered${s.feasts ? ` · ${s.feasts} feast${s.feasts === 1 ? '' : 's'} caught` : ''}`);
+    if (s.meta.endings > 0) codexRow(UI.theSea, `healing: the Long Silt falls ×${(0.95 ** Math.min(6, s.meta.endings)).toFixed(2)} for the endings your line has reached`);
     if (s.meta.endings > 0) codexRow('Endings', `${s.meta.endings} · ${s.meta.carriedEver.length} of ${MEMORIES.length} memories carried so far`);
     if (s.carried.length) codexRow('Carried', s.carried.map((id) => MEMORIES.find((m) => m.id === id)?.title ?? id).join(' · '));
     if (s.meta.spawnings) codexRow('Lineage', `${s.meta.spawnings} lesser spawning${s.meta.spawnings === 1 ? '' : 's'}, best reef ${metres(s.meta.best)}`);
@@ -870,10 +871,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const lineageSub = el('span', 'stock-sub');
   lineageHead.append(el('span', 'stock-name', 'Lineage'), lineageCount, lineageSub);
   const spawnCard = el('article', 'card spawn-lesser');
-  const spawnTitle = el('h3', '', 'Release a lesser spawning');
+  const spawnTitle = el('h3', '', UI.lesserTitle);
   const spawnText = el('p', 'flavour',
-    'Let go early. Your spawn drifts off and settles on a new seamount, and the reef begins again ' +
-    'from a single polyp, carrying its lineage. What you have read stays read.');
+    UI.lesserText);
   const spawnFoot = el('footer');
   const spawnBtn = button('buy lineage', '', () => {
     const s = lastState;
@@ -926,7 +926,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       heirBox.append(b);
     }
   }
-  spawnCard.append(spawnTitle, spawnText, spawnBuys, el('p', 'stock-name', 'Where it settles'), whereBox, whereNote, heirLabel, heirBox, heirNote, spawnFoot);
+  spawnCard.append(spawnTitle, spawnText, spawnBuys, el('p', 'stock-name', UI.whereItSettles), whereBox, whereNote, heirLabel, heirBox, heirNote, spawnFoot);
   // Feats: goals across all runs, one lineage each.
   const featCard = el('article', 'card codex feats');
   const featHead = el('h3', '', 'Feats');
@@ -951,7 +951,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   }
   // The chronicle: every ending the line has reached, and what each carried.
   const chronicle = el('article', 'card codex chronicle');
-  const chronHead = el('h3', '', 'The chronicle');
+  const chronHead = el('h3', '', UI.chronicle);
   const chronList = el('ol', 'diary-list');
   const seaChart = el('canvas', 'city-map sea-chart') as HTMLCanvasElement;
   chronicle.append(chronHead, seaChart, chronList);
@@ -1016,7 +1016,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   // One small coral per generation, as tall as it grew (zones spaced as on the gauge), the living
   // reef last; a moon over those that reached the surface.
   const lineChart = el('canvas', 'line-chart');
-  lineCard.append(el('h3', '', 'Your line'), lineChart, lineList);
+  lineCard.append(el('h3', '', UI.yourLine), lineChart, lineList);
   lineagePage.append(lineCard);
   let lineKey: string | null = null;
   function renderLine(s: GameState): void {
@@ -1093,18 +1093,18 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
 
   // ---------- Reef (settings) ----------
   const reefPage = tabPages.get('reef')!;
-  const exportBtn = button('plain', 'Copy save to clipboard', async () => {
+  const exportBtn = button('plain', UI.copySave, async () => {
     const text = hooks.exportSave();
     try {
       await navigator.clipboard.writeText(text);
       exportBtn.textContent = 'Copied ✓';
     } catch {
-      window.prompt('Copy this save:', text);
+      window.prompt(UI.copyPrompt, text);
     }
-    setTimeout(() => (exportBtn.textContent = 'Copy save to clipboard'), 2000);
+    setTimeout(() => (exportBtn.textContent = UI.copySave), 2000);
   });
   // A file is easier to keep than a clipboard on a phone.
-  const fileBtn = button('plain', 'Save to a file', () => {
+  const fileBtn = button('plain', UI.saveFile, () => {
     const text = hooks.exportSave();
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
@@ -1118,31 +1118,31 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   fileInput.hidden = true;
   fileInput.addEventListener('change', async () => {
     const f = fileInput.files?.[0];
-    if (f && !hooks.importSave(await f.text())) window.alert('That save could not be read.');
+    if (f && !hooks.importSave(await f.text())) window.alert(UI.badSave);
     fileInput.value = '';
   });
-  const loadFileBtn = button('plain', 'Load save from a file…', () => fileInput.click());
-  const importBtn = button('plain', 'Load save from text…', () => {
-    const text = window.prompt('Paste a save:');
-    if (text && !hooks.importSave(text)) window.alert('That save could not be read.');
+  const loadFileBtn = button('plain', UI.loadFile, () => fileInput.click());
+  const importBtn = button('plain', UI.loadText, () => {
+    const text = window.prompt(UI.pastePrompt);
+    if (text && !hooks.importSave(text)) window.alert(UI.badSave);
   });
-  const resetBtn = button('plain danger', 'Let the reef go (reset)', () => {
-    if (window.confirm('Start over from a single polyp? This erases the reef.')) hooks.reset();
+  const resetBtn = button('plain danger', UI.reset, () => {
+    if (window.confirm(UI.resetSure)) hooks.reset();
   });
   const backupNote = el('p', 'backup-note',
-    'This reef lives only in this browser: clearing site data would wash it away. Save it to a file (or copy it) and keep it somewhere safe.');
+    UI.backup);
   backupNote.hidden = true;
   const glowToggle = el('label', 'toggle');
   const glowBox = el('input') as HTMLInputElement;
   glowBox.type = 'checkbox';
   glowBox.checked = hooks.glow.get();
   glowBox.addEventListener('change', () => hooks.glow.set(glowBox.checked));
-  glowToggle.append(glowBox, el('span', '', 'Soft glow (turn off if a phone runs slow or warm)'));
+  glowToggle.append(glowBox, el('span', '', UI.softGlow));
   const nameRow = el('label', 'name-row');
   const nameInput = el('input') as HTMLInputElement;
   nameInput.type = 'text';
   nameInput.maxLength = 24;
-  nameInput.placeholder = 'Name your reef';
+  nameInput.placeholder = UI.namePlaceholder;
   nameInput.addEventListener('change', () => hooks.rename(nameInput.value.trim()));
   nameRow.append(el('span', 'stock-name', 'Name'), nameInput);
   // The line's colours: a swatch per palette, open once the reef has known pigment.
@@ -1173,38 +1173,38 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   buzzBox.type = 'checkbox';
   buzzBox.checked = hooks.buzz.get();
   buzzBox.addEventListener('change', () => hooks.buzz.set(buzzBox.checked));
-  buzzToggle.append(buzzBox, el('span', '', 'Vibration on purchases and milestones (phones)'));
+  buzzToggle.append(buzzBox, el('span', '', UI.vibration));
   buzzToggle.hidden = !('vibrate' in navigator);
   const sciToggle = el('label', 'toggle');
   const sciBox = el('input') as HTMLInputElement;
   sciBox.type = 'checkbox';
   sciBox.checked = hooks.sci.get();
   sciBox.addEventListener('change', () => hooks.sci.set(sciBox.checked));
-  sciToggle.append(sciBox, el('span', '', 'Scientific numbers (1.23e9 instead of 1.23B)'));
+  sciToggle.append(sciBox, el('span', '', UI.scientific));
   const sharpToggle = el('label', 'toggle');
   const sharpBox = el('input') as HTMLInputElement;
   sharpBox.type = 'checkbox';
   sharpBox.checked = hooks.sharp.get();
   sharpBox.addEventListener('change', () => hooks.sharp.set(sharpBox.checked));
-  sharpToggle.append(sharpBox, el('span', '', 'Full resolution (turn off to make a slow phone faster)'));
+  sharpToggle.append(sharpBox, el('span', '', UI.fullRes));
   const calmToggle = el('label', 'toggle');
   const calmBox = el('input') as HTMLInputElement;
   calmBox.type = 'checkbox';
   calmBox.checked = hooks.calm.get();
   calmBox.addEventListener('change', () => hooks.calm.set(calmBox.checked));
-  calmToggle.append(calmBox, el('span', '', 'Calmer motion (everything in the water moves slower)'));
+  calmToggle.append(calmBox, el('span', '', UI.calm));
   const bigToggle = el('label', 'toggle');
   const bigBox = el('input') as HTMLInputElement;
   bigBox.type = 'checkbox';
   bigBox.checked = hooks.big.get();
   bigBox.addEventListener('change', () => hooks.big.set(bigBox.checked));
-  bigToggle.append(bigBox, el('span', '', 'Larger text'));
+  bigToggle.append(bigBox, el('span', '', UI.bigText));
   const quietToggle = el('label', 'toggle');
   const quietBox = el('input') as HTMLInputElement;
   quietBox.type = 'checkbox';
   quietBox.checked = hooks.quiet.get();
   quietBox.addEventListener('change', () => hooks.quiet.set(quietBox.checked));
-  quietToggle.append(quietBox, el('span', '', 'Fewer words from Ossel (only what carries the story)'));
+  quietToggle.append(quietBox, el('span', '', UI.quiet));
   const notifyToggle = el('label', 'toggle');
   const notifyBox = el('input') as HTMLInputElement;
   notifyBox.type = 'checkbox';
@@ -1217,11 +1217,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   habitBox.type = 'checkbox';
   habitBox.checked = hooks.habits.get();
   habitBox.addEventListener('change', () => hooks.habits.set(habitBox.checked));
-  habitToggle.append(habitBox, el('span', '', 'The line’s habits (Old habits, Layering, Shoal sense, Rasp sense): let the reef do these on its own'));
+  habitToggle.append(habitBox, el('span', '', UI.habits));
   habitToggle.hidden = true;
   const group = (title: string) => el('h4', 'settings-group', title);
   const guide = el('article', 'card codex guide');
-  const guideHead = el('h3', '', 'How the reef grows');
+  const guideHead = el('h3', '', UI.howGrows);
   const guideList = el('dl', 'codex-list');
   for (const [term, text] of GUIDE) guideList.append(el('dt', '', term), el('dd', '', text));
   guide.append(guideHead, guideList);
@@ -1229,7 +1229,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   // What shapes this reef: every lasting effect from boons, relics, residents, moments, works,
   // favours and the line's hard places, one line each.
   const shapes = el('article', 'card codex shapes');
-  const shapesHead = el('h3', '', 'What shapes this reef');
+  const shapesHead = el('h3', '', UI.shapes);
   const shapesList = el('dl', 'codex-list');
   shapes.append(shapesHead, shapesList);
   collapsible(shapes, shapesHead);
@@ -1260,12 +1260,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     paletteBox,
     shapes,
     guide,
-    group('Saves'),
-    el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn,
-    group('Sound'), volRow, buzzToggle,
-    group('Display'), glowToggle, sharpToggle, calmToggle, bigToggle, sciToggle, quietToggle, notifyToggle, habitToggle,
-    el('p', 'hint', 'Hold a buy button to keep buying. Keys (? lists them): Space sweeps · 1–4 switch tabs · H hides the panel · F catches a falling feast · E sends an expedition · P buds a polyp · B lays a band · G hosts glimmerseed.'),
-    group('Start over'), resetBtn,
+    group(UI.saves),
+    el('p', 'hint', UI.autosave), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn,
+    group(UI.sound), volRow, buzzToggle,
+    group(UI.display), glowToggle, sharpToggle, calmToggle, bigToggle, sciToggle, quietToggle, notifyToggle, habitToggle,
+    el('p', 'hint', UI.keys),
+    group(UI.startOver), resetBtn,
   );
 
   /** Nudge toward copying a save when the reef is worth keeping and no copy is recent. */
@@ -1321,7 +1321,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const awayText = el('p', 'reader-text');
   const awayList = el('dl', 'codex-list away-list');
   const awayHint = el('p', 'hint');
-  const awayClose = button('plain', 'Return to the reef', () => {
+  const awayClose = button('plain', UI.awayClose, () => {
     away.hidden = true;
     const next = queue.shift();
     if (next) openStory(next);
@@ -1329,7 +1329,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   // A welcome-back gift after a long time away: two buttons, one to take.
   const welcomeBox = el('div', 'welcome');
   welcomeBox.hidden = true;
-  awayCard.append(el('h2', '', 'While you drifted'), awayText, awayList, welcomeBox, awayHint, awayClose);
+  awayCard.append(el('h2', '', UI.awayTitle), awayText, awayList, welcomeBox, awayHint, awayClose);
   away.append(awayCard);
   host.append(away);
   // Escape closes whichever card is open.
@@ -1477,7 +1477,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         truceWordsFill.style.width = `${learned * 100}%`;
         const ready = learned >= 1;
         truceWordsLabel.textContent = ready
-          ? 'Your scouts have learned enough of their words.'
+          ? UI.wordsReady
           : `Words learned: ${num(s.murmurs)} / ${num(words)} murmurs${s.jobs.scout ? ` · ${etaText(timeUntil(s, 'murmurs', words))}` : ' — set shoals to scout'}`;
         for (const c of ['a', 'b'] as const) {
           const cb = choiceButtons[c === 'a' ? 0 : 1]!;
@@ -1953,9 +1953,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         lineageSub.textContent = (title ? `${title} · ` : '') + `${s.meta.spawnings} spawning${s.meta.spawnings === 1 ? '' : 's'} · best reef ${metres(Math.max(s.meta.best, s.height))}` +
           (s.seamount !== 'plain' ? ` · this reef: ${seamountDef(s.seamount).name.toLowerCase()}` : '');
         const can = canSpawnLesser(s);
-        spawnTitle.textContent = ended(s) ? 'Begin again' : 'Release a lesser spawning';
+        spawnTitle.textContent = ended(s) ? UI.beginAgain : UI.lesserTitle;
         spawnBtn.disabled = !can;
-        spawnBtn.textContent = can ? `+${lineageFor(s)} lineage` : 'Reach the Midnight Water first';
+        spawnBtn.textContent = can ? `+${lineageFor(s)} lineage` : UI.midnightFirst;
         // What that lineage would buy in the next run, cheapest first.
         const buys = can ? affordableTraits(s, s.meta.lineage + lineageFor(s)) : [];
         spawnBuys.textContent = buys.length ? `Enough for: ${buys.join(', ')}` : '';
@@ -2021,8 +2021,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       if (gained.glow > 0.5) row('Glow', `+${num(gained.glow)}`);
       if (gained.metres > 0.05) row('Rose', metres(gained.metres));
       const titles = gained.bands.map((id) => BANDS.find((b) => b.id === id)?.title).filter((x): x is string => !!x);
-      if (titles.length) row(titles.length === 1 ? 'New band' : 'New bands', titles.map((t) => `“${t}”`).join(', '));
-      if (gained.relics?.length) row('The shoals brought', gained.relics.join(', ').toLowerCase());
+      if (titles.length) row(titles.length === 1 ? UI.newBand : UI.newBands, titles.map((t) => `“${t}”`).join(', '));
+      if (gained.relics?.length) row(UI.shoalsBrought, gained.relics.join(', ').toLowerCase());
       if (gained.roams) row('Roamed', gained.roams === 1 ? 'the shoals came home from the dark' : `${gained.roams} times`);
       if (gained.shards) row('Shards', `${gained.shards} found`);
       if (gained.heat) row(AWAY_CYCLES.heat, gained.heat);
