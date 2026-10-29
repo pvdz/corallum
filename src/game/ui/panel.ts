@@ -1335,6 +1335,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           x.btn.disabled = true;
           x.eta.textContent = '';
           x.root.classList.add('maxed');
+          // Built in full: to the end of the list, one line, like a finished upgrade.
+          if (!x.root.classList.contains('done')) {
+            x.root.classList.add('done');
+            grow.append(x.root);
+          }
           continue;
         }
         const parts = Object.entries(c) as [Currency, number][];
