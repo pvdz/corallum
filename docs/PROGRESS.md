@@ -455,3 +455,4 @@ date, what landed, what is half-done, what's next.
 - The chronicle (Lineage tab): one line per ending (seamount, hours, memories); meta.chronicle written in breach().
 - New creatures: frogfish (Twilight slope, gulps when touched), banded sea snake (Sunlit, rising to breathe).
 - New creature: a pelican at the Breach after dawn, gliding then plunging.
+- The Rasp elder's riddles: act3.ts RIDDLES (3), economy currentRiddle/answerRiddle, state.riddles (fixed keys so saves keep them); card in Grow; the bot answers right.

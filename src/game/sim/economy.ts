@@ -17,7 +17,7 @@
 
 import { ACT1, BANDS_ACT1, MILESTONES, STRAIN, type Milestone, type StrainId } from '../content/act1.ts';
 import { ACT2, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
-import { ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
+import { ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDLE, RIDDLES, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { ACT4, BANDS_ACT4, DIALECTS, OTHERS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
 import { ACT5, BANDS_ACT5, GARDEN, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
@@ -956,6 +956,24 @@ export function build(s: GameState, id: WorkId): boolean {
 
 export function setCurrent(s: GameState, c: number): void {
   s.current = Math.max(-CURRENT.steps, Math.min(CURRENT.steps, Math.round(c)));
+}
+
+// ---------- The elder's riddles ----------
+
+/** The riddle the elder is asking now, if any (truce begun, its band read, not yet answered). */
+export function currentRiddle(s: GameState) {
+  if (!s.truce.terms) return undefined;
+  return RIDDLES.find((r) => !s.riddles[r.id] && s.bands.includes(r.after));
+}
+
+/** Answer the elder: true if right (+lineage). */
+export function answerRiddle(s: GameState, id: RiddleId, choice: number): boolean {
+  const r = currentRiddle(s);
+  if (!r || r.id !== id) return false;
+  const right = choice === r.right;
+  s.riddles[id] = right ? 'right' : 'wrong';
+  if (right) s.meta.lineage += RIDDLE.lineage;
+  return right;
 }
 
 // ---------- Favours of the Rasp ----------

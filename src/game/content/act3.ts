@@ -159,6 +159,16 @@ export const BANDS_ACT3: readonly Band[] = [
   },
 ];
 
+// The elder's riddles: once the truce has begun, the Rasp elder asks about what the bands told.
+// A right answer: lineage. Each asked once per reef, after the band that holds its answer.
+export type RiddleId = 'silt' | 'wall' | 'walls';
+export const RIDDLES: readonly { id: RiddleId; after: string; ask: string; options: readonly string[]; right: number }[] = [
+  { id: 'silt', after: 'truth', ask: 'You have read the falling grey. What is it?', options: ['Snow from the sky', 'Thousandfold, ground fine', 'Our dung'], right: 1 },
+  { id: 'wall', after: 'form', ask: 'The voice in your oldest stone. What was it, once?', options: ['A Rasp', 'A wall of the city', 'The moon'], right: 1 },
+  { id: 'walls', after: 'storm', ask: 'Why did the city die?', options: ['We killed it', 'It kept everything, and choked', 'The sun burned it'], right: 1 },
+];
+export const RIDDLE = { kicker: 'The Rasp elder asks', lineage: 2, right: 'The elder grinds its beak, pleased.', wrong: 'The elder turns away. Not this time.' } as const;
+
 // Favours: once the first meeting is settled, the Rasp can be asked for things, paid in sand.
 // Each is dearer every time it is asked (cost × growth^times).
 export type FavourId = 'clear' | 'path' | 'carry';

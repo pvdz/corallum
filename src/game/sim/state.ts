@@ -3,7 +3,7 @@
 import type { Job, ReadingId } from '../content/act2.ts';
 import type { StrainId } from '../content/act1.ts';
 import { CREATURES, type CreatureId } from '../content/creatures.ts';
-import type { FavourId, MeetingId } from '../content/act3.ts';
+import type { FavourId, MeetingId, RiddleId } from '../content/act3.ts';
 import type { DialectId, DialectTier } from '../content/act4.ts';
 import type { MemoryId } from '../content/act5.ts';
 import type { RequestKind } from '../content/requests.ts';
@@ -147,6 +147,8 @@ export type GameState = {
   works: Record<WorkId, number>;
   /** The race with the sister reef: marks decided so far (content/sister.ts), and how many were won. */
   race: { decided: number; won: number; cousin: number };
+  /** The elder's riddles: '' not yet asked or answered, then how it went. */
+  riddles: Record<RiddleId, '' | 'right' | 'wrong'>;
   /** Favours asked of the Rasp, by kind (content/act3.ts FAVOURS). */
   favours: Record<FavourId, number>;
   /** Other reefs' spawnings met (moon cycle index of the last, and how many times the reef joined). */
@@ -223,6 +225,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     diary: [],
     others: { last: -1, joined: 0 },
     favours: { clear: 0, path: 0, carry: 0 },
+    riddles: { silt: '', wall: '', walls: '' },
     race: { decided: 0, won: 0, cousin: 0 },
     works: { garden: 0, spire: 0, breakwater: 0, terrace: 0, pool: 0 },
     request: { kind: '', n: 0, base: 0, done: 0, paid: 0, skipped: -1e9, streak: 0 },

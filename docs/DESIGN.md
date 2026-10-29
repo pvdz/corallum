@@ -173,6 +173,8 @@ Entry requires the last Act II Reading (*Inside the wall*): the story turn opens
   permanent choice between two terms, with economic and story consequences; the third is
   whether to give Ossel's wall to the Rasp. The choices colour the ending.
 - **Grazing grounds** (calcite): raise Rmax.
+- **The elder's riddles**: once the truce has begun, the Rasp elder asks three questions about the
+  story, each after the band that answers it. Right: +2 lineage; wrong: nothing. Reading pays.
 - **The current** (verb 3): a five-step dial. Toward the shelf it sweeps silt (+0.025/s a step) and
   brings less plankton (×0.88 a step); toward the open water it brings plankton (×1.12 a step) and
   sweeps less. The best setting moves with how hard the silt falls.

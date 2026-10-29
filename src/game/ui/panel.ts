@@ -6,7 +6,7 @@ import { ACT1, MILESTONES, STRAIN, STRAINS, type StrainId } from '../content/act
 import type { Band, Currency, UpgradeId } from '../content/types.ts';
 import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
-import { ACT3, CURRENT, FAVOURS, FAVOUR_TEXT, MEETINGS, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
+import { ACT3, CURRENT, FAVOURS, FAVOUR_TEXT, MEETINGS, RIDDLE, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { DIALECTS, OTHERS, TIERS, type DialectId } from '../content/act4.ts';
 import { BOONS, BOON_TEXT, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { GARDEN, MEMORIES } from '../content/act5.ts';
@@ -32,7 +32,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, othersSpawning, othersCap, boonsOffered, strainOpen, forkOpen, currentSignal, plantCost, untilFeast, untilThorn, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, othersSpawning, othersCap, boonsOffered, strainOpen, forkOpen, currentRiddle, currentSignal, plantCost, untilFeast, untilThorn, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -47,6 +47,8 @@ export type PanelHooks = {
   send(): void;
   /** Call the shoals home early, for glow. */
   callHome(): void;
+  /** Answer the Rasp elder's riddle; true if right. */
+  answerRiddle(id: RiddleId, choice: number): boolean;
   /** Take the fork on a trip. */
   takeFork(how: 'press' | 'home'): void;
   /** Choose the glimmerseed strain. */
@@ -282,6 +284,16 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   boonBox.append(boonKicker, boonHead, boonChoices);
   grow.prepend(boonBox);
   let boonKey = '';
+
+  // ---------- The Rasp elder's riddle ----------
+  const riddleBox = el('section', 'truce moment riddle');
+  riddleBox.hidden = true;
+  const riddleAsk = el('p', 'truce-text');
+  const riddleChoices = el('div', 'boon-choices');
+  const riddleResult = el('p', 'truce-words');
+  riddleBox.append(el('p', 'truce-kicker', RIDDLE.kicker), riddleAsk, riddleChoices, riddleResult);
+  grow.prepend(riddleBox);
+  let riddleShown = '', riddleLinger = 0;
 
   // ---------- The fork on a trip ----------
   const forkBox = el('section', 'truce moment fork');
@@ -1568,6 +1580,24 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
 
       setShown(strainBox, strainOpen(s));
       setShown(forkBox, forkOpen(s));
+      const rd = currentRiddle(s);
+      if (rd && rd.id !== riddleShown) {
+        riddleShown = rd.id;
+        riddleAsk.textContent = rd.ask;
+        riddleResult.textContent = '';
+        riddleChoices.innerHTML = '';
+        rd.options.forEach((o, i) => {
+          const b = button('choice', '', () => {
+            const ok = hooks.answerRiddle(rd.id, i);
+            riddleResult.textContent = ok ? `${RIDDLE.right} +${RIDDLE.lineage} lineage` : RIDDLE.wrong;
+            for (const x of riddleChoices.children) (x as HTMLButtonElement).disabled = true;
+            riddleLinger = performance.now() + 4000;
+          });
+          b.append(el('strong', '', o));
+          riddleChoices.append(b);
+        });
+      }
+      setShown(riddleBox, !!rd || performance.now() < riddleLinger);
 
       // A boon for this seamount, while one is still to be chosen.
       const offered = boonsOffered(s);
