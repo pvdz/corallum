@@ -208,6 +208,48 @@ export function createAbyssScene(seed: number): Scene {
     }
   }
 
+  /**
+   * A benthic storm: every twelve minutes, for a minute, a deep current stirs the floor and a low
+   * cloud of silt rolls across from left to right, streaked, hiding the far floor as it passes.
+   */
+  function drawBenthicStorm(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 720, length = 60;
+    const p = (t + 180) % period;
+    if (p > length) return;
+    const s = scale();
+    const k = p / length;
+    const front = focus.x - focus.w * 0.4 + k * focus.w * 1.8;
+    const fade = Math.min(1, p / 8, (length - p) / 10);
+    const top = baseY() - focus.h * 0.28;
+    ctx.save();
+    const g = ctx.createLinearGradient(front - focus.w * 0.6, 0, front, 0);
+    g.addColorStop(0, 'rgba(70,72,88,0)');
+    g.addColorStop(0.7, `rgba(80,82,100,${0.6 * fade})`);
+    g.addColorStop(1, 'rgba(80,82,100,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(front - focus.w * 0.6, baseY() + 20 * s);
+    for (let i = 0; i <= 20; i++) {
+      const x = front - focus.w * 0.6 + (i / 20) * focus.w * 0.6;
+      ctx.lineTo(x, top + Math.sin(i * 1.3 + t * 0.6) * 14 * s + (1 - i / 20) * 30 * s);
+    }
+    ctx.lineTo(front, baseY() + 20 * s);
+    ctx.closePath();
+    ctx.fill();
+    // Streaks of silt racing along the floor.
+    ctx.strokeStyle = `rgba(170,175,200,${0.35 * fade})`;
+    ctx.lineWidth = 1.2 * s;
+    for (let i = 0; i < 30; i++) {
+      const y = baseY() - ((i * 0.618) % 1) * focus.h * 0.25;
+      const x = front - ((t * 0.4 + i * 0.37) % 1) * focus.w * 0.6;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + 30 * s, y - 2 * s);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
   /** A lonely seamount: one far light on the horizon, another reef too far away to reach. */
   function drawFarLamp(ctx: CanvasRenderingContext2D, t: number): void {
     const x = focus.x + focus.w * 0.84, y = focus.y + focus.h * 0.36;
@@ -512,6 +554,7 @@ export function createAbyssScene(seed: number): Scene {
       life.drawFront(ctx, st, t);
       drawSnow(ctx, t, 2);
       drawFlurry(ctx, t, v.flurry);
+      drawBenthicStorm(ctx, t);
       // A warm seamount reddens the water near the floor; a cold one leaves a faint ice-blue.
       // Hungry water is pale and washed out; silent water darker, dark water darker still.
       const tint = { warm: 'rgba(255,90,40,0.10)', cold: 'rgba(150,210,255,0.09)', hungry: 'rgba(120,130,140,0.10)' }[v.seamount as 'warm'];
