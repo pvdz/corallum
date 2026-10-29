@@ -1376,6 +1376,28 @@ export function createSunlitScene(seed: number): Scene {
     }
   }
 
+  /** Soft shadows on the sand under the reef fish, by day (fainter the higher they swim). */
+  function drawFishShadows(ctx: CanvasRenderingContext2D, t: number, day: number): void {
+    if (day <= 0) return;
+    const s = scale();
+    ctx.save();
+    for (const f of fish) {
+      const u = (((f.phase + t * f.speed) % 1) + 1) % 1;
+      const x = focus.x - focus.w * 0.15 + u * focus.w * 1.3;
+      const y = focus.y + focus.h * (0.25 + f.lane * 0.55);
+      const fu = Math.min(1, Math.max(0, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2)));
+      const fy = floorY(fu) + 6 * s;
+      const height = Math.max(0, fy - y) / focus.h;
+      const len = 12 * s * f.size * (1 + height * 1.5);
+      ctx.fillStyle = `rgba(30,50,60,${0.3 * day * Math.max(0.25, 1 - height * 1.4)})`;
+      ctx.beginPath();
+      // The sun is a little to one side: shadows fall a little the other way.
+      ctx.ellipse(x + height * 40 * s, fy, len, len * 0.22, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
   function drawFish(ctx: CanvasRenderingContext2D, t: number): void {
     sight('reef-fish');
     const s = scale();
@@ -1533,6 +1555,7 @@ export function createSunlitScene(seed: number): Scene {
           alt: { branch: '#8a5bb0', tip: '#b88ad8', polyp: 'rgba(240,220,255,0.95)' } }, larvaSeed, v.nurseries);
       drawTerrace(ctx, L.cx, L.unit, v.works.terrace, scale(), (x) => floorY(Math.min(1, Math.max(0, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2)))), t);
       drawClam(ctx, t);
+      drawFishShadows(ctx, t, 1 - night);
       if (night > 0) drawNight(ctx, t, night, 0.6);
       if (v.othersSpawn) drawOthersSpawn(ctx, t);
       drawSleepers(ctx, t, v.rasp, night);

@@ -616,3 +616,4 @@ date, what landed, what is half-done, what's next.
 - The ending has a page for the reef's vows, kept and broken.
 - Feat Every vow kept (hidden).
 - Ossel's light rises and flickers while it speaks (sightings.ts spoke/speaking; Silt Floor and the Twilight wall).
+- Reef fish cast soft shadows on the Sunlit sand by day (sunlit.ts drawFishShadows). Full e2e suite green.

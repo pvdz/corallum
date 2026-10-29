@@ -218,6 +218,9 @@ Tick items as they land; keep this list honest. Add items freely.
   - [x] a milky sea in the Midnight Water (every 25 min for a minute; sweeps gather 4 s of glow)
   - [x] grotto (Twilight sand sink: +1 home per level, max 2), drawn as hollows at the reef's foot
   - [x] a fifth shoal job, guard (Sunlit on: 4 guards drive intruders off for half)
+  - [ ] a fourth vow (stillness: no sweeping)
+  - [x] fish shadows on the Sunlit sand
+  - [ ] a wish on a shooting star at the Breach (needs a sim-time meteor schedule)
   - [x] vows for a new reef after an ending: haste (+6), lightness (+4), solitude (+4)
   - [x] old stone: grey knobs fill the tips (max 6, away too), tap to break off for a burst
   - [x] Ossel's questions: four, remembered, answered back, carried into the ending
