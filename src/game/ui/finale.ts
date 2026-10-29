@@ -155,12 +155,13 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
     // The line has carried every memory there is, across its endings.
     if (MEMORIES.every((m) => s.meta.carriedEver.includes(m.id))) out.push(ENDING.everything);
     // This reef in numbers, quietly, before the last line.
+    const c = ENDING.counts;
     const nums = [
-      `Four thousand metres in ${duration(s.breachedAt || s.t)}`,
-      `${s.levels.polyp} polyps`, `${s.bands.length} bands laid down`,
-      s.feasts ? `${s.feasts} feasts caught` : '', s.relics.length ? `${s.relics.length} relics found` : '',
-      s.tally.intruders ? `${s.tally.intruders} intruders driven off` : '', s.residents.length ? `${s.residents.length} residents at home` : '',
-      s.meta.shards.length ? `${s.meta.shards.length} of 12 shards` : '',
+      c.time(duration(s.breachedAt || s.t)), c.polyps(s.levels.polyp), c.bands(s.bands.length),
+      s.feasts ? c.feasts(s.feasts) : '', s.relics.length ? c.relics(s.relics.length) : '',
+      s.tally.intruders ? c.intruders(s.tally.intruders) : '', s.residents.length ? c.residents(s.residents.length) : '',
+      s.meta.shards.length ? c.shards(s.meta.shards.length) : '', s.tally.pruned ? c.pruned(s.tally.pruned) : '',
+      s.tally.freed ? c.freed(s.tally.freed) : '', s.tally.lucky ? c.lucky(s.tally.lucky) : '',
     ].filter(Boolean);
     out.push(`${ENDING.numbers} ${nums.join('. ')}.`);
     out.push(ENDING.last);

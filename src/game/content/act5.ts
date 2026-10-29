@@ -209,6 +209,15 @@ export const ENDING = {
     'a moment you are sure it is laughing.',
   /** Before the last line: this reef in numbers. */
   numbers: 'Your own bands keep a count, because that is what bands do.',
+  /** The counts on that page, each said only when it is not zero. */
+  counts: {
+    time: (d: string) => `Four thousand metres in ${d}`,
+    polyps: (n: number) => `${n} polyps`, bands: (n: number) => `${n} bands laid down`,
+    feasts: (n: number) => `${n} feasts caught`, relics: (n: number) => `${n} relics found`,
+    intruders: (n: number) => `${n} intruders driven off`, residents: (n: number) => `${n} residents at home`,
+    shards: (n: number) => `${n} of 12 shards`, pruned: (n: number) => `${n} knobs of old stone let go`,
+    freed: (n: number) => `${n} small creatures freed`, lucky: (n: number) => `${n} lucky touches`,
+  },
   /** The creatures that know you, come to see the spawn off ({names}). */
   friends: 'They came to watch, the ones who knew you: {names}. They stay until the last bundle is out of sight.',
   /** Once every mistake of Ossel's has been found and the tablet is whole. */
