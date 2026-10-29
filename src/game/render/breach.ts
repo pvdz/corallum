@@ -27,7 +27,6 @@ import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts
 
 /** Every third shower at the Breach is a far storm: lightning strikes this many seconds into it. */
 const STRIKES = [12, 27, 41, 55];
-/** Seconds since the last lightning strike of a storm shower (with which strike), or null between storms. */
 /** A squall: every 25 minutes, for a minute and a half, the wind gets up (0 calm … 1 at its height). */
 export function squallAt(t: number): number {
   const p = (t + 500) % 1500;
@@ -35,6 +34,7 @@ export function squallAt(t: number): number {
 }
 
 
+/** Seconds since the last lightning strike of a storm shower (with which strike), or null between storms. */
 export function lightningAt(t: number): { since: number; k: number; lap: number } | null {
   const lap = Math.floor(t / 300);
   if (lap % 3 !== 1) return null;
