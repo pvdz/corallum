@@ -41,7 +41,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, steadyCalciteRate, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilThorn, untilFlurry, untilMilky, untilHeat, heatLeft, closedNow, untilRising, untilSwell, currentUpwelling, canFlare, risingLeft, canFeedRising, risingHaul, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks, vowKept } from '../sim/economy.ts';
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilThorn, untilFlurry, untilMilky, untilHeat, heatLeft, closedNow, untilRising, untilSwell, currentUpwelling, canFlare, risingLeft, canFeedRising, risingHaul, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks, vowKept, visitor, visited } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
 
@@ -1693,7 +1693,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         if (mk < 1200) soon.push([mk, MILKY.word]);
         if (th < 1200 && kind) soon.push([th, WATER.intruder[kind]!]);
         const day = DAYS.find((d) => d.id === s.meta.today);
-        todayLine.textContent = day ? `${TODAY.label}: ${day.name.toLowerCase()} · ${day.effect}` : '';
+        const vis = visitor(s);
+        const visName = vis ? CREATURES.find((c) => c.id === vis)?.name.toLowerCase() : '';
+        todayLine.textContent = (day ? `${TODAY.label}: ${day.name.toLowerCase()} · ${day.effect}` : '') +
+          (visName ? ` · ${TODAY.visitor}: ${visName} (${visited(s) ? TODAY.visited : TODAY.visitorGift})` : '');
         const usw = untilSwell(s);
         if (usw < 1200) soon.push([usw, SWELL.word]);
         const ur = untilRising(s);

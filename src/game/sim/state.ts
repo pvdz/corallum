@@ -53,6 +53,8 @@ export type Meta = {
   chronicle: string[];
   /** The last calendar day (days since 1970, from the client) a daily gift was taken. */
   lastDay: number;
+  /** The calendar day now (set by the client), for today's visitor. */
+  day: number;
   /** The line's companion creature ('' none). */
   companion: string;
   /** The colours the line's reefs wear in the light (content/palettes.ts; '' for the reef's own). */
@@ -86,6 +88,7 @@ export function newMeta(): Meta {
     palette: '',
     companion: '',
     lastDay: 0,
+    day: 0,
     chronicle: [],
     shells: [],
     records: [0, 0, 0, 0, 0],

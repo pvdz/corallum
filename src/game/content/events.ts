@@ -56,7 +56,7 @@ export const DAYS: readonly { id: DayId; name: string; effect: string }[] = [
   { id: 'clear', name: 'A clear day', effect: 'bloom ×1.15' },
   { id: 'long-swell', name: 'A long swell', effect: 'spawn ×1.1' },
 ];
-export const TODAY = { label: 'Today' } as const;
+export const TODAY = { label: 'Today', visitor: 'today’s visitor', visitorGift: '+1 lineage at its first touch today', visited: 'visited', float: '· today’s visitor' } as const;
 
 /** Dreams: the reef sleeps a quarter of an hour forward at once. One comes with each new day, at most `max` kept. */
 export const DREAM = {

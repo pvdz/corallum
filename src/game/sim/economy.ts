@@ -1622,6 +1622,11 @@ export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: 
     // A shard may turn up where a neighbour digs: once a minute per creature, like trust.
     dig(s, 'touch');
   }
+  // Today's visitor: +1 lineage the first time it is touched today.
+  if (id === visitor(s) && !visited(s)) {
+    s.meta.seen.push(`v:${s.meta.day}`);
+    s.meta.lineage += 1;
+  }
   const close = s.meta.companion === id;
   // A lucky one gives at once, whatever the cooldown, and much more.
   const luck = lucky(s, id);
@@ -1820,6 +1825,21 @@ export function dayOf(day: number): DayId {
 /** Set the day's sea (the client passes the calendar day on load). */
 export function setDay(s: GameState, day: number): void {
   s.meta.today = dayOf(day);
+  s.meta.day = day;
+}
+
+/** Today's visitor: one of the zone's creatures (not a rare one), the same for everyone on a day. */
+export function visitor(s: GameState): CreatureId | null {
+  if (!s.meta.day) return null;
+  const zone = act(actAt(s.height)).name;
+  const pool = CREATURES.filter((c) => c.zone === zone && !c.note.startsWith('Rare.'));
+  if (!pool.length) return null;
+  return pool[Math.floor(mulberry32(Math.imul(s.meta.day, 0x2545f491) + actAt(s.height))() * pool.length)]!.id;
+}
+
+/** Whether today's visitor has been touched today. */
+export function visited(s: GameState): boolean {
+  return s.meta.seen.includes(`v:${s.meta.day}`);
 }
 
 /** The day's multiplier for one of its boons. */
