@@ -715,6 +715,7 @@ photoBtn.addEventListener('click', () => {
     a.href = URL.createObjectURL(blob);
     const who = (reefName(state) || 'corallum').toLowerCase().replace(/[^a-z0-9]+/g, '-');
     a.download = `${who}-${Math.round(state.height)}m.png`;
+    if (!state.meta.seen.includes('did:photo')) state.meta.seen.push('did:photo');
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
     audio.cue('buy');

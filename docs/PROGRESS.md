@@ -212,3 +212,4 @@ date, what landed, what is half-done, what's next.
 - Twilight Shelf: a cleaning station, a mottled grouper hanging beside the reef with two cleaner wrasse darting over it (tappable; journal: 29).
 - Sunlit Crown: two seahorses holding on to the seagrass with 3+ meadows (tappable; journal: 30).
 - Midnight Water: a pyrosome drifts across, waves of light running along its tube (tappable; journal: 31).
+- Feats: 27 (+ Every kind of stone, A name, A picture).
