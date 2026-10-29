@@ -7,6 +7,7 @@ import { mulberry32, range, type Rng } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow } from './draw.ts';
 import { createLife, type Stage } from './life.ts';
+import { createGround } from './ground.ts';
 import { createLayerCache } from './layer.ts';
 import { createReef, type ReefLayout } from './reef.ts';
 import { createRuins, type RuinStyle } from './ruins.ts';
@@ -46,6 +47,7 @@ export function createAbyssScene(seed: number): Scene {
   const life = createLife(reefSeed ^ 0x9e3779b9);
   const shoals = createShoals(seed ^ 0x51);
   let bloom: Bloom | null = null;
+  const ground = createGround(reefSeed ^ 0x51f7);
   const effects = createEffects();
 
   const scale = () => Math.min(focus.w, focus.h) / 700;
@@ -147,6 +149,35 @@ export function createAbyssScene(seed: number): Scene {
     ctx.lineTo(w, h);
     ctx.closePath();
     ctx.fill();
+  }
+
+  /** The nearest ridge's line at x (device pixels). */
+  function floorY(x: number): number {
+    const pts = ridges[2]!.points;
+    const span = Math.max(w, focus.w * 1.6);
+    const u = Math.min(1, Math.max(0, (x - (centreX() - span / 2)) / span)) * (pts.length - 1);
+    const i = Math.min(pts.length - 2, Math.floor(u));
+    return baseY() + (pts[i]! + (pts[i + 1]! - pts[i]!) * (u - i)) * focus.h;
+  }
+
+  /** The reef's own light lying on the silt around its foot: wider and brighter as it hosts more glow. */
+  function drawLightPool(ctx: CanvasRenderingContext2D, v: ReefView, t: number): void {
+    const k = Math.min(1, v.symbionts / 40) * (0.6 + 0.4 * v.glowLevel);
+    if (k <= 0) return;
+    const x = centreX(), y = floorY(x) + 10 * scale();
+    const rx = focus.w * (0.14 + 0.16 * k), ry = Math.min(rx * 0.16, Math.max(8, h - y));
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.translate(x, y);
+    ctx.scale(1, ry / rx);
+    const g = ctx.createRadialGradient(0, 0, 0, 0, 0, rx);
+    const a = 0.32 * k * (0.92 + 0.08 * Math.sin(t * 0.7));
+    g.addColorStop(0, `rgba(120,200,255,${a})`);
+    g.addColorStop(0.5, `rgba(90,140,255,${a * 0.4})`);
+    g.addColorStop(1, 'rgba(60,90,255,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(-rx, -rx, rx * 2, rx * 2);
+    ctx.restore();
   }
 
   function drawSnow(ctx: CanvasRenderingContext2D, t: number, layer: number): void {
@@ -341,6 +372,9 @@ export function createAbyssScene(seed: number): Scene {
       if (v.seamount === 'crowded') drawBuriedReefs(ctx, t);
       const vent = v.vent > 0 ? life.drawVent(ctx, st, v.vent, t) : null;
       drawRidge(ctx, ridges[2]!);
+      ground.draw(ctx, w, Math.min(h, focus.y + focus.h), scale(), floorY, { light: '150,160,215', dark: '0,0,8', alpha: 0.9, tracks: true },
+        `${w}x${h}:${focus.x},${focus.y},${focus.w},${focus.h}`);
+      drawLightPool(ctx, v, t);
       if (v.seamount === 'cold') drawBrinePool(ctx, t);
       if (v.seamount === 'warm') drawSmokers(ctx, t);
       life.drawFloor(ctx, st, t);

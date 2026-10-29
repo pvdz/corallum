@@ -7,6 +7,7 @@ import { sight, spot } from './sightings.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow } from './draw.ts';
+import { createGround } from './ground.ts';
 import { createLayerCache } from './layer.ts';
 import { createReef, type ReefLayout } from './reef.ts';
 import { createRuins, type RuinStyle } from './ruins.ts';
@@ -54,6 +55,7 @@ export function createTwilightScene(seed: number): Scene {
   let motes: Mote[] = [];
   const moteSeed = Math.floor(rng() * 1e9);
   const slopeSeed = Math.floor(rng() * 1e9);
+  const ground = createGround(slopeSeed ^ 0x51f7);
   const grazers: Grazer[] = Array.from({ length: MAX_RASP }, () => ({
     lane: rng(), speed: range(rng, 0.012, 0.03) * (rng() < 0.5 ? -1 : 1), phase: rng(),
     size: range(rng, 0.8, 1.25), hue: range(rng, 160, 200),
@@ -157,8 +159,11 @@ export function createTwilightScene(seed: number): Scene {
     g.addColorStop(1, '#0c1222');
     ctx.fillStyle = g;
     ctx.fill();
-    // Boulders furred with silt.
     const s = scale();
+    const surf = (x: number) => slopeY(Math.min(1, Math.max(0, (x - x0) / span)));
+    ground.draw(ctx, w, Math.min(h, focus.y + focus.h), s, surf, { light: '200,212,235', dark: '4,8,22', alpha: 0.75, tracks: false },
+      `${w}x${h}:${focus.x},${focus.y},${focus.w},${focus.h}`);
+    // Boulders furred with silt.
     for (const b of boulders) {
       const bx = x0 + b.u * span;
       const by = slopeY(b.u);
