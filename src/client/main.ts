@@ -1000,6 +1000,7 @@ function startLapse(): void {
   if (actAt(state.height) === 5) return;
   lapseStart = animT;
   hint.classList.add('done');
+  audio.cue('zone');
 }
 function lapseHeight(): number | null {
   if (lapseStart < 0) return null;
