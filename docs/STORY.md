@@ -205,4 +205,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Firefly squid swarm (Midnight) | real animal | OK |
 | Moments: a bloom of jellies (1700 m), the last of the dark (2900 m) | real phenomena; this game's own beats | OK |
 | A blue moon (every seventh full moon) | real-world term, no game lore | OK |
+| Trait Helping habit | this game's own systems | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

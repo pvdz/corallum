@@ -2144,6 +2144,15 @@ export function freeTangle(s: GameState): number {
   return burst(s, TANGLE.seconds * (trait(s, 'gentle') ? 2 : 1));
 }
 
+/** Helping habit: the reef frees a creature left in trouble twenty seconds, for half. Only called while watching. */
+export function helpTangle(s: GameState): number {
+  const tg = currentTangle(s);
+  if (!tg || !trait(s, 'helping') || tg.age < 20) return 0;
+  s.untangled = tg.k;
+  s.tally.freed++;
+  return burst(s, TANGLE.seconds * 0.5 * (trait(s, 'gentle') ? 2 : 1));
+}
+
 /** Pick up the shell: kept by the line if new. Returns its id, or ''. */
 export function pickShell(s: GameState): string {
   const sh = currentShell(s);

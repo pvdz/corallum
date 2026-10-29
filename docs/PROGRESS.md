@@ -673,3 +673,4 @@ date, what landed, what is half-done, what's next.
 - Letting old stone go can turn up a shard of the tablet (chance 0.12).
 - A benthic storm on the Silt Floor: every 12 min a low cloud of stirred silt rolls across for a minute (abyss.ts drawBenthicStorm).
 - The chronicle marks endings under a blue moon (blue ring on the chart) and with all vows kept (gold ring).
+- Trait Helping habit (habit, 6): while watching, a creature left in trouble 20 s is freed by the reef itself for half (economy helpTangle).

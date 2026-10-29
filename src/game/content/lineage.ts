@@ -20,7 +20,7 @@ export const LINEAGE = {
 
 export type TraitId =
   | 'deep-memory' | 'quick-budding' | 'old-bands' | 'remembered-shoals' | 'glimmer' | 'kept-readings' | 'settling'
-  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table' | 'shoal-sense' | 'rasp-sense' | 'old-maps' | 'open-house' | 'water-wise' | 'thorn-wise' | 'moon-born' | 'layering' | 'shell-finder' | 'signal-wise' | 'sun-shy' | 'deep-larder' | 'grain-sense' | 'light-boned' | 'lucky-line' | 'star-gazer' | 'gentle';
+  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table' | 'shoal-sense' | 'rasp-sense' | 'old-maps' | 'open-house' | 'water-wise' | 'thorn-wise' | 'moon-born' | 'layering' | 'shell-finder' | 'signal-wise' | 'sun-shy' | 'deep-larder' | 'grain-sense' | 'light-boned' | 'lucky-line' | 'star-gazer' | 'gentle' | 'helping';
 
 export type Trait = {
   id: TraitId;
@@ -275,6 +275,11 @@ export const TRAITS: readonly Trait[] = [
     id: 'gentle', name: 'Gentle', effect: 'creatures you free from trouble pay twice as much',
     flavour: 'Your line is known for it: small things in trouble come to your branches first.',
     cost: 5, growth: 1, max: 1, kind: 'way',
+  },
+  {
+    id: 'helping', name: 'Helping habit', effect: 'while you watch, the reef frees a creature in trouble itself when you leave it twenty seconds, for half',
+    flavour: 'Your polyps reach for small things in trouble before you have quite noticed them.',
+    cost: 6, growth: 1, max: 1, kind: 'habit',
   },
 ];
 
