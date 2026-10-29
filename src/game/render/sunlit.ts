@@ -674,11 +674,21 @@ export function createSunlitScene(seed: number): Scene {
   function drawFish(ctx: CanvasRenderingContext2D, t: number): void {
     sight('reef-fish');
     const s = scale();
+    // Touched, the fish near the touch dart away from it, and ease back to their lanes.
+    const touch = startled('reef-fish', t);
     for (const f of fish) {
       const u = (((f.phase + t * f.speed) % 1) + 1) % 1;
-      const x = focus.x - focus.w * 0.15 + u * focus.w * 1.3;
-      const y = focus.y + focus.h * (0.25 + f.lane * 0.55) + Math.sin(t * 0.8 + f.phase * 10) * 10 * s;
+      let x = focus.x - focus.w * 0.15 + u * focus.w * 1.3;
+      let y = focus.y + focus.h * (0.25 + f.lane * 0.55) + Math.sin(t * 0.8 + f.phase * 10) * 10 * s;
       const dir = f.speed > 0 ? 1 : -1;
+      if (touch && touch.age < 4) {
+        const dx = x - touch.x, dy = y - touch.y, d = Math.hypot(dx, dy);
+        if (d < 120 * s) {
+          const push = (1 - d / (120 * s)) * 60 * s * Math.min(1, touch.age / 0.25) * Math.max(0, 1 - (touch.age - 0.5) / 3.5);
+          x += (dx / (d || 1)) * push;
+          y += (dy / (d || 1)) * push;
+        }
+      }
       const len = 12 * s * f.size;
       spot('reef-fish', x, y, Math.max(len * 1.5, 22 * dpr));
       ctx.save();

@@ -293,6 +293,8 @@ export function createLife(seed: number) {
     const u = (t % period) / crossing;
     if (u >= 1) return;
     sight('sea-pig');
+    // Touched, the herd pulls its feelers in and stops still for a moment.
+    const tuck = shrink('sea-pig', st.cx + st.w * (0.75 - u * 1.5) + 50 * st.s, st.baseY - 4 * st.s, 90 * st.s, t, 3);
     spot('sea-pig', st.cx + st.w * (0.75 - u * 1.5) + 50 * st.s, st.baseY - 4 * st.s, 70 * st.s);
     for (let k = 0; k < 4; k++) {
       const s = st.s * (1.4 + (k % 2) * 0.35);
@@ -328,7 +330,7 @@ export function createLife(seed: number) {
       for (const fx of [-2, 1, 4]) {
         ctx.beginPath();
         ctx.moveTo(fx * s, -5 * s);
-        ctx.quadraticCurveTo((fx + 1) * s, -9 * s, (fx + 2 + Math.sin(t + fx) * 1.5) * s, -10 * s);
+        ctx.quadraticCurveTo((fx + 1) * s, (-5 - 4 * (1 - tuck)) * s, (fx + 2 + Math.sin(t + fx) * 1.5 * (1 - tuck)) * s, (-5 - 5 * (1 - tuck)) * s);
         ctx.stroke();
       }
       ctx.restore();

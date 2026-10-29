@@ -280,3 +280,4 @@ date, what landed, what is half-done, what's next.
 - Sunlit night: the Rasp sleep at the reef's foot in mucus bubbles (as parrotfish do), up to five, tappable.
 - Fold arrows on collapsible cards stay on the line of the title's last word.
 - Growth chart (Your reef): zone bands in their colours with names, a soft fill under the height line, a dot for now; 90 px tall.
+- Touch: sunlit reef fish near the touch dart away and ease back; sea pigs pull their feelers in.
