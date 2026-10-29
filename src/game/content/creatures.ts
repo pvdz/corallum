@@ -6,7 +6,7 @@ export type CreatureId =
   | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'milky-sea' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration' | 'larvacean' | 'lantern-shark'
   | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'sardine-run' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark' | 'oarfish' | 'flashlight-fish' | 'mantis-shrimp'
   | 'cuttlefish' | 'eagle-rays' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly' | 'tree-worms'
-  | 'shore-bird' | 'pelican' | 'hatchlings' | 'green-flash' | 'flying-fish' | 'dolphin' | 'moon-jelly' | 'sailors' | 'petrel' | 'sea-sparkle' | 'moonbow' | 'far-storm' | 'giant-clam' | 'trumpetfish' | 'breaching' | 'chimaera' | 'rasp-herd' | 'barracuda' | 'firefly-squid' | 'fireworms' | 'sea-spider' | 'gulper' | 'sixgill' | 'meteors' | 'breathing-turtle'
+  | 'shore-bird' | 'pelican' | 'hatchlings' | 'green-flash' | 'flying-fish' | 'dolphin' | 'moon-jelly' | 'sailors' | 'petrel' | 'sea-sparkle' | 'moonbow' | 'far-storm' | 'giant-clam' | 'trumpetfish' | 'breaching' | 'chimaera' | 'rasp-herd' | 'barracuda' | 'firefly-squid' | 'fireworms' | 'sea-spider' | 'man-o-war' | 'gulper' | 'sixgill' | 'meteors' | 'breathing-turtle'
   | 'thorn-star' | 'dragonfish' | 'drill-snail' | 'gull' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish' | 'host-anemone' | 'cleaner-wrasse' | 'boxer-crab' | 'decorator-crab' | 'hermit-crab';
 
 export type Creature = { id: CreatureId; name: string; zone: string; note: string };
@@ -83,6 +83,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'sixgill', name: 'Sixgill shark', zone: 'The Twilight Shelf', note: 'Rare. Old and slow, up from the deep at dusk, gliding low along the slope with an eye that shines green.' },
   { id: 'giant-clam', name: 'Giant clam', zone: 'The Sunlit Crown', note: 'Sits in the sand and never moves again. Between its lips it farms the same small lights you do, in blue and green.' },
   { id: 'trumpetfish', name: 'Trumpetfish', zone: 'The Sunlit Crown', note: 'Hangs head-down among your branches, as still and straight as one of them, waiting for something small to pass.' },
+  { id: 'man-o-war', name: 'A man-o’-war', zone: 'The Breach', note: 'A float of blue glass with a crest for a sail, and below it tentacles as long as your reef is tall. Not one animal but many, sailing as one.' },
   { id: 'sea-spider', name: 'Giant sea spider', zone: 'The Silt Floor', note: 'All legs and almost no body, as wide as a hand, picking its way across the silt so slowly it seems to think about every step.' },
   { id: 'fireworms', name: 'Fireworms', zone: 'The Twilight Shelf', note: 'Only on nights after a full moon. Small worms rise from the sand and swim in tight glowing circles, green as embers, to spawn.' },
   { id: 'firefly-squid', name: 'Firefly squid', zone: 'The Midnight Water', note: 'Rare. Thumb-sized squid rising from the deep in their thousands, every one lit blue at the tips of its arms, a slow upward river of sparks.' },

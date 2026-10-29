@@ -232,6 +232,45 @@ export function createBreachScene(seed: number): Scene {
    * Rarely, a meteor shower: for forty seconds in every twenty minutes, streaks fall across the
    * sky from one point, thick for a while, then thinning out. Touched, a big bright fireball.
    */
+  /** A man-o'-war drifting on the surface, its crest catching the wind; touched, it deflates its sail a moment. */
+  function drawManOWar(ctx: CanvasRenderingContext2D, t: number): void {
+    sight('man-o-war');
+    const s = scale() * 1.6;
+    const wy = waterY();
+    const u = (t * 0.004 + 0.3) % 1;
+    const x = focus.x + focus.w * (0.1 + u * 0.8), y = wy - 3 * s + Math.sin(t * 1.4) * 2 * s;
+    const touch = startled('man-o-war', t);
+    const sag = touch && touch.age < 3 ? Math.sin(Math.min(1, touch.age / 3) * Math.PI) : 0;
+    spot('man-o-war', x, y, 26 * s);
+    ctx.save();
+    // Tentacles below the surface, long and blue, swaying.
+    ctx.strokeStyle = 'rgba(110,140,255,0.45)';
+    ctx.lineWidth = 0.8 * s;
+    for (let k = 0; k < 7; k++) {
+      ctx.beginPath();
+      ctx.moveTo(x - 6 * s + k * 2 * s, wy + 2 * s);
+      ctx.quadraticCurveTo(x - 6 * s + k * 2 * s + Math.sin(t * 0.9 + k) * 10 * s, wy + 30 * s, x - 8 * s + k * 2.5 * s + Math.sin(t * 0.7 + k * 2) * 14 * s, wy + (50 + k * 6) * s);
+      ctx.stroke();
+    }
+    // The float.
+    const g = ctx.createLinearGradient(x, y - 8 * s, x, y + 3 * s);
+    g.addColorStop(0, 'rgba(200,170,255,0.9)');
+    g.addColorStop(1, 'rgba(90,120,240,0.85)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.ellipse(x, y, 11 * s, 4.5 * s, -0.1, 0, Math.PI * 2);
+    ctx.fill();
+    // The crest, a frilled sail along the top.
+    ctx.fillStyle = 'rgba(240,150,230,0.85)';
+    ctx.beginPath();
+    ctx.moveTo(x - 8 * s, y - 2 * s);
+    for (let k = 0; k <= 8; k++) ctx.lineTo(x - 8 * s + k * 2 * s, y - (6 + (k % 2) * 1.5) * s * (1 - 0.7 * sag) * Math.sin((k / 8) * Math.PI));
+    ctx.lineTo(x + 8 * s, y - 2 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
   /** Rarely (every fifteen minutes), far off, a humpback leaps clear of the sea and falls back in a burst of spray. */
   function drawBreaching(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 900, length = 9;
@@ -1427,6 +1466,7 @@ export function createBreachScene(seed: number): Scene {
       drawWaitingFish(ctx, t, v, this.crownAt);
       drawDolphins(ctx, t);
       drawBreaching(ctx, t);
+      drawManOWar(ctx, t);
       drawFlyingFish(ctx, t);
       const sf: Surface = { focus, wy: waterY(), s: scale(), dpr, dawn };
       drawSailors(ctx, t, sf);
