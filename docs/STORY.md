@@ -233,4 +233,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Feat "A floating nursery" | plain description | OK |
 | Yeti crabs creature (Silt Floor vent) | real animal | OK |
 | Moments "A cloud settles" (bristlemouths), "Weed on the crown" (stranded sargassum) | real animals/phenomena; own text | OK |
+| Trait "Drift-wise" | plain description | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

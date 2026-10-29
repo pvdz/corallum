@@ -20,7 +20,7 @@ export const LINEAGE = {
 
 export type TraitId =
   | 'deep-memory' | 'quick-budding' | 'old-bands' | 'remembered-shoals' | 'glimmer' | 'kept-readings' | 'settling'
-  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table' | 'shoal-sense' | 'rasp-sense' | 'old-maps' | 'open-house' | 'water-wise' | 'thorn-wise' | 'moon-born' | 'layering' | 'shell-finder' | 'signal-wise' | 'sun-shy' | 'deep-larder' | 'grain-sense' | 'light-boned' | 'lucky-line' | 'star-gazer' | 'gentle' | 'helping' | 'foster' | 'long-rhythm';
+  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table' | 'shoal-sense' | 'rasp-sense' | 'old-maps' | 'open-house' | 'water-wise' | 'thorn-wise' | 'moon-born' | 'layering' | 'shell-finder' | 'signal-wise' | 'sun-shy' | 'deep-larder' | 'grain-sense' | 'light-boned' | 'lucky-line' | 'star-gazer' | 'gentle' | 'helping' | 'foster' | 'long-rhythm' | 'drift-wise';
 
 export type Trait = {
   id: TraitId;
@@ -295,6 +295,11 @@ export const TRAITS: readonly Trait[] = [
   {
     id: 'foster', name: 'Foster', effect: 'the reef can take in eight drifting fragments, not five',
     flavour: 'Your line makes room for what the current brings, whoever it came from.',
+    cost: 6, growth: 1, max: 1, kind: 'way',
+  },
+  {
+    id: 'drift-wise', name: 'Drift-wise', effect: 'weed rafts and lost shoals pass twice as often',
+    flavour: 'Your line knows the drift and where it goes, and the drifting things seem to know you.',
     cost: 6, growth: 1, max: 1, kind: 'way',
   },
 ];

@@ -2168,7 +2168,7 @@ export function currentTangle(s: GameState): { k: number; x: number; age: number
 export function currentStray(s: GameState): { k: number; x: number; age: number } | null {
   if (actAt(s.height) !== STRAY.zone || !revealed(s, 'shoal') || s.levels.shoal >= (seamount(s).shoalCap ?? Infinity)) return null;
   // A cloud of bristlemouths kept in the branches: lost shoals come twice as often.
-  const period = STRAY.period / (chose(s, 'bristle-cloud', 'a') ? 2 : 1);
+  const period = STRAY.period / (chose(s, 'bristle-cloud', 'a') ? 2 : 1) / (trait(s, 'drift-wise') ? 2 : 1);
   const k = Math.floor(s.t / period);
   if (k <= s.strayed) return null;
   const r = mulberry32((s.seed ^ 0x57a7) + Math.imul(k, 0x9e3779b1));
@@ -2191,10 +2191,11 @@ export function callStray(s: GameState): boolean {
 /** A sargassum raft drifting over the crown now (slot, seconds in), if its young are not yet sheltered. */
 export function currentRaft(s: GameState): { k: number; age: number } | null {
   if (actAt(s.height) !== RAFT.zone) return null;
-  const k = Math.floor(s.t / RAFT.period);
+  const period = RAFT.period / (trait(s, 'drift-wise') ? 2 : 1);
+  const k = Math.floor(s.t / period);
   if (k <= s.rafted) return null;
   const r = mulberry32((s.seed ^ 0x5a6f) + Math.imul(k, 0x9e3779b1));
-  const start = k * RAFT.period + r() * (RAFT.period - RAFT.life);
+  const start = k * period + r() * (period - RAFT.life);
   if (s.t < start || s.t >= start + RAFT.life) return null;
   return { k, age: s.t - start };
 }

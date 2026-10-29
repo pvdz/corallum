@@ -730,3 +730,4 @@ date, what landed, what is half-done, what's next.
 - Creature: yeti crabs on the vent chimney's lower slope (Silt Floor), waving hairy claws in time; touched, they fold their arms.
 - Moments: A cloud settles (1300 m; bristlemouths stay → lost shoals twice as often, or shake them out → calcite ×1.05) and Weed on the crown (3985 m; rafts pay ×1.5, or freed creatures pay ×1.5). Bot 7h28 unchanged.
 - Graphics: under every full moon (Silt Floor to Sunlit Crown) the other reefs' spawn rises through the water as a slow pink snow (render/spawning.ts), swelling in and out with the moon; faintly lit in the deep.
+- Lineage trait Drift-wise (6): weed rafts and lost shoals pass twice as often. Bot 7h28.
