@@ -155,8 +155,10 @@ export function createAudio() {
 
   // The Sunlit Crown crackles: snapping shrimp, thousands of tiny clicks, quiet under everything.
   let clickBuf: AudioBuffer | null = null;
+  /** Rain on the water (set by the game while a shower falls at the Breach). */
+  let raining = false;
   function crackle(): void {
-    if (!ctx || !master || !enabled || zone !== 4) return;
+    if (!ctx || !master || !enabled || (zone !== 4 && !(zone === 5 && raining))) return;
     if (!clickBuf) {
       const len = Math.floor(ctx.sampleRate * 0.004);
       clickBuf = ctx.createBuffer(1, len, ctx.sampleRate);
@@ -170,9 +172,10 @@ export function createAudio() {
       src.buffer = clickBuf;
       const f = ctx.createBiquadFilter();
       f.type = 'highpass';
-      f.frequency.value = 2500 + Math.random() * 3000;
+      // Rain is softer and lower than the shrimp: drops patting the surface.
+      f.frequency.value = raining && zone === 5 ? 900 + Math.random() * 1200 : 2500 + Math.random() * 3000;
       const g = ctx.createGain();
-      g.gain.value = 0.015 + Math.random() * 0.025;
+      g.gain.value = raining && zone === 5 ? 0.01 + Math.random() * 0.015 : 0.015 + Math.random() * 0.025;
       src.connect(f).connect(g).connect(master);
       src.start(t + Math.random() * 0.1);
     }
@@ -276,6 +279,9 @@ export function createAudio() {
     },
     get volume() {
       return volume;
+    },
+    setRain(on: boolean): void {
+      raining = on;
     },
     setZone(z: number): void {
       const next = Math.max(1, Math.min(5, Math.round(z))) as Zone;

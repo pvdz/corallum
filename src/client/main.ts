@@ -1186,6 +1186,8 @@ function frame(now: number): void {
       remember(state, 'mistake', m.title.toLowerCase());
       panel.keepStory('Ossel', OSSEL_MISTAKE.kicker, m.title, m.correction, true);
     }
+    // Rain at the Breach (the same five-minute shower the scene draws).
+    audio.setRain(state.bands.includes('rain') && actAt(state.height) === 5 && animT % 300 < 70);
     // The water turning: a soft swell (not for still water).
     const wNow = waterAt(state).id;
     if (wNow !== waterHeard && waterHeard !== '' && wNow !== 'still') audio.cue('water');
