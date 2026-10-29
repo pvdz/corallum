@@ -635,3 +635,4 @@ date, what landed, what is half-done, what's next.
 - Four more of the reef's own bands in the long Midnight Water (900, 1550, 2200, 2750 m).
 - Sweeps swirl the marine snow away from them (Silt Floor, Midnight Water).
 - Feats Every kind (garden) and Three wishes.
+- Fix: a silent seamount (no Readings) is no longer capped at 3000 m by the Reading gate it could never open; it climbs on, slowly.

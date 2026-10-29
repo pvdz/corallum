@@ -543,7 +543,8 @@ export function cost(s: GameState, id: UpgradeId): number {
  */
 export function heightCap(s: GameState): number {
   let cap = act(LAST_PLAYABLE_ACT).to;
-  if (!has(s, 'inside-the-wall')) cap = Math.min(cap, act(2).to);
+  // A silent seamount has nothing to read: its reef is not held back by a Reading.
+  if (!has(s, 'inside-the-wall') && !seamount(s).noReadings) cap = Math.min(cap, act(2).to);
   if (!s.truce.wall) cap = Math.min(cap, act(3).to - 1);
   if (!s.dialects.spawn) cap = Math.min(cap, act(4).to - 1);
   return cap;
@@ -553,7 +554,7 @@ export type CapReason = 'reading' | 'wall' | 'spawn-dialect' | 'surface';
 
 /** What holds the reef where it is (the lowest story gate), or 'surface' at the top. */
 export function capReason(s: GameState): CapReason {
-  if (!has(s, 'inside-the-wall')) return 'reading';
+  if (!has(s, 'inside-the-wall') && !seamount(s).noReadings) return 'reading';
   if (!s.truce.wall) return 'wall';
   if (!s.dialects.spawn) return 'spawn-dialect';
   return 'surface';
