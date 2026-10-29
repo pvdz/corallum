@@ -376,8 +376,9 @@ export function createMidnightScene(seed: number): Scene {
    * Rarely, a giant squid: once in every twenty minutes a huge dim shape slides through the deep
    * background, arms trailing, one eye the size of a dinner plate catching the reef's light.
    */
-  function drawGiantSquid(ctx: CanvasRenderingContext2D, t: number): void {
-    const period = 1200, crossing = 50;
+  /** `curious`: you held your light when it first passed (a moment), and it comes twice as often. */
+  function drawGiantSquid(ctx: CanvasRenderingContext2D, t: number, curious = false): void {
+    const period = curious ? 600 : 1200, crossing = 50;
     const u = ((t + 600) % period) / crossing;
     if (u >= 1) return;
     sight('giant-squid');
@@ -787,7 +788,7 @@ export function createMidnightScene(seed: number): Scene {
       const L = layout(v);
       water.draw(ctx, w, h, t, 0.2, `${w}x${h} ${p.toFixed(3)}`, (c, tq) => drawWater(c, tq, p));
       drawFlashes(ctx, t);
-      drawGiantSquid(ctx, t);
+      drawGiantSquid(ctx, t, v.moments.squid === 'b');
       // The old stone's lights answer the scouts listening at it.
       // Each Reading of Thousandfold's bands wakes more of the lights in its drowned towers.
       // A Reading just read: every light in the old stone flares, then settles.
