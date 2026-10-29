@@ -182,3 +182,4 @@ date, what landed, what is half-done, what's next.
 - Tap a creature to name it: large creatures (anglerfish, vampire squid, manta, octopus, whale, turtle, clownfish, dolphins) record where they were drawn each frame (sightings.spot); a tap shows a label with the journal note beside it (the sweep still happens).
 - Sunlit Crown: dappled light on the coral, caustic glints drifting over the branches by day (fading at night).
 - Tap Ossel on the Silt Floor: it answers with one of eight lines, in turn (OSSEL_LINES in content/whispers.ts).
+- Depth gauge: a slim bar at the scene's edge, one segment per zone in its colour, a glowing marker and label at the reef's height.

@@ -13,7 +13,7 @@
 // Console: corallum.skip(seconds), corallum.state, corallum.speed = x, corallum.feast
 
 import type { UpgradeId } from '../game/content/types.ts';
-import { act, actAt } from '../game/content/acts.ts';
+import { ACTS, act, actAt } from '../game/content/acts.ts';
 import { createAbyssScene } from '../game/render/abyss.ts';
 import { createMidnightScene } from '../game/render/midnight.ts';
 import { createBreachScene } from '../game/render/breach.ts';
@@ -609,6 +609,37 @@ function qualityCheck(dt: number): void {
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+// The depth gauge: the whole column from the seamount to the surface, one equal segment per
+// zone (linear within it), with a marker at the reef's height.
+const gauge = document.createElement('div');
+gauge.id = 'depth-gauge';
+const gaugeMarker = document.createElement('i');
+const gaugeLabel = document.createElement('span');
+for (const a of ACTS) {
+  const seg = document.createElement('b');
+  seg.className = `zone-${a.n}`;
+  seg.title = a.name;
+  gauge.append(seg);
+}
+gauge.append(gaugeMarker, gaugeLabel);
+ui.append(gauge);
+/** 0 (seamount) … 1 (surface) along the gauge. */
+function gaugeAt(h: number): number {
+  const n = actAt(h);
+  const a = ACTS[n - 1]!;
+  return (n - 1 + Math.min(1, (h - a.from) / (a.to - a.from))) / ACTS.length;
+}
+let gaugeShown = -1;
+function updateGauge(): void {
+  const h = Math.round(state.height * 10) / 10;
+  if (h === gaugeShown) return;
+  gaugeShown = h;
+  const f = gaugeAt(state.height);
+  gaugeMarker.style.bottom = `${f * 100}%`;
+  gaugeLabel.style.bottom = `${f * 100}%`;
+  gaugeLabel.textContent = metres(state.height);
+}
+
 // View mode: hide the panel and let the reef have the whole screen (button top-left, or H).
 let viewMode = false;
 const viewBtn = document.createElement('button');
@@ -725,6 +756,7 @@ function frame(now: number): void {
   lastWhaleLap = whaleLap;
   whisperCheck(now);
   if (fpsBox) fpsTick(now, dt);
+  updateGauge();
   // The journal: creatures drawn on screen are recorded the first time they are seen.
   if (now - lastJournal > 1000) {
     lastJournal = now;

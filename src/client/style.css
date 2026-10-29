@@ -488,3 +488,27 @@ html.view-mode #zone-title, html.view-mode #whisper, html.view-mode #milestone {
 #creature-label.show { opacity: 1; }
 #creature-label strong { font-family: var(--display); font-weight: 400; font-size: 15px; color: #eaf6ff; }
 #creature-label span { font-size: 12px; color: var(--ink-dim); font-style: italic; line-height: 1.35; }
+
+/* ---------- Depth gauge: the whole column, a segment per zone, the reef's height marked ---------- */
+#depth-gauge {
+  position: absolute; top: 18%; bottom: 18%; width: 6px; right: 18px; pointer-events: auto;
+  display: flex; flex-direction: column-reverse; border-radius: 3px; overflow: visible;
+  box-shadow: 0 0 0 1px rgba(150, 200, 255, 0.15);
+}
+@media (min-width: 800px) { #depth-gauge { right: calc(var(--panel-w) + 18px); } }
+@media (max-width: 799px) { #depth-gauge { top: 14%; bottom: auto; height: 30%; right: 10px; } }
+html.view-mode #depth-gauge { right: 18px; }
+#depth-gauge b { flex: 1; display: block; }
+#depth-gauge b.zone-1 { background: #121032; border-radius: 0 0 3px 3px; }
+#depth-gauge b.zone-2 { background: #0b1240; }
+#depth-gauge b.zone-3 { background: #1a3f7a; }
+#depth-gauge b.zone-4 { background: #2fa3c8; }
+#depth-gauge b.zone-5 { background: #c9b8ff; border-radius: 3px 3px 0 0; }
+#depth-gauge i {
+  position: absolute; left: 50%; width: 12px; height: 12px; margin: 0 0 -6px -6px; border-radius: 50%;
+  background: #ffd9c8; box-shadow: 0 0 10px rgba(255, 190, 160, 0.9); transition: bottom 1s ease;
+}
+#depth-gauge span {
+  position: absolute; right: 14px; margin-bottom: -7px; font-size: 11px; color: var(--ink-dim); white-space: nowrap;
+  transition: bottom 1s ease; font-variant-numeric: tabular-nums;
+}
