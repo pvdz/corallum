@@ -3,7 +3,7 @@
 // gesture before audio can start anyway).
 
 export type Zone = 1 | 2 | 3 | 4 | 5;
-export type Cue = 'buy' | 'sweep' | 'story' | 'choice' | 'release' | 'spawning' | 'whisper' | 'feast' | 'whale';
+export type Cue = 'buy' | 'sweep' | 'story' | 'choice' | 'release' | 'spawning' | 'whisper' | 'feast' | 'whale' | 'zone';
 
 /** Per zone: root frequency of the pad, pad brightness, and how much surf noise. */
 const ZONES: Record<Zone, { root: number; bright: number; surf: number; notes: number[] }> = {
@@ -250,6 +250,10 @@ export function createAudio() {
         case 'story':
           bell(root / 2, 0.08, 4);
           bell((root / 2) * 1.5, 0.04, 4);
+          break;
+        case 'zone':
+          // A new zone: a slow rising chord, a fifth and an octave over the zone's root.
+          for (const [i, n] of [0, 7, 12, 19].entries()) setTimeout(() => bell(root * 2 ** (n / 12) / 2, 0.05, 4), i * 260);
           break;
         case 'whale':
           // A far whale: two long sliding calls with a slow wobble, under everything else.

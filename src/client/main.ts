@@ -508,6 +508,30 @@ function showJournalNote(kicker: string, name: string): void {
   next();
 }
 
+/** Crossing into a new zone: a rush of bright motes streaming up past the reef during the fade. */
+function drawAscent(k: number): void {
+  const h = canvas.height;
+  const a = Math.sin(Math.PI * k);
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 70; i++) {
+    const x = focusNow.x + ((i * 0.618) % 1) * focusNow.w;
+    const speed = 0.6 + ((i * 0.37) % 1) * 0.9;
+    const y = h - (((k * speed * 1.6 + (i * 0.29) % 1) % 1.2) * h * 1.1);
+    const len = (14 + (i % 5) * 6) * dpr;
+    const g = ctx.createLinearGradient(x, y, x, y + len);
+    g.addColorStop(0, `rgba(220,240,255,${0.7 * a})`);
+    g.addColorStop(1, 'rgba(220,240,255,0)');
+    ctx.strokeStyle = g;
+    ctx.lineWidth = 1.5 * dpr;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x, y + len);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
 function showZoneTitle(n: number): void {
   const a = act(n);
   zoneTitle.innerHTML = '';
@@ -798,6 +822,11 @@ function frame(now: number): void {
     fadeStart = tNow;
     scene = want;
     showZoneTitle(actAt(state.height));
+    audio.cue('zone');
+    // Let the new zone arrive (title, ascent) before the band that tells it opens.
+    panel.holdStories(4000);
+    whisper.classList.remove('show');
+    lastWhisper = Math.max(lastWhisper, now - 80_000 + 10_000);
   }
   const p0 = performance.now();
   scene.draw(ctx, tNow, v);
@@ -811,6 +840,7 @@ function frame(now: number): void {
       ctx.globalAlpha = 1 - k * k * (3 - 2 * k);
       ctx.drawImage(fadeCanvas, 0, 0);
       ctx.restore();
+      drawAscent(k);
     }
   }
   const fe = currentFeast(state);
