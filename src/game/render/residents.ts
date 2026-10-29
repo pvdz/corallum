@@ -59,6 +59,7 @@ export function drawResidents(ctx: CanvasRenderingContext2D, reef: Reef, L: Reef
     else if (id === 'cleaner-wrasse') wrasse(ctx, reef, L, s, t, seed);
     else if (id === 'boxer-crab') { if (floor) boxer(ctx, L, s, t, floor); }
     else if (id === 'decorator-crab') { if (floor) decorator(ctx, L, s, t, floor); }
+    else if (id === 'hermit-crab') { if (floor) hermit(ctx, L, s, t, floor); }
   }
   ctx.restore();
 }
@@ -206,6 +207,48 @@ function dusters(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s: nu
       ctx.stroke();
     }
   }
+}
+
+/** A hermit crab walking the sand in a borrowed spiral shell; touched, it pulls inside. */
+function hermit(ctx: CanvasRenderingContext2D, L: ReefLayout, s0: number, t: number, floor: (x: number) => number): void {
+  const s = s0 * 1.7;
+  const touch = startled('hermit-crab', t);
+  const hide = touch && touch.age < 5;
+  const x = L.cx + 0.22 * L.unit + (hide ? 0 : Math.sin(t * 0.2) * 14 * s), y = floor(x) - 1 * s;
+  spot('hermit-crab', x, y - 5 * s, 13 * s);
+  if (!hide) {
+    // Legs and a big claw out of the shell's mouth.
+    ctx.strokeStyle = '#c0503a';
+    ctx.lineWidth = 0.9 * s;
+    for (let q = 0; q < 3; q++) {
+      ctx.beginPath();
+      ctx.moveTo(x - 3 * s, y - 3 * s);
+      ctx.lineTo(x - (6 + q * 1.5) * s, y + 0.5 * s - Math.abs(Math.sin(t * 4 + q)) * s);
+      ctx.stroke();
+    }
+    ctx.fillStyle = '#d8604a';
+    ctx.beginPath();
+    ctx.ellipse(x - 6 * s, y - 4 * s, 2 * s, 1.4 * s, -0.3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#111';
+    ctx.beginPath();
+    ctx.arc(x - 5 * s, y - 7 * s, 0.6 * s, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  // The borrowed shell: a spiral whorl.
+  ctx.fillStyle = '#e8d2b0';
+  ctx.beginPath();
+  ctx.ellipse(x + 1 * s, y - 4 * s, 5 * s, 4 * s, -0.2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(120,80,50,0.7)';
+  ctx.lineWidth = 0.7 * s;
+  ctx.beginPath();
+  for (let a = 0; a < Math.PI * 4; a += 0.25) {
+    const r = 4 * s * (1 - a / (Math.PI * 4.4));
+    const px = x + 1.5 * s + Math.cos(a) * r, py = y - 4 * s + Math.sin(a) * r * 0.8;
+    if (a === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
 }
 
 /** A decorator crab at the reef's foot, wearing sponge and weed; touched, it freezes, all legs in. */

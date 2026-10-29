@@ -3,7 +3,7 @@
 // lives here; homes are few, so which to take in is a choice that changes with the zone.
 // Taking one in or letting it go is free and immediate.
 
-export type ResidentId = 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish' | 'host-anemone' | 'cleaner-wrasse' | 'boxer-crab' | 'decorator-crab';
+export type ResidentId = 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish' | 'host-anemone' | 'cleaner-wrasse' | 'boxer-crab' | 'decorator-crab' | 'hermit-crab';
 
 export type Resident = {
   id: ResidentId;
@@ -59,6 +59,10 @@ export const RESIDENTS: readonly Resident[] = [
   {
     id: 'feather-duster', name: 'Feather dusters', metres: 3400, effect: 'plankton ×1.3',
     text: 'Worms in tubes, each with a crown of feathers combing the water. What they miss, the polyps catch.',
+  },
+  {
+    id: 'hermit-crab', name: 'A hermit crab', metres: 3800, effect: 'shells wash up twice as often',
+    text: 'It lives in somebody else’s shell and is always looking for a better one. Wherever it goes, empty shells turn up.',
   },
   {
     id: 'damselfish', name: 'Farmer damselfish', metres: 3800, effect: 'bloom ×1.3',

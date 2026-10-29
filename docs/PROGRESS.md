@@ -701,3 +701,4 @@ date, what landed, what is half-done, what's next.
 - Fireworms on the Twilight Shelf: on nights after the full moon, small glowing green rings spiral up from the sand.
 - The thermocline on the Twilight Shelf: a faint wavering band where warm water rides over cold (twilight.ts drawThermocline).
 - A giant sea spider picks its way across the Silt Floor (touched, it freezes, legs folded).
+- Resident: a hermit crab (3800 m): shells wash up twice as often; drawn on the Sunlit sand in a borrowed spiral shell (pulls in when touched).

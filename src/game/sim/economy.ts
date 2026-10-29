@@ -2120,10 +2120,12 @@ export function rideSwell(s: GameState): number {
 /** The shell lying on the Sunlit sand now (slot, place 0..1, kind), if one is still to pick up. */
 export function currentShell(s: GameState): { k: number; x: number; id: string } | null {
   if (actAt(s.height) !== SHELL.zone) return null;
-  const k = Math.floor(s.t / SHELL.period);
+  // A hermit crab in the branches: shells wash up twice as often.
+  const period = SHELL.period / (lives(s, 'hermit-crab') ? 2 : 1);
+  const k = Math.floor(s.t / period);
   if (k <= s.shelled) return null;
   const r = mulberry32((s.seed ^ 0x5e11) + Math.imul(k, 0x9e3779b1));
-  const start = k * SHELL.period + r() * (SHELL.period - SHELL.life * 2);
+  const start = k * period + r() * (period - SHELL.life * 2);
   const life = SHELL.life * (trait(s, 'shell-finder') ? 2 : 1);
   if (s.t < start || s.t >= start + life) return null;
   // New kinds first, then any.
