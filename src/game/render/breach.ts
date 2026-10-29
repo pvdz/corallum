@@ -516,6 +516,43 @@ export function createBreachScene(seed: number): Scene {
    * small rings spreading on the surface where the drops land.
    */
   /**
+   * A turtle surfacing: every three minutes a head and the top of a shell break the water beside
+   * the crown, a puff of breath, and down again. Touched, it ducks under at once.
+   */
+  function drawBreathingTurtle(ctx: CanvasRenderingContext2D, t: number, crownX: number): void {
+    const period = 180, up = 9;
+    const touch = startled('breathing-turtle', t);
+    const u = (t % period) / up;
+    if (u >= 1 || (touch && touch.age < 4)) return;
+    sight('breathing-turtle');
+    const s = scale() * 1.6;
+    const rise = Math.sin(u * Math.PI);
+    const x = crownX + 160 * s, wy = waterY();
+    spot('breathing-turtle', x, wy - 6 * s, 26 * s);
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, w, wy + 1);
+    ctx.clip();
+    // The shell's top, barely out of the water.
+    ctx.fillStyle = '#4d5a3a';
+    ctx.beginPath();
+    ctx.ellipse(x - 14 * s, wy + 4 * s - rise * 6 * s, 18 * s, 7 * s, 0, Math.PI, 0);
+    ctx.fill();
+    // The head, higher, nose up.
+    ctx.fillStyle = '#6a7350';
+    ctx.beginPath();
+    ctx.ellipse(x + 6 * s, wy - rise * 10 * s, 6 * s, 4.5 * s, -0.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#121410';
+    ctx.beginPath();
+    ctx.arc(x + 8 * s, wy - rise * 11 * s, 0.9 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    // A puff of breath at the top of the rise.
+    if (u > 0.4 && u < 0.7) glow(ctx, x + 10 * s, wy - 16 * s, 8 * s, '230,235,245', 0.4 * Math.sin(((u - 0.4) / 0.3) * Math.PI));
+  }
+
+  /**
    * A moonbow: for a little while after each shower, with the moon bright enough, a pale arc
    * stands over the sea on the side away from the moon, its colours barely there.
    */
@@ -1131,6 +1168,7 @@ export function createBreachScene(seed: number): Scene {
       const sf: Surface = { focus, wy: waterY(), s: scale(), dpr, dawn };
       drawSailors(ctx, t, sf);
       drawPetrels(ctx, t, sf);
+      drawBreathingTurtle(ctx, t, this.crownAt[0]);
       drawSeaSparkle(ctx, t, sf, this.crownAt[0]);
       if (v.sinceBreach >= 0) drawHatchlings(ctx, t, v.sinceBreach);
       if (v.sinceBreach >= 60) drawPelican(ctx, t);
