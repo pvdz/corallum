@@ -3,7 +3,7 @@
 
 export type CreatureId =
   | 'jelly' | 'tripod-fish' | 'isopod' | 'brittle-star' | 'rattail' | 'sea-pig' | 'brine-pool' | 'smokers' | 'dumbo' | 'squat-lobster' | 'sea-lily' | 'glass-sponge' | 'tube-worm' | 'sea-pen' | 'vent-shrimp'
-  | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'milky-sea' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration' | 'larvacean'
+  | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'milky-sea' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration' | 'larvacean' | 'lantern-shark'
   | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'sardine-run' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark' | 'oarfish' | 'flashlight-fish' | 'mantis-shrimp'
   | 'cuttlefish' | 'eagle-rays' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly'
   | 'shore-bird' | 'pelican' | 'hatchlings' | 'green-flash' | 'flying-fish' | 'dolphin' | 'moon-jelly' | 'sailors' | 'petrel' | 'sea-sparkle' | 'moonbow'
@@ -38,6 +38,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'vampire-squid', name: 'Vampire squid', zone: 'The Midnight Water', note: 'A red cloak of arms, blue eyes, and lights at the tips of its fins.' },
   { id: 'whale-fall', name: 'A whale fall', zone: 'The Midnight Water', note: 'Bones on the flank, and a whole small world living off them.' },
   { id: 'pyrosome', name: 'Pyrosome', zone: 'The Midnight Water', note: 'A tube of thousands of little lights, flashing one after another.' },
+  { id: 'lantern-shark', name: 'Lantern shark', zone: 'The Midnight Water', note: 'A shark no longer than a branch, its belly lit faintly so that from below it vanishes against the light.' },
   { id: 'larvacean', name: 'Giant larvacean', zone: 'The Midnight Water', note: 'Rare. A tadpole the size of a finger, beating its tail inside a house of clear mucus as wide as your crown.' },
   { id: 'giant-squid', name: 'Giant squid', zone: 'The Midnight Water', note: 'Rare. A shape longer than the reef, an eye like a plate, and gone.' },
   { id: 'migration', name: 'The migration', zone: 'The Midnight Water', note: 'Every night the deep rises to feed: the biggest journey any animals make.' },
@@ -101,7 +102,7 @@ export const CREATURES: readonly Creature[] = [
 export const GIFT = { seconds: 30, cooldown: 180, holdShare: 0.3, rare: 3 } as const;
 export type GiftStock = 'calcite' | 'glow' | 'plankton' | 'sand' | 'bloom' | 'spawn';
 const GLOWING: readonly CreatureId[] = [
-  'jelly', 'comb-jelly', 'siphonophore', 'anglerfish', 'vampire-squid', 'pyrosome', 'moon-jelly', 'sea-firefly', 'sea-sparkle', 'sea-pen', 'flashlight-fish',
+  'jelly', 'comb-jelly', 'siphonophore', 'anglerfish', 'vampire-squid', 'pyrosome', 'moon-jelly', 'sea-firefly', 'sea-sparkle', 'sea-pen', 'flashlight-fish', 'lantern-shark',
 ];
 export function giftOf(id: CreatureId): GiftStock {
   if (GLOWING.includes(id)) return 'glow';

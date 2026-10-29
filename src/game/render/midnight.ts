@@ -440,6 +440,46 @@ export function createMidnightScene(seed: number): Scene {
   }
 
   /**
+   * A lantern shark: every few minutes a small dark shark cruises slowly across low in the water,
+   * its belly lit with a soft line of light. Touched, its light goes out and it slips away faster.
+   */
+  function drawLanternShark(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 260, pass = 60;
+    const touch = startled('lantern-shark', t);
+    let u = (t % period) / pass;
+    if (touch && touch.age < 10 && u < 1.2) u += touch.age * 0.06;
+    if (u >= 1) return;
+    sight('lantern-shark');
+    const s = scale() * 1.6;
+    const dir = Math.floor(t / period) % 2 ? -1 : 1;
+    const x = focus.x + focus.w * (dir > 0 ? -0.1 + u * 1.2 : 1.1 - u * 1.2), y = focus.y + focus.h * 0.7 + Math.sin(t * 0.3) * 6 * s;
+    spot('lantern-shark', x, y, 26 * s);
+    const lit = touch && touch.age < 10 ? 0 : 1;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(dir, 1);
+    const sway = Math.sin(t * 2) * 2 * s;
+    ctx.fillStyle = '#141824';
+    ctx.beginPath();
+    ctx.moveTo(18 * s, 0);
+    ctx.quadraticCurveTo(10 * s, -5 * s, -8 * s, -3 * s);
+    ctx.lineTo(-16 * s, -7 * s + sway);
+    ctx.lineTo(-14 * s, 0);
+    ctx.lineTo(-17 * s, 5 * s + sway);
+    ctx.lineTo(-8 * s, 2 * s);
+    ctx.quadraticCurveTo(8 * s, 5 * s, 18 * s, 0);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(2 * s, -4 * s); ctx.lineTo(-2 * s, -9 * s); ctx.lineTo(-4 * s, -3.5 * s); ctx.fill();
+    if (lit) {
+      ctx.globalCompositeOperation = 'lighter';
+      for (let k = 0; k < 6; k++) glow(ctx, (12 - k * 4) * s, 2.5 * s, 4 * s, '120,190,255', 0.35);
+      glow(ctx, 14 * s, -1 * s, 2.5 * s, '180,255,220', 0.6);
+    }
+    ctx.restore();
+  }
+
+  /**
    * Rarely, a giant larvacean: a mucus house as wide as the crown drifting slowly across, an inner
    * filter like folded wings, and in it a small tadpole whose beating tail pumps the water through.
    * Touched, the tadpole bolts out of the back and the empty house drifts on, slowly collapsing.
@@ -907,6 +947,7 @@ export function createMidnightScene(seed: number): Scene {
       drawRising(ctx, t, w, h, focus, dpr, v.rising, true);
       drawGiantSquid(ctx, t, v.moments.squid === 'b');
       drawLarvacean(ctx, t);
+      drawLanternShark(ctx, t);
       // The old stone's lights answer the scouts listening at it.
       // Each Reading of Thousandfold's bands wakes more of the lights in its drowned towers.
       // A Reading just read: every light in the old stone flares, then settles.
