@@ -91,6 +91,7 @@ export function generateCoral(seed: number, form: CoralForm = 'fan'): Coral {
     np.push(i - 1);
   }
 
+  const children = new Map<number, number[]>();
   for (let iter = 0; iter < 400 && nx.length < MAX_NODES; iter++) {
     const dirX = new Float64Array(nx.length);
     const dirY = new Float64Array(nx.length);
@@ -124,7 +125,13 @@ export function generateCoral(seed: number, form: CoralForm = 'fan'): Coral {
       dx /= len; dy /= len;
       const x = nx[n]! + dx * STEP + range(rng, -0.002, 0.002);
       const y = ny[n]! + dy * STEP;
+      // A node pulled the same way again would bud on top of its last child: skip it, or the
+      // reef grows stacks of nodes on one spot (which draw as one over-bright blot).
+      const kids = children.get(n);
+      if (kids?.some((c) => Math.hypot(nx[c]! - x, ny[c]! - y) < STEP * 0.5)) continue;
       nx.push(x); ny.push(y); np.push(n);
+      if (kids) kids.push(nx.length - 1);
+      else children.set(n, [nx.length - 1]);
       grew = true;
     }
     if (!grew) {

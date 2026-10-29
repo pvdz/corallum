@@ -26,7 +26,7 @@ import { runBot } from '../game/sim/bot.ts';
 import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, greatTide, calciteHold, choose, ended, moonFull, moonPhase, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
-import { metres, num } from '../game/ui/format.ts';
+import { metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio } from '../game/audio/audio.ts';
 import { LINEAGE_BANDS } from '../game/content/lineage.ts';
 import { CREATURES } from '../game/content/creatures.ts';
@@ -158,7 +158,20 @@ let calmOn = false;
 try { calmOn = localStorage.getItem(CALM_KEY) === 'on'; } catch { /* no storage */ }
 document.documentElement.classList.toggle('calm', calmOn);
 
+const SCI_KEY = 'corallum.sci';
+let sciOn = false;
+try { sciOn = localStorage.getItem(SCI_KEY) === 'on'; } catch { /* no storage */ }
+setScientific(sciOn);
+
 const panel = createPanel(ui, {
+  sci: {
+    get: () => sciOn,
+    set(on) {
+      sciOn = on;
+      setScientific(on);
+      try { localStorage.setItem(SCI_KEY, on ? 'on' : 'off'); } catch { /* no storage */ }
+    },
+  },
   rename(name) {
     state.meta.name = name;
     showReefName();

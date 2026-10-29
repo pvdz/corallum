@@ -183,3 +183,8 @@ date, what landed, what is half-done, what's next.
 - Sunlit Crown: dappled light on the coral, caustic glints drifting over the branches by day (fading at night).
 - Tap Ossel on the Silt Floor: it answers with one of eight lines, in turn (OSSEL_LINES in content/whispers.ts).
 - Depth gauge: a slim bar at the scene's edge, one segment per zone in its colour, a glowing marker and label at the reef's height.
+- Fix: the coral generator could stack dozens of nodes on one spot (a node pulled the same way
+  each iteration budded onto its own last child), which drew as a hard white disc once glints or
+  glows landed there. A node no longer buds where it already has a child.
+- Rain on the Sunlit Crown after the band "Rain": a one-minute shower every five, rings on the surface.
+- Reef tab: scientific number notation switch (1.23e9).

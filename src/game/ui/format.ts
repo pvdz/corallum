@@ -2,11 +2,18 @@
 
 const SUFFIXES = ['', 'k', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'No', 'Dc'];
 
+let scientific = false;
+/** Show large numbers as 1.23e9 instead of 1.23B (a player setting). */
+export function setScientific(on: boolean): void {
+  scientific = on;
+}
+
 export function num(x: number): string {
   if (!Number.isFinite(x)) return '∞';
   const a = Math.abs(x);
   if (a < 10) return x.toFixed(1);
   if (a < 1000) return Math.floor(x).toString();
+  if (scientific) return x.toExponential(2).replace('e+', 'e');
   const tier = Math.min(SUFFIXES.length - 1, Math.floor(Math.log10(a) / 3));
   const scaled = x / 1000 ** tier;
   return `${scaled.toFixed(scaled < 10 ? 2 : scaled < 100 ? 1 : 0)}${SUFFIXES[tier]}`;

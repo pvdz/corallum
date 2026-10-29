@@ -231,6 +231,36 @@ export function createSunlitScene(seed: number): Scene {
   }
 
   /**
+   * Rain (after the band "Rain"): a shower for one minute in every five. Seen from below, drops
+   * make little expanding rings on the surface and the light dims a little.
+   */
+  function drawRain(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 300, length = 60;
+    const u = (t % period) / length;
+    if (u >= 1) return;
+    const strength = Math.min(1, u * 5, (1 - u) * 5);
+    ctx.save();
+    ctx.fillStyle = `rgba(20,40,70,${0.12 * strength})`;
+    ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = `rgba(230,245,255,${0.55 * strength})`;
+    ctx.lineWidth = 1 * dpr;
+    const top = focus.y + focus.h * 0.03;
+    for (let i = 0; i < 60; i++) {
+      const life = 1.2;
+      const ph = ((t + i * 0.37) % life) / life;
+      const lap = Math.floor((t + i * 0.37) / life);
+      const r = mulberry32(i * 977 + lap);
+      const x = focus.x + r() * focus.w;
+      const y = top + r() * focus.h * 0.05;
+      ctx.beginPath();
+      ctx.ellipse(x, y, (2 + ph * 14) * dpr, (0.6 + ph * 3) * dpr, 0, 0, Math.PI * 2);
+      ctx.globalAlpha = 1 - ph;
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  /**
    * Dappled light on the coral: the caustic net from the surface moving over the branches, drawn
    * as soft glints on the reef's nodes where the pattern is bright.
    */
@@ -513,6 +543,7 @@ export function createSunlitScene(seed: number): Scene {
       const night = nightAt(t);
       const L = layout(v, form);
       water.draw(ctx, w, h, t, 0.2, `${w}x${h} ${p.toFixed(3)}`, (c, tq) => drawWater(c, tq, p));
+      if (v.bands.includes('rain')) drawRain(ctx, t);
       drawWhale(ctx, t);
       drawLarvae(ctx, t);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#5d7d96');
