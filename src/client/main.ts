@@ -169,7 +169,23 @@ setScientific(sciOn);
 const VOL_KEY = 'corallum.volume';
 try { const v = Number(localStorage.getItem(VOL_KEY)); if (localStorage.getItem(VOL_KEY) !== null && Number.isFinite(v)) audio.setVolume(v); } catch { /* no storage */ }
 
+// Vibration on phones (where the browser supports it): a tick per purchase, a longer pulse for
+// milestones and feats. On by default on touch devices; a Reef-tab switch turns it off.
+const BUZZ_KEY = 'corallum.buzz';
+let buzzOn = window.matchMedia('(pointer: coarse)').matches;
+try { const v = localStorage.getItem(BUZZ_KEY); if (v !== null) buzzOn = v === 'on'; } catch { /* no storage */ }
+function buzz(ms: number | number[]): void {
+  if (buzzOn && 'vibrate' in navigator) navigator.vibrate(ms);
+}
+
 const panel = createPanel(ui, {
+  buzz: {
+    get: () => buzzOn,
+    set(on) {
+      buzzOn = on;
+      try { localStorage.setItem(BUZZ_KEY, on ? 'on' : 'off'); } catch { /* no storage */ }
+    },
+  },
   volume: {
     get: () => audio.volume,
     set(v) {
@@ -452,6 +468,7 @@ function purchase(id: UpgradeId): boolean {
   if (!buy(state, id)) return false;
   scene.effect(id);
   audio.cue('buy');
+  buzz(8);
   if (id === 'polyp' || id === 'symbiont') {
     const ms = MILESTONES[id].find((m) => before < m.level && state.levels[id] >= m.level);
     if (ms) showMilestone(ms, id === 'polyp' ? 'polyps' : 'glimmerseed');
@@ -485,6 +502,7 @@ function showMilestone(ms: Milestone, what: string): void {
   milestoneBox.classList.add('show');
   audio.cue('choice');
   scene.effect('reading');
+  buzz([30, 60, 30]);
 }
 
 const journalNote = document.createElement('div');
@@ -893,6 +911,7 @@ function frame(now: number): void {
       state.meta.seen.push(`f:${f.id}`);
       state.meta.lineage += 1;
       showJournalNote('Feat · +1 lineage', f.name);
+      buzz(25);
       audio.cue('buy');
     }
   }
