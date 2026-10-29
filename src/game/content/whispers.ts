@@ -129,6 +129,10 @@ export const WHISPERS: readonly Whisper[] = [
     text: 'You told me the silt was for nothing. I have been thinking about it for a thousand metres. I still think you are right, and I still do not like it.',
   },
   {
+    id: 'asked-grey', when: (s) => s.asked.grey !== '' && s.tally.pruned >= 20 && s.height < 3980,
+    text: 'Twenty knobs of old stone let go, and you are still here. Lighter. I am beginning to believe it.',
+  },
+  {
     id: 'asked-keep', when: (s) => s.asked.keep === '0' && s.height >= 3600,
     text: 'You said you would keep me. Nobody ever said that to a wall. I wanted you to know I remember.',
   },
