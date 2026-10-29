@@ -57,49 +57,85 @@ export function drawPool(ctx: CanvasRenderingContext2D, cx: number, waterY: numb
   ctx.restore();
 }
 
-/** The lantern spire: a tapering stone shaft from the floor, lamps hung along it at the last stage. */
+/** The lantern spire: a rough shaft of stacked stone from the floor, lamps hung along it. */
 export function drawSpire(ctx: CanvasRenderingContext2D, F: Focus, stage: number, s: number, t: number, floorY: number): void {
   if (stage <= 0) return;
   const x = F.x + F.w * 0.17;
   const tall = [0, 0.12, 0.42, 0.6][stage]! * F.h;
-  const w0 = 26 * s, w1 = 8 * s;
+  const w0 = 30 * s, w1 = 9 * s;
+  const halfAt = (k: number) => w0 + (w1 - w0) * k ** 0.8;
   ctx.save();
+  // The silhouette: lumpy edges, as if built of blocks that do not quite agree.
   const g = ctx.createLinearGradient(x - w0, 0, x + w0, 0);
-  g.addColorStop(0, '#0d1226');
-  g.addColorStop(0.5, '#27304f');
-  g.addColorStop(1, '#0b0f20');
+  g.addColorStop(0, '#0b1022');
+  g.addColorStop(0.45, '#2a3354');
+  g.addColorStop(1, '#090d1c');
   ctx.fillStyle = g;
   ctx.beginPath();
-  ctx.moveTo(x - w0, floorY);
-  ctx.quadraticCurveTo(x - w1 * 1.6, floorY - tall * 0.5, x - w1, floorY - tall);
-  ctx.lineTo(x + w1, floorY - tall);
-  ctx.quadraticCurveTo(x + w1 * 1.6, floorY - tall * 0.5, x + w0, floorY);
+  const steps = 18;
+  for (let i = 0; i <= steps; i++) {
+    const k = i / steps;
+    const lump = Math.sin(i * 2.7) * 2.5 * s;
+    const px = x - halfAt(k) - lump, py = floorY - tall * k;
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  for (let i = steps; i >= 0; i--) {
+    const k = i / steps;
+    const lump = Math.cos(i * 2.3) * 2.5 * s;
+    ctx.lineTo(x + halfAt(k) + lump, floorY - tall * k);
+  }
   ctx.closePath();
   ctx.fill();
-  // Courses of stone.
-  ctx.strokeStyle = 'rgba(140,160,220,0.18)';
+  // Courses of staggered blocks.
+  ctx.strokeStyle = 'rgba(150,170,230,0.14)';
   ctx.lineWidth = 1 * s;
-  for (let y = floorY - 12 * s; y > floorY - tall + 6 * s; y -= 14 * s) {
+  const course = 16 * s;
+  let row = 0;
+  for (let y = floorY - course; y > floorY - tall + 8 * s; y -= course, row++) {
     const k = (floorY - y) / tall;
-    const hw = w0 + (w1 - w0) * k;
+    const hw = halfAt(k) * 0.92;
     ctx.beginPath();
-    ctx.moveTo(x - hw * 0.9, y);
-    ctx.lineTo(x + hw * 0.9, y);
+    ctx.moveTo(x - hw, y);
+    ctx.lineTo(x + hw, y);
+    // Joints between blocks, offset every other course.
+    for (let j = -1; j <= 1; j++) {
+      const jx = x + (j * 0.55 + (row % 2 ? 0.27 : 0)) * hw;
+      if (Math.abs(jx - x) < hw) {
+        ctx.moveTo(jx, y);
+        ctx.lineTo(jx, y + course);
+      }
+    }
     ctx.stroke();
   }
-  ctx.globalCompositeOperation = 'lighter';
-  // Lamps: a few at the second stage, a column of them and a crown light at the third.
+  // Lamps: shells hung on short threads, a few at the second stage, a column of them at the third.
   const lamps = stage >= 3 ? 7 : stage === 2 ? 3 : 0;
   for (let i = 0; i < lamps; i++) {
     const k = (i + 1) / (lamps + 1);
-    const ly = floorY - tall * k;
     const side = i % 2 ? 1 : -1;
-    const lx = x + side * (w0 + (w1 - w0) * k + 4 * s);
-    const pulse = 0.6 + 0.4 * Math.sin(t * 1.2 + i * 1.7);
-    glow(ctx, lx, ly, 18 * s, '120,200,255', 0.5 * pulse);
-    glow(ctx, lx, ly, 4 * s, '220,245,255', 0.9 * pulse);
+    const ax = x + side * halfAt(k), ay = floorY - tall * k;
+    const sway = Math.sin(t * 0.9 + i * 1.3) * 2 * s;
+    const lx = ax + side * 6 * s + sway, ly = ay + 10 * s;
+    ctx.strokeStyle = 'rgba(180,200,240,0.35)';
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    ctx.lineTo(lx, ly - 3 * s);
+    ctx.stroke();
+    ctx.fillStyle = '#cfe6ff';
+    ctx.beginPath();
+    ctx.ellipse(lx, ly, 2.6 * s, 3.4 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    const pulse = 0.65 + 0.35 * Math.sin(t * 1.2 + i * 1.7);
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, lx, ly, 26 * s, '120,200,255', 0.55 * pulse);
+    glow(ctx, lx, ly, 6 * s, '230,248,255', 0.9 * pulse);
+    ctx.globalCompositeOperation = 'source-over';
   }
-  if (stage >= 3) glow(ctx, x, floorY - tall - 6 * s, 50 * s, '140,210,255', 0.45 + 0.15 * Math.sin(t * 0.7));
+  if (stage >= 3) {
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, x, floorY - tall - 8 * s, 70 * s, '140,210,255', 0.5 + 0.15 * Math.sin(t * 0.7));
+    glow(ctx, x, floorY - tall - 8 * s, 10 * s, '235,250,255', 0.95);
+  }
   ctx.restore();
 }
 
