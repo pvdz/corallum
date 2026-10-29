@@ -21,6 +21,7 @@ import { drawColony, drawDaughters } from './daughters.ts';
 import { createLayerCache } from './layer.ts';
 import { createForeground } from './foreground.ts';
 import { drawShellShape } from './shells.ts';
+import { drawGhosts } from './ghosts.ts';
 import { createReef, type Reef, type ReefLayout } from './reef.ts';
 import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts';
 import { createShoals } from './shoals.ts';
@@ -1565,6 +1566,8 @@ export function createSunlitScene(seed: number): Scene {
       // The turtle let sleep in the branches (a moment) spends the night there instead.
       const turtleRests = v.moments.turtle === 'a' && night > 0.5;
       if (!turtleRests) drawTurtle(ctx, t, v.meadows);
+      // The line's earlier reefs that climbed past this one, pale silhouettes far off (dark against the light).
+      drawGhosts(ctx, focus, v.ancestors, v.height, t, scale(), 'rgba(20,60,85,1)');
       // The line's earlier endings: their reefs, far off on other seamounts, faint in the blue.
       if (v.endings > 0) {
         ctx.save();

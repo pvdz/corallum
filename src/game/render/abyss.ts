@@ -12,6 +12,7 @@ import { createLife, type Stage } from './life.ts';
 import { createGround } from './ground.ts';
 import { createLayerCache } from './layer.ts';
 import { createForeground } from './foreground.ts';
+import { drawGhosts } from './ghosts.ts';
 import { createReef, type ReefLayout } from './reef.ts';
 import { createRuins, type RuinStyle } from './ruins.ts';
 import { createShoals } from './shoals.ts';
@@ -565,6 +566,7 @@ export function createAbyssScene(seed: number): Scene {
       drawSnow(ctx, t, 2);
       drawFlurry(ctx, t, v.flurry);
       drawBenthicStorm(ctx, t);
+      drawGhosts(ctx, focus, v.ancestors, v.height, t, scale(), 'rgba(160,170,220,1)');
       // A warm seamount reddens the water near the floor; a cold one leaves a faint ice-blue.
       // Hungry water is pale and washed out; silent water darker, dark water darker still.
       const tint = { warm: 'rgba(255,90,40,0.10)', cold: 'rgba(150,210,255,0.09)', hungry: 'rgba(120,130,140,0.10)' }[v.seamount as 'warm'];
