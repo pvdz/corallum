@@ -558,6 +558,13 @@ function drawAscent(k: number): void {
   ctx.restore();
 }
 
+/** The panel's tint for each zone: violet-black, deep blue, twilight blue, sea green, night. */
+const ZONE_TINTS = ['14, 20, 46', '10, 14, 40', '16, 34, 68', '14, 52, 70', '20, 22, 52'];
+function setZoneTint(n: number): void {
+  document.documentElement.style.setProperty('--zone-tint', ZONE_TINTS[n - 1] ?? ZONE_TINTS[0]!);
+}
+setZoneTint(actAt(state.height));
+
 function showZoneTitle(n: number): void {
   const a = act(n);
   zoneTitle.innerHTML = '';
@@ -850,6 +857,7 @@ function frame(now: number): void {
     fadeStart = tNow;
     scene = want;
     showZoneTitle(actAt(state.height));
+    setZoneTint(actAt(state.height));
     audio.cue('zone');
     // Let the new zone arrive (title, ascent) before the band that tells it opens.
     panel.holdStories(4000);

@@ -234,3 +234,4 @@ date, what landed, what is half-done, what's next.
 - Reef tab grouped: Saves, Sound, Display, Start over.
 - Twilight Shelf: a turbidity current every 3.5 min, a silt cloud rolling down the slope over everything on it (thicker when the reef is silted).
 - Midnight Water: the migration, every 8 min for 40 s hundreds of small lights rise past the reef (+~5 ms/frame while it lasts); in the journal (36).
+- The panel takes a tint from each zone (--zone-tint), set on load and at every zone change.
