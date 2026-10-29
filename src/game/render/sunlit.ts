@@ -1007,6 +1007,122 @@ export function createSunlitScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * A giant clam set in the sand: wavy lips of shell, and between them its mantle, blue and green
+   * with the symbionts it farms, glittering. Touched, it closes slowly and opens again.
+   */
+  function drawClam(ctx: CanvasRenderingContext2D, t: number): void {
+    sight('giant-clam');
+    const s = scale() * 1.8;
+    const u = 0.24;
+    const x = focus.x - focus.w * 0.1 + u * focus.w * 1.2, y = floorY(u) + 4 * s;
+    const touch = startled('giant-clam', t);
+    // How open: shut fast when touched, then slowly open again.
+    const open = touch && touch.age < 8 ? Math.min(1, Math.max(0, (touch.age - 2) / 6)) * 0.85 + (touch.age < 0.4 ? 1 - touch.age / 0.4 : 0) * 0.15 : 1;
+    const wdt = 30 * s, gap = 9 * s * open;
+    spot('giant-clam', x, y - 8 * s, 30 * s);
+    const lip = (dir: number) => {
+      ctx.beginPath();
+      ctx.moveTo(x - wdt, y);
+      for (let i = 0; i <= 10; i++) {
+        const xx = x - wdt + (i / 10) * wdt * 2;
+        const bulge = Math.sin((i / 10) * Math.PI);
+        ctx.lineTo(xx, y - 6 * s - bulge * 6 * s + dir * (gap / 2) * bulge + (i % 2 ? 2.4 : -2.4) * s * bulge);
+      }
+      ctx.lineTo(x + wdt, y);
+    };
+    ctx.save();
+    // The mantle between the lips.
+    if (open > 0.05) {
+      const g = ctx.createLinearGradient(x - wdt, 0, x + wdt, 0);
+      const hue = (t * 8) % 360;
+      g.addColorStop(0, `hsl(${(170 + hue * 0.1) % 360},70%,45%)`);
+      g.addColorStop(0.5, `hsl(${(205 + hue * 0.1) % 360},85%,55%)`);
+      g.addColorStop(1, `hsl(${(150 + hue * 0.1) % 360},70%,42%)`);
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.ellipse(x, y - 12 * s, wdt * 0.9, Math.max(0.5, gap * 0.75 + 1 * s), 0, 0, Math.PI * 2);
+      ctx.fill();
+      // Glittering spots: the gardens of light in its skin.
+      for (let i = 0; i < 12; i++) {
+        const a = 0.5 + 0.5 * Math.sin(t * 2.3 + i * 1.9);
+        ctx.fillStyle = `rgba(200,255,250,${0.7 * a * open})`;
+        ctx.beginPath();
+        ctx.arc(x - wdt * 0.75 + (i / 11) * wdt * 1.5, y - 12 * s + Math.sin(i * 2.7) * gap * 0.35, 1.2 * s, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    // The shell: two ribbed halves with wavy lips.
+    for (const dir of [1, -1]) {
+      ctx.fillStyle = dir > 0 ? '#d8d0bc' : '#c4baa4';
+      lip(dir);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.strokeStyle = 'rgba(110,96,80,0.6)';
+    ctx.lineWidth = 1 * s;
+    for (let i = 1; i < 6; i++) {
+      const xx = x - wdt + (i / 6) * wdt * 2;
+      ctx.beginPath();
+      ctx.moveTo(xx, y);
+      ctx.lineTo(xx + (xx - x) * 0.1, y - 9 * s * Math.sin((i / 6) * Math.PI));
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  /**
+   * A trumpetfish hanging head-down among the branches, still as a stick, waiting. Touched, it
+   * swings level and drifts off a little way, then comes back to hang again.
+   */
+  function drawTrumpetfish(ctx: CanvasRenderingContext2D, t: number, L: ReefLayout): void {
+    const s = scale() * 1.5;
+    const touch = startled('trumpetfish', t);
+    const away = touch && touch.age < 12 ? Math.sin((touch.age / 12) * Math.PI) : 0;
+    sight('trumpetfish');
+    const x = L.cx - L.unit * 0.16 - away * 90 * s, y = L.baseY - L.unit * 0.42 + Math.sin(t * 0.5) * 3 * s;
+    const ang = Math.PI / 2 - 0.25 - away * 1.2 + Math.sin(t * 0.4) * 0.04;
+    spot('trumpetfish', x, y, 26 * s);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(ang);
+    // A long thin body, snout first (along +x), tail fin at the back.
+    const len = 46 * s;
+    const g = ctx.createLinearGradient(0, -3 * s, 0, 3 * s);
+    g.addColorStop(0, '#c99a3a');
+    g.addColorStop(1, '#f0d070');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(len * 0.55, 0);
+    ctx.quadraticCurveTo(len * 0.1, -3.4 * s, -len * 0.45, -2 * s);
+    ctx.lineTo(-len * 0.45, 2 * s);
+    ctx.quadraticCurveTo(len * 0.1, 3.4 * s, len * 0.55, 0);
+    ctx.fill();
+    // Thin dark stripes and a pale eye.
+    ctx.strokeStyle = 'rgba(90,60,20,0.5)';
+    ctx.lineWidth = 0.8 * s;
+    for (let i = 0; i < 5; i++) {
+      const xx = -len * 0.35 + i * len * 0.13;
+      ctx.beginPath();
+      ctx.moveTo(xx, -2.6 * s);
+      ctx.lineTo(xx, 2.6 * s);
+      ctx.stroke();
+    }
+    ctx.fillStyle = '#fff6dc';
+    ctx.beginPath();
+    ctx.arc(len * 0.3, -0.6 * s, 1.3 * s, 0, Math.PI * 2);
+    ctx.fill();
+    // Tail fin, fluttering.
+    ctx.fillStyle = '#c99a3a';
+    ctx.beginPath();
+    ctx.moveTo(-len * 0.45, 0);
+    ctx.lineTo(-len * 0.58, -4 * s + Math.sin(t * 4) * s);
+    ctx.lineTo(-len * 0.58, 4 * s + Math.sin(t * 4) * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
   /** A dugong grazing the meadows (four or more): nose down in the grass; touched, it rises to breathe and sinks back. */
   function drawDugong(ctx: CanvasRenderingContext2D, t: number, meadows: number): void {
     if (meadows < 4) return;
@@ -1388,11 +1504,13 @@ export function createSunlitScene(seed: number): Scene {
         { branch: '#c0703e', tip: '#e8a060', polyp: 'rgba(255,240,190,0.95)',
           alt: { branch: '#8a5bb0', tip: '#b88ad8', polyp: 'rgba(240,220,255,0.95)' } }, larvaSeed, v.nurseries);
       drawTerrace(ctx, L.cx, L.unit, v.works.terrace, scale(), (x) => floorY(Math.min(1, Math.max(0, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2)))), t);
+      drawClam(ctx, t);
       if (night > 0) drawNight(ctx, t, night, 0.6);
       if (v.othersSpawn) drawOthersSpawn(ctx, t);
       drawSleepers(ctx, t, v.rasp, night);
       reef.draw(ctx, L, v, t);
       drawRelics(ctx, reef, L, v.relics, t, v.moments['old-lamp'] === 'a');
+      if (night < 0.5) drawTrumpetfish(ctx, t, L);
       if (v.moments.pups === 'a') drawPups(ctx, t, L);
       if (v.thorn?.kind === 'thorn-star') drawThorn(ctx, reef, L, v.thorn.u, v.thorn.side, t);
       if (turtleRests) {
