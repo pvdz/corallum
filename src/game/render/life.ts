@@ -559,13 +559,13 @@ export function createLife(seed: number) {
       drawJelly(ctx, st, jellies[2]!, t);
     },
     drawFront(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
+      drawDumbo(ctx, st, t);
       drawJelly(ctx, st, jellies[0]!, t);
       drawJelly(ctx, st, jellies[1]!, t);
     },
     drawFloor(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
       for (const g of sponges) drawSponge(ctx, st, g, t);
       drawSeaPigs(ctx, st, t);
-      drawDumbo(ctx, st, t);
       for (const c of lilies) drawLily(ctx, st, c, t);
       drawOssel(ctx, st, t);
       for (const star of stars) drawStar(ctx, st, star, t);
