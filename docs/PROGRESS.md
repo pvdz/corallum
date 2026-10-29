@@ -595,3 +595,4 @@ date, what landed, what is half-done, what's next.
 - Boons Bright water (milky seas last twice as long) and Brittle tips (old stone ×2).
 - Sweeps startle the small fish: lanternfish and Sunlit reef fish near a sweep dart away from it and drift back (sightings.ts poke/pushed).
 - Two more of Ossel's questions: grey (700 m, about letting old stone go) and sister (2600 m, race or company); guide says seven.
+- Golden hours in the Sunlit Crown: an amber wash at dusk and a rose one at dawn, strongest near the surface (sunlit.ts drawGoldenHour).

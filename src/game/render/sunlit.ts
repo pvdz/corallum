@@ -256,6 +256,27 @@ export function createSunlitScene(seed: number): Scene {
   }
 
   /**
+   * The golden hours: as the sun goes down, and again as it comes up, warm light slants in from
+   * the surface (amber at dusk, rose at dawn) and fades with depth.
+   */
+  function drawGoldenHour(ctx: CanvasRenderingContext2D, t: number): void {
+    const u = (t % DAY) / DAY;
+    const bump = (a: number, m: number, b: number) => (u <= a || u >= b ? 0 : u < m ? (u - a) / (m - a) : (b - u) / (b - m));
+    const dusk = bump(0.48, 0.6, 0.7), dawn = bump(0.86, 0.94, 1);
+    const k = Math.max(dusk, dawn);
+    if (k <= 0) return;
+    const rgb = dusk >= dawn ? '255,150,70' : '255,140,150';
+    ctx.save();
+    const g = ctx.createLinearGradient(0, 0, 0, h);
+    g.addColorStop(0, `rgba(${rgb},${0.4 * k})`);
+    g.addColorStop(0.5, `rgba(${rgb},${0.12 * k})`);
+    g.addColorStop(1, `rgba(${rgb},0)`);
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+    ctx.restore();
+  }
+
+  /**
    * Night over the sunlit water: a deep blue veil (strong behind the reef, light in front of it)
    * and the plankton's sparks, which only show in the dark.
    */
@@ -1542,6 +1563,7 @@ export function createSunlitScene(seed: number): Scene {
       if (v.heat.warm > 0) drawHeat(ctx, t, v.heat.warm);
       if (night < 0.5) drawCloudShadow(ctx, t, 1 - night * 2);
       if (v.moments.dust) drawDust(ctx, t, 1 - night * 0.7);
+      drawGoldenHour(ctx, t);
       if (night > 0) drawNight(ctx, t, night, 0.3);
       drawPearls(ctx, t, night);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
