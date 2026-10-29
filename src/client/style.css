@@ -224,6 +224,8 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .shoals.has-idle .level { color: #ffe08a; }
 .job { display: grid; grid-template-columns: 1fr auto 2.2em auto; align-items: center; gap: 8px; padding: 5px 0; border-top: 1px solid rgba(255, 255, 255, 0.05); }
 .job[hidden] { display: none; }
+.card.best:not(.maxed) h3::after { content: 'best buy'; margin-left: 8px; padding: 1px 6px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+  border-radius: 999px; border: 1px solid rgba(255, 220, 160, 0.5); color: #ffe0a8; vertical-align: middle; font-family: var(--ui, system-ui); }
 .job-label { display: flex; flex-direction: column; min-width: 0; }
 .job-name { font-size: 14px; }
 .job-feed .job-name { color: var(--plankton); }

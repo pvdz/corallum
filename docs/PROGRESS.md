@@ -564,3 +564,4 @@ date, what landed, what is half-done, what's next.
 - The cleaners' ledge (moment 'a') stays on the Twilight reef with three striped shrimp waving their antennae.
 - The Rasp nursery (moment eggs 'a'): a stone lip on the Twilight slope with young Rasp darting round it.
 - Affordable calcite upgrades show 'pays back in …' (price / (gain × steady calcite rate)) where the wait was; the Fan job row stays hidden below the shelf (.job[hidden]).
+- 'Best buy' mark on the calcite upgrade with the shortest payback (recomputed once per round of eta updates).

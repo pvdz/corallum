@@ -1754,6 +1754,19 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         else if (etaTurn === 0 || !x.eta.textContent) setEta(x.eta, Math.max(...parts.map(([k, v]) => timeUntil(s, k, v))));
       }
 
+      // The best buy: the calcite upgrade that pays back soonest (once per round of eta updates).
+      if (etaTurn === 0) {
+        let best: UpgradeId | null = null, bestBack = Infinity;
+        const base = steadyCalciteRate(s);
+        for (const u of UPGRADES) {
+          if (u.currency !== 'calcite' || u.id === 'lattice' || !revealed(s, u.id) || maxed(s, u.id) || !(base > 0)) continue;
+          const g = upgradeGain(s, u.id);
+          const back = g >= 0.0005 ? cost(s, u.id) / (g * base) : Infinity;
+          if (back < bestBack) { bestBack = back; best = u.id; }
+        }
+        for (const [id, c] of cards) c.root.classList.toggle('best', id === best);
+      }
+
       // Upgrade cards.
       for (const u of UPGRADES) {
         const c = cards.get(u.id)!;
