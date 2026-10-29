@@ -23,7 +23,7 @@ export type Site = {
 };
 
 /** What the shoals can meet halfway to a ruin: one per trip, seeded (the first trip always finds the passage). */
-export type ForkId = 'press' | 'home' | 'wait' | 'slip' | 'follow' | 'carry-on' | 'gather' | 'leave' | 'ride' | 'around' | 'feed' | 'pass';
+export type ForkId = 'press' | 'home' | 'wait' | 'slip' | 'follow' | 'carry-on' | 'gather' | 'leave' | 'ride' | 'around' | 'feed' | 'pass' | 'read-wall' | 'pass-by' | 'scatter' | 'dazzle' | 'open' | 'leave-sealed';
 export type Encounter = {
   id: string; kicker: string; text: string;
   /** Each way: what it costs in time (a share of the trip, added; negative is quicker) and what it brings. */
@@ -76,6 +76,30 @@ export const ENCOUNTERS: readonly Encounter[] = [
     ways: [
       { id: 'feed', label: 'Stop and feed among them', effect: 'the trip ×1.2 · a chance of a shard', time: 0.2 },
       { id: 'pass', label: 'Pass through', effect: 'as planned', time: 0 },
+    ],
+  },
+  {
+    id: 'wall', kicker: 'A wall of bands',
+    text: 'A whole wall of the old city laid bare by some slip of the silt: band over band, all of them still speaking.',
+    ways: [
+      { id: 'read-wall', label: 'Stop and listen', effect: 'the trip ×1.4 · they hear ×2', time: 0.4 },
+      { id: 'pass-by', label: 'Pass by', effect: 'as planned', time: 0 },
+    ],
+  },
+  {
+    id: 'hunter', kicker: 'Something is hunting them',
+    text: 'A long black fish with a red lamp under its eye has fallen in behind the shoals, and keeps pace.',
+    ways: [
+      { id: 'scatter', label: 'Scatter and regroup', effect: 'the trip ×1.1 · they hear ×0.5', time: 0.1 },
+      { id: 'dazzle', label: 'Dazzle it with the reef’s light', effect: 'half your glow now · the trip ×0.8', time: -0.2 },
+    ],
+  },
+  {
+    id: 'store', kicker: 'A sealed storehouse',
+    text: 'Behind a door of stone grown shut, the shoals can feel the cold of something kept: the old city’s stores, never eaten.',
+    ways: [
+      { id: 'open', label: 'Break it open', effect: 'the trip ×1.4 · five minutes of calcite when they are home', time: 0.4 },
+      { id: 'leave-sealed', label: 'Leave it sealed', effect: 'as planned', time: 0 },
     ],
   },
 ];

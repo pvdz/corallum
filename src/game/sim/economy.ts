@@ -753,6 +753,7 @@ export function takeFork(s: GameState, how: ForkId): boolean {
   if (!way) return false;
   const x = SITES.find((v) => v.id === s.expedition.site)!;
   s.expedition.fork = how;
+  if (how === 'dazzle') s.glow *= 0.5;
   s.expedition.back = Math.max(s.t, s.expedition.back + tripSeconds(s, x) * way.time);
   return true;
 }
@@ -764,7 +765,7 @@ function homecoming(s: GameState): void {
   const roam = ex.site === 'roam', visit = ex.site === 'visit', carcass = ex.site === 'carcass';
   const pressed = ex.fork === 'press';
   const seconds = (roam ? ROAM.seconds : visit ? VISIT.seconds : carcass ? CARCASS.seconds : x?.seconds ?? 0) * tripFactor(s);
-  const heard = EXPEDITION.heard * ex.n * seconds * (ex.fork === 'wait' ? 1.5 : ex.fork === 'slip' ? 0.5 : 1);
+  const heard = EXPEDITION.heard * ex.n * seconds * (ex.fork === 'wait' ? 1.5 : ex.fork === 'read-wall' ? 2 : ex.fork === 'slip' || ex.fork === 'scatter' ? 0.5 : 1);
   s.jobs.feed += ex.feed;
   s.jobs.light += ex.light;
   s.jobs.scout += ex.scout;
@@ -805,6 +806,7 @@ function homecoming(s: GameState): void {
     s.jobs.feed += n;
   }
   if (ex.fork === 'gather') burst(s, 60);
+  if (ex.fork === 'open') burst(s, 300);
   if (ex.fork === 'feed') dig(s, 'roam');
   // Pressing on at the fork turns up a shard for sure, if any are left.
   if (pressed) {

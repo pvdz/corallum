@@ -173,4 +173,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Moments: the crown grows heavy (250 m), a cold slide (3050 m, dense brine cascading off a shelf), dust from far away (3750 m, real desert dust feeding the sea) | real ocean processes; no game known | OK |
 | Giant clam, trumpetfish (Sunlit creatures) | real animals | OK |
 | A heavy seamount; trial Stone-light; moment Bowed down | this game's own theme (keeping vs letting go) | OK |
+| Trip encounters: a wall of bands, something hunting them (dragonfish), a sealed storehouse of Thousandfold | this game's own world | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |
