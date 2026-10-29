@@ -13,6 +13,12 @@ export const GUIDE: readonly [string, string][] = [
   ['Shards', 'Sweeping, catching what falls, touching neighbours and the shoals’ journeys sometimes turn up a shard of an old tablet. The whole line keeps them.'],
   ['Residents', 'From the Twilight Shelf, small animals ask for a home in your branches. Homes are few: choose who suits the water you are in.'],
   ['Great works', 'One large thing to build in each middle zone, in stages, each paid in two kinds at once.'],
+  ['Intruders', 'Something comes to eat the reef in every zone: a snail, a dragonfish, a thorn star, a gull. Tap it away for a burst.'],
+  ['The signal', 'The shoals sometimes flash a pattern of lights. Watch, then press the same lamps (or keys 7–0).'],
+  ['The elder', 'Once the truce begins, the Rasp elder asks about what the bands told. Answer rightly for lineage.'],
+  ['Shells', 'In the Sunlit Crown a shell washes up now and then. Tap it to keep it on the line’s shelf.'],
+  ['Choices', 'The glimmerseed strain at 15 m, the current on the shelf, four tiers of dialects: each shapes the reef.'],
+  ['After the end', 'Plant children in the garden at dawn, then begin again. The chronicle remembers every ending.'],
   ['Spawning early', 'A lesser spawning starts again on a new seamount with lineage to spend. Hard seamounts, once offered, teach the whole line something if you grow far enough on them.'],
   ['The goal', 'Reach the surface and release your spawn under the full moon, carrying what you choose to remember.'],
 ];
