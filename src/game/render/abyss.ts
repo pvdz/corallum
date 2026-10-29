@@ -161,6 +161,40 @@ export function createAbyssScene(seed: number): Scene {
   }
 
   /**
+   * A crowded seamount: half-buried old reefs all around, grey humps of dead branches poking out
+   * of the silt, with a few lights still glowing in them.
+   */
+  function drawBuriedReefs(ctx: CanvasRenderingContext2D, t: number): void {
+    const s = scale();
+    const r = mulberry32(seed ^ 0xb0b);
+    for (let k = 0; k < 6; k++) {
+      const u = k < 3 ? 0.04 + k * 0.1 + r() * 0.04 : 0.68 + (k - 3) * 0.1 + r() * 0.04;
+      const x = focus.x + focus.w * u, y = baseY() + (6 + r() * 6) * s;
+      const wdt = (40 + r() * 34) * s, hgt = (20 + r() * 18) * s;
+      ctx.fillStyle = '#2c2a46';
+      ctx.beginPath();
+      ctx.ellipse(x, y, wdt, hgt, 0, Math.PI, 0);
+      ctx.fill();
+      // Dead branches poking out of the hump.
+      ctx.strokeStyle = '#3a3858';
+      ctx.lineCap = 'round';
+      for (let b = 0; b < 5; b++) {
+        const bx = x + (b - 2) * wdt * 0.3;
+        const len = (8 + r() * 16) * s;
+        ctx.lineWidth = (2 + r() * 2) * s;
+        ctx.beginPath();
+        ctx.moveTo(bx, y - hgt * 0.6);
+        ctx.lineTo(bx + (r() - 0.5) * 10 * s, y - hgt * 0.6 - len);
+        ctx.stroke();
+      }
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      glow(ctx, x + (r() - 0.5) * wdt, y - hgt * 0.5, 6 * s, '170,190,255', 0.25 + 0.15 * Math.sin(t * 0.7 + k));
+      ctx.restore();
+    }
+  }
+
+  /**
    * A flurry of the Long Silt: for half a minute in every four the snow thickens, a dense second
    * fall slanting through the water (the same flakes, drawn again offset and faster).
    */
@@ -237,6 +271,7 @@ export function createAbyssScene(seed: number): Scene {
       life.drawBack(ctx, st, t);
       drawRidge(ctx, ridges[1]!);
       drawMotes(ctx, t, v);
+      if (v.seamount === 'crowded') drawBuriedReefs(ctx, t);
       const vent = v.vent > 0 ? life.drawVent(ctx, st, v.vent, t) : null;
       drawRidge(ctx, ridges[2]!);
       life.drawFloor(ctx, st, t);
