@@ -542,3 +542,4 @@ date, what landed, what is half-done, what's next.
 - Lantern shark in the Midnight Water (every ~4 min, low across; belly lights; touched, lights out and it slips away).
 - The sea heals: siltP × 0.95^min(6, endings); abyss snow loses a tenth of its flakes per ending; a 'The sea' row in Your reef.
 - Again (ossel.ts AGAIN): on a new reef after an ending, Ossel says one of five lines (by endings reached), once each (meta.seen 'again:n').
+- README brought up to date with the zone rhythms, run-long choices, Ossel's questions, the sky, the day's sea, dreams, notifications and keys.

@@ -40,6 +40,20 @@ decide which three memories your children carry into a new sea.
 - Shards of an old tablet turn up in the silt; the reef keeps its own bands, a diary of the run.
 - Lesser spawnings: boons on each new seamount, hard seamounts that teach the whole line
   something, Ways that automate or bend the systems, and the line's best times.
+- Each zone has its own rhythm to catch while you watch: flurries on the Silt Floor (sweeps ×3), the
+  rising in the Midnight Water (send the feeders in), upwellings on the Twilight Shelf (turn the
+  current to them), warm water in the Sunlit Crown (stay open for sun, or close up before you
+  bleach), and swells at the Breach (tap the crown on each crest).
+- Build choices that run the length of a reef: the grain of every tenth band (dense, quick or
+  bright), the glimmerseed's sport at the Twilight Shelf, lamp-nets for the shoals.
+- Ossel asks the reef four questions on the way up and remembers the answers to the end; at the
+  Breach the reef names the stars after its own life, tracing them star by star.
+- Each day brings a mild boon (the day's sea) and a dream (sleep the reef a quarter hour forward);
+  optional notifications when something waits while the tab is in the background.
+- The line remembers: moments marked with the way an earlier reef went, stars it named, a chart of
+  every reef it has seeded, and the Long Silt thinning with each ending.
+- Keys: Space sweeps, 1–4 tabs, F feast, E expedition, R the rising, C close up, S ride a swell,
+  7–0 the signal, P / B / G buy, H view mode, ? for the list.
 - Desktop, phone portrait and phone landscape. Sound is procedural and off by default.
 
 ## Trying it on a phone
