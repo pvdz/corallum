@@ -201,13 +201,17 @@ export function raspMax(s: GameState): number {
  */
 export const KNOWN_BONUS = 0.02;
 export const TOUCH_BONUS = 0.01;
+export const FRIEND_BONUS = 0.02;
 export function knownBonus(s: GameState): number {
   let seen = 0, touched = 0;
   for (const k of s.meta.seen) {
     if (k.startsWith('c:')) seen++;
     else if (k.startsWith('t:')) touched++;
   }
-  return 1 + KNOWN_BONUS * seen + TOUCH_BONUS * touched;
+  // Friends of the line (trust at its highest) add more.
+  let friends = 0;
+  for (const n of Object.values(s.meta.trust)) if (n >= TRUST.at[2]) friends++;
+  return 1 + KNOWN_BONUS * seen + TOUCH_BONUS * touched + FRIEND_BONUS * friends;
 }
 
 /** This run's seamount and how it bends the numbers. */
