@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended goal (user): add content, gameplay and graphics, keep going. Latest: tidal seamount, lucky/kind days, ghosts in every zone, the first larva, squalls, Ossel's far light in the Midnight Water, sister spawns with you, wishes/garden e2e. Bot ~7h28; 7 browser tests + sim tests green. Run e2e with `timeout 400` per test (a run once stalled when the machine paused).
+NOW: Open-ended goal (user): add content, gameplay and graphics, keep going. Latest: two great works in every zone (fence, beacon, rim, lawn, dome), moonlit sweeps, Quiet vow, Ossel's past memories, Long rhythm, lost shoals, fragments (+ Foster, Scattered city), hermit crab, man-o'-war, star march, fireworms, thermocline, sea spider, phone stock grid. Bot ~7h28; 7 browser tests + sim tests green. Run e2e with `timeout 500` per test.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
