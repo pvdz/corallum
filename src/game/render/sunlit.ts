@@ -511,13 +511,17 @@ export function createSunlitScene(seed: number): Scene {
     if (u >= 1) return;
     const lap = Math.floor(t / period);
     const r = mulberry32(lap * 4099 + 7);
-    const cxp = focus.x - focus.w * 0.4 + u * focus.w * 1.8, rw = focus.w * (0.35 + r() * 0.25);
-    const g = ctx.createRadialGradient(cxp, focus.y + focus.h * 0.6, 0, cxp, focus.y + focus.h * 0.6, rw);
-    g.addColorStop(0, `rgba(10,30,50,${0.34 * day})`);
-    g.addColorStop(1, 'rgba(10,30,50,0)');
+    const cxp = focus.x - focus.w * 0.6 + u * focus.w * 2.2, rw = focus.w * (0.45 + r() * 0.25);
+    const cy = focus.y + focus.h * 0.55;
     ctx.save();
+    ctx.translate(cxp, cy);
+    ctx.scale(1, 1.6);
+    const g = ctx.createRadialGradient(0, 0, 0, 0, 0, rw);
+    g.addColorStop(0, `rgba(8,26,46,${0.42 * day})`);
+    g.addColorStop(0.55, `rgba(8,26,46,${0.3 * day})`);
+    g.addColorStop(1, 'rgba(8,26,46,0)');
     ctx.fillStyle = g;
-    ctx.fillRect(cxp - rw, 0, rw * 2, h);
+    ctx.fillRect(-rw, -rw, rw * 2, rw * 2);
     ctx.restore();
   }
 

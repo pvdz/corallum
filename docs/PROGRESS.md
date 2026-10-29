@@ -569,3 +569,4 @@ date, what landed, what is half-done, what's next.
 - Lighting the way for the sister (sister.ts lightSpeed/lightLineage; economy sisterNow/lightOpen/lightSister; race.lit/declined): sisterNow replaces sisterAt for the sister everywhere (marks, gauge, visits, whispers); ending 'sisterLit'.
 - When lit, the far sister reef (when near on the gauge, Twilight) sends a thread of light up from her crown.
 - Cloud shadows slide over the Sunlit Crown by day (sunlit.ts drawCloudShadow, every 140 s for 40 s).
+- The cloud shadow is a tall soft ellipse, darker (0.42), so it reads over sand and reef.
