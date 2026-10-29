@@ -11,6 +11,7 @@ import { DIALECTS, TIERS, type DialectId } from '../content/act4.ts';
 import { SEAMOUNTS, TRAIT_GROUPS, TRAITS, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { MEMORIES } from '../content/act5.ts';
 import { CREATURES } from '../content/creatures.ts';
+import { GUIDE } from '../content/guide.ts';
 import { FEATS } from '../content/feats.ts';
 import { canSpawnLesser, lineageFor, traitCost, traitMaxed } from '../sim/prestige.ts';
 import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
@@ -565,8 +566,15 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   habitToggle.append(habitBox, el('span', '', 'Old habits: bud polyps and host glimmerseed on their own when they are cheap'));
   habitToggle.hidden = true;
   const group = (title: string) => el('h4', 'settings-group', title);
+  const guide = el('article', 'card codex guide');
+  const guideHead = el('h3', '', 'How the reef grows');
+  const guideList = el('dl', 'codex-list');
+  for (const [term, text] of GUIDE) guideList.append(el('dt', '', term), el('dd', '', text));
+  guide.append(guideHead, guideList);
+  collapsible(guide, guideHead);
   reefPage.append(
     nameRow,
+    guide,
     group('Saves'),
     el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn,
     group('Sound'), volRow, buzzToggle,
