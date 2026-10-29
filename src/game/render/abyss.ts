@@ -376,12 +376,15 @@ export function createAbyssScene(seed: number): Scene {
     if (!on && sm !== 'buried') return;
     const k = sm === 'buried' && !on ? 0.75 : 1;
     ctx.save();
-    ctx.globalAlpha = 0.7 * k;
-    ctx.fillStyle = 'rgba(210,220,245,0.6)';
-    for (const f of flakes) {
-      const y = ((f.y + 0.5 + t * f.speed * 2.6) % 1) * (h + 20) - 10;
-      const x = ((((f.x + 0.37 + t * 0.012) % 1) + 1) % 1) * w;
-      speck(ctx, x, y, f.r * 1.4);
+    ctx.globalAlpha = 0.85 * k;
+    ctx.fillStyle = 'rgba(220,228,250,0.8)';
+    // Twice over, offset: a thick slanting fall.
+    for (const off of [0.37, 0.71]) {
+      for (const f of flakes) {
+        const y = ((f.y + off + t * f.speed * 2.6) % 1) * (h + 20) - 10;
+        const x = ((((f.x + off + t * 0.012) % 1) + 1) % 1) * w;
+        speck(ctx, x, y, f.r * 1.8);
+      }
     }
     ctx.restore();
   }
