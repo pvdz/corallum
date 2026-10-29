@@ -1788,6 +1788,7 @@ function requestOpen(s: GameState, kind: RequestKind): boolean {
   switch (kind) {
     case 'bands': return !maxed(s, 'skeleton');
     case 'feast': return s.bands.includes(FEAST.band);
+    case 'prune': return s.old >= 0.5;
     case 'shoals': return revealed(s, 'shoal') && !maxed(s, 'shoal');
     case 'sandbar': case 'pigment': case 'ripen': return revealed(s, kind) && !maxed(s, kind);
     case 'glimmer': return revealed(s, 'symbiont') && !maxed(s, 'symbiont');

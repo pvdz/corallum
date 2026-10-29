@@ -1620,7 +1620,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       askBox.hidden = false;
       askBox.classList.toggle('waiting', !rq);
       if (rq) {
-        askText.textContent = rq.def.ask.replace('{n}', String(rq.n));
+        askText.textContent = rq.n === 1 && rq.def.one ? rq.def.one : rq.def.ask.replace('{n}', String(rq.n));
         askFill.style.width = `${(rq.got / rq.n) * 100}%`;
         askCount.textContent = `${rq.got}/${rq.n}`;
         // One-step asks need no bar; a streak goes up with the kicker, out of the text's way.

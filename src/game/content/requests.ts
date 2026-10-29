@@ -8,8 +8,9 @@ export type RequestKind = 'bud' | 'glimmer' | 'bands' | 'feast' | 'touch' | 'swe
 
 export type RequestDef = {
   kind: RequestKind;
-  /** Ossel's words, with {n} for the number. */
+  /** Ossel's words, with {n} for the number; `one` when it is just one. */
   ask: string;
+  one?: string;
   /** How many, by how many requests are already done (a little more each time, capped). */
   n: (done: number) => number;
   /** Zones where it can be asked. */
@@ -36,11 +37,11 @@ export const REQUEST = {
 export const REQUESTS: readonly RequestDef[] = [
   { kind: 'bud', ask: 'Bud {n} polyps.', n: (d) => Math.min(12, 3 + d), zones: [1, 2, 3, 4, 5] },
   { kind: 'glimmer', ask: 'Take in {n} more glimmerseed.', n: (d) => Math.min(10, 3 + Math.floor(d / 2)), zones: [1, 2, 3, 4, 5] },
-  { kind: 'bands', ask: 'Lay down {n} bands.', n: (d) => Math.min(5, 1 + Math.floor(d / 3)), zones: [1, 2, 3, 4, 5] },
+  { kind: 'bands', ask: 'Lay down {n} bands.', one: 'Lay down a band.', n: (d) => Math.min(5, 1 + Math.floor(d / 3)), zones: [1, 2, 3, 4, 5] },
   { kind: 'feast', ask: 'Catch something falling.', n: () => 1, zones: [1, 2, 3, 4, 5] },
   { kind: 'touch', ask: 'Touch {n} of our neighbours.', n: (d) => Math.min(6, 2 + Math.floor(d / 3)), zones: [1, 2, 3, 4, 5] },
   { kind: 'sweep', ask: 'Sweep the water {n} times with your tentacles.', n: (d) => Math.min(8, 3 + Math.floor(d / 3)), zones: [1, 2] },
-  { kind: 'shoals', ask: 'Call {n} more shoals.', n: (d) => Math.min(4, 1 + Math.floor(d / 4)), zones: [2, 3] },
+  { kind: 'shoals', ask: 'Call {n} more shoals.', one: 'Call one more shoal.', n: (d) => Math.min(4, 1 + Math.floor(d / 4)), zones: [2, 3] },
   { kind: 'sandbar', ask: 'Raise {n} sand bar.', n: () => 1, zones: [3] },
   { kind: 'pigment', ask: 'Grow {n} new pigment.', n: () => 1, zones: [4] },
   { kind: 'ripen', ask: 'Ripen the spawn {n} more time.', n: () => 1, zones: [5] },
@@ -52,5 +53,5 @@ export const REQUESTS: readonly RequestDef[] = [
   { kind: 'rising', ask: 'Send the feeders into the next rising.', n: () => 1, zones: [2, 3] },
   { kind: 'signal', ask: 'Answer the shoals when they next signal.', n: () => 1, zones: [2, 3, 4] },
   { kind: 'star', ask: 'Give a name to some of the stars.', n: () => 1, zones: [5] },
-  { kind: 'prune', ask: 'Let {n} knobs of old stone go.', n: (d) => Math.min(3, 1 + Math.floor(d / 6)), zones: [1, 2, 3, 4, 5] },
+  { kind: 'prune', ask: 'Let {n} knobs of old stone go.', one: 'Let a knob of old stone go.', n: (d) => Math.min(3, 1 + Math.floor(d / 6)), zones: [1, 2, 3, 4, 5] },
 ];
