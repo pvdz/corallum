@@ -444,6 +444,56 @@ export function createLife(seed: number) {
    * A rattail: a big-headed deep fish with a long tapering tail, nosing slowly along the silt
    * and crossing the frame every couple of minutes.
    */
+  /**
+   * The tripod fish: standing on the silt on three long fin-rays, facing the current, pectoral
+   * fins held up like feelers. Touched, it lifts off, swims a little way and settles again.
+   */
+  function drawTripod(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
+    sight('tripod-fish');
+    const s = st.s * 1.3;
+    const touch = startled('tripod-fish', t);
+    const hop = touch && touch.age < 6 ? Math.sin(Math.min(1, touch.age / 6) * Math.PI) : 0;
+    const x = st.cx - st.w * 0.27 + hop * 40 * s;
+    const ground = st.baseY + 4 * s;
+    const lift = hop * 30 * s;
+    const stand = (1 - hop) * 22 * s;
+    const y = ground - stand - lift;
+    spot('tripod-fish', x, y, 24 * s);
+    ctx.save();
+    // The three stilts: two pelvic rays and the tail's long lower ray.
+    ctx.strokeStyle = 'rgba(190,190,210,0.7)';
+    ctx.lineWidth = 0.9 * s;
+    ctx.beginPath();
+    if (hop < 0.9) {
+      ctx.moveTo(x + 4 * s, y + 2 * s);
+      ctx.lineTo(x + 6 * s, y + 2 * s + stand);
+      ctx.moveTo(x + 1 * s, y + 2 * s);
+      ctx.lineTo(x - 1 * s, y + 2 * s + stand);
+      ctx.moveTo(x - 16 * s, y);
+      ctx.lineTo(x - 20 * s, y + stand + 1 * s);
+    }
+    // Pectoral feelers raised over the head into the current.
+    ctx.moveTo(x + 3 * s, y - 2 * s);
+    ctx.quadraticCurveTo(x + 10 * s, y - 14 * s, x + 18 * s, y - 16 * s + Math.sin(t * 1.3) * 2 * s);
+    ctx.moveTo(x + 2 * s, y - 2 * s);
+    ctx.quadraticCurveTo(x + 6 * s, y - 16 * s, x + 12 * s, y - 20 * s + Math.cos(t * 1.1) * 2 * s);
+    ctx.stroke();
+    // The body: slim, pale, tapering to the tail.
+    ctx.fillStyle = '#4a4860';
+    ctx.beginPath();
+    ctx.moveTo(10 * s + x, y);
+    ctx.quadraticCurveTo(x + 4 * s, y - 5 * s, x - 6 * s, y - 2.5 * s);
+    ctx.lineTo(x - 18 * s, y);
+    ctx.lineTo(x - 6 * s, y + 2.5 * s);
+    ctx.quadraticCurveTo(x + 4 * s, y + 4 * s, x + 10 * s, y);
+    ctx.fill();
+    ctx.fillStyle = '#c8c4d8';
+    ctx.beginPath();
+    ctx.arc(x + 6 * s, y - 1 * s, 0.9 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
   function drawRattail(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
     const period = 150;
     const u = (t % period) / period;
@@ -648,6 +698,7 @@ export function createLife(seed: number) {
       drawOssel(ctx, st, t);
       for (const star of stars) drawStar(ctx, st, star, t);
       drawRattail(ctx, st, t);
+      drawTripod(ctx, st, t);
     },
     drawVent,
   };
