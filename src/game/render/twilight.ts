@@ -450,6 +450,73 @@ export function createTwilightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * A nautilus drifting at mid-water: a striped spiral shell, tentacles trailing from its mouth.
+   * Touched, it pulls in and sinks a little way, then rises again.
+   */
+  function drawNautilus(ctx: CanvasRenderingContext2D, t: number): void {
+    sight('nautilus');
+    const s = scale() * 1.5;
+    const touch = startled('nautilus', t);
+    const sink = touch && touch.age < 8 ? Math.sin(Math.min(1, touch.age / 8) * Math.PI) : 0;
+    const x = focus.x + focus.w * (0.7 + 0.05 * Math.sin(t * 0.04)), y = focus.y + focus.h * 0.38 + Math.sin(t * 0.15) * 12 * s + sink * 60 * s;
+    spot('nautilus', x, y, 18 * s);
+    ctx.save();
+    ctx.translate(x, y);
+    // Tentacles, trailing forward-left from the mouth (pulled in when touched).
+    const reach = 1 - sink * 0.8;
+    ctx.strokeStyle = 'rgba(230,200,170,0.7)';
+    ctx.lineWidth = 0.9 * s;
+    for (let i = 0; i < 9; i++) {
+      ctx.beginPath();
+      ctx.moveTo(-8 * s, 2 * s + i * 0.6 * s);
+      ctx.quadraticCurveTo(-14 * s * reach, (2 + i) * s, -(18 + (i % 3) * 3) * s * reach, (3 + i * 1.2) * s + Math.sin(t * 1.5 + i) * 1.5 * s);
+      ctx.stroke();
+    }
+    // The shell: a disc with the spiral's tiger stripes, and the coiled centre.
+    const g = ctx.createRadialGradient(2 * s, -2 * s, 1 * s, 0, 0, 11 * s);
+    g.addColorStop(0, '#f6efe0');
+    g.addColorStop(1, '#d9c7a8');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(0, 0, 11 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(0, 0, 11 * s, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.strokeStyle = 'rgba(150,80,40,0.75)';
+    ctx.lineWidth = 2.2 * s;
+    for (let k = 0; k < 6; k++) {
+      const a = -0.6 + k * 0.45;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(a) * 4 * s, Math.sin(a) * 4 * s - 3 * s);
+      ctx.quadraticCurveTo(Math.cos(a + 0.4) * 9 * s, Math.sin(a + 0.4) * 9 * s - 3 * s, Math.cos(a + 0.7) * 12 * s, Math.sin(a + 0.7) * 12 * s);
+      ctx.stroke();
+    }
+    ctx.restore();
+    ctx.strokeStyle = 'rgba(120,90,60,0.6)';
+    ctx.lineWidth = 0.8 * s;
+    ctx.beginPath();
+    for (let a = 0; a < Math.PI * 3; a += 0.2) {
+      const r = 1 + a * 0.9;
+      const px = Math.cos(a) * r * s * 0.6, py = Math.sin(a) * r * s * 0.6;
+      if (a === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+    // The hood over the mouth, and an eye.
+    ctx.fillStyle = '#8a5a3a';
+    ctx.beginPath();
+    ctx.ellipse(-8 * s, 1 * s, 3.5 * s, 4 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#1a1210';
+    ctx.beginPath();
+    ctx.arc(-7.5 * s, 3 * s, 1 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
   function drawSeaFans(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
     for (const [k, f] of fans.entries()) {
@@ -1007,6 +1074,7 @@ export function createTwilightScene(seed: number): Scene {
       drawSeaFans(ctx, t);
       drawGardenEels(ctx, t);
       drawMoray(ctx, t);
+      drawNautilus(ctx, t);
       drawOctopus(ctx, t);
       drawCleaningStation(ctx, t);
       drawWall(ctx, t, v.wall);

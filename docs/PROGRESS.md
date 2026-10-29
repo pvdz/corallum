@@ -415,3 +415,4 @@ date, what landed, what is half-done, what's next.
 - The quick cousin: a faster racer (sister.ts COUSIN, 5 h) for lines that have reached an ending; double lineage per mark; orange gauge marker; diary line; codex.
 - Setting 'Fewer words from Ossel': only story whispers (claims, the moon).
 - New creature: the barreleye (Midnight): clear dome head, green tube eyes looking up; touched they swing forward.
+- New creature: the nautilus (Twilight): striped spiral shell, trailing tentacles; touched it pulls in and sinks.
