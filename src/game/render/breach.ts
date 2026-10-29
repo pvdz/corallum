@@ -3,6 +3,7 @@
 // at the release they rise in their millions through the moonlight and spread on the surface.
 
 import { drawResidents } from './residents.ts';
+import { drawSong } from './song.ts';
 import { drawPool } from './works.ts';
 import { palette } from '../content/palettes.ts';
 import { drawRelics } from './relics.ts';
@@ -788,6 +789,7 @@ export function createBreachScene(seed: number): Scene {
       drawCraft(ctx, v.craft, reef, L, t, 0.6);
       drawResidents(ctx, reef, L, v.residents, t, seed);
       this.crownAt = reef.crown(L);
+      drawSong(ctx, v.song, this.crownAt[0], this.crownAt[1], t, scale());
       reef.drawEffects(ctx, L, v, effects.live(t));
       drawWaves(ctx, t);
       if (v.bands.includes('air')) drawGlowSurf(ctx, t, this.crownAt);

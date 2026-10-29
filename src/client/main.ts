@@ -579,6 +579,7 @@ function view(): ReefView {
     works: state.works,
     sister: sisterAt(state.t),
     current: state.current,
+    song: state.dialects.song,
     ancestors: state.meta.ancestors.map((a) => Number(a.split('|')[0]) || 0),
     gauge: gaugeAt(state.height),
     moments: state.moments,

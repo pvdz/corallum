@@ -32,6 +32,8 @@ export type ReefView = {
   othersSpawn: boolean;
   /** How each moment was met. */
   moments: Readonly<Record<MomentId, '' | 'a' | 'b'>>;
+  /** The Song dialect ('' none yet). */
+  song: string;
   /** The current's setting on the shelf (−2 … +2). */
   current: number;
   /** The line's old reefs: their final heights, oldest first. */

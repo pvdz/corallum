@@ -3,6 +3,7 @@
 // follows its Form dialect: a fan until it chooses, then antlers, a dome, or stacked tables.
 
 import { createSlugs } from './slugs.ts';
+import { drawSong } from './song.ts';
 import { drawThorn } from './thorn.ts';
 import { drawTerrace } from './works.ts';
 import { drawRelics } from './relics.ts';
@@ -1068,6 +1069,7 @@ export function createSunlitScene(seed: number): Scene {
         (x) => floorY(Math.min(1, Math.max(0, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2)))));
       slugs.draw(ctx, reef, L, t);
       this.crownAt = reef.crown(L);
+      drawSong(ctx, v.song, this.crownAt[0], this.crownAt[1], t, scale());
       reef.drawEffects(ctx, L, v, effects.live(t));
       reef.drawCaustics(ctx, L, t, 1 - night, '255,250,215');
       // Reef fish shelter in the branches at night.
