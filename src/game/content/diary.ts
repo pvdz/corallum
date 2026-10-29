@@ -16,6 +16,7 @@ export const DIARY: Record<string, string> = {
   request: 'You had kept {a} of Ossel’s requests.',
   reading: 'Your scouts read “{a}”.',
   roam: 'The shoals came home from roaming. {a}',
+  mistake: 'Ossel misremembered: {a}.',
   visit: 'Your shoals visited the sister reef, and came home with its colours in their lights.',
 };
 

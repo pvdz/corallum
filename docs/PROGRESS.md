@@ -408,3 +408,4 @@ date, what landed, what is half-done, what's next.
 - Audio cues 'intruder' (two low notes a tritone apart) and 'moment' (a soft rising third) when one appears.
 - Roam tales: eight seeded tales (expeditions.ts ROAM_TALES), each with a small reward (calcite, glow, murmurs or a sure shard roll); shown in the return note and the diary.
 - Heirlooms: spawnLesser(s, where, heirloom); state.heirloom; relic() used for effects (found() for progress); 'What it carries' in the spawning card; test in prestige.test.ts.
+- Ossel's mistakes: content/ossel.ts (5), claims as whispers ('claim-<id>'), corrections told when the proof is found (meta.seen 'o:<id>'), kept in the Bands list (panel.keepStory), diary line, codex count.

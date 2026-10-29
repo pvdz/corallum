@@ -21,6 +21,7 @@ import { REQUEST } from '../content/requests.ts';
 import { WORKS, WORK_TEXT, type WorkId } from '../content/works.ts';
 import { SISTER } from '../content/sister.ts';
 import { DIARY, DIARY_TEXT } from '../content/diary.ts';
+import { OSSEL_MISTAKES } from '../content/ossel.ts';
 import { PALETTES, PALETTE_TEXT } from '../content/palettes.ts';
 import { SHARD, SHARD_LINES } from '../content/shards.ts';
 import { MOMENT, MOMENTS, type Moment, type MomentId } from '../content/moments.ts';
@@ -696,6 +697,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     codexList.innerHTML = '';
     const tr = seamountDef(s.seamount).trial;
     if (tr) codexRow('Trial', `${seamountDef(s.seamount).name}: grow to ${metres(tr.goal)}${s.meta.seen.includes(`trial:${s.seamount}`) ? ` · ${TRIAL_TEXT.met}` : ''} · ${tr.reward}`);
+    const wrong = s.meta.seen.filter((k) => k.startsWith('o:')).length;
+    if (wrong) codexRow('Ossel', `${wrong} of ${OSSEL_MISTAKES.length} mistakes found`);
     if (s.race.decided > 0) codexRow('Sister reef', `first to ${s.race.won} of ${s.race.decided} marks`);
     const recs = s.meta.records.map((t, i) => t > 0 ? `${metres(SISTER.marks[i]!)} in ${duration(t)}` : '').filter(Boolean);
     if (recs.length) codexRow('Line’s best', recs.join(' · '));
@@ -1785,6 +1788,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     /** Open a story card (or queue it behind the one showing). */
     story(kicker: string, title: string, text: string): void {
       showStory({ kicker, title, text });
+    },
+    /** A story kept in the Bands list too (Ossel's mistakes); `open` shows it now. */
+    keepStory(depth: string, kicker: string, title: string, text: string, open: boolean): void {
+      const st = { kicker, title, text };
+      bandList.prepend(storyItem(depth, title, st, 'is-moment'));
+      if (open) showStory(st);
     },
     /** Switch to the n-th visible tab (1-based); false if there is none. */
     showTabAt(n: number): boolean {

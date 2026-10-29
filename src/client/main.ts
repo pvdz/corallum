@@ -47,6 +47,7 @@ import { GAUGE_MOON } from '../game/content/act5.ts';
 import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { ACT1, MILESTONES, type Milestone } from '../game/content/act1.ts';
 import { OSSEL_LINES, OSSEL_NOW, WHISPERS } from '../game/content/whispers.ts';
+import { OSSEL_MISTAKE, OSSEL_MISTAKES } from '../game/content/ossel.ts';
 import { buyTrait, habitPurchase, raspSense, shoalSense, spawnLesser } from '../game/sim/prestige.ts';
 import { createFinale } from '../game/ui/finale.ts';
 import { createPanel, reefName } from '../game/ui/panel.ts';
@@ -341,6 +342,7 @@ const panel = createPanel(ui, {
   },
 });
 panel.primeStories(state);
+for (const m of OSSEL_MISTAKES) if (state.meta.seen.includes(`o:${m.id}`)) panel.keepStory('Ossel', OSSEL_MISTAKE.kicker, m.title, m.correction, false);
 showReefName();
 // Feats already earned when a reef loads (older saves, or long absences) are granted together.
 if (frozenT === null && botT === null) {
@@ -1139,6 +1141,13 @@ function frame(now: number): void {
     const waitingChoice = `${nextMoment(state)?.id ?? ''}|${othersSpawning(state)}`;
     if (waitingChoice !== choiceHeard && waitingChoice !== '|false') audio.cue('moment');
     choiceHeard = waitingChoice;
+    // Ossel's mistakes: a claim heard, then the proof found: the correction is told.
+    for (const m of OSSEL_MISTAKES) {
+      if (!state.meta.seen.includes(`w:claim-${m.id}`) || state.meta.seen.includes(`o:${m.id}`) || !m.truth(state)) continue;
+      state.meta.seen.push(`o:${m.id}`);
+      remember(state, 'mistake', m.title.toLowerCase());
+      panel.keepStory('Ossel', OSSEL_MISTAKE.kicker, m.title, m.correction, true);
+    }
     // The water turning: a soft swell (not for still water).
     const wNow = waterAt(state).id;
     if (wNow !== waterHeard && waterHeard !== '' && wNow !== 'still') audio.cue('water');

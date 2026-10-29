@@ -96,6 +96,11 @@ kind of purchase: both stocks must be ready). The lantern spire (Midnight; calci
 (Sunlit; bloom + sand; bloom ×1.15 a stage). Offered in their zone; begun ones stay. Each is drawn
 growing by stage: a lamp-hung spire, courses of stone upslope, stepped slabs at the reef's foot.
 
+**Ossel's mistakes**: five things Ossel is sure of, said in passing as whispers (the city never
+fought; the silt falls from the sky; nobody was shut out; the Rasp killed the city; a wall is never
+afraid). A Reading, a band or a relic later proves each wrong, and the correction is told and kept in
+the Bands list (the narrator is unreliable by design, and the player finds out how).
+
 **Your own bands**: the reef keeps a diary of the run in its stone (the theme made literal): first
 sightings, the first feast, relics, moments, residents, works, shards, readings, the sister race,
 trials, every fifth request, each with its time and height. Bands tab, newest first.

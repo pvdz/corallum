@@ -4,6 +4,7 @@
 
 import type { GameState } from '../sim/state.ts';
 import { actAt } from './acts.ts';
+import { OSSEL_MISTAKES } from './ossel.ts';
 import {
   calciteHold, canSend, waterAt, homes, workOpen, sisterAt, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
 } from '../sim/economy.ts';
@@ -15,6 +16,8 @@ const metNot = (s: GameState, id: string, zones: readonly number[]) =>
   zones.includes(actAt(s.height)) && s.meta.seen.includes(`c:${id}`) && !s.meta.seen.includes(`t:${id}`);
 
 export const WHISPERS: readonly Whisper[] = [
+  // Ossel's mistakes, said in passing while they are still believable (content/ossel.ts).
+  ...OSSEL_MISTAKES.map((m) => ({ id: `claim-${m.id}`, when: (s: GameState) => s.height >= m.metres && !m.truth(s), text: m.claim })),
   {
     id: 'two', when: (s) => s.levels.polyp >= 1 && s.levels.polyp <= 3,
     text: 'Good. Now there are two of you eating.',
