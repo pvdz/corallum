@@ -463,7 +463,14 @@ milestoneBox.id = 'milestone';
 milestoneBox.setAttribute('role', 'status');
 milestoneBox.setAttribute('aria-live', 'polite');
 ui.append(milestoneBox);
+let zoneTitleUntil = 0;
 function showMilestone(ms: Milestone, what: string): void {
+  // Not on top of a zone title: wait for it to finish.
+  const wait = zoneTitleUntil - performance.now();
+  if (wait > 0) {
+    setTimeout(() => showMilestone(ms, what), wait);
+    return;
+  }
   milestoneBox.innerHTML = '';
   const name = document.createElement('strong');
   name.textContent = ms.name;
@@ -545,6 +552,7 @@ function showZoneTitle(n: number): void {
   zoneTitle.classList.remove('show');
   void zoneTitle.offsetWidth;
   zoneTitle.classList.add('show');
+  zoneTitleUntil = performance.now() + 7000;
 }
 ui.append(zoneTitle);
 ui.append(soundBtn);
