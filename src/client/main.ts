@@ -47,6 +47,7 @@ import { GAUGE_MOON } from '../game/content/act5.ts';
 import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { ACT1, MILESTONES, type Milestone } from '../game/content/act1.ts';
 import { OSSEL_LINES, OSSEL_NOW, WHISPERS } from '../game/content/whispers.ts';
+import { NEWS } from '../game/content/guide.ts';
 import { OSSEL_MISTAKE, OSSEL_MISTAKES } from '../game/content/ossel.ts';
 import { buyTrait, habitPurchase, raspSense, shoalSense, spawnLesser } from '../game/sim/prestige.ts';
 import { createFinale } from '../game/ui/finale.ts';
@@ -349,6 +350,11 @@ const panel = createPanel(ui, {
   },
 });
 panel.primeStories(state);
+// Once after an update: what is new (not on a brand-new reef, which meets everything as it comes).
+if (!state.meta.seen.includes(NEWS.id) && (state.t > 600 || state.meta.spawnings > 0) && frozenT === null && botT === null) {
+  state.meta.seen.push(NEWS.id);
+  panel.story(NEWS.kicker, NEWS.title, NEWS.text);
+} else if (!state.meta.seen.includes(NEWS.id) && state.t <= 600) state.meta.seen.push(NEWS.id);
 for (const m of OSSEL_MISTAKES) if (state.meta.seen.includes(`o:${m.id}`)) panel.keepStory('Ossel', OSSEL_MISTAKE.kicker, m.title, m.correction, false);
 showReefName();
 // Feats already earned when a reef loads (older saves, or long absences) are granted together.

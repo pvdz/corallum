@@ -28,3 +28,16 @@ export const STOCK_NOTES: Record<string, string> = {
   bloom: 'Sugar from the sunlight your symbionts catch. It multiplies your calcite; dialects and canopy cost it.',
   spawn: 'Eggs and sperm in bundles, ripening for the Spawning Moon. Release it at the surface under a full moon.',
 };
+
+/** Shown once (per browser line) after an update with new things to find; `id` changes per update. */
+export const NEWS = {
+  id: 'news:2026-10-29',
+  kicker: 'New in the sea',
+  title: 'The reef has neighbours, and plans',
+  text: 'The water turns every ten minutes and makes one kind of growing cheaper. Ossel asks for small things, ' +
+    'and moments ask how you meet what happens. Shoals can search the ruins of Thousandfold, roam the dark, or ' +
+    'visit the sister reef that races you to the surface. Residents move into your branches; each zone has a ' +
+    'great work to build; thorn stars and dragonfish come to eat and can be driven off; shards of an old tablet ' +
+    'turn up in the silt; the reef keeps its own bands. New seamounts bring boons, heirlooms and hard places, ' +
+    'and the line learns new ways. The Reef tab’s guide has a line on each.',
+} as const;

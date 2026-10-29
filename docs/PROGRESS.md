@@ -424,3 +424,4 @@ date, what landed, what is half-done, what's next.
 - The line's old reefs: on later seamounts, up to three pale silhouettes of earlier reefs that climbed past this height, in the Midnight and Twilight water (render/ghosts.ts; ReefView.ancestors).
 - Phone landscape: the water, request and before-you-go lines compact on short screens.
 - Calling the shoals home early: ↩ on the trip card, 5 glow per second left (economy callHome); test.
+- 'New in the sea': a one-time card after this update for saves older than ten minutes (guide.ts NEWS; meta.seen id).
