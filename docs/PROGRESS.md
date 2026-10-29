@@ -225,3 +225,4 @@ date, what landed, what is half-done, what's next.
 - Debug ?at=<sec> starts the live scene clock at a time; verified the rare-sighting note with the giant squid (?bot=4000&at=612).
 - Breach perf: layer-skip timings were noise (whole scene 4.7 ms this run vs 11.6 earlier; skipping layers measured slower). No clear target; left as is.
 - Sunlit polyps pull in by day (×0.8) and open wide to feed at night (×1.15), as real corals do.
+- The Breach has a tide: the surface rises and falls over 3 min of scene time; the reef stays put (placed against the still level), so low water bares more of the crown and its stone, high water covers it.

@@ -52,7 +52,10 @@ export function createBreachScene(seed: number): Scene {
 
   const scale = () => Math.min(focus.w, focus.h) / 700;
   const cx = () => focus.x + focus.w * 0.5;
-  const waterY = () => focus.y + focus.h * 0.3;
+  // The tide: the surface rises and falls a little over three minutes of scene time.
+  let tideT = 0;
+  const stillY = () => focus.y + focus.h * 0.3;
+  const waterY = () => stillY() + focus.h * 0.012 * Math.sin((tideT / 180) * Math.PI * 2);
 
   function progress(height: number): number {
     return Math.max(0, Math.min(1, (height - FROM) / (TO - FROM)));
@@ -61,7 +64,8 @@ export function createBreachScene(seed: number): Scene {
   function layout(v: ReefView, form: CoralForm): ReefLayout {
     // The crown rises from just under the surface to break it.
     const unit = focus.h * 0.8;
-    const crownY = waterY() + focus.h * (0.12 - 0.16 * progress(v.height));
+    // The reef stands on the seamount, not on the water: it is placed against the still level.
+    const crownY = stillY() + focus.h * (0.12 - 0.16 * progress(v.height));
     return {
       cx: cx(), baseY: crownY + unit, unit, s: scale(), dpr, top: 1, bandStep: 0,
       encrust: 1, encrustColours: ['#8a4a3a', '#5a3c7a', '#8a7a3a', '#2a6a60'],
@@ -362,7 +366,10 @@ export function createBreachScene(seed: number): Scene {
   function topOf(v: ReefView, crown: readonly [number, number]) {
     const s = scale() * 1.8;
     const rise = Math.min(1, Math.max(0.3, (v.height - 3990) / 10));
-    return { s, wy: waterY(), hx: crown[0] - 6 * s, hw: 22 * s, hh: 7 * s * rise };
+    // High water covers more of the stone, low water bares it.
+    const wy = waterY();
+    const hh = Math.max(1.5 * s, 7 * s * rise + (wy - stillY()) * 0.8);
+    return { s, wy, hx: crown[0] - 6 * s, hw: 22 * s, hh };
   }
 
   /** The reef's top in the air at low tide (drawn behind the reef so wide forms cover it). */
@@ -531,6 +538,7 @@ export function createBreachScene(seed: number): Scene {
       w = nw; h = nh; dpr = ndpr; focus = nfocus;
     },
     draw(ctx, t, v) {
+      tideT = t;
       const form = formOf(v.form);
       const reef = reefFor(form);
       const L = layout(v, form);
