@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { currentTangle, freeTangle, visitor, visited, setDay, currentFeast, wishOpen, makeWish, flare, prune, oldKnobs, inMilky, guarding, lucky, currentThorn, dayOf, catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
+import { currentFragment, takeFragment, currentTangle, freeTangle, visitor, visited, setDay, currentFeast, wishOpen, makeWish, flare, prune, oldKnobs, inMilky, guarding, lucky, currentThorn, dayOf, catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { newGame, type GameState } from '../../src/game/sim/state.ts';
 import { GIFT, LUCKY } from '../../src/game/content/creatures.ts';
@@ -680,4 +680,15 @@ test('a creature in trouble: one per slot, freed once for a burst', () => {
   assert.ok(freeTangle(s) > 0);
   assert.equal(currentTangle(s), null);
   assert.equal(freeTangle(s), 0);
+});
+
+test('drifting fragments: on the shelf and in the light, taken in one per slot, at most five, each calcite ×1.03', () => {
+  const s = newGame(81);
+  s.height = 3300;
+  s.levels.polyp = 10;
+  const base = calciteRate(s);
+  let taken = 0;
+  for (s.t = 0; s.t < 40000 && taken < 7; s.t += 5) if (currentFragment(s) && takeFragment(s)) taken++;
+  assert.equal(s.fragments, 5);
+  assert.ok(Math.abs(calciteRate(s) / base - 1.03 ** 5) < 1e-9);
 });

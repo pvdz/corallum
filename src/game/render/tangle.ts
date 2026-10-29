@@ -104,3 +104,41 @@ export function drawPinned(ctx: CanvasRenderingContext2D, tg: { k: number; x: nu
   ctx.stroke();
   ctx.restore();
 }
+
+/** A fragment of some other reef tumbling past on the current: tap to take it in. */
+export function drawFragment(ctx: CanvasRenderingContext2D, f: { k: number; x: number; age: number }, life: number, t: number, focus: Focus, dpr: number): void {
+  const s = Math.min(focus.w, focus.h) / 700 * 1.7;
+  const a = Math.min(1, f.age / 2, (life - f.age) / 3);
+  if (a <= 0) return;
+  const u = f.age / life;
+  const x = focus.x + focus.w * (f.k % 2 ? 1.05 - u * 1.1 : -0.05 + u * 1.1);
+  const y = focus.y + focus.h * (0.25 + 0.3 * f.x) + Math.sin(t * 0.9 + f.k) * 14 * s;
+  spot('fragment', x, y, Math.max(34 * s, 30 * dpr));
+  const hue = [12, 290, 40, 180][f.k % 4]!;
+  ctx.save();
+  ctx.globalAlpha = a;
+  ctx.translate(x, y);
+  ctx.rotate(t * 0.6 + f.k);
+  ctx.strokeStyle = `hsl(${hue},55%,62%)`;
+  ctx.lineCap = 'round';
+  const branch = (bx: number, by: number, ang: number, len: number, depth: number) => {
+    const ex = bx + Math.cos(ang) * len, ey = by + Math.sin(ang) * len;
+    ctx.lineWidth = (4 - depth) * s;
+    ctx.beginPath();
+    ctx.moveTo(bx, by);
+    ctx.lineTo(ex, ey);
+    ctx.stroke();
+    if (depth < 3) { branch(ex, ey, ang - 0.5, len * 0.7, depth + 1); branch(ex, ey, ang + 0.45, len * 0.7, depth + 1); }
+    else { ctx.fillStyle = `hsl(${hue},70%,82%)`; ctx.beginPath(); ctx.arc(ex, ey, 1.6 * s, 0, Math.PI * 2); ctx.fill(); }
+  };
+  branch(0, 8 * s, -Math.PI / 2, 9 * s, 0);
+  ctx.restore();
+  const p = (t * 0.6) % 1;
+  ctx.save();
+  ctx.strokeStyle = `rgba(255,235,200,${0.35 * (1 - p) * a})`;
+  ctx.lineWidth = 1.2 * dpr;
+  ctx.beginPath();
+  ctx.arc(x, y, (22 + 14 * p) * s, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+}

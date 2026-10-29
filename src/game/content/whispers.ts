@@ -6,7 +6,7 @@ import type { GameState } from '../sim/state.ts';
 import { actAt } from './acts.ts';
 import { OSSEL_MISTAKES } from './ossel.ts';
 import {
-  calciteHold, canSend, currentTangle, wishOpen, oldKnobs, inMilky, currentThorn, guarding, inFlurry, inHeat, inRising, currentUpwelling, currentSwell, grainsWaiting, skyOpen, canFlare, glowHold, waterAt, homes, workOpen, sisterNow, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
+  calciteHold, canSend, currentFragment, currentTangle, wishOpen, oldKnobs, inMilky, currentThorn, guarding, inFlurry, inHeat, inRising, currentUpwelling, currentSwell, grainsWaiting, skyOpen, canFlare, glowHold, waterAt, homes, workOpen, sisterNow, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
 } from '../sim/economy.ts';
 
 export type Whisper = { id: string; when: (s: GameState) => boolean; text: string };
@@ -115,6 +115,10 @@ export const WHISPERS: readonly Whisper[] = [
   {
     id: 'dream', when: (s) => s.meta.dreams > 0 && s.t > 600,
     text: 'You have a dream kept. I dream all the time. A quarter of an hour, gone, and everything grown.',
+  },
+  {
+    id: 'fragment', when: (s) => !!currentFragment(s) && s.fragments === 0,
+    text: 'A piece of someone else’s reef, broken off and tumbling. Catch it. It can grow here, beside us.',
   },
   {
     id: 'tangle', when: (s) => !!currentTangle(s) && s.tally.freed === 0,

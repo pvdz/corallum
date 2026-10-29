@@ -692,3 +692,4 @@ date, what landed, what is half-done, what's next.
 - Two more days' seas: a lucky day (lucky neighbours ×2) and a kind day (freed creatures ×2).
 - Memory The small ones (needs 5 creatures freed; line title 'the line of small kindnesses').
 - With each far whale call in the Midnight Water, a vast dim whale crosses high overhead (midnight.ts drawFarWhale).
+- Drifting fragments (events.ts FRAGMENT; economy currentFragment/takeFragment; tangle.ts drawFragment): on the shelf and in the light, one slot every 9 min a broken-off branch of another reef tumbles past for 30 s; tapped, it grows at the reef's foot in its own colours (max 5, calcite ×1.03 each). Whisper, guide row, sim test.

@@ -25,7 +25,7 @@ import { ACT5, BANDS_ACT5, GARDEN, MEMORIES, type Memory, type MemoryId, type Ga
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, LUCKY, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
 import { BOONS, LINEAGE, SEAMOUNTS, type BoonId, type Seamount, type SeamountId, type TraitId, VOW, VOWS, type VowId } from '../content/lineage.ts';
-import { DAYS, type DayId, DAILY, FEAST, SIGNAL, SWELL, THORN, WELCOME, intruderOf, type Intruder, DREAM, TANGLE } from '../content/events.ts';
+import { DAYS, type DayId, DAILY, FEAST, SIGNAL, SWELL, THORN, WELCOME, intruderOf, type Intruder, DREAM, TANGLE, FRAGMENT } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { WORKS, type WorkId } from '../content/works.ts';
 import { COUSIN, SISTER } from '../content/sister.ts';
@@ -232,7 +232,7 @@ export function rates(s: GameState): Rates {
       (speaks(s, 'massive') ? 1.5 : 1) * (speaks(s, 'pillar') ? 1.25 : 1) *
       1.5 ** trait(s, 'deep-memory') *
       knownBonus(s) * shardBonus(s) *
-      (lives(s, 'goby') ? 1.15 : 1) * (chose(s, 'whale-fall', 'a') ? 1.1 : 1) * (chose(s, 'snow', 'a') ? 1.05 : 1) * (chose(s, 'slope', 'a') ? 1.05 : 1) * (chose(s, 'krill', 'a') ? 1.1 : 1) * (chose(s, 'heatwave', 'b') ? 1.1 : 1) * (chose(s, 'outbreak', 'a') ? 1.1 : 1) * 1.05 ** s.works.garden *
+      (lives(s, 'goby') ? 1.15 : 1) * FRAGMENT.each ** s.fragments * (chose(s, 'whale-fall', 'a') ? 1.1 : 1) * (chose(s, 'snow', 'a') ? 1.05 : 1) * (chose(s, 'slope', 'a') ? 1.05 : 1) * (chose(s, 'krill', 'a') ? 1.1 : 1) * (chose(s, 'heatwave', 'b') ? 1.1 : 1) * (chose(s, 'outbreak', 'a') ? 1.1 : 1) * 1.05 ** s.works.garden *
       (boon(s, 'currents') ? 1.15 : 1) * today(s, 'calm', 1.1),
     calciteK:
       ACT1.dissolve * sm.dissolve * ACT1.latticeFactor ** lv.lattice * (ACT1.ventAcid * sm.ventAcid) ** vent * (vent > 0 && chose(s, 'vent-crack', 'a') ? 0.8 : 1) *
@@ -2137,6 +2137,26 @@ export function currentTangle(s: GameState): { k: number; x: number; age: number
   const start = k * TANGLE.period + r() * (TANGLE.period - TANGLE.life);
   if (s.t < start || s.t >= start + TANGLE.life) return null;
   return { k, x: r() < 0.5 ? 0.12 + r() * 0.2 : 0.68 + r() * 0.2, age: s.t - start };
+}
+
+/** A fragment of another reef drifting past now (slot, place 0..1, seconds in), if not yet taken and there is room. */
+export function currentFragment(s: GameState): { k: number; x: number; age: number } | null {
+  if (!FRAGMENT.zones.includes(actAt(s.height)) || s.fragments >= FRAGMENT.max) return null;
+  const k = Math.floor(s.t / FRAGMENT.period);
+  if (k <= s.fragmentSlot) return null;
+  const r = mulberry32((s.seed ^ 0xf4a9) + Math.imul(k, 0x9e3779b1));
+  const start = k * FRAGMENT.period + r() * (FRAGMENT.period - FRAGMENT.life);
+  if (s.t < start || s.t >= start + FRAGMENT.life) return null;
+  return { k, x: r(), age: s.t - start };
+}
+
+/** Take the drifting fragment in: it grows at the reef's foot (calcite ×FRAGMENT.each). */
+export function takeFragment(s: GameState): boolean {
+  const f = currentFragment(s);
+  if (!f) return false;
+  s.fragmentSlot = f.k;
+  s.fragments++;
+  return true;
 }
 
 /** Free the tangled fish: a burst of the zone's currency. */

@@ -1611,6 +1611,14 @@ export function createSunlitScene(seed: number): Scene {
       if (v.othersSpawn) drawOthersSpawn(ctx, t);
       drawSleepers(ctx, t, v.rasp, night);
       reef.draw(ctx, L, v, t);
+      // Fragments of other reefs, taken in: small colonies of their own colours at the foot.
+      for (let k = 0; k < v.fragments; k++) {
+        const fu = [0.38, 0.62, 0.32, 0.68, 0.45][k]!;
+        const fxp = focus.x - focus.w * 0.1 + fu * focus.w * 1.2;
+        const hue = [12, 290, 40, 180, 330][k]!;
+        drawColony(ctx, fxp, floorY(fu) + 2 * scale(), scale() * 1.1, t,
+          { branch: `hsl(${hue},45%,45%)`, tip: `hsl(${hue},60%,70%)`, polyp: 'rgba(255,240,230,0.9)' }, seed ^ (0xf4a + k * 313));
+      }
       drawRelics(ctx, reef, L, v.relics, t, v.moments['old-lamp'] === 'a');
       if (night < 0.5) drawTrumpetfish(ctx, t, L);
       if (v.moments.fry === 'a') drawFry(ctx, t, L);

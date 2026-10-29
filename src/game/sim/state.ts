@@ -174,6 +174,9 @@ export type GameState = {
   nursed: string;
   lineWishes: number;
   surfacedAt: number;
+  /** Fragments taken in (content/events.ts FRAGMENT), and the last slot seen to. */
+  fragments: number;
+  fragmentSlot: number;
   /** The last tangle slot freed (content/events.ts TANGLE). */
   untangled: number;
   /** The span of time (content/creatures.ts LUCKY) in which a lucky neighbour was last touched. */
@@ -284,6 +287,8 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     shelled: -1,
     luckySpan: -1,
     untangled: -1,
+    fragments: 0,
+    fragmentSlot: -1,
     vows: [],
     wished: -1,
     gardenKinds: '',

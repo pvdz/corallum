@@ -171,3 +171,12 @@ export const TANGLE = {
   /** On the Silt Floor it is a brittle star pinned under a fallen stone, lifted off. */
   lifted: '· the stone lifted',
 } as const;
+
+/**
+ * Drifting fragments (the Twilight Shelf and the Sunlit Crown, while you watch): a broken-off piece of
+ * some other reef tumbles past; taken in, it grows at the reef's foot. At most `max`, each calcite ×`each`.
+ */
+export const FRAGMENT = {
+  period: 540, life: 30, max: 5, each: 1.03, zones: [3, 4] as readonly number[],
+  float: '· taken in',
+} as const;
