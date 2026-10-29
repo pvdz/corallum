@@ -771,6 +771,12 @@ function updateGaugeMoon(): void {
   const c = gaugeMoon.getContext('2d')!;
   c.clearRect(0, 0, 36, 36);
   drawMoon(c, 18, 18, 14, p);
+  // A faint rim, so a new moon is a shape and not a hole.
+  c.strokeStyle = 'rgba(220,225,255,0.45)';
+  c.lineWidth = 1.5;
+  c.beginPath();
+  c.arc(18, 18, 14, 0, Math.PI * 2);
+  c.stroke();
   gaugeMoon.title = moonFull(state.t) ? GAUGE_MOON.full : `${GAUGE_MOON.until} ${duration(untilFullMoon(state.t))}`;
 }
 /** 0 (seamount) … 1 (surface) along the gauge. */
