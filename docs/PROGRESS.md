@@ -713,3 +713,4 @@ date, what landed, what is half-done, what's next.
 - Trait Long rhythm (way, 6): sweep combos cap at 21 (up to ×3) instead of 11.
 - Every tenth request kept, Ossel remembers something of its own (ossel.ts OSSEL_PAST, five memories) as a story card, +1 lineage.
 - Mobile: with six or more stocks showing, the stock grid tightens (smaller values and notes) so the cards keep their room.
+- Vow Quiet (+3): no requests from Ossel on that reef.

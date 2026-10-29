@@ -60,7 +60,7 @@ decide which three memories your children carry into a new sea.
 - Small creatures in trouble in every zone (a fish in a jelly's threads, a brittle star under a stone, a fish
   stranded on the crown); a daily visitor to touch; rare spectacles in every zone; a blue moon every seventh cycle;
   the view drifts on its own when left in view mode.
-- After an ending, a new reef may take vows (haste, lightness, solitude, stillness) for lineage.
+- After an ending, a new reef may take vows (haste, lightness, solitude, stillness, quiet) for lineage.
 - The reef's own bands can be read as rings in a cross-section of its stone.
 - Keys: Space sweeps, 1–4 tabs, F feast, E expedition, L flare the lure, R the rising, C close up, S ride a swell, K old stone, W wish, T time-lapse,
   7–0 the signal, P / B / G buy, H view mode, ? for the list.

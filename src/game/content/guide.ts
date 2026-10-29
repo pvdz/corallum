@@ -28,7 +28,7 @@ export const GUIDE: readonly [string, string][] = [
   ['Ossel', 'Ossel asks seven questions on the way up and remembers your answers to the end. Ossel is also wrong about some things.'],
   ['The sky', 'At the Breach the reef names the stars after its own life: pick a figure and tap its stars in order. When stars fall, make one wish.'],
   ['Each day', 'A new day brings a gift, a dream (sleep a quarter hour forward), the day’s sea (a mild boon) and a visitor: touch it for lineage.'],
-  ['After the end', 'Plant children in the garden at dawn, then begin again. The chronicle remembers every ending. A new reef may take vows (haste, lightness, solitude, stillness) for lineage at its own ending.'],
+  ['After the end', 'Plant children in the garden at dawn, then begin again. The chronicle remembers every ending. A new reef may take vows (haste, lightness, solitude, stillness, quiet) for lineage at its own ending.'],
   ['Spawning early', 'A lesser spawning starts again on a new seamount with lineage to spend. Hard seamounts, once offered, teach the whole line something if you grow far enough on them.'],
   ['The goal', 'Reach the surface and release your spawn under the full moon, carrying what you choose to remember.'],
 ];
