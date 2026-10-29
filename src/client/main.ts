@@ -36,13 +36,13 @@ import { deserialize, exportString, importString, serialize } from '../game/sim/
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio } from '../game/audio/audio.ts';
-import { AWAY_PREP, FEAST, THORN, WELCOME } from '../game/content/events.ts';
+import { AWAY_PREP, FEAST, SIGNAL, THORN, WELCOME } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS, TRIAL_TEXT } from '../game/content/lineage.ts';
 import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf, TRUST, trustLevel, COMPANION } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
 import { createPortraits } from './portraits.ts';
 import { createZoom } from './zoom.ts';
-import { drawMoon } from '../game/render/draw.ts';
+import { drawMoon, glow as glowAt } from '../game/render/draw.ts';
 import { GAUGE_MOON } from '../game/content/act5.ts';
 import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { ACT1, MILESTONES, type Milestone } from '../game/content/act1.ts';
@@ -237,6 +237,9 @@ const panel = createPanel(ui, {
     if (done.includes('trip')) audio.cue('depart');
     save();
     return done.length ? done.map((d) => (d === 'rasp' ? AWAY_PREP.rasp : AWAY_PREP.trip)).join(', ') : AWAY_PREP.nothing;
+  },
+  lamp(i) {
+    lampFlash = { rgb: SIGNAL.lamps[i]!, at: performance.now() };
   },
   answerSignal(answer) {
     const pay = answerSignal(state, answer);
@@ -483,6 +486,8 @@ if (params.has('skip')) catchUp(Number(params.get('skip')));
 let speed = Number(params.get('speed') ?? 1);
 /** Relics found so far (a homecoming while watching gets the reading's light). */
 let relicsSeen = state.relics.length;
+/** A signal lamp's flash in the world (colour and when it lit). */
+let lampFlash: { rgb: string; at: number } | null = null;
 /** Shards the line had found (a new one is announced). */
 let shardsSeen = state.meta.shards.length;
 /** The intruder and the waiting choice last announced. */
@@ -1282,6 +1287,23 @@ function frame(now: number): void {
   const wl = untilWaterTurns(state);
   drawWater(ctx, waterAt(state).id, focusNow, tNow, WATER.period - wl, wl, dpr, actAt(state.height) >= 4);
   zoomer.apply(ctx);
+  // A signal lamp lit in the panel: the shoals around the crown flash its colour.
+  if (lampFlash) {
+    const age = (now - lampFlash.at) / 500;
+    if (age >= 1) lampFlash = null;
+    else {
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.globalCompositeOperation = 'lighter';
+      const [cx, cy] = scene.crownAt;
+      for (let k = 0; k < 9; k++) {
+        const a = k * 0.7 + 0.3;
+        glowAt(ctx, cx + Math.cos(a) * (60 + (k % 3) * 30) * dpr, cy - 40 * dpr + Math.sin(a) * 40 * dpr, 14 * dpr, lampFlash.rgb, 0.8 * (1 - age));
+      }
+      ctx.restore();
+      zoomer.apply(ctx);
+    }
+  }
   const fe = currentFeast(state);
   if (fe) drawFeast(ctx, fe, state.t - fe.start, tNow, focusNow, dpr, feastPay(state));
   taps.draw(ctx, tNow, scene.crownAt, dpr, (x, y) => actAt(state.height) <= 2 || !!scene.darkAt?.(x, y));

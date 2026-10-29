@@ -53,6 +53,8 @@ export type PanelHooks = {
   meetOthers(how: 'feed' | 'join'): void;
   /** Ready the reef for an absence; returns what was done, in words. */
   prepareAway(): string;
+  /** A signal lamp lit (the world flashes it too). */
+  lamp?(i: number): void;
   /** Answer the shoals' signal; returns what it paid (0 if wrong). */
   answerSignal(answer: number[]): number;
   /** Ask Ossel for a different request. */
@@ -287,6 +289,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     return b;
   });
   function flash(i: number): void {
+    hooks.lamp?.(i);
     const b = lampButtons[i]!;
     b.classList.remove('lit');
     void b.offsetWidth;
