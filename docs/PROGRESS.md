@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended goal (user): add content, gameplay and graphics, keep going. Latest: garden children of three kinds, almanac strip, darkness beyond the reef's light, time-lapse (T), wishes, vows, lucky neighbours (+ Lucky line), guard job, listening dome, Pillars, old stone. Bot ~7h08; 7 browser tests + 77 sim tests green.
+NOW: Open-ended goal (user): add content, gameplay and graphics, keep going. Latest: gleaming seamount, Ossel's sand in the light, shelf of drawn shells (12 kinds), Moments met card, keys K/W/T, garden kinds, almanac strip, silent-seamount cap fix, darkness beyond the light, wishes, vows. Bot ~7h08; 7 browser tests + 79 sim tests green.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
