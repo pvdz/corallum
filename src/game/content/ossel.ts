@@ -24,6 +24,13 @@ export const OSSEL_MISTAKES: readonly OsselMistake[] = [
       'It was easier to call it weather.”',
   },
   {
+    id: 'strong', metres: 600, truth: (s) => s.readings.includes('kept-stone'),
+    claim: 'Strength is keeping. The heavier the stone, the stronger the reef.',
+    title: 'Weight is not strength',
+    correction: 'The kept stone shows what the weight did: branches bowed to the floor, nothing new able to grow. ' +
+      '“I said that to every polyp I ever knew,” says Ossel. “I am sorry. Let it go. Let it all go, if you have to.”',
+  },
+  {
     id: 'gate', metres: 900, truth: (s) => s.relics.includes('gate'),
     claim: 'Nobody was ever left outside our gate. We let everyone in.',
     title: 'The gate was shut',
@@ -46,7 +53,7 @@ export const OSSEL_MISTAKES: readonly OsselMistake[] = [
   },
 ];
 
-// Ossel's questions: four times on the way up Ossel asks the reef something. The answer changes
+// Ossel's questions: seven times on the way up Ossel asks the reef something. The answer changes
 // nothing in the numbers; Ossel remembers it, answers back, and the ending carries it.
 export type QuestionId = 'silt' | 'tell' | 'keep' | 'surface' | 'remember' | 'grey' | 'sister';
 export type Question = {

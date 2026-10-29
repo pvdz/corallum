@@ -181,4 +181,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Readings: The night the sea burned (a milky sea in the city's youth), The kept stone (Thousandfold never let any stone go; Ossel thought weight was strength) | this game's own lore | OK |
 | Gulper eel (Midnight), sixgill shark (Twilight) | real animals | OK |
 | Form dialect Pillars (columns from one foot, feeding by day: real pillar coral habit) | real biology | OK |
+| Ossel's mistake: strength is keeping (corrected by The kept stone) | this game's own theme | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |
