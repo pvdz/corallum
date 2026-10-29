@@ -8,7 +8,7 @@ import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
 import { ACT3, FAVOURS, FAVOUR_TEXT, MEETINGS, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { DIALECTS, OTHERS, TIERS, type DialectId } from '../content/act4.ts';
-import { SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type SeamountId, type TraitId } from '../content/lineage.ts';
+import { BOON_TEXT, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { MEMORIES } from '../content/act5.ts';
 import { CREATURES, TRUST, trustLevel } from '../content/creatures.ts';
 import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
@@ -31,7 +31,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, othersSpawning, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, othersSpawning, boonsOffered, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -42,6 +42,8 @@ export type PanelHooks = {
   read(id: ReadingId): void;
   /** Send shoals to the next ruin. */
   send(): void;
+  /** Choose this seamount's boon. */
+  chooseBoon(id: BoonId): void;
   /** Meet the other reefs' spawning. */
   meetOthers(how: 'feed' | 'join'): void;
   /** Ask Ossel for a different request. */
@@ -235,6 +237,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   });
   momentBox.append(el('p', 'truce-kicker', MOMENT.kicker), momentTitle, momentText, momentChoices);
   grow.prepend(momentBox);
+
+  // ---------- A boon for a new seamount ----------
+  const boonBox = el('section', 'truce moment boon');
+  boonBox.hidden = true;
+  const boonChoices = el('div', 'boon-choices');
+  boonBox.append(el('p', 'truce-kicker', BOON_TEXT.kicker), el('p', 'truce-text', BOON_TEXT.head), boonChoices);
+  grow.prepend(boonBox);
+  let boonKey = '';
 
   // ---------- Other reefs spawning (Sunlit full moon) ----------
   const othersBox = el('section', 'truce moment others');
@@ -1303,6 +1313,20 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         askFill.style.width = `${(rq.got / rq.n) * 100}%`;
         askCount.textContent = `${rq.got}/${rq.n}`;
         askSkip.disabled = !canSkipRequest(s);
+      }
+
+      // A boon for this seamount, while one is still to be chosen.
+      const offered = boonsOffered(s);
+      setShown(boonBox, offered.length > 0);
+      const bk = offered.map((b) => b.id).join();
+      if (bk !== boonKey) {
+        boonKey = bk;
+        boonChoices.innerHTML = '';
+        for (const b of offered) {
+          const btn = button('choice', '', () => hooks.chooseBoon(b.id));
+          btn.append(el('strong', '', b.name), el('span', '', b.effect));
+          boonChoices.append(btn);
+        }
       }
 
       // Other reefs spawning: this moon's choice.

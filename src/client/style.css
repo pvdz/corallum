@@ -306,6 +306,10 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 .welcome { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0 4px; }
 .welcome-head { grid-column: 1 / -1; margin: 0; font-size: 12px; color: var(--ink-dim); }
 .welcome-gift.taken { border-color: #ffd9a8; }
+.boon-choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+@media (max-width: 799px) { .boon-choices { grid-template-columns: 1fr; } }
+.truce.boon { border-color: rgba(255, 217, 168, 0.4); }
+.truce.boon .truce-kicker { color: #ffd9a8; }
 .residents { background: rgba(255, 140, 120, 0.03); border: 1px solid rgba(255, 150, 130, 0.2); border-radius: var(--radius); padding: 10px 12px; }
 .residents[hidden], .resident[hidden] { display: none; }
 .residents header { display: flex; justify-content: space-between; align-items: baseline; }

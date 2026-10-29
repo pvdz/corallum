@@ -10,7 +10,7 @@ import type { WorkId } from '../content/works.ts';
 import type { MomentId } from '../content/moments.ts';
 import type { ResidentId } from '../content/residents.ts';
 import type { SiteId, TripId } from '../content/expeditions.ts';
-import type { SeamountId, TraitId } from '../content/lineage.ts';
+import type { BoonId, SeamountId, TraitId } from '../content/lineage.ts';
 import type { UpgradeId } from '../content/types.ts';
 
 export const SAVE_VERSION = 1;
@@ -141,6 +141,8 @@ export type GameState = {
   relics: SiteId[];
   /** Sim time each creature last gave a gift when touched (content/creatures.ts GIFT). */
   gifts: Record<CreatureId, number>;
+  /** The boon this reef chose ('' none yet; only after the first reef). */
+  boon: BoonId | '';
   /** The seamount this run grows on (lesser spawnings choose; the first reef's is plain). */
   seamount: SeamountId;
   /** Lifetime totals. */
@@ -199,6 +201,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     },
     gifts: Object.fromEntries(CREATURES.map((c) => [c.id, -1e9])) as Record<CreatureId, number>,
     seamount: 'plain',
+    boon: '',
     earned: { calcite: 0, glow: 0, murmurs: 0 },
     act: 1,
     meta,

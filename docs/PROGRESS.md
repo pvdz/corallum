@@ -384,3 +384,4 @@ date, what landed, what is half-done, what's next.
 - Thorn stars: events.ts THORN, economy currentThorn/crabThorn/pryThorn (slots like feasts), state.thorned; render/thorn.ts on the coral in Twilight and Sunlit; tap to pry, guard crabs take it at the end for half; journal creature 'thorn-star'; corallum.thorn() jumps to one.
 - Dragonfish (Midnight intruder, events.ts intruderOf; render/thorn.ts drawDragonfish): tap to drive off, a finished spire dazzles it away for half; journal creature.
 - Test chaos.test.ts: a whole game of random choices (moments, residents, favours, works, request swaps, trips, full-moon choices, intruders) plus a month away keeps every stock and rate finite and non-negative (0.6 s).
+- Boons: lineage.ts BOONS, economy boonsOffered/chooseBoon, state.boon; card at the top of Grow on reefs after the first; the bot takes the first.

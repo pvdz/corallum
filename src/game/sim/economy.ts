@@ -22,7 +22,7 @@ import { ACT4, BANDS_ACT4, DIALECTS, OTHERS, TIERS, type DialectId, type Dialect
 import { ACT5, BANDS_ACT5, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
-import { LINEAGE, SEAMOUNTS, type Seamount, type SeamountId, type TraitId } from '../content/lineage.ts';
+import { BOONS, LINEAGE, SEAMOUNTS, type BoonId, type Seamount, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { FEAST, THORN, WELCOME, intruderOf } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { WORKS, type WorkId } from '../content/works.ts';
@@ -220,7 +220,7 @@ export function rates(s: GameState): Rates {
   const onShelf = target >= ACT3.from;
   return {
     glowP: (ACT1.symbiontGlow * lv.symbiont * milestoneMult('symbiont', lv.symbiont) * (1 + ACT2.lightAmplify * s.jobs.light) +
-      lightGlow * s.jobs.light) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1) * (chose(s, 'vent-crack', 'b') ? 1.15 : 1) * (sm.glow ?? 1) * (passed(s, 'dark') ? 1.25 : 1),
+      lightGlow * s.jobs.light) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1) * (chose(s, 'vent-crack', 'b') ? 1.15 : 1) * (sm.glow ?? 1) * (passed(s, 'dark') ? 1.25 : 1) * (boon(s, 'warm-heart') ? 1.3 : 1),
     glowK: ACT1.glowFade * (chose(s, 'squid', 'a') ? 0.8 : 1),
     planktonP: ACT2.feedRate * s.jobs.feed * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
       (speaks(s, 'sweepers') ? 3 : 1) * (lives(s, 'feather-duster') ? 1.3 : 1),
@@ -250,10 +250,11 @@ export function rates(s: GameState): Rates {
       (speaks(s, 'massive') ? 1.5 : 1) *
       1.5 ** trait(s, 'deep-memory') *
       knownBonus(s) * shardBonus(s) *
-      (lives(s, 'goby') ? 1.15 : 1) * (chose(s, 'whale-fall', 'a') ? 1.1 : 1) * 1.05 ** s.works.garden,
+      (lives(s, 'goby') ? 1.15 : 1) * (chose(s, 'whale-fall', 'a') ? 1.1 : 1) * 1.05 ** s.works.garden *
+      (boon(s, 'currents') ? 1.15 : 1),
     calciteK:
       ACT1.dissolve * sm.dissolve * ACT1.latticeFactor ** lv.lattice * (ACT1.ventAcid * sm.ventAcid) ** vent * (vent > 0 && chose(s, 'vent-crack', 'a') ? 0.8 : 1) *
-      (has(s, 'lattice-songs') ? 0.7 : 1) * (chose(s, 'brittle', 'a') ? 0.9 : 1) * (chose(s, 'cleaners', 'b') ? 0.9 : 1) * (speaks(s, 'massive') ? 0.5 : 1) +
+      (has(s, 'lattice-songs') ? 0.7 : 1) * (chose(s, 'brittle', 'a') ? 0.9 : 1) * (chose(s, 'cleaners', 'b') ? 0.9 : 1) * (boon(s, 'roots') ? 0.85 : 1) * (speaks(s, 'massive') ? 0.5 : 1) +
       (speaks(s, 'mucus') ? 0 : ACT3.raspEat * rasp * (s.truce.terms === 'b' ? ACT3.politeEat : 1) * (lives(s, 'guard-crab') ? 0.5 : 1) * (chose(s, 'young-rasp', 'a') ? 0.8 : 1) * (paired(s, 'guard-crab', 'goby') ? 0.8 : 1)),
     lureMax: ACT1.lureMax + ACT1.lureMaxPerPattern * lv.lure + (has(s, 'fear') ? 1 : 0) + (speaks(s, 'fluorescent') ? 2 : 0) +
       (found(s, 'lamp-hall') ? 1 : 0) + 0.5 * s.works.spire + (chose(s, 'angler', 'a') ? 0.5 : 0),
@@ -512,7 +513,7 @@ export function cost(s: GameState, id: UpgradeId): number {
   const l = s.levels[id];
   if (id === 'skeleton') {
     const discount = (has(s, 'walls') ? 0.75 : 1) * (speaks(s, 'branching') ? 0.6 : 1) * (found(s, 'gate') ? 0.85 : 1);
-    return Math.ceil(u.baseCost * BAND_COST[Math.min(MAX_BANDS, l)]! * discount * waterFactor(s, id));
+    return Math.ceil(u.baseCost * BAND_COST[Math.min(MAX_BANDS, l)]! * discount * waterFactor(s, id) * (boon(s, 'quick-stone') ? 0.9 : 1));
   }
   const discount = (id === 'polyp' ? 0.85 ** trait(s, 'quick-budding') : 1) * (id === 'shoal' && passed(s, 'lonely') ? 0.8 : 1);
   const [from, gentle] = u.growthAfter ?? [Infinity, u.growth];
@@ -674,7 +675,7 @@ function roamSite(s: GameState): Site {
 
 /** How long a trip takes this reef (Old maps halves it). */
 export function tripSeconds(s: GameState, x: Site): number {
-  return x.seconds * (trait(s, 'old-maps') ? 0.5 : 1);
+  return x.seconds * (trait(s, 'old-maps') ? 0.5 : 1) * (boon(s, 'near-ruins') ? 0.5 : 1);
 }
 
 /** The trip the shoals are on now (a ruin, or a roam of the size that left), if any. */
@@ -722,7 +723,7 @@ function homecoming(s: GameState): void {
   const ex = s.expedition;
   const x = SITES.find((v) => v.id === ex.site);
   const roam = ex.site === 'roam';
-  const seconds = (roam ? ROAM.seconds : x?.seconds ?? 0) * (trait(s, 'old-maps') ? 0.5 : 1);
+  const seconds = (roam ? ROAM.seconds : x?.seconds ?? 0) * (trait(s, 'old-maps') ? 0.5 : 1) * (boon(s, 'near-ruins') ? 0.5 : 1);
   const heard = EXPEDITION.heard * ex.n * seconds;
   s.jobs.feed += ex.feed;
   s.jobs.light += ex.light;
@@ -1191,7 +1192,7 @@ export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: 
   // Never more than a share of what the reef can hold of it (P/k), or it would only wash away.
   // Rare visitors give more: catching one is luck as well as attention.
   const rare = CREATURES.find((c) => c.id === id)?.note.startsWith('Rare.') ? GIFT.rare : 1;
-  const amount = TRUST.gift[trustLevel(s.meta.trust[id] ?? 0)]! * (chose(s, 'whale-fall', 'b') ? 2 : 1) * rare * (stock === 'calcite' ? calciteRate(s, r) * GIFT.seconds
+  const amount = (boon(s, 'welcome') ? 2 : 1) * TRUST.gift[trustLevel(s.meta.trust[id] ?? 0)]! * (chose(s, 'whale-fall', 'b') ? 2 : 1) * rare * (stock === 'calcite' ? calciteRate(s, r) * GIFT.seconds
     : stock === 'bloom' ? r.bloomP * GIFT.seconds : stock === 'spawn' ? r.spawnP * GIFT.seconds
     : Math.min(made * GIFT.seconds, GIFT.holdShare * made / k));
   if (!(amount > 0)) return null;
@@ -1250,6 +1251,32 @@ export function meetOthers(s: GameState, how: 'feed' | 'join'): boolean {
     s.meta.lineage += 1;
   }
   return true;
+}
+
+// ---------- Boons ----------
+
+/** The three boons offered to this reef (seeded), while none is chosen; none for a first reef. */
+export function boonsOffered(s: GameState): typeof BOONS[number][] {
+  if (s.meta.spawnings === 0 || s.boon) return [];
+  const r = mulberry32(s.seed ^ 0xb0b0);
+  const pool = [...BOONS];
+  const out: typeof BOONS[number][] = [];
+  while (out.length < 3 && pool.length) out.push(pool.splice(Math.floor(r() * pool.length), 1)[0]!);
+  return out;
+}
+
+export function chooseBoon(s: GameState, id: BoonId): boolean {
+  if (!boonsOffered(s).some((b) => b.id === id)) return false;
+  s.boon = id;
+  if (id === 'lamps') {
+    s.levels.shoal += 4;
+    s.jobs.feed += 4;
+  }
+  return true;
+}
+
+function boon(s: GameState, id: BoonId): boolean {
+  return s.boon === id;
 }
 
 // ---------- Welcome back ----------

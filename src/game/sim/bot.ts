@@ -5,7 +5,7 @@ import { UPGRADES } from '../content/upgrades.ts';
 import type { Job } from '../content/act2.ts';
 import type { ResidentId } from '../content/residents.ts';
 import { WORKS } from '../content/works.ts';
-import { assign, BANDS, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil, readingCost, meetingWords, jobGain, steadyCalciteRate, bestRasp, carryAt, balanceFeedLight, canSend, send, build, homes, house, residentsAsking, nextMoment, meet as meetMoment, skipRequest } from './economy.ts';
+import { assign, BANDS, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil, readingCost, meetingWords, jobGain, steadyCalciteRate, bestRasp, carryAt, balanceFeedLight, canSend, send, build, homes, house, residentsAsking, nextMoment, meet as meetMoment, skipRequest, boonsOffered, chooseBoon } from './economy.ts';
 import type { Choice, MeetingId } from '../content/act3.ts';
 import type { DialectId, DialectTier } from '../content/act4.ts';
 import { newGame, type GameState } from './state.ts';
@@ -96,6 +96,8 @@ export function botDecide(
   }
   // The bot cannot touch creatures: it asks Ossel for something else.
   if (s.request.kind === 'touch') skipRequest(s);
+  const offered = boonsOffered(s);
+  if (offered.length) chooseBoon(s, offered[0]!.id);
   const mo = nextMoment(s);
   if (mo && meetMoment(s, mo.id, 'a')) bought.push(`moment:${mo.id}`);
   for (const w of WORKS) if (build(s, w.id)) bought.push(`work:${w.id}`);

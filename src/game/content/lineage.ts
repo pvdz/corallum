@@ -229,3 +229,16 @@ export const LINEAGE_BANDS: readonly { title: string; text: string }[] = [
       'every channel open. Nobody told it to. It remembers the gate.',
   },
 ];
+
+// Boons: each reef after the first is offered three (seeded by its seamount) and keeps one.
+export type BoonId = 'currents' | 'lamps' | 'quick-stone' | 'warm-heart' | 'roots' | 'welcome' | 'near-ruins';
+export const BOONS: readonly { id: BoonId; name: string; effect: string }[] = [
+  { id: 'currents', name: 'Rich currents', effect: 'calcite ×1.15 on this reef' },
+  { id: 'lamps', name: 'Early lamps', effect: 'start with 4 shoals feeding' },
+  { id: 'quick-stone', name: 'Quick stone', effect: 'bands ×0.9 on this reef' },
+  { id: 'warm-heart', name: 'A warm heart', effect: 'glow ×1.3 on this reef' },
+  { id: 'roots', name: 'Deep roots', effect: 'calcite dissolves ×0.85 on this reef' },
+  { id: 'welcome', name: 'A welcoming sea', effect: 'gifts from neighbours ×2 on this reef' },
+  { id: 'near-ruins', name: 'Near ruins', effect: 'expeditions take half as long on this reef' },
+];
+export const BOON_TEXT = { kicker: 'A new seamount', head: 'Something here is on your side. Choose one:' } as const;
