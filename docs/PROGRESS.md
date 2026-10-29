@@ -188,3 +188,4 @@ date, what landed, what is half-done, what's next.
   glows landed there. A node no longer buds where it already has a child.
 - Rain on the Sunlit Crown after the band "Rain": a one-minute shower every five, rings on the surface.
 - Reef tab: scientific number notation switch (1.23e9).
+- View mode has a camera button: saves the scene as a PNG named after the reef and its height.

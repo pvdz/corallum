@@ -670,6 +670,26 @@ function setViewMode(on: boolean): void {
 viewBtn.addEventListener('click', () => setViewMode(!viewMode));
 ui.append(viewBtn);
 
+// A photo of the reef: the canvas as it is now, saved as a PNG (shown in view mode).
+const photoBtn = document.createElement('button');
+photoBtn.id = 'photo';
+photoBtn.type = 'button';
+photoBtn.title = 'Save a picture of the reef';
+photoBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
+photoBtn.addEventListener('click', () => {
+  canvas.toBlob((blob) => {
+    if (!blob) return;
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    const who = (reefName(state) || 'corallum').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    a.download = `${who}-${Math.round(state.height)}m.png`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    audio.cue('buy');
+  }, 'image/png');
+});
+ui.append(photoBtn);
+
 // Keyboard: Space sweeps; F eats a falling feast; P, B and G buy a polyp, a band and glimmerseed.
 const KEYS: Record<string, UpgradeId> = { p: 'polyp', b: 'skeleton', g: 'symbiont' };
 window.addEventListener('keydown', (e) => {
