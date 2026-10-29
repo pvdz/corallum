@@ -66,6 +66,19 @@ export function speaking(t: number): number {
   return fade * (0.55 + 0.45 * Math.abs(Math.sin(t * 7.3) * Math.sin(t * 3.1 + 1)));
 }
 
+/** Where the pointer last hovered over the water (device pixels, scene time): polyps near it pull in. */
+let hoverAt = { x: 0, y: 0, t: -1e9 };
+export function hover(x: number, y: number, t: number): void {
+  hoverAt = { x, y, t };
+}
+/** How much a polyp at (x, y) shies from the pointer: 1 right under it, 0 out of reach or after a pause. */
+export function shy(x: number, y: number, t: number, reach: number): number {
+  const age = t - hoverAt.t;
+  if (age < 0 || age > 1.5) return 0;
+  const d = Math.hypot(x - hoverAt.x, y - hoverAt.y);
+  return d >= reach ? 0 : (1 - d / reach) * Math.min(1, (1.5 - age) / 0.5);
+}
+
 /** The last sweep of the tentacles (device pixels, scene time): small fish nearby dart away from it. */
 let lastPoke = { x: 0, y: 0, t: -1e9 };
 export function poke(x: number, y: number, t: number): void {

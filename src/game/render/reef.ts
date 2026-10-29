@@ -4,7 +4,7 @@
 
 import { generateCoral, thickness, type CoralForm } from './coral.ts';
 import { glow, ring } from './draw.ts';
-import { spot } from './sightings.ts';
+import { shy, spot } from './sightings.ts';
 import { zoom, type EffectKind, type ReefView } from './scene.ts';
 
 /** Where and how big the reef is drawn. */
@@ -405,7 +405,7 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
       // Each polyp milestone fills the polyps out a little.
       const ps = s * (L.polypScale ?? 1) * (1 + 0.06 * v.polypTier) * (k === 0 ? 1 : 0.42 + 0.25 * ((i * 0.618) % 1));
       const lean = k === 0 ? 0 : leanOf(i);
-      drawPolyp(ctx, x, y, ps, t, lean, i * 0.37, flick, colours);
+      drawPolyp(ctx, x, y, ps, t, lean, i * 0.37, Math.max(flick, shy(x, y, t, 70 * s)), colours);
       const [ox, oy] = polypPose(x, y, ps, t, lean, i * 0.37);
       for (let q = 0; q < 8; q += 2) {
         const a = -Math.PI / 2 + lean * 0.4 + (q - 3.5) * 0.32;

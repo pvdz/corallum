@@ -45,7 +45,7 @@ import { createPortraits } from './portraits.ts';
 import { createZoom } from './zoom.ts';
 import { drawMoon, glow as glowAt } from '../game/render/draw.ts';
 import { GAUGE_MOON } from '../game/content/act5.ts';
-import { creatureAt, endFrameSpots, poke, spoke, startle, tappable, takeSightings } from '../game/render/sightings.ts';
+import { creatureAt, endFrameSpots, hover, poke, spoke, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { HEAT } from '../game/content/act4.ts';
 import { AGAIN, QUESTION, QUESTIONS } from '../game/content/ossel.ts';
 import { MILKY, RISING } from '../game/content/act2.ts';
@@ -1273,6 +1273,13 @@ function eatFeast(share = 1): boolean {
   save();
   return true;
 }
+
+// Moving over the water (a mouse; touches tap instead): polyps near the pointer pull their tentacles in.
+canvas.addEventListener('pointermove', (e) => {
+  if (e.pointerType !== 'mouse') return;
+  const [wx, wy] = toWorld(e.clientX * dpr, e.clientY * dpr);
+  hover(wx, wy, frozenT ?? animT);
+});
 
 // Tapping the water sweeps the tentacles: a small burst of calcite. Tapping a falling feast eats it.
 canvas.addEventListener('pointerdown', (e) => {
