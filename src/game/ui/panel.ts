@@ -852,6 +852,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (spoken.length) codexRow('Dialects', spoken.join(' · '));
     if (s.meta.name) codexRow('Name', reefName(s));
     codexRow(UI.thisReef, `${duration(s.t)} growing · ${num(s.earned.calcite)} calcite gathered${s.feasts ? ` · ${s.feasts} feast${s.feasts === 1 ? '' : 's'} caught` : ''}`);
+    const small = [
+      s.tally.pruned ? UI.tallyPruned(s.tally.pruned) : '',
+      s.tally.lucky ? UI.tallyLucky(s.tally.lucky) : '',
+      s.tally.milky ? UI.tallyMilky(s.tally.milky) : '',
+      s.lineWishes || s.wished >= 0 ? UI.tallyWished : '',
+    ].filter(Boolean);
+    if (small.length) codexRow(UI.smallThings, small.join(' · '));
     if (s.vows.length) codexRow(VOW.label, VOWS.filter((v) => s.vows.includes(v.id)).map((v) => `${v.name.toLowerCase()} (${vowKept(s, v.id) ? VOW.kept : VOW.broken})`).join(' · '));
     if (s.meta.endings > 0) codexRow(UI.theSea, `healing: the Long Silt falls ×${(0.95 ** Math.min(6, s.meta.endings)).toFixed(2)} for the endings your line has reached`);
     if (s.meta.endings > 0) codexRow('Endings', `${s.meta.endings} · ${s.meta.carriedEver.length} of ${MEMORIES.length} memories carried so far`);

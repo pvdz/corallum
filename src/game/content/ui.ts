@@ -80,4 +80,9 @@ export const UI = {
   showPanel: 'Show the panel (H) · scroll, pinch or + / − to look closer',
   photo: 'Save a picture of the reef',
   seenFirst: 'Seen for the first time',
+  smallThings: 'Small things',
+  tallyPruned: (n: number) => `${n} knob${n === 1 ? '' : 's'} of old stone let go`,
+  tallyLucky: (n: number) => `${n} lucky touch${n === 1 ? '' : 'es'}`,
+  tallyMilky: (n: number) => `${n} sweep${n === 1 ? '' : 's'} through a milky sea`,
+  tallyWished: 'a wish on falling stars',
 } as const;
