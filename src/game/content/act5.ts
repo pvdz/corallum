@@ -223,5 +223,14 @@ export const GARDEN = {
   effect: '+1 lineage when you begin again',
 } as const;
 
+/** The line's title, from the memory its endings carried most often. */
+export const LINE_TITLES: Partial<Record<MemoryId, string>> = {
+  vent: 'the line of the warm vent', ossel: 'the line of the old wall', thousandfold: 'the line of the city',
+  'slow-water': 'the line of open currents', lanternfish: 'the line of lamps', rasp: 'the friends of the Rasp',
+  'long-animal': 'the line of the long animal', colour: 'the bright line', rain: 'the line of rain', fear: 'the brave line',
+  'silt-truth': 'the line of the grey', dialect: 'the line of many shapes', gate: 'the line of open gates',
+  midden: 'the line of the beak', tablet: 'the line that forgets gently', eye: 'the line that looks back', turtle: 'the line of the turtle',
+};
+
 /** The little moon above the depth gauge: its tooltip. */
 export const GAUGE_MOON = { full: 'The Spawning Moon is full', until: 'Full moon in' } as const;

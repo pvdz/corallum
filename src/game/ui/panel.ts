@@ -9,7 +9,7 @@ import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../conte
 import { ACT3, CURRENT, FAVOURS, FAVOUR_TEXT, MEETINGS, RIDDLE, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { DIALECTS, OTHERS, TIERS, type DialectId } from '../content/act4.ts';
 import { BOONS, BOON_TEXT, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId } from '../content/lineage.ts';
-import { GARDEN, MEMORIES } from '../content/act5.ts';
+import { GARDEN, LINE_TITLES, MEMORIES, type MemoryId } from '../content/act5.ts';
 import { COMPANION, CREATURES, TRUST, trustLevel } from '../content/creatures.ts';
 import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
 import { upgradeIcon } from './icons.ts';
@@ -1900,7 +1900,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           b.hidden = s.meta.spawnings < TRIALS_FROM;
           b.classList.toggle('met', s.meta.seen.includes(`trial:${m.id}`));
         });
-        lineageSub.textContent = `${s.meta.spawnings} spawning${s.meta.spawnings === 1 ? '' : 's'} · best reef ${metres(Math.max(s.meta.best, s.height))}` +
+        // The line's title: the memory its endings carried most.
+        const counts = new Map<string, number>();
+        for (const line of s.meta.chronicle) for (const id of (line.split('|')[1] ?? '').split(',')) if (id) counts.set(id, (counts.get(id) ?? 0) + 1);
+        const top = [...counts].sort((a, b) => b[1] - a[1])[0];
+        const title = top ? LINE_TITLES[top[0] as MemoryId] : undefined;
+        lineageSub.textContent = (title ? `${title} · ` : '') + `${s.meta.spawnings} spawning${s.meta.spawnings === 1 ? '' : 's'} · best reef ${metres(Math.max(s.meta.best, s.height))}` +
           (s.seamount !== 'plain' ? ` · this reef: ${seamountDef(s.seamount).name.toLowerCase()}` : '');
         const can = canSpawnLesser(s);
         spawnTitle.textContent = ended(s) ? 'Begin again' : 'Release a lesser spawning';

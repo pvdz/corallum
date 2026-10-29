@@ -467,3 +467,4 @@ date, what landed, what is half-done, what's next.
 - Seventh resident: a host anemone with its clownfish (from 3980 m, spawn ×1.15), drawn high on the reef.
 - Moment 'The slope gives way' (3500 m).
 - Feats: A garden at dawn, The elder's respect, Fluent, Kept close.
+- The line's title (Lineage header), from the memory its endings carried most (act5.ts LINE_TITLES).
