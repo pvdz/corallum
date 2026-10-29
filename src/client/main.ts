@@ -33,7 +33,7 @@ import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio } from '../game/audio/audio.ts';
 import { FEAST } from '../game/content/events.ts';
-import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS } from '../game/content/lineage.ts';
+import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS, TRIAL_TEXT } from '../game/content/lineage.ts';
 import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
 import { createPortraits } from './portraits.ts';
@@ -320,7 +320,8 @@ if (ended(state)) document.documentElement.classList.add('ended');
     state.meta.seen.push(key);
     const where = SEAMOUNTS.find((m) => m.id === state.seamount);
     panel.story(`Lesser spawning ${n}${where && where.id !== 'plain' ? ` · ${where.name.toLowerCase()}` : ''}`, lb.title,
-      `${lb.text}${where && where.id !== 'plain' ? ` ${where.text}` : ''}`);
+      `${lb.text}${where && where.id !== 'plain' ? ` ${where.text}` : ''}` +
+      (where?.trial ? ` A hard place (${where.effect}): grow to ${where.trial.goal.toLocaleString('en-US')} m here, and the line learns it.` : ''));
   }
 }
 const replay = document.createElement('button');
@@ -384,6 +385,9 @@ if (params.has('skip')) catchUp(Number(params.get('skip')));
 let speed = Number(params.get('speed') ?? 1);
 /** Relics found so far (a homecoming while watching gets the reading's light). */
 let relicsSeen = state.relics.length;
+/** Whether this reef's trial was already met when the page loaded (no announcement then). */
+const trialAtLoad = state.meta.seen.includes(`trial:${state.seamount}`);
+let trialShown = false;
 /** Rolling average milliseconds per frame (read from the console: corallum.prof). */
 const prof = { draw: 0, panel: 0 };
 window.corallum = {
@@ -1094,6 +1098,17 @@ function frame(now: number): void {
       showJournalNote('Feat · +1 lineage', f.name);
       buzz(25);
       audio.cue('buy');
+    }
+  }
+  // A hard seamount's trial met (the sim records it the moment the reef reaches the goal).
+  const trialKey = `trial:${state.seamount}`;
+  if (!trialShown && state.meta.seen.includes(trialKey)) {
+    trialShown = true;
+    if (!trialAtLoad) {
+      const tr = SEAMOUNTS.find((m) => m.id === state.seamount)?.trial;
+      if (tr) showJournalNote(TRIAL_TEXT.note, tr.reward);
+      audio.cue('spawning');
+      buzz([40, 60, 40]);
     }
   }
   // The line's record (set by the sim at the exact moment of reaching the surface): announce a new one.

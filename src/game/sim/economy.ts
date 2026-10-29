@@ -22,7 +22,7 @@ import { ACT4, BANDS_ACT4, DIALECTS, TIERS, type DialectId, type DialectTier } f
 import { ACT5, BANDS_ACT5, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
 import { act, actAt, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, giftOf, type CreatureId, type GiftStock } from '../content/creatures.ts';
-import { LINEAGE, SEAMOUNTS, type Seamount, type TraitId } from '../content/lineage.ts';
+import { LINEAGE, SEAMOUNTS, type Seamount, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { FEAST } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { MOMENTS, type MomentId } from '../content/moments.ts';
@@ -139,6 +139,19 @@ export function chose(s: GameState, id: MomentId, c: 'a' | 'b'): boolean {
   return s.moments[id] === c;
 }
 
+/** A hard seamount's trial met by this line (kept in meta.seen as 'trial:<id>'). */
+export function passed(s: GameState, id: SeamountId): boolean {
+  return s.meta.seen.includes(`trial:${id}`);
+}
+
+/** Meet this seamount's trial once the reef has grown to its goal. Returns true the moment it is met. */
+function trialCheck(s: GameState): boolean {
+  const tr = seamount(s).trial;
+  if (!tr || s.height < tr.goal || passed(s, s.seamount)) return false;
+  s.meta.seen.push(`trial:${s.seamount}`);
+  return true;
+}
+
 function lives(s: GameState, id: ResidentId): boolean {
   return s.residents.includes(id);
 }
@@ -201,10 +214,10 @@ export function rates(s: GameState): Rates {
     planktonP: ACT2.feedRate * s.jobs.feed * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
       (speaks(s, 'sweepers') ? 3 : 1) * (lives(s, 'feather-duster') ? 1.3 : 1),
     planktonK: ACT2.planktonEaten * (has(s, 'slow-currents') ? 0.6 : 1) * (found(s, 'terraces') ? 0.75 : 1),
-    murmurP: ACT2.scoutRate * s.jobs.scout * (has(s, 'beaked') ? 1.5 : 1) * (found(s, 'wells') ? 1.25 : 1) * (chose(s, 'lost-shoal', 'b') ? 1.2 : 1),
+    murmurP: ACT2.scoutRate * s.jobs.scout * (has(s, 'beaked') ? 1.5 : 1) * (found(s, 'wells') ? 1.25 : 1) * (chose(s, 'lost-shoal', 'b') ? 1.2 : 1) * (passed(s, 'silent') ? 1.3 : 1),
     murmurK: ACT2.murmurFade * (found(s, 'wells') ? 0.5 : 1),
     siltP: onShelf
-      ? ACT3.siltFall * (1 + (target - ACT3.from) / ACT3.siltGrowthPer) * (s.truce.wall === 'a' ? 0.6 : 1) * sm.silt
+      ? ACT3.siltFall * (1 + (target - ACT3.from) / ACT3.siltGrowthPer) * (s.truce.wall === 'a' ? 0.6 : 1) * sm.silt * (passed(s, 'buried') ? 0.8 : 1)
       : 0,
     siltK: ACT3.naturalSweep + (lives(s, 'pistol-shrimp') ? 0.04 : 0) + ACT3.flowSweep * lv.sandbar + LINEAGE.glassSweep * trait(s, 'glass-gardeners') + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
     sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1) * (found(s, 'midden') ? 1.3 : 1) * (lives(s, 'sea-cucumber') ? 1.4 : 1) * (chose(s, 'turtle', 'b') ? 1.25 : 1),
@@ -218,7 +231,7 @@ export function rates(s: GameState): Rates {
       : 0,
     spawnK: ACT5.spawnFade * (chose(s, 'bird', 'a') ? 0.8 : 1),
     calciteBase:
-      (ACT1.trickle + ACT1.polypRate * sm.polyp * lv.polyp * milestoneMult('polyp', lv.polyp) * (has(s, 'city') ? 1.5 : 1)) *
+      (ACT1.trickle + ACT1.polypRate * sm.polyp * (passed(s, 'hungry') ? 1.1 : 1) * lv.polyp * milestoneMult('polyp', lv.polyp) * (has(s, 'city') ? 1.5 : 1)) *
       (ACT1.ventBoost * sm.ventBoost) ** vent *
       (has(s, 'inside-the-wall') ? 2 : 1) *
       (s.truce.wall === 'b' ? 1.25 : 1) *
@@ -456,6 +469,7 @@ function flow(s: GameState, dt: number, stepFraction: number): GameState {
   }
   s.act = Math.max(s.act, actAt(s.height));
   readBands(s);
+  trialCheck(s);
   return s;
 }
 
@@ -475,7 +489,7 @@ export function cost(s: GameState, id: UpgradeId): number {
     const discount = (has(s, 'walls') ? 0.75 : 1) * (speaks(s, 'branching') ? 0.6 : 1) * (found(s, 'gate') ? 0.85 : 1);
     return Math.ceil(u.baseCost * BAND_COST[Math.min(MAX_BANDS, l)]! * discount * waterFactor(s, id));
   }
-  const discount = id === 'polyp' ? 0.85 ** trait(s, 'quick-budding') : 1;
+  const discount = (id === 'polyp' ? 0.85 ** trait(s, 'quick-budding') : 1) * (id === 'shoal' && passed(s, 'lonely') ? 0.8 : 1);
   const [from, gentle] = u.growthAfter ?? [Infinity, u.growth];
   const scale = l <= from ? u.growth ** l : u.growth ** from * gentle ** (l - from);
   return Math.ceil(u.baseCost * scale * discount * waterFactor(s, id));
@@ -542,6 +556,7 @@ export function maxed(s: GameState, id: UpgradeId): boolean {
     const next = heightForBands(s.levels.skeleton + 1);
     if (next > heightCap(s) || next <= heightForBands(s.levels.skeleton)) return true;
   }
+  if (id === 'shoal' && s.levels.shoal >= (seamount(s).shoalCap ?? Infinity)) return true;
   return s.levels[id] >= upgrade(id).maxLevel;
 }
 
@@ -692,6 +707,7 @@ export function reading(id: ReadingId) {
 
 /** The next Reading on offer: they are deciphered in order, one band at a time. */
 export function nextReading(s: GameState) {
+  if (seamount(s).noReadings) return undefined;
   return READINGS.find((r) => !s.readings.includes(r.id));
 }
 
@@ -762,8 +778,9 @@ export function meet(s: GameState, id: MomentId, c: 'a' | 'b'): boolean {
   if (!m || m.id !== id) return false;
   s.moments[id] = c;
   if (id === 'lost-shoal' && c === 'a') {
-    s.levels.shoal += 3;
-    s.jobs[jobOpen(s, s.lastJob) ? s.lastJob : 'feed'] += 3;
+    const n = Math.max(0, Math.min(3, (seamount(s).shoalCap ?? Infinity) - s.levels.shoal));
+    s.levels.shoal += n;
+    s.jobs[jobOpen(s, s.lastJob) ? s.lastJob : 'feed'] += n;
   }
   return true;
 }

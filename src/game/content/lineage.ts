@@ -38,11 +38,21 @@ export type Trait = {
  * Where a lesser spawning settles. Each seamount bends the economy one way; the plain one is the
  * first reef's. Multipliers are read by sim/economy.ts.
  */
-export type SeamountId = 'plain' | 'warm' | 'cold' | 'crowded';
+export type SeamountId = 'plain' | 'warm' | 'cold' | 'crowded' | 'hungry' | 'silent' | 'lonely' | 'buried';
 export type Seamount = {
   id: SeamountId; name: string; text: string; effect: string;
   ventBoost: number; ventAcid: number; dissolve: number; polyp: number; readings: number; silt: number;
+  /** Hard seamounts: grow to `goal` metres under the rule to earn `reward` for the whole line. */
+  trial?: { goal: number; reward: string };
+  /** At most this many shoals answer (lonely). */
+  shoalCap?: number;
+  /** No band can be read here (silent). */
+  noReadings?: boolean;
 };
+
+/** Hard seamounts are offered once the line has spawned this many times. */
+export const TRIALS_FROM = 1;
+export const TRIAL_TEXT = { head: 'Hard places', note: 'A trial met', met: 'met' } as const;
 export const SEAMOUNTS: readonly Seamount[] = [
   { id: 'plain', name: 'A plain seamount', text: 'Bare rock in the dark, like the first.', effect: 'as before',
     ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 1, readings: 1, silt: 1 },
@@ -52,6 +62,18 @@ export const SEAMOUNTS: readonly Seamount[] = [
     ventBoost: 1, ventAcid: 1, dissolve: 0.5, polyp: 0.92, readings: 1, silt: 1 },
   { id: 'crowded', name: 'A crowded seamount', text: 'Old reefs all around, buried and talking.', effect: 'Readings cost ×0.6, silt falls ×1.4',
     ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 1, readings: 0.6, silt: 1.4 },
+  { id: 'hungry', name: 'A hungry seamount', text: 'Thin water. Little drifts this far out.', effect: 'polyps feed ×0.5',
+    ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 0.5, readings: 1, silt: 1,
+    trial: { goal: 3000, reward: 'Lean years: polyps feed ×1.1 on every reef after' } },
+  { id: 'silent', name: 'A silent seamount', text: 'No old reefs lie under this one. Nothing to listen to.', effect: 'no Readings',
+    ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 1, readings: 1, silt: 1, noReadings: true,
+    trial: { goal: 2800, reward: 'Deaf-born: scouts hear ×1.3 on every reef after' } },
+  { id: 'lonely', name: 'A lonely seamount', text: 'Far from the lanes the shoals swim.', effect: 'at most 8 shoals',
+    ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 1, readings: 1, silt: 1, shoalCap: 8,
+    trial: { goal: 3000, reward: 'Few and close: shoals cost ×0.8 on every reef after' } },
+  { id: 'buried', name: 'A buried seamount', text: 'The Long Silt lies thickest here, and is still falling.', effect: 'silt falls ×3',
+    ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 1, readings: 1, silt: 3,
+    trial: { goal: 3600, reward: 'Silt-hardened: silt falls ×0.8 on every reef after' } },
 ];
 
 export const TRAIT_GROUPS = {

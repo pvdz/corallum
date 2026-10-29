@@ -134,3 +134,25 @@ test('the record for reaching the surface is the exact crossing time, offline or
   assert.ok(a.meta.fastest > state.t && a.meta.fastest < state.t + 3 * 3600, `${a.meta.fastest}`);
   assert.ok(Math.abs(a.meta.fastest - b.meta.fastest) < 1e-6, `${a.meta.fastest} vs ${b.meta.fastest}`);
 });
+
+test('hard seamounts: the rule holds, the trial is met mid-advance, and the line keeps the reward', async () => {
+  const { canAfford, maxed, nextReading, passed } = await import('../../src/game/sim/economy.ts');
+  const { state: first } = runBot((x) => x.height >= 200, 3 * 3600, { ventures: false });
+  const lonely = spawnLesser(first, 'lonely')!;
+  lonely.levels.shoal = 8;
+  lonely.glow = 1e9;
+  assert.ok(maxed(lonely, 'shoal') && !canAfford(lonely, 'shoal'));
+  const silent = spawnLesser(first, 'silent')!;
+  silent.bands.push('murmur');
+  assert.equal(nextReading(silent), undefined);
+  // Grown to the goal inside one long offline step: met, and kept by the next reef.
+  lonely.levels.skeleton = 200;
+  advance(lonely, 30 * 86400);
+  assert.ok(lonely.height >= 3000 && passed(lonely, 'lonely'));
+  const next = spawnLesser(lonely, 'plain')!;
+  assert.ok(passed(next, 'lonely'));
+  const was = structuredClone(next);
+  was.meta.seen = was.meta.seen.filter((k) => k !== 'trial:lonely');
+  next.levels.shoal = was.levels.shoal = 5;
+  assert.ok(cost(next, 'shoal') < cost(was, 'shoal'));
+});

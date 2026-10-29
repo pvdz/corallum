@@ -167,6 +167,11 @@ the release also sets the lineage for beginning again.
     are eaten for you at half: tapping becomes optional).
 - **Seamounts**: each spawning chooses where to settle: plain, warm (active-friendly), cold
   (idle-friendly), crowded (fast story, more silt). See ECONOMY.md for numbers.
+- **Hard seamounts (trials)**, offered from the second reef on: hungry (polyps feed ×0.5, goal
+  3000 m), silent (no Readings, goal 2800 m), lonely (at most 8 shoals, goal 3000 m), buried (silt
+  ×3, goal 3600 m). Reaching the goal there (offline too; the sim records it) teaches the whole line
+  a lasting gift: polyps ×1.1, scouts ×1.3, shoals cost ×0.8, silt ×0.8. Prestige that changes how
+  a run is played, by choice.
 - **Lineage bands**: each spawning unlocks one short story of your descendants settling.
 - Target: one spawning at ~3000 m finishes the game sooner than none; a bot test checks it.
 - After the ending, **Begin again** is a spawning with a lineage bonus of 10 + 4 per doubling of

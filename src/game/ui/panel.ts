@@ -8,7 +8,7 @@ import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
 import { ACT3, MEETINGS, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { DIALECTS, TIERS, type DialectId } from '../content/act4.ts';
-import { SEAMOUNTS, TRAIT_GROUPS, TRAITS, type SeamountId, type TraitId } from '../content/lineage.ts';
+import { SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { MEMORIES } from '../content/act5.ts';
 import { CREATURES } from '../content/creatures.ts';
 import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
@@ -524,6 +524,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (key === codexKey) return;
     codexKey = key;
     codexList.innerHTML = '';
+    const tr = seamountDef(s.seamount).trial;
+    if (tr) codexRow('Trial', `${seamountDef(s.seamount).name}: grow to ${metres(tr.goal)}${s.meta.seen.includes(`trial:${s.seamount}`) ? ` · ${TRIAL_TEXT.met}` : ''} · ${tr.reward}`);
     codexRow('Grown', `${metres(s.height)} up the seamount, ${Math.round(Math.max(0, SURFACE - s.height)).toLocaleString('en-US')} m down`);
     codexRow('Bands read', `${s.bands.length} of your own, ${s.readings.length} of Thousandfold’s`);
     const truce = MEETINGS.filter((m) => s.truce[m.id]).map((m) => `${m.title}: ${m[s.truce[m.id] as Choice].label}`);
@@ -572,9 +574,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const b = button('seamount', m.name.replace(/^A /, ''), () => {
       whereNext = m.id;
       for (const x of whereButtons) x.classList.toggle('on', x === b);
-      whereNote.textContent = `${m.text} ${m.effect === 'as before' ? '' : `(${m.effect})`}`;
+      whereNote.textContent = `${m.text} ${m.effect === 'as before' ? '' : `(${m.effect})`}` +
+        (m.trial ? ` Grow to ${metres(m.trial.goal)} there and your line learns it: ${m.trial.reward}.` : '');
     });
     b.classList.toggle('on', m.id === whereNext);
+    if (m.trial) b.classList.add('trial');
     return b;
   });
   whereBox.append(...whereButtons);
@@ -1286,6 +1290,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       tabButtons.get('lineage')!.hidden = !lineageOpen;
       if (lineageOpen) {
         lineageCount.textContent = String(s.meta.lineage);
+        // Hard seamounts once the line has spawned; a trial met is marked.
+        SEAMOUNTS.forEach((m, i) => {
+          const b = whereButtons[i]!;
+          if (!m.trial) return;
+          b.hidden = s.meta.spawnings < TRIALS_FROM;
+          b.classList.toggle('met', s.meta.seen.includes(`trial:${m.id}`));
+        });
         lineageSub.textContent = `${s.meta.spawnings} spawning${s.meta.spawnings === 1 ? '' : 's'} · best reef ${metres(Math.max(s.meta.best, s.height))}` +
           (s.seamount !== 'plain' ? ` · this reef: ${seamountDef(s.seamount).name.toLowerCase()}` : '');
         const can = canSpawnLesser(s);

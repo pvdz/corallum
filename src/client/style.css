@@ -358,6 +358,9 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .band.is-dialect .band-depth { color: var(--bloom); }
 .truce.moment { border-color: rgba(180, 220, 255, 0.35); }
 .truce.moment .truce-kicker { color: #a8dcff; }
+.seamount.trial { border-style: dashed; }
+.seamount.trial[hidden] { display: none; }
+.seamount.trial.met::after { content: ' ✓'; color: var(--glowc); }
 .band.is-moment .band-depth { color: #a8dcff; }
 
 /* ---------- Act V: spawn, the moon card, the finale ---------- */
