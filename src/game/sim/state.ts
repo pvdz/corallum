@@ -225,7 +225,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     diary: [],
     others: { last: -1, joined: 0 },
     favours: { clear: 0, path: 0, carry: 0 },
-    riddles: { silt: '', wall: '', walls: '' },
+    riddles: { silt: '', wall: '', walls: '', song: '', beaks: '', shallows: '' },
     race: { decided: 0, won: 0, cousin: 0 },
     works: { garden: 0, spire: 0, breakwater: 0, terrace: 0, pool: 0 },
     request: { kind: '', n: 0, base: 0, done: 0, paid: 0, skipped: -1e9, streak: 0 },

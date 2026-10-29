@@ -472,3 +472,4 @@ date, what landed, what is half-done, what's next.
 - Rare sights: a sardine run on the Twilight Shelf (every 30 min, a minute); the green flash at the Breach's sunrise after the release.
 - Rare: a squadron of eagle rays in the Sunlit Crown by day (every 25 min).
 - Sea sparkle at the Breach before dawn: blue glints where waves break.
+- Three more riddles (after the Rasp's own band, the midden, the sun gate): six in all.

@@ -36,7 +36,7 @@ export const FEATS: readonly Feat[] = [
   { id: 'sister', name: 'First to the light', text: 'Reach the surface before the sister reef.', when: (s) => s.race.decided >= 5 && s.race.won >= 1 && s.diary.some((d) => d.includes('|ahead|the surface')) },
   { id: 'trials', name: 'Every hard place', text: 'Meet the trial of every hard seamount.', when: (s) => ['hungry', 'silent', 'lonely', 'buried', 'dark'].every((m) => s.meta.seen.includes(`trial:${m}`)) },
   { id: 'gardener-end', name: 'A garden at dawn', text: 'Plant all twelve children after the release.', when: (s) => s.garden >= 12, progress: (s) => [s.garden, 12] },
-  { id: 'riddles', name: 'The elder’s respect', text: 'Answer all three of the elder’s riddles rightly in one reef.', when: (s) => Object.values(s.riddles).every((r) => r === 'right') },
+  { id: 'riddles', name: 'The elder’s respect', text: 'Answer all six of the elder’s riddles rightly in one reef.', when: (s) => Object.values(s.riddles).every((r) => r === 'right') },
   { id: 'signals', name: 'Fluent', text: 'Answer ten of the shoals’ signals in one reef.', when: (s) => s.signal.answered >= 10, progress: (s) => [s.signal.answered, 10] },
   { id: 'companion', name: 'Kept close', text: 'Keep a creature close as your companion.', when: (s) => s.meta.companion !== '' },
   { id: 'readings', name: 'Every band read', text: 'Read every band the scouts can find.', when: (s) => s.readings.length >= 12, progress: (s) => [s.readings.length, 12] },

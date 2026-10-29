@@ -975,7 +975,8 @@ export function setCurrent(s: GameState, c: number): void {
 /** The riddle the elder is asking now, if any (truce begun, its band read, not yet answered). */
 export function currentRiddle(s: GameState) {
   if (!s.truce.terms) return undefined;
-  return RIDDLES.find((r) => !s.riddles[r.id] && s.bands.includes(r.after));
+  return RIDDLES.find((r) => !s.riddles[r.id] &&
+    (s.bands.includes(r.after) || s.readings.includes(r.after as ReadingId) || s.relics.includes(r.after as SiteId)));
 }
 
 /** Answer the elder: true if right (+lineage). */
