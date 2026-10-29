@@ -95,6 +95,10 @@ kind of purchase: both stocks must be ready). The lantern spire (Midnight; calci
 (Sunlit; bloom + sand; bloom ×1.15 a stage). Offered in their zone; begun ones stay. Each is drawn
 growing by stage: a lamp-hung spire, courses of stone upslope, stepped slabs at the reef's foot.
 
+**Your own bands**: the reef keeps a diary of the run in its stone (the theme made literal): first
+sightings, the first feast, relics, moments, residents, works, shards, readings, the sister race,
+trials, every fifth request, each with its time and height. Bands tab, newest first.
+
 **The sister reef**: another child of Ossel's wall on the next seamount grows on a fixed schedule
 (the surface at 8 h) and shows as a small cool mark on the depth gauge. Each zone reached before
 it brings +1 lineage (the surface +2), judged at the exact crossing moment so offline and stepped

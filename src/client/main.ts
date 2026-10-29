@@ -30,7 +30,7 @@ import { SISTER } from '../game/content/sister.ts';
 import { REQUEST } from '../game/content/requests.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, sisterAt, tripSeconds, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, sisterAt, tripSeconds, remember, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -1168,6 +1168,7 @@ function frame(now: number): void {
       if (c?.note.startsWith('Rare.')) rarePassing.set(id, now);
       if (frozenT !== null || state.meta.seen.includes(key)) continue;
       state.meta.seen.push(key);
+      if (c) remember(state, 'seen', c.name);
       if (c?.note.startsWith('Rare.')) {
         showJournalNote('A rare sighting', c.name);
         audio.cue('feast');

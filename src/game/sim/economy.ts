@@ -27,6 +27,7 @@ import { FEAST } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { WORKS, type WorkId } from '../content/works.ts';
 import { SISTER } from '../content/sister.ts';
+import { DIARY_TEXT } from '../content/diary.ts';
 import { SHARD, SHARD_LINES, type ShardSource } from '../content/shards.ts';
 import { REQUEST, REQUESTS, type RequestKind } from '../content/requests.ts';
 import { MOMENTS, type MomentId } from '../content/moments.ts';
@@ -153,6 +154,7 @@ function trialCheck(s: GameState): boolean {
   const tr = seamount(s).trial;
   if (!tr || s.height < tr.goal || passed(s, s.seamount)) return false;
   s.meta.seen.push(`trial:${s.seamount}`);
+  remember(s, 'trial', tr.reward.split(':')[0]!);
   return true;
 }
 
@@ -729,7 +731,10 @@ function homecoming(s: GameState): void {
     return;
   }
   if (!x) return;
-  if (!found(s, x.id)) s.relics.push(x.id);
+  if (!found(s, x.id)) {
+    s.relics.push(x.id);
+    remember(s, 'relic', x.relic.toLowerCase());
+  }
   dig(s, 'expedition');
 }
 
@@ -752,6 +757,7 @@ export function house(s: GameState, id: ResidentId): boolean {
   }
   if (!residentsAsking(s).some((r) => r.id === id) || s.residents.length >= homes(s)) return false;
   s.residents.push(id);
+  if (!s.diary.some((d) => d.endsWith(`|resident|${RESIDENTS.find((r) => r.id === id)!.name}`))) remember(s, 'resident', RESIDENTS.find((r) => r.id === id)!.name);
   return true;
 }
 
@@ -806,6 +812,7 @@ export function read(s: GameState, id: ReadingId): boolean {
   if (!readingsRevealed(s) || !next || next.id !== id || s.murmurs < readingCost(s, next)) return false;
   s.murmurs -= readingCost(s, next);
   s.readings.push(id);
+  remember(s, 'reading', next.title);
   return true;
 }
 
@@ -853,12 +860,22 @@ export function meet(s: GameState, id: MomentId, c: 'a' | 'b'): boolean {
   const m = nextMoment(s);
   if (!m || m.id !== id) return false;
   s.moments[id] = c;
+  const mo = MOMENTS.find((x) => x.id === id)!;
+  remember(s, 'moment', `${mo.title}: ${mo[c].label.toLowerCase()}.`);
   if (id === 'lost-shoal' && c === 'a') {
     const n = Math.max(0, Math.min(3, (seamount(s).shoalCap ?? Infinity) - s.levels.shoal));
     s.levels.shoal += n;
     s.jobs[jobOpen(s, s.lastJob) ? s.lastJob : 'feed'] += n;
   }
   return true;
+}
+
+// ---------- Your own bands ----------
+
+/** Write a line into the reef's own bands (content/diary.ts), at the time and height it happens. */
+export function remember(s: GameState, key: string, arg = '', at = s.t): void {
+  s.diary.push(`${Math.round(at)}|${Math.round(s.height)}|${key}|${arg.replaceAll('|', '/')}`);
+  if (s.diary.length > DIARY_TEXT.max) s.diary.splice(0, s.diary.length - DIARY_TEXT.max);
 }
 
 // ---------- The sister reef ----------
@@ -888,10 +905,12 @@ function judgeMark(s: GameState, at: number): void {
   // The line's best time to this mark.
   const best = s.meta.records[i] ?? 0;
   if (!best || at < best) s.meta.records[i] = at;
+  const where = mark >= SURFACE ? 'the surface' : (ACTS.find((a) => a.from === mark)?.name ?? `${mark} m`);
   if (sisterAt(at) < gaugeAt(mark) - 1e-9) {
     s.race.won++;
     s.meta.lineage += SISTER.lineage[i]!;
-  }
+    remember(s, 'ahead', where, at);
+  } else remember(s, 'behind', where, at);
 }
 
 // ---------- Great works ----------
@@ -917,6 +936,8 @@ export function build(s: GameState, id: WorkId): boolean {
   if (!canBuild(s, id)) return false;
   for (const [k, v] of Object.entries(workCost(s, id)!) as [Currency, number][]) s[k] -= v;
   s.works[id]++;
+  const wk = WORKS.find((x) => x.id === id)!;
+  remember(s, 'work', `${wk.stageNames[s.works[id] - 1]!.toLowerCase()} of ${wk.name.toLowerCase()}`);
   return true;
 }
 
@@ -1196,6 +1217,7 @@ export function dig(s: GameState, source: ShardSource): number {
   if (r() >= SHARD.chance[source]) return -1;
   const i = left[Math.floor(r() * left.length)]!;
   s.meta.shards.push(i);
+  remember(s, 'shard', SHARD_LINES[i]!);
   return i;
 }
 
@@ -1255,6 +1277,7 @@ function keepRequest(s: GameState): number {
       paid = burst(s, REQUEST.seconds);
       q.paid = paid;
       q.done++;
+      if (q.done % 5 === 0) remember(s, 'request', String(q.done));
     }
     q.kind = '';
   }
@@ -1341,6 +1364,7 @@ export function feast(s: GameState, share = 1): number {
   const gain = burst(s, FEAST.seconds * share * (chose(s, 'brittle', 'b') ? 1.5 : 1));
   s.feasted = f.k;
   s.feasts++;
+  if (s.feasts === 1) remember(s, 'feast');
   dig(s, 'feast');
   return gain;
 }

@@ -294,6 +294,11 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 .card.work { border-color: rgba(255, 210, 160, 0.25); }
 .touched.trust-2 { color: #a8dcff; }
 .touched.trust-3 { color: #ffd9a8; }
+.diary[hidden] { display: none; }
+.diary-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 5px; max-height: 320px; overflow-y: auto; }
+.diary-list li { display: grid; grid-template-columns: auto 1fr; gap: 8px; font-size: 12.5px; line-height: 1.4; }
+.diary-when { color: var(--ink-dim); font-variant-numeric: tabular-nums; font-size: 11px; padding-top: 1px; white-space: nowrap; }
+.diary-what { font-family: var(--display); color: #efe6d6; }
 .residents { background: rgba(255, 140, 120, 0.03); border: 1px solid rgba(255, 150, 130, 0.2); border-radius: var(--radius); padding: 10px 12px; }
 .residents[hidden], .resident[hidden] { display: none; }
 .residents header { display: flex; justify-content: space-between; align-items: baseline; }

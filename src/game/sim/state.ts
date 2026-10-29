@@ -127,6 +127,8 @@ export type GameState = {
   race: { decided: number; won: number };
   /** Favours asked of the Rasp, by kind (content/act3.ts FAVOURS). */
   favours: Record<FavourId, number>;
+  /** Your own bands: "t|height|key|arg" for each thing remembered (content/diary.ts). */
+  diary: string[];
   /** Moments answered ('' until then): content/moments.ts. */
   moments: Record<MomentId, '' | 'a' | 'b'>;
   /** Animals living in the reef's homes (content/residents.ts). */
@@ -179,6 +181,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     expedition: { site: '', back: 0, feed: 0, light: 0, scout: 0, n: 0 },
     relics: [],
     residents: [],
+    diary: [],
     favours: { clear: 0, path: 0, carry: 0 },
     race: { decided: 0, won: 0 },
     works: { spire: 0, breakwater: 0, terrace: 0 },

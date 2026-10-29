@@ -360,3 +360,4 @@ date, what landed, what is half-done, what's next.
 - Moments shown in the Sunlit Crown: the turtle let sleep rests in the branches at night; the storm's branch let go grows as a colony far off on the sand (daughters.ts drawColony; ReefView.moments).
 - Four more moments (vent cracks 45 m, another light 900 m, a young Rasp 3450 m, first light 3982 m): twelve in all.
 - Rebalance: band cost growth raised in zones 2–4; bot back to 7h28 for the whole game; pacing test bound restored to 6–11 h.
+- Your own bands: state.diary ('t|h|key|arg' strings, capped 200), economy remember() hooked into feasts, homecoming, meet, house, build, dig, trialCheck, requests, read, judgeMark; client adds first sightings; Bands tab card (content/diary.ts).

@@ -18,6 +18,7 @@ import { WATER } from '../content/waters.ts';
 import { REQUEST } from '../content/requests.ts';
 import { WORKS, WORK_TEXT, type WorkId } from '../content/works.ts';
 import { SISTER } from '../content/sister.ts';
+import { DIARY, DIARY_TEXT } from '../content/diary.ts';
 import { PALETTES, PALETTE_TEXT } from '../content/palettes.ts';
 import { SHARD, SHARD_LINES } from '../content/shards.ts';
 import { MOMENT, MOMENTS, type Moment, type MomentId } from '../content/moments.ts';
@@ -593,7 +594,27 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (got.length === SHARD_LINES.length) tabletLines.append(el('li', 'whole', SHARD.whole_text));
     drawTablet(tabletCanvas, got);
   }
-  bandsPage.append(codex, journal, readingCard, tablet, bandsIntro, bandList);
+  // Your own bands: the reef's diary of this run, newest first.
+  const diary = el('article', 'card codex diary');
+  const diaryHead = el('h3', '', DIARY_TEXT.label);
+  const diaryList = el('ol', 'diary-list');
+  diary.append(diaryHead, el('p', 'hint', DIARY_TEXT.intro), diaryList);
+  collapsible(diary, diaryHead);
+  let diaryLen = -1;
+  function renderDiary(s: GameState): void {
+    diary.hidden = s.diary.length === 0;
+    if (s.diary.length === diaryLen) return;
+    diaryLen = s.diary.length;
+    diaryHead.textContent = `${DIARY_TEXT.label} · ${s.diary.length}`;
+    diaryList.innerHTML = '';
+    for (const line of [...s.diary].reverse()) {
+      const [t, h, key, arg] = line.split('|');
+      const li = el('li');
+      li.append(el('span', 'diary-when', `${duration(Number(t))} · ${metres(Number(h))}`), el('span', 'diary-what', (DIARY[key!] ?? '{a}').replace('{a}', arg ?? '')));
+      diaryList.append(li);
+    }
+  }
+  bandsPage.append(codex, journal, readingCard, tablet, diary, bandsIntro, bandList);
   let codexKey = '';
   function codexRow(term: string, value: string): void {
     codexList.append(el('dt', '', term), el('dd', '', value));
@@ -1491,6 +1512,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       renderJournal(s);
       renderChart(s);
       renderTablet(s);
+      renderDiary(s);
       renderFeats(s);
       renderLine(s);
       habitToggle.hidden = !s.meta.traits['old-habits'] && !s.meta.traits['shoal-sense'] && !s.meta.traits['rasp-sense'];
