@@ -636,3 +636,4 @@ date, what landed, what is half-done, what's next.
 - Sweeps swirl the marine snow away from them (Silt Floor, Midnight Water).
 - Feats Every kind (garden) and Three wishes.
 - Fix: a silent seamount (no Readings) is no longer capped at 3000 m by the Reading gate it could never open; it climbs on, slowly.
+- Twelve shells (murex, nautilus, tusk, top shell added); drawn larger, each kind its own shape (ribbed scallop, starred sand dollar, banded spires, spiral whorls, spotted cowrie).

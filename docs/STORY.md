@@ -191,4 +191,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Trait Lucky line | this game's own systems | OK |
 | Garden children of three kinds (quick, bright, deep) carried as gifts to the next reef | this game's own systems | OK |
 | Midnight bands: Grey on the tips (900), Cold light (1550), Something passing (2200), Old light (2750) | this game's own lore | OK |
+| Shells: murex, nautilus, tusk, top shell | real shells | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |
