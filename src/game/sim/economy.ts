@@ -802,21 +802,32 @@ export function currentFeast(s: GameState): Feast | null {
   return s.t >= f.start && s.t < f.start + FEAST.life ? f : null;
 }
 
-/** Eat the current feast: a burst of the zone's currency (feastPay). Returns the amount (0 if none). */
-export function feast(s: GameState): number {
+/** Shared table: the feast the scavengers take for the reef now, in its last second in reach. */
+export function tableFeast(s: GameState): Feast | null {
+  if (!trait(s, 'shared-table')) return null;
+  const f = currentFeast(s);
+  return f && s.t >= f.start + FEAST.life - 1 ? f : null;
+}
+
+/**
+ * Eat the current feast: a burst of the zone's currency (feastPay), times `share` (the shared
+ * table brings half). Returns the amount (0 if none).
+ */
+export function feast(s: GameState, share = 1): number {
   const f = currentFeast(s);
   if (!f) return 0;
   const pay = feastPay(s);
   const r = rates(s);
+  const secs = FEAST.seconds * share;
   let gain: number;
   if (pay === 'bloom') {
-    gain = r.bloomP * FEAST.seconds;
+    gain = r.bloomP * secs;
     s.bloom += gain;
   } else if (pay === 'spawn') {
-    gain = r.spawnP * FEAST.seconds;
+    gain = r.spawnP * secs;
     s.spawn += gain;
   } else {
-    gain = calciteRate(s, r) * FEAST.seconds;
+    gain = calciteRate(s, r) * secs;
     s.calcite += gain;
     s.earned.calcite += gain;
   }

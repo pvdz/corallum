@@ -23,9 +23,19 @@ await withGame(async (open) => {
     });
     await page.keyboard.press('f');
     const keyed = await page.evaluate(() => window.corallum!.state.feasted);
+    // Shared table: with the trait, the next feast left alone is eaten as it sinks away.
+    await page.evaluate(() => {
+      const c = window.corallum!;
+      c.state.meta.traits['shared-table'] = 1;
+      for (let i = 0; i < 2 * 300 && !c.feast; i++) c.skip(1);
+    });
+    // Half-second skips with frames between them, so the last second in reach is seen.
+    for (let i = 0; i < 100 && (await page.evaluate(() => (window.corallum!.skip(0.5), !!window.corallum!.feast))); i++)
+await page.waitForTimeout(40);
+    const shared = await page.evaluate(() => window.corallum!.state.feasted);
     const ok = !!at && after.k > before.k && after.c > before.c * 1.5 && after.f === null && float > 0 && keyed > after.k &&
-      errors.length === 0;
-    console.log(`${ok ? 'ok  ' : 'FAIL'} ${vp.name}: tapped feast ${before.k}→${after.k}, calcite ×${(after.c / before.c).toFixed(2)}, key → ${keyed}` +
+      shared > keyed && errors.length === 0;
+    console.log(`${ok ? 'ok  ' : 'FAIL'} ${vp.name}: tapped feast ${before.k}→${after.k}, calcite ×${(after.c / before.c).toFixed(2)}, key → ${keyed}, shared table → ${shared}` +
       (errors.length ? ' · ' + errors.join(' | ') : ''));
     failed ||= !ok;
   }

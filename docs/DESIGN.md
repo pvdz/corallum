@@ -128,7 +128,8 @@ the release also sets the lineage for beginning again.
     start with 3 shoals/level · glow ×1.5 · Readings cost ×0.5 · reef settles ×2 faster.
   - *Ways* (routes): Lamps in the snow (shoals in Act I) · Rasp kin (sand economy in Act II) ·
     Glass gardeners (a no-Rasp route) · Old habits (auto-buys cheap polyps/glimmerseed while
-    watching) · Tide-reader (every full moon a great tide).
+    watching) · Tide-reader (every full moon a great tide) · Shared table (missed feasts
+    are eaten for you at half: tapping becomes optional).
 - **Seamounts**: each spawning chooses where to settle: plain, warm (active-friendly), cold
   (idle-friendly), crowded (fast story, more silt). See ECONOMY.md for numbers.
 - **Lineage bands**: each spawning unlocks one short story of your descendants settling.

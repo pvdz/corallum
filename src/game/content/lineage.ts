@@ -14,11 +14,13 @@ export const LINEAGE = {
   releaseBonus: 4,
   /** Glass gardeners: silt the shrimp clear (1/s), as much as six grazing Rasp without their appetite. */
   glassSweep: 0.18,
+  /** Shared table: the share of a missed feast the scavengers bring down to the reef. */
+  tableShare: 0.5,
 } as const;
 
 export type TraitId =
   | 'deep-memory' | 'quick-budding' | 'old-bands' | 'remembered-shoals' | 'glimmer' | 'kept-readings' | 'settling'
-  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader';
+  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table';
 
 export type Trait = {
   id: TraitId;
@@ -117,6 +119,11 @@ export const TRAITS: readonly Trait[] = [
     id: 'tide-reader', name: 'Tide-reader', effect: 'every full moon is a great tide: the spawn always carries four memories',
     flavour: 'They know the water will lift them. They do not wait for it.',
     cost: 16, growth: 1, max: 1, kind: 'way',
+  },
+  {
+    id: 'shared-table', name: 'Shared table', effect: 'a feast nobody eats is eaten for you as it sinks away: half of it reaches the reef',
+    flavour: 'The small lights that pick at the dead have learned where your stone is, and carry some of it home.',
+    cost: 8, growth: 1, max: 1, kind: 'way',
   },
 ];
 

@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { FEAST } from '../../src/game/content/events.ts';
-import { advance, calciteRate, currentFeast, feast } from '../../src/game/sim/economy.ts';
+import { LINEAGE } from '../../src/game/content/lineage.ts';
+import { advance, calciteRate, currentFeast, feast, tableFeast } from '../../src/game/sim/economy.ts';
 import { newGame } from '../../src/game/sim/state.ts';
 
 test('feasts: none before their band, then one per window, eaten once', () => {
@@ -45,4 +46,21 @@ test('feasts are deterministic and do not touch offline advance', () => {
   advance(b, 5000);
   assert.deepEqual(currentFeast(a), currentFeast(b));
   assert.equal(a.feasted, -1);
+});
+
+test('shared table: only with the trait, only in the last second, half the meal', () => {
+  const s = newGame(7);
+  s.bands.push(FEAST.band);
+  let f = null;
+  for (let t = FEAST.period; !f; t += 1) { s.t = t; f = currentFeast(s); }
+  s.t = f.start + FEAST.life - 0.5;
+  assert.equal(tableFeast(s), null, 'not without the trait');
+  s.meta.traits['shared-table'] = 1;
+  s.t = f.start + FEAST.life - 2;
+  assert.equal(tableFeast(s), null, 'still in reach: left for the player');
+  s.t = f.start + FEAST.life - 0.5;
+  assert.equal(tableFeast(s)?.k, f.k);
+  const full = calciteRate(s) * FEAST.seconds;
+  assert.ok(Math.abs(feast(s, LINEAGE.tableShare) - full * LINEAGE.tableShare) < 1e-9);
+  assert.equal(tableFeast(s), null, 'eaten once');
 });

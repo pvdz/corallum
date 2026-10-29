@@ -24,12 +24,13 @@ import { createTaps } from '../game/render/taps.ts';
 import { drawFeast, feastPos, feastReach } from '../game/render/feast.ts';
 import type { Focus, ReefView, Scene } from '../game/render/scene.ts';
 import { runBot } from '../game/sim/bot.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, greatTide, calciteHold, choose, ended, moonFull, moonPhase, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio } from '../game/audio/audio.ts';
-import { LINEAGE_BANDS, SEAMOUNTS } from '../game/content/lineage.ts';
+import { FEAST } from '../game/content/events.ts';
+import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS } from '../game/content/lineage.ts';
 import { CREATURES } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
 import { creatureAt, endFrameSpots, takeSightings } from '../game/render/sightings.ts';
@@ -633,16 +634,20 @@ function floatText(x: number, y: number, text: string, cls = ''): void {
   setTimeout(() => f.remove(), cls ? 2200 : 1200);
 }
 
-/** Eat the falling feast, if there is one; motes stream from it into the crown. */
-function eatFeast(): boolean {
+/**
+ * Eat the falling feast, if there is one; motes stream from it into the crown. `share` below 1
+ * is the shared table: the scavengers bring part of a feast nobody tapped.
+ */
+function eatFeast(share = 1): boolean {
   const f = currentFeast(state);
   if (!f) return false;
   const [x, y] = feastPos(f, state.t - f.start, focusNow, feastPay(state));
-  const gain = feast(state);
+  const gain = feast(state, share);
   if (gain <= 0) return false;
-  taps.push(x, y, animT, 16);
+  taps.push(x, y, animT, share < 1 ? 8 : 16);
   audio.cue('feast');
-  floatText(x / dpr, y / dpr, `+${num(gain)} ${feastPay(state) === 'calcite' ? '· a feast' : feastPay(state)}`, 'feast-float');
+  const what = feastPay(state) === 'calcite' ? (share < 1 ? FEAST.brought : FEAST.ate) : feastPay(state);
+  floatText(x / dpr, y / dpr, `+${num(gain)} ${what}`, 'feast-float');
   save();
   return true;
 }
@@ -920,6 +925,8 @@ function frame(now: number): void {
     if (shownRecord > 0 && frozenT === null) showJournalNote('A new record', `The surface in ${duration(state.meta.fastest)}`);
     shownRecord = state.meta.fastest;
   }
+  // Shared table: a feast left to sink is eaten by the scavengers, half for the reef.
+  if (frozenT === null && tableFeast(state)) eatFeast(LINEAGE.tableShare);
   // Old habits: the reef's own small purchases, only while the page is open.
   if (habits.get() && frozenT === null && now - lastHabit > 250) {
     lastHabit = now;

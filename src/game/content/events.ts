@@ -12,5 +12,8 @@ export const FEAST = {
   /** Reward: this many seconds of calcite production. */
   seconds: 90,
   label: 'A feast falls',
+  /** Float text after the amount: tapped, and brought by the scavengers (Shared table). */
+  ate: '· a feast',
+  brought: '· the scavengers’ share',
   eaten: 'feast',
 } as const;
