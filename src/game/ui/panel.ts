@@ -36,7 +36,7 @@ import { CITY_MAP, EXPEDITION, site, type Site } from '../content/expeditions.ts
 import { canSpawnLesser, lineageFor, traitCost, traitMaxed, forgetRefund } from '../sim/prestige.ts';
 import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
-  BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
+  BANDS, bandMetres, ended, steadyCalciteRate, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
   revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilThorn, untilFlurry, untilHeat, heatLeft, closedNow, untilRising, untilSwell, currentUpwelling, canFlare, risingLeft, canFeedRising, risingHaul, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
@@ -1542,6 +1542,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           const row = jobRows.get(j.id)!;
           const open = jobOpen(s, j.id);
           row.row.classList.toggle('locked', !open);
+          // Fanning only exists on the shelf: no locked row before then.
+          row.row.hidden = j.id === 'fan' && !open;
           row.count.textContent = String(s.jobs[j.id]);
           row.minus.disabled = s.jobs[j.id] <= 0;
           row.plus.disabled = !open || idle <= 0;
@@ -1808,8 +1810,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         if (c.max) c.max.hidden = !ok;
         c.root.classList.toggle('ready', ok);
         const due = etaSlot++ === etaTurn || !c.eta.textContent;
-        if (ok) setEta(c.eta, 0);
-        else if (due) setEta(c.eta, timeUntil(s, cur, price));
+        if (ok) {
+          // Affordable and paid in calcite: how long it takes to earn back its price, once settled.
+          if (due && cur === 'calcite' && u.id !== 'lattice') {
+            const g = upgradeGain(s, u.id);
+            const back = g >= 0.0005 ? price / (g * steadyCalciteRate(s)) : Infinity;
+            c.eta.textContent = Number.isFinite(back) ? `pays back in ${duration(back)}` : '';
+          } else if (cur !== 'calcite' || u.id === 'lattice') setEta(c.eta, 0);
+        } else if (due) setEta(c.eta, timeUntil(s, cur, price));
         if (u.id === pinned) pinnedText = ok ? `${u.name} ready` : `${u.name} ${c.eta.textContent}`;
       }
 
