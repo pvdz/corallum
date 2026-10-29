@@ -507,3 +507,4 @@ date, what landed, what is half-done, what's next.
 - Four more riddles (rule, ripple, end, children): ten in all, each about a band already read.
 - The line remembers its stars (meta.seen 'sky:<id>'): later Breaches draw those figures as faint dotted outlines and the sky card says 'named before'.
 - Dreams (events.ts DREAM; meta.dreams; economy dream; dailyGift adds one, max 3): a Dream (n) button in the prep row; main.ts runs catchUp(900).
+- Sea pens on the Silt Floor (render/life.ts drawSeaPens; a glowing creature for gifts): touched, a green wave runs up each in turn.

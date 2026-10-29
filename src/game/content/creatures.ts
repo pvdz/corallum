@@ -2,7 +2,7 @@
 // actually seen on screen (kept across lesser spawnings, in meta.seen as 'c:<id>').
 
 export type CreatureId =
-  | 'jelly' | 'tripod-fish' | 'isopod' | 'brittle-star' | 'rattail' | 'sea-pig' | 'brine-pool' | 'smokers' | 'dumbo' | 'squat-lobster' | 'sea-lily' | 'glass-sponge' | 'tube-worm'
+  | 'jelly' | 'tripod-fish' | 'isopod' | 'brittle-star' | 'rattail' | 'sea-pig' | 'brine-pool' | 'smokers' | 'dumbo' | 'squat-lobster' | 'sea-lily' | 'glass-sponge' | 'tube-worm' | 'sea-pen'
   | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'milky-sea' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration'
   | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'sardine-run' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark'
   | 'cuttlefish' | 'eagle-rays' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly'
@@ -13,6 +13,7 @@ export type Creature = { id: CreatureId; name: string; zone: string; note: strin
 
 export const CREATURES: readonly Creature[] = [
   { id: 'jelly', name: 'Deep jellies', zone: 'The Silt Floor', note: 'Bells of violet light, pulsing without hurry.' },
+  { id: 'sea-pen', name: 'Sea pens', zone: 'The Silt Floor', note: 'Colonies shaped like quill feathers, rooted in the silt. Touch one and green light runs up it.' },
   { id: 'isopod', name: 'Giant isopod', zone: 'The Silt Floor', note: 'A woodlouse as long as your hand, armoured, patient. It can go years between meals.' },
   { id: 'tripod-fish', name: 'Tripod fish', zone: 'The Silt Floor', note: 'It stands on three long fins, facing the current, and waits for food to walk into its mouth.' },
   { id: 'brittle-star', name: 'Brittle stars', zone: 'The Silt Floor', note: 'Five thin arms, combing the silt for crumbs.' },
@@ -94,7 +95,7 @@ export const CREATURES: readonly Creature[] = [
 export const GIFT = { seconds: 30, cooldown: 180, holdShare: 0.3, rare: 3 } as const;
 export type GiftStock = 'calcite' | 'glow' | 'plankton' | 'sand' | 'bloom' | 'spawn';
 const GLOWING: readonly CreatureId[] = [
-  'jelly', 'comb-jelly', 'siphonophore', 'anglerfish', 'vampire-squid', 'pyrosome', 'moon-jelly', 'sea-firefly', 'sea-sparkle',
+  'jelly', 'comb-jelly', 'siphonophore', 'anglerfish', 'vampire-squid', 'pyrosome', 'moon-jelly', 'sea-firefly', 'sea-sparkle', 'sea-pen',
 ];
 export function giftOf(id: CreatureId): GiftStock {
   if (GLOWING.includes(id)) return 'glow';

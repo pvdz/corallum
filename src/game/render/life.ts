@@ -390,6 +390,57 @@ export function createLife(seed: number) {
   }
 
   /**
+   * Sea pens: three feather-shaped colonies rooted in the silt, leaning and swaying in the current.
+   * Touched, a wave of green light runs up each in turn from the root to the tip.
+   */
+  function drawSeaPens(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
+    sight('sea-pen');
+    const touch = startled('sea-pen', t);
+    const pens = [{ x: 0.07, size: 1, phase: 0.4 }, { x: 0.1, size: 0.7, phase: 2.2 }, { x: 0.33, size: 0.85, phase: 3.7 }];
+    ctx.save();
+    ctx.lineCap = 'round';
+    for (const [k, p] of pens.entries()) {
+      const s = st.s * p.size;
+      const x0 = st.cx + st.w * p.x, y0 = st.baseY + 3 * st.s;
+      const lean = 0.15 + Math.sin(t * 0.4 + p.phase) * 0.08;
+      const len = 52 * s;
+      if (k === 0) spot('sea-pen', x0 + Math.sin(lean) * len * 0.6, y0 - len * 0.6, Math.max(18 * s, 22 * st.dpr));
+      // The stalk, then the feather: leaves (polyp rows) on both sides, shorter toward the tip.
+      const at = (u: number): [number, number] => [x0 + Math.sin(lean * u) * len * u, y0 - Math.cos(lean * u) * len * u];
+      ctx.strokeStyle = 'rgba(225,175,150,0.75)';
+      ctx.lineWidth = 1.6 * s;
+      ctx.beginPath();
+      ctx.moveTo(x0, y0);
+      for (let i = 1; i <= 10; i++) { const [x, y] = at(i / 10); ctx.lineTo(x, y); }
+      ctx.stroke();
+      // Touched: the light runs up this pen a little after the one before it.
+      const age = touch ? touch.age - k * 0.4 : Infinity;
+      for (let i = 3; i <= 14; i++) {
+        const u = i / 15;
+        const [x, y] = at(u);
+        const leaf = (12 - 7 * u) * s;
+        for (const side of [-1, 1]) {
+          const ang = -Math.PI / 2 + lean * u + side * (1.15 + 0.1 * Math.sin(t * 1.3 + i));
+          ctx.strokeStyle = 'rgba(240,190,160,0.55)';
+          ctx.lineWidth = 1.1 * s;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x + Math.cos(ang) * leaf, y + Math.sin(ang) * leaf + 2 * s);
+          ctx.stroke();
+        }
+        const wave = age >= 0 && age < 3 ? Math.exp(-(((u - age / 1.4) / 0.12) ** 2)) * (1 - age / 3) : 0;
+        if (wave > 0.02) {
+          ctx.save();
+          ctx.globalCompositeOperation = 'lighter';
+          glow(ctx, x, y, 9 * s, '120,255,170', 0.7 * wave);
+          ctx.restore();
+        }
+      }
+    }
+    ctx.restore();
+  }
+
+  /**
    * Sea lilies: stalked crinoids rooted in the silt, their feathery arms held open into the
    * current and swaying slowly with it. Half-lit, pale, very old.
    */
@@ -762,6 +813,7 @@ export function createLife(seed: number) {
       for (const g of sponges) drawSponge(ctx, st, g, t);
       drawSeaPigs(ctx, st, t);
       for (const c of lilies) drawLily(ctx, st, c, t);
+      drawSeaPens(ctx, st, t);
       drawOssel(ctx, st, t);
       for (const star of stars) drawStar(ctx, st, star, t);
       drawRattail(ctx, st, t);
