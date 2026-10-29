@@ -1,7 +1,7 @@
 // The small life of the Silt Floor: drifting jellies, brittle stars on the silt, and the vent
 // chimney with its plume. Pure functions of time and a seed.
 
-import { sight, spot } from './sightings.ts';
+import { sight, spot, startled } from './sightings.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { glow } from './draw.ts';
 
@@ -53,6 +53,10 @@ export function createLife(seed: number) {
     const y = st.baseY + j.y * st.h + Math.sin(beat * Math.PI * 2 - 0.8) * 6 * s;
     const bw = (26 - contract * 5) * s;
     const bh = (20 + contract * 4) * s;
+    spot('jelly', x, y - bh * 0.4, Math.max(bw * 1.4, 28 * st.dpr));
+    // Touched, a jelly startles: a wave of light runs round its rim and it pulses hard.
+    const touch = startled('jelly', t);
+    const flash = touch && touch.age < 2.5 && Math.hypot(touch.x - x, touch.y - y) < 160 * s ? 1 - touch.age / 2.5 : 0;
 
     // Tentacles, trailing and lagging behind the beat.
     ctx.lineCap = 'round';
@@ -92,9 +96,12 @@ export function createLife(seed: number) {
     // Bioluminescent rim lights.
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
+    if (flash > 0) glow(ctx, x, y - bh * 0.4, bw * (1.5 + 2 * (1 - flash)), '150,230,255', 0.55 * flash);
     for (let k = 0; k <= 6; k++) {
       const rx = x - bw + (k / 6) * bw * 2;
-      const a = 0.35 + 0.35 * Math.sin(t * 3 + k + j.phase);
+      // The startle runs along the rim from one side to the other, twice.
+      const run = flash > 0 ? Math.max(0, 1 - Math.abs(((1 - flash) * 2 * 6) % 6 - k) / 1.5) : 0;
+      const a = Math.min(1, 0.35 + 0.35 * Math.sin(t * 3 + k + j.phase) + run * flash * 1.2);
       const rg = ctx.createRadialGradient(rx, y, 0, rx, y, 7 * s);
       rg.addColorStop(0, `hsla(${j.hue - 60},100%,80%,${a})`);
       rg.addColorStop(1, `hsla(${j.hue - 60},100%,70%,0)`);

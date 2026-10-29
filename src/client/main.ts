@@ -33,7 +33,7 @@ import { FEAST } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS } from '../game/content/lineage.ts';
 import { CREATURES } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
-import { creatureAt, endFrameSpots, takeSightings } from '../game/render/sightings.ts';
+import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { ACT1, MILESTONES, type Milestone } from '../game/content/act1.ts';
 import { OSSEL_LINES, WHISPERS } from '../game/content/whispers.ts';
 import { buyTrait, habitPurchase, spawnLesser } from '../game/sim/prestige.ts';
@@ -47,6 +47,8 @@ declare global {
       state: GameState; skip(seconds: number): void; speed: number; prof: { draw: number; panel: number };
       /** Where the falling feast is, in CSS pixels (null when there is none). */
       readonly feast: { x: number; y: number } | null;
+      /** The tappable creatures on screen, in CSS pixels. */
+      readonly spots: { id: string; x: number; y: number }[];
     };
   }
 }
@@ -358,6 +360,9 @@ window.corallum = {
     const [x, y] = feastPos(f, state.t - f.start, focusNow, feastPay(state));
     return { x: x / dpr, y: y / dpr };
   },
+  get spots() {
+    return tappable().map((p) => ({ id: p.id, x: p.x / dpr, y: p.y / dpr }));
+  },
 };
 
 // Layout: the panel covers the right side (wide screens) or the bottom (narrow ones);
@@ -658,6 +663,7 @@ canvas.addEventListener('pointerdown', (e) => {
   const who = creatureAt(e.clientX * dpr, e.clientY * dpr);
   if (who?.id === 'ossel') sayOssel();
   else if (who) showCreatureLabel(who.id, who.x / dpr, who.y / dpr);
+  if (who) startle(who.id, frozenT ?? animT, e.clientX * dpr, e.clientY * dpr);
   const f = currentFeast(state);
   if (f) {
     const [fx, fy] = feastPos(f, state.t - f.start, focusNow, feastPay(state));

@@ -1,6 +1,6 @@
 // Scenes report the creatures they actually draw on screen; the game loop collects them for the
 // journal (content/creatures.ts). A plain module-level set: rendering stays a pure function of
-// (state, t) apart from this note-taking.
+// (state, t) apart from this note-taking, and the record of which creature was last touched.
 
 import type { CreatureId } from '../content/creatures.ts';
 
@@ -34,6 +34,11 @@ export function endFrameSpots(): void {
   nextSpots = [];
 }
 
+/** The spots of the last frame. */
+export function tappable(): readonly Spot[] {
+  return spots;
+}
+
 /** The creature at device pixel (x, y), if any (the nearest whose radius covers it). */
 export function creatureAt(x: number, y: number): Spot | null {
   let best: Spot | null = null, bestD = Infinity;
@@ -42,4 +47,18 @@ export function creatureAt(x: number, y: number): Spot | null {
     if (d < p.r && d < bestD) { best = p; bestD = d; }
   }
   return best;
+}
+
+/** The last time each creature was touched (scene time) and where (device pixels). */
+const touched = new Map<CreatureId | 'ossel', { t: number; x: number; y: number }>();
+
+/** A creature was tapped: its renderer may react (eels duck, an octopus inks, a jelly flashes). */
+export function startle(id: CreatureId | 'ossel', t: number, x: number, y: number): void {
+  touched.set(id, { t, x, y });
+}
+
+/** Seconds since the creature was last touched, and where (null if never or before `t`). */
+export function startled(id: CreatureId | 'ossel', t: number): { age: number; x: number; y: number } | null {
+  const e = touched.get(id);
+  return e && t >= e.t ? { age: t - e.t, x: e.x, y: e.y } : null;
 }

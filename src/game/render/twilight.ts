@@ -3,7 +3,7 @@
 // until the truce decides what happens to it.
 
 import { createSlugs } from './slugs.ts';
-import { sight, spot } from './sightings.ts';
+import { sight, spot, startled } from './sightings.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow } from './draw.ts';
@@ -38,7 +38,7 @@ export function createTwilightScene(seed: number): Scene {
   let focus: Focus = { x: 0, y: 0, w: 1, h: 1 };
   const reef = createReef(Math.floor(rng() * 1e9));
   const shoals = createShoals(seed ^ 0x3c);
-  // A garden eel colony on the slope, away from the reef's foot.
+  // Two garden eel colonies on the slope, either side of the reef's foot.
   const fans = [
     { u: 0.08, size: 1.1, colour: 'rgba(150,70,170,0.9)' },
     { u: 0.66, size: 0.8, colour: 'rgba(200,90,120,0.9)' },
@@ -297,12 +297,22 @@ export function createTwilightScene(seed: number): Scene {
   function drawGardenEels(ctx: CanvasRenderingContext2D, t: number): void {
     sight('garden-eel');
     const s = scale();
+    // Touched, the whole colony drops into its burrows from the nearest outward, and comes back
+    // up slowly, the bravest first.
+    const touch = startled('garden-eel', t);
+    for (const u of [0.2, 0.8]) spot('garden-eel', focus.x - focus.w * 0.1 + u * focus.w * 1.2, slopeY(u) - 15 * s, Math.max(36 * s, focus.w * 0.12));
     for (const [k, e] of eels.entries()) {
       const x = focus.x - focus.w * 0.1 + e.u * focus.w * 1.2;
       const base = slopeY(e.u) + 3 * s;
       // Every so often a wave of ducking runs through the colony.
       const wave = Math.max(0, Math.sin(t * 0.25 - e.u * 6));
-      const out = 1 - Math.pow(wave, 6) * 0.85;
+      let out = 1 - Math.pow(wave, 6) * 0.85;
+      if (touch && touch.age < 12 && Math.abs(touch.x - x) < focus.w * 0.25) {
+        const a = touch.age - Math.abs(touch.x - x) / (600 * s);
+        const hide = a < 0 ? 0 : a < 0.25 ? a / 0.25 : Math.max(0, 1 - (a - 3 - (k % 4) * 1.5) / 3);
+        out = Math.min(out, 1 - hide * 0.97);
+      }
+      if (out < 0.04) continue;
       const len = e.len * s * out;
       const lean = 0.35 + 0.12 * Math.sin(t * 0.7 + k);
       ctx.strokeStyle = e.light ? 'rgba(235,225,200,0.9)' : 'rgba(150,140,120,0.9)';
@@ -316,6 +326,21 @@ export function createTwilightScene(seed: number): Scene {
       ctx.fillStyle = 'rgba(30,30,30,0.9)';
       ctx.beginPath();
       ctx.arc(x + lean * len * 0.6 + 1.2 * s, base - len * 0.85, 0.8 * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  /** An ink cloud `age` seconds old: dark puffs billowing out and thinning into the water. */
+  function drawInk(ctx: CanvasRenderingContext2D, x: number, y: number, age: number, s: number): void {
+    const k = Math.min(1, age / 1.2);
+    const fade = Math.max(0, 1 - age / 6);
+    for (let i = 0; i < 9; i++) {
+      const a = i * 2.4;
+      const r = (4 + 14 * k) * s * (0.6 + (i % 3) * 0.25);
+      const d = 10 * s * k * (0.5 + (i % 4) * 0.3);
+      ctx.fillStyle = `rgba(22,16,30,${0.55 * fade})`;
+      ctx.beginPath();
+      ctx.arc(x + Math.cos(a) * d + age * 3 * s, y + Math.sin(a) * d * 0.7 - age * 7 * s, r, 0, Math.PI * 2);
       ctx.fill();
     }
   }
@@ -339,8 +364,15 @@ export function createTwilightScene(seed: number): Scene {
     const y = slopeY(pu) - 8 * s - moving * 6 * s;
     sight('octopus');
     spot('octopus', x, y, 26 * s);
+    // Touched, it blanches, leaves a cloud of ink where it was and flushes dark.
+    const touch = startled('octopus', t);
+    const shock = touch && touch.age < 6 ? touch.age : -1;
+    if (shock >= 0) drawInk(ctx, touch!.x, touch!.y, shock, s);
+    const pale = shock >= 0 && shock < 0.6 ? 1 - shock / 0.6 : 0;
+    const dark = shock >= 0.6 ? Math.max(0, 1 - (shock - 0.6) / 5) : 0;
     // Colour: sandy camouflage at rest, red while it moves.
-    const rC = Math.round(150 + 90 * moving), gC = Math.round(130 - 70 * moving), bC = Math.round(105 - 50 * moving);
+    const mix = (c: number) => Math.round(c + (245 - c) * pale - c * 0.55 * dark);
+    const rC = mix(150 + 90 * moving), gC = mix(130 - 70 * moving), bC = mix(105 - 50 * moving);
     ctx.save();
     ctx.translate(x, y);
     ctx.strokeStyle = `rgb(${rC},${gC},${bC})`;
