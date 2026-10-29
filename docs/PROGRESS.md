@@ -444,3 +444,4 @@ date, what landed, what is half-done, what's next.
 - Gulls: the Breach's intruder (before the release), circling and dipping; wave off for a spawn burst.
 - Glimmerseed strain: Act I's three-way choice at 15 m (act1.ts STRAINS, state.strain, chooseStrain); specks take the strain's colour; the bot takes gold.
 - Turtle hatchlings paddle across the Breach's surface at dawn after the release; touched they dive.
+- The fork on a ruin trip: press on (×1.5 time, a sure shard) or come home; forkOpen/takeFork, expedition.fork; test.

@@ -666,7 +666,7 @@ export function send(s: GameState): boolean {
     took[j] = n;
     need -= n;
   }
-  s.expedition = { site: x.id, back: s.t + tripSeconds(s, x), ...took, n: x.shoals };
+  s.expedition = { site: x.id, back: s.t + tripSeconds(s, x), ...took, n: x.shoals, fork: '' };
   if ((x.id as string) === 'visit') s.visits.push(actAt(s.height));
   return true;
 }
@@ -685,17 +685,36 @@ export function callHome(s: GameState): boolean {
   return true;
 }
 
+/** The fork halfway along a ruin trip: open while watching, once per trip. */
+export function forkOpen(s: GameState): boolean {
+  const ex = s.expedition;
+  const x = SITES.find((v) => v.id === ex.site);
+  if (!x || ex.fork) return false;
+  const total = tripSeconds(s, x);
+  return ex.back - s.t <= total / 2;
+}
+
+/** Take the fork: press on (the trip ×1.5, a sure shard) or come straight home. */
+export function takeFork(s: GameState, how: 'press' | 'home'): boolean {
+  if (!forkOpen(s)) return false;
+  const x = SITES.find((v) => v.id === s.expedition.site)!;
+  s.expedition.fork = how;
+  if (how === 'press') s.expedition.back += tripSeconds(s, x) * 0.5;
+  return true;
+}
+
 /** The shoals come home: back to the jobs they left, with a relic and what they heard. */
 function homecoming(s: GameState): void {
   const ex = s.expedition;
   const x = SITES.find((v) => v.id === ex.site);
   const roam = ex.site === 'roam', visit = ex.site === 'visit';
+  const pressed = ex.fork === 'press';
   const seconds = (roam ? ROAM.seconds : visit ? VISIT.seconds : x?.seconds ?? 0) * tripFactor(s);
   const heard = EXPEDITION.heard * ex.n * seconds;
   s.jobs.feed += ex.feed;
   s.jobs.light += ex.light;
   s.jobs.scout += ex.scout;
-  s.expedition = { site: '', back: 0, feed: 0, light: 0, scout: 0, n: 0 };
+  s.expedition = { site: '', back: 0, feed: 0, light: 0, scout: 0, n: 0, fork: '' };
   s.murmurs += heard;
   s.earned.murmurs += heard;
   if (roam) {
@@ -718,6 +737,15 @@ function homecoming(s: GameState): void {
     return;
   }
   if (!x) return;
+  // Pressing on at the fork turns up a shard for sure, if any are left.
+  if (pressed) {
+    const left = SHARD_LINES.map((_, i) => i).filter((i) => !s.meta.shards.includes(i));
+    if (left.length) {
+      const i = left[Math.floor(mulberry32((s.seed ^ 0xf0c) + s.relics.length)() * left.length)]!;
+      s.meta.shards.push(i);
+      remember(s, 'shard', SHARD_LINES[i]!);
+    }
+  }
   if (!found(s, x.id)) {
     s.relics.push(x.id);
     remember(s, 'relic', x.relic.toLowerCase());

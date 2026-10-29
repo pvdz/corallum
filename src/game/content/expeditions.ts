@@ -31,6 +31,10 @@ export const EXPEDITION = {
   heard: 0.5,
   label: 'Expeditions',
   heirLabel: 'What it carries',
+  forkKicker: 'The shoals have found a passage',
+  forkText: 'Halfway there, a crack in the old wall goes deeper than the shoals have been.',
+  press: { label: 'Press on', effect: 'the trip ×1.5 · a shard, if any are left' },
+  home: { label: 'Come straight home', effect: 'as planned' },
   /** Calling the shoals home early: glow per second of the trip still to go. */
   callPerSecond: 5,
   call: 'Call them home',

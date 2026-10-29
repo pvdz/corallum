@@ -96,3 +96,19 @@ test('the shoals’ signal: one try per slot, the right pattern pays, a wrong on
   assert.ok(answerSignal(s, sig!.pattern) > 0);
   assert.equal(s.signal.answered, 1);
 });
+
+test('the fork: pressing on makes the trip half again as long and brings a shard home', async () => {
+  const { forkOpen, takeFork } = await import('../../src/game/sim/economy.ts');
+  const s = atGate();
+  s.meta.shards = [];
+  send(s);
+  assert.equal(forkOpen(s), false);
+  advance(s, 181);
+  assert.ok(forkOpen(s));
+  const back = s.expedition.back;
+  assert.ok(takeFork(s, 'press'));
+  assert.equal(s.expedition.back, back + 180);
+  advance(s, 1000);
+  assert.deepEqual(s.relics, ['gate']);
+  assert.ok(s.meta.shards.length >= 1);
+});

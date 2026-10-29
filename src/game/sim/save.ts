@@ -48,7 +48,7 @@ function migrate(s: GameState): GameState {
   s.version = SAVE_VERSION;
   // A trip saved before trips recorded their size: a ruin's size is fixed.
   const ex = s.expedition;
-  if (ex.site && ex.site !== 'roam' && ex.n === 0) ex.n = SITES.find((x) => x.id === ex.site)?.shoals ?? 0;
+  if (ex.site && ex.site !== 'roam' && ex.site !== 'visit' && ex.n === 0) ex.n = SITES.find((x) => x.id === ex.site)?.shoals ?? 0;
   return s;
 }
 
