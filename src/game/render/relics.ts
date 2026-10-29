@@ -9,7 +9,18 @@ import type { Reef, ReefLayout } from './reef.ts';
 /** Fixed places on the lower stone, one per relic, as fractions of the grown height. */
 const PLACE: Record<SiteId, number> = { gate: 0.16, terraces: 0.24, 'lamp-hall': 0.36, wells: 0.12, midden: 0.3 };
 
+const placeCache = new Map<string, number>();
 function nodeAt(reef: Reef, L: ReefLayout, frac: number, side: number): number {
+  const key = `${frac}|${side}|${L.top.toFixed(3)}|${reef.coral.count}`;
+  const hit = placeCache.get(key);
+  if (hit !== undefined) return hit;
+  if (placeCache.size > 64) placeCache.clear();
+  const i = findNode(reef, L, frac, side);
+  placeCache.set(key, i);
+  return i;
+}
+
+function findNode(reef: Reef, L: ReefLayout, frac: number, side: number): number {
   const c = reef.coral;
   const want = frac * L.top;
   let best = -1, bestD = Infinity;

@@ -376,3 +376,4 @@ date, what landed, what is half-done, what's next.
 - The ending gains a page about the sister reef (ahead or behind at the surface).
 - A fifth hard seamount: dark (glow ×0.3, goal 2500 m, Lamp-born: glow ×1.25 after); drawn darker on the Silt Floor.
 - Four more lineage stories (spawnings 6–9).
+- Perf (6× CPU throttle, mobile, Sunlit): everything on (residents, relics, works, water overlay, spawning) 20.1 ms vs 17.4 ms draw; perch/relic node lookups cached per grown height (no measurable change: the cost is drawing).

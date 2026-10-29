@@ -10,7 +10,19 @@ import type { Reef, ReefLayout } from './reef.ts';
 import { sight, spot, startled } from './sightings.ts';
 
 /** Nodes of the grown coral between two fractions of its height, in a fixed seeded order. */
+const perchCache = new Map<string, number[]>();
 function perches(reef: Reef, L: ReefLayout, lo: number, hi: number, seed: number, n: number): number[] {
+  // The perches change only as the reef grows: kept per grown height.
+  const key = `${seed}|${lo}|${hi}|${n}|${L.top.toFixed(3)}|${reef.coral.count}`;
+  const hit = perchCache.get(key);
+  if (hit) return hit;
+  if (perchCache.size > 64) perchCache.clear();
+  const out = findPerches(reef, L, lo, hi, seed, n);
+  perchCache.set(key, out);
+  return out;
+}
+
+function findPerches(reef: Reef, L: ReefLayout, lo: number, hi: number, seed: number, n: number): number[] {
   const c = reef.coral;
   const out: number[] = [];
   const r = mulberry32(seed);
