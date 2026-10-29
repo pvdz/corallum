@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { askFavour, build, house, meet, meetOthers, nextMoment, othersSpawning, pryThorn, residentsAsking, send, skipRequest, rates, advance, calciteHold } from '../../src/game/sim/economy.ts';
+import { askFavour, build, house, meet, meetOthers, nextMoment, othersSpawning, pryThorn, residentsAsking, send, skipRequest, rates, advance, calciteHold,
+  currentRiddle, answerRiddle, forkOpen, takeFork, currentSignal, answerSignal, pickShell, strainOpen, chooseStrain, setCurrent, plant, callHome } from '../../src/game/sim/economy.ts';
 import { botDecide } from '../../src/game/sim/bot.ts';
 import { newGame, type GameState } from '../../src/game/sim/state.ts';
 import { mulberry32 } from '../../src/game/sim/rng.ts';
@@ -31,6 +32,16 @@ test('a whole game of random choices keeps every stock finite and non-negative',
     if (r() < 0.05) send(s);
     if (othersSpawning(s)) meetOthers(s, r() < 0.5 ? 'feed' : 'join');
     if (r() < 0.1) pryThorn(s);
+    const rd = currentRiddle(s);
+    if (rd) answerRiddle(s, rd.id, Math.floor(r() * 3));
+    if (forkOpen(s)) takeFork(s, r() < 0.5 ? 'press' : 'home');
+    const sig = currentSignal(s);
+    if (sig) answerSignal(s, r() < 0.5 ? sig.pattern : [0]);
+    if (r() < 0.2) pickShell(s);
+    if (strainOpen(s)) chooseStrain(s, (['blue', 'gold', 'violet'] as const)[Math.floor(r() * 3)]!);
+    if (r() < 0.02) setCurrent(s, Math.floor(r() * 5) - 2);
+    if (r() < 0.01) callHome(s);
+    if (r() < 0.05) plant(s);
     advance(s, 4);
     if (i % 500 === 0) sane(s, `at step ${i}`);
   }
