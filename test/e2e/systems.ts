@@ -114,6 +114,13 @@ await withGame(async (open) => {
   if (p) await page.mouse.click(p.x, p.y);
   await page.waitForTimeout(300);
   check((await page.evaluate(() => window.corallum!.state.meta.shells.length)) === 1, 'shell picked up');
+  // A fish in trouble: free it.
+  await page.evaluate(() => window.corallum!.tangle());
+  await page.waitForTimeout(500);
+  const tg = await page.evaluate(() => window.corallum!.spots.find((q) => q.id === 'tangle'));
+  if (tg) await page.mouse.click(tg.x, tg.y);
+  await page.waitForTimeout(200);
+  check((await page.evaluate(() => window.corallum!.state.tally.freed)) === 1, 'a fish freed from a jelly’s threads');
   // Old stone on the tips: tap a knob to break it off.
   const k = await page.evaluate(() => window.corallum!.spots.find((q) => q.id === 'old'));
   if (k) await page.mouse.click(k.x, k.y);

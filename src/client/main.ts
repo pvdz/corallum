@@ -79,6 +79,8 @@ declare global {
       water(id: string): boolean;
       /** Move the clock to the next shell on the sand (for checking it). */
       shell(): boolean;
+      /** Move the clock into the next tangle (a fish to free). */
+      tangle(): boolean;
       /** Move the clock to the next shoal signal; returns its pattern (for checking it). */
       signal(): number[] | null;
       /** Move the clock into the next thorn star's climb (for checking it). */
@@ -635,6 +637,15 @@ window.corallum = {
   },
   get zoom() { return zoom.k; },
   flourish: (kind: string) => scene.effect(kind as EffectKind),
+  tangle() {
+    const t0 = state.t;
+    for (let dt = 0; dt < 5000; dt += 2) {
+      state.t = t0 + dt;
+      if (currentTangle(state)) { state.t += 4; return true; }
+    }
+    state.t = t0;
+    return false;
+  },
   shell() {
     const t0 = state.t;
     for (let dt = 0; dt < 5000; dt += 5) {
