@@ -1,6 +1,7 @@
 // The whole game state. Plain JSON-able data so saving is a stringify.
 
 import type { Job, ReadingId } from '../content/act2.ts';
+import { CREATURES, type CreatureId } from '../content/creatures.ts';
 import type { MeetingId } from '../content/act3.ts';
 import type { DialectId, DialectTier } from '../content/act4.ts';
 import type { MemoryId } from '../content/act5.ts';
@@ -97,6 +98,8 @@ export type GameState = {
   feasts: number;
   /** The reef's height sampled every HISTORY_STEP sim seconds (for the growth chart). */
   history: number[];
+  /** Sim time each creature last gave a gift when touched (content/creatures.ts GIFT). */
+  gifts: Record<CreatureId, number>;
   /** The seamount this run grows on (lesser spawnings choose; the first reef's is plain). */
   seamount: SeamountId;
   /** Lifetime totals. */
@@ -138,6 +141,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     feasted: -1,
     feasts: 0,
     history: [],
+    gifts: Object.fromEntries(CREATURES.map((c) => [c.id, -1e9])) as Record<CreatureId, number>,
     seamount: 'plain',
     earned: { calcite: 0, glow: 0, murmurs: 0 },
     act: 1,

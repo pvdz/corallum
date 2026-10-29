@@ -51,3 +51,25 @@ export const CREATURES: readonly Creature[] = [
   { id: 'sea-firefly', name: 'Sea fireflies', zone: 'The Sunlit Crown', note: 'Only after dark. Specks that court in light, leaving strings of blue pearls as they rise.' },
   { id: 'shore-bird', name: 'Shore bird', zone: 'The Breach', note: 'It walks on your crown at low tide, as if it owned it.' },
 ];
+
+/**
+ * Gifts: touching a creature now and then brings a little of what it lives by. Each creature gives
+ * once per cooldown, `seconds` of the reef's production of that stock (calcite if it makes none),
+ * at most `holdShare` of what the reef can hold of it.
+ */
+export const GIFT = { seconds: 30, cooldown: 180, holdShare: 0.3 } as const;
+export type GiftStock = 'calcite' | 'glow' | 'plankton' | 'sand';
+const GLOWING: readonly CreatureId[] = [
+  'jelly', 'comb-jelly', 'siphonophore', 'anglerfish', 'vampire-squid', 'pyrosome', 'moon-jelly', 'sea-firefly',
+];
+export function giftOf(id: CreatureId): GiftStock {
+  if (GLOWING.includes(id)) return 'glow';
+  if (id === 'rasp') return 'sand';
+  if (id === 'lanternfish' || id === 'migration' || id === 'bait-ball') return 'plankton';
+  return 'calcite';
+}
+
+/** The float text after a gift's amount. */
+export const GIFT_TEXT: Record<GiftStock, string> = {
+  calcite: 'calcite · a gift', glow: 'glow · a gift of light', plankton: 'plankton · they share', sand: 'sand · a gift',
+};

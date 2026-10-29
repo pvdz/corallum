@@ -42,6 +42,9 @@ pacing targets and the offline cap are untouched; a watching player gets roughly
 calcite × (1 + 0.02·seen + 0.01·touched), counting creatures in meta.seen ('c:' and 't:'). A
 constant within a run, so offline stays exact. Shared table (a way): a feast left to sink is
 eaten for 0.5 × its value in its last second in reach, while watching.
+Gifts (active only): touching a creature gives 30 s of its stock's production (glow for the
+glowing ones, sand from the Rasp, plankton from shoals, calcite otherwise or when the reef makes
+none), capped at 0.3 × what the reef holds of it, once per 180 s per creature (state.gifts).
 
 ## Milestones (polyps and glimmerseed)
 Each milestone doubles everything its kind makes (`ACT1.milestoneFactor`, `MILESTONES` in content/act1.ts):

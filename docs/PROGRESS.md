@@ -300,3 +300,4 @@ date, what landed, what is half-done, what's next.
 - Feeding channels are visible: one groove per channel cut in the Twilight slope toward the reef's foot, with sand banks and plankton streaming along it (ReefView.channels).
 - Sunlit upgrades show on the reef: each pigment adds encrusting colour (denser, and a new hue every two: rose, gold, green, …); each canopy spread opens the polyps a little wider (ReefView.pigments, canopy).
 - The aragonite lattice shows: crystal glints twinkling at fixed places along the branches, eight per level (ReefView.lattice).
+- Gifts from neighbours: touching a creature now and then (180 s each) brings 30 s of its stock's production (glow, sand, plankton, else calcite), capped at 30% of what the reef holds; float text from content (GIFT_TEXT). state.gifts holds every creature id so saves keep the cooldowns.
