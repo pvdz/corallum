@@ -706,3 +706,4 @@ date, what landed, what is half-done, what's next.
 - Resident pair A tidy floor (hermit crab + sea cucumbers): sand ×1.2.
 - A man-o'-war drifts on the Breach surface, crest up, long blue tentacles below (touched, its sail sags).
 - Moment egg-cases (300 m: gifts ×1.25 or calcite ×1.05).
+- A second Sunlit great work, the lagoon rim (from 3900 m; bloom+sand; spawn ×1.1 per stage), drawn as a low arc of stones on the sand. Bot 7h28.

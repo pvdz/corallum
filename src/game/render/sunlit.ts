@@ -5,7 +5,7 @@
 import { createSlugs } from './slugs.ts';
 import { drawSong } from './song.ts';
 import { drawThorn } from './thorn.ts';
-import { drawTerrace } from './works.ts';
+import { drawTerrace, drawRim } from './works.ts';
 import { SHELLS } from '../content/shells.ts';
 import { drawRelics } from './relics.ts';
 import { drawResidents } from './residents.ts';
@@ -1625,6 +1625,7 @@ export function createSunlitScene(seed: number): Scene {
           alt: { branch: '#8a5bb0', tip: '#b88ad8', polyp: 'rgba(240,220,255,0.95)' } }, larvaSeed, v.nurseries);
       drawTerrace(ctx, L.cx, L.unit, v.works.terrace, scale(), (x) => floorY(Math.min(1, Math.max(0, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2)))), t);
       drawClam(ctx, t);
+      drawRim(ctx, focus, v.works.rim, scale() * 1.6, floorY);
       {
         // Ossel, as the glittering sand it became (or, kept, its wall's foot): tap to hear it.
         const ox = focus.x - focus.w * 0.1 + 0.62 * focus.w * 1.2, oy = floorY(0.62) + 6 * scale();

@@ -3,7 +3,7 @@
 
 import type { Currency } from './types.ts';
 
-export type WorkId = 'garden' | 'spire' | 'dome' | 'breakwater' | 'lawn' | 'terrace' | 'pool';
+export type WorkId = 'garden' | 'spire' | 'dome' | 'breakwater' | 'lawn' | 'terrace' | 'rim' | 'pool';
 
 export type Work = {
   id: WorkId;
@@ -64,6 +64,13 @@ export const WORKS: readonly Work[] = [
     effect: 'bloom ×1.15 per stage',
     stages: [{ bloom: 1e5, sand: 30000 }, { bloom: 1e6, sand: 80000 }, { bloom: 1e7, sand: 160000 }],
     stageNames: ['One step', 'Three steps', 'The terrace'],
+  },
+  {
+    id: 'rim', name: 'The lagoon rim', zone: 4, from: 3900,
+    flavour: 'A low ring of stone around a stretch of sand, so the water inside lies still and warm, the way spawn likes it.',
+    effect: 'spawn ×1.1 per stage (when it ripens)',
+    stages: [{ bloom: 2e6, sand: 100000 }, { bloom: 6e6, sand: 200000 }, { bloom: 2e7, sand: 400000 }],
+    stageNames: ['A curve of stones', 'Half a ring', 'The rim'],
   },
   {
     id: 'pool', name: 'The spawning pool', zone: 5, from: 3982,

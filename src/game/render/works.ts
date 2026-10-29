@@ -293,3 +293,22 @@ export function drawLawn(ctx: CanvasRenderingContext2D, F: Focus, stage: number,
   }
   ctx.restore();
 }
+
+/** The lagoon rim: a low ring of piled stones on the sand to one side, more of it with each stage. */
+export function drawRim(ctx: CanvasRenderingContext2D, F: Focus, stage: number, s: number, floor: (u: number) => number): void {
+  if (stage <= 0) return;
+  const cu = 0.76, R = 0.08;
+  const x = (u: number) => F.x - F.w * 0.1 + u * F.w * 1.2;
+  const span = [0, 0.4, 0.7, 1][stage]!;
+  ctx.save();
+  for (let i = 0; i <= 24 * span; i++) {
+    const a = Math.PI + (i / 24) * Math.PI;
+    const u = cu + Math.cos(a) * R;
+    const y = floor(u) + 3 * s + Math.sin(a) * 6 * s;
+    ctx.fillStyle = i % 2 ? '#bfb29a' : '#a89a80';
+    ctx.beginPath();
+    ctx.ellipse(x(u), y, (5 + (i % 3)) * s, (3.5 + (i % 2)) * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
