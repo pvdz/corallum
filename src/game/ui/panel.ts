@@ -907,6 +907,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       s.tally.pruned ? UI.tallyPruned(s.tally.pruned) : '',
       s.tally.lucky ? UI.tallyLucky(s.tally.lucky) : '',
       s.tally.milky ? UI.tallyMilky(s.tally.milky) : '',
+      s.tally.freed ? UI.tallyFreed(s.tally.freed) : '',
       s.lineWishes || s.wished >= 0 ? UI.tallyWished : '',
     ].filter(Boolean);
     if (small.length) codexRow(UI.smallThings, small.join(' · '));

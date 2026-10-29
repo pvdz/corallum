@@ -85,6 +85,7 @@ export const UI = {
   tallyLucky: (n: number) => `${n} lucky touch${n === 1 ? '' : 'es'}`,
   tallyMilky: (n: number) => `${n} sweep${n === 1 ? '' : 's'} through a milky sea`,
   tallyWished: 'a wish on falling stars',
+  tallyFreed: (n: number) => `${n} small creature${n === 1 ? '' : 's'} freed`,
   timelapse: 'Watch this reef grow again (T)',
   momentsLabel: 'Moments met',
   momentsIntro: 'Across your line: each moment, and the ways your reefs have met it.',
