@@ -76,6 +76,12 @@ export function giftOf(id: CreatureId): GiftStock {
   return 'calcite';
 }
 
+/** Trust: touches remembered by the line. Levels at 1, 5 and 15 touches; gifts grow with it. */
+export const TRUST = { at: [1, 5, 15], names: ['', 'known', 'familiar', 'a friend'], gift: [1, 1, 1.5, 2] } as const;
+export function trustLevel(touches: number): number {
+  return TRUST.at.filter((n) => touches >= n).length;
+}
+
 /** The float text after a gift's amount. */
 export const GIFT_TEXT: Record<GiftStock, string> = {
   calcite: 'calcite · a gift', glow: 'glow · a gift of light', plankton: 'plankton · they share', sand: 'sand · a gift',

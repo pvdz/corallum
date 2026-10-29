@@ -36,7 +36,7 @@ import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio } from '../game/audio/audio.ts';
 import { FEAST } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS, TRIAL_TEXT } from '../game/content/lineage.ts';
-import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf } from '../game/content/creatures.ts';
+import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf, TRUST, trustLevel } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
 import { createPortraits } from './portraits.ts';
 import { createZoom } from './zoom.ts';
@@ -743,6 +743,9 @@ function showCreatureLabel(id: string, x: number, y: number, r = 20): void {
   creatureLabel.innerHTML = '';
   const n = document.createElement('strong');
   n.textContent = c.name;
+  // How well the line knows it (touches remembered across reefs).
+  const tl = trustLevel(state.meta.trust[c.id] ?? 0);
+  if (tl > 1) n.append(Object.assign(document.createElement('small'), { textContent: ` · ${TRUST.names[tl]}` }));
   const t = document.createElement('span');
   t.textContent = c.note;
   // What it gives when touched, and when it will give again.

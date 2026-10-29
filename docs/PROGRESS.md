@@ -348,3 +348,4 @@ date, what landed, what is half-done, what's next.
 - Great works: content/works.ts, economy workOpen/workCost/canBuild/build, state.works; cards with two-currency price, stage pips and an eta for both; render/works.ts (spire in Midnight, breakwater in Twilight, terrace in Sunlit); the bot builds them.
 - Guide (Reef tab) explains the water, Ossel's requests, moments, expeditions, shards, residents, great works and hard seamounts.
 - Away summary lists relics brought home, roams and shards found while away.
+- Trust with neighbours: meta.trust per creature (gift() counts every touch), TRUST levels in creatures.ts, gifts ×1/1.5/2; journal and touch label show the level; feats 'A friend in the deep', 'Old friends'.

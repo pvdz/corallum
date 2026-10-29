@@ -44,6 +44,8 @@ export const FEATS: readonly Feat[] = [
     when: (s) => ['warm', 'cold', 'crowded'].every((m) => s.seamount === m || s.meta.ancestors.some((a) => a.split('|')[1] === m)) },
   { id: 'named', name: 'A name', text: 'Give your reef a name.', when: (s) => s.meta.name !== '' },
   { id: 'touch', name: 'A light touch', text: 'Touch eight different creatures.', when: (s) => seenCount(s, 't:') >= 8 },
+  { id: 'friend', name: 'A friend in the deep', text: 'Touch one creature fifteen times.', when: (s) => Object.values(s.meta.trust).some((n) => n >= 15) },
+  { id: 'friends', name: 'Old friends', text: 'Be a friend to ten creatures.', when: (s) => Object.values(s.meta.trust).filter((n) => n >= 15).length >= 10 },
   { id: 'touch-many', name: 'Known to all', text: 'Touch twenty-five different creatures.', when: (s) => seenCount(s, 't:') >= 25 },
   { id: 'closer', name: 'A closer look', text: 'Zoom in close on a creature (view mode).', when: (s) => s.meta.seen.includes('did:closeup') },
   { id: 'picture', name: 'A picture', text: 'Save a picture of your reef.', when: (s) => s.meta.seen.includes('did:photo') },

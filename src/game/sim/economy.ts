@@ -21,7 +21,7 @@ import { ACT3, BANDS_ACT3, FAVOURS, MEETINGS, type FavourId, type Choice, type M
 import { ACT4, BANDS_ACT4, DIALECTS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
 import { ACT5, BANDS_ACT5, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
 import { act, actAt, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
-import { CREATURES, GIFT, giftOf, type CreatureId, type GiftStock } from '../content/creatures.ts';
+import { CREATURES, GIFT, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
 import { LINEAGE, SEAMOUNTS, type Seamount, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { FEAST } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
@@ -1092,6 +1092,7 @@ export function sweep(s: GameState): number {
  */
 export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: number } | null {
   s.tally.touches++;
+  s.meta.trust[id] = (s.meta.trust[id] ?? 0) + 1;
   dig(s, 'touch');
   if (s.t - s.gifts[id] < GIFT.cooldown) return null;
   const r = rates(s);
@@ -1105,7 +1106,7 @@ export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: 
   // Never more than a share of what the reef can hold of it (P/k), or it would only wash away.
   // Rare visitors give more: catching one is luck as well as attention.
   const rare = CREATURES.find((c) => c.id === id)?.note.startsWith('Rare.') ? GIFT.rare : 1;
-  const amount = (chose(s, 'whale-fall', 'b') ? 2 : 1) * rare * (stock === 'calcite' ? calciteRate(s, r) * GIFT.seconds
+  const amount = TRUST.gift[trustLevel(s.meta.trust[id] ?? 0)]! * (chose(s, 'whale-fall', 'b') ? 2 : 1) * rare * (stock === 'calcite' ? calciteRate(s, r) * GIFT.seconds
     : stock === 'bloom' ? r.bloomP * GIFT.seconds : stock === 'spawn' ? r.spawnP * GIFT.seconds
     : Math.min(made * GIFT.seconds, GIFT.holdShare * made / k));
   if (!(amount > 0)) return null;

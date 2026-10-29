@@ -10,7 +10,7 @@ import { ACT3, FAVOURS, FAVOUR_TEXT, MEETINGS, type FavourId, type Choice, type 
 import { DIALECTS, TIERS, type DialectId } from '../content/act4.ts';
 import { SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { MEMORIES } from '../content/act5.ts';
-import { CREATURES } from '../content/creatures.ts';
+import { CREATURES, TRUST, trustLevel } from '../content/creatures.ts';
 import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
 import { upgradeIcon } from './icons.ts';
 import { FEATS } from '../content/feats.ts';
@@ -535,7 +535,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   function renderJournal(s: GameState): void {
     const seen = CREATURES.filter((c) => s.meta.seen.includes(`c:${c.id}`));
     const touched = s.meta.seen.filter((k) => k.startsWith('t:')).length;
-    const key = seen.map((c) => c.id).join() + `|${hooks.portraits ?? 0}|${touched}`;
+    const key = seen.map((c) => c.id).join() + `|${hooks.portraits ?? 0}|${touched}|` + Object.values(s.meta.trust).map(trustLevel).join('');
     if (key === journalKey) return;
     journalKey = key;
     journalHead.textContent = `Creatures seen · ${seen.length} of ${CREATURES.length}${touched ? ` · ${touched} touched` : ''} · calcite +${Math.round((knownBonus(s) - 1) * 100)}%`;
@@ -563,7 +563,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         } else row.append(el('div', 'portrait none'));
         const text = el('div', 'journal-text');
         const name = el('strong', '', known ? c.name : 'Not yet seen');
-        if (known && s.meta.seen.includes(`t:${c.id}`)) name.append(el('em', 'touched', ' · touched'));
+        const tl = trustLevel(s.meta.trust[c.id] ?? 0);
+        if (known && tl > 0) name.append(el('em', `touched trust-${tl}`, ` · ${TRUST.names[tl]}`));
         text.append(name,
           el('span', '', known ? c.note : c.note.startsWith('Rare.') ? 'Rare: watch for it.' : (/Only (?:on|after) [^.]*\./.exec(c.note)?.[0] ?? '')));
         row.append(text);

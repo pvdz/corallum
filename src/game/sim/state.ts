@@ -37,6 +37,8 @@ export type Meta = {
   /** Every memory any spawn has carried, and how many times the reef has reached the ending. */
   carriedEver: string[];
   endings: number;
+  /** How many times the line has touched each creature (content/creatures.ts TRUST). */
+  trust: Record<CreatureId, number>;
   /** The colours the line's reefs wear in the light (content/palettes.ts; '' for the reef's own). */
   palette: string;
   /** Shards of Thousandfold's tablet found by the line (indices into content/shards.ts). */
@@ -60,6 +62,7 @@ export function newMeta(): Meta {
     endings: 0,
     shards: [],
     palette: '',
+    trust: Object.fromEntries(CREATURES.map((c) => [c.id, 0])) as Record<CreatureId, number>,
   };
 }
 

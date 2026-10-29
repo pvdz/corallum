@@ -172,7 +172,8 @@ the release also sets the lineage for beginning again.
 - **Neighbours**: every creature drawn on screen is tappable: it is named, and most answer in
   their own way (eels duck, octopus inks, lure goes dark, manta rolls, tube worms withdraw...).
   Seen creatures add +2% calcite each, touched ones +1% more; a touch now and then brings a gift
-  of the creature's own stock (light from glowing ones, sand from the Rasp); touching eight, and twenty-five, are feats. The journal keeps a portrait of
+  of the creature's own stock (light from glowing ones, sand from the Rasp); touching eight, and twenty-five, are feats. Trust: the line remembers touches per creature (known at 1, familiar
+  at 5, a friend at 15); gifts ×1.5 when familiar, ×2 from a friend; feats for one friend and ten. The journal keeps a portrait of
   each, cropped from the world the first time it was in full view (an album that is your own).
 
 ## Prestige — Lesser Spawnings and Lineage
