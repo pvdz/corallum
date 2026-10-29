@@ -2,7 +2,7 @@
 // Everything is generated from a seed; `draw` is a pure function of (view, t) so a given
 // seed, state and time always render the same frame — screenshots rely on that.
 
-import { sight, spot, startled } from './sightings.ts';
+import { sight, spot, startled, pushed } from './sightings.ts';
 import { drawThorn } from './thorn.ts';
 import { drawGarden } from './works.ts';
 import { mulberry32, range, type Rng } from '../sim/rng.ts';
@@ -198,9 +198,12 @@ export function createAbyssScene(seed: number): Scene {
       // Each ending of the line takes away a tenth of the flakes.
       if ((i * 7) % 10 < Math.min(6, healed)) continue;
       const y = ((f.y + t * f.speed) % 1) * (h + 20) - 10;
-      const x = ((((f.x + Math.sin(t * 0.3 + f.phase) * 0.004 + t * f.drift * 0.002) % 1) + 1) % 1) * w;
+      const x0 = ((((f.x + Math.sin(t * 0.3 + f.phase) * 0.004 + t * f.drift * 0.002) % 1) + 1) % 1) * w;
+      // A sweep nearby swirls the snow away from it.
+      const [px, py] = pushed(x0, y, t, 110 * scale());
+      const x = x0 + px;
       ctx.beginPath();
-      ctx.arc(x, y, f.r, 0, Math.PI * 2);
+      ctx.arc(x, y + py, f.r, 0, Math.PI * 2);
       ctx.fill();
     }
   }

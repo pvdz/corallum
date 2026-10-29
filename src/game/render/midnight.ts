@@ -4,7 +4,7 @@
 // the dark below. Glass shrimp and a passing siphonophore appear once their bands are laid.
 
 import { drawRising } from './rising.ts';
-import { sight, spot, startled } from './sightings.ts';
+import { sight, spot, startled, pushed } from './sightings.ts';
 import { drawGhosts } from './ghosts.ts';
 import { drawSisterFar } from './sister.ts';
 import { drawDragonfish } from './thorn.ts';
@@ -842,7 +842,9 @@ export function createMidnightScene(seed: number): Scene {
       if (thin && i % 3) continue;
       const y = ((f.y + t * f.speed) % 1) * (h + 10) - 5;
       const x = (((f.x + Math.sin(t * 0.25 + f.phase) * 0.003) % 1) + 1) % 1 * w;
-      speck(ctx, x, y, f.r);
+      // A sweep nearby swirls the snow away from it.
+      const [px, py] = pushed(x, y, t, 110 * scale());
+      speck(ctx, x + px, y + py, f.r);
     }
   }
 
