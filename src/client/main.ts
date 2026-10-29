@@ -781,7 +781,7 @@ function frame(now: number): void {
   }
   const fe = currentFeast(state);
   if (fe) drawFeast(ctx, fe, state.t - fe.start, tNow, focusNow, dpr, feastPay(state));
-  taps.draw(ctx, tNow, scene.crownAt, dpr);
+  taps.draw(ctx, tNow, scene.crownAt, dpr, actAt(state.height) <= 2);
   endFrameSpots();
   const p2 = performance.now();
   panel.update(state);

@@ -21,7 +21,7 @@ export function createTaps() {
       taps.push({ x, y, start: t, seed: 0x7a95 + count++ * 7919, motes });
       if (taps.length > 12) taps.shift();
     },
-    draw(ctx: CanvasRenderingContext2D, t: number, crown: readonly [number, number], s: number): void {
+    draw(ctx: CanvasRenderingContext2D, t: number, crown: readonly [number, number], s: number, dark = false): void {
       for (let i = taps.length - 1; i >= 0; i--) if (t - taps[i]!.start > LIFE || t < taps[i]!.start) taps.splice(i, 1);
       if (!taps.length) return;
       ctx.save();
@@ -29,6 +29,15 @@ export function createTaps() {
       const [cx, cy] = crown;
       for (const tap of taps) {
         const age = t - tap.start;
+        if (age < RIPPLE && dark) {
+          // In the dark water the disturbance lights the plankton: a burst of blue sparks.
+          const k = age / RIPPLE;
+          const sr = mulberry32(tap.seed ^ 0x5a5a);
+          for (let p = 0; p < 18; p++) {
+            const a = sr() * Math.PI * 2, d = (10 + sr() * 40) * s * (0.4 + 0.6 * k);
+            glow(ctx, tap.x + Math.cos(a) * d, tap.y + Math.sin(a) * d, 4 * s, '90,200,255', (1 - k) * (0.5 + 0.5 * sr()));
+          }
+        }
         if (age < RIPPLE) {
           const k = age / RIPPLE;
           ring(ctx, tap.x, tap.y, (8 + 46 * k) * s, '170,240,255', 0.5 * (1 - k), 1.5 * s);
