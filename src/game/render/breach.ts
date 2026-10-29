@@ -85,6 +85,27 @@ export function createBreachScene(seed: number): Scene {
       ctx.fillStyle = `rgba(230,235,255,${a})`;
       ctx.fillRect(st.x * w, st.y * wy * 0.95, st.r * dpr, st.r * dpr);
     }
+    // Now and then a shooting star: a short bright streak fading along its path.
+    for (let k = 0; k < 2; k++) {
+      const period = 37 + k * 23;
+      const u = ((t + k * 11) % period) / 1.2;
+      if (u < 1) {
+        const lap = Math.floor((t + k * 11) / period);
+        const r = mulberry32(seed + lap * 977 + k);
+        const x0 = w * range(r, 0.1, 0.8), y0 = wy * range(r, 0.05, 0.4);
+        const dx = w * 0.18, dy = wy * 0.12;
+        const hx = x0 + dx * u, hy = y0 + dy * u;
+        const g = ctx.createLinearGradient(hx - dx * 0.3, hy - dy * 0.3, hx, hy);
+        g.addColorStop(0, 'rgba(255,255,255,0)');
+        g.addColorStop(1, `rgba(255,255,255,${0.8 * (1 - u)})`);
+        ctx.strokeStyle = g;
+        ctx.lineWidth = 1.5 * dpr;
+        ctx.beginPath();
+        ctx.moveTo(hx - dx * 0.3, hy - dy * 0.3);
+        ctx.lineTo(hx, hy);
+        ctx.stroke();
+      }
+    }
     // The moon, lit to its phase.
     const [mx, my] = moonPos();
     // A great tide moon rides lower and larger, with a warm ring around it.
