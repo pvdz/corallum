@@ -512,6 +512,7 @@ html.view-mode #depth-gauge { right: 18px; }
 #depth-gauge span {
   position: absolute; right: 14px; margin-bottom: -7px; font-size: 11px; color: var(--ink-dim); white-space: nowrap;
   transition: bottom 1s ease; font-variant-numeric: tabular-nums;
+  color: #e8f4ff; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8), 0 0 2px rgba(0, 0, 0, 0.9);
 }
 #photo {
   position: absolute; left: calc(max(12px, env(safe-area-inset-left)) + 92px); top: max(12px, env(safe-area-inset-top)); z-index: 11;
