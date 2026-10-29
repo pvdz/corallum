@@ -31,7 +31,7 @@ import { PALETTES } from '../game/content/palettes.ts';
 import { REQUEST } from '../game/content/requests.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, chooseStrain, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -45,7 +45,7 @@ import { createZoom } from './zoom.ts';
 import { drawMoon, glow as glowAt } from '../game/render/draw.ts';
 import { GAUGE_MOON } from '../game/content/act5.ts';
 import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
-import { ACT1, MILESTONES, type Milestone } from '../game/content/act1.ts';
+import { ACT1, MILESTONES, STRAINS, type Milestone } from '../game/content/act1.ts';
 import { OSSEL_LINES, OSSEL_NOW, WHISPERS } from '../game/content/whispers.ts';
 import { NEWS } from '../game/content/guide.ts';
 import { OSSEL_MISTAKE, OSSEL_MISTAKES } from '../game/content/ossel.ts';
@@ -218,6 +218,12 @@ const panel = createPanel(ui, {
   },
   setRasp(n) {
     setRasp(state, n);
+  },
+  chooseStrain(id) {
+    if (!chooseStrain(state, id)) return;
+    scene.effect('symbiont');
+    audio.cue('choice');
+    save();
   },
   chooseBoon(id) {
     if (!chooseBoon(state, id)) return;
@@ -616,6 +622,7 @@ function view(): ReefView {
     current: state.current,
     song: state.dialects.song,
     garden: state.garden,
+    strainRgb: STRAINS.find((x) => x.id === state.strain)?.rgb ?? '',
     ancestors: state.meta.ancestors.map((a) => Number(a.split('|')[0]) || 0),
     gauge: gaugeAt(state.height),
     moments: state.moments,

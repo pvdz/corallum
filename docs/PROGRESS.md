@@ -442,3 +442,4 @@ date, what landed, what is half-done, what's next.
 - Drill snail: the Silt Floor's intruder (from 20 m), tap to pick it off.
 - The Song dialect colours the melody in the shallows: lullaby slower and longer, chorus doubled a third above, call answers phrases with a high root.
 - Gulls: the Breach's intruder (before the release), circling and dipping; wave off for a spawn burst.
+- Glimmerseed strain: Act I's three-way choice at 15 m (act1.ts STRAINS, state.strain, chooseStrain); specks take the strain's colour; the bot takes gold.

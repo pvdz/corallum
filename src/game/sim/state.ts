@@ -1,6 +1,7 @@
 // The whole game state. Plain JSON-able data so saving is a stringify.
 
 import type { Job, ReadingId } from '../content/act2.ts';
+import type { StrainId } from '../content/act1.ts';
 import { CREATURES, type CreatureId } from '../content/creatures.ts';
 import type { FavourId, MeetingId } from '../content/act3.ts';
 import type { DialectId, DialectTier } from '../content/act4.ts';
@@ -104,6 +105,8 @@ export type GameState = {
   breachedAt: number;
   /** Truce choices: '' until made, then 'a' or 'b'. */
   truce: Record<MeetingId, '' | 'a' | 'b'>;
+  /** The glimmerseed strain ('' until chosen at 15 m). */
+  strain: StrainId | '';
   /** Reef height up the seamount, metres. */
   height: number;
   levels: Record<UpgradeId, number>;
@@ -189,6 +192,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     breachedAt: 0,
     dialects: { form: '', craft: '', spawn: '', song: '' },
     height: 0,
+    strain: '',
     levels: {
       polyp: 0, symbiont: 0, skeleton: 0, lattice: 0, vent: 0, lure: 0, shoal: 0, daughter: 0,
       grounds: 0, sandbar: 0, channel: 0, pigment: 0, canopy: 0, meadow: 0, ripen: 0,

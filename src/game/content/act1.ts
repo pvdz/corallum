@@ -3,6 +3,19 @@
 
 import type { Band, UpgradeDef } from './types.ts';
 
+/** The glimmerseed's strain: chosen once, at 15 m, for the whole run. */
+export type StrainId = 'blue' | 'gold' | 'violet';
+export const STRAIN = {
+  metres: 15,
+  kicker: 'Your glimmerseed are settling',
+  text: 'The little lights in your tissue are beginning to breed true. Which kind will you keep?',
+} as const;
+export const STRAINS: readonly { id: StrainId; name: string; effect: string; flavour: string; rgb: string }[] = [
+  { id: 'blue', name: 'Blue', effect: 'glow ×1.3', flavour: 'Cold and bright, the colour of the deep looking back.', rgb: '120,190,255' },
+  { id: 'gold', name: 'Gold', effect: 'polyps feed ×1.15', flavour: 'Warm and dim; they feed the polyps more than they shine.', rgb: '255,200,110' },
+  { id: 'violet', name: 'Violet', effect: 'scouts hear ×1.4 (later)', flavour: 'A colour almost no one can see. The old bands answer to it.', rgb: '200,150,255' },
+];
+
 export const ACT1 = {
   /** Calcite/s from the seamount's mineral seep before any polyp is budded. */
   trickle: 0.2,

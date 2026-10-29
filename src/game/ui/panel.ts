@@ -2,7 +2,7 @@
 // reader and the away summary. Built once; `update()` only rewrites text and classes, so it
 // is cheap to call every frame.
 
-import { ACT1, MILESTONES } from '../content/act1.ts';
+import { ACT1, MILESTONES, STRAIN, STRAINS, type StrainId } from '../content/act1.ts';
 import type { Band, Currency, UpgradeId } from '../content/types.ts';
 import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
@@ -32,7 +32,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, othersSpawning, othersCap, boonsOffered, currentSignal, plantCost, untilFeast, untilThorn, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, othersSpawning, othersCap, boonsOffered, strainOpen, currentSignal, plantCost, untilFeast, untilThorn, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -47,6 +47,8 @@ export type PanelHooks = {
   send(): void;
   /** Call the shoals home early, for glow. */
   callHome(): void;
+  /** Choose the glimmerseed strain. */
+  chooseStrain(id: StrainId): void;
   /** Choose this seamount's boon. */
   chooseBoon(id: BoonId): void;
   /** Meet the other reefs' spawning. */
@@ -256,6 +258,19 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   });
   momentBox.append(el('p', 'truce-kicker', MOMENT.kicker), momentTitle, momentText, momentChoices);
   grow.prepend(momentBox);
+
+  // ---------- The glimmerseed strain (once, at 15 m) ----------
+  const strainBox = el('section', 'truce moment strain');
+  strainBox.hidden = true;
+  const strainChoices = el('div', 'boon-choices');
+  for (const st of STRAINS) {
+    const b = button('choice', '', () => hooks.chooseStrain(st.id));
+    b.style.borderColor = `rgba(${st.rgb},0.5)`;
+    b.append(el('strong', '', st.name), el('em', '', st.flavour), el('span', '', st.effect));
+    strainChoices.append(b);
+  }
+  strainBox.append(el('p', 'truce-kicker', STRAIN.kicker), el('p', 'truce-text', STRAIN.text), strainChoices);
+  grow.prepend(strainBox);
 
   // ---------- A boon for a new seamount ----------
   const boonBox = el('section', 'truce moment boon');
@@ -1500,6 +1515,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         askKicker.textContent = s.request.streak > 1 ? `${REQUEST.kicker} · ${s.request.streak} ${REQUEST.streakWord}` : REQUEST.kicker;
         askSkip.disabled = !canSkipRequest(s);
       }
+
+      setShown(strainBox, strainOpen(s));
 
       // A boon for this seamount, while one is still to be chosen.
       const offered = boonsOffered(s);
