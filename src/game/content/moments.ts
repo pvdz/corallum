@@ -5,7 +5,7 @@
 export type MomentId = 'brittle' | 'vent-crack' | 'snow' | 'lost-shoal' | 'hunters' | 'angler' | 'squid' | 'whale-fall' | 'old-lamp' | 'cleaners'
   | 'young-rasp' | 'slope' | 'eggs' | 'storm' | 'turtle' | 'first-light' | 'last-night' | 'bird'
   | 'fire-body' | 'seep' | 'rising-stop' | 'split-shoal' | 'heatwave' | 'pups' | 'king-tide' | 'outbreak'
-  | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes' | 'heavy-crown' | 'cold-slide' | 'dust';
+  | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes' | 'heavy-crown' | 'cold-slide' | 'dust' | 'bowed';
 
 export type MomentOption = { label: string; effect: string; text: string };
 export type Moment = { id: MomentId; metres: number; title: string; text: string; a: MomentOption; b: MomentOption;
@@ -254,6 +254,12 @@ export const MOMENTS: readonly Moment[] = [
     text: 'Thorn stars in their hundreds, climbing the shelf from every side at once, more than any crab could hold back.',
     a: { label: 'Grow faster than they eat', effect: 'calcite ×1.1', text: 'You pour everything into the stone. They eat, and you grow, and you grow more.' },
     b: { label: 'Call every crab on the shelf', effect: 'thorn stars driven off for half, crabs or not', text: 'Crabs come from every reef on the shelf, and the starfish learn your branches are not safe.' },
+  },
+  {
+    id: 'bowed', metres: 500, seamount: 'heavy', title: 'Bowed down',
+    text: 'Your youngest branch has bent nearly to the rock under the grey on its tips. It will snap, or it will learn to carry it.',
+    a: { label: 'Prop it with stone', effect: 'calcite dissolves ×0.9', text: 'You lay a buttress under it, band by band. It holds, and so does everything after.' },
+    b: { label: 'Let it snap', effect: 'old stone pays ×1.5', text: 'It breaks with a sound like a shell. The rest of you stands lighter, and learns not to hold so hard.' },
   },
   {
     id: 'eyes', metres: 700, seamount: 'dark', title: 'Eyes in the dark',

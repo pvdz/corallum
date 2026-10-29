@@ -551,3 +551,18 @@ test('old stone: fills toward its cap the same away as stepped (across skipped w
   assert.equal(prune(s, before[1]!), 0, 'gone');
   assert.equal(s.tally.pruned, 1);
 });
+
+test('a heavy seamount gathers old stone three times as fast; met, its trial doubles what a knob pays on later reefs', () => {
+  const plain = newGame(4), heavy = newGame(4);
+  heavy.seamount = 'heavy';
+  advance(plain, 300);
+  advance(heavy, 300);
+  const k = OLD.k;
+  assert.ok(Math.abs(heavy.old - OLD.max * (1 - Math.exp(-3 * k * 300))) < 1e-9);
+  assert.ok(Math.abs(plain.old - OLD.max * (1 - Math.exp(-k * 300))) < 1e-9);
+  const a = newGame(5), b = newGame(5);
+  for (const s of [a, b]) { s.levels.polyp = 5; s.old = 2; }
+  b.meta.seen.push('trial:heavy');
+  const pa = prune(a, a.oldSlots[0]!), pb = prune(b, b.oldSlots[0]!);
+  assert.ok(Math.abs(pb / pa - 2) < 1e-9, `${pb / pa}`);
+});

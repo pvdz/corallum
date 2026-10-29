@@ -38,7 +38,7 @@ export type Trait = {
  * Where a lesser spawning settles. Each seamount bends the economy one way; the plain one is the
  * first reef's. Multipliers are read by sim/economy.ts.
  */
-export type SeamountId = 'plain' | 'warm' | 'cold' | 'crowded' | 'hungry' | 'silent' | 'lonely' | 'buried' | 'dark' | 'shallow' | 'thorny';
+export type SeamountId = 'plain' | 'warm' | 'cold' | 'crowded' | 'hungry' | 'silent' | 'lonely' | 'buried' | 'dark' | 'shallow' | 'thorny' | 'heavy';
 export type Seamount = {
   id: SeamountId; name: string; text: string; effect: string;
   ventBoost: number; ventAcid: number; dissolve: number; polyp: number; readings: number; silt: number;
@@ -54,6 +54,8 @@ export type Seamount = {
   heat?: number;
   /** Intruders come this many times as far apart (thorny: 0.5, twice as often). */
   thorns?: number;
+  /** Old stone gathers this many times as fast (heavy). */
+  old?: number;
 };
 
 /** Hard seamounts are offered once the line has spawned this many times. */
@@ -89,6 +91,9 @@ export const SEAMOUNTS: readonly Seamount[] = [
   { id: 'thorny', name: 'A thorny seamount', text: 'Everything here that eats coral has heard there is coral to eat.', effect: 'intruders come twice as often',
     ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 1, readings: 1, silt: 1, thorns: 0.5,
     trial: { goal: 3700, reward: 'Spine-born: driving off an intruder pays ×1.5 on every reef after' } },
+  { id: 'heavy', name: 'A heavy seamount', text: 'Everything that grows here grows old too soon, and the old stone weighs on the young.', effect: 'old stone gathers ×3 as fast, polyps feed ×0.7',
+    ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 0.7, readings: 1, silt: 1, old: 3,
+    trial: { goal: 3000, reward: 'Stone-light: old stone pays ×2 when let go, on every reef after' } },
 ];
 
 /** Forgetting a trait (Lineage tab). */

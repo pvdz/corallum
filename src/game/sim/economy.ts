@@ -236,7 +236,7 @@ export function rates(s: GameState): Rates {
       (boon(s, 'currents') ? 1.15 : 1) * today(s, 'calm', 1.1),
     calciteK:
       ACT1.dissolve * sm.dissolve * ACT1.latticeFactor ** lv.lattice * (ACT1.ventAcid * sm.ventAcid) ** vent * (vent > 0 && chose(s, 'vent-crack', 'a') ? 0.8 : 1) *
-      (has(s, 'lattice-songs') ? 0.7 : 1) * (chose(s, 'brittle', 'a') ? 0.9 : 1) * (chose(s, 'cleaners', 'b') ? 0.9 : 1) * (chose(s, 'snow', 'b') ? 0.95 : 1) * (chose(s, 'drifts', 'b') ? 0.9 : 1) * (chose(s, 'heavy-crown', 'b') ? 0.92 : 1) * (chose(s, 'seep', 'b') ? 0.95 : 1) * (chose(s, 'last-night', 'a') ? 0.9 : 1) * (boon(s, 'roots') ? 0.85 : 1) * (speaks(s, 'massive') ? 0.5 : 1) * grainMult(s, 'dense') +
+      (has(s, 'lattice-songs') ? 0.7 : 1) * (chose(s, 'brittle', 'a') ? 0.9 : 1) * (chose(s, 'cleaners', 'b') ? 0.9 : 1) * (chose(s, 'snow', 'b') ? 0.95 : 1) * (chose(s, 'drifts', 'b') ? 0.9 : 1) * (chose(s, 'heavy-crown', 'b') ? 0.92 : 1) * (chose(s, 'bowed', 'a') ? 0.9 : 1) * (chose(s, 'seep', 'b') ? 0.95 : 1) * (chose(s, 'last-night', 'a') ? 0.9 : 1) * (boon(s, 'roots') ? 0.85 : 1) * (speaks(s, 'massive') ? 0.5 : 1) * grainMult(s, 'dense') +
       (speaks(s, 'mucus') ? 0 : ACT3.raspEat * rasp * (s.truce.terms === 'b' ? ACT3.politeEat : 1) * (lives(s, 'guard-crab') ? 0.5 : 1) * (chose(s, 'young-rasp', 'a') ? 0.8 : 1) * (paired(s, 'guard-crab', 'goby') ? 0.8 : 1)),
     lureMax: ACT1.lureMax + ACT1.lureMaxPerPattern * lv.lure + (has(s, 'fear') ? 1 : 0) + (speaks(s, 'fluorescent') ? 2 : 0) +
       (relic(s, 'lamp-hall') ? 1 : 0) + 0.5 * s.works.spire + (chose(s, 'angler', 'a') ? 0.5 : 0) + (chose(s, 'eyes', 'a') ? 0.5 : 0) + (s.sport === 'lamp' ? 1 : 0),
@@ -1987,7 +1987,7 @@ export function pickShell(s: GameState): string {
 
 /** How fast old stone gathers (Light-boned speeds it). */
 export function oldK(s: GameState): number {
-  return OLD.k * (1 + 0.4 * trait(s, 'light-boned'));
+  return OLD.k * (1 + 0.4 * trait(s, 'light-boned')) * (seamount(s).old ?? 1);
 }
 
 /** Knobs of old stone on the tips now. */
@@ -2005,7 +2005,7 @@ export function prune(s: GameState, slot: number): number {
   s.old -= 1;
   s.pruned = { t: s.t, slot };
   s.tally.pruned++;
-  return burst(s, OLD.seconds * (1 + 0.3 * trait(s, 'light-boned')) * (chose(s, 'heavy-crown', 'a') ? 1.5 : 1));
+  return burst(s, OLD.seconds * (1 + 0.3 * trait(s, 'light-boned')) * (chose(s, 'heavy-crown', 'a') ? 1.5 : 1) * (passed(s, 'heavy') ? 2 : 1) * (chose(s, 'bowed', 'b') ? 1.5 : 1));
 }
 
 // ---------- Thorn stars ----------
