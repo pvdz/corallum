@@ -18,8 +18,8 @@ export type RequestDef = {
 export const REQUEST = {
   /** Reward: this many seconds of the zone's production (calcite, bloom in the light, spawn at the surface). */
   seconds: 120,
-  /** Asked once the reef has this many polyps. */
-  fromPolyps: 3,
+  /** Asked once the reef has this many polyps (from the start: the first request is always to bud). */
+  fromPolyps: 0,
   kicker: 'Ossel asks',
   paid: 'A request kept',
   /** Ask for something else: at most once per this many sim seconds. */

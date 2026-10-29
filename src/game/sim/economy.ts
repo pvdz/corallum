@@ -918,7 +918,7 @@ function judgeMark(s: GameState, at: number): void {
 /** A work the reef can see: built in its zone, or begun already. */
 export function workOpen(s: GameState, id: WorkId): boolean {
   const w = WORKS.find((x) => x.id === id)!;
-  return s.works[id] > 0 || actAt(s.height) === w.zone;
+  return s.works[id] > 0 || (actAt(s.height) === w.zone && s.height >= w.from);
 }
 
 /** The next stage's price (null once all are built). */
@@ -1307,7 +1307,8 @@ function keepRequest(s: GameState): number {
     const open = all.length > 1 ? all.filter((r) => r.kind !== prev) : all;
     if (open.length) {
       const r = mulberry32((s.seed ^ 0x0a5e11) + Math.imul(q.done + 1, 0x27d4eb2d));
-      const pick = open[Math.floor(r() * open.length)]!;
+      // The very first is always to bud: the first thing a new reef can do.
+      const pick = q.done === 0 && open.some((x) => x.kind === 'bud') ? REQUESTS.find((x) => x.kind === 'bud')! : open[Math.floor(r() * open.length)]!;
       q.kind = pick.kind;
       q.n = pick.n(q.done);
       q.base = requestCount(s, pick.kind);

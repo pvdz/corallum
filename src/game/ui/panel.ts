@@ -1265,7 +1265,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const after = waterAt(s, k + 2);
         // The next two slots: "then the same, then carrying".
         const say = (w: typeof water, prev: typeof water) => w.id === prev.id ? WATER.same : w.name.toLowerCase().replace(/ water$/, '');
-        waterNext.textContent = `${WATER.turns} ${duration(untilWaterTurns(s))} · ${WATER.next} ${say(next, water)}, ${WATER.next} ${say(after, next)}`;
+        const turning = s.bands.includes(WATER.band);
+        waterNext.textContent = turning ? `${WATER.turns} ${duration(untilWaterTurns(s))} · ${WATER.next} ${say(next, water)}, ${WATER.next} ${say(after, next)}` : '';
+        if (!turning) waterLine.textContent = WATER.notYet;
         if (waterShown && waterShown !== water.id) { waterBox.classList.remove('turned'); void waterBox.offsetWidth; waterBox.classList.add('turned'); }
         waterShown = water.id;
       }

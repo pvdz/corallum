@@ -31,6 +31,8 @@ export const WATER = {
   label: 'The water',
   next: 'then',
   same: 'the same',
+  /** Before the water starts turning (the reef still in the silt). */
+  notYet: 'the deep does not change yet',
   turns: 'turns in',
 } as const;
 
