@@ -1546,7 +1546,7 @@ export function createTwilightScene(seed: number): Scene {
       if (v.gardeners) drawGardeners(ctx, t);
       drawSiltSlide(ctx, t, v.siltLevel);
       drawGhosts(ctx, focus, v.ancestors, v.height, t, scale(), 'rgba(190,210,240,1)');
-      drawSisterFar(ctx, focus, v.sister - v.gauge, t, scale(), true);
+      drawSisterFar(ctx, focus, v.sister - v.gauge, t, scale(), true, v.sisterLit);
       drawBreakwater(ctx, focus, v.works.breakwater, scale(), slopeY);
       if (night > 0) drawNight(ctx, t, night, 0.5);
       reef.draw(ctx, L, v, t);
