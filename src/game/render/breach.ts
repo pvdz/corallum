@@ -263,6 +263,45 @@ export function createBreachScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** Moon jellies drifting under the surface: translucent saucers with four pale rings, pulsing. */
+  function drawMoonJellies(ctx: CanvasRenderingContext2D, t: number): void {
+    const s = scale();
+    const wy = waterY();
+    sight('moon-jelly');
+    for (let k = 0; k < 6; k++) {
+      const u = ((t * 0.008 + k * 0.17) % 1);
+      const x = focus.x + focus.w * (k % 2 ? 0.05 + u * 0.25 : 0.95 - u * 0.25);
+      const y = wy + focus.h * (0.12 + 0.1 * (k % 3)) + Math.sin(t * 0.4 + k) * 10 * s;
+      const pulse = 0.85 + 0.15 * Math.sin(t * 1.6 + k);
+      const r = (14 + (k % 3) * 4) * s;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.fillStyle = 'rgba(200,215,255,0.13)';
+      ctx.strokeStyle = 'rgba(220,230,255,0.35)';
+      ctx.lineWidth = 0.8 * s;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, r * pulse, r * 0.45 / pulse, 0, Math.PI, 0);
+      ctx.fill();
+      ctx.stroke();
+      // Four pale rings seen through the bell.
+      ctx.strokeStyle = 'rgba(255,200,230,0.45)';
+      for (const dx of [-0.45, -0.15, 0.15, 0.45]) {
+        ctx.beginPath();
+        ctx.arc(dx * r * pulse, -r * 0.15, r * 0.12, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      // A fringe of short tentacles.
+      ctx.strokeStyle = 'rgba(210,225,255,0.25)';
+      for (let q = -4; q <= 4; q++) {
+        ctx.beginPath();
+        ctx.moveTo(q * r * 0.22 * pulse, 0);
+        ctx.lineTo(q * r * 0.22 * pulse + Math.sin(t + q) * 2 * s, r * 0.5);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+  }
+
   /** Now and then a pod of dolphins arcs out of the moonlit water, one after another. */
   function drawDolphins(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 75;
@@ -498,6 +537,7 @@ export function createBreachScene(seed: number): Scene {
       drawSky(ctx, t, v.moonPhase, v.greatMoon);
       drawSea(ctx, t, v.moonPhase);
       drawChildren(ctx, v, t);
+      drawMoonJellies(ctx, t);
       drawDolphins(ctx, t);
       drawTop(ctx, v, reef.crown(L));
       reef.draw(ctx, L, v, t);

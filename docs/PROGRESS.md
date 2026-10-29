@@ -192,3 +192,4 @@ date, what landed, what is half-done, what's next.
 - Twilight Shelf: three swaying sea fans (gorgonians) on the slope.
 - Grow tab ends with "Coming up: <next hidden upgrade> — <what opens it>".
 - Midnight Water: a whale fall (spine, ribs, skull, small pink lights living on it) on the seamount's flank early in the zone (journal: 25).
+- The Breach: six moon jellies drift under the surface either side of the reef (journal: 26).
