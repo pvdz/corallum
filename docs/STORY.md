@@ -177,4 +177,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | A milky sea (Midnight Water: the whole water glows) | real phenomenon (bioluminescent milky seas) | OK |
 | Boxer crab resident (holds anemones in its claws) | real animal | OK |
 | Boons Bright water, Brittle tips | this game's own systems | OK |
+| Ossel's questions: the grey on your tips (700 m), the sister reef (2600 m) | this game's own characters | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

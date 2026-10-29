@@ -22,7 +22,7 @@ export const GUIDE: readonly [string, string][] = [
   ['Old stone', 'Stone kept too long grows grey and heavy on the branch tips, up to six knobs, away or not. Tap one to break it off for a burst.'],
   ['Glow', 'Glow lures more calcite, calls shoals and weaves lamp-nets. When it sits full, flare it (L) for a burst of calcite.'],
   ['Shoals', 'Feed, light, scout, and on the shelf fan the silt. Trips take shoals away and bring them back seasoned.'],
-  ['Ossel', 'Ossel asks five questions on the way up and remembers your answers to the end. Ossel is also wrong about some things.'],
+  ['Ossel', 'Ossel asks seven questions on the way up and remembers your answers to the end. Ossel is also wrong about some things.'],
   ['The sky', 'At the Breach the reef names the stars after its own life: pick a figure and tap its stars in order.'],
   ['Each day', 'A new day brings a gift, a dream (sleep a quarter hour forward) and the day’s sea, a mild boon.'],
   ['After the end', 'Plant children in the garden at dawn, then begin again. The chronicle remembers every ending.'],

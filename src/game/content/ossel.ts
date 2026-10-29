@@ -48,7 +48,7 @@ export const OSSEL_MISTAKES: readonly OsselMistake[] = [
 
 // Ossel's questions: four times on the way up Ossel asks the reef something. The answer changes
 // nothing in the numbers; Ossel remembers it, answers back, and the ending carries it.
-export type QuestionId = 'silt' | 'tell' | 'keep' | 'surface' | 'remember';
+export type QuestionId = 'silt' | 'tell' | 'keep' | 'surface' | 'remember' | 'grey' | 'sister';
 export type Question = {
   id: QuestionId; metres: number; ask: string;
   answers: readonly [{ label: string; reply: string; ending: string }, { label: string; reply: string; ending: string }];
@@ -65,12 +65,30 @@ export const QUESTIONS: readonly Question[] = [
     ],
   },
   {
+    id: 'grey', metres: 700, ask: '“The grey on your tips. Does it frighten you, to let it go?”',
+    answers: [
+      { label: 'A little. It was mine.', reply: '“It was,” says Ossel. “And now it is the silt’s. That is not nothing.”',
+        ending: 'You told Ossel that letting the old stone go frightened you a little, and Ossel said that was how it should feel.' },
+      { label: 'No. It is lighter after.', reply: '“I held on to everything,” Ossel says. “Look where it got me.” It almost laughs.',
+        ending: 'You told Ossel you were lighter for letting go, and it almost laughed, for the first time in four hundred years.' },
+    ],
+  },
+  {
     id: 'tell', metres: 1500, ask: '“When you spawn, will you tell them about Thousandfold? All of it?”',
     answers: [
       { label: 'All of it. They should know.', reply: '“All of it,” Ossel repeats, as if tasting the words. “Even the walls.”',
         ending: 'You promised Ossel the spawn would know all of Thousandfold, even the walls.' },
       { label: 'Only what will help them.', reply: '“That is what a wall would say,” Ossel says, and then: “No. It is not. A wall keeps it all.”',
         ending: 'You told Ossel the spawn would carry only what helped, and Ossel said that was what made you not a wall.' },
+    ],
+  },
+  {
+    id: 'sister', metres: 2600, ask: '“The other reef, climbing beside us. Is it a race, do you think?”',
+    answers: [
+      { label: 'Yes. And we will win.', reply: '“Then grow,” says Ossel, “and do not look back too often. It slows you.”',
+        ending: 'You told Ossel the sister reef was a race, and you meant to win it.' },
+      { label: 'No. We are going the same way.', reply: '“The same way,” Ossel says slowly. “Thousandfold never had anyone going the same way.”',
+        ending: 'You told Ossel the sister reef was not a rival but company, going the same way.' },
     ],
   },
   {
