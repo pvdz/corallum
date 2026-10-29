@@ -3,7 +3,7 @@
 // circle the reef herding plankton, light-swimmers spiral above the crown, scouts dive into
 // the dark below. Glass shrimp and a passing siphonophore appear once their bands are laid.
 
-import { sight } from './sightings.ts';
+import { sight, spot } from './sightings.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow } from './draw.ts';
@@ -82,6 +82,7 @@ export function createMidnightScene(seed: number): Scene {
     const x = focus.x + focus.w * (dir > 0 ? -0.1 + u * 1.2 : 1.1 - u * 1.2);
     const y = focus.y + focus.h * (0.2 + 0.06 * Math.sin(lap * 1.7)) + Math.sin(t * 0.4) * 8 * s;
     const pulse = 0.6 + 0.4 * Math.sin(t * 2.4);
+    spot('anglerfish', x, y, 45 * s);
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(dir, 1);
@@ -170,6 +171,7 @@ export function createMidnightScene(seed: number): Scene {
     const x = focus.x + focus.w * (dir > 0 ? -0.08 + u * 1.16 : 1.08 - u * 1.16);
     const y = focus.y + focus.h * (0.34 + 0.06 * Math.sin(lap * 2.1)) + Math.sin(t * 0.7) * 10 * s;
     const open = 0.5 + 0.5 * Math.sin(t * 1.4);
+    spot('vampire-squid', x, y, 30 * s);
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(dir, 1);

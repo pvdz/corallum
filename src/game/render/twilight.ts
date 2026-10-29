@@ -3,7 +3,7 @@
 // until the truce decides what happens to it.
 
 import { createSlugs } from './slugs.ts';
-import { sight } from './sightings.ts';
+import { sight, spot } from './sightings.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow } from './draw.ts';
@@ -281,12 +281,13 @@ export function createTwilightScene(seed: number): Scene {
     // Crawls during the first fifth of each period, from one resting place to the next.
     const crawl = Math.min(1, u / 0.2);
     const ease = crawl * crawl * (3 - 2 * crawl);
-    const spot = (k: number) => 0.2 + ((k * 0.37) % 1) * 0.16;
-    const pu = spot(leg) + (spot(leg + 1) - spot(leg)) * ease;
+    const restAt = (k: number) => 0.2 + ((k * 0.37) % 1) * 0.16;
+    const pu = restAt(leg) + (restAt(leg + 1) - restAt(leg)) * ease;
     const moving = crawl < 1 ? Math.sin(Math.PI * crawl) : 0;
     const x = focus.x - focus.w * 0.1 + pu * focus.w * 1.2;
     const y = slopeY(pu) - 8 * s - moving * 6 * s;
     sight('octopus');
+    spot('octopus', x, y, 26 * s);
     // Colour: sandy camouflage at rest, red while it moves.
     const rC = Math.round(150 + 90 * moving), gC = Math.round(130 - 70 * moving), bC = Math.round(105 - 50 * moving);
     ctx.save();
@@ -330,6 +331,7 @@ export function createTwilightScene(seed: number): Scene {
     const x = focus.x + focus.w * (dir > 0 ? -0.15 + u * 1.3 : 1.15 - u * 1.3);
     const y = focus.y + focus.h * (0.22 + 0.05 * Math.sin(lap)) + Math.sin(t * 0.3) * 10 * s;
     const flap = Math.sin(t * 1.1);
+    spot('manta', x, y, 45 * s);
     ctx.save();
     ctx.translate(x, y);
     // Seen at a low angle: the wing span flattened, so it reads as a wide ray gliding past.

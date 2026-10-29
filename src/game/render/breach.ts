@@ -2,7 +2,7 @@
 // path on the waves, the reef's crown breaking the water. Spawn bundles swell on the polyps;
 // at the release they rise in their millions through the moonlight and spread on the surface.
 
-import { sight } from './sightings.ts';
+import { sight, spot } from './sightings.ts';
 import type { DialectId } from '../content/act4.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
@@ -280,6 +280,7 @@ export function createBreachScene(seed: number): Scene {
       const x = x0 + (p + k * 0.25) * focus.w * 0.22;
       const y = wy - Math.sin(Math.PI * p) * 46 * s;
       const ang = -Math.cos(Math.PI * p) * 0.9;
+      spot('dolphin', x, y, 26 * s);
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate(ang);

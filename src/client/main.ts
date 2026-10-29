@@ -31,7 +31,7 @@ import { createAudio } from '../game/audio/audio.ts';
 import { LINEAGE_BANDS } from '../game/content/lineage.ts';
 import { CREATURES } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
-import { takeSightings } from '../game/render/sightings.ts';
+import { creatureAt, endFrameSpots, takeSightings } from '../game/render/sightings.ts';
 import { ACT1, MILESTONES, type Milestone } from '../game/content/act1.ts';
 import { WHISPERS } from '../game/content/whispers.ts';
 import { buyTrait, habitPurchase, spawnLesser } from '../game/sim/prestige.ts';
@@ -522,6 +522,28 @@ ui.append(hint);
 
 const taps = createTaps();
 
+const creatureLabel = document.createElement('div');
+creatureLabel.id = 'creature-label';
+ui.append(creatureLabel);
+let labelTimer = 0;
+/** A small label beside a tapped creature: its name and the journal's note. */
+function showCreatureLabel(id: string, x: number, y: number): void {
+  const c = CREATURES.find((k) => k.id === id);
+  if (!c) return;
+  creatureLabel.innerHTML = '';
+  const n = document.createElement('strong');
+  n.textContent = c.name;
+  const t = document.createElement('span');
+  t.textContent = c.note;
+  creatureLabel.append(n, t);
+  const left = Math.min(window.innerWidth - 230, Math.max(8, x + 18));
+  creatureLabel.style.left = `${left}px`;
+  creatureLabel.style.top = `${Math.max(8, y - 30)}px`;
+  creatureLabel.classList.add('show');
+  clearTimeout(labelTimer);
+  labelTimer = window.setTimeout(() => creatureLabel.classList.remove('show'), 3500);
+}
+
 /** A float of text over the water, e.g. "+12". */
 function floatText(x: number, y: number, text: string, cls = ''): void {
   const f = document.createElement('div');
@@ -549,6 +571,9 @@ function eatFeast(): boolean {
 
 // Tapping the water sweeps the tentacles: a small burst of calcite. Tapping a falling feast eats it.
 canvas.addEventListener('pointerdown', (e) => {
+  // Tapping a creature names it (the sweep still happens).
+  const who = creatureAt(e.clientX * dpr, e.clientY * dpr);
+  if (who) showCreatureLabel(who.id, who.x / dpr, who.y / dpr);
   const f = currentFeast(state);
   if (f) {
     const [fx, fy] = feastPos(f, state.t - f.start, focusNow, feastPay(state));
@@ -674,6 +699,7 @@ function frame(now: number): void {
   const fe = currentFeast(state);
   if (fe) drawFeast(ctx, fe, state.t - fe.start, tNow, focusNow, dpr, feastPay(state));
   taps.draw(ctx, tNow, scene.crownAt, dpr);
+  endFrameSpots();
   const p2 = performance.now();
   panel.update(state);
   const p3 = performance.now();

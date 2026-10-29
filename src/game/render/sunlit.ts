@@ -3,7 +3,7 @@
 // follows its Form dialect: a fan until it chooses, then antlers, a dome, or stacked tables.
 
 import { createSlugs } from './slugs.ts';
-import { sight } from './sightings.ts';
+import { sight, spot } from './sightings.ts';
 import type { DialectId } from '../content/act4.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
@@ -236,6 +236,7 @@ export function createSunlitScene(seed: number): Scene {
     const u = 0.79;
     const x = focus.x - focus.w * 0.1 + u * focus.w * 1.2, y = floorY(u) + 2 * s;
     sight('clownfish');
+    spot('clownfish', x, y - 20 * s, 34 * s);
     // Tentacles: a fat swaying fountain.
     ctx.lineCap = 'round';
     for (let k = 0; k < 26; k++) {
@@ -297,6 +298,7 @@ export function createSunlitScene(seed: number): Scene {
     const dip = Math.max(0, Math.sin(t * 0.5)) ** 4;
     const y = focus.y + focus.h * 0.8 + dip * 14 * s + Math.sin(t * 0.8) * 3 * s;
     const stroke = Math.sin(t * 1.6);
+    spot('turtle', x, y, 30 * s);
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(dir, 1);
@@ -428,6 +430,7 @@ export function createSunlitScene(seed: number): Scene {
     const y = focus.y + focus.h * (0.2 + 0.06 * (lap % 3)) + Math.sin(t * 0.15) * 6 * s;
     const fade = Math.min(1, u * 8, (1 - u) * 8);
     const beat = Math.sin(t * 0.9);
+    spot('whale', x, y, 110 * s);
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(dir, 1);

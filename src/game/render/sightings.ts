@@ -17,3 +17,29 @@ export function takeSightings(): CreatureId[] {
   seen.clear();
   return out;
 }
+
+/** Where creatures were drawn this frame, for tapping them (device pixels). */
+export type Spot = { id: CreatureId; x: number; y: number; r: number };
+let spots: Spot[] = [];
+let nextSpots: Spot[] = [];
+
+/** A creature was drawn at (x, y) with roughly radius r (device pixels). */
+export function spot(id: CreatureId, x: number, y: number, r: number): void {
+  nextSpots.push({ id, x, y, r });
+}
+
+/** Call once per frame after drawing: the spots of this frame become the tappable ones. */
+export function endFrameSpots(): void {
+  spots = nextSpots;
+  nextSpots = [];
+}
+
+/** The creature at device pixel (x, y), if any (the nearest whose radius covers it). */
+export function creatureAt(x: number, y: number): Spot | null {
+  let best: Spot | null = null, bestD = Infinity;
+  for (const p of spots) {
+    const d = Math.hypot(p.x - x, p.y - y);
+    if (d < p.r && d < bestD) { best = p; bestD = d; }
+  }
+  return best;
+}
