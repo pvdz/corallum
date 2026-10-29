@@ -524,3 +524,4 @@ date, what landed, what is half-done, what's next.
 - Upwellings (act3.ts UPWELL; economy currentUpwelling/catchUpwelling; state.upwelled): caught by setting the current toward it (main setCurrent hook), the line under the dial says so, twilight.ts drawUpwell plume, tab dot.
 - Moments pups (3880: thorn stars driven off for half / bloom ×1.1) and king-tide (3995: spawn ×1.1 / spawn fade ×0.85).
 - The sheltered shark pups (moment 'a') circle the reef in the Sunlit scene.
+- Resident pair 'Clean water' (cleaner wrasse + feather dusters): plankton ×1.15.
