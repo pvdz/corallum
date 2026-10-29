@@ -138,6 +138,15 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
     out.push(s.truce.wall === 'b' ? ENDING.closingKept : ENDING.closingLetGo);
     // The line has carried every memory there is, across its endings.
     if (MEMORIES.every((m) => s.meta.carriedEver.includes(m.id))) out.push(ENDING.everything);
+    // This reef in numbers, quietly, before the last line.
+    const nums = [
+      `Four thousand metres in ${duration(s.breachedAt || s.t)}`,
+      `${s.levels.polyp} polyps`, `${s.bands.length} bands laid down`,
+      s.feasts ? `${s.feasts} feasts caught` : '', s.relics.length ? `${s.relics.length} relics found` : '',
+      s.tally.intruders ? `${s.tally.intruders} intruders driven off` : '', s.residents.length ? `${s.residents.length} residents at home` : '',
+      s.meta.shards.length ? `${s.meta.shards.length} of 12 shards` : '',
+    ].filter(Boolean);
+    out.push(`${ENDING.numbers} ${nums.join('. ')}.`);
     out.push(ENDING.last);
     return out;
   }

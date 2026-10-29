@@ -189,7 +189,7 @@ Tick items as they land; keep this list honest. Add items freely.
   - [x] the Rasp elder: riddles about the story for lineage
   - [x] a Midnight moment: hunters in the dark (shelter the shoals, or light the water)
   - [x] Ossel's lines change once mistakes are found
-  - [ ] after the ending: a page of this reef's numbers
+  - [x] after the ending: a page of this reef's numbers
   - [ ] journal: each zone's completion shown as a small ring
   - [ ] a whale fall that can be visited by the shoals (Midnight trip variant)
 - [ ] perf on a real phone (unmeasured: headless is software-rendered). Tools ready: `--lan` prints the network address, `?fps` shows a readout; see README "Trying it on a phone"

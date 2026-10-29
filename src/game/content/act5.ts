@@ -191,6 +191,8 @@ export const ENDING = {
     'and asks you to let the Rasp have it after all. You do. It is the last thing you learn.',
   closingLetGo: 'At dawn the sand that was Ossel washes over your crown in the surf, warm, and for ' +
     'a moment you are sure it is laughing.',
+  /** Before the last line: this reef in numbers. */
+  numbers: 'Your own bands keep a count, because that is what bands do.',
   /** The creatures that know you, come to see the spawn off ({names}). */
   friends: 'They came to watch, the ones who knew you: {names}. They stay until the last bundle is out of sight.',
   /** Once every mistake of Ossel's has been found and the tablet is whole. */
