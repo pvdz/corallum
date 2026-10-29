@@ -1664,7 +1664,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       const coloured = s.levels.pigment > 0 || s.meta.best >= 3800 || s.meta.palette !== '';
       paletteBox.hidden = !coloured;
       paletteRow.hidden = !coloured;
-      for (const x of swatches) x.b.classList.toggle('on', x.p.id === s.meta.palette);
+      for (const x of swatches) {
+        x.b.classList.toggle('on', x.p.id === s.meta.palette);
+        // Some colours are earned by a feat.
+        const locked = !!x.p.feat && !s.meta.seen.includes(`f:${x.p.feat}`);
+        x.b.disabled = locked;
+        x.b.classList.toggle('locked', locked);
+        x.b.title = locked ? `${x.p.name} · ${PALETTE_TEXT.locked} “${FEATS.find((f) => f.id === x.p.feat)?.name ?? ''}”` : x.p.name;
+      }
       bandsDot.hidden = seenStories >= storyCount;
       primed = true;
     },

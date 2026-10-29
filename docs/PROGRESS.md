@@ -394,3 +394,4 @@ date, what landed, what is half-done, what's next.
 - Reef tab card 'What shapes this reef': every lasting effect in play (boon, relics, residents, pairings, moments, works, favours, hard places learned), one line each.
 - Ways: Thorn-wise, Moon-born (othersCap); the full-moon card says how much lineage is left on this reef.
 - A first reef earns the boon offer by keeping ten requests ('Ossel is pleased').
+- Palettes Violet, Ember and Pale moon are earned by feats (A friend in the deep, First to the light, Four memories); locked swatches dim with the feat's name.

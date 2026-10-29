@@ -27,6 +27,7 @@ import { runBot } from '../game/sim/bot.ts';
 import { ROAM, SITES } from '../game/content/expeditions.ts';
 import { WATER } from '../game/content/waters.ts';
 import { SISTER } from '../game/content/sister.ts';
+import { PALETTES } from '../game/content/palettes.ts';
 import { REQUEST } from '../game/content/requests.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
@@ -231,6 +232,8 @@ const panel = createPanel(ui, {
     save();
   },
   recolour(id) {
+    const feat = PALETTES.find((p) => p.id === id)?.feat;
+    if (feat && !state.meta.seen.includes(`f:${feat}`)) return;
     state.meta.palette = id;
     scene.effect('pigment');
     audio.cue('shimmer');
