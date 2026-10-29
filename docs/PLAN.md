@@ -192,6 +192,9 @@ Tick items as they land; keep this list honest. Add items freely.
   - [x] after the ending: a page of this reef's numbers
   - [x] journal: each zone's completion shown as a small ring
   - [x] a whale fall that can be visited by the shoals (Midnight trip variant)
+  - [x] a sixth ruin in the Sunlit Crown: the sun gate (bloom ×1.2)
+  - [ ] a seventh resident for the Breach: an anemone with its clownfish
+  - [ ] a Twilight moment: the slope gives way
 - [ ] perf on a real phone (unmeasured: headless is software-rendered). Tools ready: `--lan` prints the network address, `?fps` shows a readout; see README "Trying it on a phone"
 - [x] rebalance pacing after the feature push (bot fell to ~4h): band cost growth 2: 1.18, 3: 1.28, 4: 1.2 → bot 7h28; test bound back to 6–11 h
 

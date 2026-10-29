@@ -203,7 +203,7 @@ test('bands are read in height order and the act completes', () => {
 
 /** A Sunlit Crown state: bloom far from settled, a dialect spoken. */
 function act4Game(): GameState {
-  const { state } = runBot((s) => s.height >= 3880, 16 * 3600);
+  const { state } = runBot((s) => s.height >= 3880, 16 * 3600, { ventures: false });
   state.bloom = 0;
   state.glow = 0;
   state.levels.skeleton += 1;

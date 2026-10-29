@@ -191,6 +191,13 @@ export function createShoals(seed: number) {
       ctx.closePath();
       ctx.fillStyle = '#b8b2a2';
       ctx.fill();
+    } else if (site === 'sun-gate') {
+      // A doorway: two posts and a lintel.
+      ctx.rect(x - 22 * k, y - 18 * k, 5 * k, 32 * k);
+      ctx.rect(x + 17 * k, y - 18 * k, 5 * k, 32 * k);
+      ctx.rect(x - 26 * k, y - 22 * k, 52 * k, 6 * k);
+      ctx.fillStyle = '#d8d0c0';
+      ctx.fill();
     } else if (site === 'carcass') {
       // The whale fall: a long spine and a row of ribs.
       ctx.moveTo(x - 36 * k, y + 8 * k);

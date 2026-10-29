@@ -3,7 +3,7 @@
 // piece of the story and a lasting effect for this reef) and what they heard on the way.
 // One site at a time, in order, each found once per reef.
 
-export type SiteId = 'gate' | 'terraces' | 'lamp-hall' | 'wells' | 'midden';
+export type SiteId = 'gate' | 'terraces' | 'lamp-hall' | 'wells' | 'midden' | 'sun-gate';
 /** A ruin, or a roam through the dark (repeatable, no relic). */
 export type TripId = SiteId | 'roam' | 'visit' | 'carcass';
 
@@ -94,6 +94,14 @@ export const SITES: readonly Site[] = [
       'I was there, and I did not know. The shoals bring back a single beak. The Rasp who see it ' +
       'set into your reef grind harder, as if for someone.',
   },
+  {
+    id: 'sun-gate', name: 'The sun gate', metres: 3850, shoals: 28, seconds: 30 * 60,
+    hint: 'High on the old city’s flank, a doorway that once stood in the light.',
+    relic: 'A sun-bleached lintel', effect: 'bloom ×1.2',
+    text: 'Before the walls, before the dark, Thousandfold grew here in the shallows and kept this door open to the ' +
+      'sun. The lintel is bleached white by a light that has not touched it in four hundred years. The shoals bring ' +
+      'back a piece of it, and your symbionts turn toward it as if it were still warm.',
+  },
 ];
 
 /** Roaming: when no ruin is in reach, a quarter of the shoals can wander for a while. */
@@ -132,7 +140,7 @@ export const ROAM = {
 /** The map of the buried city in the Bands tab: where each ruin lies (0..1 across, 0..1 down). */
 export const CITY_MAP = {
   label: 'Thousandfold, as the shoals have seen it',
-  where: { gate: [0.18, 0.55], terraces: [0.36, 0.78], 'lamp-hall': [0.55, 0.42], wells: [0.68, 0.66], midden: [0.86, 0.3] } as Record<SiteId, [number, number]>,
+  where: { gate: [0.18, 0.55], terraces: [0.36, 0.78], 'lamp-hall': [0.55, 0.42], wells: [0.68, 0.66], midden: [0.86, 0.3], 'sun-gate': [0.5, 0.12] } as Record<SiteId, [number, number]>,
   roams: 'roams through the dark',
 } as const;
 

@@ -463,3 +463,4 @@ date, what landed, what is half-done, what's next.
 - Trip to the whale fall (once per reef after the whale-fall moment): 10 min, 5 minutes of calcite; bones drawn in the far water.
 - Perf (6× throttle, mobile, Sunlit): day 15.4 ms, night 21 ms. Skipping each newer layer group (creatures, residents/relics/works/song, craft, meadows, night, others' spawning) saves ≤1 ms each; the night cost is the reef's own glow. No single culprit; auto quality steps cover slow phones.
 - Touch sounds by kind: glowing ones shimmer, birds cry, shelled ones click, fish bubble.
+- A sixth ruin: the sun gate (3850 m, 28 shoals, 30 min; relic: bloom ×1.2), on the city map and drawn as a doorway; Act IV offline test fixture without ventures.

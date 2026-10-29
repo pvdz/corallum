@@ -7,7 +7,7 @@ import { glow } from './draw.ts';
 import type { Reef, ReefLayout } from './reef.ts';
 
 /** Fixed places on the lower stone, one per relic, as fractions of the grown height. */
-const PLACE: Record<SiteId, number> = { gate: 0.16, terraces: 0.24, 'lamp-hall': 0.36, wells: 0.12, midden: 0.3 };
+const PLACE: Record<SiteId, number> = { gate: 0.16, terraces: 0.24, 'lamp-hall': 0.36, wells: 0.12, midden: 0.3, 'sun-gate': 0.44 };
 
 const placeCache = new Map<string, number>();
 function nodeAt(reef: Reef, L: ReefLayout, frac: number, side: number): number {
@@ -95,6 +95,13 @@ export function drawRelics(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLay
         ctx.arc(x, y, r * s, 0, Math.PI * 2);
         ctx.stroke();
       }
+    } else if (id === 'sun-gate') {
+      // A bleached lintel: a pale bar of carved stone.
+      ctx.fillStyle = '#f2ece0';
+      ctx.fillRect(x - 7 * s, y - 2 * s, 14 * s, 4 * s);
+      ctx.strokeStyle = 'rgba(180,160,120,0.6)';
+      ctx.lineWidth = 0.6 * s;
+      ctx.strokeRect(x - 7 * s, y - 2 * s, 14 * s, 4 * s);
     } else {
       // One Rasp beak: two fused plates of teeth, pale as bone.
       ctx.fillStyle = '#e4dcc4';
