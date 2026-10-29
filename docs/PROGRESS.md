@@ -726,3 +726,4 @@ date, what landed, what is half-done, what's next.
 - The Rasp elder asks each wrongly answered riddle once more once the reef is in the light (3800 m), for half the lineage (state riddlesAgain; 'asks again' kicker); sim test.
 - Creature: bristlemouths (Midnight Water), a loose drifting cloud of tiny silver fish that scatters when touched.
 - Event: a sargassum raft drifts over the crown at the Breach (every 10 min, 50 s, while watching); tapped, the reef's young shelter under it for 60 s of spawn (state rafted, tally.rafts; debug hook raft(); systems e2e).
+- Feat: A floating nursery (shelter under three weed rafts on one reef).

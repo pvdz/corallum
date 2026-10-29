@@ -230,4 +230,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Ochre sea star resident (Breach) | real animal | OK |
 | Bristlemouths creature (Midnight) | real animal | OK |
 | Sargassum raft event (Breach): the young shelter under drifting weed | real phenomenon (floating sargassum nurseries) | OK |
+| Feat "A floating nursery" | plain description | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |
