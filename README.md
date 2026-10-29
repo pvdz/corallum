@@ -20,6 +20,8 @@ decide which three memories your children carry into a new sea.
 - Lesser spawnings start over on a new seamount with Lineage traits.
 - Milestones double polyps and glimmerseed at set counts; every card shows what its next level is
   worth to your reef right now, and shoal jobs show what one more feeder or light-swimmer adds.
+- A journal of the creatures you have seen (each adds a little calcite), 24 feats across runs,
+  seamounts with their own look and numbers, and a view mode (H) for the reef on the whole screen.
 - Falling feasts sink past now and then for those who watch; under a great tide moon the spawn
   carries four memories instead of three.
 - Desktop, phone portrait and phone landscape. Sound is procedural and off by default.
