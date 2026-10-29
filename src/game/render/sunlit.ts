@@ -230,6 +230,58 @@ export function createSunlitScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** An anemone on the sand with its pair of clownfish weaving in and out of the tentacles. */
+  function drawAnemone(ctx: CanvasRenderingContext2D, t: number): void {
+    const s = scale() * 1.5;
+    const u = 0.79;
+    const x = focus.x - focus.w * 0.1 + u * focus.w * 1.2, y = floorY(u) + 2 * s;
+    sight('clownfish');
+    // Tentacles: a fat swaying fountain.
+    ctx.lineCap = 'round';
+    for (let k = 0; k < 26; k++) {
+      const a = -Math.PI / 2 + (k / 25 - 0.5) * 2.4;
+      const len = (18 + (k % 4) * 3) * s;
+      const sway = Math.sin(t * 1.2 + k * 0.4) * 0.12;
+      ctx.strokeStyle = k % 2 ? 'rgba(170,220,120,0.9)' : 'rgba(200,235,150,0.9)';
+      ctx.lineWidth = 3 * s;
+      ctx.beginPath();
+      ctx.moveTo(x, y - 4 * s);
+      ctx.quadraticCurveTo(x + Math.cos(a) * len * 0.5, y - 4 * s + Math.sin(a) * len * 0.6,
+        x + Math.cos(a + sway) * len, y - 4 * s + Math.sin(a + sway) * len);
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(240,120,200,0.9)';
+      ctx.beginPath();
+      ctx.arc(x + Math.cos(a + sway) * len, y - 4 * s + Math.sin(a + sway) * len, 1.6 * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // The clownfish: orange with white bands, circling close.
+    for (let k = 0; k < 2; k++) {
+      const a = t * (0.9 + k * 0.3) + k * 2.5;
+      const fx = x + Math.cos(a) * (16 + k * 6) * s;
+      const fy = y - 20 * s + Math.sin(a * 1.7) * 8 * s;
+      const dir = -Math.sin(a) >= 0 ? 1 : -1;
+      ctx.save();
+      ctx.translate(fx, fy);
+      ctx.scale(dir, 1);
+      ctx.fillStyle = '#ff7a1a';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 6 * s, 3.4 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(-5 * s, 0);
+      ctx.lineTo(-9 * s, -3 * s);
+      ctx.lineTo(-9 * s, 3 * s);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      for (const bx of [2.5, -1.5]) ctx.fillRect(bx * s, -3.2 * s, 1.4 * s, 6.4 * s);
+      ctx.fillStyle = '#111';
+      ctx.beginPath();
+      ctx.arc(4 * s, -0.8 * s, 0.7 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
   /**
    * A green turtle comes to graze once there are meadows: it paddles slowly over the seagrass,
    * dips to crop it, and drifts on.
@@ -441,6 +493,7 @@ export function createSunlitScene(seed: number): Scene {
       drawFloor(ctx, t);
       drawMeadows(ctx, t, v.meadows);
       drawTurtle(ctx, t, v.meadows);
+      drawAnemone(ctx, t);
       drawClumps(ctx, t);
       if (night > 0) drawNight(ctx, t, night, 0.55);
       reef.draw(ctx, L, v, t);

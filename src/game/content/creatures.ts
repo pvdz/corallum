@@ -5,7 +5,7 @@ export type CreatureId =
   | 'jelly' | 'brittle-star' | 'rattail' | 'sea-pig' | 'sea-lily' | 'glass-sponge' | 'tube-worm'
   | 'lanternfish' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish'
   | 'rasp' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch'
-  | 'reef-fish' | 'whale' | 'turtle'
+  | 'reef-fish' | 'whale' | 'turtle' | 'clownfish'
   | 'shore-bird' | 'dolphin';
 
 export type Creature = { id: CreatureId; name: string; zone: string; note: string };
@@ -32,5 +32,6 @@ export const CREATURES: readonly Creature[] = [
   { id: 'whale', name: 'Whale', zone: 'The Sunlit Crown', note: 'A long shadow in the haze, calling as it passes.' },
   { id: 'turtle', name: 'Green turtle', zone: 'The Sunlit Crown', note: 'It comes for the seagrass and stays for the meadows.' },
   { id: 'dolphin', name: 'Dolphins', zone: 'The Breach', note: 'They leap out of the moonlight just to fall back into it.' },
+  { id: 'clownfish', name: 'Clownfish', zone: 'The Sunlit Crown', note: 'Two of them, never far from the anemone that stings everything else.' },
   { id: 'shore-bird', name: 'Shore bird', zone: 'The Breach', note: 'It walks on your crown at low tide, as if it owned it.' },
 ];

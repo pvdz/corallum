@@ -175,3 +175,4 @@ date, what landed, what is half-done, what's next.
 - Silt Floor: a herd of four sea pigs walks across the silt every ~3 min (journal: 21 creatures).
 - Journal pays: every creature the lineage has seen adds +2% calcite (knownBonus, constant between purchases so offline stays exact); shown on the journal card.
 - The Breach: a pod of three dolphins arcs out of the moonlit water every ~75 s, with splash rings (journal: 22 creatures).
+- Sunlit Crown: an anemone with two clownfish weaving around it (journal: 23 creatures).
