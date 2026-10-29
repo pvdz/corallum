@@ -263,8 +263,10 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   border: 1px solid rgba(255, 220, 170, 0.14); background: rgba(255, 220, 170, 0.03); }
 .ask[hidden] { display: none; }
 .ask.waiting { visibility: hidden; }
-.ask em { font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #ffd9a8; font-style: normal; white-space: nowrap; }
+.ask { flex-wrap: wrap; row-gap: 0; }
+.ask em { flex-basis: 100%; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #ffd9a8; font-style: normal; white-space: nowrap; }
 .ask-text { flex: 1; font-family: var(--display); color: #f2e8d8; }
+.ask-bar[hidden] { display: none; }
 .ask-bar { width: 54px; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
 .ask-fill { display: block; height: 100%; background: #ffd9a8; transition: width 0.3s ease; }
 .ask .ask-skip { width: 28px; height: 28px; min-width: 0; padding: 0; font-size: 14px; }

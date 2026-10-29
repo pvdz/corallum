@@ -426,3 +426,4 @@ date, what landed, what is half-done, what's next.
 - Calling the shoals home early: ↩ on the trip card, 5 glow per second left (economy callHome); test.
 - 'New in the sea': a one-time card after this update for saves older than ten minutes (guide.ts NEWS; meta.seen id).
 - New creature: a giant isopod trundling across the Silt Floor; touched it rolls into a ball.
+- Request line: kicker (with the streak) on its own row, text full width, no bar for one-step asks.

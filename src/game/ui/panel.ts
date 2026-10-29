@@ -343,7 +343,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const askSkip = button('step ask-skip', '↻', () => hooks.skipRequest());
   askSkip.title = REQUEST.skip;
   askSkip.setAttribute('aria-label', REQUEST.skip);
-  askBox.append(el('em', '', REQUEST.kicker), askText, askBar, askCount, askSkip);
+  const askKicker = el('em', '', REQUEST.kicker);
+  askBox.append(askKicker, askText, askBar, askCount, askSkip);
   waterBox.after(askBox);
   // Before you go: one tap to ready the reef for an absence (shown once there is something to set).
   const prepBtn = button('plain prep-away', AWAY_PREP.label, () => { prepNote.textContent = hooks.prepareAway(); });
@@ -1406,7 +1407,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       if (rq) {
         askText.textContent = rq.def.ask.replace('{n}', String(rq.n));
         askFill.style.width = `${(rq.got / rq.n) * 100}%`;
-        askCount.textContent = `${rq.got}/${rq.n}` + (s.request.streak > 1 ? ` · ${s.request.streak} ${REQUEST.streakWord}` : '');
+        askCount.textContent = `${rq.got}/${rq.n}`;
+        // One-step asks need no bar; a streak goes up with the kicker, out of the text's way.
+        askBar.hidden = rq.n === 1;
+        askKicker.textContent = s.request.streak > 1 ? `${REQUEST.kicker} · ${s.request.streak} ${REQUEST.streakWord}` : REQUEST.kicker;
         askSkip.disabled = !canSkipRequest(s);
       }
 
