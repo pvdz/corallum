@@ -148,7 +148,7 @@ type Card = { root: HTMLElement; cost: HTMLElement; level: HTMLElement; effect: 
 type Story = { kicker: string; title: string; text: string };
 
 function bandStory(b: Band, kept = false): Story {
-  return { kicker: b.metres === 0 ? 'A seamount, 4,000 m down' : `Band at ${metres(b.metres)}`, title: b.title, text: kept && b.kept ? b.kept : b.text };
+  return { kicker: b.metres === 0 ? UI.bandFirst : UI.bandAt(metres(b.metres)), title: b.title, text: kept && b.kept ? b.kept : b.text };
 }
 function readingStory(r: Reading): Story {
   return { kicker: 'A Thousandfold band, read', title: r.title, text: r.text };
@@ -416,8 +416,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const minus = button('step', '−', () => hooks.assign(j.id, -1));
     const count = el('span', 'job-count', '0');
     const plus = button('step', '+', () => hooks.assign(j.id, 1));
-    minus.setAttribute('aria-label', `Fewer shoals ${j.verb}`);
-    plus.setAttribute('aria-label', `More shoals ${j.verb}`);
+    minus.setAttribute('aria-label', UI.fewerShoals(j.verb));
+    plus.setAttribute('aria-label', UI.moreShoals(j.verb));
     row.append(label, minus, count, plus);
     shoalBox.append(row);
     jobRows.set(j.id, { row, count, what, minus, plus });
@@ -671,7 +671,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const key = seen.map((c) => c.id).join() + `|${hooks.portraits ?? 0}|${touched}|${luckyKey}|${s.meta.companion}|` + Object.values(s.meta.trust).map(trustLevel).join('');
     if (key === journalKey) return;
     journalKey = key;
-    journalHead.textContent = `Creatures seen · ${seen.length} of ${CREATURES.length}${touched ? ` · ${touched} touched` : ''} · calcite +${Math.round((knownBonus(s) - 1) * 100)}%`;
+    journalHead.textContent = UI.journalHead(seen.length, CREATURES.length, touched, Math.round((knownBonus(s) - 1) * 100));
     journalList.innerHTML = '';
     // Grouped by zone, with how many of each zone's creatures have been seen.
     const zones = [...new Set(CREATURES.map((c) => c.zone))];
@@ -941,8 +941,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const s = lastState;
     if (!s) return;
     const msg = ended(s)
-      ? `Begin again on a new seamount, with +${lineageFor(s)} lineage?`
-      : `Release a lesser spawning now for +${lineageFor(s)} lineage? This reef starts over.`;
+      ? UI.beginAgainSure(lineageFor(s))
+      : UI.lesserSure(lineageFor(s));
     if (window.confirm(`${msg}\nIt will settle on ${seamountDef(whereNext).name.toLowerCase()}.`)) hooks.spawnLesser(whereNext, heirNext, [...vowsNext]);
   });
   // Where the spawn settles: each seamount bends the next run one way.
@@ -1039,7 +1039,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const key = s.meta.chronicle.join(';');
     if (key === chronKey) return;
     chronKey = key;
-    chronHead.textContent = `The chronicle · ${s.meta.chronicle.length} ending${s.meta.chronicle.length === 1 ? '' : 's'}`;
+    chronHead.textContent = UI.chronHead(s.meta.chronicle.length);
     chronList.innerHTML = '';
     drawSeaChart(seaChart, s.meta.chronicle);
     s.meta.chronicle.forEach((line, i) => {
@@ -1103,7 +1103,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     lineKey = key;
     lineList.innerHTML = '';
     drawLine(s);
-    if (s.meta.fastest > 0) lineList.append(el('dt', '', 'Record'), el('dd', '', `The surface in ${duration(s.meta.fastest)} of reef time`));
+    if (s.meta.fastest > 0) lineList.append(el('dt', '', UI.record), el('dd', '', UI.recordText(duration(s.meta.fastest))));
     s.meta.ancestors.forEach((a, i) => {
       const [h, sm, form, end] = a.split('|');
       const gen = s.meta.name ? reefName({ ...s, meta: { ...s.meta, spawnings: i } }) : `Reef ${i + 1}`;
@@ -1322,13 +1322,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     for (const m of MOMENTS) { const c = s.moments[m.id]; if (c) rows.push([m[c].label, m[c].effect]); }
     for (const w of WORKS) if (s.works[w.id] > 0) rows.push([`${w.name} (${s.works[w.id]}/${w.stages.length})`, w.effect]);
     if (s.favours.clear > 0) rows.push([`${FAVOURS[0]!.name} ×${s.favours.clear}`, FAVOURS[0]!.effect]);
-    for (const m of SEAMOUNTS) if (m.trial && s.meta.seen.includes(`trial:${m.id}`)) rows.push(['Learned on ' + m.name.toLowerCase(), m.trial.reward.split(': ')[1] ?? m.trial.reward]);
+    for (const m of SEAMOUNTS) if (m.trial && s.meta.seen.includes(`trial:${m.id}`)) rows.push([UI.learnedOn(m.name.toLowerCase()), m.trial.reward.split(': ')[1] ?? m.trial.reward]);
     if (s.meta.carriedEver.length) rows.push([`${s.meta.carriedEver.length} memories carried by the line`, `calcite +${s.meta.carriedEver.length}%`]);
     shapes.hidden = rows.length === 0;
     const key = rows.map((r) => r.join(':')).join('|');
     if (key === shapesKey) return;
     shapesKey = key;
-    shapesHead.textContent = `What shapes this reef · ${rows.length}`;
+    shapesHead.textContent = `${UI.shapes} · ${rows.length}`;
     shapesList.innerHTML = '';
     for (const [k, v] of rows) shapesList.append(el('dt', '', k), el('dd', '', v));
   }
@@ -1582,8 +1582,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         // Two good settings: most income while you watch, most held for while you are away.
         const mark = (n: number) => `${n}${n === s.rasp ? ' ✓' : ''}`;
         const bestNote = raspBest === raspHold
-          ? `Best setting: ${mark(raspBest)}`
-          : `Best for income: ${mark(raspBest)} · best before going away: ${mark(raspHold)}`;
+          ? UI.raspBest(mark(raspBest))
+          : UI.raspBoth(mark(raspBest), mark(raspHold));
         currentRow.hidden = actAt(s.height) < 3;
         for (const x of currentButtons) x.b.classList.toggle('on', x.c === s.current);
         // An upwelling waiting to be caught takes over the line under the dial.
@@ -2132,7 +2132,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     showAway(seconds: number, gained: { calcite: number; glow: number; metres: number; full: boolean; bands: string[]; fullAfter: number | null;
       relics?: string[]; roams?: number; shards?: number; heat?: string; risings?: string; old?: string }, gifts?: { label: string; note: string; take: () => string }[]): void {
       // A headline, then what changed as labelled rows (like the Your reef card).
-      awayText.textContent = `You were gone ${duration(seconds)}. The reef kept growing.`;
+      awayText.textContent = UI.awayText(duration(seconds));
       awayList.innerHTML = '';
       const row = (term: string, value: string) => awayList.append(el('dt', '', term), el('dd', '', value));
       row('Calcite', `+${num(gained.calcite)}`);
