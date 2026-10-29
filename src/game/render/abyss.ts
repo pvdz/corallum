@@ -537,6 +537,16 @@ export function createAbyssScene(seed: number): Scene {
       life.drawFloor(ctx, st, t);
       const L = layout(v);
       if (v.shoals > 0) shoals.drawBack(ctx, focus, reef, L, v, t);
+      // A new reef's first seconds: the larva that will become it drifts down and settles.
+      if (v.age < 9 && v.polyps === 0) {
+        const k = Math.min(1, v.age / 7), s = scale();
+        const x = L.cx + Math.sin(v.age * 1.3) * 30 * s * (1 - k), y = focus.y + focus.h * 0.1 + (L.baseY - focus.y - focus.h * 0.1) * (1 - (1 - k) ** 2);
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        glow(ctx, x, y, 22 * s, '255,190,210', 0.5 * (1 - Math.max(0, k - 0.8) * 5));
+        glow(ctx, x, y, 4 * s, '255,235,240', 0.95);
+        ctx.restore();
+      }
       reef.draw(ctx, L, v, t);
       if (v.thorn?.kind === 'drill-snail') drawThorn(ctx, reef, L, v.thorn.u, v.thorn.side, t, 'drill-snail');
       this.crownAt = reef.crown(L);

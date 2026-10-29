@@ -45,6 +45,8 @@ export type ReefView = {
   meteor: { k: number; u: number } | null;
   /** A fish stranded on the crown at the Breach (seconds since it landed), or null. */
   stranded: { k: number; age: number } | null;
+  /** Seconds this reef has lived (for its first moments). */
+  age: number;
   /** This cycle's moon is a blue moon. */
   blueMoon: boolean;
   /** Grottoes hollowed at the reef's foot (0–2). */
