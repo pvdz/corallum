@@ -688,3 +688,4 @@ date, what landed, what is half-done, what's next.
 - A squall at the Breach every 25 min for 90 s: the sky darkens, waves rise and quicken, spume blows along the surface and rain drives slantwise (breach.ts squallAt/drawSquall).
 - A new reef's first seconds: the larva that will become it drifts down out of the dark and settles (abyss.ts; ReefView age).
 - The line's earlier reefs show as far ghosts on the Silt Floor and in the Sunlit Crown too.
+- Hard seamount 'tidal': great tides every other moon, spawn ×0.85; trial: reach the surface → Moon-tied (a blue moon brings +4 instead of +2); moment two-seas (3900 m).

@@ -38,7 +38,7 @@ export type Trait = {
  * Where a lesser spawning settles. Each seamount bends the economy one way; the plain one is the
  * first reef's. Multipliers are read by sim/economy.ts.
  */
-export type SeamountId = 'plain' | 'warm' | 'cold' | 'crowded' | 'hungry' | 'silent' | 'lonely' | 'buried' | 'dark' | 'shallow' | 'thorny' | 'heavy' | 'gleaming';
+export type SeamountId = 'plain' | 'warm' | 'cold' | 'crowded' | 'hungry' | 'silent' | 'lonely' | 'buried' | 'dark' | 'shallow' | 'thorny' | 'heavy' | 'gleaming' | 'tidal';
 export type Seamount = {
   id: SeamountId; name: string; text: string; effect: string;
   ventBoost: number; ventAcid: number; dissolve: number; polyp: number; readings: number; silt: number;
@@ -60,6 +60,8 @@ export type Seamount = {
   lucky?: number;
   /** Nothing falls from above: no feasts (gleaming). */
   noFeasts?: boolean;
+  /** Great tides come every other moon (tidal). */
+  tides?: boolean;
 };
 
 /** Hard seamounts are offered once the line has spawned this many times. */
@@ -101,6 +103,9 @@ export const SEAMOUNTS: readonly Seamount[] = [
   { id: 'gleaming', name: 'A gleaming seamount', text: 'The water here is clear as glass and empty above: nothing falls, but everything that lives here shines.', effect: 'lucky neighbours ×3, no falling feasts',
     ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 1, readings: 1, silt: 1, lucky: 3, noFeasts: true,
     trial: { goal: 3500, reward: 'Fortune’s child: lucky neighbours ×1.5 on every reef after' } },
+  { id: 'tidal', name: 'A tidal seamount', text: 'Its top lies where two seas meet, and the moon pulls hard on both.', effect: 'great tides every other moon, spawn ×0.85',
+    ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 1, readings: 1, silt: 1, tides: true,
+    trial: { goal: 4000, reward: 'Moon-tied: a blue moon brings +2 more lineage on every reef after' } },
 ];
 
 /**

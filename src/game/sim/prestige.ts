@@ -7,6 +7,7 @@ import { DIALECTS } from '../content/act4.ts';
 import { HABIT_SHARE, LINEAGE, TRAITS, type SeamountId, type Trait, type TraitId, type VowId } from '../content/lineage.ts';
 import { blueMoon, vowLineage, assign, balanceFeedLight, cost, ended, maxed, setCurrent, steadyCalciteRate, idleShoals, jobGain, raspMax, raspSettings, revealed, setRasp, spawnTarget, chooseGrain } from './economy.ts';
 import { newGame, type GameState, type Meta } from './state.ts';
+import { passed } from './modifiers.ts';
 
 /** Lineage a spawning released now would bring. */
 export function lineageFor(s: GameState): number {
@@ -17,7 +18,7 @@ export function lineageFor(s: GameState): number {
 
 /** The ending's lineage for a release of this much spawn. */
 export function endingLineage(s: GameState, released: number): number {
-  return LINEAGE.endingBonus + Math.floor(LINEAGE.releaseBonus * Math.log2(Math.max(1, released / spawnTarget(s)))) + (blueMoon(s.breachedAt) ? 2 : 0);
+  return LINEAGE.endingBonus + Math.floor(LINEAGE.releaseBonus * Math.log2(Math.max(1, released / spawnTarget(s)))) + (blueMoon(s.breachedAt) ? (passed(s, 'tidal') ? 4 : 2) : 0);
 }
 
 export function canSpawnLesser(s: GameState): boolean {

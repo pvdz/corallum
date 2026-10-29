@@ -5,7 +5,7 @@
 export type MomentId = 'brittle' | 'vent-crack' | 'snow' | 'lost-shoal' | 'hunters' | 'angler' | 'squid' | 'whale-fall' | 'old-lamp' | 'cleaners'
   | 'young-rasp' | 'slope' | 'eggs' | 'storm' | 'turtle' | 'first-light' | 'last-night' | 'bird'
   | 'fire-body' | 'seep' | 'rising-stop' | 'split-shoal' | 'heatwave' | 'pups' | 'king-tide' | 'outbreak'
-  | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes' | 'heavy-crown' | 'cold-slide' | 'dust' | 'bowed' | 'mirror' | 'jelly-bloom' | 'last-dark' | 'fry';
+  | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes' | 'heavy-crown' | 'cold-slide' | 'dust' | 'bowed' | 'mirror' | 'jelly-bloom' | 'last-dark' | 'fry' | 'two-seas';
 
 export type MomentOption = { label: string; effect: string; text: string };
 export type Moment = { id: MomentId; metres: number; title: string; text: string; a: MomentOption; b: MomentOption;
@@ -290,6 +290,12 @@ export const MOMENTS: readonly Moment[] = [
     text: 'The water above is so clear that, looking up, you see a faint second reef hanging in the dark: yourself, mirrored in the still layer of the sea.',
     a: { label: 'Shine back at it', effect: 'glow ×1.15', text: 'You blaze, and the reef in the water blazes back. Your light learns it can be twice as much.' },
     b: { label: 'Look away', effect: 'calcite dissolves ×0.9', text: 'You turn your crown down to the stone. Better to be solid than to be seen.' },
+  },
+  {
+    id: 'two-seas', metres: 3900, seamount: 'tidal', title: 'Where two seas meet',
+    text: 'Twice a day the warm sea and the cold one change places over your crown, and everything that drifts changes with them.',
+    a: { label: 'Ride the warm one', effect: 'spawn ×1.1', text: 'You ripen with the warm water and rest through the cold. What you carry grows in fits, but grows.' },
+    b: { label: 'Hold through both', effect: 'spawn fades ×0.85', text: 'You close up against every change and keep what you have. Less grows; less is lost.' },
   },
   {
     id: 'eyes', metres: 700, seamount: 'dark', title: 'Eyes in the dark',
