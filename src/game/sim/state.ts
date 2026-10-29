@@ -72,7 +72,7 @@ export function newMeta(): Meta {
     lineage: 0,
     traits: {
       'deep-memory': 0, 'quick-budding': 0, 'old-bands': 0, 'remembered-shoals': 0, glimmer: 0,
-      'kept-readings': 0, settling: 0, 'early-shoals': 0, 'rasp-kin': 0, 'glass-gardeners': 0, 'old-habits': 0, 'tide-reader': 0, 'shared-table': 0, 'shoal-sense': 0, 'rasp-sense': 0, 'old-maps': 0, 'open-house': 0, 'water-wise': 0, 'thorn-wise': 0, 'moon-born': 0, layering: 0, 'shell-finder': 0, 'signal-wise': 0, 'sun-shy': 0, 'deep-larder': 0, 'grain-sense': 0, 'light-boned': 0, 'lucky-line': 0, 'star-gazer': 0, gentle: 0, helping: 0,
+      'kept-readings': 0, settling: 0, 'early-shoals': 0, 'rasp-kin': 0, 'glass-gardeners': 0, 'old-habits': 0, 'tide-reader': 0, 'shared-table': 0, 'shoal-sense': 0, 'rasp-sense': 0, 'old-maps': 0, 'open-house': 0, 'water-wise': 0, 'thorn-wise': 0, 'moon-born': 0, layering: 0, 'shell-finder': 0, 'signal-wise': 0, 'sun-shy': 0, 'deep-larder': 0, 'grain-sense': 0, 'light-boned': 0, 'lucky-line': 0, 'star-gazer': 0, gentle: 0, helping: 0, foster: 0,
     },
     spawnings: 0,
     seen: [],
@@ -176,6 +176,8 @@ export type GameState = {
   surfacedAt: number;
   /** Fragments taken in (content/events.ts FRAGMENT), and the last slot seen to. */
   fragments: number;
+  /** When each fragment was taken in (reef time), for its growing. */
+  fragmentAt: number[];
   fragmentSlot: number;
   /** The last tangle slot freed (content/events.ts TANGLE). */
   untangled: number;
@@ -288,6 +290,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     luckySpan: -1,
     untangled: -1,
     fragments: 0,
+    fragmentAt: [],
     fragmentSlot: -1,
     vows: [],
     wished: -1,

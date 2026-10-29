@@ -2139,9 +2139,14 @@ export function currentTangle(s: GameState): { k: number; x: number; age: number
   return { k, x: r() < 0.5 ? 0.12 + r() * 0.2 : 0.68 + r() * 0.2, age: s.t - start };
 }
 
+/** How many fragments the reef can take in (Foster: eight). */
+export function fragmentMax(s: GameState): number {
+  return trait(s, 'foster') ? 8 : FRAGMENT.max;
+}
+
 /** A fragment of another reef drifting past now (slot, place 0..1, seconds in), if not yet taken and there is room. */
 export function currentFragment(s: GameState): { k: number; x: number; age: number } | null {
-  if (!FRAGMENT.zones.includes(actAt(s.height)) || s.fragments >= FRAGMENT.max) return null;
+  if (!FRAGMENT.zones.includes(actAt(s.height)) || s.fragments >= fragmentMax(s)) return null;
   const k = Math.floor(s.t / FRAGMENT.period);
   if (k <= s.fragmentSlot) return null;
   const r = mulberry32((s.seed ^ 0xf4a9) + Math.imul(k, 0x9e3779b1));
@@ -2156,6 +2161,7 @@ export function takeFragment(s: GameState): boolean {
   if (!f) return false;
   s.fragmentSlot = f.k;
   s.fragments++;
+  s.fragmentAt.push(s.t);
   return true;
 }
 

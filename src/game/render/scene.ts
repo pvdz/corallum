@@ -47,6 +47,8 @@ export type ReefView = {
   stranded: { k: number; age: number } | null;
   /** Fragments of other reefs taken in, growing at the reef's foot. */
   fragments: number;
+  /** Seconds since each fragment was taken in. */
+  fragmentAges: number[];
   /** Seconds this reef has lived (for its first moments). */
   age: number;
   /** This cycle's moon is a blue moon. */

@@ -886,6 +886,7 @@ function view(): ReefView {
     blueMoon: blueMoon(state.t),
     age: state.t,
     fragments: state.fragments,
+    fragmentAges: state.fragmentAt.map((x) => state.t - x),
     stranded: (() => { const tg = actAt(state.height) === 5 ? currentTangle(state) : null; return tg ? { k: tg.k, age: tg.age } : null; })(),
     meteor: meteorShower(state),
     old: { slots: state.oldSlots.slice(0, oldKnobs(state)), slot: state.pruned.slot, since: state.t - state.pruned.t,

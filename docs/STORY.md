@@ -212,4 +212,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | A tidal seamount; trial Moon-tied; moment Where two seas meet | this game's own systems | OK |
 | Memory: The small ones (line title 'the line of small kindnesses') | this game's own theme | OK |
 | Drifting fragments of other reefs, taken in to grow (real coral fragmentation) | real biology | OK |
+| Trait Foster | this game's own systems | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |
