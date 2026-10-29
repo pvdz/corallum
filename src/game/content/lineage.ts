@@ -20,7 +20,7 @@ export const LINEAGE = {
 
 export type TraitId =
   | 'deep-memory' | 'quick-budding' | 'old-bands' | 'remembered-shoals' | 'glimmer' | 'kept-readings' | 'settling'
-  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table' | 'shoal-sense' | 'rasp-sense' | 'old-maps' | 'open-house' | 'water-wise' | 'thorn-wise' | 'moon-born' | 'layering' | 'shell-finder' | 'signal-wise' | 'sun-shy' | 'deep-larder' | 'grain-sense' | 'light-boned' | 'lucky-line';
+  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table' | 'shoal-sense' | 'rasp-sense' | 'old-maps' | 'open-house' | 'water-wise' | 'thorn-wise' | 'moon-born' | 'layering' | 'shell-finder' | 'signal-wise' | 'sun-shy' | 'deep-larder' | 'grain-sense' | 'light-boned' | 'lucky-line' | 'star-gazer';
 
 export type Trait = {
   id: TraitId;
@@ -265,6 +265,11 @@ export const TRAITS: readonly Trait[] = [
     id: 'lucky-line', name: 'Lucky line', effect: 'lucky neighbours come twice as often',
     flavour: 'Something in the sea seems to like your line. Nobody knows why. Nobody asks.',
     cost: 8, growth: 1, max: 1, kind: 'way',
+  },
+  {
+    id: 'star-gazer', name: 'Star-gazer', effect: 'shooting stars fall at the Breach twice as often',
+    flavour: 'Your line learned to look up, and the sky seems to have noticed.',
+    cost: 7, growth: 1, max: 1, kind: 'way',
   },
 ];
 

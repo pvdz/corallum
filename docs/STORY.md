@@ -193,4 +193,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Midnight bands: Grey on the tips (900), Cold light (1550), Something passing (2200), Old light (2750) | this game's own lore | OK |
 | Shells: murex, nautilus, tusk, top shell | real shells | OK |
 | A gleaming seamount; trial Fortune's child; moment The water like glass | this game's own systems | OK |
+| Trait Star-gazer | this game's own systems | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

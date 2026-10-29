@@ -1312,9 +1312,10 @@ export function breach(s: GameState, memories: MemoryId[]): boolean {
 /** The shower of shooting stars at the Breach now (its index and how far through, 0..1), or null. */
 export function meteorShower(s: GameState): { k: number; u: number } | null {
   if (actAt(s.height) !== 5) return null;
+  const period = WISH.period / (trait(s, 'star-gazer') ? 2 : 1);
   const x = s.t + WISH.offset;
-  const u = (x % WISH.period) / WISH.length;
-  return u < 1 ? { k: Math.floor(x / WISH.period), u } : null;
+  const u = (x % period) / WISH.length;
+  return u < 1 ? { k: Math.floor(x / period), u } : null;
 }
 
 /** A wish can be made: stars falling, none made on this shower yet. */
