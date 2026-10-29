@@ -29,7 +29,7 @@ import { deserialize, exportString, importString, serialize } from '../game/sim/
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio } from '../game/audio/audio.ts';
-import { LINEAGE_BANDS } from '../game/content/lineage.ts';
+import { LINEAGE_BANDS, SEAMOUNTS } from '../game/content/lineage.ts';
 import { CREATURES } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
 import { creatureAt, endFrameSpots, takeSightings } from '../game/render/sightings.ts';
@@ -355,7 +355,9 @@ if (ended(state)) document.documentElement.classList.add('ended');
   const lb = LINEAGE_BANDS[Math.min(n, LINEAGE_BANDS.length) - 1];
   if (n > 0 && lb && !state.meta.seen.includes(key)) {
     state.meta.seen.push(key);
-    panel.story(`Lesser spawning ${n}`, lb.title, lb.text);
+    const where = SEAMOUNTS.find((m) => m.id === state.seamount);
+    panel.story(`Lesser spawning ${n}${where && where.id !== 'plain' ? ` · ${where.name.toLowerCase()}` : ''}`, lb.title,
+      `${lb.text}${where && where.id !== 'plain' ? ` ${where.text}` : ''}`);
   }
 }
 const replay = document.createElement('button');
