@@ -857,6 +857,19 @@ export function createBreachScene(seed: number): Scene {
       if (v.thorn?.kind === 'gull') drawGull(ctx, this.crownAt[0], waterY(), v.thorn.u, v.thorn.side, t, scale());
       if (v.bands.includes('rain')) drawRain(ctx, t);
       drawPool(ctx, L.cx, waterY(), v.works.pool, scale(), t);
+      // Sand cays the reef has raised: low pale islands breaking the surface beside it.
+      for (let k = 0; k < v.cays; k++) {
+        const side = k % 2 ? -1 : 1;
+        const cx2 = L.cx + side * (190 + Math.floor(k / 2) * 110) * scale();
+        const w2 = (60 + (k % 3) * 18) * scale(), h2 = (8 + (k % 2) * 4) * scale();
+        // Moonlit sand by night, warm by dawn.
+        ctx.fillStyle = dawn > 0.5 ? '#c9b48c' : '#5e5a66';
+        ctx.beginPath();
+        ctx.ellipse(cx2, waterY() + 2 * scale(), w2, h2, 0, Math.PI, 0);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(200,210,255,0.18)';
+        ctx.fillRect(cx2 - w2 * 0.9, waterY() + 1 * scale(), w2 * 1.8, 1.5 * scale());
+      }
       // The epilogue garden: children taking hold in the shallows either side of the crown.
       for (let k = 0; k < v.garden; k++) {
         const side = k % 2 ? 1 : -1;

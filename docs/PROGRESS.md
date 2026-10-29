@@ -451,3 +451,4 @@ date, what landed, what is half-done, what's next.
 - A new day's gift: first visit each local calendar day pays 10 minutes of the zone's currency and a shard roll (economy dailyGift; meta.lastDay; client passes the day).
 - Sunlit night: the sun terrace is drawn under the night overlay (it stayed daylight-bright).
 - Your reef card: this reef's feasts, intruders, signals, trips and requests.
+- Breach upgrade 'Raise a sand cay' (sand, max 6, spawn ×1.1 each), drawn as low islands by the reef.

@@ -25,6 +25,11 @@ export const UPGRADES_ACT5: readonly UpgradeDef[] = [
     flavour: 'Pink bundles swell under every mouth, waiting for the moon.',
     currency: 'calcite', baseCost: 3e9, growth: 2.5, maxLevel: 8, reveal: { band: 'breach' },
   },
+  {
+    id: 'cay', name: 'Raise a sand cay',
+    flavour: 'Heap the Rasp’s sand where the waves slow down, until it breaks the surface and stays.',
+    currency: 'sand', baseCost: 40000, growth: 1.6, maxLevel: 6, reveal: { band: 'breach' },
+  },
 ];
 
 export const BANDS_ACT5: readonly Band[] = [

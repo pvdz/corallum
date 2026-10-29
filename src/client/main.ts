@@ -634,6 +634,7 @@ function view(): ReefView {
     current: state.current,
     song: state.dialects.song,
     garden: state.garden,
+    cays: state.levels.cay,
     strainRgb: STRAINS.find((x) => x.id === state.strain)?.rgb ?? '',
     ancestors: state.meta.ancestors.map((a) => Number(a.split('|')[0]) || 0),
     gauge: gaugeAt(state.height),

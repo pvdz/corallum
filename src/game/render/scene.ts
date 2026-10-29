@@ -34,6 +34,8 @@ export type ReefView = {
   moments: Readonly<Record<MomentId, '' | 'a' | 'b'>>;
   /** The glimmerseed strain's colour ('' for the wild green). */
   strainRgb: string;
+  /** Sand cays raised at the Breach. */
+  cays: number;
   /** Children planted in the epilogue garden. */
   garden: number;
   /** The Song dialect ('' none yet). */

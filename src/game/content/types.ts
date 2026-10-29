@@ -5,7 +5,7 @@ export type UpgradeId =
   | 'shoal' | 'daughter'
   | 'grounds' | 'sandbar' | 'channel'
   | 'pigment' | 'canopy' | 'meadow'
-  | 'ripen';
+  | 'ripen' | 'cay';
 
 export type Currency = 'calcite' | 'glow' | 'sand' | 'bloom';
 
