@@ -1780,6 +1780,17 @@ export function createTwilightScene(seed: number): Scene {
       drawSixgill(ctx, t);
       drawRaspHerd(ctx, t);
       drawThermocline(ctx, t, night);
+      // The blue hour: as dusk deepens, a short spell when everything is the same deep blue.
+      {
+        const bh = Math.max(0, 1 - Math.abs(night - 0.45) / 0.2);
+        if (bh > 0) {
+          ctx.save();
+          ctx.globalCompositeOperation = 'color';
+          ctx.fillStyle = `rgba(30,70,170,${0.35 * bh})`;
+          ctx.fillRect(focus.x, focus.y, focus.w, focus.h);
+          ctx.restore();
+        }
+      }
       drawMotes(ctx, t, v.siltLevel);
       drawRising(ctx, t, w, h, focus, dpr, v.rising, false);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#1d3557');
