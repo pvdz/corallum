@@ -32,6 +32,8 @@ export type ReefView = {
   othersSpawn: boolean;
   /** How each moment was met. */
   moments: Readonly<Record<MomentId, '' | 'a' | 'b'>>;
+  /** The current's setting on the shelf (−2 … +2). */
+  current: number;
   /** The line's old reefs: their final heights, oldest first. */
   ancestors: readonly number[];
   /** The sister reef's place, 0 (seamount) … 1 (surface), and yours on the same scale. */

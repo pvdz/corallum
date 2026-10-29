@@ -518,6 +518,27 @@ export function createTwilightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** The current made visible: faint streaks running toward the shelf (+) or the open water (−). */
+  function drawCurrent(ctx: CanvasRenderingContext2D, t: number, c: number): void {
+    if (c === 0) return;
+    const s = scale();
+    ctx.save();
+    ctx.strokeStyle = 'rgba(200,225,255,0.12)';
+    ctx.lineWidth = 1.2 * s;
+    for (let i = 0; i < 40; i++) {
+      const y = focus.y + focus.h * (0.2 + 0.7 * ((i * 0.618034) % 1));
+      const speed = (0.04 + (i % 5) * 0.01) * c;
+      const u = ((((t * speed + i * 0.37) % 1.2) + 1.2) % 1.2) - 0.1;
+      const x = focus.x + u * focus.w;
+      const len = (18 + (i % 4) * 10) * s * Math.abs(c);
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x - Math.sign(c) * len, y + Math.sin(t + i) * 2 * s);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
   function drawSeaFans(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
     for (const [k, f] of fans.entries()) {
@@ -1075,6 +1096,7 @@ export function createTwilightScene(seed: number): Scene {
       drawSeaFans(ctx, t);
       drawGardenEels(ctx, t);
       drawMoray(ctx, t);
+      drawCurrent(ctx, t, v.current);
       drawNautilus(ctx, t);
       drawOctopus(ctx, t);
       drawCleaningStation(ctx, t);

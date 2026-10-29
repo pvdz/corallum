@@ -428,3 +428,4 @@ date, what landed, what is half-done, what's next.
 - New creature: a giant isopod trundling across the Silt Floor; touched it rolls into a ball.
 - Request line: kicker (with the streak) on its own row, text full width, no bar for one-step asks.
 - The current (Twilight verb): act3.ts CURRENT, state.current, setCurrent; a five-step control in the Rasp box; the bot picks the best each half minute. Bot 8h08 / 7h28.
+- The current drawn on the shelf: faint streaks running with it, longer and faster with the setting.
