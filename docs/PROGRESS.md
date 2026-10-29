@@ -202,3 +202,4 @@ date, what landed, what is half-done, what's next.
 - Finale: the memory choice centres in the scene area on desktop (it overlapped the panel); at the Breach only the moon whisper may speak (others talked over the spawning).
 - Feats already earned when a reef loads (older saves) are granted together with one note instead of a long queue of toasts.
 - Crowded seamount: half-buried old reefs (humps with dead branches and faint lights) around the Silt Floor.
+- Cold seamount: a brine pool on the Silt Floor (shimmering surface, ring of mussels); in the journal (27).

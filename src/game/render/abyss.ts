@@ -2,6 +2,7 @@
 // Everything is generated from a seed; `draw` is a pure function of (view, t) so a given
 // seed, state and time always render the same frame — screenshots rely on that.
 
+import { sight } from './sightings.ts';
 import { mulberry32, range, type Rng } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow } from './draw.ts';
@@ -161,6 +162,43 @@ export function createAbyssScene(seed: number): Scene {
   }
 
   /**
+   * A cold seamount: a brine pool on the floor, a little lake of heavy salt water with a
+   * shimmering surface, edged with a ring of dark mussels.
+   */
+  function drawBrinePool(ctx: CanvasRenderingContext2D, t: number): void {
+    const s = scale();
+    const x = focus.x + focus.w * 0.41, y = baseY() + 12 * s;
+    const rx = 48 * s, ry = 7 * s;
+    sight('brine-pool');
+    const g = ctx.createLinearGradient(0, y - ry, 0, y + ry);
+    g.addColorStop(0, 'rgba(150,180,230,0.55)');
+    g.addColorStop(1, 'rgba(40,60,110,0.75)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // The surface: slow ripples of light across the brine.
+    ctx.strokeStyle = 'rgba(210,230,255,0.35)';
+    ctx.lineWidth = 1 * s;
+    for (let k = 0; k < 4; k++) {
+      const u = ((t * 0.08 + k * 0.25) % 1);
+      ctx.beginPath();
+      ctx.ellipse(x, y, rx * (0.2 + 0.75 * u), ry * (0.2 + 0.75 * u), 0, Math.PI * 1.05, Math.PI * 1.95);
+      ctx.globalAlpha = 1 - u;
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+    // Mussels crowding the rim.
+    ctx.fillStyle = '#2a2638';
+    for (let k = 0; k < 30; k++) {
+      const a = (k / 30) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.ellipse(x + Math.cos(a) * rx * 1.04, y + Math.sin(a) * ry * 1.3, 4 * s, 2.2 * s, a, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  /**
    * A crowded seamount: half-buried old reefs all around, grey humps of dead branches poking out
    * of the silt, with a few lights still glowing in them.
    */
@@ -274,6 +312,7 @@ export function createAbyssScene(seed: number): Scene {
       if (v.seamount === 'crowded') drawBuriedReefs(ctx, t);
       const vent = v.vent > 0 ? life.drawVent(ctx, st, v.vent, t) : null;
       drawRidge(ctx, ridges[2]!);
+      if (v.seamount === 'cold') drawBrinePool(ctx, t);
       life.drawFloor(ctx, st, t);
       const L = layout(v);
       if (v.shoals > 0) shoals.drawBack(ctx, focus, reef, L, v, t);
