@@ -222,3 +222,4 @@ date, what landed, what is half-done, what's next.
 - Sunlit Crown rare sighting: an ocean sunfish (mola) every 16 min (journal: 35). Dumbo octopus drawn in front of the reef.
 - Journal grouped by zone with per-zone counts; unseen entries hint 'Rare: watch for it.' or 'Only on a cold/warm seamount.'
 - First sighting of a rare creature: note reads 'A rare sighting' with its own chime.
+- Debug ?at=<sec> starts the live scene clock at a time; verified the rare-sighting note with the giant squid (?bot=4000&at=612).

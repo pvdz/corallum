@@ -8,6 +8,7 @@
 //   ?speed=<x>    run the sim <x> times faster
 //   ?fresh        ignore the stored save
 //   ?seed=<n>     world seed for a new game
+//   ?at=<sec>     start the scene clock at <sec> (live, unlike ?t)
 //   ?fps          show frame rate and draw time (for trying it on a phone)
 // With ?t, ?bot or ?fresh nothing is written to storage.
 // Console: corallum.skip(seconds), corallum.state, corallum.speed = x, corallum.feast
@@ -809,7 +810,8 @@ let lastHabit = 0;
 let lastJournal = 0;
 let lastFeatCheck = 0;
 let lastWhaleLap = -1;
-let animT = 40;
+// ?at=<sec> starts the scene clock there (to reach timed events such as rare creatures).
+let animT = params.has('at') ? Number(params.get('at')) : 40;
 let needResize = true;
 function frame(now: number): void {
   if (needResize) { resize(); needResize = false; }
