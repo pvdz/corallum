@@ -6,7 +6,7 @@ import type { GameState } from '../sim/state.ts';
 import { actAt } from './acts.ts';
 import { OSSEL_MISTAKES } from './ossel.ts';
 import {
-  calciteHold, canSend, inFlurry, inHeat, waterAt, homes, workOpen, sisterAt, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
+  calciteHold, canSend, inFlurry, inHeat, inRising, waterAt, homes, workOpen, sisterAt, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
 } from '../sim/economy.ts';
 
 export type Whisper = { id: string; when: (s: GameState) => boolean; text: string };
@@ -76,6 +76,10 @@ export const WHISPERS: readonly Whisper[] = [
   {
     id: 'flurry', when: (s) => inFlurry(s) && s.levels.polyp >= 3,
     text: 'The snow is falling thick. Sweep now: there is more in it than silt.',
+  },
+  {
+    id: 'rising', when: (s) => inRising(s) && s.levels.shoal > 0 && s.rose < 0,
+    text: 'Look down. The whole deep is coming up to eat. Put the shoals on feeding and send them in with it.',
   },
   {
     id: 'heat', when: (s) => inHeat(s) && !s.closed && s.bloom > 1,

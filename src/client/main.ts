@@ -32,7 +32,7 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, feedRising, inRising, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -47,6 +47,7 @@ import { drawMoon, glow as glowAt } from '../game/render/draw.ts';
 import { GAUGE_MOON } from '../game/content/act5.ts';
 import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { HEAT } from '../game/content/act4.ts';
+import { RISING } from '../game/content/act2.ts';
 import { FIGURES, SKY, type FigureId } from '../game/content/sky.ts';
 import { ACT1, MILESTONES, STRAINS, type Milestone } from '../game/content/act1.ts';
 import { OSSEL_LINES, OSSEL_LINES_TRUE, OSSEL_NOW, WHISPERS } from '../game/content/whispers.ts';
@@ -303,6 +304,16 @@ const panel = createPanel(ui, {
   trace(id) {
     tracing = tracing?.id === id || !figureOpen(state, id) ? null : { id, n: 0 };
     if (tracing) audio.cue('shimmer');
+  },
+  feedRising() {
+    const gain = feedRising(state);
+    if (gain <= 0) return;
+    const [x, y] = scene.crownAt;
+    const [sx, sy] = toScreen(x, y);
+    floatText(sx / dpr, sy / dpr, `+${num(gain)} calcite ${RISING.float}`, 'feast-float');
+    audio.cue('feast');
+    buzz([10, 30, 10]);
+    save();
   },
   closeUp(closed) {
     closeUp(state, closed);
@@ -665,6 +676,13 @@ function tapStar(n: number, x: number, y: number): void {
   save();
 }
 
+/** The rising as the scenes show it: the stream thickens over half a minute and thins at the end. */
+function risingView(): number {
+  if (!inRising(state)) return 0;
+  const u = state.t % HEAT.period - RISING.start;
+  return Math.min(1, u / 30, (RISING.length - u) / 30);
+}
+
 /** The warm spell as the Sunlit scene shows it: warmth eases in and out, an open reef pales and recovers. */
 function heatView(): ReefView['heat'] {
   const closed = closedNow(state);
@@ -709,6 +727,7 @@ function view(): ReefView {
     shell: currentShell(state),
     flurry: inFlurry(state),
     heat: heatView(),
+    rising: risingView(),
     sky: { named: FIGURES.filter((f) => state.sky[f.id]).map((f) => f.id), tracing },
     othersSpawn: actAt(state.height) === 4 && moonFull(state.t),
     planktonLevel: Math.min(1, (feeding(state.plankton) - 1) / 2),

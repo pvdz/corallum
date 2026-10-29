@@ -6,7 +6,7 @@ import type { FigureId } from '../content/sky.ts';
 import { ACT1, FLURRY, MILESTONES, type StrainId } from '../content/act1.ts';
 import type { Band, Currency, UpgradeId } from '../content/types.ts';
 import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
-import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
+import { JOBS, READINGS, type Job, type Reading, type ReadingId, RISING } from '../content/act2.ts';
 import { ACT3, CURRENT, FAVOURS, FAVOUR_TEXT, MEETINGS, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { DIALECTS, HEAT, TIERS, type DialectId } from '../content/act4.ts';
 import { BOONS, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId } from '../content/lineage.ts';
@@ -36,7 +36,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilThorn, untilFlurry, untilHeat, heatLeft, closedNow, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilThorn, untilFlurry, untilHeat, heatLeft, closedNow, untilRising, risingLeft, canFeedRising, risingHaul, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -80,6 +80,7 @@ export type PanelHooks = {
   /** Turn the current (−2 … +2). */
   setCurrent(c: number): void;
   closeUp(closed: boolean): void;
+  feedRising(): void;
   /** Trace a figure of the night sky (again: stop). */
   trace(id: FigureId): void;
   tracing(): FigureId | null;
@@ -337,7 +338,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let heatClosed = false;
   const heatButton = button('heat-toggle', '', () => hooks.closeUp(!heatClosed));
   heatRow.append(heatText, heatButton, heatWhat);
-  waterBox.append(waterName, waterLine, waterNext, waterSoon, heatRow);
+  // The rising: send the feeders in, once, while it passes.
+  const riseRow = el('div', 'heat-row rise-row');
+  riseRow.hidden = true;
+  const riseText = el('span', 'heat-text');
+  const riseWhat = el('span', 'heat-what');
+  const riseButton = button('heat-toggle', RISING.send, () => hooks.feedRising());
+  riseRow.append(riseText, riseButton, riseWhat);
+  waterBox.append(waterName, waterLine, waterNext, waterSoon, heatRow, riseRow);
   grow.prepend(waterBox);
   let waterShown = '';
   // Ossel's request: one small thing to do, with its progress.
@@ -1502,6 +1510,15 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const fl = untilFlurry(s);
         if (fl < 1200) soon.push([fl, FLURRY.word + ' (sweeps ×3)']);
         if (th < 1200 && kind) soon.push([th, WATER.intruder[kind]!]);
+        const ur = untilRising(s);
+        if (ur > 0 && ur < 1200) soon.push([ur, RISING.word]);
+        setShown(riseRow, ur === 0 && (canFeedRising(s) || s.rose === Math.floor(s.t / HEAT.period)));
+        if (!riseRow.hidden) {
+          const go = canFeedRising(s);
+          riseText.textContent = RISING.now(duration(risingLeft(s)));
+          riseButton.hidden = !go;
+          riseWhat.textContent = go ? `${RISING.share(s.jobs.feed, s.levels.shoal)} · +${num(risingHaul(s))} calcite` : RISING.sent;
+        }
         const uh = untilHeat(s);
         if (uh > 0 && uh < 1200) soon.push([uh, HEAT.word]);
         heatRow.hidden = !Number.isFinite(uh);

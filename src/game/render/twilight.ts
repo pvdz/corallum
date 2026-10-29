@@ -2,6 +2,7 @@
 // grazing it, pale sand bars where they have been, and Ossel's dead wall beside the reef —
 // until the truce decides what happens to it.
 
+import { drawRising } from './rising.ts';
 import { createSlugs } from './slugs.ts';
 import { drawGhosts } from './ghosts.ts';
 import { drawSisterFar } from './sister.ts';
@@ -1162,6 +1163,7 @@ export function createTwilightScene(seed: number): Scene {
       drawManta(ctx, t);
       drawWhaleShark(ctx, t);
       drawMotes(ctx, t, v.siltLevel);
+      drawRising(ctx, t, w, h, focus, dpr, v.rising, false);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#1d3557');
       drawShelf(ctx, v.sandBars, v.siltLevel);
       drawChannels(ctx, t, v.channels);

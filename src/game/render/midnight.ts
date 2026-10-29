@@ -3,6 +3,7 @@
 // circle the reef herding plankton, light-swimmers spiral above the crown, scouts dive into
 // the dark below. Glass shrimp and a passing siphonophore appear once their bands are laid.
 
+import { drawRising } from './rising.ts';
 import { sight, spot, startled } from './sightings.ts';
 import { drawGhosts } from './ghosts.ts';
 import { drawSisterFar } from './sister.ts';
@@ -788,6 +789,7 @@ export function createMidnightScene(seed: number): Scene {
       const L = layout(v);
       water.draw(ctx, w, h, t, 0.2, `${w}x${h} ${p.toFixed(3)}`, (c, tq) => drawWater(c, tq, p));
       drawFlashes(ctx, t);
+      drawRising(ctx, t, w, h, focus, dpr, v.rising, true);
       drawGiantSquid(ctx, t, v.moments.squid === 'b');
       // The old stone's lights answer the scouts listening at it.
       // Each Reading of Thousandfold's bands wakes more of the lights in its drowned towers.

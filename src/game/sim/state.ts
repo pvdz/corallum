@@ -119,6 +119,8 @@ export type GameState = {
   strain: StrainId | '';
   /** Figures named in the night sky over the Breach. */
   sky: Record<FigureId, boolean>;
+  /** The half-hour cycle whose rising the feeders were last sent into (−1: never). */
+  rose: number;
   /** The polyps are closed against warm water (Sunlit Crown). */
   closed: boolean;
   /** Reef height up the seamount, metres. */
@@ -152,7 +154,7 @@ export type GameState = {
   /** Ossel's current request (kind '' for none yet), its count at the start, and how many are done; `paid` is what the last one brought. */
   request: { kind: RequestKind | ''; n: number; base: number; done: number; paid: number; skipped: number; streak: number };
   /** Counters the requests watch, and how many times the silt was searched for a shard. */
-  tally: { touches: number; sweeps: number; digs: number; roams: number; intruders: number; carcass: number; shells: number };
+  tally: { touches: number; sweeps: number; digs: number; roams: number; intruders: number; carcass: number; shells: number; risings: number };
   /** Stages built of each great work (content/works.ts). */
   works: Record<WorkId, number>;
   /** The race with the sister reef: marks decided so far (content/sister.ts), and how many were won. */
@@ -214,6 +216,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     height: 0,
     strain: '',
     closed: false,
+    rose: -1,
     sky: { cup: false, beak: false, sister: false, whale: false, sleeper: false, lamp: false },
     levels: {
       polyp: 0, symbiont: 0, skeleton: 0, lattice: 0, vent: 0, lure: 0, shoal: 0, daughter: 0,
@@ -242,7 +245,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     race: { decided: 0, won: 0, cousin: 0 },
     works: { garden: 0, spire: 0, breakwater: 0, terrace: 0, pool: 0 },
     request: { kind: '', n: 0, base: 0, done: 0, paid: 0, skipped: -1e9, streak: 0 },
-    tally: { touches: 0, sweeps: 0, digs: 0, roams: 0, intruders: 0, carcass: 0, shells: 0 },
+    tally: { touches: 0, sweeps: 0, digs: 0, roams: 0, intruders: 0, carcass: 0, shells: 0, risings: 0 },
     moments: {
       brittle: '', 'vent-crack': '', snow: '', 'lost-shoal': '', hunters: '', angler: '', squid: '', 'whale-fall': '', 'old-lamp': '', cleaners: '',
       'young-rasp': '', slope: '', eggs: '', storm: '', turtle: '', 'first-light': '', 'last-night': '', bird: '',

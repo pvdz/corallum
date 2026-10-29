@@ -16,7 +16,7 @@
 // month offline costs a few hundred iterations and ends exactly where the dynamics settle.
 
 import { ACT1, BANDS_ACT1, FLURRY, MILESTONES, STRAIN, type Milestone, type StrainId } from '../content/act1.ts';
-import { ACT2, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
+import { ACT2, RISING, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
 import { ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDLE, RIDDLES, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { FIGURES, SKY, type FigureId } from '../content/sky.ts';
 import { ACT4, HEAT, BANDS_ACT4, DIALECTS, OTHERS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
@@ -1289,6 +1289,53 @@ function heatEdge(s: GameState): number {
   for (const e of [base + HEAT.length, base + HEAT.period, base + HEAT.period + HEAT.length])
     if (e > s.t) return e;
   return Infinity;
+}
+
+/** The rising passes the reef in the Midnight Water and on the Twilight Shelf (the purchased height). */
+function risingZone(s: GameState): boolean {
+  const target = heightForBands(s.levels.skeleton);
+  return target >= act(2).from && target < ACT4.from;
+}
+
+/** The deep's small life is rising past the reef now. */
+export function inRising(s: GameState): boolean {
+  if (!risingZone(s)) return false;
+  const u = s.t % HEAT.period;
+  return u >= RISING.start && u < RISING.start + RISING.length;
+}
+
+/** Seconds until the next rising (0 while one passes; Infinity outside its zones). */
+export function untilRising(s: GameState): number {
+  if (!risingZone(s)) return Infinity;
+  if (inRising(s)) return 0;
+  const u = s.t % HEAT.period;
+  return u < RISING.start ? RISING.start - u : HEAT.period - u + RISING.start;
+}
+
+/** Seconds the rising has left (0 when none). */
+export function risingLeft(s: GameState): number {
+  return inRising(s) ? RISING.start + RISING.length - s.t % HEAT.period : 0;
+}
+
+/** The feeders can still be sent into this rising (once each, and only with feeders on the job). */
+export function canFeedRising(s: GameState): boolean {
+  return inRising(s) && s.jobs.feed > 0 && s.rose !== Math.floor(s.t / HEAT.period);
+}
+
+/** What sending the feeders into the rising would bring: minutes of calcite, by the share feeding. */
+export function risingHaul(s: GameState): number {
+  return calciteRate(s) * RISING.seconds * (s.jobs.feed / Math.max(1, s.levels.shoal));
+}
+
+/** Send the feeding shoals into the rising: a haul of calcite, once per rising. */
+export function feedRising(s: GameState): number {
+  if (!canFeedRising(s)) return 0;
+  const gain = risingHaul(s);
+  s.rose = Math.floor(s.t / HEAT.period);
+  s.calcite += gain;
+  s.earned.calcite += gain;
+  s.tally.risings++;
+  return gain;
 }
 
 /** Sun taken in for bloom: closed polyps take half; open ones take more while the water is warm. */

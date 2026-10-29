@@ -163,6 +163,12 @@ stone (5% of each second away's calcite production, at most 8 h of it) or a sear
 **Flurries** (Silt Floor): every four minutes the Long Silt falls thick for 30 s; sweeps catch ×3 then
 (on the sim clock, so the snow and the pay agree; the Soon line counts down to the next).
 
+**The rising** (Midnight Water and Twilight Shelf, while watching): for three minutes in every half
+hour (half a cycle after the Sunlit's warm water) the deep's small life streams up past the reef.
+The feeders can be sent into it once: four minutes of calcite times the share of shoals feeding, so
+moving shoals onto feeding just before is the play. An instant haul, not a rate: plankton is a fast
+stock, and a rate change would force tiny offline steps at every edge (tried: 2.7 s a month).
+
 **Warm water** (Sunlit Crown): for four minutes in every thirty the shallows run warm. Polyps left
 open take in sun ×1.6 for bloom but bleach (bloom fades ×5); closed polyps take half the sun, warm or
 not, and never bleach. Open is right while bloom is low (the sun outruns the loss), closing is right

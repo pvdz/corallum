@@ -2,6 +2,23 @@
 
 import type { Band, UpgradeDef } from './types.ts';
 
+/**
+ * The rising: the deep's small life climbs past the reef to feed, for three minutes in every half
+ * hour (on the same half-hour clock as the Sunlit Crown's warm water, half a cycle later). While it
+ * passes, the feeding shoals can be sent into it once: four minutes of calcite, times the share of
+ * shoals that are feeding. Midnight Water and Twilight Shelf only, while watching.
+ */
+export const RISING = {
+  start: 900, length: 180, seconds: 240,
+  word: 'the rising',
+  now: (left: string) => `The rising: the deep comes up to feed, for ${left}.`,
+  send: 'Send the feeders in',
+  sent: 'The feeders are back, full.',
+  share: (feed: number, all: number) => `${feed} of ${all} shoals feeding`,
+  noFeeders: 'Put shoals on feeding to send them in.',
+  float: 'from the rising',
+} as const;
+
 export const ACT2 = {
   /** Plankton/s per feeding shoal; plankton is eaten fast. */
   feedRate: 2,

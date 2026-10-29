@@ -1,10 +1,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
+import { canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { newGame, type GameState } from '../../src/game/sim/state.ts';
 import { GIFT } from '../../src/game/content/creatures.ts';
 import { HEAT } from '../../src/game/content/act4.ts';
+import { RISING } from '../../src/game/content/act2.ts';
 
 const rel = (a: number, b: number) => Math.abs(a - b) / Math.max(1, Math.abs(b));
 const clone = (s: GameState): GameState => structuredClone(s);
@@ -244,6 +245,24 @@ test('warm spells: an open reef bleaches, offline equals online across the edges
   while (slow.t < month.t - 1e-6) advance(slow, Math.min(1700, month.t - slow.t));
   for (const k of ['calcite', 'bloom', 'height'] as const) assert.ok(rel(month[k], slow[k]) < 1e-6, `${k}: ${month[k]} vs ${slow[k]}`);
   assert.ok(rel(month.earned.calcite, slow.earned.calcite) < 1e-6);
+});
+
+test('the rising: the feeders go in once per rising, for a haul by the share feeding', () => {
+  const s = act2Game();
+  assert.ok(s.jobs.feed > 0);
+  s.t = Math.ceil(s.t / HEAT.period) * HEAT.period + RISING.start + 10;
+  assert.ok(canFeedRising(s));
+  const half = clone(s);
+  half.jobs.light += half.jobs.feed - Math.floor(half.jobs.feed / 2);
+  half.jobs.feed = Math.floor(half.jobs.feed / 2);
+  const c0 = s.calcite, want = risingHaul(s);
+  assert.ok(rel(feedRising(s), want) < 1e-12 && rel(s.calcite, c0 + want) < 1e-12);
+  assert.equal(feedRising(s), 0, 'once per rising');
+  assert.ok(risingHaul(half) < want);
+  s.t += HEAT.period;
+  assert.ok(feedRising(s) > 0, 'the next one comes');
+  s.t += RISING.length;
+  assert.equal(canFeedRising(s), false);
 });
 
 test('dialects: one per tier, in order, after their band, paid in bloom', () => {

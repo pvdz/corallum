@@ -29,6 +29,8 @@ export type ReefView = {
   /** Shoals away at a ruin: how many, sim seconds since they left and until they are back, which side they went. */
   /** A flurry of the Long Silt is falling (Silt Floor). */
   flurry: boolean;
+  /** The rising passing the reef (0..1, eased in and out; Midnight Water and Twilight Shelf). */
+  rising: number;
   /** The night sky over the Breach: figures named, and the one being traced (stars joined so far). */
   sky: { named: readonly FigureId[]; tracing: { id: FigureId; n: number } | null };
   /** Warm water in the Sunlit Crown: how warm (0..1), how bleached the reef is (0..1), polyps closed. */

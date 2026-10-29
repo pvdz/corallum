@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended goal (user): add features and gameplay, repeat. Latest: seamount moments; warm water in the Sunlit Crown (+ Sun-shy trait); the night sky at the Breach (trace figures). Keep a backlog in PLAN.md. Bot ~7 h; 7 browser tests + 55 sim tests green.
+NOW: Open-ended goal (user): add features and gameplay, repeat. Latest: seamount moments; warm water in the Sunlit Crown (+ Sun-shy trait); the night sky at the Breach (trace figures); the rising (Midnight/Twilight active haul). Keep a backlog in PLAN.md. Bot ~7 h; 7 browser tests + 55 sim tests green.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -487,3 +487,4 @@ date, what landed, what is half-done, what's next.
 - Warm water (act4.ts HEAT; economy inHeat/untilHeat/heatLeft/closeUp/heatEdge/skipCycles; state.closed): a row in the water box with a Close up / Open toggle; Sunlit scene haze + bleached palette + pulled-in polyps; Ossel whispers at the first one. advance splits at heat edges; a month away skips whole repeated cycles (tested against stepped cycles).
 - Sun-shy trait (habit, 8 lineage): closedNow() = chosen closed, or warm water with the trait; rates, panel and scene read it.
 - The night sky (content/sky.ts FIGURES; economy skyOpen/figureOpen/nameFigure/named; state.sky): sky card in choices.ts, breach.ts drawFigures + 'star' spots with an index, main.ts tracing/tapStar; ending page + 'stars' feat; finale e2e traces Ossel's Cup.
+- The rising (act2.ts RISING; economy inRising/untilRising/risingLeft/canFeedRising/risingHaul/feedRising; state.rose, tally.risings): rise row in the water box, render/rising.ts stream in midnight + twilight, Ossel whisper, systems e2e. A plankton-rate version was tried first and dropped: fast plankton steps made a month offline 2.7 s.

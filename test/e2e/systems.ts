@@ -1,5 +1,5 @@
 // The newer systems through their cards, on one page: send an expedition and call it home, take a
-// resident in, answer a riddle and the shoals' signal, pick up a shell, close up against warm water. Each must change the state.
+// resident in, answer a riddle and the shoals' signal, pick up a shell, close up against warm water, send the feeders into the rising. Each must change the state.
 
 import { withGame, VIEWPORTS } from '../../tools/browser.ts';
 import { RIDDLES } from '../../src/game/content/act3.ts';
@@ -51,6 +51,13 @@ await withGame(async (open) => {
   await box.locator('button').nth(r.right).click();
   check((await st()).meta.lineage === lin + 2, 'riddle answered for lineage');
 
+  // The rising: jump into one and send the feeders in.
+  await page.evaluate(() => { const s = window.corallum!.state; s.t = Math.ceil(s.t / 1800) * 1800 + 920; s.rose = -1; });
+  await page.waitForTimeout(400);
+  const c0 = (await st()).calcite;
+  await page.locator('.rise-row button').click();
+  check((await st()).rose >= 0 && (await st()).calcite > c0, 'feeders sent into the rising');
+
   // The shoals' signal: repeat the pattern.
   const pattern = await page.evaluate(() => window.corallum!.signal());
   check(!!pattern, 'a signal comes');
@@ -75,9 +82,9 @@ await withGame(async (open) => {
   await page.waitForTimeout(300);
   check((await page.evaluate(() => window.corallum!.state.meta.shells.length)) === 1, 'shell picked up');
   // Warm water: close the polyps, then open them again.
-  await page.locator('.heat-toggle').click();
+  await page.locator('.heat-row:not(.rise-row) .heat-toggle').click();
   check((await page.evaluate(() => window.corallum!.state.closed)) === true, 'polyps closed against warm water');
-  await page.locator('.heat-toggle').click();
+  await page.locator('.heat-row:not(.rise-row) .heat-toggle').click();
   check((await page.evaluate(() => window.corallum!.state.closed)) === false, 'polyps opened to the sun');
   check(errors.length === 0, 'no console errors (Sunlit)');
 });
