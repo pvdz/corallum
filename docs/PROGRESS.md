@@ -699,3 +699,4 @@ date, what landed, what is half-done, what's next.
 - Ossel's requests: stray (call home a lost shoal) and fragment (catch a drifting fragment); tally.strays.
 - Heat shimmer: faint wavering bands rise and widen over the vent on the Silt Floor.
 - Fireworms on the Twilight Shelf: on nights after the full moon, small glowing green rings spiral up from the sand.
+- The thermocline on the Twilight Shelf: a faint wavering band where warm water rides over cold (twilight.ts drawThermocline).

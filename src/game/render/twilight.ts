@@ -1275,6 +1275,30 @@ export function createTwilightScene(seed: number): Scene {
    * A sixgill shark, rarely (once in thirteen minutes): long, dark and slow, gliding low along the
    * slope from one side to the other, its eye glinting green. Touched, it turns down and away.
    */
+  /** The thermocline: where warm water rides over cold, a faint band that bends the light and wavers. */
+  function drawThermocline(ctx: CanvasRenderingContext2D, t: number, night: number): void {
+    const s = scale();
+    const y0 = focus.y + focus.h * (0.34 + 0.02 * Math.sin(t * 0.05));
+    ctx.save();
+    const g = ctx.createLinearGradient(0, y0 - 30 * s, 0, y0 + 30 * s);
+    g.addColorStop(0, 'rgba(160,210,255,0)');
+    g.addColorStop(0.5, `rgba(160,210,255,${0.07 * (1 - night * 0.6)})`);
+    g.addColorStop(1, 'rgba(160,210,255,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(focus.x, y0 - 30 * s, focus.w, 60 * s);
+    ctx.strokeStyle = `rgba(200,230,255,${0.12 * (1 - night * 0.6)})`;
+    ctx.lineWidth = 1 * s;
+    for (let k = 0; k < 3; k++) {
+      ctx.beginPath();
+      for (let x = focus.x; x <= focus.x + focus.w; x += 10 * s) {
+        const y = y0 + (k - 1) * 9 * s + Math.sin(x / (60 * s) + t * (0.5 + k * 0.2) + k) * 4 * s;
+        if (x === focus.x) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
   /** Fireworms: on nights after a full moon, small green rings of light spiral up from the sand to spawn. */
   function drawFireworms(ctx: CanvasRenderingContext2D, t: number, night: number): void {
     sight('fireworms');
@@ -1755,6 +1779,7 @@ export function createTwilightScene(seed: number): Scene {
       drawOarfish(ctx, t);
       drawSixgill(ctx, t);
       drawRaspHerd(ctx, t);
+      drawThermocline(ctx, t, night);
       drawMotes(ctx, t, v.siltLevel);
       drawRising(ctx, t, w, h, focus, dpr, v.rising, false);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#1d3557');
