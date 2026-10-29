@@ -8,6 +8,7 @@ import { VIEWPORTS, withGame } from '../../tools/browser.ts';
 
 // A reef that has just reached the surface (independent of how the balance moves the timing).
 const { state } = runBot((s) => s.height >= 4000, 12 * 3600);
+state.asked.silt = '1'; // one of Ossel's questions answered: its line is a page of the ending
 const save = serialize(state, Date.now());
 
 let failed = false;
@@ -61,7 +62,7 @@ await withGame(async (open) => {
       await page.screenshot({ path: `${shots}/${vp.name}-finale-release.png` });
     }
     const pages: string[] = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 20; i++) {
       const text = (await page.locator('.ending .finale-text').textContent()) ?? '';
       pages.push(text);
       const btn = page.locator('.ending button');
@@ -74,7 +75,8 @@ await withGame(async (open) => {
     const sister = await page.evaluate(() => window.corallum!.state.race.decided >= 5 ? 1 : 0);
     const friends = await page.evaluate(() => Object.values(window.corallum!.state.meta.trust).some((n) => n >= 5) ? 1 : 0);
     const named = great ? 1 : 0; // the stars page
-    const ok = endedFlag && pages.length === carry + 4 + sister + friends + named && errors.length === 0;
+    const told = 1; // what you told Ossel
+    const ok = endedFlag && pages.length === carry + 4 + sister + friends + named + told && errors.length === 0;
     console.log(`${ok ? 'ok  ' : 'FAIL'} ${vp.name}: ${pages.length} ending pages${errors.length ? ' · ' + errors.join(' | ') : ''}`);
     failed ||= !ok;
   }
