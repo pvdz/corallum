@@ -4,7 +4,7 @@
 
 import { sight, spot, startled, pushed } from './sightings.ts';
 import { drawThorn } from './thorn.ts';
-import { drawGarden } from './works.ts';
+import { drawGarden, drawFence } from './works.ts';
 import { mulberry32, range, type Rng } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { drawDarkness, glow, speck } from './draw.ts';
@@ -504,6 +504,7 @@ export function createAbyssScene(seed: number): Scene {
       drawMotes(ctx, t, v);
       if (v.seamount === 'crowded') drawBuriedReefs(ctx, t);
       drawGarden(ctx, centreX(), v.works.garden, scale(), t, floorY);
+      drawFence(ctx, centreX(), baseY() + 6 * scale(), v.works.fence, scale());
       const vent = v.vent > 0 ? life.drawVent(ctx, st, v.vent, t) : null;
       // Heat shimmer over the vent: faint wavering bands of warmer water rising from the chimneys.
       if (vent) {

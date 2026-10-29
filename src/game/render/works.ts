@@ -334,3 +334,25 @@ export function drawBeacon(ctx: CanvasRenderingContext2D, x: number, waterY: num
   }
   ctx.restore();
 }
+
+/** The snow fence: a low wall of stacked stones on the floor left of the reef, longer by stages, snow banked against it. */
+export function drawFence(ctx: CanvasRenderingContext2D, cx: number, baseY: number, stage: number, s: number): void {
+  if (stage <= 0) return;
+  ctx.save();
+  const n = [0, 4, 8, 12][stage]!;
+  for (let i = 0; i < n; i++) {
+    const x = cx - 60 * s - i * 13 * s, layer = i % 2;
+    for (let k = 0; k <= layer + (i % 3 === 0 ? 1 : 0); k++) {
+      ctx.fillStyle = (i + k) % 2 ? '#4a4f6e' : '#3c4060';
+      ctx.beginPath();
+      ctx.ellipse(x, baseY - 3 * s - k * 7 * s, 7.5 * s, 4.5 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  // Pale snow banked against its far side.
+  ctx.fillStyle = 'rgba(190,200,230,0.25)';
+  ctx.beginPath();
+  ctx.ellipse(cx - 60 * s - (n - 1) * 6.5 * s, baseY - 1 * s, n * 7 * s, 6 * s, 0, Math.PI, 0);
+  ctx.fill();
+  ctx.restore();
+}

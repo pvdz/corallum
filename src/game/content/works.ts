@@ -3,7 +3,7 @@
 
 import type { Currency } from './types.ts';
 
-export type WorkId = 'garden' | 'spire' | 'dome' | 'breakwater' | 'lawn' | 'terrace' | 'rim' | 'pool' | 'beacon';
+export type WorkId = 'garden' | 'fence' | 'spire' | 'dome' | 'breakwater' | 'lawn' | 'terrace' | 'rim' | 'pool' | 'beacon';
 
 export type Work = {
   id: WorkId;
@@ -29,6 +29,13 @@ export const WORKS: readonly Work[] = [
     effect: 'calcite ×1.05 per stage',
     stages: [{ calcite: 400, glow: 40 }, { calcite: 4000, glow: 150 }, { calcite: 40000, glow: 400 }],
     stageNames: ['One chimney', 'A ring', 'The garden'],
+  },
+  {
+    id: 'fence', name: 'The snow fence', zone: 1, from: 40,
+    flavour: 'A low wall of stacked stones upcurrent of you, so the snow piles against it and not against your foot.',
+    effect: 'calcite dissolves ×0.95 per stage',
+    stages: [{ calcite: 2000, glow: 100 }, { calcite: 15000, glow: 250 }, { calcite: 80000, glow: 500 }],
+    stageNames: ['A few stones', 'A low wall', 'The fence'],
   },
   {
     id: 'spire', name: 'The lantern spire', zone: 2, from: 300,

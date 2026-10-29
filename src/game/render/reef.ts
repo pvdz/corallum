@@ -432,7 +432,7 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
       const p = 0.6 + 0.4 * Math.sin(t * 2 + i * 0.8);
       // A sweep combo running: the tips burn brighter with every sweep in the row.
       const heat = Math.min(1, ((v.combo ?? 1) - 1) / 10);
-      glow(ctx, tx, ty, 8 * s * (1 + heat * 0.6), heat > 0 ? '200,250,255' : '160,250,255', Math.min(1, 0.75 * p * gs * (1 + heat)));
+      glow(ctx, tx, ty, 8 * s * (1 + heat * 0.25), '160,250,255', Math.min(1, 0.75 * p * gs * (1 + heat * 0.4)));
     });
     // Glimmerseed symbionts speckle the branches.
     const specks = Math.min(MAX_SPECKS, v.symbionts * 6, Math.floor(visibleCount * 0.6));
