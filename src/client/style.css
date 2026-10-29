@@ -532,3 +532,4 @@ html.view-mode #photo { display: grid; }
 .collapsible > h3::after { content: ' ▾'; color: var(--ink-dim); font-size: 0.8em; }
 .collapsible.folded > h3::after { content: ' ▸'; }
 .collapsible.folded > :not(h3) { display: none; }
+.settings-group { margin: 16px 2px 4px; font-family: var(--display); font-weight: 400; font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--ink-dim); border-top: 1px solid var(--edge); padding-top: 10px; }

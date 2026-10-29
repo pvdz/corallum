@@ -564,10 +564,15 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   habitBox.addEventListener('change', () => hooks.habits.set(habitBox.checked));
   habitToggle.append(habitBox, el('span', '', 'Old habits: bud polyps and host glimmerseed on their own when they are cheap'));
   habitToggle.hidden = true;
+  const group = (title: string) => el('h4', 'settings-group', title);
   reefPage.append(
     nameRow,
-    el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn, volRow, buzzToggle, glowToggle, calmToggle, sciToggle, habitToggle, resetBtn,
+    group('Saves'),
+    el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn,
+    group('Sound'), volRow, buzzToggle,
+    group('Display'), glowToggle, calmToggle, sciToggle, habitToggle,
     el('p', 'hint', 'Hold a buy button to keep buying. Keys (? lists them): Space sweeps · H hides the panel · F catches a falling feast · P buds a polyp · B lays a band · G hosts glimmerseed.'),
+    group('Start over'), resetBtn,
   );
 
   /** Nudge toward copying a save when the reef is worth keeping and no copy is recent. */
