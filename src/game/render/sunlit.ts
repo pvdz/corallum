@@ -731,6 +731,45 @@ export function createSunlitScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** Eagle rays (rare): every 25 minutes a line of spotted rays flies across the upper water. */
+  function drawEagleRays(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 1500, length = 40;
+    const u = ((t + 400) % period) / length;
+    if (u >= 1) return;
+    sight('eagle-rays');
+    const s = scale() * 1.4;
+    for (let k = 0; k < 6; k++) {
+      const x = focus.x + focus.w * (1.15 - u * 1.4 + k * 0.07);
+      const y = focus.y + focus.h * (0.2 + k * 0.035) + Math.sin(t + k) * 4 * s;
+      if (k === 0) spot('eagle-rays', x, y, 40 * s);
+      const flap = Math.sin(t * 2.2 + k * 0.6) * 0.3;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.fillStyle = '#2c3a4a';
+      ctx.beginPath();
+      ctx.moveTo(-8 * s, 0);
+      ctx.quadraticCurveTo(0, (-12 - flap * 10) * s, 10 * s, (-14 - flap * 12) * s);
+      ctx.quadraticCurveTo(4 * s, -2 * s, 8 * s, 2 * s);
+      ctx.quadraticCurveTo(4 * s, 2 * s, 10 * s, (14 + flap * 12) * s);
+      ctx.quadraticCurveTo(0, (12 + flap * 10) * s, -8 * s, 0);
+      ctx.fill();
+      // White spots, and the long whip of a tail.
+      ctx.fillStyle = 'rgba(230,240,250,0.8)';
+      for (const [px, py] of [[2, -6], [4, 6], [0, -2], [3, 2]] as const) {
+        ctx.beginPath();
+        ctx.arc(px * s, py * s, 0.8 * s, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.strokeStyle = '#2c3a4a';
+      ctx.lineWidth = 0.8 * s;
+      ctx.beginPath();
+      ctx.moveTo(8 * s, 0);
+      ctx.quadraticCurveTo(20 * s, Math.sin(t * 3 + k) * 3 * s, 32 * s, 0);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
   /** A banded sea snake winding up toward the surface to breathe and back down; touched, it turns away. */
   function drawSeaSnake(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 70;
@@ -1142,6 +1181,7 @@ export function createSunlitScene(seed: number): Scene {
       if (night < 0.5) drawReefShark(ctx, t);
       drawDugong(ctx, t, v.meadows);
       if (night < 0.5) drawSeaSnake(ctx, t);
+      if (night < 0.5) drawEagleRays(ctx, t);
       drawClumps(ctx, t);
       drawDaughters(ctx, v.polyps, (u) => [focus.x - focus.w * 0.1 + u * focus.w * 1.2, floorY(u) + 2 * scale()], scale() * 1.2, t,
         { branch: '#c0703e', tip: '#e8a060', polyp: 'rgba(255,240,190,0.95)',

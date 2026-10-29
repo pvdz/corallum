@@ -5,7 +5,7 @@ export type CreatureId =
   | 'jelly' | 'tripod-fish' | 'isopod' | 'brittle-star' | 'rattail' | 'sea-pig' | 'brine-pool' | 'smokers' | 'dumbo' | 'squat-lobster' | 'sea-lily' | 'glass-sponge' | 'tube-worm'
   | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'milky-sea' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration'
   | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'sardine-run' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark'
-  | 'cuttlefish' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly'
+  | 'cuttlefish' | 'eagle-rays' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly'
   | 'shore-bird' | 'pelican' | 'hatchlings' | 'green-flash' | 'flying-fish' | 'dolphin' | 'moon-jelly'
   | 'thorn-star' | 'dragonfish' | 'drill-snail' | 'gull' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish' | 'host-anemone';
 
@@ -58,6 +58,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'seahorse', name: 'Seahorses', zone: 'The Sunlit Crown', note: 'They hold on to the seagrass by their tails and let the water do the rest.' },
   { id: 'mola', name: 'Ocean sunfish', zone: 'The Sunlit Crown', note: 'Rare. A silver disc as tall as the reef, sculling along with two fins.' },
   { id: 'reef-shark', name: 'Blacktip shark', zone: 'The Sunlit Crown', note: 'It patrols the edge of the reef on the same loop every day. Everything small watches it go.' },
+  { id: 'eagle-rays', name: 'Eagle rays', zone: 'The Sunlit Crown', note: 'Rare. A squadron of spotted rays flying in a line, wingtip to wingtip.' },
   { id: 'sea-snake', name: 'Banded sea snake', zone: 'The Sunlit Crown', note: 'It hunts in the reef’s cracks and rises to breathe. Leave it be, and it will leave you.' },
   { id: 'dugong', name: 'Dugong', zone: 'The Sunlit Crown', note: 'Only where meadows grow. It ploughs the seagrass slowly with its lip, all day.' },
   { id: 'cuttlefish', name: 'Cuttlefish', zone: 'The Sunlit Crown', note: 'Waves of colour run down its skin like thoughts. Startle it and it goes white.' },
