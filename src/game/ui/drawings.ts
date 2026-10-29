@@ -220,6 +220,10 @@ export function drawSeaChart(c: HTMLCanvasElement, chronicle: readonly string[])
     g.beginPath();
     g.arc(x, y, r, 0, Math.PI * 2);
     g.fill();
+    // A blue moon ending wears a blue ring; one with vows kept, a gold one.
+    const flags = line.split('|')[3] ?? '';
+    if (flags.includes('b')) { g.strokeStyle = 'rgba(130,180,255,0.9)'; g.lineWidth = 1.2; g.beginPath(); g.arc(x, y, r + 2.5, 0, Math.PI * 2); g.stroke(); }
+    if (flags.includes('v')) { g.strokeStyle = 'rgba(255,210,120,0.9)'; g.lineWidth = 1.2; g.beginPath(); g.arc(x, y, r + 5, 0, Math.PI * 2); g.stroke(); }
     g.fillStyle = 'rgba(255,245,230,0.8)';
     g.font = '9px system-ui, sans-serif';
     g.textAlign = 'center';

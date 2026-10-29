@@ -1310,7 +1310,9 @@ export function breach(s: GameState, memories: MemoryId[]): boolean {
   s.meta.carriedEver = [...new Set([...s.meta.carriedEver, ...unique])];
   s.meta.endings++;
   // The line's chronicle: one line per ending (seamount, memories carried, hours it took).
-  s.meta.chronicle = [...s.meta.chronicle, `${s.seamount}|${unique.join(',')}|${Math.round(s.t / 360) / 10}`].slice(-30);
+  // Flags: b under a blue moon, v with vows (all kept so far).
+  const flags = (blueMoon(s.t) ? 'b' : '') + (s.vows.length && s.vows.every((v) => vowKept(s, v)) ? 'v' : '');
+  s.meta.chronicle = [...s.meta.chronicle, `${s.seamount}|${unique.join(',')}|${Math.round(s.t / 360) / 10}|${flags}`].slice(-30);
   return true;
 }
 

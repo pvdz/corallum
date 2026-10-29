@@ -1045,10 +1045,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     chronList.innerHTML = '';
     drawSeaChart(seaChart, s.meta.chronicle);
     s.meta.chronicle.forEach((line, i) => {
-      const [sm, ids, hours] = line.split('|');
+      const [sm, ids, hours, flags = ''] = line.split('|');
       const names = (ids ?? '').split(',').map((id) => MEMORIES.find((m) => m.id === id)?.title ?? id).join(', ');
       const li = el('li');
-      li.append(el('span', 'diary-when', `${i + 1} · ${seamountDef((sm ?? 'plain') as SeamountId).name.replace(/^A /, '')} · ${hours} h`), el('span', 'diary-what', names));
+      li.append(el('span', 'diary-when', `${i + 1} · ${seamountDef((sm ?? 'plain') as SeamountId).name.replace(/^A /, '')} · ${hours} h${flags.includes('b') ? ` · ${UI.chronBlue}` : ''}${flags.includes('v') ? ` · ${UI.chronVows}` : ''}`), el('span', 'diary-what', names));
       chronList.append(li);
     });
   }

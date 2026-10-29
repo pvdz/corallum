@@ -672,3 +672,4 @@ date, what landed, what is half-done, what's next.
 - The almanac strip waits until the water has started turning and two things are coming, so a new reef's first cards stay near the top.
 - Letting old stone go can turn up a shard of the tablet (chance 0.12).
 - A benthic storm on the Silt Floor: every 12 min a low cloud of stirred silt rolls across for a minute (abyss.ts drawBenthicStorm).
+- The chronicle marks endings under a blue moon (blue ring on the chart) and with all vows kept (gold ring).
