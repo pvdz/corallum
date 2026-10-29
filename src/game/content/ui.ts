@@ -86,4 +86,7 @@ export const UI = {
   tallyMilky: (n: number) => `${n} sweep${n === 1 ? '' : 's'} through a milky sea`,
   tallyWished: 'a wish on falling stars',
   timelapse: 'Watch this reef grow again (T)',
+  momentsLabel: 'Moments met',
+  momentsIntro: 'Across your line: each moment, and the ways your reefs have met it.',
+  notYetMet: 'Not yet met',
 } as const;

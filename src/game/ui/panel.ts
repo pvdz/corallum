@@ -825,7 +825,32 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       shelfRow.append(d);
     }
   }
-  bandsPage.append(codex, journal, readingCard, tablet, shelf, cityCard, diary, bandsIntro, bandList);
+  // Moments across the line: each one met, and the ways the line has met it.
+  const momentCard = el('article', 'card codex moments-met');
+  const momentHead = el('h3');
+  const momentList = el('dl', 'codex-list');
+  momentCard.append(momentHead, el('p', 'hint', UI.momentsIntro), momentList);
+  collapsible(momentCard, momentHead);
+  let momentKey = '';
+  function renderMoments(s: GameState): void {
+    const key = s.meta.seen.filter((k) => k.startsWith('m:')).join();
+    if (key === momentKey) return;
+    momentKey = key;
+    const met = MOMENTS.filter((m) => s.meta.seen.includes(`m:${m.id}:a`) || s.meta.seen.includes(`m:${m.id}:b`));
+    momentCard.hidden = met.length === 0;
+    momentHead.textContent = `${UI.momentsLabel} · ${met.length} of ${MOMENTS.length}`;
+    momentList.innerHTML = '';
+    for (const m of MOMENTS) {
+      const ways = (['a', 'b'] as const).filter((c) => s.meta.seen.includes(`m:${m.id}:${c}`)).map((c) => m[c].label);
+      if (!ways.length) {
+        // Hard places' moments stay hidden until met; others show a hint of where they wait.
+        if (!m.seamount) momentList.append(el('dt', 'unknown', UI.notYetMet), el('dd', '', `${metres(m.metres)}`));
+        continue;
+      }
+      momentList.append(el('dt', '', m.title), el('dd', '', ways.join(' · ')));
+    }
+  }
+  bandsPage.append(codex, journal, readingCard, tablet, shelf, cityCard, diary, momentCard, bandsIntro, bandList);
   let codexKey = '';
   function codexRow(term: string, value: string): void {
     codexList.append(el('dt', '', term), el('dd', '', value));
@@ -2045,6 +2070,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       renderChart(s);
       renderTablet(s);
       renderDiary(s);
+      renderMoments(s);
       renderShapes(s);
       renderShelf(s);
       renderChronicle(s);
