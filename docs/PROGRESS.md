@@ -278,3 +278,4 @@ date, what landed, what is half-done, what's next.
 - Feat 'Known to all': touch 25 different creatures.
 - Sunlit night: the water itself turns moonlit navy (cached, keyed by the quantised night), the sun's glare and shafts fade into a moon glow and three thin silver shafts; the veils are rebalanced so the floor goes dim and the reef's own light shows.
 - Sunlit night: the Rasp sleep at the reef's foot in mucus bubbles (as parrotfish do), up to five, tappable.
+- Fold arrows on collapsible cards stay on the line of the title's last word.

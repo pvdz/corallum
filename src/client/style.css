@@ -546,8 +546,8 @@ html.view-mode #photo { display: grid; }
   grid-column: 1 / -1; margin-top: 8px; font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--glowc);
 }
 .collapsible > h3 { cursor: pointer; }
-.collapsible > h3::after { content: ' ▾'; color: var(--ink-dim); font-size: 0.8em; }
-.collapsible.folded > h3::after { content: ' ▸'; }
+.collapsible > h3::after { content: '\00a0▾'; color: var(--ink-dim); font-size: 0.8em; }
+.collapsible.folded > h3::after { content: '\00a0▸'; }
 .collapsible.folded > :not(h3) { display: none; }
 .settings-group { margin: 16px 2px 4px; font-family: var(--display); font-weight: 400; font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--ink-dim); border-top: 1px solid var(--edge); padding-top: 10px; }
 
