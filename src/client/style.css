@@ -60,6 +60,12 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .stocks { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; }
 .stock { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 0 8px; min-width: 0; }
 .stock[hidden] { display: none; }
+.stock[title] { cursor: help; }
+.stock-note {
+  margin: 0; padding: 7px 10px; border-radius: 8px; font-size: 12px; line-height: 1.4; color: #dbe6f5;
+  background: rgba(120, 170, 255, 0.07); border: 1px solid var(--edge);
+}
+.stock-note[hidden] { display: none; }
 .stock-name { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim); }
 .stock-value { font-family: var(--display); font-size: 22px; text-align: right; font-variant-numeric: tabular-nums; }
 .stock-sub { grid-column: 1 / -1; font-size: 11px; color: var(--ink-dim); text-align: right; font-variant-numeric: tabular-nums; }

@@ -11,7 +11,7 @@ import { DIALECTS, TIERS, type DialectId } from '../content/act4.ts';
 import { SEAMOUNTS, TRAIT_GROUPS, TRAITS, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { MEMORIES } from '../content/act5.ts';
 import { CREATURES } from '../content/creatures.ts';
-import { GUIDE } from '../content/guide.ts';
+import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
 import { FEATS } from '../content/feats.ts';
 import { canSpawnLesser, lineageFor, traitCost, traitMaxed } from '../sim/prestige.ts';
 import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
@@ -93,11 +93,27 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
 
   // ---------- Stocks ----------
   const stocks = el('div', 'stocks');
+  // Tapping a stock explains it, under the stocks, for a few seconds.
+  const stockNote = el('p', 'stock-note');
+  stockNote.hidden = true;
+  let noteTimer = 0;
   const stock = (name: string, cls: string) => {
     const row = el('div', `stock ${cls}`);
     const value = el('span', 'stock-value', '0');
     const sub = el('span', 'stock-sub', '');
     row.append(el('span', 'stock-name', name), value, sub);
+    const note = STOCK_NOTES[cls];
+    if (note) {
+      row.title = note;
+      row.addEventListener('click', () => {
+        const again = !stockNote.hidden && stockNote.dataset.stock === cls;
+        stockNote.hidden = again;
+        stockNote.dataset.stock = cls;
+        stockNote.textContent = `${name}: ${note}`;
+        clearTimeout(noteTimer);
+        if (!again) noteTimer = window.setTimeout(() => { stockNote.hidden = true; }, 8000);
+      });
+    }
     stocks.append(row);
     return { row, value, sub };
   };
@@ -648,7 +664,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     backupNote.hidden = !due;
   }
 
-  panel.append(stocks, tabs, pages);
+  panel.append(stocks, stockNote, tabs, pages);
   host.append(panel);
   showTab('grow');
 
