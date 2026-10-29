@@ -85,17 +85,34 @@ export function createSunlitScene(seed: number): Scene {
     const pal = palette(v.palette);
     return {
       cx: cx(), baseY: focus.y + focus.h * 0.97, unit: focus.h * tall, s: scale(), dpr,
-      top: 0.35 + 0.65 * progress(v.height), bandStep: 0, palette: FORM_LOOK[form].palette,
-      // Each pigment grown adds colour: more of the reef crusted, in more hues (rose, gold, green…).
-      encrust: (0.3 + 0.7 * Math.min(1, v.pigments / 6)) * (0.8 + 0.2 * progress(v.height)),
+      top: 0.35 + 0.65 * progress(v.height), bandStep: 0,
       encrustColours: pal.pigments.slice(0, 2 + Math.min(pal.pigments.length - 2, Math.floor(v.pigments / 2))),
       polyp: v.craft === 'fluorescent' ? FLUORESCENT_POLYP : (pal.polyp as [string, string] | null) ?? FORM_LOOK[form].polyp,
       // By night the reef's own light comes back (fluorescent reefs glow brighter still).
       glowScale: (v.craft === 'fluorescent' ? 0.25 : 0) + 0.8 * nightAt(lastT),
       // Polyps pull in against the noon light and open wide to feed at night, as real corals do.
       // The canopy leans the polyps open to the light: wider with each spread.
-      polypScale: 1.2 * (0.8 + 0.35 * nightAt(lastT)) * (1 + 0.025 * Math.min(12, v.canopy)),
+      // Closed against warm water, they are pulled right in.
+      polypScale: 1.2 * (0.8 + 0.35 * nightAt(lastT)) * (1 + 0.025 * Math.min(12, v.canopy)) * (v.heat.closed ? 0.3 : 1),
+      // Each pigment grown adds colour: more of the reef crusted, in more hues (rose, gold, green…).
+      ...bleached(FORM_LOOK[form].palette, v.heat.bleach, (0.3 + 0.7 * Math.min(1, v.pigments / 6)) * (0.8 + 0.2 * progress(v.height))),
     };
+  }
+
+  /**
+   * Bleaching: an open reef in warm water loses its colour toward bone white (quantised, so the
+   * reef's cached picture repaints only a few times through a spell).
+   */
+  function bleached(pal: [string, string, string], b: number, encrust: number): { palette: [string, string, string]; encrust: number } {
+    const q = Math.round(b * 6) / 6;
+    if (q === 0) return { palette: pal, encrust };
+    const bone: [number, number, number][] = [[150, 144, 136], [226, 220, 208], [252, 250, 244]];
+    const mix = (hex: string, to: [number, number, number]) => {
+      const n = parseInt(hex.slice(1), 16);
+      const c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((x, i) => Math.round(x + (to[i]! - x) * q));
+      return `#${c.map((x) => x.toString(16).padStart(2, '0')).join('')}`;
+    };
+    return { palette: [mix(pal[0], bone[0]!), mix(pal[1], bone[1]!), mix(pal[2], bone[2]!)], encrust: encrust * (1 - q) };
   }
 
   function build(): void {
@@ -410,6 +427,30 @@ export function createSunlitScene(seed: number): Scene {
       ctx.lineTo(10 * s, -9 * s);
       ctx.stroke();
       ctx.restore();
+    }
+    ctx.restore();
+  }
+
+  /** Warm water: an amber haze from the surface down and slow shimmering bands of heat. */
+  function drawHeat(ctx: CanvasRenderingContext2D, t: number, warm: number): void {
+    ctx.save();
+    const g = ctx.createLinearGradient(0, 0, 0, h);
+    g.addColorStop(0, `rgba(255,186,110,${0.28 * warm})`);
+    g.addColorStop(0.6, `rgba(255,170,100,${0.07 * warm})`);
+    g.addColorStop(1, 'rgba(255,170,100,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.lineWidth = 2 * dpr;
+    for (let i = 0; i < 7; i++) {
+      const y0 = h * (0.06 + i * 0.07) + Math.sin(t * 0.3 + i) * 6 * dpr;
+      ctx.strokeStyle = `rgba(255,214,160,${0.05 * warm * (1 - i / 8)})`;
+      ctx.beginPath();
+      for (let x = 0; x <= w; x += 12 * dpr) {
+        const y = y0 + Math.sin(x / (40 * dpr) + t * (1.4 + i * 0.2)) * 3 * dpr;
+        if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
     }
     ctx.restore();
   }
@@ -1259,6 +1300,7 @@ export function createSunlitScene(seed: number): Scene {
       ctx.restore();
       shoals.drawFront(ctx, focus, reef, L, v, t, '#5d7d96');
       if (v.bands.includes('storm')) drawStorm(ctx, t);
+      if (v.heat.warm > 0) drawHeat(ctx, t, v.heat.warm);
       if (night > 0) drawNight(ctx, t, night, 0.3);
       drawPearls(ctx, t, night);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);

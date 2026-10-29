@@ -32,7 +32,7 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closeUp, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -46,6 +46,7 @@ import { createZoom } from './zoom.ts';
 import { drawMoon, glow as glowAt } from '../game/render/draw.ts';
 import { GAUGE_MOON } from '../game/content/act5.ts';
 import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
+import { HEAT } from '../game/content/act4.ts';
 import { ACT1, MILESTONES, STRAINS, type Milestone } from '../game/content/act1.ts';
 import { OSSEL_LINES, OSSEL_LINES_TRUE, OSSEL_NOW, WHISPERS } from '../game/content/whispers.ts';
 import { NEWS } from '../game/content/guide.ts';
@@ -295,6 +296,11 @@ const panel = createPanel(ui, {
     state.meta.palette = id;
     scene.effect('pigment');
     audio.cue('shimmer');
+    save();
+  },
+  closeUp(closed) {
+    closeUp(state, closed);
+    audio.cue('sweep');
     save();
   },
   setCurrent(c) {
@@ -629,6 +635,17 @@ function thornView(): ReefView['thorn'] {
   return th ? { u: (state.t - th.start) / THORN.life, side: th.side, kind: th.kind } : null;
 }
 
+/** The warm spell as the Sunlit scene shows it: warmth eases in and out, an open reef pales and recovers. */
+function heatView(): ReefView['heat'] {
+  const closed = state.closed;
+  if (!Number.isFinite(untilHeat(state))) return { warm: 0, bleach: 0, closed };
+  const u = state.t % HEAT.period;
+  const warm = u < HEAT.length ? Math.min(1, u / 20, (HEAT.length - u) / 20) : 0;
+  const peak = Math.min(1, HEAT.length / 150) * 0.75;
+  const bleach = closed ? 0 : u < HEAT.length ? Math.min(1, u / 150) * 0.75 : Math.max(0, peak - (u - HEAT.length) / 120);
+  return { warm, bleach, closed };
+}
+
 function view(): ReefView {
   const r = rates(state);
   return {
@@ -660,6 +677,7 @@ function view(): ReefView {
     thorn: thornView(),
     shell: currentShell(state),
     flurry: inFlurry(state),
+    heat: heatView(),
     othersSpawn: actAt(state.height) === 4 && moonFull(state.t),
     planktonLevel: Math.min(1, (feeding(state.plankton) - 1) / 2),
     bands: state.bands,

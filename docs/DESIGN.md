@@ -163,6 +163,12 @@ stone (5% of each second away's calcite production, at most 8 h of it) or a sear
 **Flurries** (Silt Floor): every four minutes the Long Silt falls thick for 30 s; sweeps catch ×3 then
 (on the sim clock, so the snow and the pay agree; the Soon line counts down to the next).
 
+**Warm water** (Sunlit Crown): for four minutes in every thirty the shallows run warm. Polyps left
+open take in sun ×1.6 for bloom but bleach (bloom fades ×5); closed polyps take half the sun, warm or
+not, and never bleach. Open is right while bloom is low (the sun outruns the loss), closing is right
+when a large bloom stock is at stake; whatever is set stays set while away. The scene shows an amber
+haze, an open reef paling to bone and recovering after, closed polyps pulled in.
+
 Falling feasts (from 42 m, late in the Silt Floor where buying slows): something dead sinks past the reef every few minutes; tap it (or F)
 for 90 s of calcite. A reward for watching (principle 6: never needed, never lost offline), and the
 "What falls" band made playable.

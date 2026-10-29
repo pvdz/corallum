@@ -4,6 +4,7 @@ import { act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomH
 import { runBot } from '../../src/game/sim/bot.ts';
 import { newGame, type GameState } from '../../src/game/sim/state.ts';
 import { GIFT } from '../../src/game/content/creatures.ts';
+import { HEAT } from '../../src/game/content/act4.ts';
 
 const rel = (a: number, b: number) => Math.abs(a - b) / Math.max(1, Math.abs(b));
 const clone = (s: GameState): GameState => structuredClone(s);
@@ -218,8 +219,31 @@ test('Act IV: offline equals online with bloom moving', () => {
   for (let i = 0; i < 600 * 20; i++) advance(b, 1 / 20);
   for (const k of ['calcite', 'bloom', 'height', 'silt'] as const)
     assert.ok(rel(a[k], b[k]) < 1e-6, `${k}: ${a[k]} vs ${b[k]}`);
+  // Closed against warm water, nothing in the rates changes with time: bloom settles at its hold.
+  a.closed = true;
   const week = advance(clone(a), 7 * 86400);
   assert.ok(rel(week.bloom, bloomHold(a)) < 1e-9);
+});
+
+test('warm spells: an open reef bleaches, offline equals online across the edges, and a month skips whole cycles exactly', () => {
+  const a = act4Game();
+  a.t = Math.ceil(a.t / HEAT.period) * HEAT.period - 100; // a warm spell begins in 100 s
+  a.closed = false;
+  const b = clone(a);
+  advance(a, 600);
+  for (let i = 0; i < 600 * 20; i++) advance(b, 1 / 20);
+  for (const k of ['calcite', 'bloom'] as const) assert.ok(rel(a[k], b[k]) < 1e-6, `${k}: ${a[k]} vs ${b[k]}`);
+  const warm = clone(b);
+  warm.t = Math.ceil(warm.t / HEAT.period) * HEAT.period + 10;
+  const shut = clone(warm);
+  shut.closed = true;
+  assert.ok(rates(shut).bloomK < rates(warm).bloomK, 'closed polyps do not bleach');
+  // A month in one call (cycles skipped) against a month in sub-cycle calls (every cycle stepped).
+  const month = advance(clone(a), 30 * 86400);
+  const slow = clone(a);
+  while (slow.t < month.t - 1e-6) advance(slow, Math.min(1700, month.t - slow.t));
+  for (const k of ['calcite', 'bloom', 'height'] as const) assert.ok(rel(month[k], slow[k]) < 1e-6, `${k}: ${month[k]} vs ${slow[k]}`);
+  assert.ok(rel(month.earned.calcite, slow.earned.calcite) < 1e-6);
 });
 
 test('dialects: one per tier, in order, after their band, paid in bloom', () => {

@@ -1,5 +1,5 @@
 // The newer systems through their cards, on one page: send an expedition and call it home, take a
-// resident in, answer a riddle and the shoals' signal, pick up a shell. Each must change the state.
+// resident in, answer a riddle and the shoals' signal, pick up a shell, close up against warm water. Each must change the state.
 
 import { withGame, VIEWPORTS } from '../../tools/browser.ts';
 import { RIDDLES } from '../../src/game/content/act3.ts';
@@ -74,6 +74,11 @@ await withGame(async (open) => {
   if (p) await page.mouse.click(p.x, p.y);
   await page.waitForTimeout(300);
   check((await page.evaluate(() => window.corallum!.state.meta.shells.length)) === 1, 'shell picked up');
+  // Warm water: close the polyps, then open them again.
+  await page.locator('.heat-toggle').click();
+  check((await page.evaluate(() => window.corallum!.state.closed)) === true, 'polyps closed against warm water');
+  await page.locator('.heat-toggle').click();
+  check((await page.evaluate(() => window.corallum!.state.closed)) === false, 'polyps opened to the sun');
   check(errors.length === 0, 'no console errors (Sunlit)');
 });
 process.exitCode = failed ? 1 : 0;

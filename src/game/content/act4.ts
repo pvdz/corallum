@@ -19,6 +19,24 @@ export const OTHERS = {
   } as Record<number, { kicker: string; text: string; feed: { label: string; effect: string }; join: { label: string; effect: string } }>,
 } as const;
 
+/**
+ * Warm spells in the Sunlit Crown: for a few minutes in every half hour the shallow water runs warm.
+ * A reef left open takes in more sun but bleaches (its bloom fades fast); a closed reef is safe but
+ * takes in half the sun, warm or not.
+ */
+export const HEAT = {
+  period: 1800, length: 240,
+  openSun: 1.6, openFade: 5, closedSun: 0.5,
+  word: 'warm water',
+  title: 'Warm water',
+  now: (left: string) => `The water runs warm: ${left} left. Open polyps bleach.`,
+  next: (wait: string) => `Warm water in ${wait}.`,
+  open: 'Close up',
+  closed: 'Open to the sun',
+  openWhat: 'open: full sun · in warm water sun ×1.6, bloom fades ×5',
+  closedWhat: 'closed: sun ×0.5 · no bleaching',
+} as const;
+
 export const ACT4 = {
   from: 3800,
   /** Sunlight per symbiont colony at the bottom of the zone; grows toward the surface. */

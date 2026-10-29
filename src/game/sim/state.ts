@@ -116,6 +116,8 @@ export type GameState = {
   truce: Record<MeetingId, '' | 'a' | 'b'>;
   /** The glimmerseed strain ('' until chosen at 15 m). */
   strain: StrainId | '';
+  /** The polyps are closed against warm water (Sunlit Crown). */
+  closed: boolean;
   /** Reef height up the seamount, metres. */
   height: number;
   levels: Record<UpgradeId, number>;
@@ -208,6 +210,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     dialects: { form: '', craft: '', spawn: '', song: '' },
     height: 0,
     strain: '',
+    closed: false,
     levels: {
       polyp: 0, symbiont: 0, skeleton: 0, lattice: 0, vent: 0, lure: 0, shoal: 0, daughter: 0,
       grounds: 0, sandbar: 0, channel: 0, pigment: 0, canopy: 0, meadow: 0, ripen: 0, cay: 0,

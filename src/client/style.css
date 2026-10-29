@@ -254,6 +254,17 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .water-soon:empty { display: none; }
 .water-next { margin-left: auto; color: var(--ink-dim); font-variant-numeric: tabular-nums; }
 .water[data-water='still'] strong, .water[data-water='still'] .water-line { color: var(--ink-dim); }
+.heat-row { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; margin-top: 3px; padding-top: 5px;
+  border-top: 1px solid rgba(255, 200, 140, 0.14); }
+.heat-row[hidden] { display: none; }
+.heat-text { color: #ffd9a8; }
+.heat-row.warm .heat-text { color: #ffb27a; animation: heat-pulse 2.4s ease-in-out infinite; }
+@keyframes heat-pulse { 50% { color: #ffe2b0; } }
+.heat-what { flex-basis: 100%; color: var(--ink-dim); font-size: 11.5px; }
+.heat-toggle { margin-left: auto; padding: 3px 10px; font-size: 12px; border-radius: 999px; border: 1px solid rgba(255, 200, 140, 0.35);
+  background: rgba(255, 190, 120, 0.08); color: #ffe0bc; }
+.heat-row.warm:not(.closed) .heat-toggle { border-color: rgba(255, 170, 110, 0.8); box-shadow: 0 0 10px rgba(255, 160, 90, 0.35); }
+@media (prefers-reduced-motion: reduce) { .heat-row.warm .heat-text { animation: none; } }
 .water.turned { animation: water-turn 1.6s ease; }
 @keyframes water-turn { 0% { box-shadow: 0 0 0 0 rgba(150, 210, 255, 0.5); } 100% { box-shadow: 0 0 0 14px rgba(150, 210, 255, 0); } }
 .card.watered:not(.maxed) { border-color: rgba(150, 210, 255, 0.45); }

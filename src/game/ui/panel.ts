@@ -7,7 +7,7 @@ import type { Band, Currency, UpgradeId } from '../content/types.ts';
 import { GATE_TEXT, UPGRADES, effectText } from '../content/upgrades.ts';
 import { JOBS, READINGS, type Job, type Reading, type ReadingId } from '../content/act2.ts';
 import { ACT3, CURRENT, FAVOURS, FAVOUR_TEXT, MEETINGS, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
-import { DIALECTS, TIERS, type DialectId } from '../content/act4.ts';
+import { DIALECTS, HEAT, TIERS, type DialectId } from '../content/act4.ts';
 import { BOONS, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { GARDEN, LINE_TITLES, MEMORIES, type MemoryId } from '../content/act5.ts';
 import { COMPANION, CREATURES, TRUST, trustLevel } from '../content/creatures.ts';
@@ -35,7 +35,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilThorn, untilFlurry, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilThorn, untilFlurry, untilHeat, heatLeft, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -78,6 +78,7 @@ export type PanelHooks = {
   recolour(id: string): void;
   /** Turn the current (−2 … +2). */
   setCurrent(c: number): void;
+  closeUp(closed: boolean): void;
   /** Ask the Rasp a favour. */
   favour(id: FavourId): void;
   /** Answer a moment. */
@@ -324,7 +325,15 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const waterLine = el('span', 'water-line');
   const waterNext = el('span', 'water-next');
   const waterSoon = el('span', 'water-soon');
-  waterBox.append(waterName, waterLine, waterNext, waterSoon);
+  // Warm spells in the Sunlit Crown: open to the sun, or closed against the heat.
+  const heatRow = el('div', 'heat-row');
+  heatRow.hidden = true;
+  const heatText = el('span', 'heat-text');
+  const heatWhat = el('span', 'heat-what');
+  let closedNow = false;
+  const heatButton = button('heat-toggle', '', () => hooks.closeUp(!closedNow));
+  heatRow.append(heatText, heatButton, heatWhat);
+  waterBox.append(waterName, waterLine, waterNext, waterSoon, heatRow);
   grow.prepend(waterBox);
   let waterShown = '';
   // Ossel's request: one small thing to do, with its progress.
@@ -1489,6 +1498,17 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const fl = untilFlurry(s);
         if (fl < 1200) soon.push([fl, FLURRY.word + ' (sweeps ×3)']);
         if (th < 1200 && kind) soon.push([th, WATER.intruder[kind]!]);
+        const uh = untilHeat(s);
+        if (uh > 0 && uh < 1200) soon.push([uh, HEAT.word]);
+        heatRow.hidden = !Number.isFinite(uh);
+        if (Number.isFinite(uh)) {
+          closedNow = s.closed;
+          heatRow.classList.toggle('warm', uh === 0);
+          heatRow.classList.toggle('closed', s.closed);
+          heatText.textContent = uh === 0 ? HEAT.now(duration(heatLeft(s))) : HEAT.next(duration(uh));
+          heatButton.textContent = s.closed ? HEAT.closed : HEAT.open;
+          heatWhat.textContent = s.closed ? HEAT.closedWhat : HEAT.openWhat;
+        }
         if (s.height >= 1) soon.push([moonFull(s.t) ? 0 : untilFullMoon(s.t), WATER.moon]);
         soon.sort((a, b) => a[0] - b[0]);
         waterSoon.textContent = soon.length ? `${WATER.soon}: ${soon.map(([t, w]) => `${w} ${t > 0 ? `in ${duration(t)}` : WATER.now}`).join(' · ')}` : '';

@@ -28,6 +28,8 @@ export type ReefView = {
   /** Shoals away at a ruin: how many, sim seconds since they left and until they are back, which side they went. */
   /** A flurry of the Long Silt is falling (Silt Floor). */
   flurry: boolean;
+  /** Warm water in the Sunlit Crown: how warm (0..1), how bleached the reef is (0..1), polyps closed. */
+  heat: { warm: number; bleach: number; closed: boolean };
   /** A shell on the Sunlit sand (place 0..1 and kind), if one lies there now. */
   shell: { x: number; id: string } | null;
   /** A thorn star climbing the reef: how far through its climb (0..1), and on which side. */

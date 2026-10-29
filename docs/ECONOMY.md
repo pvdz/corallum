@@ -85,6 +85,13 @@ Reading costs 40/900/1800/3000/4500/6000/8000/7000/7500 murmurs (were 25…16000
 1100, so five stories landed within four minutes). Now one every 5–15 min through Act II. Act II
 band growth 1.155. Bot: 7h48 default, paths 7h08–8h28.
 
+## Warm water (Sunlit Crown)
+HEAT: period 1800 s, warm for the first 240 s, from the purchased height ≥ 3800 m. bloomP × (closed ? 0.5 :
+warm ? 1.6 : 1); bloomK × (warm and open ? 5 : 1). Rates change at the edges, so `advance` splits time
+there (like an expedition's return). An open reef never settles; a long absence repeats one cycle, so
+once a whole cycle ends where it began (1e-12) the remaining whole cycles are skipped (`skipCycles`,
+earnings scaled): a month away costs ~10–20 ms instead of ~150.
+
 ## Seamounts and the Rasp dial (2026-10-29)
 A lesser spawning chooses where to settle (content/lineage.ts SEAMOUNTS): plain; warm (each vent
 tier ×1.07 stronger, acid ×1.3: faster while watching, weaker offline); cold (dissolve ×0.5, polyps

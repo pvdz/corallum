@@ -18,7 +18,7 @@
 import { ACT1, BANDS_ACT1, FLURRY, MILESTONES, STRAIN, type Milestone, type StrainId } from '../content/act1.ts';
 import { ACT2, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
 import { ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDLE, RIDDLES, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
-import { ACT4, BANDS_ACT4, DIALECTS, OTHERS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
+import { ACT4, HEAT, BANDS_ACT4, DIALECTS, OTHERS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
 import { ACT5, BANDS_ACT5, GARDEN, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
@@ -213,9 +213,9 @@ export function rates(s: GameState): Rates {
     siltK: Math.max(0.02, ACT3.naturalSweep + (s.current > 0 ? CURRENT.siltPerStep : CURRENT.siltPerStep / 2) * s.current) + (lives(s, 'pistol-shrimp') ? 0.04 : 0) + 0.02 * s.favours.clear + (chose(s, 'eggs', 'b') ? 0.02 : 0) + (chose(s, 'slope', 'b') ? 0.03 : 0) + (chose(s, 'drifts', 'a') ? 0.03 : 0) + ACT3.flowSweep * lv.sandbar + LINEAGE.glassSweep * trait(s, 'glass-gardeners') + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
     sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1) * (relic(s, 'midden') ? 1.3 : 1) * (lives(s, 'sea-cucumber') ? 1.4 : 1) * (chose(s, 'turtle', 'b') ? 1.25 : 1) * (has(s, 'rasp-song') ? 1.3 : 1) * (chose(s, 'young-rasp', 'b') ? 1.15 : 1) * (paired(s, 'pistol-shrimp', 'sea-cucumber') ? 1.2 : 1),
     sandK: ACT3.sandSettle,
-    bloomP: sunlight(s, target) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * ACT4.meadowBloom ** lv.meadow *
+    bloomP: sunlight(s, target) * heatSun(s) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * ACT4.meadowBloom ** lv.meadow *
       (speaks(s, 'fluorescent') ? 1.5 : 1) * (lives(s, 'damselfish') ? 1.3 : 1) * (chose(s, 'storm', 'b') ? 1.15 : 1) * 1.15 ** s.works.terrace * (has(s, 'light-walls') ? 1.25 : 1) * (relic(s, 'sun-gate') ? 1.2 : 1) * (chose(s, 'first-light', 'a') ? 1.15 : 1) * (paired(s, 'feather-duster', 'damselfish') ? 1.15 : 1),
-    bloomK: ACT4.bloomFade * (chose(s, 'turtle', 'a') ? 0.8 : 1) * (speaks(s, 'lullaby') ? 0.7 : 1),
+    bloomK: ACT4.bloomFade * (inHeat(s) && !s.closed ? HEAT.openFade : 1) * (chose(s, 'turtle', 'a') ? 0.8 : 1) * (speaks(s, 'lullaby') ? 0.7 : 1),
     spawnP: target >= ACT5.from
       ? lv.polyp * ACT5.spawnRate * ACT5.ripenSpawn ** lv.ripen * (speaks(s, 'broadcast') ? 2 : 1) *
         (1 + sunlight(s, target) * lv.symbiont / 100) * (chose(s, 'bird', 'b') ? 1.1 : 1) * (chose(s, 'last-night', 'b') ? 1.05 : 1) * (has(s, 'last-spawning') ? 1.25 : 1) * 1.15 ** s.works.pool * 1.1 ** lv.cay * (lives(s, 'host-anemone') ? 1.15 : 1)
@@ -388,14 +388,40 @@ type Upstream = 'glow' | 'plankton' | 'height' | 'silt' | 'bloom';
  */
 export function advance(s: GameState, dt: number, stepFraction = STEP_FRACTION): GameState {
   if (!(dt > 0)) return s;
-  const ex = s.expedition;
-  if (ex.site && ex.back < s.t + dt) {
-    const first = Math.max(0, ex.back - s.t);
-    flow(s, first, stepFraction);
-    homecoming(s);
-    return flow(s, dt - first, stepFraction);
+  const end = s.t + dt;
+  for (;;) {
+    if (end - s.t >= 2 * HEAT.period && s.t % HEAT.period === 0 && heatZone(s) && !s.expedition.site) skipCycles(s, end, stepFraction);
+    const ex = s.expedition;
+    const home = ex.site !== '' && ex.back < end;
+    const cut = Math.min(home ? Math.max(s.t, ex.back) : end, heatEdge(s));
+    flow(s, cut - s.t, stepFraction);
+    if (cut >= end) return s;
+    s.t = cut;
+    if (home && cut >= ex.back) homecoming(s);
   }
-  return flow(s, dt, stepFraction);
+}
+
+const CYCLE_STOCKS = ['glow', 'plankton', 'height', 'silt', 'bloom', 'calcite', 'murmurs', 'sand', 'spawn'] as const;
+
+/**
+ * Warm spells keep the bloom from ever settling, so a long absence repeats one cycle over and over.
+ * Run one whole cycle; if it ends where it began, the rest of the whole cycles before `end` would
+ * too, so they are skipped (their earnings and growth-chart samples added).
+ */
+function skipCycles(s: GameState, end: number, stepFraction: number): void {
+  const x0 = CYCLE_STOCKS.map((k) => s[k]);
+  const e0 = { ...s.earned };
+  advance(s, HEAT.period, stepFraction);
+  if (!CYCLE_STOCKS.every((k, i) => Math.abs(s[k] - x0[i]!) <= 1e-12 * Math.max(1, Math.abs(x0[i]!)))) return;
+  const n = Math.floor((end - s.t) / HEAT.period) - 1;
+  if (n <= 0) return;
+  for (const k of ['calcite', 'glow', 'murmurs'] as const) s.earned[k] += n * (s.earned[k] - e0[k]);
+  const before = Math.floor(s.t / HISTORY_STEP);
+  s.t += n * HEAT.period;
+  for (let k = before, after = Math.floor(s.t / HISTORY_STEP); k < after && k - before < HISTORY_MAX; k++) {
+    s.history.push(Math.round(s.height * 10) / 10);
+    if (s.history.length > HISTORY_MAX) s.history = s.history.filter((_, i) => i % 2 === 0);
+  }
 }
 
 function flow(s: GameState, dt: number, stepFraction: number): GameState {
@@ -1206,6 +1232,47 @@ export function canSweep(s: GameState): boolean {
 }
 
 /** Sweep the tentacles by hand: a small burst that matters early and fades into noise later. */
+/** The reef takes in sun (the Sunlit Crown's purchased height): warm spells come there. */
+function heatZone(s: GameState): boolean {
+  return heightForBands(s.levels.skeleton) >= ACT4.from;
+}
+
+/** The shallow water runs warm now. */
+export function inHeat(s: GameState): boolean {
+  return heatZone(s) && s.t % HEAT.period < HEAT.length;
+}
+
+/** Seconds until the next warm spell (0 while one lasts; Infinity below the Sunlit Crown). */
+export function untilHeat(s: GameState): number {
+  if (!heatZone(s)) return Infinity;
+  const u = s.t % HEAT.period;
+  return u < HEAT.length ? 0 : HEAT.period - u;
+}
+
+/** Seconds a warm spell has left (0 when none). */
+export function heatLeft(s: GameState): number {
+  return inHeat(s) ? HEAT.length - s.t % HEAT.period : 0;
+}
+
+/** Sim time of the next start or end of a warm spell: the rates change there, so time is split. */
+function heatEdge(s: GameState): number {
+  if (!heatZone(s)) return Infinity;
+  const base = Math.floor(s.t / HEAT.period) * HEAT.period;
+  for (const e of [base + HEAT.length, base + HEAT.period, base + HEAT.period + HEAT.length])
+    if (e > s.t) return e;
+  return Infinity;
+}
+
+/** Sun taken in for bloom: closed polyps take half; open ones take more while the water is warm. */
+function heatSun(s: GameState): number {
+  return s.closed ? HEAT.closedSun : inHeat(s) ? HEAT.openSun : 1;
+}
+
+/** Close the polyps against warm water, or open them to the sun. */
+export function closeUp(s: GameState, closed: boolean): void {
+  s.closed = closed;
+}
+
 /** A flurry of the Long Silt is falling (Silt Floor only): sweeps catch more. */
 export function inFlurry(s: GameState): boolean {
   return actAt(s.height) === 1 && s.t % FLURRY.period < FLURRY.length;
