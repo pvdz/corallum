@@ -461,4 +461,4 @@ date, what landed, what is half-done, what's next.
 - The ending: a page of this reef's numbers before the last line.
 - Journal: a progress ring per zone.
 - Trip to the whale fall (once per reef after the whale-fall moment): 10 min, 5 minutes of calcite; bones drawn in the far water.
-- Perf (6× throttle, mobile, Sunlit): day 15.4 ms, night 21 ms. Skipping each newer layer group (creatures, residents/relics/works/song, craft, meadows, night, others' spawning) saves ≤1 ms each; the night cost is the reef's own glow. No single culprit; auto quality steps cover slow phones. Snake batched into two paths.
+- Perf (6× throttle, mobile, Sunlit): day 15.4 ms, night 21 ms. Skipping each newer layer group (creatures, residents/relics/works/song, craft, meadows, night, others' spawning) saves ≤1 ms each; the night cost is the reef's own glow. No single culprit; auto quality steps cover slow phones.
