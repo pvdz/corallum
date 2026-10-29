@@ -1023,6 +1023,15 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   }
 
   let primed = false;
+  /** Show or hide a section; one appearing during play rises in with a brief glow. */
+  function setShown(e: HTMLElement, show: boolean): void {
+    if (show && e.hidden && primed) {
+      e.classList.remove('fresh');
+      void e.offsetWidth;
+      e.classList.add('fresh');
+    }
+    e.hidden = !show;
+  }
   let etaTurn = 0;
   let jobGains: { feed: number; light: number } | null = null;
   let raspBest = -1;
@@ -1167,7 +1176,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
 
       // Shoals.
       const shoals = s.levels.shoal;
-      shoalBox.hidden = shoals === 0;
+      setShown(shoalBox, shoals > 0);
       if (shoals > 0) {
         const idle = idleShoals(s);
         const gone = awayShoals(s);
@@ -1227,7 +1236,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       const mo = nextMoment(s);
       if (mo !== momentNow) {
         momentNow = mo;
-        momentBox.hidden = !mo;
+        setShown(momentBox, !!mo);
         if (mo) {
           momentTitle.textContent = mo.title;
           momentText.textContent = mo.text;
@@ -1249,7 +1258,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
 
       // Residents: who may move in, and who has.
       const nHomes = homes(s);
-      homeBox.hidden = nHomes === 0;
+      setShown(homeBox, nHomes > 0);
       if (nHomes > 0) {
         const asking = residentsAsking(s);
         homeCount.textContent = `${s.residents.length} of ${nHomes} home${nHomes === 1 ? '' : 's'}`;
@@ -1266,7 +1275,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       // Expeditions: the next ruin, or the shoals away at one.
       const away = tripSite(s);
       const ahead = away ?? nextSite(s);
-      tripCard.hidden = !ahead;
+      setShown(tripCard, !!ahead);
       if (ahead) {
         tripTitle.textContent = ahead.name;
         tripHint.textContent = ahead.hint;
@@ -1294,7 +1303,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       // Great works.
       for (const x of workCards) {
         const open = workOpen(s, x.w.id);
-        x.root.hidden = !open;
+        setShown(x.root, open);
         if (!open) continue;
         const n = s.works[x.w.id];
         x.level.textContent = `${WORK_TEXT.stage} ${Math.min(n + 1, x.w.stages.length)}/${x.w.stages.length}`;
