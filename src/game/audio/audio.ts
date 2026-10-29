@@ -188,6 +188,19 @@ export function createAudio() {
   }
   setInterval(crackle, 100);
 
+  /** Now and then a zone's own small sound: fish grunts on the shelf, a vent's rumble on the floor. */
+  function zoneCall(): void {
+    if (!ctx || !master || !enabled) return;
+    if (zone === 3 && Math.random() < 0.35) {
+      // Two or three low grunts, a fish talking to its neighbours.
+      const n = 2 + Math.floor(Math.random() * 2);
+      for (let i = 0; i < n; i++) glide(110 + Math.random() * 30, 80, 0.12, i * 0.22);
+    } else if (zone === 1 && Math.random() < 0.3) {
+      glide(48, 38, 2.2, 0);
+    }
+  }
+  setInterval(zoneCall, 9000);
+
   /** A soft bell: a sine and its octave with a quick attack and long tail. */
   function bell(freq: number, gain: number, length = 1.6, at = 0): void {
     if (!ctx || !master || !enabled) return;
