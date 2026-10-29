@@ -511,3 +511,4 @@ date, what landed, what is half-done, what's next.
 - Ossel's requests: three more kinds (rising, signal, star); the bot skips them as it does touches.
 - Ossel's questions (content/ossel.ts QUESTIONS; state.asked; economy osselAsks/answerOssel; diary 'asked'): a card in choices.ts, the reply as a story, one ending page of what you told Ossel.
 - finale e2e: the save has one of Ossel's questions answered (its ending page is counted); reads up to 20 pages.
+- The reseeded sea: the chronicle card draws every ending as a reef islet on a spiral chart (ui/drawings.ts drawSeaChart; SEAMOUNT_TINT shared with the line chart).

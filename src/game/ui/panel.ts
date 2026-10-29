@@ -19,7 +19,7 @@ import { upgradeIcon } from './icons.ts';
 import { SHELL, SHELLS } from '../content/shells.ts';
 import { button, el } from './dom.ts';
 import { createChoices } from './choices.ts';
-import { drawCity, drawTablet } from './drawings.ts';
+import { drawCity, drawTablet, drawSeaChart, SEAMOUNT_TINT } from './drawings.ts';
 import { FEATS } from '../content/feats.ts';
 import { AWAY_CYCLES, AWAY_PREP, DREAM, NOTIFY, WELCOME, intruderOf } from '../content/events.ts';
 import { WATER } from '../content/waters.ts';
@@ -913,7 +913,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const chronicle = el('article', 'card codex chronicle');
   const chronHead = el('h3', '', 'The chronicle');
   const chronList = el('ol', 'diary-list');
-  chronicle.append(chronHead, chronList);
+  const seaChart = el('canvas', 'city-map sea-chart') as HTMLCanvasElement;
+  chronicle.append(chronHead, seaChart, chronList);
   collapsible(chronicle, chronHead);
   let chronKey = '';
   function renderChronicle(s: GameState): void {
@@ -923,6 +924,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     chronKey = key;
     chronHead.textContent = `The chronicle · ${s.meta.chronicle.length} ending${s.meta.chronicle.length === 1 ? '' : 's'}`;
     chronList.innerHTML = '';
+    drawSeaChart(seaChart, s.meta.chronicle);
     s.meta.chronicle.forEach((line, i) => {
       const [sm, ids, hours] = line.split('|');
       const names = (ids ?? '').split(',').map((id) => MEMORIES.find((m) => m.id === id)?.title ?? id).join(', ');
@@ -993,7 +995,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     lineChart.height = H * dpr;
     const c = lineChart.getContext('2d')!;
     c.scale(dpr, dpr);
-    const tint: Record<string, string> = { plain: '#c98a9a', warm: '#e0886a', cold: '#8ab8e0', crowded: '#b49ad8', hungry: '#b8ae96', silent: '#7f86a8', lonely: '#9fd8ff', buried: '#a9a49a', dark: '#6a6a90', shallow: '#f0c080' };
+    const tint = SEAMOUNT_TINT;
     const step = Math.min(34, (W - 8) / gens.length);
     gens.forEach((g, i) => {
       const x = 4 + step * (i + 0.5);

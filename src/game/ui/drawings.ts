@@ -130,3 +130,67 @@ export function drawTablet(c: HTMLCanvasElement, got: readonly number[]): void {
     }
   }
 }
+
+/** Seamount colours for the line's charts. */
+export const SEAMOUNT_TINT: Record<string, string> = {
+  plain: '#c98a9a', warm: '#e0886a', cold: '#8ab8e0', crowded: '#b49ad8', hungry: '#b8ae96', silent: '#7f86a8',
+  lonely: '#9fd8ff', buried: '#a9a49a', dark: '#6a6a90', shallow: '#f0c080',
+};
+
+/**
+ * The reseeded sea, from above: every ending of the line a small reef islet (a ring of shallows
+ * round a coloured heart, larger for each memory carried), placed outward on a slow spiral from
+ * the first, with the drift of each spawn to the next drawn as a dotted line.
+ */
+export function drawSeaChart(c: HTMLCanvasElement, chronicle: readonly string[]): void {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const W = c.clientWidth || 300, H = 140;
+  c.width = W * dpr;
+  c.height = H * dpr;
+  const g = c.getContext('2d')!;
+  g.scale(dpr, dpr);
+  // Open water: deep blue, lighter toward the middle, faint swell lines.
+  const bg = g.createRadialGradient(W / 2, H / 2, 10, W / 2, H / 2, W * 0.6);
+  bg.addColorStop(0, '#173c5e');
+  bg.addColorStop(1, '#081a2e');
+  g.fillStyle = bg;
+  g.fillRect(0, 0, W, H);
+  g.strokeStyle = 'rgba(160,200,240,0.07)';
+  for (let k = 0; k < 9; k++) {
+    g.beginPath();
+    for (let x = 0; x <= W; x += 8) {
+      const y = (k + 0.5) * (H / 9) + Math.sin(x * 0.04 + k * 1.7) * 3;
+      if (x === 0) g.moveTo(x, y);
+      else g.lineTo(x, y);
+    }
+    g.stroke();
+  }
+  const at = (i: number): [number, number] => {
+    const a = i * 2.399963, r = 12 + 26 * Math.sqrt(i);
+    return [W / 2 + Math.cos(a) * r * (W / H) * 0.55, H / 2 + Math.sin(a) * r * 0.55];
+  };
+  g.setLineDash([2, 3]);
+  g.strokeStyle = 'rgba(255,220,180,0.3)';
+  g.beginPath();
+  chronicle.forEach((_, i) => { const [x, y] = at(i); if (i === 0) g.moveTo(x, y); else g.lineTo(x, y); });
+  g.stroke();
+  g.setLineDash([]);
+  chronicle.forEach((line, i) => {
+    const [sm, ids] = line.split('|');
+    const n = (ids ?? '').split(',').filter(Boolean).length;
+    const [x, y] = at(i);
+    const r = 3 + n;
+    g.fillStyle = 'rgba(120,220,210,0.25)';
+    g.beginPath();
+    g.arc(x, y, r + 4, 0, Math.PI * 2);
+    g.fill();
+    g.fillStyle = SEAMOUNT_TINT[sm ?? 'plain'] ?? '#c98a9a';
+    g.beginPath();
+    g.arc(x, y, r, 0, Math.PI * 2);
+    g.fill();
+    g.fillStyle = 'rgba(255,245,230,0.8)';
+    g.font = '9px system-ui, sans-serif';
+    g.textAlign = 'center';
+    g.fillText(String(i + 1), x, y - r - 6);
+  });
+}
