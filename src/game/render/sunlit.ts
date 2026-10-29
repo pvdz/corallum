@@ -22,6 +22,9 @@ type Clump = { u: number; size: number; kind: number; hue: number };
 type Larva = { x: number; y: number; phase: number; speed: number };
 
 /** Each form's reef, its girth and its stone colours (shadow, flesh, highlight). */
+/** Length of a sunlit day, in seconds of scene time. */
+const DAY = 600;
+
 const FORM_LOOK: Record<CoralForm, { girth: number; palette: [string, string, string]; polyp: [string, string] }> = {
   fan: { girth: 1, palette: ['#3a1d33', '#c25a76', 'rgba(255,225,210,0.35)'], polyp: ['#ffd2c4', 'rgba(255,240,170,0.95)'] },
   branching: { girth: 0.9, palette: ['#3b2a18', '#d99a54', 'rgba(255,240,200,0.4)'], polyp: ['#7fe0c9', 'rgba(220,255,140,0.95)'] },
@@ -46,6 +49,7 @@ export function createSunlitScene(seed: number): Scene {
   };
   const shoals = createShoals(seed ^ 0x77);
   const water = createLayerCache(0.5);
+  let lastT = 0;
   const effects = createEffects();
   let bloom: Bloom | null = null;
   const fish: Fish[] = Array.from({ length: 14 }, () => ({
@@ -72,7 +76,8 @@ export function createSunlitScene(seed: number): Scene {
       cx: cx(), baseY: focus.y + focus.h * 0.97, unit: focus.h * tall, s: scale(), dpr,
       top: 0.35 + 0.65 * progress(v.height), bandStep: 0, palette: FORM_LOOK[form].palette,
       polyp: v.craft === 'fluorescent' ? FLUORESCENT_POLYP : FORM_LOOK[form].polyp,
-      glowScale: v.craft === 'fluorescent' ? 0.25 : 0, polypScale: 1.2,
+      // By night the reef's own light comes back (fluorescent reefs glow brighter still).
+      glowScale: (v.craft === 'fluorescent' ? 0.25 : 0) + 0.8 * nightAt(lastT), polypScale: 1.2,
     };
   }
 
@@ -180,6 +185,46 @@ export function createSunlitScene(seed: number): Scene {
         ctx.stroke();
       }
     }
+  }
+
+  /**
+   * The day: 10 minutes of scene time, mostly light, with a dusk, a short night and a dawn.
+   * Returns 0 (full day) … 1 (deep night).
+   */
+  function nightAt(t: number): number {
+    const u = (t % DAY) / DAY;
+    const ramp = (a: number, b: number) => Math.min(1, Math.max(0, (u - a) / (b - a)));
+    const x = u < 0.75 ? ramp(0.55, 0.68) : 1 - ramp(0.88, 0.98);
+    return x * x * (3 - 2 * x);
+  }
+
+  /**
+   * Night over the sunlit water: a deep blue veil (strong behind the reef, light in front of it)
+   * and the plankton's sparks, which only show in the dark.
+   */
+  function drawNight(ctx: CanvasRenderingContext2D, t: number, night: number, veil: number): void {
+    ctx.save();
+    ctx.fillStyle = `rgba(4,10,40,${veil * night})`;
+    ctx.fillRect(0, 0, w, h);
+    if (veil < 0.5) {
+      // Sparks in front: the plankton flashing when anything moves through it.
+      ctx.globalCompositeOperation = 'lighter';
+      const r = mulberry32(larvaSeed ^ 0x4e1);
+      for (let i = 0; i < 70; i++) {
+        const x = focus.x + r() * focus.w, y = focus.y + focus.h * (0.15 + 0.8 * r());
+        const ph = r() * 40;
+        const flash = Math.max(0, Math.sin(t * (0.6 + r()) + ph)) ** 12;
+        if (flash < 0.02) continue;
+        glow(ctx, x, y, 6 * scale(), '120,230,255', 0.7 * flash * night);
+      }
+      // The moon's path on the surface.
+      const g = ctx.createLinearGradient(0, 0, 0, focus.y + focus.h * 0.18);
+      g.addColorStop(0, `rgba(200,215,255,${0.12 * night})`);
+      g.addColorStop(1, 'rgba(200,215,255,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, focus.y + focus.h * 0.18);
+    }
+    ctx.restore();
   }
 
   /**
@@ -383,6 +428,8 @@ export function createSunlitScene(seed: number): Scene {
       const p = progress(v.height);
       const form = formOf(v.form);
       const reef = reefFor(form);
+      lastT = t;
+      const night = nightAt(t);
       const L = layout(v, form);
       water.draw(ctx, w, h, t, 0.2, `${w}x${h} ${p.toFixed(3)}`, (c, tq) => drawWater(c, tq, p));
       drawWhale(ctx, t);
@@ -392,12 +439,18 @@ export function createSunlitScene(seed: number): Scene {
       drawMeadows(ctx, t, v.meadows);
       drawTurtle(ctx, t, v.meadows);
       drawClumps(ctx, t);
+      if (night > 0) drawNight(ctx, t, night, 0.55);
       reef.draw(ctx, L, v, t);
       drawCraft(ctx, v.craft, reef, L, t, 1);
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
+      // Reef fish shelter in the branches at night.
+      ctx.save();
+      ctx.globalAlpha = 1 - 0.85 * night;
       drawFish(ctx, t);
+      ctx.restore();
       shoals.drawFront(ctx, focus, reef, L, v, t, '#5d7d96');
+      if (night > 0) drawNight(ctx, t, night, 0.4);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
     },
   };
