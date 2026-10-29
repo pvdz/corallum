@@ -305,30 +305,53 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (hist.length === chartLen || hist.length < 2) return;
     chartLen = hist.length;
     const dpr = Math.min(2, window.devicePixelRatio || 1);
-    const W = chart.clientWidth || 300, H = 70;
+    const W = chart.clientWidth || 300, H = 90;
     chart.width = W * dpr;
     chart.height = H * dpr;
     const c = chart.getContext('2d')!;
     c.scale(dpr, dpr);
     // Zones get equal bands, like the depth gauge, so the shallow zones are not squashed flat.
     const y = (m: number) => H - 4 - (H - 8) * gaugeFraction(m);
-    c.strokeStyle = 'rgba(150,200,255,0.12)';
-    c.lineWidth = 1;
-    for (const a of ACTS) {
-      c.beginPath();
-      c.moveTo(0, y(a.from));
-      c.lineTo(W, y(a.from));
-      c.stroke();
+    // Each zone a faint band of its own colour, named at the left edge.
+    const tints = ['rgba(60,50,140,0.16)', 'rgba(40,70,160,0.13)', 'rgba(40,120,190,0.12)', 'rgba(60,190,210,0.12)', 'rgba(220,170,230,0.12)'];
+    c.font = '9px system-ui, sans-serif';
+    c.textBaseline = 'middle';
+    for (const [i, a] of ACTS.entries()) {
+      const top = y(a.to), bottom = y(a.from);
+      c.fillStyle = tints[i] ?? 'rgba(255,255,255,0.05)';
+      c.fillRect(0, top, W, bottom - top);
+      c.fillStyle = 'rgba(190,210,240,0.35)';
+      c.fillText(a.name.replace(/^The /, ''), 4, (top + bottom) / 2);
     }
+    const px = (i: number) => (i / (hist.length - 1)) * W;
+    // A soft fill under the line, then the line.
+    const fill = c.createLinearGradient(0, 0, 0, H);
+    fill.addColorStop(0, 'rgba(255,194,176,0.28)');
+    fill.addColorStop(1, 'rgba(255,194,176,0)');
+    c.fillStyle = fill;
+    c.beginPath();
+    c.moveTo(0, H);
+    hist.forEach((m, i) => c.lineTo(px(i), y(m)));
+    c.lineTo(W, H);
+    c.closePath();
+    c.fill();
     c.strokeStyle = '#ffc2b0';
     c.lineWidth = 1.5;
     c.beginPath();
     hist.forEach((m, i) => {
-      const x = (i / (hist.length - 1)) * W;
-      if (i) c.lineTo(x, y(m));
-      else c.moveTo(x, y(m));
+      if (i) c.lineTo(px(i), y(m));
+      else c.moveTo(px(i), y(m));
     });
     c.stroke();
+    // Where the reef is now.
+    const last = hist[hist.length - 1]!;
+    c.fillStyle = '#ffe2d6';
+    c.shadowColor = 'rgba(255,194,176,0.9)';
+    c.shadowBlur = 6;
+    c.beginPath();
+    c.arc(W - 2.5, y(last), 2.5, 0, Math.PI * 2);
+    c.fill();
+    c.shadowBlur = 0;
   }
   // The journal of creatures seen (kept across spawnings).
   const journal = el('article', 'card codex journal');
