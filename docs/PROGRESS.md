@@ -647,3 +647,4 @@ date, what landed, what is half-done, what's next.
 - Today's visitor (economy visitor/visited; meta.day): one non-rare creature of the reef's zone each calendar day; its first touch that day brings +1 lineage; named on the Today line, a journal note when touched; sim test.
 - Today's visitor wears a slow silver halo in the world until touched.
 - Rasp favour Grind a hollow (20000 sand, once): +1 resident home.
+- Resident: a decorator crab (3000 m): lucky neighbours ×1.5; drawn at the reef's foot in its sponge and weed (freezes when touched).

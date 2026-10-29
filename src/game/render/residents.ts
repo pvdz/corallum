@@ -58,6 +58,7 @@ export function drawResidents(ctx: CanvasRenderingContext2D, reef: Reef, L: Reef
     else if (id === 'host-anemone') anemone(ctx, reef, L, s, t, seed);
     else if (id === 'cleaner-wrasse') wrasse(ctx, reef, L, s, t, seed);
     else if (id === 'boxer-crab') { if (floor) boxer(ctx, L, s, t, floor); }
+    else if (id === 'decorator-crab') { if (floor) decorator(ctx, L, s, t, floor); }
   }
   ctx.restore();
 }
@@ -205,6 +206,45 @@ function dusters(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s: nu
       ctx.stroke();
     }
   }
+}
+
+/** A decorator crab at the reef's foot, wearing sponge and weed; touched, it freezes, all legs in. */
+function decorator(ctx: CanvasRenderingContext2D, L: ReefLayout, s0: number, t: number, floor: (x: number) => number): void {
+  const s = s0 * 1.7;
+  const touch = startled('decorator-crab', t);
+  const still = touch && touch.age < 4;
+  const x = L.cx - 0.17 * L.unit + (still ? 0 : Math.sin(t * 0.25) * 6 * s), y = floor(x) - 1 * s;
+  spot('decorator-crab', x, y - 4 * s, 13 * s);
+  // Legs (pulled in when frozen).
+  ctx.strokeStyle = '#7a5a3a';
+  ctx.lineWidth = 0.9 * s;
+  for (let l = -1; l <= 1; l += 2)
+    for (let q = 0; q < 3; q++) {
+      const reach = still ? 2.5 : 5 + q * 0.8 + Math.sin(t * 3 + q + l) * 0.6;
+      ctx.beginPath();
+      ctx.moveTo(x + l * 2 * s, y - 2 * s);
+      ctx.lineTo(x + l * reach * s, y + 0.8 * s);
+      ctx.stroke();
+    }
+  // The body, hidden under what it wears.
+  ctx.fillStyle = '#8a6a48';
+  ctx.beginPath();
+  ctx.ellipse(x, y - 3.5 * s, 4.2 * s, 3 * s, 0, 0, Math.PI * 2);
+  ctx.fill();
+  const bits: [number, number, number, string][] = [[-2.5, -5.5, 1.8, '#e0a040'], [1.5, -6.5, 2, '#c05a6a'], [3.2, -4, 1.4, '#6aa060'], [-0.5, -3, 1.5, '#d8c8a0']];
+  for (const [bx, by, br, col] of bits) {
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    ctx.arc(x + bx * s, y + by * s, br * s, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  // A curl of weed waving from its back.
+  ctx.strokeStyle = '#5a9a5a';
+  ctx.lineWidth = 0.8 * s;
+  ctx.beginPath();
+  ctx.moveTo(x - 1 * s, y - 6 * s);
+  ctx.quadraticCurveTo(x - 3 * s + Math.sin(t) * 2 * s, y - 10 * s, x - 1 * s + Math.sin(t * 1.3) * 3 * s, y - 13 * s);
+  ctx.stroke();
 }
 
 /** A boxer crab at the reef's foot, an anemone in each claw, waving them; touched, it shakes them hard. */

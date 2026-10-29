@@ -194,4 +194,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Shells: murex, nautilus, tusk, top shell | real shells | OK |
 | A gleaming seamount; trial Fortune's child; moment The water like glass | this game's own systems | OK |
 | Trait Star-gazer | this game's own systems | OK |
+| Decorator crab resident | real animal | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

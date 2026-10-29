@@ -7,7 +7,7 @@ export type CreatureId =
   | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'sardine-run' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark' | 'oarfish' | 'flashlight-fish' | 'mantis-shrimp'
   | 'cuttlefish' | 'eagle-rays' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly' | 'tree-worms'
   | 'shore-bird' | 'pelican' | 'hatchlings' | 'green-flash' | 'flying-fish' | 'dolphin' | 'moon-jelly' | 'sailors' | 'petrel' | 'sea-sparkle' | 'moonbow' | 'far-storm' | 'giant-clam' | 'trumpetfish' | 'gulper' | 'sixgill' | 'meteors' | 'breathing-turtle'
-  | 'thorn-star' | 'dragonfish' | 'drill-snail' | 'gull' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish' | 'host-anemone' | 'cleaner-wrasse' | 'boxer-crab';
+  | 'thorn-star' | 'dragonfish' | 'drill-snail' | 'gull' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish' | 'host-anemone' | 'cleaner-wrasse' | 'boxer-crab' | 'decorator-crab';
 
 export type Creature = { id: CreatureId; name: string; zone: string; note: string };
 
@@ -97,6 +97,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'sea-cucumber', name: 'Sea cucumbers', zone: 'Residents', note: 'They eat the floor and leave it cleaner.' },
   { id: 'goby', name: 'Coral gobies', zone: 'Residents', note: 'Perched on the branches like birds, watching everything.' },
   { id: 'feather-duster', name: 'Feather dusters', zone: 'Residents', note: 'Crowns of feathers that vanish into their tubes at a shadow.' },
+  { id: 'decorator-crab', name: 'A decorator crab', zone: 'Residents', note: 'Touched, it freezes and becomes a small heap of rubbish, very convincingly.' },
   { id: 'boxer-crab', name: 'A boxer crab', zone: 'Residents', note: 'Touched, it shakes its two anemones at you like a pair of small fists.' },
   { id: 'cleaner-wrasse', name: 'Cleaner wrasse', zone: 'Residents', note: 'They dance to say the station is open. Even sharks hold still for them.' },
   { id: 'host-anemone', name: 'A host anemone', zone: 'Residents', note: 'Its clownfish never leave it. It never leaves them.' },
