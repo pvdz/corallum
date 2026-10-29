@@ -943,7 +943,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     el('p', 'hint', 'The reef saves itself every few seconds in this browser.'), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn,
     group('Sound'), volRow, buzzToggle,
     group('Display'), glowToggle, sharpToggle, calmToggle, bigToggle, sciToggle, habitToggle,
-    el('p', 'hint', 'Hold a buy button to keep buying. Keys (? lists them): Space sweeps · 1–4 switch tabs · H hides the panel · F catches a falling feast · P buds a polyp · B lays a band · G hosts glimmerseed.'),
+    el('p', 'hint', 'Hold a buy button to keep buying. Keys (? lists them): Space sweeps · 1–4 switch tabs · H hides the panel · F catches a falling feast · E sends an expedition · P buds a polyp · B lays a band · G hosts glimmerseed.'),
     group('Start over'), resetBtn,
   );
 
