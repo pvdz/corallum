@@ -568,3 +568,5 @@ html.view-mode #photo { display: grid; }
     rgba(255, 225, 210, 0.3) 5px 6px, rgba(var(--zone-tint), 0.9) 6px 7px, rgba(255, 190, 170, 0.22) 7px 9px);
   box-shadow: 0 1px 10px rgba(255, 190, 170, 0.3);
 }
+.away-list { text-align: left; margin: 0 auto 10px; max-width: 360px; font-size: 14px; }
+.away .hint { margin-bottom: 16px; }

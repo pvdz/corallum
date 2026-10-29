@@ -250,3 +250,4 @@ date, what landed, what is half-done, what's next.
 - Moon card: the next four full moons as a strip, great tides marked in gold.
 - Refactor: player settings moved to client/settings.ts (setting(key, fallback, onChange(value, initial))), replacing eight hand-written localStorage blocks; same keys and values, so existing settings carry over. Verified toggles persist across reload.
 - The line's record: fastest climb to the surface in reef time (meta.fastest), set by the sim at the exact crossing time (closed-form height), so offline catch-up records it exactly too; shown in Your line; beating it shows 'A new record'.
+- Away summary as a headline plus labelled rows (calcite, glow, rose, new bands, when full) and the lattice tip; a zone title waits until the away summary or a story is closed.

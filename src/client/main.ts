@@ -527,6 +527,11 @@ function setZoneTint(n: number): void {
 setZoneTint(actAt(state.height));
 
 function showZoneTitle(n: number): void {
+  // Not behind the away summary or a story: wait until it is closed, so the title is seen.
+  if (document.querySelector('.away:not([hidden]), .reader:not([hidden])')) {
+    setTimeout(() => showZoneTitle(n), 500);
+    return;
+  }
   const a = act(n);
   zoneTitle.innerHTML = '';
   const num = document.createElement('span');

@@ -651,12 +651,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   away.hidden = true;
   const awayCard = el('div', 'reader-card');
   const awayText = el('p', 'reader-text');
+  const awayList = el('dl', 'codex-list away-list');
+  const awayHint = el('p', 'hint');
   const awayClose = button('plain', 'Return to the reef', () => {
     away.hidden = true;
     const next = queue.shift();
     if (next) openStory(next);
   });
-  awayCard.append(el('h2', '', 'While you drifted'), awayText, awayClose);
+  awayCard.append(el('h2', '', 'While you drifted'), awayText, awayList, awayHint, awayClose);
   away.append(awayCard);
   host.append(away);
   // Escape closes whichever card is open.
@@ -1009,17 +1011,19 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     },
     /** Show the offline summary; any bands read while away are queued behind it. */
     showAway(seconds: number, gained: { calcite: number; glow: number; metres: number; full: boolean; bands: string[]; fullAfter: number | null }): void {
-      const parts = [`You were gone ${duration(seconds)}. The reef kept growing.`];
-      parts.push(`+${num(gained.calcite)} calcite gathered${gained.glow > 0.5 ? `, +${num(gained.glow)} glow` : ''}.`);
-      if (gained.metres > 0.05) parts.push(`It rose ${metres(gained.metres)}.`);
+      // A headline, then what changed as labelled rows (like the Your reef card).
+      awayText.textContent = `You were gone ${duration(seconds)}. The reef kept growing.`;
+      awayList.innerHTML = '';
+      const row = (term: string, value: string) => awayList.append(el('dt', '', term), el('dd', '', value));
+      row('Calcite', `+${num(gained.calcite)}`);
+      if (gained.glow > 0.5) row('Glow', `+${num(gained.glow)}`);
+      if (gained.metres > 0.05) row('Rose', metres(gained.metres));
       const titles = gained.bands.map((id) => BANDS.find((b) => b.id === id)?.title).filter((x): x is string => !!x);
-      if (titles.length) {
-        parts.push(titles.length === 1
-          ? `It laid down a band worth reading: “${titles[0]}”.`
-          : `It laid down ${titles.length} bands worth reading: ${titles.map((t) => `“${t}”`).join(', ')}.`);
-      }
-      if (gained.full) parts.push(`Its stores filled to what the reef can hold${gained.fullAfter !== null && gained.fullAfter > 60 ? ` after about ${duration(gained.fullAfter)}` : ''}, and the rest dissolved back into the sea. A denser lattice holds more.`);
-      awayText.textContent = parts.join(' ');
+      if (titles.length) row(titles.length === 1 ? 'New band' : 'New bands', titles.map((t) => `“${t}”`).join(', '));
+      if (gained.full) {
+        row('Full', `the stores filled${gained.fullAfter !== null && gained.fullAfter > 60 ? ` after ${duration(gained.fullAfter)}` : ''}; the rest dissolved back into the sea`);
+        awayHint.textContent = 'A denser lattice holds more while you are away.';
+      } else awayHint.textContent = '';
       away.hidden = false;
     },
     /** List the bands and readings of a loaded save without opening the reader for each. */
