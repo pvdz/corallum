@@ -502,3 +502,4 @@ date, what landed, what is half-done, what's next.
 - systems e2e: the Sunlit page is bot=17000 (the bot now reaches the Breach by 19000 s), and story cards are closed after moving the clock to a shell.
 - Tab dot marks a rising waiting. Hard seamount 'shallow' (Seamount.heat ×2 → economy heatLength used everywhere a spell's length was), trial to 3950 m → passed('shallow') halves open bleaching; moment 'heatwave' (bloom fade ×0.85 / calcite ×1.1).
 - The line remembers moment answers (meta.seen 'm:<id>:<a|b>'): the moment card marks a way chosen before; feat 'Both ways' (every moment both ways, across the line).
+- Trip encounters (expeditions.ts ENCOUNTERS, ForkId; economy currentEncounter/takeFork; homecoming reads the way): passage, squid, lights, sponges. The fork card fills from the encounter.

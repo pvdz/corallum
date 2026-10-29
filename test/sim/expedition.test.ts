@@ -113,6 +113,38 @@ test('the fork: pressing on makes the trip half again as long and brings a shard
   assert.ok(s.meta.shards.length >= 1);
 });
 
+test('encounters on later trips: following the lost lights brings two shoals home, slipping past hears half', async () => {
+  const { currentEncounter, forkOpen, takeFork } = await import('../../src/game/sim/economy.ts');
+  const base = atGate();
+  send(base);
+  advance(base, 1000);
+  assert.deepEqual(base.relics, ['gate']);
+  // Find reefs (seeds) whose next trip meets the lights, and the squid.
+  const tripWith = (id: string) => {
+    for (let seed = 1; seed < 400; seed++) {
+      const s = structuredClone(base);
+      s.seed = seed;
+      if (!canSend(s)) s.glow = 1e12;
+      if (!send(s)) continue;
+      advance(s, (s.expedition.back - s.t) / 2 + 1);
+      if (forkOpen(s) && currentEncounter(s).id === id) return s;
+    }
+    throw new Error(`no trip meets ${id}`);
+  };
+  const lights = tripWith('lights');
+  const shoals = lights.levels.shoal;
+  assert.equal(takeFork(lights, 'press'), false, 'only this encounter\'s ways');
+  assert.ok(takeFork(lights, 'follow'));
+  advance(lights, 5000);
+  assert.equal(lights.levels.shoal, shoals + 2);
+  const squid = tripWith('squid'), quiet = structuredClone(squid);
+  const m0 = squid.earned.murmurs;
+  assert.ok(takeFork(squid, 'slip') && takeFork(quiet, 'wait'));
+  assert.ok(squid.expedition.back < quiet.expedition.back);
+  advance(squid, 5000);
+  assert.ok(squid.earned.murmurs > m0);
+});
+
 test('shells: one per slot on the Sunlit sand, new kinds first, kept by the line', async () => {
   const { currentShell, pickShell, knownBonus } = await import('../../src/game/sim/economy.ts');
   const { state: s } = runBot((x) => x.height >= 3850, 12 * 3600, { ventures: false });

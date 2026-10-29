@@ -233,7 +233,7 @@ const panel = createPanel(ui, {
   },
   takeFork(how) {
     if (!takeFork(state, how)) return;
-    audio.cue(how === 'press' ? 'depart' : 'choice');
+    audio.cue(how === 'press' || how === 'wait' || how === 'follow' || how === 'gather' ? 'depart' : 'choice');
     save();
   },
   chooseSport(id) {

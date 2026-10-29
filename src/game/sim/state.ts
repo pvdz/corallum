@@ -1,5 +1,6 @@
 // The whole game state. Plain JSON-able data so saving is a stringify.
 
+import type { ForkId } from '../content/expeditions.ts';
 import type { GrainId, SportId } from '../content/act1.ts';
 import type { FigureId } from '../content/sky.ts';
 import type { Job, ReadingId } from '../content/act2.ts';
@@ -157,7 +158,7 @@ export type GameState = {
   /** Shoals away at a ruin: the site ('' for none), when they return, and the jobs they left. */
   expedition: { site: TripId | ''; back: number; feed: number; light: number; scout: number; n: number;
     /** The fork halfway: '' not met yet, 'press' went deeper, 'home' came straight back. */
-    fork: '' | 'press' | 'home' };
+    fork: '' | ForkId };
   /** Ossel's current request (kind '' for none yet), its count at the start, and how many are done; `paid` is what the last one brought. */
   request: { kind: RequestKind | ''; n: number; base: number; done: number; paid: number; skipped: number; streak: number };
   /** Counters the requests watch, and how many times the silt was searched for a shard. */

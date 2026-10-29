@@ -2,6 +2,7 @@
 // reader and the away summary. Built once; `update()` only rewrites text and classes, so it
 // is cheap to call every frame.
 
+import type { ForkId } from '../content/expeditions.ts';
 import { FIGURES, type FigureId } from '../content/sky.ts';
 import { ACT1, FLURRY, GRAINS, MILESTONES, SPORTS, STRAINS, type GrainId, type SportId, type StrainId } from '../content/act1.ts';
 import type { Band, Currency, UpgradeId } from '../content/types.ts';
@@ -54,7 +55,7 @@ export type PanelHooks = {
   /** Answer the Rasp elder's riddle; true if right. */
   answerRiddle(id: RiddleId, choice: number): boolean;
   /** Take the fork on a trip. */
-  takeFork(how: 'press' | 'home'): void;
+  takeFork(how: ForkId): void;
   /** Choose the glimmerseed strain. */
   chooseStrain(id: StrainId): void;
   chooseGrain(id: GrainId): void;

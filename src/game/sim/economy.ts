@@ -33,7 +33,7 @@ import { SHELL, SHELLS } from '../content/shells.ts';
 import { SHARD, SHARD_LINES, type ShardSource } from '../content/shards.ts';
 import { REQUEST, REQUESTS, type RequestKind } from '../content/requests.ts';
 import { MOMENTS, type MomentId } from '../content/moments.ts';
-import { CARCASS, EXPEDITION, ROAM, ROAM_TALES, SITES, VISIT, type Site, type SiteId } from '../content/expeditions.ts';
+import { CARCASS, EXPEDITION, ROAM, ROAM_TALES, SITES, VISIT, type Site, type SiteId, ENCOUNTERS, type Encounter, type ForkId } from '../content/expeditions.ts';
 import type { Band, Currency, UpgradeDef, UpgradeId } from '../content/types.ts';
 import { UPGRADES } from '../content/upgrades.ts';
 import { equilibrium, relax } from './ode.ts';
@@ -735,12 +735,21 @@ export function forkOpen(s: GameState): boolean {
   return ex.back - s.t <= total / 2;
 }
 
-/** Take the fork: press on (the trip ×1.5, a sure shard) or come straight home. */
-export function takeFork(s: GameState, how: 'press' | 'home'): boolean {
+/** What the shoals have met on this trip (the first trip of a reef always finds the passage). */
+export function currentEncounter(s: GameState): Encounter {
+  if (s.relics.length === 0) return ENCOUNTERS[0]!;
+  const r = mulberry32((s.seed ^ 0xe1c0) + Math.imul(Math.floor(s.expedition.back), 0x9e3779b1));
+  return ENCOUNTERS[Math.floor(r() * ENCOUNTERS.length)]!;
+}
+
+/** Take one of the encounter's two ways: it lengthens (or shortens) the trip and changes what comes home. */
+export function takeFork(s: GameState, how: ForkId): boolean {
   if (!forkOpen(s)) return false;
+  const way = currentEncounter(s).ways.find((w) => w.id === how);
+  if (!way) return false;
   const x = SITES.find((v) => v.id === s.expedition.site)!;
   s.expedition.fork = how;
-  if (how === 'press') s.expedition.back += tripSeconds(s, x) * 0.5;
+  s.expedition.back = Math.max(s.t, s.expedition.back + tripSeconds(s, x) * way.time);
   return true;
 }
 
@@ -751,7 +760,7 @@ function homecoming(s: GameState): void {
   const roam = ex.site === 'roam', visit = ex.site === 'visit', carcass = ex.site === 'carcass';
   const pressed = ex.fork === 'press';
   const seconds = (roam ? ROAM.seconds : visit ? VISIT.seconds : carcass ? CARCASS.seconds : x?.seconds ?? 0) * tripFactor(s);
-  const heard = EXPEDITION.heard * ex.n * seconds;
+  const heard = EXPEDITION.heard * ex.n * seconds * (ex.fork === 'wait' ? 1.5 : ex.fork === 'slip' ? 0.5 : 1);
   s.jobs.feed += ex.feed;
   s.jobs.light += ex.light;
   s.jobs.scout += ex.scout;
@@ -784,6 +793,13 @@ function homecoming(s: GameState): void {
     return;
   }
   if (!x) return;
+  // Stragglers followed home join the shoals; a sponge garden gathered feeds the reef.
+  if (ex.fork === 'follow') {
+    const n = Math.max(0, Math.min(2, (seamount(s).shoalCap ?? Infinity) - s.levels.shoal));
+    s.levels.shoal += n;
+    s.jobs.feed += n;
+  }
+  if (ex.fork === 'gather') burst(s, 60);
   // Pressing on at the fork turns up a shard for sure, if any are left.
   if (pressed) {
     const left = SHARD_LINES.map((_, i) => i).filter((i) => !s.meta.shards.includes(i));

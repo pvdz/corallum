@@ -121,8 +121,11 @@ and a lasting effect for this reef (bands ×0.85, plankton eaten ×0.75, lure +1
 murmurs fade ×0.5, Rasp sand ×1.3). The verb is committing: a costly pause for something lasting,
 best timed before going away. When no ruin is in reach (the next too high, or all five found) the
 shoals can **roam**: a quarter of them (at least 4) for 10 minutes, murmurs and a 35% shard chance,
-repeatable. Halfway to a ruin the shoals find a fork: press on (trip ×1.5, a sure shard) or come straight
-home (the default if unanswered). When the sister reef is near your depth the shoals can **visit** it instead (once per zone,
+repeatable. Halfway to a ruin the shoals meet something (seeded per trip; a reef's first trip always
+finds the passage), with two ways, the second the default if unanswered: the passage (press on: trip
+×1.5, a sure shard / home as planned), a sleeping squid (wait: ×1.3, hear ×1.5 / slip past: ×0.75, hear
+×0.5), lost lights (follow: ×1.3, +2 shoals / carry on), a sponge garden (gather: ×1.2, a minute of
+calcite / leave it). When the sister reef is near your depth the shoals can **visit** it instead (once per zone,
 8 minutes, +1 lineage). Once the whale has come down (a moment) they can feed at the **whale fall** once
 (10 minutes, 5 minutes of calcite). Shoals come back **seasoned**: feeding and light ×(1 + 0.02 per trip, at most 20 trips).
 Shown in the world as a stream of shoal lights leaving for the

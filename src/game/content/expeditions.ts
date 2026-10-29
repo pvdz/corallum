@@ -22,6 +22,48 @@ export type Site = {
   text: string;
 };
 
+/** What the shoals can meet halfway to a ruin: one per trip, seeded (the first trip always finds the passage). */
+export type ForkId = 'press' | 'home' | 'wait' | 'slip' | 'follow' | 'carry-on' | 'gather' | 'leave';
+export type Encounter = {
+  id: string; kicker: string; text: string;
+  /** Each way: what it costs in time (a share of the trip, added; negative is quicker) and what it brings. */
+  ways: readonly [{ id: ForkId; label: string; effect: string; time: number }, { id: ForkId; label: string; effect: string; time: number }];
+};
+export const ENCOUNTERS: readonly Encounter[] = [
+  {
+    id: 'passage', kicker: 'The shoals have found a passage',
+    text: 'Halfway there, a crack in the old wall goes deeper than the shoals have been.',
+    ways: [
+      { id: 'press', label: 'Press on', effect: 'the trip ×1.5 · a shard, if any are left', time: 0.5 },
+      { id: 'home', label: 'Come straight home', effect: 'as planned', time: 0 },
+    ],
+  },
+  {
+    id: 'squid', kicker: 'Something asleep across the way',
+    text: 'A giant squid lies coiled across the old street, arms drifting. The shoals hang back, lamps dimmed.',
+    ways: [
+      { id: 'wait', label: 'Wait for it to wake and go', effect: 'the trip ×1.3 · they hear ×1.5 while they wait', time: 0.3 },
+      { id: 'slip', label: 'Slip past, lamps out', effect: 'the trip ×0.75 · they hear ×0.5', time: -0.25 },
+    ],
+  },
+  {
+    id: 'lights', kicker: 'Lights in a side tunnel',
+    text: 'Down a side tunnel, a few lamps blink in a rhythm the shoals almost know: stragglers, lost in the ruin.',
+    ways: [
+      { id: 'follow', label: 'Go after them', effect: 'the trip ×1.3 · +2 shoals come home', time: 0.3 },
+      { id: 'carry-on', label: 'Carry on', effect: 'as planned', time: 0 },
+    ],
+  },
+  {
+    id: 'sponges', kicker: 'A garden in the dark',
+    text: 'A hall full of glass sponges, grown over the ages into a forest of white lace. Things live in it.',
+    ways: [
+      { id: 'gather', label: 'Gather what lives there', effect: 'the trip ×1.2 · a minute of calcite when they are home', time: 0.2 },
+      { id: 'leave', label: 'Leave it as it is', effect: 'as planned', time: 0 },
+    ],
+  },
+];
+
 export const EXPEDITION = {
   /** Shoals come back seasoned: feeding and light ×(1 + this × trips), at most `seasonedMax` trips. */
   seasoned: 0.02,
@@ -31,10 +73,6 @@ export const EXPEDITION = {
   heard: 0.5,
   label: 'Expeditions',
   heirLabel: 'What it carries',
-  forkKicker: 'The shoals have found a passage',
-  forkText: 'Halfway there, a crack in the old wall goes deeper than the shoals have been.',
-  press: { label: 'Press on', effect: 'the trip ×1.5 · a shard, if any are left' },
-  home: { label: 'Come straight home', effect: 'as planned' },
   /** Calling the shoals home early: glow per second of the trip still to go. */
   callPerSecond: 5,
   call: 'Call them home',

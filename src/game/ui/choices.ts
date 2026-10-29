@@ -7,10 +7,9 @@ import { RIDDLE } from '../content/act3.ts';
 import { OTHERS } from '../content/act4.ts';
 import { actAt } from '../content/acts.ts';
 import { SIGNAL } from '../content/events.ts';
-import { EXPEDITION } from '../content/expeditions.ts';
 import { BOON_TEXT } from '../content/lineage.ts';
 import { FIGURES, SKY } from '../content/sky.ts';
-import { grainsWaiting, sportOpen, boonsOffered, figureOpen, skyOpen, currentRiddle, currentSignal, forkOpen, othersCap, othersSpawning, strainOpen } from '../sim/economy.ts';
+import { currentEncounter, grainsWaiting, sportOpen, boonsOffered, figureOpen, skyOpen, currentRiddle, currentSignal, forkOpen, othersCap, othersSpawning, strainOpen } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { button, el } from './dom.ts';
 import { num } from './format.ts';
@@ -83,12 +82,18 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
   const forkBox = el('section', 'truce moment fork');
   forkBox.hidden = true;
   const forkChoices = el('div', 'truce-choices');
-  for (const how of ['press', 'home'] as const) {
-    const b = button('choice', '', () => hooks.takeFork(how));
-    b.append(el('strong', '', EXPEDITION[how].label), el('span', '', EXPEDITION[how].effect));
+  const forkKicker = el('p', 'truce-kicker'), forkText = el('p', 'truce-text');
+  // The encounter changes per trip: its two ways are filled in when it shows.
+  const forkWays = [0, 1].map((i) => {
+    const label = el('strong'), effect = el('span');
+    const b = button('choice', '', () => { if (lastFork) hooks.takeFork(currentEncounter(lastFork).ways[i]!.id); });
+    b.append(label, effect);
     forkChoices.append(b);
-  }
-  forkBox.append(el('p', 'truce-kicker', EXPEDITION.forkKicker), el('p', 'truce-text', EXPEDITION.forkText), forkChoices);
+    return { label, effect };
+  });
+  let lastFork: GameState | null = null;
+  let forkShown = '';
+  forkBox.append(forkKicker, forkText, forkChoices);
   grow.prepend(forkBox);
 
   // ---------- The shoals' signal (a little memory game) ----------
@@ -195,6 +200,16 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
       }
       setShown(strainBox, strainOpen(s));
       setShown(forkBox, forkOpen(s));
+      if (forkOpen(s)) {
+        lastFork = s;
+        const enc = currentEncounter(s);
+        if (enc.id !== forkShown) {
+          forkShown = enc.id;
+          forkKicker.textContent = enc.kicker;
+          forkText.textContent = enc.text;
+          enc.ways.forEach((w, i) => { forkWays[i]!.label.textContent = w.label; forkWays[i]!.effect.textContent = w.effect; });
+        }
+      }
       const rd = currentRiddle(s);
       if (rd && rd.id !== riddleShown) {
         riddleShown = rd.id;
