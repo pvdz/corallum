@@ -1558,6 +1558,8 @@ photoBtn.addEventListener('click', () => {
     a.download = `${who}-${Math.round(state.height)}m.png`;
     if (!state.meta.seen.includes('did:photo')) state.meta.seen.push('did:photo');
     if (actAt(state.height) === 2 && !state.meta.seen.includes('did:photo-dark')) state.meta.seen.push('did:photo-dark');
+    const zoneShot = `did:photo-z${actAt(state.height)}`;
+    if (!state.meta.seen.includes(zoneShot)) state.meta.seen.push(zoneShot);
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
     audio.cue('buy');
