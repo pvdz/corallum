@@ -269,3 +269,4 @@ date, what landed, what is half-done, what's next.
 - Whale fall alive: bacterial mats, red bone-eating worm fuzz swaying along the spine, a hagfish weaving through the ribs, a crab on the skull.
 - Photo journal (client/portraits.ts): the first good look at each tappable creature is cropped from the canvas (112 px JPEG) and kept in localStorage 'corallum.portraits' (memory only in ephemeral sessions; cleared by reset). The journal is rows now: portrait, name, note; unknown entries are one-line hints.
 - Tappable (and portrait-able): one lanternfish shoal, sunlit reef fish, the warm seamount's smokers, the cold seamount's brine pool.
+- Moon craters reworked: small asymmetric pits with a lit rim and one bright rayed crater (the first version read as a smiling face at full moon).

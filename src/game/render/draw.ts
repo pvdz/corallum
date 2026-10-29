@@ -70,17 +70,32 @@ export function drawMoon(ctx: CanvasRenderingContext2D, x: number, y: number, r:
     }
   }
   if (r > 12) {
-    ctx.lineWidth = Math.max(0.6, r * 0.025);
+    // Small pits, darker inside with a lit lower rim; one young bright crater with faint rays.
     for (const [cx, cy, cr] of CRATERS) {
-      ctx.strokeStyle = 'rgba(120,118,110,0.45)';
+      ctx.fillStyle = 'rgba(125,124,118,0.32)';
       ctx.beginPath();
-      ctx.arc(x + cx * r, y + cy * r, cr * r, 0.3, Math.PI + 0.3);
-      ctx.stroke();
-      ctx.strokeStyle = 'rgba(255,255,245,0.5)';
+      ctx.arc(x + cx * r, y + cy * r, cr * r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,248,0.35)';
+      ctx.lineWidth = Math.max(0.5, r * 0.015);
       ctx.beginPath();
-      ctx.arc(x + cx * r, y + cy * r, cr * r, Math.PI + 0.3, 0.3);
+      ctx.arc(x + cx * r, y + cy * r, cr * r, 0.2, 1.6);
       ctx.stroke();
     }
+    const [bx, by] = [x - 0.18 * r, y + 0.62 * r];
+    ctx.strokeStyle = 'rgba(255,255,250,0.18)';
+    ctx.lineWidth = Math.max(0.5, r * 0.012);
+    for (let k = 0; k < 7; k++) {
+      const a = k * 0.9 + 0.3;
+      ctx.beginPath();
+      ctx.moveTo(bx, by);
+      ctx.lineTo(bx + Math.cos(a) * r * 0.45, by + Math.sin(a) * r * 0.45);
+      ctx.stroke();
+    }
+    ctx.fillStyle = 'rgba(255,255,250,0.7)';
+    ctx.beginPath();
+    ctx.arc(bx, by, r * 0.035, 0, Math.PI * 2);
+    ctx.fill();
   }
   const limb = ctx.createRadialGradient(x, y, r * 0.55, x, y, r);
   limb.addColorStop(0, 'rgba(0,0,0,0)');
@@ -105,4 +120,4 @@ const MARIA: readonly [number, number, number][] = [
   [-0.32, -0.38, 0.22], [0.02, -0.2, 0.17], [0.28, 0.02, 0.15], [-0.18, 0.18, 0.2], [0.42, -0.38, 0.09], [-0.52, 0.0, 0.11],
   [0.12, 0.22, 0.1], [-0.35, -0.08, 0.12],
 ];
-const CRATERS: readonly [number, number, number][] = [[0.15, 0.6, 0.1], [-0.55, 0.45, 0.07], [0.6, 0.35, 0.06], [-0.05, 0.45, 0.05]];
+const CRATERS: readonly [number, number, number][] = [[0.42, 0.48, 0.07], [-0.62, 0.28, 0.05], [0.58, -0.12, 0.045], [0.2, -0.66, 0.04], [-0.4, 0.62, 0.035]];
