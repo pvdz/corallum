@@ -581,3 +581,4 @@ date, what landed, what is half-done, what's next.
 - Every fourth knob of old stone let go held one of the reef's own bands (economy oldHeld; diary.ts diaryLine shared with the panel): shown as a journal note ahead of the queue.
 - Once the cold-slide moment is met, every seven minutes a river of cold water pours down the Twilight slope for 50 s (twilight.ts drawColdSlide).
 - Three trip encounters (expeditions.ts): wall (stop and listen: ×1.4 time, hear ×2), hunter (scatter: ×1.1, hear ×0.5; dazzle: half the glow, ×0.8), store (break it open: ×1.4, five minutes of calcite at homecoming).
+- A near foreground in the Twilight Shelf and Sunlit Crown (render/foreground.ts): a sea fan and weed blades in the bottom corners, dark, swaying, painted at quarter resolution so they read out of focus.

@@ -19,6 +19,7 @@ import { glow } from './draw.ts';
 import { drawCraft, FLUORESCENT_POLYP } from './craft.ts';
 import { drawColony, drawDaughters } from './daughters.ts';
 import { createLayerCache } from './layer.ts';
+import { createForeground } from './foreground.ts';
 import { createReef, type Reef, type ReefLayout } from './reef.ts';
 import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts';
 import { createShoals } from './shoals.ts';
@@ -58,6 +59,7 @@ export function createSunlitScene(seed: number): Scene {
   };
   const shoals = createShoals(seed ^ 0x77);
   const water = createLayerCache(0.5);
+  const fore = createForeground(seed);
   const slugs = createSlugs(7);
   let lastT = 0;
   const effects = createEffects();
@@ -1539,6 +1541,7 @@ export function createSunlitScene(seed: number): Scene {
       if (night > 0) drawNight(ctx, t, night, 0.3);
       drawPearls(ctx, t, night);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
+      fore.draw(ctx, focus, t, '8,40,58', 0.75);
     },
   };
 }

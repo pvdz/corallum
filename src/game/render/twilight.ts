@@ -17,6 +17,7 @@ import { glow, speck } from './draw.ts';
 import { drawDaughters } from './daughters.ts';
 import { createGround } from './ground.ts';
 import { createLayerCache } from './layer.ts';
+import { createForeground } from './foreground.ts';
 import { createReef, type Reef, type ReefLayout } from './reef.ts';
 import { createRuins, type RuinStyle } from './ruins.ts';
 import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts';
@@ -58,6 +59,7 @@ export function createTwilightScene(seed: number): Scene {
     u: (i < 11 ? 0.12 : 0.72) + rng() * 0.16, len: range(rng, 22, 36), light: rng() < 0.6,
   }));
   const water = createLayerCache(0.5);
+  const fore = createForeground(seed);
   const slugs = createSlugs(7);
   const ruins = createRuins(seed);
   const effects = createEffects();
@@ -1599,6 +1601,7 @@ export function createTwilightScene(seed: number): Scene {
       if (night > 0) drawNight(ctx, t, night, 0.2);
       if (night > 0.4) drawFlashlightFish(ctx, t, night);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
+      fore.draw(ctx, focus, t, '4,12,30', 0.85);
       vignette(ctx);
     },
   };
