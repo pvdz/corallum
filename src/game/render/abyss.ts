@@ -2,7 +2,7 @@
 // Everything is generated from a seed; `draw` is a pure function of (view, t) so a given
 // seed, state and time always render the same frame — screenshots rely on that.
 
-import { sight, spot } from './sightings.ts';
+import { sight, spot, startled } from './sightings.ts';
 import { mulberry32, range, type Rng } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow } from './draw.ts';
@@ -197,6 +197,8 @@ export function createAbyssScene(seed: number): Scene {
     const s = scale();
     sight('smokers');
     spot('smokers', focus.x + focus.w * 0.66, baseY() - 20 * s, 50 * s);
+    // Touched, the nearest chimneys belch: a thick burst of smoke and a flare at the throat.
+    const touch = startled('smokers', t);
     for (const [k, u] of [0.06, 0.12, 0.62, 0.7, 0.94].entries()) {
       const x = focus.x + focus.w * u, base = baseY() + 6 * s;
       const hgt = (34 + (k % 3) * 12) * s, wid = (7 + (k % 2) * 3) * s;
@@ -215,9 +217,19 @@ export function createAbyssScene(seed: number): Scene {
         ctx.arc(x + Math.sin(t + p + k) * 4 * s * q, base - hgt - q * 70 * s, (3 + q * 9) * s, 0, Math.PI * 2);
         ctx.fill();
       }
+      const belch = touch && touch.age < 4 && Math.abs(touch.x - x) < focus.w * 0.12 ? touch.age : -1;
+      if (belch >= 0) {
+        for (let p = 0; p < 6; p++) {
+          const q = Math.min(1, belch / 3 + p * 0.05);
+          ctx.fillStyle = `rgba(40,32,42,${0.7 * (1 - q)})`;
+          ctx.beginPath();
+          ctx.arc(x + Math.sin(p * 2.3) * 8 * s * q, base - hgt - q * 90 * s - p * 4 * s, (6 + q * 18) * s, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
-      glow(ctx, x, base - hgt, 10 * s, '255,120,60', 0.3 + 0.1 * Math.sin(t * 2 + k));
+      glow(ctx, x, base - hgt, 10 * s, '255,120,60', 0.3 + 0.1 * Math.sin(t * 2 + k) + (belch >= 0 ? 0.6 * Math.max(0, 1 - belch) : 0));
       ctx.restore();
     }
   }
@@ -250,6 +262,19 @@ export function createAbyssScene(seed: number): Scene {
       ctx.stroke();
     }
     ctx.globalAlpha = 1;
+    // Touched, rings run out across the heavy brine from where the touch fell.
+    const touch = startled('brine-pool', t);
+    if (touch && touch.age < 3) {
+      for (let k = 0; k < 3; k++) {
+        const a = touch.age - k * 0.35;
+        if (a < 0) continue;
+        const rr = a * 30 * s;
+        ctx.strokeStyle = `rgba(220,240,255,${0.5 * Math.max(0, 1 - a / 2.5)})`;
+        ctx.beginPath();
+        ctx.ellipse(touch.x, y, Math.min(rr, rx), Math.min(rr, rx) * (ry / rx), 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
     // Mussels crowding the rim.
     ctx.fillStyle = '#2a2638';
     for (let k = 0; k < 30; k++) {

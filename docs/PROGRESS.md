@@ -287,3 +287,4 @@ date, what landed, what is half-done, what's next.
 - Touching pays a little: +1% calcite per creature touched (knownBonus), on top of +2% per creature seen; Ossel does not count. ECONOMY.md: journal and Shared table.
 - Journal heading counts creatures touched.
 - Stocks explain themselves: hover (title) or tap a stock for a short note under the stocks (content/guide.ts STOCK_NOTES); tap again to close, gone after 8 s.
+- Touch: the warm seamount's smokers belch a burst of smoke with a flare; the brine pool rings out from the touch.
