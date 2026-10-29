@@ -386,3 +386,4 @@ date, what landed, what is half-done, what's next.
 - Test chaos.test.ts: a whole game of random choices (moments, residents, favours, works, request swaps, trips, full-moon choices, intruders) plus a month away keeps every stock and rate finite and non-negative (0.6 s).
 - Boons: lineage.ts BOONS, economy boonsOffered/chooseBoon, state.boon; card at the top of Grow on reefs after the first; the bot takes the first.
 - 'Soon' line in the water box: the next feast, intruder and full moon with countdowns (economy untilFeast/untilThorn); fixed min-height so it never shifts the cards.
+- New creature: the cuttlefish (Sunlit, by day): colour bands running down the mantle, rippling fin, W-pupil; touched it flashes white, jets back and inks.

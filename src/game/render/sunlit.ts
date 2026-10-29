@@ -656,6 +656,80 @@ export function createSunlitScene(seed: number): Scene {
    * A green turtle comes to graze once there are meadows: it paddles slowly over the seagrass,
    * dips to crop it, and drifts on.
    */
+  /**
+   * A cuttlefish hovering beside the reef: waves of colour pulsing down its mantle, fins rippling.
+   * Touched, it flashes white and jets backward, then drifts back.
+   */
+  function drawCuttlefish(ctx: CanvasRenderingContext2D, t: number): void {
+    sight('cuttlefish');
+    const s = scale() * 1.5;
+    const touch = startled('cuttlefish', t);
+    const jet = touch && touch.age < 5 ? Math.sin(Math.min(1, touch.age / 5) * Math.PI) : 0;
+    const flash = touch && touch.age < 1.2 ? 1 - touch.age / 1.2 : 0;
+    const x = focus.x + focus.w * 0.28 + Math.sin(t * 0.13) * 30 * s - jet * 90 * s;
+    const y = focus.y + focus.h * 0.5 + Math.sin(t * 0.21) * 16 * s;
+    spot('cuttlefish', x, y, 22 * s);
+    ctx.save();
+    ctx.translate(x, y);
+    // Arms forward (to the right), mantle behind.
+    ctx.strokeStyle = 'rgba(190,140,120,0.9)';
+    ctx.lineWidth = 1.6 * s;
+    for (let a = 0; a < 5; a++) {
+      ctx.beginPath();
+      ctx.moveTo(10 * s, (a - 2) * 1.2 * s);
+      ctx.quadraticCurveTo(16 * s, (a - 2) * 2 * s + Math.sin(t * 2 + a) * 1.5 * s, 21 * s, (a - 2) * 2.6 * s);
+      ctx.stroke();
+    }
+    // The fin: a rippling skirt all round the mantle.
+    ctx.fillStyle = 'rgba(240,210,190,0.45)';
+    ctx.beginPath();
+    for (let i = 0; i <= 24; i++) {
+      const th = (i / 24) * Math.PI * 2;
+      const r = 1 + 0.06 * Math.sin(th * 8 + t * 6);
+      ctx.lineTo(Math.cos(th) * 15 * s * r - 2 * s, Math.sin(th) * 8.5 * s * r);
+    }
+    ctx.fill();
+    // The mantle, with bands of colour running down it.
+    ctx.save();
+    ctx.beginPath();
+    ctx.ellipse(-2 * s, 0, 13 * s, 6.5 * s, 0, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.fillStyle = '#b07a5a';
+    ctx.fillRect(-16 * s, -8 * s, 30 * s, 16 * s);
+    for (let b = 0; b < 7; b++) {
+      const bx = -16 * s + (((t * 9 + b * 5) % 30) * s);
+      ctx.fillStyle = `rgba(${b % 2 ? '90,40,30' : '230,170,120'},0.55)`;
+      ctx.fillRect(bx, -8 * s, 2.5 * s, 16 * s);
+    }
+    if (flash > 0) {
+      ctx.fillStyle = `rgba(255,255,250,${0.9 * flash})`;
+      ctx.fillRect(-16 * s, -8 * s, 30 * s, 16 * s);
+    }
+    ctx.restore();
+    // The eye, with its W-shaped pupil.
+    ctx.fillStyle = '#f2e6c8';
+    ctx.beginPath();
+    ctx.arc(7 * s, -2 * s, 2.2 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#2a1a10';
+    ctx.lineWidth = 0.7 * s;
+    ctx.beginPath();
+    ctx.moveTo(5.8 * s, -2.6 * s);
+    ctx.lineTo(6.5 * s, -1.4 * s);
+    ctx.lineTo(7 * s, -2.2 * s);
+    ctx.lineTo(7.5 * s, -1.4 * s);
+    ctx.lineTo(8.2 * s, -2.6 * s);
+    ctx.stroke();
+    // Startled: a puff of ink where it was.
+    if (touch && touch.age < 4) {
+      ctx.fillStyle = `rgba(30,25,35,${0.45 * (1 - touch.age / 4)})`;
+      ctx.beginPath();
+      ctx.arc(14 * s + jet * 90 * s, 0, (6 + touch.age * 8) * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
   /** The other reefs spawning at full moon: pink bundles rising everywhere from the floor. */
   function drawOthersSpawn(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
@@ -917,6 +991,7 @@ export function createSunlitScene(seed: number): Scene {
           { branch: '#c0703e', tip: '#e8a060', polyp: 'rgba(255,240,190,0.95)' }, seed ^ 0x570f);
       }
       drawAnemone(ctx, t);
+      if (night < 0.5) drawCuttlefish(ctx, t);
       drawClumps(ctx, t);
       drawDaughters(ctx, v.polyps, (u) => [focus.x - focus.w * 0.1 + u * focus.w * 1.2, floorY(u) + 2 * scale()], scale() * 1.2, t,
         { branch: '#c0703e', tip: '#e8a060', polyp: 'rgba(255,240,190,0.95)',
