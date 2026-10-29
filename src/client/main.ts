@@ -32,7 +32,7 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inMilky, milkyGlow, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, lucky, prune, oldKnobs, oldHeld, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, sisterNow, lightSister, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inMilky, milkyGlow, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, lucky, meteorShower, makeWish, prune, oldKnobs, oldHeld, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, sisterNow, lightSister, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -50,7 +50,7 @@ import { HEAT } from '../game/content/act4.ts';
 import { AGAIN, QUESTION, QUESTIONS } from '../game/content/ossel.ts';
 import { MILKY, RISING } from '../game/content/act2.ts';
 import { UPWELL } from '../game/content/act3.ts';
-import { FIGURES, SKY, type FigureId } from '../game/content/sky.ts';
+import { FIGURES, SKY, WISH, type FigureId } from '../game/content/sky.ts';
 import { ACT1, FLARE, GRAINS, OLD, MILESTONES, SPORTS, STRAINS, type Milestone } from '../game/content/act1.ts';
 import { diaryLine } from '../game/content/diary.ts';
 import { OSSEL_LINES, OSSEL_LINES_TRUE, OSSEL_NOW, WHISPERS, WHISPER_BY } from '../game/content/whispers.ts';
@@ -243,6 +243,15 @@ const panel = createPanel(ui, {
   takeFork(how) {
     if (!takeFork(state, how)) return;
     audio.cue(how === 'press' || how === 'wait' || how === 'follow' || how === 'gather' ? 'depart' : 'choice');
+    save();
+  },
+  makeWish(id) {
+    const got = makeWish(state, id);
+    if (!got) return;
+    audio.cue('shimmer');
+    if (got >= 1000) showJournalNote(SHARD.found, SHARD_LINES[got - 1000] ?? '', true);
+    else if (id === 'line') showJournalNote(WISH.kicker, WISH.lineGot, true);
+    else floatText(innerWidth / 2, innerHeight / 3, `+${num(got)} ${feastPay(state)} ${WISH.float}`, 'feast-float');
     save();
   },
   chooseSport(id) {
@@ -863,6 +872,7 @@ function view(): ReefView {
     heat: heatView(),
     sisterLit: state.race.lit > 0,
     grotto: state.levels.grotto,
+    meteor: meteorShower(state),
     old: { slots: state.oldSlots.slice(0, oldKnobs(state)), slot: state.pruned.slot, since: state.t - state.pruned.t,
       fall: ended(state) ? { slots: state.oldSlots.slice(0, Math.min(6, Math.floor(state.old))), since: state.t - state.breachedAt } : undefined },
     sweeten: state.levels.sweeten,

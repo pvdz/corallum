@@ -15,7 +15,7 @@ import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import type { CoralForm } from './coral.ts';
 import { drawMoon, glow } from './draw.ts';
-import { FIGURES, type Figure } from '../content/sky.ts';
+import { FIGURES, WISH, type Figure } from '../content/sky.ts';
 import { SWELL } from '../content/events.ts';
 import { drawPetrels, drawSailors, drawSeaSparkle, type Surface } from './surface.ts';
 import { createLayerCache } from './layer.ts';
@@ -225,10 +225,11 @@ export function createBreachScene(seed: number): Scene {
    * Rarely, a meteor shower: for forty seconds in every twenty minutes, streaks fall across the
    * sky from one point, thick for a while, then thinning out. Touched, a big bright fireball.
    */
-  function drawMeteors(ctx: CanvasRenderingContext2D, t: number, dawn: number): void {
-    const period = 1200, length = 40;
-    const u = ((t + 640) % period) / length;
-    if (u >= 1 || dawn > 0.6) return;
+  /** Shooting stars: the shower the reef can wish on (content/sky.ts WISH), on the reef's own clock. */
+  function drawMeteors(ctx: CanvasRenderingContext2D, t: number, dawn: number, shower: { k: number; u: number } | null): void {
+    const length = WISH.length;
+    if (!shower || dawn > 0.6) return;
+    const u = shower.u, local = u * length;
     sight('meteors');
     const wy = waterY();
     const rx = focus.x + focus.w * 0.85, ry = focus.y;
@@ -237,10 +238,10 @@ export function createBreachScene(seed: number): Scene {
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     const rate = Math.sin(u * Math.PI);
-    for (let k = 0; k < 180; k++) {
-      const r = mulberry32(k * 911 + Math.floor((t + 640) / period) * 7);
+    for (let k = 0; k < 400; k++) {
+      const r = mulberry32(k * 911 + shower.k * 7);
       const start = r() * length, dur = 0.6 + r() * 0.6;
-      const p = ((t + 640) % period - start) / dur;
+      const p = (local - start) / dur;
       if (p < 0 || p > 1 || r() > rate) continue;
       const ang = Math.PI * (0.7 + r() * 0.25), len = (wy - focus.y) * (0.3 + r() * 0.5);
       const x0 = rx + (r() - 0.5) * focus.w * 0.3, y0 = ry + r() * (wy - focus.y) * 0.3;
@@ -1233,7 +1234,7 @@ export function createBreachScene(seed: number): Scene {
       lastDawn = dawn;
       drawSky(ctx, t, v.moonPhase, v.greatMoon, dawn);
       drawFigures(ctx, t, v, dawn);
-      drawMeteors(ctx, t, dawn);
+      drawMeteors(ctx, t, dawn, v.meteor);
       drawSea(ctx, t, v.moonPhase, dawn);
       drawSister(ctx, t, v.sister);
       drawChildren(ctx, v, t);

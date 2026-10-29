@@ -8,10 +8,10 @@ import { OTHERS } from '../content/act4.ts';
 import { actAt } from '../content/acts.ts';
 import { SIGNAL } from '../content/events.ts';
 import { BOON_TEXT } from '../content/lineage.ts';
-import { FIGURES, SKY } from '../content/sky.ts';
+import { FIGURES, SKY, WISH } from '../content/sky.ts';
 import { QUESTION, type Question } from '../content/ossel.ts';
 import { SISTER } from '../content/sister.ts';
-import { lightOpen, osselAsks, currentEncounter, grainsWaiting, sportOpen, boonsOffered, figureOpen, skyOpen, currentRiddle, currentSignal, forkOpen, othersCap, othersSpawning, strainOpen } from '../sim/economy.ts';
+import { wishOpen, lightOpen, osselAsks, currentEncounter, grainsWaiting, sportOpen, boonsOffered, figureOpen, skyOpen, currentRiddle, currentSignal, forkOpen, othersCap, othersSpawning, strainOpen } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { button, el } from './dom.ts';
 import { num } from './format.ts';
@@ -59,6 +59,19 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
   });
   askBoxQ.append(el('p', 'truce-kicker', QUESTION.kicker), askText, askChoices);
   grow.prepend(askBoxQ);
+
+  // ---------- A wish on shooting stars (at the Breach) ----------
+  const wishBox = el('section', 'truce moment wish');
+  wishBox.hidden = true;
+  const wishChoices = el('div', 'boon-choices');
+  const wishButtons = WISH.wishes.map((w) => {
+    const b = button('choice', '', () => hooks.makeWish(w.id));
+    b.append(el('strong', '', w.label), el('span', '', w.effect));
+    wishChoices.append(b);
+    return { w, b };
+  });
+  wishBox.append(el('p', 'truce-kicker', WISH.kicker), el('p', 'truce-text', WISH.text), wishChoices);
+  grow.prepend(wishBox);
 
   // ---------- The strain's sport (at the Twilight Shelf) ----------
   const sportBox = el('section', 'truce moment sport');
@@ -213,6 +226,8 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
         q.answers.forEach((a, i) => { askButtons[i]!.textContent = a.label; });
       }
       asking = q;
+      setShown(wishBox, wishOpen(s));
+      if (!wishBox.hidden) for (const x of wishButtons) x.b.hidden = x.w.id === 'line' && s.lineWishes >= WISH.lineMax;
       setShown(sportBox, sportOpen(s));
       if (sportOpen(s)) {
         sportText.textContent = SPORT.text(STRAINS.find((x) => x.id === s.strain)?.name ?? '');

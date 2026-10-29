@@ -18,7 +18,7 @@
 import { ACT1, BANDS_ACT1, FLARE, FLURRY, OLD, GRAIN, GRAINS, SPORT, SPORTS, type GrainId, type SportId, MILESTONES, STRAIN, type Milestone, type StrainId } from '../content/act1.ts';
 import { ACT2, MILKY, RISING, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
 import { FAN, GUARD, UPWELL, ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDLE, RIDDLES, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
-import { FIGURES, SKY, type FigureId } from '../content/sky.ts';
+import { FIGURES, SKY, type FigureId, WISH, type WishId } from '../content/sky.ts';
 import { QUESTIONS, type Question, type QuestionId } from '../content/ossel.ts';
 import { ACT4, HEAT, BANDS_ACT4, DIALECTS, OTHERS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
 import { ACT5, BANDS_ACT5, GARDEN, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
@@ -1304,6 +1304,45 @@ export function breach(s: GameState, memories: MemoryId[]): boolean {
   // The line's chronicle: one line per ending (seamount, memories carried, hours it took).
   s.meta.chronicle = [...s.meta.chronicle, `${s.seamount}|${unique.join(',')}|${Math.round(s.t / 360) / 10}`].slice(-30);
   return true;
+}
+
+// ---------- Shooting stars ----------
+
+/** The shower of shooting stars at the Breach now (its index and how far through, 0..1), or null. */
+export function meteorShower(s: GameState): { k: number; u: number } | null {
+  if (actAt(s.height) !== 5) return null;
+  const x = s.t + WISH.offset;
+  const u = (x % WISH.period) / WISH.length;
+  return u < 1 ? { k: Math.floor(x / WISH.period), u } : null;
+}
+
+/** A wish can be made: stars falling, none made on this shower yet. */
+export function wishOpen(s: GameState): boolean {
+  const m = meteorShower(s);
+  return !!m && s.wished !== m.k && !ended(s);
+}
+
+/** Make a wish: returns what it brought (spawn, a shard index + 1000, or lineage), or 0. */
+export function makeWish(s: GameState, id: WishId): number {
+  const m = meteorShower(s);
+  if (!m || !wishOpen(s)) return 0;
+  if (id === 'line' && s.lineWishes >= WISH.lineMax) return 0;
+  s.wished = m.k;
+  if (id === 'line') {
+    s.lineWishes++;
+    s.meta.lineage += 1;
+    return 1;
+  }
+  if (id === 'tablet') {
+    const left = SHARD_LINES.map((_, i) => i).filter((i) => !s.meta.shards.includes(i));
+    if (left.length) {
+      const i = left[Math.floor(mulberry32((s.seed ^ 0x57a2) + m.k)() * left.length)]!;
+      s.meta.shards.push(i);
+      remember(s, 'shard', SHARD_LINES[i]!);
+      return 1000 + i;
+    }
+  }
+  return burst(s, WISH.seconds);
 }
 
 /** Whether a vow this reef took is kept (so far, or at its ending). */

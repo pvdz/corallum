@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { flare, prune, oldKnobs, inMilky, guarding, lucky, currentThorn, dayOf, catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
+import { wishOpen, makeWish, flare, prune, oldKnobs, inMilky, guarding, lucky, currentThorn, dayOf, catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { newGame, type GameState } from '../../src/game/sim/state.ts';
 import { GIFT, LUCKY } from '../../src/game/content/creatures.ts';
@@ -8,6 +8,7 @@ import { HEAT } from '../../src/game/content/act4.ts';
 import { RISING } from '../../src/game/content/act2.ts';
 import { SWELL } from '../../src/game/content/events.ts';
 import { OLD } from '../../src/game/content/act1.ts';
+import { WISH } from '../../src/game/content/sky.ts';
 import { MILKY } from '../../src/game/content/act2.ts';
 
 const rel = (a: number, b: number) => Math.abs(a - b) / Math.max(1, Math.abs(b));
@@ -611,4 +612,21 @@ test('lucky neighbours: now and then a creature is lucky; touched, it gives at o
   assert.ok(Math.abs(g.amount / n.amount - LUCKY.mult) < 1e-9, `${g.amount / n.amount}`);
   assert.ok(!lucky(s, 'jelly'), 'claimed for this span');
   assert.ok(s.meta.seen.includes('g:jelly'));
+});
+
+test('shooting stars at the Breach: one wish per shower; for the line at most three times a reef', () => {
+  const s = newGame(13);
+  s.height = 3990;
+  s.t = WISH.period - WISH.offset + 5;
+  assert.ok(wishOpen(s));
+  const l0 = s.meta.lineage;
+  assert.equal(makeWish(s, 'line'), 1);
+  assert.equal(s.meta.lineage, l0 + 1);
+  assert.ok(!wishOpen(s), 'once per shower');
+  for (let i = 0; i < 3; i++) { s.t += WISH.period; makeWish(s, 'line'); }
+  assert.equal(s.meta.lineage, l0 + WISH.lineMax);
+  s.t += WISH.period;
+  assert.ok(makeWish(s, 'tablet') >= 1000, 'a shard while any are lost');
+  s.height = 3000;
+  assert.ok(!wishOpen(s), 'only at the Breach');
 });

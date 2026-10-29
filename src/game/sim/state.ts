@@ -164,6 +164,9 @@ export type GameState = {
   shelled: number;
   /** Vows this reef grows under (content/lineage.ts VOWS), and when it reached the surface (−1 not yet). */
   vows: VowId[];
+  /** The shower (content/sky.ts WISH) last wished on, and how many wishes were for the line. */
+  wished: number;
+  lineWishes: number;
   surfacedAt: number;
   /** The span of time (content/creatures.ts LUCKY) in which a lucky neighbour was last touched. */
   luckySpan: number;
@@ -273,6 +276,8 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     shelled: -1,
     luckySpan: -1,
     vows: [],
+    wished: -1,
+    lineWishes: 0,
     surfacedAt: -1,
     old: 0,
     oldSlots: [0, 1, 2, 3, 4, 5],

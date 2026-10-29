@@ -37,6 +37,8 @@ export type ReefView = {
   old: { slots: number[]; slot: number; since: number;
     /** At the release all the old stone falls away together: those slots, and seconds since. */
     fall?: { slots: number[]; since: number } };
+  /** A shower of shooting stars at the Breach (sim time), or null. */
+  meteor: { k: number; u: number } | null;
   /** Grottoes hollowed at the reef's foot (0–2). */
   grotto: number;
   /** Levels of Sweeten the spawn: the bundles turn golden. */

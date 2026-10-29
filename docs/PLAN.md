@@ -220,7 +220,7 @@ Tick items as they land; keep this list honest. Add items freely.
   - [x] a fifth shoal job, guard (Sunlit on: 4 guards drive intruders off for half)
   - [x] a fourth vow (stillness: no sweeping, +5)
   - [x] fish shadows on the Sunlit sand
-  - [ ] a wish on a shooting star at the Breach (needs a sim-time meteor schedule)
+  - [x] a wish on shooting stars at the Breach (sim-time showers; ripen, a shard, or +1 lineage ×3)
   - [x] vows for a new reef after an ending: haste (+6), lightness (+4), solitude (+4)
   - [x] old stone: grey knobs fill the tips (max 6, away too), tap to break off for a burst
   - [x] Ossel's questions: four, remembered, answered back, carried into the ending

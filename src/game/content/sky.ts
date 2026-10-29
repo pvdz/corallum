@@ -67,6 +67,26 @@ export const FIGURES: readonly Figure[] = [
   },
 ];
 
+/**
+ * Shooting stars at the Breach: a shower every `period` seconds of reef time, lasting `length`.
+ * While one falls the reef may make one wish.
+ */
+export type WishId = 'ripen' | 'tablet' | 'line';
+export const WISH = {
+  period: 1200, offset: 640, length: 90,
+  /** Seconds of spawn a ripening wish brings; at most `lineMax` lineage wishes per reef. */
+  seconds: 240, lineMax: 3,
+  kicker: 'Shooting stars',
+  text: 'Stars are falling into the sea. Ossel says that is when you ask for something, and you may ask once.',
+  wishes: [
+    { id: 'ripen', label: 'Ripen', effect: 'four minutes of spawn at once' },
+    { id: 'tablet', label: 'A piece of the tablet', effect: 'a shard, if any are still lost (or the spawn ripens)' },
+    { id: 'line', label: 'For the line', effect: '+1 lineage (three times on a reef)' },
+  ] as readonly { id: WishId; label: string; effect: string }[],
+  float: '· a wish',
+  lineGot: '+1 lineage · a wish for the line',
+} as const;
+
 export const SKY = {
   title: 'The sky',
   intro: 'Stars. No reef has ever seen them; there are no words for them in any band. Give them some.',

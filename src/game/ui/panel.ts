@@ -27,6 +27,7 @@ import { REQUEST } from '../content/requests.ts';
 import { WORKS, WORK_TEXT, type WorkId } from '../content/works.ts';
 import { SISTER } from '../content/sister.ts';
 import { DIARY_TEXT, diaryLine } from '../content/diary.ts';
+import type { WishId } from '../content/sky.ts';
 import { UI } from '../content/ui.ts';
 import { OSSEL_MISTAKES } from '../content/ossel.ts';
 import { PALETTES, PALETTE_TEXT } from '../content/palettes.ts';
@@ -61,6 +62,7 @@ export type PanelHooks = {
   chooseStrain(id: StrainId): void;
   chooseGrain(id: GrainId): void;
   chooseSport(id: SportId): void;
+  makeWish(id: WishId): void;
   /** Choose this seamount's boon. */
   chooseBoon(id: BoonId): void;
   /** Meet the other reefs' spawning. */
