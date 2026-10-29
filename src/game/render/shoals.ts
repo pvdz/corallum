@@ -191,6 +191,11 @@ export function createShoals(seed: number) {
       ctx.closePath();
       ctx.fillStyle = '#b8b2a2';
       ctx.fill();
+    } else if (site === 'harbour') {
+      // The harbour: a ring of worn posts.
+      for (let i = 0; i < 7; i++) ctx.rect(x - 36 * k + i * 12 * k, y - (10 + (i % 3) * 4) * k, 4 * k, (24 + (i % 3) * 4) * k);
+      ctx.fillStyle = '#cfc6b4';
+      ctx.fill();
     } else if (site === 'sun-gate') {
       // A doorway: two posts and a lintel.
       ctx.rect(x - 22 * k, y - 18 * k, 5 * k, 32 * k);

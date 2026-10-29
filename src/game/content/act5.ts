@@ -66,7 +66,7 @@ export const BANDS_ACT5: readonly Band[] = [
 export type MemoryId =
   | 'vent' | 'ossel' | 'thousandfold' | 'slow-water' | 'lanternfish' | 'rasp'
   | 'long-animal' | 'colour' | 'rain' | 'fear' | 'silt-truth' | 'dialect'
-  | 'gate' | 'midden' | 'tablet' | 'eye' | 'turtle';
+  | 'gate' | 'midden' | 'tablet' | 'eye' | 'turtle' | 'harbour';
 
 export type Memory = {
   id: MemoryId;
@@ -154,6 +154,11 @@ export const MEMORIES: readonly Memory[] = [
     id: 'gate', title: 'The fallen gate', needs: { relic: 'gate' },
     hint: 'A door the city shut on itself.',
     epilogue: 'They never build gates. Where the water wants to come in, they let it, and they grow around the way it goes.',
+  },
+  {
+    id: 'harbour', title: 'The harbour', needs: { relic: 'harbour' },
+    hint: 'Where the city once let its own children go.',
+    epilogue: 'When they spawn, they spawn all at once, and they do not hold anything back to keep. They learned it from a ring of stone.',
   },
   {
     id: 'midden', title: 'The beak midden', needs: { relic: 'midden' },

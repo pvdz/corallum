@@ -3,7 +3,7 @@
 // piece of the story and a lasting effect for this reef) and what they heard on the way.
 // One site at a time, in order, each found once per reef.
 
-export type SiteId = 'gate' | 'terraces' | 'lamp-hall' | 'wells' | 'midden' | 'sun-gate';
+export type SiteId = 'gate' | 'terraces' | 'lamp-hall' | 'wells' | 'midden' | 'sun-gate' | 'harbour';
 /** A ruin, or a roam through the dark (repeatable, no relic). */
 export type TripId = SiteId | 'roam' | 'visit' | 'carcass';
 
@@ -140,6 +140,14 @@ export const SITES: readonly Site[] = [
       'sun. The lintel is bleached white by a light that has not touched it in four hundred years. The shoals bring ' +
       'back a piece of it, and your symbionts turn toward it as if it were still warm.',
   },
+  {
+    id: 'harbour', name: 'The harbour', metres: 3982, shoals: 30, seconds: 20 * 60,
+    hint: 'On the city’s highest edge, where it met the open sea: a ring of worn posts.',
+    relic: 'A mooring ring', effect: 'spawn ×1.15',
+    text: 'Once the city sent its own spawn out from here, before it decided to keep everything. The posts are ' +
+      'worn smooth on their seaward side by a million larvae brushing past on their way out. The shoals bring ' +
+      'back a ring of stone that something was once tied to, and then let go.',
+  },
 ];
 
 /** Roaming: when no ruin is in reach, a quarter of the shoals can wander for a while. */
@@ -178,7 +186,7 @@ export const ROAM = {
 /** The map of the buried city in the Bands tab: where each ruin lies (0..1 across, 0..1 down). */
 export const CITY_MAP = {
   label: 'Thousandfold, as the shoals have seen it',
-  where: { gate: [0.18, 0.55], terraces: [0.36, 0.78], 'lamp-hall': [0.55, 0.42], wells: [0.68, 0.66], midden: [0.86, 0.3], 'sun-gate': [0.5, 0.12] } as Record<SiteId, [number, number]>,
+  where: { gate: [0.18, 0.55], terraces: [0.36, 0.78], 'lamp-hall': [0.55, 0.42], wells: [0.68, 0.66], midden: [0.86, 0.3], 'sun-gate': [0.5, 0.12], harbour: [0.3, 0.1] } as Record<SiteId, [number, number]>,
   roams: 'roams through the dark',
 } as const;
 

@@ -7,7 +7,7 @@ import { glow } from './draw.ts';
 import type { Reef, ReefLayout } from './reef.ts';
 
 /** Fixed places on the lower stone, one per relic, as fractions of the grown height. */
-const PLACE: Record<SiteId, number> = { gate: 0.16, terraces: 0.24, 'lamp-hall': 0.36, wells: 0.12, midden: 0.3, 'sun-gate': 0.44 };
+const PLACE: Record<SiteId, number> = { gate: 0.16, terraces: 0.24, 'lamp-hall': 0.36, wells: 0.12, midden: 0.3, 'sun-gate': 0.44, harbour: 0.5 };
 
 const placeCache = new Map<string, number>();
 function nodeAt(reef: Reef, L: ReefLayout, frac: number, side: number): number {
@@ -113,6 +113,13 @@ export function drawRelics(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLay
         ctx.arc(x, y, r * s, 0, Math.PI * 2);
         ctx.stroke();
       }
+    } else if (id === 'harbour') {
+      // A mooring ring: a worn ring of stone.
+      ctx.strokeStyle = '#d6cfc0';
+      ctx.lineWidth = 2 * s;
+      ctx.beginPath();
+      ctx.arc(x, y, 4 * s, 0, Math.PI * 2);
+      ctx.stroke();
     } else if (id === 'sun-gate') {
       // A bleached lintel: a pale bar of carved stone.
       ctx.fillStyle = '#f2ece0';

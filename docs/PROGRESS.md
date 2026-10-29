@@ -532,3 +532,4 @@ date, what landed, what is half-done, what's next.
 - The Rasp elder shows on the slope (twilight.ts drawElder: pale, worn beak) while a riddle is asked.
 - Audio: 'upwell' (rising bubbles) and 'swell' (two long surges) as each begins.
 - Boons: Clear voices (Readings and words ×0.8), Kind shallows (open bleaching ×0.5); nine boons now. Rasp elder and upwell/swell sounds before this.
+- Seventh ruin 'harbour' (3982 m, 30 shoals, 20 min; mooring ring: spawn ×1.15): relic drawing, its look on the trip, and a memory 'The harbour' for the spawn to carry (24 memories).
