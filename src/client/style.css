@@ -816,3 +816,8 @@ html.view-mode #photo { display: grid; }
 .almanac-note { flex: 1 0 100%; font-size: 11px; color: rgba(210, 225, 245, 0.8); min-height: 0; }
 .almanac-note:empty { display: none; }
 .almanac .mark { cursor: pointer; }
+@media (max-width: 799px) {
+  .stocks.many .stock-value { font-size: 17px; }
+  .stocks.many .stock-name { font-size: 9.5px; letter-spacing: 0.1em; }
+  .stocks.many .stock-sub { font-size: 9.5px; }
+}

@@ -712,3 +712,4 @@ date, what landed, what is half-done, what's next.
 - systems e2e calls a lost shoal home and catches a fragment (debug hooks corallum.stray()/fragment()).
 - Trait Long rhythm (way, 6): sweep combos cap at 21 (up to ×3) instead of 11.
 - Every tenth request kept, Ossel remembers something of its own (ossel.ts OSSEL_PAST, five memories) as a story card, +1 lineage.
+- Mobile: with six or more stocks showing, the stock grid tightens (smaller values and notes) so the cards keep their room.

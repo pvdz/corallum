@@ -1510,6 +1510,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       // Murmurs pay for Readings and the truce's words; once both are done the stock leaves the panel.
       const murmursWanted = s.readings.length < READINGS.length || MEETINGS.some((m) => !s.truce[m.id]);
       murmurs.row.hidden = !(s.jobs.scout > 0 || (s.murmurs > 0.05 && murmursWanted));
+      // Many stocks at once: a tighter grid, so the cards keep their room on a phone.
+      stocks.classList.toggle('many', [...stocks.children].filter((c) => !(c as HTMLElement).hidden).length >= 6);
       murmurs.value.textContent = num(s.murmurs);
       murmurs.sub.textContent = `${rate(murmurNet(s, r))} · holds ~${num(murmurHold(s, r))}`;
       silt.row.hidden = !(r.siltP > 0 || s.silt > 0.5);
