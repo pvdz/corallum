@@ -25,7 +25,7 @@ import { ACT5, BANDS_ACT5, GARDEN, MEMORIES, type Memory, type MemoryId, type Ga
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, LUCKY, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
 import { BOONS, LINEAGE, SEAMOUNTS, type BoonId, type Seamount, type SeamountId, type TraitId, VOW, VOWS, type VowId } from '../content/lineage.ts';
-import { DAYS, type DayId, DAILY, FEAST, SIGNAL, SWELL, THORN, WELCOME, intruderOf, type Intruder, DREAM, TANGLE, FRAGMENT, STRAY } from '../content/events.ts';
+import { DAYS, type DayId, DAILY, FEAST, SIGNAL, SWELL, THORN, WELCOME, intruderOf, type Intruder, DREAM, TANGLE, FRAGMENT, STRAY, RAFT } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { WORKS, type WorkId } from '../content/works.ts';
 import { COUSIN, SISTER } from '../content/sister.ts';
@@ -2184,6 +2184,26 @@ export function callStray(s: GameState): boolean {
   s.levels.shoal += 1;
   s.jobs.feed += 1;
   return true;
+}
+
+/** A sargassum raft drifting over the crown now (slot, seconds in), if its young are not yet sheltered. */
+export function currentRaft(s: GameState): { k: number; age: number } | null {
+  if (actAt(s.height) !== RAFT.zone) return null;
+  const k = Math.floor(s.t / RAFT.period);
+  if (k <= s.rafted) return null;
+  const r = mulberry32((s.seed ^ 0x5a6f) + Math.imul(k, 0x9e3779b1));
+  const start = k * RAFT.period + r() * (RAFT.period - RAFT.life);
+  if (s.t < start || s.t >= start + RAFT.life) return null;
+  return { k, age: s.t - start };
+}
+
+/** Shelter the young under the passing raft: a burst of spawn. Returns the pay, 0 when none passes. */
+export function shelterRaft(s: GameState): number {
+  const ra = currentRaft(s);
+  if (!ra) return 0;
+  s.rafted = ra.k;
+  s.tally.rafts++;
+  return burst(s, RAFT.seconds);
 }
 
 /** How many fragments the reef can take in (Foster: eight). */

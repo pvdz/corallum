@@ -33,12 +33,12 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inMilky, milkyGlow, moonlitSpawn, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, currentFragment, takeFragment, currentStray, callStray, blueMoon, helpTangle, currentTangle, freeTangle, lucky, visitor, visited, meteorShower, makeWish, prune, oldKnobs, oldHeld, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, sisterNow, lightSister, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inMilky, milkyGlow, moonlitSpawn, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, currentFragment, takeFragment, currentStray, callStray, currentRaft, shelterRaft, blueMoon, helpTangle, currentTangle, freeTangle, lucky, visitor, visited, meteorShower, makeWish, prune, oldKnobs, oldHeld, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, sisterNow, lightSister, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio, type Cue } from '../game/audio/audio.ts';
-import { AWAY_CYCLES, AWAY_PREP, DAILY, DREAM, NOTIFY, SWELL, FEAST, SIGNAL, THORN, WELCOME, TODAY, TANGLE, FRAGMENT, STRAY } from '../game/content/events.ts';
+import { AWAY_CYCLES, AWAY_PREP, DAILY, DREAM, NOTIFY, SWELL, FEAST, SIGNAL, THORN, WELCOME, TODAY, TANGLE, FRAGMENT, STRAY, RAFT } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS, TRIAL_TEXT } from '../game/content/lineage.ts';
 import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, LUCKY, giftOf, TRUST, trustLevel, COMPANION, type CreatureId } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
@@ -84,6 +84,8 @@ declare global {
       /** Move the clock into the next lost shoal, or the next drifting fragment. */
       stray(): boolean;
       fragment(): boolean;
+      /** Move the clock into the next weed raft at the Breach. */
+      raft(): boolean;
       /** Move the clock to the next shoal signal; returns its pattern (for checking it). */
       signal(): number[] | null;
       /** Move the clock into the next thorn star's climb (for checking it). */
@@ -661,6 +663,15 @@ window.corallum = {
     state.t = t0;
     return false;
   },
+  raft() {
+    const t0 = state.t;
+    for (let dt = 0; dt < 5000; dt += 2) {
+      state.t = t0 + dt;
+      if (currentRaft(state)) { state.t += 10; return true; }
+    }
+    state.t = t0;
+    return false;
+  },
   tangle() {
     const t0 = state.t;
     for (let dt = 0; dt < 5000; dt += 2) {
@@ -909,6 +920,7 @@ function view(): ReefView {
     combo: state.t - state.lastSweep <= ACT1.comboGap ? state.combo : 1,
     fragments: state.fragments,
     fragmentAges: state.fragmentAt.map((x) => state.t - x),
+    raft: (() => { const ra = currentRaft(state); return ra ? { k: ra.k, age: ra.age, life: RAFT.life } : null; })(),
     stranded: (() => { const tg = actAt(state.height) === 5 ? currentTangle(state) : null; return tg ? { k: tg.k, age: tg.age } : null; })(),
     meteor: meteorShower(state),
     old: { slots: state.oldSlots.slice(0, oldKnobs(state)), slot: state.pruned.slot, since: state.t - state.pruned.t,
@@ -1083,7 +1095,7 @@ function drawLucky(t: number): void {
   // One of its kind is the lucky one: the first drawn.
   const done = new Set<string>();
   for (const p of tappable()) {
-    if (done.has(p.id) || p.id === 'ossel' || p.id === 'shell' || p.id === 'star' || p.id === 'old' || p.id === 'tangle' || p.id === 'fragment' || p.id === 'stray' || !lucky(state, p.id)) continue;
+    if (done.has(p.id) || p.id === 'ossel' || p.id === 'shell' || p.id === 'star' || p.id === 'old' || p.id === 'tangle' || p.id === 'fragment' || p.id === 'stray' || p.id === 'raft' || !lucky(state, p.id)) continue;
     done.add(p.id);
     // A soft chime the first time a lucky one shows in this span.
     const span = Math.floor(state.t / LUCKY.span);
@@ -1233,7 +1245,7 @@ function takePortrait(): void {
   // Zoomed in (2× or more), a creature large in view earns a sharper close-up, once.
   const closeUp = zoom.k >= 2;
   for (const p of tappable()) {
-    if (p.id === 'ossel' || p.id === 'shell' || p.id === 'star' || p.id === 'old' || p.id === 'tangle' || p.id === 'fragment' || p.id === 'stray' || !portraits.wants(p.id, closeUp)) continue;
+    if (p.id === 'ossel' || p.id === 'shell' || p.id === 'star' || p.id === 'old' || p.id === 'tangle' || p.id === 'fragment' || p.id === 'stray' || p.id === 'raft' || !portraits.wants(p.id, closeUp)) continue;
     const [x, y] = toScreen(p.x, p.y);
     const r = p.r * zoom.k;
     if (closeUp && r < 60 * dpr) continue;
@@ -1344,6 +1356,18 @@ canvas.addEventListener('pointerdown', (e) => {
   }
   if (hit?.id === 'star') {
     tapStar(hit.n ?? -1, e.clientX, e.clientY);
+    return;
+  }
+  if (hit?.id === 'raft') {
+    if (frozenT === null) {
+      const gain = shelterRaft(state);
+      if (gain > 0) {
+        floatText(e.clientX, e.clientY - 20, `+${num(gain)} ${feastPay(state)} ${RAFT.float}`, 'feast-float');
+        audio.cue('shimmer');
+        buzz(15);
+        save();
+      }
+    }
     return;
   }
   if (hit?.id === 'stray') {

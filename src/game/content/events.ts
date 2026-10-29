@@ -183,3 +183,9 @@ export const FRAGMENT = {
 
 /** A lost shoal (the Midnight Water, while you watch): a stray light far off; called in, it joins the reef. */
 export const STRAY = { period: 900, life: 40, zone: 2, float: '· a shoal comes home' } as const;
+
+/**
+ * A sargassum raft (the Breach, while you watch): a mat of floating weed drifts across the surface
+ * over the crown; the reef's young shelter under it, and tapped while it passes it pays `seconds` of spawn.
+ */
+export const RAFT = { period: 600, life: 50, seconds: 60, zone: 5, float: '· the young shelter under the weed' } as const;

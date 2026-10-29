@@ -45,6 +45,8 @@ export type ReefView = {
   meteor: { k: number; u: number } | null;
   /** A fish stranded on the crown at the Breach (seconds since it landed), or null. */
   stranded: { k: number; age: number } | null;
+  /** A sargassum raft drifting over the crown at the Breach (slot, seconds in, its life), or null. */
+  raft: { k: number; age: number; life: number } | null;
   /** Fragments of other reefs taken in, growing at the reef's foot. */
   fragments: number;
   /** Seconds since each fragment was taken in. */

@@ -1,5 +1,5 @@
 // The newer systems through their cards, on one page: send an expedition and call it home, take a
-// resident in, answer a riddle and the shoals' signal, pick up a shell, make a wish, break off old stone, close up against warm water, send the feeders into the rising. Each must change the state.
+// resident in, answer a riddle and the shoals' signal, pick up a shell, make a wish, shelter under a weed raft, break off old stone, close up against warm water, send the feeders into the rising. Each must change the state.
 
 import { withGame, VIEWPORTS } from '../../tools/browser.ts';
 import { RIDDLES } from '../../src/game/content/act3.ts';
@@ -145,6 +145,15 @@ await withGame(async (open) => {
   await page.locator('.wish button', { hasText: 'For the line' }).click();
   await page.waitForTimeout(200);
   check((await page.evaluate(() => window.corallum!.state.meta.lineage)) === before + 1, 'a wish on falling stars, for the line');
+  // A weed raft drifting over: shelter the young under it.
+  await page.evaluate(() => window.corallum!.raft());
+  await page.waitForTimeout(500);
+  for (let i = 0; i < 12 && (await page.locator('.away:not([hidden]) button, .reader:not([hidden]) button').count()); i++)
+    await page.locator('.away:not([hidden]) button, .reader:not([hidden]) button').first().click().catch(() => {});
+  const ra = await page.evaluate(() => window.corallum!.spots.find((q) => q.id === 'raft'));
+  if (ra) await page.mouse.click(ra.x, ra.y);
+  await page.waitForTimeout(200);
+  check((await page.evaluate(() => window.corallum!.state.tally.rafts)) === 1, 'the young sheltered under a weed raft');
   check(errors.length === 0, 'no console errors (Breach)');
 });
 await withGame(async (open) => {

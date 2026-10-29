@@ -232,6 +232,66 @@ export function createBreachScene(seed: number): Scene {
    * Rarely, a meteor shower: for forty seconds in every twenty minutes, streaks fall across the
    * sky from one point, thick for a while, then thinning out. Touched, a big bright fireball.
    */
+  /**
+   * A sargassum raft: a long mat of golden-brown weed drifting across the surface, its float
+   * bladders bobbing, small fish and the reef's young sheltering in its shade below.
+   */
+  function drawRaft(ctx: CanvasRenderingContext2D, ra: { k: number; age: number; life: number }, t: number): void {
+    const s = scale() * 1.8;
+    const wy = waterY();
+    const a = Math.min(1, ra.age / 4, (ra.life - ra.age) / 4);
+    if (a <= 0) return;
+    const dir = ra.k % 2 ? 1 : -1;
+    const u = ra.age / ra.life;
+    const x = focus.x + focus.w * (dir > 0 ? 0.15 + u * 0.7 : 0.85 - u * 0.7);
+    const len = 70 * s;
+    spot('raft', x, wy, Math.max(len * 0.7, 30 * dpr));
+    ctx.save();
+    ctx.globalAlpha = a;
+    // The shade under it, and the young hiding there.
+    const sh = ctx.createRadialGradient(x, wy + 8 * s, 0, x, wy + 8 * s, len);
+    sh.addColorStop(0, 'rgba(0,10,20,0.35)');
+    sh.addColorStop(1, 'rgba(0,10,20,0)');
+    ctx.fillStyle = sh;
+    ctx.beginPath();
+    ctx.ellipse(x, wy + 10 * s, len, 18 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    for (let i = 0; i < 14; i++) {
+      const px = x + Math.sin(i * 2.1 + t * 0.8) * len * 0.6, py = wy + (6 + (i % 4) * 4) * s + Math.sin(t * 1.3 + i) * 2 * s;
+      ctx.fillStyle = i % 3 ? 'rgba(255,190,210,0.7)' : 'rgba(200,220,170,0.7)';
+      ctx.beginPath();
+      ctx.arc(px, py, (i % 3 ? 1.1 : 1.8) * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // Trailing fronds below the surface.
+    ctx.strokeStyle = 'rgba(150,120,50,0.6)';
+    ctx.lineWidth = 1.2 * s;
+    for (let i = 0; i < 9; i++) {
+      const fx = x - len * 0.8 + (i / 8) * len * 1.6;
+      ctx.beginPath();
+      ctx.moveTo(fx, wy + 1 * s);
+      ctx.quadraticCurveTo(fx - dir * 6 * s + Math.sin(t * 0.9 + i) * 4 * s, wy + 10 * s, fx - dir * 10 * s + Math.sin(t * 0.7 + i * 2) * 5 * s, wy + (14 + (i % 3) * 6) * s);
+      ctx.stroke();
+    }
+    // The mat at the surface: tangled golden weed with round float bladders.
+    for (let i = 0; i < 22; i++) {
+      const fx = x - len + (i / 21) * len * 2;
+      const lift = Math.sin((i / 21) * Math.PI);
+      const fy = wy - lift * 3 * s + Math.sin(t * 1.4 + i * 0.6) * 1.2 * s;
+      ctx.fillStyle = i % 2 ? 'rgba(222,176,72,1)' : 'rgba(184,138,50,1)';
+      ctx.beginPath();
+      ctx.ellipse(fx, fy, 5 * s, (1.6 + lift * 1.6) * s, Math.sin(i * 1.7) * 0.6, 0, Math.PI * 2);
+      ctx.fill();
+      if (i % 3 === 1) {
+        ctx.fillStyle = 'rgba(245,215,120,1)';
+        ctx.beginPath();
+        ctx.arc(fx + 2 * s, fy - 2 * s, 1.5 * s, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    ctx.restore();
+  }
+
   /** A man-o'-war drifting on the surface, its crest catching the wind; touched, it deflates its sail a moment. */
   function drawManOWar(ctx: CanvasRenderingContext2D, t: number): void {
     sight('man-o-war');
@@ -1519,6 +1579,7 @@ export function createBreachScene(seed: number): Scene {
       this.crownAt = reef.crown(L);
       if (v.moments['king-tide']) drawWrack(ctx, L);
       if (v.stranded) drawStranded(ctx, L, v.stranded, t);
+      if (v.raft) drawRaft(ctx, v.raft, t);
       drawSong(ctx, v.song, this.crownAt[0], this.crownAt[1], t, scale());
       reef.drawEffects(ctx, L, v, effects.live(t));
       drawWaves(ctx, t);
