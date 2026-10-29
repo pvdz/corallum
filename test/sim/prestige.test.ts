@@ -156,3 +156,18 @@ test('hard seamounts: the rule holds, the trial is met mid-advance, and the line
   next.levels.shoal = was.levels.shoal = 5;
   assert.ok(cost(next, 'shoal') < cost(was, 'shoal'));
 });
+
+test('an heirloom relic carries its effect to the next reef, which still has the ruin to find', async () => {
+  const { nextSite } = await import('../../src/game/sim/economy.ts');
+  const { state: s } = runBot((x) => x.height >= 300, 3 * 3600, { ventures: false });
+  s.relics = ['gate'];
+  const plain = spawnLesser(s, 'plain')!;
+  const heir = spawnLesser(s, 'plain', 'gate')!;
+  assert.equal(heir.heirloom, 'gate');
+  assert.ok(cost(heir, 'skeleton') < cost(plain, 'skeleton'));
+  heir.height = plain.height = 200;
+  heir.levels.shoal = 10;
+  assert.equal(nextSite(heir)?.id, 'gate');
+  // Only a relic actually found can go along.
+  assert.equal(spawnLesser(s, 'plain', 'midden')!.heirloom, '');
+});

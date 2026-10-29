@@ -236,6 +236,8 @@ the release also sets the lineage for beginning again.
   ×3, goal 3600 m), dark (glow ×0.3, goal 2500 m; teaches glow ×1.25). Reaching the goal there (offline too; the sim records it) teaches the whole line
   a lasting gift: polyps ×1.1, scouts ×1.3, shoals cost ×0.8, silt ×0.8. Prestige that changes how
   a run is played, by choice.
+- **Heirlooms**: a lesser spawning may carry one relic this reef found; its effect is in play on the
+  next reef from the start (its ruin is still there to search, for the story).
 - **Boons**: every reef after the first is offered three of seven boons (seeded by its seamount; a
   first reef earns the offer by keeping ten of Ossel's requests) and
   keeps one for that reef (rich currents, early lamps, quick stone, a warm heart, deep roots, a

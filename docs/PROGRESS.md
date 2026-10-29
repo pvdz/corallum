@@ -407,3 +407,4 @@ date, what landed, what is half-done, what's next.
 - Visiting the sister reef: a trip offered when it is near your depth, once per zone, +1 lineage on return (expeditions.ts VISIT, state.visits, diary line).
 - Audio cues 'intruder' (two low notes a tritone apart) and 'moment' (a soft rising third) when one appears.
 - Roam tales: eight seeded tales (expeditions.ts ROAM_TALES), each with a small reward (calcite, glow, murmurs or a sure shard roll); shown in the return note and the diary.
+- Heirlooms: spawnLesser(s, where, heirloom); state.heirloom; relic() used for effects (found() for progress); 'What it carries' in the spawning card; test in prestige.test.ts.

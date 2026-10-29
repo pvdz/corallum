@@ -139,6 +139,8 @@ export type GameState = {
   residents: ResidentId[];
   /** Zones in which the shoals have visited the sister reef. */
   visits: number[];
+  /** A relic brought from the last reef with the spawn: its effect is in play from the start. */
+  heirloom: SiteId | '';
   /** Ruins searched this run (content/expeditions.ts), in order. */
   relics: SiteId[];
   /** Sim time each creature last gave a gift when touched (content/creatures.ts GIFT). */
@@ -189,6 +191,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     history: [],
     expedition: { site: '', back: 0, feed: 0, light: 0, scout: 0, n: 0 },
     relics: [],
+    heirloom: '',
     visits: [],
     residents: [],
     diary: [],

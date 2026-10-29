@@ -30,6 +30,9 @@ export const EXPEDITION = {
   /** Murmurs per shoal-second on the way (half what scouting at home hears). */
   heard: 0.5,
   label: 'Expeditions',
+  heirLabel: 'What it carries',
+  heirNone: 'Nothing',
+  heirNote: 'One relic this reef found may go with the spawn: its effect in play on the next reef from the start.',
   intro: 'Send shoals to a ruin. They stop their work while they are away, and come back with what they find.',
   send: 'Send',
   away: 'away',

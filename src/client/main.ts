@@ -24,7 +24,7 @@ import { createTaps } from '../game/render/taps.ts';
 import { drawFeast, feastPos, feastReach } from '../game/render/feast.ts';
 import { zoom, type EffectKind, type Focus, type ReefView, type Scene } from '../game/render/scene.ts';
 import { runBot } from '../game/sim/bot.ts';
-import { ROAM, SITES } from '../game/content/expeditions.ts';
+import { ROAM, SITES, type SiteId } from '../game/content/expeditions.ts';
 import { WATER } from '../game/content/waters.ts';
 import { SISTER } from '../game/content/sister.ts';
 import { PALETTES } from '../game/content/palettes.ts';
@@ -276,8 +276,8 @@ const panel = createPanel(ui, {
     buzz(20);
     save();
   },
-  spawnLesser(where) {
-    const next = spawnLesser(state, where);
+  spawnLesser(where, heirloom) {
+    const next = spawnLesser(state, where, heirloom as SiteId | '');
     if (!next) return;
     if (ephemeral) {
       state = next;

@@ -1,6 +1,7 @@
 // Lesser Spawnings: let go early, start again on a new seamount, keep the Lineage.
 
 import { MOMENTS } from '../content/moments.ts';
+import type { SiteId } from '../content/expeditions.ts';
 import { MEETINGS } from '../content/act3.ts';
 import { DIALECTS } from '../content/act4.ts';
 import { HABIT_SHARE, LINEAGE, TRAITS, type SeamountId, type Trait, type TraitId } from '../content/lineage.ts';
@@ -35,7 +36,7 @@ function storiesOf(s: GameState): string[] {
  * Release a lesser spawning (or, after the ending, begin again): a new run on a new seamount
  * that keeps the lineage. Returns the new state, or null if it is not allowed yet.
  */
-export function spawnLesser(s: GameState, where: SeamountId = 'plain'): GameState | null {
+export function spawnLesser(s: GameState, where: SeamountId = 'plain', heirloom: SiteId | '' = ''): GameState | null {
   if (!canSpawnLesser(s)) return null;
   const meta: Meta = structuredClone(s.meta);
   meta.lineage += lineageFor(s);
@@ -47,6 +48,8 @@ export function spawnLesser(s: GameState, where: SeamountId = 'plain'): GameStat
   const seed = (Math.imul(s.seed ^ 0x9e3779b9, 2654435761) + meta.spawnings) >>> 0;
   const next = newGame(seed, meta);
   next.seamount = where;
+  // One relic this reef found may go with the spawn.
+  if (heirloom && s.relics.includes(heirloom)) next.heirloom = heirloom;
   return next;
 }
 

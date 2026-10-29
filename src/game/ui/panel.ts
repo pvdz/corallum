@@ -65,7 +65,7 @@ export type PanelHooks = {
   setRasp(n: number): void;
   choose(id: MeetingId, choice: Choice): void;
   speak(id: DialectId): void;
-  spawnLesser(where: SeamountId): void;
+  spawnLesser(where: SeamountId, heirloom: string): void;
   buyTrait(id: TraitId): void;
   exportSave(): string;
   importSave(text: string): boolean;
@@ -737,7 +737,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const msg = ended(s)
       ? `Begin again on a new seamount, with +${lineageFor(s)} lineage?`
       : `Release a lesser spawning now for +${lineageFor(s)} lineage? This reef starts over.`;
-    if (window.confirm(`${msg}\nIt will settle on ${seamountDef(whereNext).name.toLowerCase()}.`)) hooks.spawnLesser(whereNext);
+    if (window.confirm(`${msg}\nIt will settle on ${seamountDef(whereNext).name.toLowerCase()}.`)) hooks.spawnLesser(whereNext, heirNext);
   });
   // Where the spawn settles: each seamount bends the next run one way.
   let whereNext: SeamountId = 'plain';
@@ -758,7 +758,31 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   whereNote.textContent = SEAMOUNTS[0]!.text;
   spawnFoot.append(spawnBtn);
   const spawnBuys = el('p', 'effect');
-  spawnCard.append(spawnTitle, spawnText, spawnBuys, el('p', 'stock-name', 'Where it settles'), whereBox, whereNote, spawnFoot);
+  // What it carries: one relic this reef found may go along (its effect in play on the next reef).
+  let heirNext = '';
+  const heirLabel = el('p', 'stock-name', EXPEDITION.heirLabel);
+  const heirBox = el('div', 'seamounts heirs');
+  const heirNote = el('p', 'hint', EXPEDITION.heirNote);
+  let heirKey = '';
+  function renderHeirs(s: GameState): void {
+    const key = s.relics.join();
+    heirLabel.hidden = heirBox.hidden = heirNote.hidden = s.relics.length === 0;
+    if (key === heirKey) return;
+    heirKey = key;
+    heirBox.innerHTML = '';
+    if (!s.relics.includes(heirNext as never)) heirNext = '';
+    for (const id of ['', ...s.relics]) {
+      const x = id ? site(id) : undefined;
+      const b = button('seamount', x ? x.relic : EXPEDITION.heirNone, () => {
+        heirNext = id;
+        for (const o of heirBox.children) o.classList.toggle('on', o === b);
+        heirNote.textContent = x ? `${x.relic}: ${x.effect}, from the start of the next reef.` : EXPEDITION.heirNote;
+      });
+      b.classList.toggle('on', id === heirNext);
+      heirBox.append(b);
+    }
+  }
+  spawnCard.append(spawnTitle, spawnText, spawnBuys, el('p', 'stock-name', 'Where it settles'), whereBox, whereNote, heirLabel, heirBox, heirNote, spawnFoot);
   // Feats: goals across all runs, one lineage each.
   const featCard = el('article', 'card codex feats');
   const featHead = el('h3', '', 'Feats');
@@ -1019,6 +1043,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const b = BOONS.find((x) => x.id === s.boon);
     if (b) rows.push([b.name, b.effect]);
     for (const id of s.relics) { const x = site(id); if (x) rows.push([x.relic, x.effect]); }
+    if (s.heirloom && !s.relics.includes(s.heirloom)) { const x = site(s.heirloom); if (x) rows.push([`${x.relic} (heirloom)`, x.effect]); }
     for (const id of s.residents) { const r = RESIDENTS.find((x) => x.id === id); if (r) rows.push([r.name, r.effect]); }
     for (const p of PAIRS) if (s.residents.includes(p.a) && s.residents.includes(p.b)) rows.push([p.name, p.effect]);
     for (const m of MOMENTS) { const c = s.moments[m.id]; if (c) rows.push([m[c].label, m[c].effect]); }
@@ -1672,6 +1697,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       renderTablet(s);
       renderDiary(s);
       renderShapes(s);
+      renderHeirs(s);
       renderCity(s);
       renderFeats(s);
       renderLine(s);
