@@ -32,7 +32,7 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, feedRising, inRising, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -305,21 +305,8 @@ const panel = createPanel(ui, {
     tracing = tracing?.id === id || !figureOpen(state, id) ? null : { id, n: 0 };
     if (tracing) audio.cue('shimmer');
   },
-  feedRising() {
-    const gain = feedRising(state);
-    if (gain <= 0) return;
-    const [x, y] = scene.crownAt;
-    const [sx, sy] = toScreen(x, y);
-    floatText(sx / dpr, sy / dpr, `+${num(gain)} calcite ${RISING.float}`, 'feast-float');
-    audio.cue('feast');
-    buzz([10, 30, 10]);
-    save();
-  },
-  closeUp(closed) {
-    closeUp(state, closed);
-    audio.cue('sweep');
-    save();
-  },
+  feedRising: sendFeeders,
+  closeUp: setClosed,
   setCurrent(c) {
     setCurrent(state, c);
     audio.cue('sweep');
@@ -650,6 +637,25 @@ function tripView(): ReefView['trip'] {
 function thornView(): ReefView['thorn'] {
   const th = currentThorn(state);
   return th ? { u: (state.t - th.start) / THORN.life, side: th.side, kind: th.kind } : null;
+}
+
+/** Send the feeding shoals into the rising (panel button or R). */
+function sendFeeders(): void {
+  const gain = feedRising(state);
+  if (gain <= 0) return;
+  const [x, y] = scene.crownAt;
+  const [sx, sy] = toScreen(x, y);
+  floatText(sx / dpr, sy / dpr, `+${num(gain)} calcite ${RISING.float}`, 'feast-float');
+  audio.cue('feast');
+  buzz([10, 30, 10]);
+  save();
+}
+
+/** Close the polyps against warm water, or open them (panel button or C). */
+function setClosed(closed: boolean): void {
+  closeUp(state, closed);
+  audio.cue('sweep');
+  save();
 }
 
 /** The figure being traced in the night sky (stars joined so far); only on screen, never saved. */
@@ -1281,7 +1287,7 @@ window.addEventListener('keydown', (e) => {
   }
   if (e.key === '?') {
     panel.story('Keys', 'Shortcuts',
-      'Space sweeps your tentacles. 1–4 switch the panel tabs. F catches a falling feast. E sends the shoals on the next expedition. 7–0 answer the shoals’ signal. P buds a polyp, B lays a band, G hosts ' +
+      'Space sweeps your tentacles. 1–4 switch the panel tabs. F catches a falling feast. E sends the shoals on the next expedition. R sends the feeders into the rising. C closes the polyps against warm water (or opens them). 7–0 answer the shoals’ signal. P buds a polyp, B lays a band, G hosts ' +
       'glimmerseed. H hides the panel to see the whole reef. Hold any buy button to keep buying. ' +
       'Tap a creature to learn its name; tap Ossel and it will answer.');
     return;
@@ -1293,6 +1299,14 @@ window.addEventListener('keydown', (e) => {
   if (viewMode && (e.key === '+' || e.key === '=' || e.key === '-' || e.key === '0')) {
     const k = e.key === '0' ? 1 : zoom.k * (e.key === '-' ? 1 / 1.25 : 1.25);
     zoomer.zoomAt(k, canvas.width / 2, canvas.height / 2);
+    return;
+  }
+  if (e.key.toLowerCase() === 'r' && canFeedRising(state)) {
+    sendFeeders();
+    return;
+  }
+  if (e.key.toLowerCase() === 'c' && Number.isFinite(untilHeat(state))) {
+    setClosed(!state.closed);
     return;
   }
   if (e.key.toLowerCase() === 'h') {

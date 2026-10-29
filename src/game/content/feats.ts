@@ -68,6 +68,7 @@ export const FEATS: readonly Feat[] = [
   { id: 'talker', name: 'Old friends talking', text: 'Tap Ossel ten times.', hidden: true, when: (s) => s.meta.seen.includes('did:ossel10') },
   { id: 'dark-picture', name: 'A picture in the dark', text: 'Save a picture of your reef in the Midnight Water.', hidden: true, when: (s) => s.meta.seen.includes('did:photo-dark') },
   { id: 'watcher', name: 'Just watching', text: 'Watch the reef in view mode for five minutes.', hidden: true, when: (s) => s.meta.seen.includes('did:watch') },
+  { id: 'risings', name: 'Into the rising', text: 'Send the feeders into ten risings.', when: (s) => s.tally.risings >= 10, progress: (s) => [s.tally.risings, 10] },
   { id: 'stars', name: 'Every star a name', text: 'Name all six figures in the night sky over one Breach.', when: (s) => FIGURES.every((f) => s.sky[f.id]), progress: (s) => [FIGURES.filter((f) => s.sky[f.id]).length, FIGURES.length] },
   { id: 'picture', name: 'A picture', text: 'Save a picture of your reef.', when: (s) => s.meta.seen.includes('did:photo') },
 ];

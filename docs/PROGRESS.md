@@ -488,3 +488,4 @@ date, what landed, what is half-done, what's next.
 - Sun-shy trait (habit, 8 lineage): closedNow() = chosen closed, or warm water with the trait; rates, panel and scene read it.
 - The night sky (content/sky.ts FIGURES; economy skyOpen/figureOpen/nameFigure/named; state.sky): sky card in choices.ts, breach.ts drawFigures + 'star' spots with an index, main.ts tracing/tapStar; ending page + 'stars' feat; finale e2e traces Ossel's Cup.
 - The rising (act2.ts RISING; economy inRising/untilRising/risingLeft/canFeedRising/risingHaul/feedRising; state.rose, tally.risings): rise row in the water box, render/rising.ts stream in midnight + twilight, Ossel whisper, systems e2e. A plankton-rate version was tried first and dropped: fast plankton steps made a month offline 2.7 s.
+- Keys: R sends the feeders into the rising, C closes/opens the polyps (main.ts sendFeeders/setClosed, also the panel hooks); feat 'Into the rising' (ten risings).
