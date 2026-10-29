@@ -14,6 +14,7 @@ import { CREATURES, TRUST, trustLevel } from '../content/creatures.ts';
 import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
 import { upgradeIcon } from './icons.ts';
 import { FEATS } from '../content/feats.ts';
+import { WELCOME } from '../content/events.ts';
 import { WATER } from '../content/waters.ts';
 import { REQUEST } from '../content/requests.ts';
 import { WORKS, WORK_TEXT, type WorkId } from '../content/works.ts';
@@ -1021,7 +1022,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const next = queue.shift();
     if (next) openStory(next);
   });
-  awayCard.append(el('h2', '', 'While you drifted'), awayText, awayList, awayHint, awayClose);
+  // A welcome-back gift after a long time away: two buttons, one to take.
+  const welcomeBox = el('div', 'welcome');
+  welcomeBox.hidden = true;
+  awayCard.append(el('h2', '', 'While you drifted'), awayText, awayList, welcomeBox, awayHint, awayClose);
   away.append(awayCard);
   host.append(away);
   // Escape closes whichever card is open.
@@ -1555,7 +1559,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     },
     /** Show the offline summary; any bands read while away are queued behind it. */
     showAway(seconds: number, gained: { calcite: number; glow: number; metres: number; full: boolean; bands: string[]; fullAfter: number | null;
-      relics?: string[]; roams?: number; shards?: number }): void {
+      relics?: string[]; roams?: number; shards?: number }, gifts?: { label: string; note: string; take: () => string }[]): void {
       // A headline, then what changed as labelled rows (like the Your reef card).
       awayText.textContent = `You were gone ${duration(seconds)}. The reef kept growing.`;
       awayList.innerHTML = '';
@@ -1572,6 +1576,22 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         row('Full', `the stores filled${gained.fullAfter !== null && gained.fullAfter > 60 ? ` after ${duration(gained.fullAfter)}` : ''}; the rest dissolved back into the sea`);
         awayHint.textContent = 'A denser lattice holds more while you are away.';
       } else awayHint.textContent = '';
+      welcomeBox.innerHTML = '';
+      welcomeBox.hidden = !gifts?.length;
+      if (gifts?.length) {
+        welcomeBox.append(el('p', 'welcome-head', WELCOME.head));
+        const buttons = gifts.map((g) => {
+          const b = button('choice welcome-gift', '', () => {
+            const said = g.take();
+            for (const x of buttons) x.disabled = true;
+            b.classList.add('taken');
+            b.lastChild!.textContent = `${WELCOME.took} · ${said}`;
+          });
+          b.append(el('strong', '', g.label), el('span', '', g.note));
+          welcomeBox.append(b);
+          return b;
+        });
+      }
       away.hidden = false;
     },
     /** List the bands and readings of a loaded save without opening the reader for each. */

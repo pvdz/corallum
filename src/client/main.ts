@@ -30,12 +30,12 @@ import { SISTER } from '../game/content/sister.ts';
 import { REQUEST } from '../game/content/requests.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, sisterAt, tripSeconds, remember, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio } from '../game/audio/audio.ts';
-import { FEAST } from '../game/content/events.ts';
+import { FEAST, WELCOME } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS, TRIAL_TEXT } from '../game/content/lineage.ts';
 import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf, TRUST, trustLevel } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
@@ -400,7 +400,10 @@ function catchUp(seconds: number): void {
     relics: state.relics.slice(before.relics).map((id) => SITES.find((x) => x.id === id)?.relic ?? id),
     roams: state.tally.roams - before.roams,
     shards: state.meta.shards.length - before.shards,
-  });
+  }, seconds >= WELCOME.after && state.levels.polyp > 0 ? [
+    { label: WELCOME.haul, note: `+${num(welcomeHaul(state, seconds))} calcite`, take: () => { const g = welcome(state, 'haul', seconds); save(); return `+${num(g)} calcite`; } },
+    { label: WELCOME.search, note: WELCOME.searchNote, take: () => { const n = welcome(state, 'search', seconds); save(); return n ? `${n} shard${n > 1 ? 's' : ''}` : 'nothing this time'; } },
+  ] : undefined);
 }
 
 // Offline catch-up on load. Exact: the economy is closed-form and saturates by itself.

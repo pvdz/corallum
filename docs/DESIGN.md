@@ -123,6 +123,10 @@ dusters: plankton ×1.3; from 3800 m farmer damselfish: bloom ×1.3). Taking one
 is free, so the verb is choosing a loadout that fits the zone (silt and Rasp on the shelf, bloom in
 the light). They live visibly on the coral and in the journal ("Residents"), each tappable.
 
+**Welcome back**: after an hour or more away, the away summary offers one of two gifts: a haul of
+stone (5% of each second away's calcite production, at most 8 h of it) or a search of the silt
+(three shard chances). A small choice on return; absence costs nothing and earns a little.
+
 Falling feasts (from 42 m, late in the Silt Floor where buying slows): something dead sinks past the reef every few minutes; tap it (or F)
 for 90 s of calcite. A reward for watching (principle 6: never needed, never lost offline), and the
 "What falls" band made playable.

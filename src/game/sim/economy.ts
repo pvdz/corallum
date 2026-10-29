@@ -23,7 +23,7 @@ import { ACT5, BANDS_ACT5, MEMORIES, type Memory, type MemoryId } from '../conte
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
 import { LINEAGE, SEAMOUNTS, type Seamount, type SeamountId, type TraitId } from '../content/lineage.ts';
-import { FEAST } from '../content/events.ts';
+import { FEAST, WELCOME } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { WORKS, type WorkId } from '../content/works.ts';
 import { SISTER } from '../content/sister.ts';
@@ -1225,6 +1225,26 @@ export function dig(s: GameState, source: ShardSource): number {
 export function shardBonus(s: GameState): number {
   const n = s.meta.shards.length;
   return 1 + SHARD.each * n + (n >= SHARD_LINES.length ? SHARD.whole : 0);
+}
+
+// ---------- Welcome back ----------
+
+/** The haul of stone offered after `away` seconds: a share of what the reef makes, capped. */
+export function welcomeHaul(s: GameState, away: number): number {
+  return calciteRate(s) * WELCOME.share * Math.min(away, WELCOME.cap);
+}
+
+/** Take one welcome-back gift. Returns what it brought (calcite, or shards found). */
+export function welcome(s: GameState, choice: 'haul' | 'search', away: number): number {
+  if (choice === 'haul') {
+    const gain = welcomeHaul(s, away);
+    s.calcite += gain;
+    s.earned.calcite += gain;
+    return gain;
+  }
+  let n = 0;
+  for (let i = 0; i < WELCOME.digs; i++) if (dig(s, 'roam') >= 0) n++;
+  return n;
 }
 
 // ---------- Ossel's requests ----------
