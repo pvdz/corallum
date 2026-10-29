@@ -414,6 +414,7 @@ function view(): ReefView {
     channels: state.levels.channel,
     meadows: state.levels.meadow,
     pigments: state.levels.pigment,
+    lattice: state.levels.lattice,
     canopy: state.levels.canopy,
     seamount: state.seamount,
     rasp: state.rasp,

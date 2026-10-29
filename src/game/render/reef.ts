@@ -287,6 +287,35 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     }
   }
 
+  /**
+   * The aragonite lattice: tight-packed crystal in the stone catching the light, a few glints per
+   * level, each twinkling now and then at a fixed place along the branches.
+   */
+  function drawGlints(ctx: CanvasRenderingContext2D, L: ReefLayout, lattice: number, t: number): void {
+    const n = Math.min(lattice * 8, 64);
+    const s = L.s;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let k = 0; k < n; k++) {
+      const i = (k * 7919 + 13) % coral.count;
+      if (coral.y[i]! > L.top) continue;
+      const tw = Math.max(0, Math.sin(t * (0.7 + (k % 5) * 0.23) + k * 2.1)) ** 8;
+      if (tw < 0.03) continue;
+      const [x, y] = nodePx(L, i);
+      const r = 2.2 * s * (0.6 + 0.4 * tw);
+      glow(ctx, x, y, r * 3, '220,240,255', 0.35 * tw);
+      ctx.strokeStyle = `rgba(255,255,255,${0.8 * tw})`;
+      ctx.lineWidth = 0.6 * s;
+      ctx.beginPath();
+      ctx.moveTo(x - r * 2, y);
+      ctx.lineTo(x + r * 2, y);
+      ctx.moveTo(x, y - r * 2);
+      ctx.lineTo(x, y + r * 2);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
   function draw(ctx: CanvasRenderingContext2D, L: ReefLayout, v: ReefView, t: number): void {
     const s = L.s;
     const [crx, cry] = crown(L);
@@ -306,6 +335,7 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     if (form === 'plating') drawTables(ctx, L, t);
     drawBranchesCached(ctx, L);
     if (L.encrust && L.encrust > 0) drawEncrusting(ctx, L, t);
+    if (v.lattice > 0) drawGlints(ctx, L, v.lattice, t);
 
     const nodes = polypNodes(L, shownPolyps(L, v));
     // Before the stone has grown, new polyps cluster around its foot on the silt.

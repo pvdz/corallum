@@ -35,6 +35,8 @@ export type ReefView = {
   meadows: number;
   /** Sunlit Crown: pigments grown (colour on the reef) and canopy spread (polyps opened to the light). */
   pigments: number;
+  /** Aragonite lattice levels (crystal glints along the branches). */
+  lattice: number;
   canopy: number;
   /** Which seamount this run grows on (warm and cold tint the deep). */
   seamount: string;
