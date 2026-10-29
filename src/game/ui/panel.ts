@@ -339,7 +339,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let journalKey: string | null = null;
   function renderJournal(s: GameState): void {
     const seen = CREATURES.filter((c) => s.meta.seen.includes(`c:${c.id}`));
-    const key = seen.map((c) => c.id).join() + `|${hooks.portraits ?? 0}`;
+    const touched = s.meta.seen.filter((k) => k.startsWith('t:')).length;
+    const key = seen.map((c) => c.id).join() + `|${hooks.portraits ?? 0}|${touched}`;
     if (key === journalKey) return;
     journalKey = key;
     journalHead.textContent = `Creatures seen · ${seen.length} of ${CREATURES.length} · calcite +${Math.round((knownBonus(s) - 1) * 100)}%`;
@@ -362,7 +363,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           row.append(img);
         } else row.append(el('div', 'portrait none'));
         const text = el('div', 'journal-text');
-        text.append(el('strong', '', known ? c.name : 'Not yet seen'),
+        const name = el('strong', '', known ? c.name : 'Not yet seen');
+        if (known && s.meta.seen.includes(`t:${c.id}`)) name.append(el('em', 'touched', ' · touched'));
+        text.append(name,
           el('span', '', known ? c.note : c.note.startsWith('Rare.') ? 'Rare: watch for it.' : (/Only on [^.]*\./.exec(c.note)?.[0] ?? '')));
         row.append(text);
         journalList.append(row);

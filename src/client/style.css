@@ -538,6 +538,7 @@ html.view-mode #photo { display: grid; }
 .journal-text { display: flex; flex-direction: column; gap: 1px; }
 .journal-text strong { font-weight: 400; color: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.1em; font-size: 10.5px; }
 .journal-text span { color: #dbe6f5; line-height: 1.35; }
+.journal-text .touched { font-style: normal; color: var(--glowc); letter-spacing: 0.06em; text-transform: none; }
 .journal-entry.unknown { opacity: 0.45; font-style: italic; }
 .journal-entry.unknown .portrait { display: none; }
 .journal-entry.unknown .journal-text { flex-direction: row; gap: 10px; align-items: baseline; }
