@@ -869,6 +869,7 @@ function view(): ReefView {
     heat: heatView(),
     sisterLit: state.race.lit > 0,
     grotto: state.levels.grotto,
+    stranded: (() => { const tg = actAt(state.height) === 5 ? currentTangle(state) : null; return tg ? { k: tg.k, age: tg.age } : null; })(),
     meteor: meteorShower(state),
     old: { slots: state.oldSlots.slice(0, oldKnobs(state)), slot: state.pruned.slot, since: state.t - state.pruned.t,
       fall: ended(state) ? { slots: state.oldSlots.slice(0, Math.min(6, Math.floor(state.old))), since: state.t - state.breachedAt } : undefined },
@@ -1309,7 +1310,7 @@ canvas.addEventListener('pointerdown', (e) => {
     if (frozenT === null) {
       const gain = freeTangle(state);
       if (gain > 0) {
-        floatText(e.clientX, e.clientY - 20, `+${num(gain)} ${feastPay(state)} ${TANGLE.float}`, 'feast-float');
+        floatText(e.clientX, e.clientY - 20, `+${num(gain)} ${feastPay(state)} ${actAt(state.height) === 5 ? TANGLE.tossed : TANGLE.float}`, 'feast-float');
         audio.cue('shimmer');
         buzz([10, 30, 10]);
         save();
@@ -1837,7 +1838,7 @@ function frame(now: number): void {
   const fe = currentFeast(state);
   if (fe) drawFeast(ctx, fe, state.t - fe.start, tNow, focusNow, dpr, feastPay(state));
   const tg = currentTangle(state);
-  if (tg) drawTangle(ctx, tg, TANGLE.life, tNow, focusNow, dpr);
+  if (tg && actAt(state.height) !== 5) drawTangle(ctx, tg, TANGLE.life, tNow, focusNow, dpr);
   taps.draw(ctx, tNow, scene.crownAt, dpr, (x, y) => actAt(state.height) <= 2 || !!scene.darkAt?.(x, y));
   drawLucky(tNow);
   ctx.setTransform(1, 0, 0, 1, 0, 0);

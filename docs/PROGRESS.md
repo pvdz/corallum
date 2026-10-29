@@ -657,3 +657,4 @@ date, what landed, what is half-done, what's next.
 - A second Twilight great work, the grazing lawn (from 3400 m; calcite+sand; sand ×1.15 per stage); works.ts drawLawn. Bot 6h48.
 - Palettes Oath (feat Every vow kept) and Silver (feat A week of visitors).
 - Tangles (events.ts TANGLE; economy currentTangle/freeTangle; render/tangle.ts): in the Midnight Water to the Sunlit Crown, one slot every 7 min a small fish is caught in a jelly's threads near the reef for 35 s; tap it free for 40 s of the zone's currency. Whisper, request 'free', feat Untangler (10), guide row; sim test.
+- At the Breach the tangle slot is a fish stranded on the crown at low water (breach.ts drawStranded; ReefView stranded): tap to toss it back.

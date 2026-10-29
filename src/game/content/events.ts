@@ -158,10 +158,12 @@ export const FEAST = {
 } as const;
 
 /**
- * A fish tangled in a jelly's trailing tentacles (Midnight Water to the Sunlit Crown, while you
- * watch): one slot every `period` seconds, there for `life`. Freed, it pays `seconds` of the zone's currency.
+ * A fish tangled in a jelly's trailing tentacles (Midnight Water to the Sunlit Crown; at the Breach
+ * a fish stranded on the crown; while you watch): one slot every `period` seconds, there for `life`. Freed, it pays `seconds` of the zone's currency.
  */
 export const TANGLE = {
-  period: 420, life: 35, seconds: 40, zones: [2, 3, 4] as readonly number[],
+  period: 420, life: 35, seconds: 40, zones: [2, 3, 4, 5] as readonly number[],
   float: '· freed',
+  /** At the Breach it is a fish stranded on the crown at low water, tossed back. */
+  tossed: '· back in the sea',
 } as const;

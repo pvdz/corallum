@@ -290,6 +290,42 @@ export function createBreachScene(seed: number): Scene {
     }
   }
 
+  /** A small fish stranded on the crown above the water, flapping: tap to toss it back. */
+  function drawStranded(ctx: CanvasRenderingContext2D, L: ReefLayout, st: { k: number; age: number }, t: number): void {
+    const s = scale() * 1.5;
+    const side = st.k % 2 ? 1 : -1;
+    const x = L.cx + side * L.unit * 0.12, y = waterY() - 30 * scale();
+    spot('tangle', x, y, 28 * s);
+    const flop = Math.abs(Math.sin(t * 7)) * 5 * s;
+    ctx.save();
+    ctx.translate(x, y - flop);
+    ctx.rotate(Math.sin(t * 7) * 0.6);
+    ctx.fillStyle = '#c8d8e8';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 8 * s, 3.2 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(-7 * s, 0);
+    ctx.lineTo(-12 * s, -3.5 * s);
+    ctx.lineTo(-12 * s, 3.5 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#111';
+    ctx.beginPath();
+    ctx.arc(4 * s, -0.8 * s, 0.9 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    // A glint of wet scales, and a ring: it can be touched.
+    const p = (t * 0.6) % 1;
+    ctx.save();
+    ctx.strokeStyle = `rgba(230,240,255,${0.4 * (1 - p)})`;
+    ctx.lineWidth = 1.2 * dpr;
+    ctx.beginPath();
+    ctx.arc(x, y, (16 + 12 * p) * s, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+  }
+
   /** Where the king tide reached (a moment): a line of dried weed and pale salt along the reef above the water. */
   function drawWrack(ctx: CanvasRenderingContext2D, L: ReefLayout): void {
     const s = scale();
@@ -1372,6 +1408,7 @@ export function createBreachScene(seed: number): Scene {
       drawResidents(ctx, reef, L, v.residents, t, seed);
       this.crownAt = reef.crown(L);
       if (v.moments['king-tide']) drawWrack(ctx, L);
+      if (v.stranded) drawStranded(ctx, L, v.stranded, t);
       drawSong(ctx, v.song, this.crownAt[0], this.crownAt[1], t, scale());
       reef.drawEffects(ctx, L, v, effects.live(t));
       drawWaves(ctx, t);

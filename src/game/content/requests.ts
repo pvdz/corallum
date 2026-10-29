@@ -55,6 +55,6 @@ export const REQUESTS: readonly RequestDef[] = [
   { kind: 'star', ask: 'Give a name to some of the stars.', n: () => 1, zones: [5] },
   { kind: 'milky', ask: 'Sweep through the next milky sea {n} times.', n: (d) => Math.min(10, 4 + Math.floor(d / 4)), zones: [2] },
   { kind: 'lucky', ask: 'Touch a lucky one: watch for golden sparks.', n: () => 1, zones: [1, 2, 3, 4, 5] },
-  { kind: 'free', ask: 'Free the next fish caught in a jelly’s threads.', n: () => 1, zones: [2, 3, 4] },
+  { kind: 'free', ask: 'Free the next small fish in trouble.', n: () => 1, zones: [2, 3, 4, 5] },
   { kind: 'prune', ask: 'Let {n} knobs of old stone go.', one: 'Let a knob of old stone go.', n: (d) => Math.min(3, 1 + Math.floor(d / 6)), zones: [1, 2, 3, 4, 5] },
 ];
