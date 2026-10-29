@@ -389,3 +389,4 @@ date, what landed, what is half-done, what's next.
 - New creature: the cuttlefish (Sunlit, by day): colour bands running down the mantle, rippling fin, W-pupil; touched it flashes white, jets back and inks.
 - New creature: the tripod fish on the Silt Floor (stilts of fin-rays, feelers into the current; touched it lifts off and resettles).
 - New creature: hatchetfish in the Midnight Water (silver keel-bellied school, belly lights; touched they flare and scatter).
+- New creature: a moray eel in a hole in the Twilight slope (gaping as it breathes; touched it pulls back in).

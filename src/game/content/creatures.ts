@@ -4,7 +4,7 @@
 export type CreatureId =
   | 'jelly' | 'tripod-fish' | 'brittle-star' | 'rattail' | 'sea-pig' | 'brine-pool' | 'smokers' | 'dumbo' | 'squat-lobster' | 'sea-lily' | 'glass-sponge' | 'tube-worm'
   | 'lanternfish' | 'hatchetfish' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration'
-  | 'rasp' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark'
+  | 'rasp' | 'moray' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark'
   | 'cuttlefish' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly'
   | 'shore-bird' | 'dolphin' | 'moon-jelly'
   | 'thorn-star' | 'dragonfish' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish';
@@ -36,6 +36,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'giant-squid', name: 'Giant squid', zone: 'The Midnight Water', note: 'Rare. A shape longer than the reef, an eye like a plate, and gone.' },
   { id: 'migration', name: 'The migration', zone: 'The Midnight Water', note: 'Every night the deep rises to feed: the biggest journey any animals make.' },
   { id: 'rasp', name: 'The Rasp', zone: 'The Twilight Shelf', note: 'Blunt beaks that grind dead stone into sand.' },
+  { id: 'moray', name: 'Moray eel', zone: 'The Twilight Shelf', note: 'It gapes all day, not to threaten: it breathes through its mouth. It is shy.' },
   { id: 'manta', name: 'Manta', zone: 'The Twilight Shelf', note: 'Wings as wide as the reef is tall, gliding through the light.' },
   { id: 'garden-eel', name: 'Garden eels', zone: 'The Twilight Shelf', note: 'A colony standing out of the sand, ducking all at once.' },
   { id: 'octopus', name: 'Octopus', zone: 'The Twilight Shelf', note: 'The colour of sand until it moves, and then of fire.' },

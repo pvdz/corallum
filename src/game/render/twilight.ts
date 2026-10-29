@@ -380,6 +380,75 @@ export function createTwilightScene(seed: number): Scene {
    * Sea fans on the slope: flat purple gorgonians standing across the current, a lattice of fine
    * branches swaying together.
    */
+  /**
+   * A moray in a hole in the slope: the head leaning out, mouth opening and shutting as it breathes.
+   * Touched, it pulls back into the dark and slowly comes out again.
+   */
+  function drawMoray(ctx: CanvasRenderingContext2D, t: number): void {
+    sight('moray');
+    const s = scale() * 1.4;
+    const u = 0.24;
+    const hx = focus.x - focus.w * 0.1 + u * focus.w * 1.2, hy = slopeY(u) - 10 * s;
+    const touch = startled('moray', t);
+    const back = touch && touch.age < 7 ? Math.max(0, 1 - Math.max(0, touch.age - 0.3) / 6.7) : 0;
+    const out = (0.85 + 0.15 * Math.sin(t * 0.3)) * (1 - back);
+    spot('moray', hx - 10 * s, hy, 22 * s);
+    ctx.save();
+    // The hole: a dark mouth in the rock.
+    ctx.fillStyle = '#0a0f1a';
+    ctx.beginPath();
+    ctx.ellipse(hx, hy, 10 * s, 7 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(120,130,150,0.4)';
+    ctx.lineWidth = 2 * s;
+    ctx.stroke();
+    if (out > 0.05) {
+      ctx.beginPath();
+      ctx.ellipse(hx, hy, 9 * s, 6.5 * s, 0, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.restore();
+      ctx.save();
+      // The head and neck leaning out to the left, mottled green-brown.
+      const len = 26 * s * out;
+      const gape = (0.3 + 0.7 * Math.max(0, Math.sin(t * 1.4))) * 3 * s;
+      ctx.translate(hx, hy);
+      ctx.rotate(-0.15);
+      const g = ctx.createLinearGradient(0, -6 * s, 0, 6 * s);
+      g.addColorStop(0, '#5a6a3a');
+      g.addColorStop(1, '#3a4428');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.moveTo(4 * s, -6 * s);
+      ctx.quadraticCurveTo(-len * 0.5, -7 * s, -len, -2.5 * s - gape * 0.4);
+      ctx.lineTo(-len - 3 * s, -1 * s);
+      ctx.lineTo(-len + 2 * s, 0);
+      ctx.lineTo(-len - 3 * s, 1 * s);
+      ctx.lineTo(-len, 2.5 * s + gape * 0.6);
+      ctx.quadraticCurveTo(-len * 0.5, 7 * s, 4 * s, 6 * s);
+      ctx.closePath();
+      ctx.fill();
+      // Mottling, the eye, and the open mouth's pale lining.
+      ctx.fillStyle = 'rgba(200,210,140,0.25)';
+      for (let i = 0; i < 6; i++) {
+        ctx.beginPath();
+        ctx.arc(-len * (0.2 + i * 0.12), (i % 2 ? -2 : 2) * s, 1.4 * s, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.fillStyle = '#e8e0a0';
+      ctx.beginPath();
+      ctx.arc(-len + 6 * s, -3 * s, 1.3 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#d8a0a0';
+      ctx.beginPath();
+      ctx.moveTo(-len + 1 * s, 0);
+      ctx.lineTo(-len - 2 * s, -gape * 0.4);
+      ctx.lineTo(-len - 2 * s, gape * 0.6);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
   function drawSeaFans(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
     for (const [k, f] of fans.entries()) {
@@ -936,6 +1005,7 @@ export function createTwilightScene(seed: number): Scene {
         { branch: '#9a5a6c', tip: '#c98292', polyp: 'rgba(255,225,235,0.9)' }, slopeSeed, v.nurseries);
       drawSeaFans(ctx, t);
       drawGardenEels(ctx, t);
+      drawMoray(ctx, t);
       drawOctopus(ctx, t);
       drawCleaningStation(ctx, t);
       drawWall(ctx, t, v.wall);
