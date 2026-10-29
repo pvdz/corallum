@@ -12,7 +12,7 @@ export type Moment = { id: MomentId; metres: number; title: string; text: string
   /** Only on this seamount (the hard places each have one of their own). */
   seamount?: string };
 
-export const MOMENT = { kicker: 'A moment', choose: 'What do you do?' } as const;
+export const MOMENT = { kicker: 'A moment', choose: 'What do you do?', before: 'chosen before' } as const;
 
 export const MOMENTS: readonly Moment[] = [
   {

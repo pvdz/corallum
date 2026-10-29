@@ -6,6 +6,7 @@ import { SITES } from './expeditions.ts';
 import type { GameState } from '../sim/state.ts';
 import { CREATURES } from './creatures.ts';
 import { FIGURES } from './sky.ts';
+import { MOMENTS } from './moments.ts';
 
 export type Feat = { id: string; name: string; text: string; when: (s: GameState) => boolean; progress?: (s: GameState) => [number, number];
   /** A secret: shown as ??? until earned. */
@@ -68,6 +69,7 @@ export const FEATS: readonly Feat[] = [
   { id: 'talker', name: 'Old friends talking', text: 'Tap Ossel ten times.', hidden: true, when: (s) => s.meta.seen.includes('did:ossel10') },
   { id: 'dark-picture', name: 'A picture in the dark', text: 'Save a picture of your reef in the Midnight Water.', hidden: true, when: (s) => s.meta.seen.includes('did:photo-dark') },
   { id: 'watcher', name: 'Just watching', text: 'Watch the reef in view mode for five minutes.', hidden: true, when: (s) => s.meta.seen.includes('did:watch') },
+  { id: 'both-ways', name: 'Both ways', text: 'Across the line, meet every moment both ways.', when: (s) => MOMENTS.every((m) => s.meta.seen.includes(`m:${m.id}:a`) && s.meta.seen.includes(`m:${m.id}:b`)), progress: (s) => [s.meta.seen.filter((k) => k.startsWith('m:')).length, MOMENTS.length * 2] },
   { id: 'risings', name: 'Into the rising', text: 'Send the feeders into ten risings.', when: (s) => s.tally.risings >= 10, progress: (s) => [s.tally.risings, 10] },
   { id: 'stars', name: 'Every star a name', text: 'Name all six figures in the night sky over one Breach.', when: (s) => FIGURES.every((f) => s.sky[f.id]), progress: (s) => [FIGURES.filter((f) => s.sky[f.id]).length, FIGURES.length] },
   { id: 'picture', name: 'A picture', text: 'Save a picture of your reef.', when: (s) => s.meta.seen.includes('did:photo') },

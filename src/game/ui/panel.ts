@@ -253,9 +253,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const b = button('choice', '', () => { if (momentNow) hooks.meet(momentNow.id, c); });
     const label = el('strong');
     const effect = el('span');
-    b.append(label, effect);
+    const before = el('em', 'carried-before', MOMENT.before);
+    b.append(label, effect, before);
     momentChoices.append(b);
-    return { b, label, effect, c };
+    return { b, label, effect, before, c };
   });
   momentBox.append(el('p', 'truce-kicker', MOMENT.kicker), momentTitle, momentText, momentChoices);
   grow.prepend(momentBox);
@@ -1574,6 +1575,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           for (const x of momentButtons) {
             x.label.textContent = mo[x.c].label;
             x.effect.textContent = mo[x.c].effect;
+            // A way an earlier reef of the line already went.
+            x.before.hidden = !s.meta.seen.includes(`m:${mo.id}:${x.c}`);
           }
         }
       }

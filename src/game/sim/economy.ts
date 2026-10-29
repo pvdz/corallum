@@ -922,6 +922,8 @@ export function meet(s: GameState, id: MomentId, c: 'a' | 'b'): boolean {
   const m = nextMoment(s);
   if (!m || m.id !== id) return false;
   s.moments[id] = c;
+  // The line remembers which way each moment was met, on any reef.
+  if (!s.meta.seen.includes(`m:${id}:${c}`)) s.meta.seen.push(`m:${id}:${c}`);
   const mo = MOMENTS.find((x) => x.id === id)!;
   remember(s, 'moment', `${mo.title}: ${mo[c].label.toLowerCase()}.`);
   if ((id === 'lost-shoal' || id === 'split-shoal') && c === 'a') {
