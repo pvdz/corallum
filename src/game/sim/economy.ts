@@ -19,7 +19,7 @@ import { ACT1, BANDS_ACT1, MILESTONES, type Milestone } from '../content/act1.ts
 import { ACT2, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
 import { ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { ACT4, BANDS_ACT4, DIALECTS, OTHERS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
-import { ACT5, BANDS_ACT5, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
+import { ACT5, BANDS_ACT5, GARDEN, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
 import { BOONS, LINEAGE, SEAMOUNTS, type BoonId, type Seamount, type SeamountId, type TraitId } from '../content/lineage.ts';
@@ -1269,6 +1269,20 @@ export function chooseBoon(s: GameState, id: BoonId): boolean {
     s.levels.shoal += 4;
     s.jobs.feed += 4;
   }
+  return true;
+}
+
+// ---------- The epilogue garden ----------
+
+export function plantCost(s: GameState): number {
+  return Math.ceil(calciteRate(s) * GARDEN.seconds * GARDEN.growth ** s.garden);
+}
+
+/** Plant a child in the dawn shallows (after the ending only). */
+export function plant(s: GameState): boolean {
+  if (!ended(s) || s.garden >= GARDEN.max || s.calcite < plantCost(s)) return false;
+  s.calcite -= plantCost(s);
+  s.garden++;
   return true;
 }
 

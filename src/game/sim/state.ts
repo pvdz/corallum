@@ -96,6 +96,8 @@ export type GameState = {
   spawn: number;
   /** The memories the spawn carried; non-empty once the game has ended. */
   carried: MemoryId[];
+  /** Children planted in the epilogue garden. */
+  garden: number;
   /** How much spawn was released at the ending (sets the lineage for beginning again). */
   released: number;
   /** Sim time of the Breach (0 until then). */
@@ -183,6 +185,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     spawn: 0,
     carried: [],
     released: 0,
+    garden: 0,
     breachedAt: 0,
     dialects: { form: '', craft: '', spawn: '', song: '' },
     height: 0,

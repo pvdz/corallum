@@ -203,6 +203,10 @@ Entry requires the last Act II Reading (*Inside the wall*): the story turn opens
   tablet, the squid moment and the sleeping turtle). The ending composes the release, one epilogue paragraph per
   memory, Ossel's closing (kept or let go), and the last line.
 
+**The epilogue garden** (principle 10): after the release, children can be planted in the dawn
+shallows (calcite, ×1.6 each, at most 12); each grows around the crown and adds +1 lineage when you
+begin again.
+
 Great tides: every third full moon carries four memories instead of three. Releasing at the
 first full moon or waiting (up to 40 min) for a great tide is Act V's wait-or-go choice; the size of
 the release also sets the lineage for beginning again.

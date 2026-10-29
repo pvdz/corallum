@@ -201,5 +201,16 @@ export const ENDING = {
     'falling on reefs again.',
 } as const;
 
+/** The epilogue garden: after the release, children planted in the dawn shallows. */
+export const GARDEN = {
+  max: 12,
+  /** Seconds of calcite production the first costs; each next ×growth. */
+  seconds: 300, growth: 1.6,
+  label: 'The garden',
+  text: 'The spawn is gone, and the morning is very quiet. Some of your children did not drift far. Help them take hold here, in the shallows around you.',
+  plant: 'Plant a child',
+  effect: '+1 lineage when you begin again',
+} as const;
+
 /** The little moon above the depth gauge: its tooltip. */
 export const GAUGE_MOON = { full: 'The Spawning Moon is full', until: 'Full moon in' } as const;

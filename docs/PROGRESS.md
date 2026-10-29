@@ -438,3 +438,4 @@ date, what landed, what is half-done, what's next.
 - Companion: meta.companion, ☆/★ in the journal on touched creatures; gifts ×2 at half the cooldown; shown on the touch label.
 - The shoals' signal: a little memory game (events.ts SIGNAL, economy currentSignal/answerSignal, state.signal); panel card with four lamps; corallum.signal() jumps to one; test.
 - Signal lamps also flash in the water around the crown.
+- The epilogue garden: act5.ts GARDEN, economy plant/plantCost, state.garden, +1 begin-again lineage each; card after the ending; colonies drawn in the Breach shallows.

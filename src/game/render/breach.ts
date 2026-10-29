@@ -3,6 +3,7 @@
 // at the release they rise in their millions through the moonlight and spread on the surface.
 
 import { drawResidents } from './residents.ts';
+import { drawColony } from './daughters.ts';
 import { drawSong } from './song.ts';
 import { drawPool } from './works.ts';
 import { palette } from '../content/palettes.ts';
@@ -817,6 +818,13 @@ export function createBreachScene(seed: number): Scene {
       drawFlyingFish(ctx, t);
       if (v.bands.includes('rain')) drawRain(ctx, t);
       drawPool(ctx, L.cx, waterY(), v.works.pool, scale(), t);
+      // The epilogue garden: children taking hold in the shallows either side of the crown.
+      for (let k = 0; k < v.garden; k++) {
+        const side = k % 2 ? 1 : -1;
+        const gx = L.cx + side * (110 + Math.floor(k / 2) * 46 + (k % 3) * 8) * scale();
+        drawColony(ctx, gx, waterY() + (70 + (k % 4) * 14) * scale(), scale() * (0.8 + (k % 3) * 0.15), t,
+          { branch: '#b0607a', tip: '#e8a0b8', polyp: 'rgba(255,225,235,0.95)' }, seed + k * 131);
+      }
       drawTop(ctx, v, reef.crown(L));
       reef.draw(ctx, L, v, t);
       drawRelics(ctx, reef, L, v.relics, t);
