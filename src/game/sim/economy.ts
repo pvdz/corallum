@@ -1594,7 +1594,7 @@ export function milkyGlow(s: GameState): number {
 export function sweep(s: GameState): number {
   if (!canSweep(s) || s.vows.includes('still')) return 0;
   // Quick sweeps one after another build a combo.
-  s.combo = s.t - s.lastSweep <= ACT1.comboGap ? Math.min(ACT1.comboMax, s.combo + 1) : 1;
+  s.combo = s.t - s.lastSweep <= ACT1.comboGap ? Math.min(ACT1.comboMax * (trait(s, 'long-rhythm') ? 2 : 1) - (trait(s, 'long-rhythm') ? 1 : 0), s.combo + 1) : 1;
   const gain = (ACT1.sweepFlat + calciteRate(s) * ACT1.sweepSeconds) * (inFlurry(s) ? FLURRY.sweep : 1) * (1 + ACT1.comboStep * (s.combo - 1));
   s.calcite += gain;
   s.earned.calcite += gain;

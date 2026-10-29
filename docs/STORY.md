@@ -222,4 +222,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Moment: egg cases of a deep skate (300 m) | real biology | OK |
 | Great work: the lagoon rim (Sunlit) | this game's own world | OK |
 | A march of brittle stars (Silt Floor) | real behaviour | OK |
+| Trait Long rhythm | this game's own systems | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

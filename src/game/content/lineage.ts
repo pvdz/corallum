@@ -20,7 +20,7 @@ export const LINEAGE = {
 
 export type TraitId =
   | 'deep-memory' | 'quick-budding' | 'old-bands' | 'remembered-shoals' | 'glimmer' | 'kept-readings' | 'settling'
-  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table' | 'shoal-sense' | 'rasp-sense' | 'old-maps' | 'open-house' | 'water-wise' | 'thorn-wise' | 'moon-born' | 'layering' | 'shell-finder' | 'signal-wise' | 'sun-shy' | 'deep-larder' | 'grain-sense' | 'light-boned' | 'lucky-line' | 'star-gazer' | 'gentle' | 'helping' | 'foster';
+  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table' | 'shoal-sense' | 'rasp-sense' | 'old-maps' | 'open-house' | 'water-wise' | 'thorn-wise' | 'moon-born' | 'layering' | 'shell-finder' | 'signal-wise' | 'sun-shy' | 'deep-larder' | 'grain-sense' | 'light-boned' | 'lucky-line' | 'star-gazer' | 'gentle' | 'helping' | 'foster' | 'long-rhythm';
 
 export type Trait = {
   id: TraitId;
@@ -285,6 +285,11 @@ export const TRAITS: readonly Trait[] = [
     id: 'helping', name: 'Helping habit', effect: 'while you watch, the reef frees a creature in trouble itself when you leave it twenty seconds, for half',
     flavour: 'Your polyps reach for small things in trouble before you have quite noticed them.',
     cost: 6, growth: 1, max: 1, kind: 'habit',
+  },
+  {
+    id: 'long-rhythm', name: 'Long rhythm', effect: 'sweeps in a row build twice as far (up to ×3)',
+    flavour: 'Your polyps keep a beat their parents taught them, and keep it longer.',
+    cost: 6, growth: 1, max: 1, kind: 'way',
   },
   {
     id: 'foster', name: 'Foster', effect: 'the reef can take in eight drifting fragments, not five',

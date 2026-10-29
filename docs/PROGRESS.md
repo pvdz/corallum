@@ -710,3 +710,4 @@ date, what landed, what is half-done, what's next.
 - Rare on the Silt Floor: a march of brittle stars crossing the floor together every 13 min.
 - Feat Homecoming (5 lost shoals); A full shelf now counts every kind (12).
 - systems e2e calls a lost shoal home and catches a fragment (debug hooks corallum.stray()/fragment()).
+- Trait Long rhythm (way, 6): sweep combos cap at 21 (up to ×3) instead of 11.
