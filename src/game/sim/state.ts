@@ -330,7 +330,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     request: { kind: '', n: 0, base: 0, done: 0, paid: 0, skipped: -1e9, streak: 0 },
     tally: { touches: 0, sweeps: 0, digs: 0, roams: 0, intruders: 0, carcass: 0, shells: 0, risings: 0, pruned: 0, milky: 0, lucky: 0, freed: 0, strays: 0, rafts: 0 },
     moments: {
-      brittle: '', 'vent-crack': '', snow: '', 'lost-shoal': '', hunters: '', angler: '', squid: '', 'whale-fall': '', 'old-lamp': '', cleaners: '',
+      brittle: '', 'bristle-cloud': '', weed: '', 'vent-crack': '', snow: '', 'lost-shoal': '', hunters: '', angler: '', squid: '', 'whale-fall': '', 'old-lamp': '', cleaners: '',
       'young-rasp': '', slope: '', eggs: '', storm: '', turtle: '', 'first-light': '', 'last-night': '', bird: '',
       krill: '', echo: '', 'far-light': '', drifts: '', eyes: '', 'heavy-crown': '', 'cold-slide': '', dust: '', bowed: '', mirror: '', 'jelly-bloom': '', 'last-dark': '', fry: '', 'two-seas': '', 'egg-cases': '',
       'fire-body': '', seep: '', 'rising-stop': '', 'split-shoal': '', heatwave: '', pups: '', 'king-tide': '', outbreak: '',

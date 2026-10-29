@@ -5,7 +5,7 @@
 export type MomentId = 'brittle' | 'vent-crack' | 'snow' | 'lost-shoal' | 'hunters' | 'angler' | 'squid' | 'whale-fall' | 'old-lamp' | 'cleaners'
   | 'young-rasp' | 'slope' | 'eggs' | 'storm' | 'turtle' | 'first-light' | 'last-night' | 'bird'
   | 'fire-body' | 'seep' | 'rising-stop' | 'split-shoal' | 'heatwave' | 'pups' | 'king-tide' | 'outbreak'
-  | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes' | 'heavy-crown' | 'cold-slide' | 'dust' | 'bowed' | 'mirror' | 'jelly-bloom' | 'last-dark' | 'fry' | 'two-seas' | 'egg-cases';
+  | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes' | 'heavy-crown' | 'cold-slide' | 'dust' | 'bowed' | 'mirror' | 'jelly-bloom' | 'last-dark' | 'fry' | 'two-seas' | 'egg-cases' | 'bristle-cloud' | 'weed';
 
 export type MomentOption = { label: string; effect: string; text: string };
 export type Moment = { id: MomentId; metres: number; title: string; text: string; a: MomentOption; b: MomentOption;
@@ -15,6 +15,22 @@ export type Moment = { id: MomentId; metres: number; title: string; text: string
 export const MOMENT = { kicker: 'A moment', choose: 'What do you do?', before: 'chosen before' } as const;
 
 export const MOMENTS: readonly Moment[] = [
+  {
+    id: 'bristle-cloud', metres: 1300, title: 'A cloud settles',
+    text: 'A cloud of bristlemouths, more than you could ever count, has come to rest among your branches. They are very small, and there is no end to them.',
+    a: { label: 'Let them stay', effect: 'lost shoals come twice as often',
+      text: 'They stay, and wherever such a crowd sits in the dark, others notice. Lost lights find their way to you more often.' },
+    b: { label: 'Shake them out', effect: 'calcite ×1.05',
+      text: 'You stir, and the cloud lifts off you all at once and goes on. Without them in the way, your mouths catch more.' },
+  },
+  {
+    id: 'weed', metres: 3985, title: 'Weed on the crown',
+    text: 'A raft of golden weed has run aground on your crown at low water, and the little fish living in it are stranded with it.',
+    a: { label: 'Leave it for the young', effect: 'weed rafts pay ×1.5',
+      text: 'The tide floats it off again in the night. After that the young know weed means shelter, and they go to it quicker.' },
+    b: { label: 'Let the tide take it', effect: 'creatures freed pay ×1.5',
+      text: 'You shed it into the next wave, fish and all. You have learned how to give back what the sea leaves on you.' },
+  },
   {
     id: 'brittle', metres: 25, title: 'A brittle star, dying',
     text: 'It drifts against your base with two arms gone, still combing the silt out of habit.',

@@ -728,3 +728,4 @@ date, what landed, what is half-done, what's next.
 - Event: a sargassum raft drifts over the crown at the Breach (every 10 min, 50 s, while watching); tapped, the reef's young shelter under it for 60 s of spawn (state rafted, tally.rafts; debug hook raft(); systems e2e).
 - Feat: A floating nursery (shelter under three weed rafts on one reef).
 - Creature: yeti crabs on the vent chimney's lower slope (Silt Floor), waving hairy claws in time; touched, they fold their arms.
+- Moments: A cloud settles (1300 m; bristlemouths stay → lost shoals twice as often, or shake them out → calcite ×1.05) and Weed on the crown (3985 m; rafts pay ×1.5, or freed creatures pay ×1.5). Bot 7h28 unchanged.

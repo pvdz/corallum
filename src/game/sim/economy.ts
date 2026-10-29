@@ -232,7 +232,7 @@ export function rates(s: GameState): Rates {
       (speaks(s, 'massive') ? 1.5 : 1) * (speaks(s, 'pillar') ? 1.25 : 1) *
       1.5 ** trait(s, 'deep-memory') *
       knownBonus(s) * shardBonus(s) *
-      (lives(s, 'goby') ? 1.15 : 1) * (chose(s, 'egg-cases', 'b') ? 1.05 : 1) * (has(s, 'scattered') ? 1.05 : FRAGMENT.each) ** s.fragments * (chose(s, 'whale-fall', 'a') ? 1.1 : 1) * (chose(s, 'snow', 'a') ? 1.05 : 1) * (chose(s, 'slope', 'a') ? 1.05 : 1) * (chose(s, 'krill', 'a') ? 1.1 : 1) * (chose(s, 'heatwave', 'b') ? 1.1 : 1) * (chose(s, 'outbreak', 'a') ? 1.1 : 1) * 1.05 ** s.works.garden *
+      (lives(s, 'goby') ? 1.15 : 1) * (chose(s, 'egg-cases', 'b') ? 1.05 : 1) * (has(s, 'scattered') ? 1.05 : FRAGMENT.each) ** s.fragments * (chose(s, 'whale-fall', 'a') ? 1.1 : 1) * (chose(s, 'snow', 'a') ? 1.05 : 1) * (chose(s, 'bristle-cloud', 'b') ? 1.05 : 1) * (chose(s, 'slope', 'a') ? 1.05 : 1) * (chose(s, 'krill', 'a') ? 1.1 : 1) * (chose(s, 'heatwave', 'b') ? 1.1 : 1) * (chose(s, 'outbreak', 'a') ? 1.1 : 1) * 1.05 ** s.works.garden *
       (boon(s, 'currents') ? 1.15 : 1) * today(s, 'calm', 1.1),
     calciteK:
       ACT1.dissolve * sm.dissolve * ACT1.latticeFactor ** lv.lattice * (ACT1.ventAcid * sm.ventAcid) ** vent * (vent > 0 && chose(s, 'vent-crack', 'a') ? 0.8 : 1) *
@@ -2167,10 +2167,12 @@ export function currentTangle(s: GameState): { k: number; x: number; age: number
 /** A lost shoal's light in the dark now (slot, place 0..1, seconds in), if not yet called in. */
 export function currentStray(s: GameState): { k: number; x: number; age: number } | null {
   if (actAt(s.height) !== STRAY.zone || !revealed(s, 'shoal') || s.levels.shoal >= (seamount(s).shoalCap ?? Infinity)) return null;
-  const k = Math.floor(s.t / STRAY.period);
+  // A cloud of bristlemouths kept in the branches: lost shoals come twice as often.
+  const period = STRAY.period / (chose(s, 'bristle-cloud', 'a') ? 2 : 1);
+  const k = Math.floor(s.t / period);
   if (k <= s.strayed) return null;
   const r = mulberry32((s.seed ^ 0x57a7) + Math.imul(k, 0x9e3779b1));
-  const start = k * STRAY.period + r() * (STRAY.period - STRAY.life);
+  const start = k * period + r() * (period - STRAY.life);
   if (s.t < start || s.t >= start + STRAY.life) return null;
   return { k, x: r(), age: s.t - start };
 }
@@ -2203,7 +2205,7 @@ export function shelterRaft(s: GameState): number {
   if (!ra) return 0;
   s.rafted = ra.k;
   s.tally.rafts++;
-  return burst(s, RAFT.seconds);
+  return burst(s, RAFT.seconds * (chose(s, 'weed', 'a') ? 1.5 : 1));
 }
 
 /** How many fragments the reef can take in (Foster: eight). */
@@ -2238,7 +2240,7 @@ export function freeTangle(s: GameState): number {
   if (!tg) return 0;
   s.untangled = tg.k;
   s.tally.freed++;
-  return burst(s, TANGLE.seconds * (trait(s, 'gentle') ? 2 : 1) * today(s, 'kind-day', 2));
+  return burst(s, TANGLE.seconds * (trait(s, 'gentle') ? 2 : 1) * today(s, 'kind-day', 2) * (chose(s, 'weed', 'b') ? 1.5 : 1));
 }
 
 /** Helping habit: the reef frees a creature left in trouble twenty seconds, for half. Only called while watching. */
