@@ -266,6 +266,7 @@ Entry requires the last Act II Reading (*Inside the wall*): the story turn opens
 - **Spawn** (stock): `P = polyps × rate × ripen × (broadcast ×2) × (1 + sun·symbionts/100)`, slow
   reabsorption. Target 1M (brooding ×0.6). **Ripen the spawn** (calcite) ×1.5 each.
   **Raise a sand cay** (sand, max 6): spawn ×1.1 each; a late sink for the Rasp's sand, drawn as low islands.
+  **Sweeten the spawn** (bloom, 2e7 × 3^level, max 6): spawn ×1.1 each, a sink for the bloom that piles up late.
 - **The Spawning Moon**: a 20-minute cycle in sim time, full for ±8% of it. The release is a
   player action and needs: the surface (4000 m), spawn ≥ target, and a full moon.
 - **What the spawn carries** (the final verb: letting go): choose exactly 3 of the memories the
