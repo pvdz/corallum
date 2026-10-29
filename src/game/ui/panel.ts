@@ -238,14 +238,17 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   // ---------- Other reefs spawning (Sunlit full moon) ----------
   const othersBox = el('section', 'truce moment others');
   othersBox.hidden = true;
+  const othersKicker = el('p', 'truce-kicker');
+  const othersText = el('p', 'truce-text');
   const othersChoices = el('div', 'truce-choices');
   const othersButtons = (['feed', 'join'] as const).map((how) => {
     const b = button('choice', '', () => hooks.meetOthers(how));
-    b.append(el('strong', '', OTHERS[how].label), el('span', '', OTHERS[how].effect));
+    const label = el('strong'), effect = el('span');
+    b.append(label, effect);
     othersChoices.append(b);
-    return { how, b };
+    return { how, b, label, effect };
   });
-  othersBox.append(el('p', 'truce-kicker', OTHERS.kicker), el('p', 'truce-text', OTHERS.text), othersChoices);
+  othersBox.append(othersKicker, othersText, othersChoices);
   grow.prepend(othersBox);
 
   // ---------- Dialects (a tier waiting for a choice) ----------
@@ -1301,7 +1304,16 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
 
       // Other reefs spawning: this moon's choice.
       setShown(othersBox, othersSpawning(s));
-      for (const x of othersButtons) x.b.disabled = x.how === 'join' && s.others.joined >= OTHERS.maxJoins;
+      if (!othersBox.hidden) {
+        const z = OTHERS.zones[actAt(s.height)]!;
+        othersKicker.textContent = z.kicker;
+        othersText.textContent = z.text;
+        for (const x of othersButtons) {
+          x.label.textContent = z[x.how].label;
+          x.effect.textContent = z[x.how].effect;
+          x.b.disabled = x.how === 'join' && s.others.joined >= OTHERS.maxJoins;
+        }
+      }
 
       // A moment waiting for an answer, and answers given.
       const mo = nextMoment(s);

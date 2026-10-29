@@ -4,12 +4,19 @@ import type { Band, UpgradeDef } from './types.ts';
 
 /** Other reefs spawn: at each full moon in the Sunlit Crown, while you watch, a choice. */
 export const OTHERS = {
-  kicker: 'Other reefs are spawning',
-  text: 'All around you, in the moonlight, the other reefs let go. Pink bundles rise past your crown from every side.',
-  feed: { label: 'Feed on their spawn', effect: '5 minutes of bloom now' },
-  join: { label: 'Add your own', effect: '+1 lineage (at most 3 for this reef)' },
   seconds: 300,
   maxJoins: 3,
+  /** By zone (1–4): what happens at the full moon, and the two ways to meet it. */
+  zones: {
+    1: { kicker: 'The moon is full, far above', text: 'You cannot see it, but your polyps feel it. A few of them let go of something small and pink, without asking you.',
+      feed: { label: 'Take it back in', effect: '5 minutes of calcite now' }, join: { label: 'Let it drift', effect: '+1 lineage (at most 3 for this reef)' } },
+    2: { kicker: 'The moon is full, far above', text: 'Through all this water the moon still reaches you. Your polyps loosen a few bundles into the dark.',
+      feed: { label: 'Take it back in', effect: '5 minutes of calcite now' }, join: { label: 'Let it drift', effect: '+1 lineage (at most 3 for this reef)' } },
+    3: { kicker: 'The shelf is spawning', text: 'Sea fans and old shelf corals let go in the faint moonlight, and the water fills with slow pink snow.',
+      feed: { label: 'Feed on it', effect: '5 minutes of calcite now' }, join: { label: 'Add your own', effect: '+1 lineage (at most 3 for this reef)' } },
+    4: { kicker: 'Other reefs are spawning', text: 'All around you, in the moonlight, the other reefs let go. Pink bundles rise past your crown from every side.',
+      feed: { label: 'Feed on their spawn', effect: '5 minutes of bloom now' }, join: { label: 'Add your own', effect: '+1 lineage (at most 3 for this reef)' } },
+  } as Record<number, { kicker: string; text: string; feed: { label: string; effect: string }; join: { label: string; effect: string } }>,
 } as const;
 
 export const ACT4 = {

@@ -1229,9 +1229,9 @@ export function shardBonus(s: GameState): number {
 
 // ---------- Other reefs spawning ----------
 
-/** Whether the other reefs are spawning now and this moon's choice is still open (Sunlit Crown, full moon). */
+/** Whether this full moon's spawning choice is open (any zone below the Breach, once per moon). */
 export function othersSpawning(s: GameState): boolean {
-  return actAt(s.height) === 4 && moonFull(s.t) && Math.floor(s.t / ACT5.moonPeriod) !== s.others.last;
+  return actAt(s.height) <= 4 && s.height >= 1 && moonFull(s.t) && Math.floor(s.t / ACT5.moonPeriod) !== s.others.last;
 }
 
 /** Meet the other reefs' spawning: feed on it (bloom) or add your own (lineage). */
@@ -1239,7 +1239,7 @@ export function meetOthers(s: GameState, how: 'feed' | 'join'): boolean {
   if (!othersSpawning(s)) return false;
   if (how === 'join' && s.others.joined >= OTHERS.maxJoins) return false;
   s.others.last = Math.floor(s.t / ACT5.moonPeriod);
-  if (how === 'feed') s.bloom += rates(s).bloomP * OTHERS.seconds;
+  if (how === 'feed') burst(s, OTHERS.seconds);
   else {
     s.others.joined++;
     s.meta.lineage += 1;
