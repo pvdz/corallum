@@ -1673,6 +1673,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         soon.sort((a, b) => a[0] - b[0]);
         // Redrawn when the marks move by a whole percent of the strip.
         const marks = soon.filter(([t]) => t < 1200);
+        // The water's turns too, when it changes to something else.
+        if (turning) {
+          const ut = untilWaterTurns(s);
+          if (next.id !== water.id && ut < 1200) marks.push([ut, next.name.toLowerCase()]);
+          if (after.id !== next.id && ut + WATER.period < 1200) marks.push([ut + WATER.period, after.name.toLowerCase()]);
+          marks.sort((a, b) => a[0] - b[0]);
+        }
         const key = marks.map(([t, w]) => `${Math.round(t / 12)}${w}`).join('|');
         if (key !== almanacKey) {
           almanacKey = key;
