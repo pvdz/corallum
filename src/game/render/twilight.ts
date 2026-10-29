@@ -382,30 +382,96 @@ export function createTwilightScene(seed: number): Scene {
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(-1, 1);
-    // The grouper: heavy, mottled, fins spread.
+    // The grouper: heavy, mottled, fins spread; it gapes slowly while it is cleaned.
+    const gape = 0.5 + 0.5 * Math.sin(t * 0.5);
+    const sway = Math.sin(t * 0.9) * 2 * s;
+    // Dorsal fin: a spiny front half, a soft rounded back half.
+    ctx.fillStyle = '#4e4034';
+    ctx.beginPath();
+    ctx.moveTo(14 * s, -12 * s);
+    for (let k = 0; k <= 8; k++) {
+      const fx = 14 - k * 3.4;
+      ctx.lineTo((fx - 1.2) * s, (-17 - (k % 2) * 1.5 - (k < 5 ? 1 : 0)) * s);
+      ctx.lineTo((fx - 3.4) * s, -15.5 * s);
+    }
+    ctx.quadraticCurveTo(-20 * s, -18 * s, -24 * s, -7 * s);
+    ctx.closePath();
+    ctx.fill();
+    // Anal fin.
+    ctx.beginPath();
+    ctx.moveTo(-6 * s, 12 * s);
+    ctx.quadraticCurveTo(-16 * s, 18 * s, -22 * s, 8 * s);
+    ctx.closePath();
+    ctx.fill();
+    // Tail: broad and rounded, swaying.
+    ctx.beginPath();
+    ctx.moveTo(-24 * s, -5 * s);
+    ctx.quadraticCurveTo(-40 * s, -15 * s + sway, -40 * s, 0 + sway);
+    ctx.quadraticCurveTo(-40 * s, 14 * s + sway, -24 * s, 5 * s);
+    ctx.closePath();
+    ctx.fill();
+    // Body.
     const body = ctx.createLinearGradient(0, -14 * s, 0, 14 * s);
-    body.addColorStop(0, '#6b5a48');
-    body.addColorStop(1, '#3d3128');
+    body.addColorStop(0, '#6f5c49');
+    body.addColorStop(0.6, '#584837');
+    body.addColorStop(1, '#a08a6c');
     ctx.fillStyle = body;
     ctx.beginPath();
-    ctx.moveTo(30 * s, 2 * s);
-    ctx.bezierCurveTo(26 * s, -14 * s, -10 * s, -16 * s, -24 * s, -4 * s);
-    ctx.lineTo(-36 * s, -12 * s + Math.sin(t) * 2 * s);
-    ctx.lineTo(-34 * s, 10 * s + Math.sin(t) * 2 * s);
-    ctx.lineTo(-24 * s, 6 * s);
-    ctx.bezierCurveTo(-8 * s, 16 * s, 24 * s, 14 * s, 30 * s, 2 * s);
+    ctx.moveTo(32 * s, -1 * s);
+    ctx.bezierCurveTo(28 * s, -15 * s, -8 * s, -17 * s, -25 * s, -5 * s);
+    ctx.lineTo(-25 * s, 5 * s);
+    ctx.bezierCurveTo(-8 * s, 15 * s, 22 * s, 14 * s, 30 * s, (4 + 3 * gape) * s);
+    ctx.lineTo(25 * s, (1 + gape) * s);
+    ctx.closePath();
+    ctx.save();
     ctx.fill();
-    ctx.fillStyle = 'rgba(30,22,18,0.5)';
-    // Mottling: irregular blotches over the flank.
-    for (let k = 0; k < 14; k++) {
-      const mx = ((k * 0.618) % 1) * 46 - 22, my = ((k * 0.382) % 1) * 16 - 8;
+    ctx.clip();
+    // Mottling: pale and dark blotches, inside the body only.
+    for (let k = 0; k < 22; k++) {
+      const mx = ((k * 0.618) % 1) * 54 - 26, my = ((k * 0.382) % 1) * 24 - 12;
+      ctx.fillStyle = k % 3 ? 'rgba(35,26,20,0.45)' : 'rgba(210,190,150,0.25)';
       ctx.beginPath();
-      ctx.ellipse(mx * s, my * s, (1.6 + (k % 3) * 0.7) * s, (1.2 + (k % 2) * 0.6) * s, k, 0, Math.PI * 2);
+      ctx.ellipse(mx * s, my * s, (1.8 + (k % 3) * 0.8) * s, (1.3 + (k % 2) * 0.7) * s, k, 0, Math.PI * 2);
       ctx.fill();
     }
-    ctx.fillStyle = '#e8d8b0';
+    // Gill cover: an arc that lifts as it breathes.
+    ctx.strokeStyle = 'rgba(30,22,16,0.6)';
+    ctx.lineWidth = 1.2 * s;
     ctx.beginPath();
-    ctx.arc(20 * s, -4 * s, 2.2 * s, 0, Math.PI * 2);
+    ctx.arc((12 - gape) * s, 0, 11 * s, -1.1, 1.1);
+    ctx.stroke();
+    ctx.restore();
+    // The open mouth: a dark gape under the big upper jaw.
+    ctx.fillStyle = '#1c120e';
+    ctx.beginPath();
+    ctx.moveTo(32 * s, -1 * s);
+    ctx.quadraticCurveTo(27 * s, (1 + gape) * s, 30 * s, (4 + 3 * gape) * s);
+    ctx.lineTo(25 * s, (1 + gape) * s);
+    ctx.closePath();
+    ctx.fill();
+    // Pectoral fin, fanning to hold it still.
+    ctx.fillStyle = 'rgba(120,98,74,0.85)';
+    ctx.save();
+    ctx.translate(6 * s, 3 * s);
+    ctx.rotate(0.5 + 0.25 * Math.sin(t * 2.2));
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.quadraticCurveTo(-6 * s, -6 * s, -12 * s, -1 * s);
+    ctx.quadraticCurveTo(-7 * s, 5 * s, 0, 0);
+    ctx.fill();
+    ctx.restore();
+    // Eye: a gold ring, a dark pupil, a glint.
+    ctx.fillStyle = '#c8a860';
+    ctx.beginPath();
+    ctx.arc(21 * s, -5 * s, 2.6 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#120c08';
+    ctx.beginPath();
+    ctx.arc(21.4 * s, -5 * s, 1.5 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.beginPath();
+    ctx.arc(20.8 * s, -5.7 * s, 0.5 * s, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
     // The cleaners: tiny blue fish with a black stripe, darting about the grouper.
@@ -418,10 +484,25 @@ export function createTwilightScene(seed: number): Scene {
       ctx.scale(dir, 1);
       ctx.fillStyle = '#5ab8ff';
       ctx.beginPath();
-      ctx.ellipse(0, 0, 5 * s, 1.6 * s, 0, 0, Math.PI * 2);
+      ctx.moveTo(5 * s, 0);
+      ctx.quadraticCurveTo(1 * s, -2.2 * s, -4 * s, -0.6 * s);
+      ctx.lineTo(-6.5 * s, -2 * s);
+      ctx.lineTo(-6 * s, 0);
+      ctx.lineTo(-6.5 * s, 2 * s);
+      ctx.lineTo(-4 * s, 0.6 * s);
+      ctx.quadraticCurveTo(1 * s, 2.2 * s, 5 * s, 0);
       ctx.fill();
-      ctx.fillStyle = '#111';
-      ctx.fillRect(-4 * s, -0.4 * s, 8 * s, 0.8 * s);
+      ctx.fillStyle = 'rgba(235,245,255,0.85)';
+      ctx.beginPath();
+      ctx.ellipse(0.5 * s, 0.8 * s, 3.6 * s, 0.6 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // The black stripe from snout to tail.
+      ctx.strokeStyle = '#0d1420';
+      ctx.lineWidth = 0.8 * s;
+      ctx.beginPath();
+      ctx.moveTo(4.6 * s, -0.2 * s);
+      ctx.lineTo(-6 * s, 0);
+      ctx.stroke();
       ctx.restore();
     }
   }
