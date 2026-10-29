@@ -3,7 +3,7 @@
 // gesture before audio can start anyway).
 
 export type Zone = 1 | 2 | 3 | 4 | 5;
-export type Cue = 'buy' | 'sweep' | 'story' | 'choice' | 'release' | 'spawning' | 'whisper' | 'feast' | 'whale' | 'zone' | 'touch' | 'shimmer' | 'crunch' | 'dolphin' | 'water' | 'depart' | 'shard' | 'intruder' | 'moment' | 'gull' | 'rising' | 'heat' | 'upwell' | 'swell';
+export type Cue = 'buy' | 'sweep' | 'story' | 'choice' | 'release' | 'spawning' | 'whisper' | 'feast' | 'whale' | 'zone' | 'touch' | 'shimmer' | 'crunch' | 'dolphin' | 'water' | 'depart' | 'shard' | 'intruder' | 'moment' | 'gull' | 'rising' | 'heat' | 'upwell' | 'swell' | 'thunder';
 
 /** Per zone: root frequency of the pad, pad brightness, and how much surf noise. */
 const ZONES: Record<Zone, { root: number; bright: number; surf: number; notes: number[] }> = {
@@ -262,6 +262,31 @@ export function createAudio() {
     src.start(t);
   }
 
+  /** Far thunder: a long low rumble of noise, rolling louder and away. */
+  function thunder(): void {
+    if (!ctx || !master || !enabled) return;
+    const t = ctx.currentTime;
+    const len = Math.floor(ctx.sampleRate * 3.5);
+    const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    let last = 0;
+    for (let i = 0; i < len; i++) {
+      const u = i / len;
+      // Brown-ish noise (each sample leans on the last), in rolls that swell and fade.
+      last = 0.985 * last + 0.15 * (Math.random() * 2 - 1);
+      d[i] = last * Math.min(1, u * 8) * (1 - u) ** 1.5 * (0.6 + 0.4 * Math.sin(u * 23));
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const f = ctx.createBiquadFilter();
+    f.type = 'lowpass';
+    f.frequency.value = 220;
+    const e = ctx.createGain();
+    e.gain.value = 0.5;
+    src.connect(f).connect(e).connect(master);
+    src.start(t);
+  }
+
   function bubble(): void {
     if (!ctx || !master || !enabled) return;
     const t = ctx.currentTime;
@@ -344,6 +369,9 @@ export function createAudio() {
           break;
         case 'crunch':
           crunch();
+          break;
+        case 'thunder':
+          thunder();
           break;
         case 'water':
           // The water turns: a slow low swell, sliding up and back.

@@ -17,7 +17,7 @@ import type { UpgradeId } from '../game/content/types.ts';
 import { ACTS, act, actAt } from '../game/content/acts.ts';
 import { createAbyssScene } from '../game/render/abyss.ts';
 import { createMidnightScene } from '../game/render/midnight.ts';
-import { createBreachScene } from '../game/render/breach.ts';
+import { createBreachScene, lightningAt } from '../game/render/breach.ts';
 import { createSunlitScene } from '../game/render/sunlit.ts';
 import { createTwilightScene } from '../game/render/twilight.ts';
 import { createTaps } from '../game/render/taps.ts';
@@ -1281,6 +1281,8 @@ canvas.addEventListener('pointerdown', (e) => {
 
 // Quality: if frames run slow for a while, drop the bloom pass.
 let slowFrames = 0;
+/** The last lightning strike whose thunder was heard. */
+let thunderHeard = -1;
 /** Slow frames for a while: first the glow pass goes, then (still slow) the resolution drops to 1×. */
 let autoLowRes = false;
 function qualityCheck(dt: number): void {
@@ -1551,6 +1553,10 @@ function frame(now: number): void {
     // Rain at the Breach (the same five-minute shower the scene draws).
     audio.setSong(state.dialects.song);
     audio.setRain(state.bands.includes('rain') && actAt(state.height) === 5 && animT % 300 < 70);
+    // Thunder from the far storm, a couple of seconds after each flash.
+    const strike = state.bands.includes('rain') && actAt(state.height) === 5 ? lightningAt(animT) : null;
+    const strikeKey = strike && strike.since > 1.8 ? strike.lap * 10 + strike.k : -1;
+    if (strikeKey >= 0 && strikeKey !== thunderHeard) { thunderHeard = strikeKey; audio.cue('thunder'); }
     // The water turning: a soft swell (not for still water).
     const wNow = waterAt(state).id;
     if (wNow !== waterHeard && waterHeard !== '' && wNow !== 'still') audio.cue('water');

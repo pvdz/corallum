@@ -6,7 +6,7 @@ export type CreatureId =
   | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'milky-sea' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration' | 'larvacean' | 'lantern-shark'
   | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'sardine-run' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark' | 'oarfish' | 'flashlight-fish' | 'mantis-shrimp'
   | 'cuttlefish' | 'eagle-rays' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly' | 'tree-worms'
-  | 'shore-bird' | 'pelican' | 'hatchlings' | 'green-flash' | 'flying-fish' | 'dolphin' | 'moon-jelly' | 'sailors' | 'petrel' | 'sea-sparkle' | 'moonbow' | 'meteors' | 'breathing-turtle'
+  | 'shore-bird' | 'pelican' | 'hatchlings' | 'green-flash' | 'flying-fish' | 'dolphin' | 'moon-jelly' | 'sailors' | 'petrel' | 'sea-sparkle' | 'moonbow' | 'far-storm' | 'meteors' | 'breathing-turtle'
   | 'thorn-star' | 'dragonfish' | 'drill-snail' | 'gull' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish' | 'host-anemone' | 'cleaner-wrasse';
 
 export type Creature = { id: CreatureId; name: string; zone: string; note: string };
@@ -79,6 +79,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'meteors', name: 'A meteor shower', zone: 'The Breach', note: 'Rare. For a little while the sky rains light, more falling stars than anyone could name.' },
   { id: 'breathing-turtle', name: 'A turtle breathing', zone: 'The Breach', note: 'Every few minutes an old turtle comes up beside your crown, takes one long breath, and goes back down.' },
   { id: 'moonbow', name: 'A moonbow', zone: 'The Breach', note: 'Rare. After rain, under a bright moon: a rainbow made of moonlight, so pale its colours are nearly gone.' },
+  { id: 'far-storm', name: 'A storm far off', zone: 'The Breach', note: 'Rare. In some showers, light walks on the sea at the edge of the sky, and a long while after, a sound like stone grinding comes over the water.' },
   { id: 'sailors', name: 'By-the-wind sailors', zone: 'The Breach', note: 'A fleet of blue floats, each with a little stiff sail set at a slant. Wherever the wind goes, they go.' },
   { id: 'petrel', name: 'Storm petrels', zone: 'The Breach', note: 'Birds no bigger than a fist, fluttering so low their feet patter on the water as if walking on it.' },
   { id: 'sea-sparkle', name: 'Sea sparkle', zone: 'The Breach', note: 'Only at night. Tiny drifting cells that flash blue when the water moves: every wavelet lights up. Stir it.' },

@@ -23,6 +23,19 @@ import { drawCraft, FLUORESCENT_POLYP } from './craft.ts';
 import { createReef, type Reef, type ReefLayout } from './reef.ts';
 import { createEffects, type Focus, type ReefView, type Scene } from './scene.ts';
 
+/** Every third shower at the Breach is a far storm: lightning strikes this many seconds into it. */
+const STRIKES = [12, 27, 41, 55];
+/** Seconds since the last lightning strike of a storm shower (with which strike), or null between storms. */
+export function lightningAt(t: number): { since: number; k: number; lap: number } | null {
+  const lap = Math.floor(t / 300);
+  if (lap % 3 !== 1) return null;
+  const u = t - lap * 300;
+  let k = -1;
+  for (let j = 0; j < STRIKES.length; j++) if (u >= STRIKES[j]!) k = j;
+  if (k < 0 || u - STRIKES[k]! > 3) return null;
+  return { since: u - STRIKES[k]!, k, lap };
+}
+
 const FROM = 3980;
 const TO = 4000;
 
@@ -579,6 +592,58 @@ export function createBreachScene(seed: number): Scene {
       ctx.stroke();
     });
     ctx.restore();
+  }
+
+  /** A storm far off: a forked bolt to the horizon, the sky lit for an instant, a glint on the sea. */
+  function drawLightning(ctx: CanvasRenderingContext2D, t: number): void {
+    const l = lightningAt(t);
+    if (!l) return;
+    sight('far-storm');
+    const s = scale();
+    const wy = waterY();
+    const r = mulberry32(l.lap * 131 + l.k * 17 + 5);
+    const x0 = focus.x + focus.w * (0.12 + r() * 0.76);
+    // Two quick flickers, then a fading afterglow.
+    const f = l.since < 0.08 ? 1 : l.since < 0.16 ? 0.25 : l.since < 0.26 ? 0.9 : Math.max(0, 1 - (l.since - 0.26) / 0.9);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    // The whole sky over the sea lights up, most around the bolt.
+    const g = ctx.createRadialGradient(x0, wy - (wy - focus.y) * 0.5, 0, x0, wy - (wy - focus.y) * 0.5, focus.w * 0.7);
+    g.addColorStop(0, `rgba(190,200,255,${0.32 * f})`);
+    g.addColorStop(1, `rgba(120,130,200,${0.08 * f})`);
+    ctx.fillStyle = g;
+    ctx.fillRect(focus.x, focus.y, focus.w, wy - focus.y);
+    if (l.since < 0.6) {
+      // The bolt: a jagged main stroke from the clouds to the horizon, with two forks.
+      const top = focus.y + (wy - focus.y) * 0.3, bottom = wy - 2 * s;
+      const pts: [number, number][] = [[x0, top]];
+      const n = 11;
+      for (let i = 1; i <= n; i++) pts.push([pts[i - 1]![0] + (r() - 0.5) * 24 * s, top + (bottom - top) * (i / n)]);
+      const strokeBolt = (p: [number, number][], width: number, a: number) => {
+        ctx.strokeStyle = `rgba(225,230,255,${a})`;
+        ctx.lineWidth = width;
+        ctx.beginPath();
+        p.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+        ctx.stroke();
+      };
+      ctx.shadowColor = 'rgba(170,180,255,0.9)';
+      ctx.shadowBlur = 18 * s;
+      strokeBolt(pts, 2.4 * s, f);
+      for (const at of [3, 6]) {
+        const fork: [number, number][] = [pts[at]!];
+        const dir = r() < 0.5 ? -1 : 1;
+        for (let i = 1; i <= 4; i++) fork.push([fork[i - 1]![0] + dir * (6 + r() * 14) * s, fork[i - 1]![1] + (10 + r() * 16) * s]);
+        strokeBolt(fork, 1.2 * s, 0.7 * f);
+      }
+      ctx.shadowBlur = 0;
+      // Where it meets the sea, a bright glint spreading along the water.
+      glow(ctx, pts[n]![0], wy, 60 * s, '200,210,255', 0.6 * f);
+    }
+    // The flash on the water's skin, all along.
+    ctx.fillStyle = `rgba(200,210,255,${0.12 * f})`;
+    ctx.fillRect(focus.x, wy - 1 * s, focus.w, 3 * s);
+    ctx.restore();
+    spot('far-storm', x0, wy - (wy - focus.y) * 0.4, 60 * s);
   }
 
   function drawRain(ctx: CanvasRenderingContext2D, t: number): void {
@@ -1174,7 +1239,7 @@ export function createBreachScene(seed: number): Scene {
       if (v.sinceBreach >= 60) drawPelican(ctx, t);
       if (v.sinceBreach >= 0) drawGreenFlash(ctx, v.sinceBreach);
       if (v.thorn?.kind === 'gull') drawGull(ctx, this.crownAt[0], waterY(), v.thorn.u, v.thorn.side, t, scale());
-      if (v.bands.includes('rain')) { drawRain(ctx, t); drawMoonbow(ctx, t, v.moonPhase, lastDawn); }
+      if (v.bands.includes('rain')) { drawLightning(ctx, t); drawRain(ctx, t); drawMoonbow(ctx, t, v.moonPhase, lastDawn); }
       drawPool(ctx, L.cx, waterY(), v.works.pool, scale(), t);
       // Sand cays the reef has raised: low pale islands breaking the surface beside it.
       for (let k = 0; k < v.cays; k++) {
