@@ -359,3 +359,17 @@ so carrying different ones across endings pays.
 - Target: one spawning at ~3000 m finishes the game sooner than none; a bot test checks it.
 - After the ending, **Begin again** is a spawning with a lineage bonus of 10 + 4 per doubling of
   spawn released over its target. Endings and memories carried are remembered across runs.
+
+## Later systems (keeping, letting go, and luck)
+- **Old stone**: grey knobs gather on the branch tips toward six (closed form, away too). Tapping one
+  lets it go for a burst; every fourth held a memory of this reef. The theme in a verb: the reef that
+  keeps everything bows to the floor. Built on by a trait (Light-boned), a hard seamount (heavy), a
+  Reading (The kept stone), an Ossel mistake, a riddle and a memory. At the release all of it falls.
+- **Lucky neighbours**: short spans in which one creature gives five times as much, at once.
+  Rewards looking at the world rather than the panel.
+- **Guard**: a fifth shoal job in the light; four guards drive intruders off for half, at the cost
+  of feeding.
+- **Vows**: after the first ending, harder ways to grow a reef, paid at its own ending.
+- **Wishes**: a choice of three small gifts while stars fall at the Breach (sim-time showers).
+- **The garden's kinds**: each child planted is a small, chosen gift to the next reef.
+- **Seeing ahead**: the almanac strip (the next twenty minutes) and the time-lapse (T).
