@@ -334,6 +334,77 @@ export function createBreachScene(seed: number): Scene {
   }
 
   /**
+   * Flying fish: every so often a few burst from the water, glide low over the surface on spread
+   * wing-fins, and drop back in. Tapped in the air, they glide on farther.
+   */
+  function drawFlyingFish(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 24, flight = 4.5;
+    const lap = Math.floor(t / period);
+    const touch = startled('flying-fish', t);
+    const extra = touch && t - touch.age >= lap * period ? 2.5 : 0;
+    const u = (t - lap * period) / (flight + extra);
+    if (u < 0 || u > 1) return;
+    sight('flying-fish');
+    const s = scale() * 1.3;
+    const wy = waterY();
+    const dir = lap % 2 ? 1 : -1;
+    const x0 = focus.x + focus.w * (dir > 0 ? 0.15 : 0.85) + Math.sin(lap * 3.1) * focus.w * 0.05;
+    for (let k = 0; k < 3; k++) {
+      const uk = Math.max(0, Math.min(1, u * 1.15 - k * 0.07));
+      if (uk <= 0 || uk >= 1) continue;
+      const x = x0 + dir * uk * focus.w * (0.45 + extra * 0.08) + k * 14 * s;
+      const y = wy - Math.sin(uk * Math.PI) * (26 + k * 6) * s;
+      if (k === 0) spot('flying-fish', x, y, 18 * s);
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(dir, 1);
+      ctx.rotate(-Math.cos(uk * Math.PI) * 0.25);
+      // Dark blue back, silver belly.
+      const g = ctx.createLinearGradient(0, -2.5 * s, 0, 2.5 * s);
+      g.addColorStop(0, '#2c4a78');
+      g.addColorStop(1, '#a9bcd4');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.moveTo(9 * s, 0);
+      ctx.quadraticCurveTo(4 * s, -2.6 * s, -6 * s, -1 * s);
+      ctx.lineTo(-9 * s, 0);
+      ctx.lineTo(-6 * s, 1.2 * s);
+      ctx.quadraticCurveTo(4 * s, 2.6 * s, 9 * s, 0);
+      ctx.fill();
+      // A forked tail, the lower lobe longer.
+      ctx.fillStyle = '#3a5a88';
+      ctx.beginPath();
+      ctx.moveTo(-8 * s, 0);
+      ctx.lineTo(-12 * s, -2.5 * s);
+      ctx.lineTo(-10.5 * s, 0);
+      ctx.lineTo(-13.5 * s, 3.5 * s);
+      ctx.closePath();
+      ctx.fill();
+      // The long wing-fin sweeping back from the shoulder, faintly ribbed.
+      ctx.fillStyle = 'rgba(150,185,230,0.6)';
+      ctx.beginPath();
+      ctx.moveTo(4 * s, -1 * s);
+      ctx.quadraticCurveTo(-2 * s, -7 * s, -10 * s, -5 * s);
+      ctx.quadraticCurveTo(-4 * s, -2.5 * s, 2 * s, -0.5 * s);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(220,235,255,0.5)';
+      ctx.lineWidth = 0.4 * s;
+      ctx.beginPath();
+      for (let r = 0; r < 4; r++) {
+        ctx.moveTo(3 * s, -1 * s);
+        ctx.lineTo(-4 * s - r * 1.6 * s, -5.5 * s + r * 0.6 * s);
+      }
+      ctx.stroke();
+      ctx.fillStyle = '#e8eef8';
+      ctx.beginPath();
+      ctx.arc(6.5 * s, -0.4 * s, 0.7 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  /**
    * The sister reef on the next seamount: far off on the horizon once it nears the surface, a
    * small dark crown rising out of the haze, breaking the water when it arrives, lights on its tips.
    */
@@ -707,6 +778,7 @@ export function createBreachScene(seed: number): Scene {
       drawMoonJellies(ctx, t);
       drawWaitingFish(ctx, t, v, this.crownAt);
       drawDolphins(ctx, t);
+      drawFlyingFish(ctx, t);
       drawPool(ctx, L.cx, waterY(), v.works.pool, scale(), t);
       drawTop(ctx, v, reef.crown(L));
       reef.draw(ctx, L, v, t);
