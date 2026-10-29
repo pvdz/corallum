@@ -677,6 +677,8 @@ function updateGauge(): void {
   const h = Math.round(state.height * 10) / 10;
   if (h === gaugeShown) return;
   gaugeShown = h;
+  // A brand-new reef keeps the opening clear: the gauge appears with the first metre of stone.
+  gauge.hidden = state.height < 1;
   const f = gaugeAt(state.height);
   gaugeMarker.style.bottom = `${f * 100}%`;
   gaugeLabel.style.bottom = `${f * 100}%`;
@@ -828,7 +830,8 @@ function frame(now: number): void {
   if (fpsBox) fpsTick(now, dt);
   updateGauge();
   // The journal: creatures drawn on screen are recorded the first time they are seen.
-  if (now - lastJournal > 1000) {
+  // (Not while the title is still showing over a new reef: the note would sit on it.)
+  if (now - lastJournal > 1000 && title.classList.contains('faded')) {
     lastJournal = now;
     for (const id of takeSightings()) {
       const key = `c:${id}`;

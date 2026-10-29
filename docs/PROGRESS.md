@@ -208,3 +208,4 @@ date, what landed, what is half-done, what's next.
 - Midnight Water: a near layer of marine snow in front of the reef (bigger, softer, faster) for depth.
 - Accessibility: zone titles, milestones, journal/feat notes, whispers and creature labels are polite live regions; the story reader is a labelled modal dialog.
 - Escape closes the story card, the away summary or the memory choice.
+- Opening screen: journal notes wait until the title has faded, and the depth gauge appears with the first metre of stone (both collided with the title/hint on phones).
