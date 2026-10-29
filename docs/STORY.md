@@ -213,4 +213,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Memory: The small ones (line title 'the line of small kindnesses') | this game's own theme | OK |
 | Drifting fragments of other reefs, taken in to grow (real coral fragmentation) | real biology | OK |
 | Trait Foster | this game's own systems | OK |
+| A lost shoal's lights called home | this game's own world | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

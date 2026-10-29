@@ -25,7 +25,7 @@ import { ACT5, BANDS_ACT5, GARDEN, MEMORIES, type Memory, type MemoryId, type Ga
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, LUCKY, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
 import { BOONS, LINEAGE, SEAMOUNTS, type BoonId, type Seamount, type SeamountId, type TraitId, VOW, VOWS, type VowId } from '../content/lineage.ts';
-import { DAYS, type DayId, DAILY, FEAST, SIGNAL, SWELL, THORN, WELCOME, intruderOf, type Intruder, DREAM, TANGLE, FRAGMENT } from '../content/events.ts';
+import { DAYS, type DayId, DAILY, FEAST, SIGNAL, SWELL, THORN, WELCOME, intruderOf, type Intruder, DREAM, TANGLE, FRAGMENT, STRAY } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { WORKS, type WorkId } from '../content/works.ts';
 import { COUSIN, SISTER } from '../content/sister.ts';
@@ -2137,6 +2137,27 @@ export function currentTangle(s: GameState): { k: number; x: number; age: number
   const start = k * TANGLE.period + r() * (TANGLE.period - TANGLE.life);
   if (s.t < start || s.t >= start + TANGLE.life) return null;
   return { k, x: r() < 0.5 ? 0.12 + r() * 0.2 : 0.68 + r() * 0.2, age: s.t - start };
+}
+
+/** A lost shoal's light in the dark now (slot, place 0..1, seconds in), if not yet called in. */
+export function currentStray(s: GameState): { k: number; x: number; age: number } | null {
+  if (actAt(s.height) !== STRAY.zone || !revealed(s, 'shoal') || s.levels.shoal >= (seamount(s).shoalCap ?? Infinity)) return null;
+  const k = Math.floor(s.t / STRAY.period);
+  if (k <= s.strayed) return null;
+  const r = mulberry32((s.seed ^ 0x57a7) + Math.imul(k, 0x9e3779b1));
+  const start = k * STRAY.period + r() * (STRAY.period - STRAY.life);
+  if (s.t < start || s.t >= start + STRAY.life) return null;
+  return { k, x: r(), age: s.t - start };
+}
+
+/** Call the lost shoal in: one more shoal, set to feed. */
+export function callStray(s: GameState): boolean {
+  const st = currentStray(s);
+  if (!st) return false;
+  s.strayed = st.k;
+  s.levels.shoal += 1;
+  s.jobs.feed += 1;
+  return true;
 }
 
 /** How many fragments the reef can take in (Foster: eight). */

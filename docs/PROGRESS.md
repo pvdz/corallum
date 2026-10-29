@@ -695,3 +695,4 @@ date, what landed, what is half-done, what's next.
 - Drifting fragments (events.ts FRAGMENT; economy currentFragment/takeFragment; tangle.ts drawFragment): on the shelf and in the light, one slot every 9 min a broken-off branch of another reef tumbles past for 30 s; tapped, it grows at the reef's foot in its own colours (max 5, calcite ×1.03 each). Whisper, guide row, sim test.
 - Trait Foster (way, 6): up to eight fragments (economy fragmentMax). Fragments are taken in small and grow to full size over an hour (state fragmentAt).
 - Glinting specks drift in the Sunlit sun shafts by day (sunlit.ts drawShaftMotes).
+- Lost shoals (events.ts STRAY; economy currentStray/callStray; tangle.ts drawStray): in the Midnight Water every 15 min a stray shoal's lights flicker far off for 40 s; tapped, it joins the reef (+1 shoal feeding, within the seamount's cap). Whisper, guide row, sim test.

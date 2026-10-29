@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { currentFragment, takeFragment, currentTangle, freeTangle, visitor, visited, setDay, currentFeast, wishOpen, makeWish, flare, prune, oldKnobs, inMilky, guarding, lucky, currentThorn, dayOf, catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
+import { currentStray, callStray, currentFragment, takeFragment, currentTangle, freeTangle, visitor, visited, setDay, currentFeast, wishOpen, makeWish, flare, prune, oldKnobs, inMilky, guarding, lucky, currentThorn, dayOf, catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { newGame, type GameState } from '../../src/game/sim/state.ts';
 import { GIFT, LUCKY } from '../../src/game/content/creatures.ts';
@@ -691,4 +691,19 @@ test('drifting fragments: on the shelf and in the light, taken in one per slot, 
   for (s.t = 0; s.t < 40000 && taken < 7; s.t += 5) if (currentFragment(s) && takeFragment(s)) taken++;
   assert.equal(s.fragments, 5);
   assert.ok(Math.abs(calciteRate(s) / base - 1.03 ** 5) < 1e-9);
+});
+
+test('a lost shoal: in the Midnight Water, called in once per slot, one more shoal feeding', () => {
+  const s = newGame(91);
+  s.height = 1500;
+  s.bands.push('eyes');
+  s.levels.shoal = 4;
+  let found = false;
+  for (s.t = 0; s.t < 5000 && !found; s.t += 5) found = !!currentStray(s);
+  assert.ok(found);
+  const feed = s.jobs.feed;
+  assert.ok(callStray(s));
+  assert.equal(s.levels.shoal, 5);
+  assert.equal(s.jobs.feed, feed + 1);
+  assert.equal(callStray(s), false);
 });

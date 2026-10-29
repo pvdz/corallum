@@ -6,7 +6,7 @@ import type { GameState } from '../sim/state.ts';
 import { actAt } from './acts.ts';
 import { OSSEL_MISTAKES } from './ossel.ts';
 import {
-  calciteHold, canSend, currentFragment, currentTangle, wishOpen, oldKnobs, inMilky, currentThorn, guarding, inFlurry, inHeat, inRising, currentUpwelling, currentSwell, grainsWaiting, skyOpen, canFlare, glowHold, waterAt, homes, workOpen, sisterNow, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
+  calciteHold, canSend, currentStray, currentFragment, currentTangle, wishOpen, oldKnobs, inMilky, currentThorn, guarding, inFlurry, inHeat, inRising, currentUpwelling, currentSwell, grainsWaiting, skyOpen, canFlare, glowHold, waterAt, homes, workOpen, sisterNow, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
 } from '../sim/economy.ts';
 
 export type Whisper = { id: string; when: (s: GameState) => boolean; text: string };
@@ -115,6 +115,10 @@ export const WHISPERS: readonly Whisper[] = [
   {
     id: 'dream', when: (s) => s.meta.dreams > 0 && s.t > 600,
     text: 'You have a dream kept. I dream all the time. A quarter of an hour, gone, and everything grown.',
+  },
+  {
+    id: 'stray', when: (s) => !!currentStray(s) && s.strayed < 0,
+    text: 'Out there, far off: a few lamps on their own. A shoal that has lost its way. Call it in.',
   },
   {
     id: 'fragment', when: (s) => !!currentFragment(s) && s.fragments === 0,

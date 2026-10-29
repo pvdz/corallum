@@ -180,3 +180,6 @@ export const FRAGMENT = {
   period: 540, life: 30, max: 5, each: 1.03, zones: [3, 4] as readonly number[],
   float: '· taken in',
 } as const;
+
+/** A lost shoal (the Midnight Water, while you watch): a stray light far off; called in, it joins the reef. */
+export const STRAY = { period: 900, life: 40, zone: 2, float: '· a shoal comes home' } as const;

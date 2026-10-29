@@ -142,3 +142,29 @@ export function drawFragment(ctx: CanvasRenderingContext2D, f: { k: number; x: n
   ctx.stroke();
   ctx.restore();
 }
+
+/** A lost shoal far off in the dark: a small knot of lantern lights, flickering, as if calling. */
+export function drawStray(ctx: CanvasRenderingContext2D, st: { k: number; x: number; age: number }, life: number, t: number, focus: Focus, dpr: number): void {
+  const s = Math.min(focus.w, focus.h) / 700;
+  const a = Math.min(1, st.age / 3, (life - st.age) / 4);
+  if (a <= 0) return;
+  const x = focus.x + focus.w * (st.x < 0.5 ? 0.08 + st.x * 0.3 : 0.62 + (st.x - 0.5) * 0.5);
+  const y = focus.y + focus.h * (0.18 + 0.1 * Math.sin(st.k));
+  spot('stray', x, y, Math.max(40 * s, 30 * dpr));
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 7; i++) {
+    const px = x + Math.cos(i * 2.4 + t * 0.6) * 12 * s, py = y + Math.sin(i * 1.7 + t * 0.5) * 6 * s;
+    const flick = 0.5 + 0.5 * Math.max(0, Math.sin(t * 3.1 + i * 1.3)) ** 4;
+    glow(ctx, px, py, 7 * s, '120,200,255', 0.6 * a * flick);
+    glow(ctx, px, py, 1.6 * s, '220,245,255', a);
+  }
+  const p = (t * 0.5) % 1;
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.strokeStyle = `rgba(160,220,255,${0.35 * (1 - p) * a})`;
+  ctx.lineWidth = 1.2 * dpr;
+  ctx.beginPath();
+  ctx.arc(x, y, (20 + 18 * p) * s, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+}
