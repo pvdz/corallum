@@ -520,3 +520,4 @@ date, what landed, what is half-done, what's next.
 - Rare giant larvacean in the Midnight Water (every 22 min for 110 s, high in the open water); touched, the tadpole bolts and the empty house sags. Frame costs checked across zones: 2–7 ms draw headless.
 - The shoals' signal keeps a streak (state.signal.right/streak): answered in the very next slot, each pays +15% more, up to +90%; a wrong answer breaks it. Shown after the answer.
 - Lamp-nets (upgrade 'net', Midnight, glow): feeding ×1.05 each, max 6, drawn as glowing webs between branches. Pacing had already slipped under 6 h on some path before this (unnoticed: a commit chained on grep); band cost growth retuned, bot 7h28, all 61 sim tests green.
+- Feats: Every crest (all five of a swell set), Six in a row (signal streak), Ossel heard it all (four questions).
