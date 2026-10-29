@@ -4,7 +4,7 @@ export const GUIDE: readonly [string, string][] = [
   ['Calcite', 'Your polyps make it. Tap the water to sweep for more; buy polyps to make it faster.'],
   ['Bands', 'Each band of stone raises the reef. Rising is the whole journey: four thousand metres to the surface.'],
   ['Holding', 'Stores fill toward what the reef can hold, then stop. A denser lattice holds more while you are away.'],
-  ['Neighbours', 'Tap a creature to learn its name; some of them answer a touch. Each one seen feeds the reef a little, and a little more once touched.'],
+  ['Neighbours', 'Tap a creature to learn its name; some of them answer a touch. Each one seen feeds the reef a little, and a little more once touched. Now and then one is lucky (golden sparks): touch it then.'],
   ['Zones', 'Each zone of the sea brings a new way to grow: shoals, the Rasp, sunlight, the Spawning Moon.'],
   ['The water', 'Every ten minutes the water turns, and each kind makes one kind of growing cheaper. The line above the shoals says what comes next: buy now, or wait for the right water.'],
   ['Ossel asks', 'One small thing at a time. Do it while you watch, and the reef gets a burst of what it lives by.'],

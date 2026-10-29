@@ -23,7 +23,7 @@ import { QUESTIONS, type Question, type QuestionId } from '../content/ossel.ts';
 import { ACT4, HEAT, BANDS_ACT4, DIALECTS, OTHERS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
 import { ACT5, BANDS_ACT5, GARDEN, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
 import { act, actAt, ACTS, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
-import { CREATURES, GIFT, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
+import { CREATURES, GIFT, LUCKY, TRUST, giftOf, trustLevel, type CreatureId, type GiftStock } from '../content/creatures.ts';
 import { BOONS, LINEAGE, SEAMOUNTS, type BoonId, type Seamount, type SeamountId, type TraitId } from '../content/lineage.ts';
 import { DAYS, type DayId, DAILY, FEAST, SIGNAL, SWELL, THORN, WELCOME, intruderOf, type Intruder, DREAM } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
@@ -1544,6 +1544,14 @@ export function sweep(s: GameState): number {
 
 // ---------- Gifts from neighbours ----------
 
+/** Is this creature a lucky one right now (seeded by the reef, the creature and the span of time)? */
+export function lucky(s: GameState, id: string): boolean {
+  let h = 2166136261;
+  for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 16777619);
+  const win = Math.floor(s.t / LUCKY.span);
+  return s.luckySpan !== win && mulberry32((h ^ s.seed ^ Math.imul(win, 0x9e3779b1)) >>> 0)() < LUCKY.chance;
+}
+
 /**
  * A touched creature's gift: GIFT.seconds of the reef's production of its stock (calcite when the
  * reef makes none of it yet), once per GIFT.cooldown per creature. Null while it is cooling down.
@@ -1559,7 +1567,9 @@ export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: 
     dig(s, 'touch');
   }
   const close = s.meta.companion === id;
-  if (s.t - s.gifts[id] < GIFT.cooldown * (close ? 0.5 : 1) * (lives(s, 'cleaner-wrasse') ? 0.5 : 1)) return null;
+  // A lucky one gives at once, whatever the cooldown, and much more.
+  const luck = lucky(s, id);
+  if (!luck && s.t - s.gifts[id] < GIFT.cooldown * (close ? 0.5 : 1) * (lives(s, 'cleaner-wrasse') ? 0.5 : 1)) return null;
   const r = rates(s);
   let stock = giftOf(id);
   const made = stock === 'glow' ? r.glowP : stock === 'plankton' ? r.planktonP : stock === 'sand' ? r.sandP : 0;
@@ -1571,11 +1581,16 @@ export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: 
   // Never more than a share of what the reef can hold of it (P/k), or it would only wash away.
   // Rare visitors give more: catching one is luck as well as attention.
   const rare = CREATURES.find((c) => c.id === id)?.note.startsWith('Rare.') ? GIFT.rare : 1;
-  const amount = (close ? 2 : 1) * (lives(s, 'cleaner-wrasse') ? 2 : 1) * (boon(s, 'welcome') ? 2 : 1) * (speaks(s, 'chorus') ? 2 : 1) * TRUST.gift[trustLevel(s.meta.trust[id] ?? 0)]! * (chose(s, 'whale-fall', 'b') ? 2 : 1) * rare * (stock === 'calcite' ? calciteRate(s, r) * GIFT.seconds
+  const amount = (luck ? LUCKY.mult : 1) * (close ? 2 : 1) * (lives(s, 'cleaner-wrasse') ? 2 : 1) * (boon(s, 'welcome') ? 2 : 1) * (speaks(s, 'chorus') ? 2 : 1) * TRUST.gift[trustLevel(s.meta.trust[id] ?? 0)]! * (chose(s, 'whale-fall', 'b') ? 2 : 1) * rare * (stock === 'calcite' ? calciteRate(s, r) * GIFT.seconds
     : stock === 'bloom' ? r.bloomP * GIFT.seconds : stock === 'spawn' ? r.spawnP * GIFT.seconds
     : Math.min(made * GIFT.seconds, GIFT.holdShare * made / k));
   if (!(amount > 0)) return null;
   s.gifts[id] = s.t;
+  if (luck) {
+    s.luckySpan = Math.floor(s.t / LUCKY.span);
+    s.tally.lucky++;
+    if (!s.meta.seen.includes(`g:${id}`)) s.meta.seen.push(`g:${id}`);
+  }
   if (stock === 'calcite') {
     s.calcite += amount;
     s.earned.calcite += amount;

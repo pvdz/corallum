@@ -19,6 +19,8 @@ export const AWAY_CYCLES = {
   heatShy: (n: number) => `${n} warm spell${n === 1 ? '' : 's'}; the reef closed itself each time`,
   rising: 'The rising',
   risings: (n: number) => `came up past the reef ${n} time${n === 1 ? '' : 's'} while no one sent the feeders in`,
+  old: 'Old stone',
+  knobs: (n: number) => `${n} grey knob${n === 1 ? '' : 's'} on the tips now, waiting to be let go`,
 } as const;
 
 /** Browser notifications while the tab is in the background (a setting, off by default). */

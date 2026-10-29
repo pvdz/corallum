@@ -75,6 +75,7 @@ export const FEATS: readonly Feat[] = [
   { id: 'six-in-a-row', name: 'Six in a row', text: 'Answer the shoals’ signal six times in a row.', when: (s) => s.signal.streak >= 6, progress: (s) => [s.signal.streak, 6] },
   { id: 'heard-it-all', name: 'Ossel heard it all', text: 'Answer all of Ossel’s questions on one reef.', when: (s) => Object.values(s.asked).every((a) => a !== '') },
   { id: 'both-ways', name: 'Both ways', text: 'Across the line, meet every moment both ways.', when: (s) => MOMENTS.every((m) => s.meta.seen.includes(`m:${m.id}:a`) && s.meta.seen.includes(`m:${m.id}:b`)), progress: (s) => [s.meta.seen.filter((k) => k.startsWith('m:')).length, MOMENTS.length * 2] },
+  { id: 'lucky', name: 'Touched by luck', text: 'Touch five different lucky neighbours (golden sparks), across all reefs.', when: (s) => seenCount(s, 'g:') >= 5, progress: (s) => [seenCount(s, 'g:'), 5] },
   { id: 'milky', name: 'Wading in light', text: 'Sweep 40 times through a milky sea in one reef.', when: (s) => s.tally.milky >= 40, progress: (s) => [s.tally.milky, 40] },
   { id: 'pruned', name: 'Light stone', text: 'Let 50 knobs of old stone go in one reef.', when: (s) => s.tally.pruned >= 50, progress: (s) => [s.tally.pruned, 50] },
   { id: 'risings', name: 'Into the rising', text: 'Send the feeders into ten risings.', when: (s) => s.tally.risings >= 10, progress: (s) => [s.tally.risings, 10] },

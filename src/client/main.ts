@@ -32,14 +32,14 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inMilky, milkyGlow, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, prune, oldKnobs, oldHeld, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, sisterNow, lightSister, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inMilky, milkyGlow, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, lucky, prune, oldKnobs, oldHeld, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, sisterNow, lightSister, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio, type Cue } from '../game/audio/audio.ts';
 import { AWAY_CYCLES, AWAY_PREP, DAILY, DREAM, NOTIFY, SWELL, FEAST, SIGNAL, THORN, WELCOME } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS, TRIAL_TEXT } from '../game/content/lineage.ts';
-import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf, TRUST, trustLevel, COMPANION, type CreatureId } from '../game/content/creatures.ts';
+import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, LUCKY, giftOf, TRUST, trustLevel, COMPANION, type CreatureId } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
 import { createPortraits } from './portraits.ts';
 import { createZoom } from './zoom.ts';
@@ -577,6 +577,7 @@ function catchUp(seconds: number): void {
     shards: state.meta.shards.length - before.shards,
     heat: cycles.heat ? (start.closed ? AWAY_CYCLES.heatClosed(cycles.heat) : start.meta.traits['sun-shy'] ? AWAY_CYCLES.heatShy(cycles.heat) : AWAY_CYCLES.heatOpen(cycles.heat)) : '',
     risings: cycles.risings ? AWAY_CYCLES.risings(cycles.risings) : '',
+    old: oldKnobs(state) > oldKnobs(start) ? AWAY_CYCLES.knobs(oldKnobs(state)) : '',
   }, seconds >= WELCOME.after && state.levels.polyp > 0 ? [
     { label: WELCOME.haul, note: `+${num(welcomeHaul(state, seconds))} calcite`, take: () => { const g = welcome(state, 'haul', seconds); save(); return `+${num(g)} calcite`; } },
     { label: WELCOME.search, note: WELCOME.searchNote, take: () => { const n = welcome(state, 'search', seconds); save(); return n ? `${n} shard${n > 1 ? 's' : ''}` : 'nothing this time'; } },
@@ -979,6 +980,26 @@ function showJournalNote(kicker: string, name: string, now = false): void {
   next();
 }
 
+/** Lucky neighbours on screen: golden sparks circling each one (where it was drawn last frame). */
+function drawLucky(t: number): void {
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  // One of its kind is the lucky one: the first drawn.
+  const done = new Set<string>();
+  for (const p of tappable()) {
+    if (done.has(p.id) || p.id === 'ossel' || p.id === 'shell' || p.id === 'star' || p.id === 'old' || !lucky(state, p.id)) continue;
+    done.add(p.id);
+    const r = Math.min(Math.max(p.r, 22 * dpr), 70 * dpr);
+    glowAt(ctx, p.x, p.y, r * 1.4, '255,200,90', 0.18);
+    for (let k = 0; k < 8; k++) {
+      const a = t * 1.6 + k * (Math.PI * 2 / 8);
+      const tw = 0.5 + 0.5 * Math.sin(t * 5 + k * 1.9);
+      glowAt(ctx, p.x + Math.cos(a) * r, p.y + Math.sin(a) * r * 0.7, 7 * dpr, '255,215,120', 0.6 + 0.4 * tw);
+    }
+  }
+  ctx.restore();
+}
+
 /** Crossing into a new zone: a rush of bright motes streaming up past the reef during the fade. */
 function drawAscent(k: number): void {
   const h = canvas.height;
@@ -1259,12 +1280,14 @@ canvas.addEventListener('pointerdown', (e) => {
       }
     }
     const trustBefore = who.id !== 'ossel' ? state.meta.trust[who.id] ?? 0 : 0;
+    const wasLucky = who.id !== 'ossel' && lucky(state, who.id);
     const g = frozenT === null && who.id !== 'ossel' ? gift(state, who.id) : null;
+    if (g && wasLucky) audio.cue('shimmer');
     if (who.id !== 'ossel' && trustBefore < TRUST.at[2] && (state.meta.trust[who.id] ?? 0) >= TRUST.at[2]) {
       showJournalNote(TRUST.friendNote, `${CREATURES.find((c) => c.id === who.id)?.name ?? ''} · +${TRUST.friendLineage} lineage`);
       audio.cue('shard');
     }
-    if (g) floatText(e.clientX, e.clientY - 26, `+${num(g.amount)} ${GIFT_TEXT[g.stock]}`, 'feast-float');
+    if (g) floatText(e.clientX, e.clientY - 26, `+${num(g.amount)} ${GIFT_TEXT[g.stock]}${wasLucky ? ` ${LUCKY.float}` : ''}`, 'feast-float');
     // A light tick on phones; a double one when it brought a gift.
     if (who.id !== 'ossel') buzz(g ? [8, 40, 8] : 8);
     if (who.id !== 'ossel') {
@@ -1698,6 +1721,7 @@ function frame(now: number): void {
   const fe = currentFeast(state);
   if (fe) drawFeast(ctx, fe, state.t - fe.start, tNow, focusNow, dpr, feastPay(state));
   taps.draw(ctx, tNow, scene.crownAt, dpr, (x, y) => actAt(state.height) <= 2 || !!scene.darkAt?.(x, y));
+  drawLucky(tNow);
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   endFrameSpots();
   if (now - lastPortrait > 1000 && frozenT === null && !fadingFrom && (zoom.k === 1 || zoom.k >= 2)) {

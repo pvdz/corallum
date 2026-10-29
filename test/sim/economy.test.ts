@@ -1,9 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { flare, prune, oldKnobs, inMilky, guarding, currentThorn, dayOf, catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
+import { flare, prune, oldKnobs, inMilky, guarding, lucky, currentThorn, dayOf, catchUpwelling, currentUpwelling, setCurrent as turnCurrent, currentSwell, rideSwell, dailyGift, dream, heatLeft, inHeat, cyclesBetween, chooseSport, canFeedRising, feedRising, risingHaul, act1Done, advance, calciteRate, gift, knownBonus, rates, assign, bloomHold, breach, breachReady, buy, canBreach, ended, memoriesAvailable, moonFull, moonPhase, spawnTarget, untilFullMoon, nextTier, speak, sunlight, calciteHold, choose, cost, glowHold, heightCap, heightForBands, bandMetres, idleShoals, maxed, murmurHold, nextMeeting, planktonHold, raspMax, read, reassign, sandHold, setRasp, siltHold, sweep, timeUntil } from '../../src/game/sim/economy.ts';
 import { runBot } from '../../src/game/sim/bot.ts';
 import { newGame, type GameState } from '../../src/game/sim/state.ts';
-import { GIFT } from '../../src/game/content/creatures.ts';
+import { GIFT, LUCKY } from '../../src/game/content/creatures.ts';
 import { HEAT } from '../../src/game/content/act4.ts';
 import { RISING } from '../../src/game/content/act2.ts';
 import { SWELL } from '../../src/game/content/events.ts';
@@ -522,6 +522,7 @@ test('gifts: a touched neighbour gives its own stock once per cooldown, calcite 
   s.levels.polyp = 10;
   s.levels.symbiont = 5;
   s.t = 1000;
+  s.luckySpan = Math.floor(s.t / LUCKY.span); // no lucky neighbour in this test
   const r = rates(s);
   const g = gift(s, 'jelly');
   assert.equal(g?.stock, 'glow');
@@ -593,4 +594,21 @@ test('guard shoals: in the light, four on guard drive intruders off by themselve
   for (let i = 0; i < 4; i++) assert.ok(assign(s, 'guard', 1));
   assert.equal(idleShoals(s), 2);
   assert.ok(guarding(s));
+});
+
+test('lucky neighbours: now and then a creature is lucky; touched, it gives at once and ×5, once per span', () => {
+  const s = newGame(9);
+  s.levels.polyp = 10;
+  // Find a span of time when the jelly is lucky.
+  s.t = 0;
+  while (!lucky(s, 'jelly')) s.t += LUCKY.span;
+  const normal = newGame(9);
+  normal.levels.polyp = 10;
+  normal.t = s.t;
+  normal.luckySpan = Math.floor(s.t / LUCKY.span); // already claimed in this span: an ordinary touch
+  s.gifts.jelly = s.t; // even cooling down
+  const g = gift(s, 'jelly')!, n = gift(normal, 'jelly')!;
+  assert.ok(Math.abs(g.amount / n.amount - LUCKY.mult) < 1e-9, `${g.amount / n.amount}`);
+  assert.ok(!lucky(s, 'jelly'), 'claimed for this span');
+  assert.ok(s.meta.seen.includes('g:jelly'));
 });

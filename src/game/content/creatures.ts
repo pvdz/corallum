@@ -109,6 +109,12 @@ export const CREATURES: readonly Creature[] = [
  * at most `holdShare` of what the reef can hold of it; rare visitors give `rare` times as much.
  */
 export const GIFT = { seconds: 30, cooldown: 180, holdShare: 0.3, rare: 3 } as const;
+/**
+ * Lucky neighbours: in each `span` seconds of the reef's time, each creature has a small chance of
+ * being a lucky one (golden sparks around it). Touched then, its gift comes at once and ×`mult`;
+ * one lucky touch per span.
+ */
+export const LUCKY = { span: 120, chance: 0.025, mult: 5, float: '· a lucky one', seen: 'Touched when lucky' } as const;
 export type GiftStock = 'calcite' | 'glow' | 'plankton' | 'sand' | 'bloom' | 'spawn';
 const GLOWING: readonly CreatureId[] = [
   'jelly', 'comb-jelly', 'siphonophore', 'anglerfish', 'vampire-squid', 'pyrosome', 'moon-jelly', 'sea-firefly', 'sea-sparkle', 'sea-pen', 'flashlight-fish', 'lantern-shark',
