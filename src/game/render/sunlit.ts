@@ -380,6 +380,54 @@ export function createSunlitScene(seed: number): Scene {
   }
 
   /**
+   * Rarely, a mola: once in sixteen minutes an ocean sunfish drifts across, a huge flat silver
+   * disc with a tall fin above and below, sculling slowly.
+   */
+  function drawMola(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 960, crossing = 60;
+    const u = ((t + 200) % period) / crossing;
+    if (u >= 1) return;
+    sight('mola');
+    const s = scale() * 2.6;
+    const x = focus.x + focus.w * (1.15 - u * 1.3), y = focus.y + focus.h * 0.38 + Math.sin(t * 0.4) * 6 * s;
+    spot('mola', x, y, 34 * s);
+    const scull = Math.sin(t * 1.4) * 0.35;
+    ctx.save();
+    ctx.translate(x, y);
+    const g = ctx.createLinearGradient(0, -20 * s, 0, 20 * s);
+    g.addColorStop(0, '#b8c6d0');
+    g.addColorStop(1, '#6f8290');
+    ctx.fillStyle = g;
+    // Fins first (behind the body), sculling opposite each other.
+    for (const dir of [-1, 1]) {
+      ctx.save();
+      ctx.rotate(dir * scull * 0.4);
+      ctx.beginPath();
+      ctx.moveTo(4 * s, dir * 14 * s);
+      ctx.quadraticCurveTo(10 * s, dir * 34 * s, 2 * s, dir * 38 * s);
+      ctx.lineTo(-6 * s, dir * 14 * s);
+      ctx.fill();
+      ctx.restore();
+    }
+    // The disc, its clipped tail, the eye and small mouth (facing left).
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 22 * s, 17 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#5a6b78';
+    ctx.beginPath();
+    ctx.ellipse(21 * s, 0, 4 * s, 14 * s, 0, -Math.PI / 2, Math.PI / 2);
+    ctx.fill();
+    ctx.fillStyle = '#1c2228';
+    ctx.beginPath();
+    ctx.arc(-13 * s, -3 * s, 1.8 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(-21 * s, 1 * s, 1.2 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  /**
    * A green turtle comes to graze once there are meadows: it paddles slowly over the seagrass,
    * dips to crop it, and drifts on.
    */
@@ -588,6 +636,7 @@ export function createSunlitScene(seed: number): Scene {
       water.draw(ctx, w, h, t, 0.2, `${w}x${h} ${p.toFixed(3)}`, (c, tq) => drawWater(c, tq, p));
       if (v.bands.includes('rain')) drawRain(ctx, t);
       drawWhale(ctx, t);
+      drawMola(ctx, t);
       drawLarvae(ctx, t);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#5d7d96');
       drawFloor(ctx, t);

@@ -219,3 +219,4 @@ date, what landed, what is half-done, what's next.
 - Zone change as one moment: motes stream upward through the crossfade, a rising chord plays, any whisper clears, whispers wait out the fade, and the band's story opens 4 s later (title, story, whisper and notes all appeared at once before).
 - Midnight Water: a rare giant squid, once every 20 min of scene time, a long dim shape with trailing arms (tappable; journal: 32).
 - Rare sightings, one per deep zone: a dumbo octopus over the Silt Floor (every 15 min), a whale shark across the Twilight Shelf (every 18 min); journal: 34.
+- Sunlit Crown rare sighting: an ocean sunfish (mola) every 16 min (journal: 35). Dumbo octopus drawn in front of the reef.
