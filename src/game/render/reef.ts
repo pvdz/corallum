@@ -4,7 +4,7 @@
 
 import { generateCoral, thickness, type CoralForm } from './coral.ts';
 import { glow, ring } from './draw.ts';
-import type { EffectKind, ReefView } from './scene.ts';
+import { zoom, type EffectKind, type ReefView } from './scene.ts';
 
 /** Where and how big the reef is drawn. */
 export type ReefLayout = {
@@ -74,7 +74,7 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
       branchKey = key;
       steady = 0;
     }
-    if (cachedKey !== key && ++steady < 30) {
+    if (zoom.k > 1 || (cachedKey !== key && ++steady < 30)) {
       drawBranches(ctx, L, 0);
       return;
     }

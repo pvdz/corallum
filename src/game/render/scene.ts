@@ -62,6 +62,12 @@ export type EffectKind = UpgradeId | 'reading' | 'truce' | 'breach';
 /** The part of the canvas not covered by the panel, in device pixels. */
 export type Focus = { x: number; y: number; w: number; h: number };
 
+/**
+ * The view's zoom (view mode): scenes are drawn under a scale transform when it is above 1, so
+ * caches made at 1× would look soft; drawers that cache check it and draw directly instead.
+ */
+export const zoom = { k: 1 };
+
 export type Scene = {
   resize(w: number, h: number, dpr: number, focus: Focus): void;
   draw(ctx: CanvasRenderingContext2D, t: number, view: ReefView): void;

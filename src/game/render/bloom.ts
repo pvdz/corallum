@@ -27,6 +27,8 @@ export function createBloom(): Bloom {
       bctx.imageSmoothingEnabled = true;
       bctx.drawImage(a, 0, 0, bw, bh);
       ctx.save();
+      // In screen space, whatever transform the scene was drawn under (view-mode zoom).
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.globalCompositeOperation = 'lighter';
       ctx.imageSmoothingEnabled = true;
       ctx.globalAlpha = strength;

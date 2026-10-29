@@ -512,6 +512,8 @@ html.view-mode #zone-title, html.view-mode #whisper, html.view-mode #milestone {
 @media (min-width: 800px) { #depth-gauge { right: calc(var(--panel-w) + 18px); } }
 @media (max-width: 799px) { #depth-gauge { top: 14%; bottom: auto; height: 30%; right: 10px; } }
 html.view-mode #depth-gauge { right: 18px; }
+/* View mode zooms the world itself: pinches belong to the game, not the page. */
+html.view-mode #world { touch-action: none; }
 #depth-gauge b { flex: 1; display: block; }
 #depth-gauge b.zone-1 { background: #121032; border-radius: 0 0 3px 3px; }
 #depth-gauge b.zone-2 { background: #0b1240; }
