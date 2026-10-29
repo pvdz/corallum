@@ -31,7 +31,7 @@ import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio } from '../game/audio/audio.ts';
 import { FEAST } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS } from '../game/content/lineage.ts';
-import { CREATURES, GIFT, GIFT_TEXT, GIFT_WORD, giftOf } from '../game/content/creatures.ts';
+import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
 import { createPortraits } from './portraits.ts';
 import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
@@ -955,6 +955,8 @@ let last = performance.now();
 let lastSave = last;
 let lastTitle = 0;
 let lastHabit = 0;
+/** When each rare visitor was last on screen (ms), so a visit is announced once. */
+const rarePassing = new Map<string, number>();
 let lastJournal = 0;
 let lastFeatCheck = 0;
 let shownRecord = -1;
@@ -1036,9 +1038,15 @@ function frame(now: number): void {
     lastJournal = now;
     for (const id of takeSightings()) {
       const key = `c:${id}`;
+      const c = CREATURES.find((x) => x.id === id);
+      // A rare visitor already in the journal: say it is passing, once per visit.
+      if (frozenT === null && c?.note.startsWith('Rare.') && state.meta.seen.includes(key) && now - (rarePassing.get(id) ?? -1e9) > 120_000) {
+        showJournalNote(JOURNAL_PASSING, c.name);
+        audio.cue('whisper');
+      }
+      if (c?.note.startsWith('Rare.')) rarePassing.set(id, now);
       if (frozenT !== null || state.meta.seen.includes(key)) continue;
       state.meta.seen.push(key);
-      const c = CREATURES.find((x) => x.id === id);
       if (c?.note.startsWith('Rare.')) {
         showJournalNote('A rare sighting', c.name);
         audio.cue('feast');

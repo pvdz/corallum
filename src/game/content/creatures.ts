@@ -78,3 +78,6 @@ export const GIFT_TEXT: Record<GiftStock, string> = {
 export const GIFT_WORD: Record<GiftStock, string> = {
   calcite: 'Shares a little food', glow: 'Shares a little light', plankton: 'Shares a little plankton', sand: 'Shares a little sand',
 };
+
+/** The note shown when a rare visitor already in the journal comes by again. */
+export const JOURNAL_PASSING = 'Passing now';
