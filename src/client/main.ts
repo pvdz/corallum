@@ -484,7 +484,7 @@ function tripView(): ReefView['trip'] {
   const x = tripSite(state);
   if (!x) return null;
   const i = SITES.indexOf(x) + state.tally.roams;
-  return { shoals: x.shoals, since: tripSeconds(state, x) - (ex.back - state.t), left: ex.back - state.t, side: i % 2 ? -1 : 1 };
+  return { shoals: x.shoals, since: tripSeconds(state, x) - (ex.back - state.t), left: ex.back - state.t, side: i % 2 ? -1 : 1, site: x.id };
 }
 
 function view(): ReefView {

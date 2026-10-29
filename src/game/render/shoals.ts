@@ -138,6 +138,9 @@ export function createShoals(seed: number) {
     const [crx, cry] = reef.crown(L);
     const fx = F.x + F.w * (trip.side > 0 ? 0.96 : 0.04), fy = F.y + F.h * 0.28;
     const m = Math.min(16, trip.shoals);
+    // While they search, the ruin itself shows faintly where their lights hang.
+    const there = Math.min(1, Math.max(0, raw * 1.35 - 1.2) * 4);
+    if (there > 0) drawSite(ctx, trip.site, fx - (trip.side > 0 ? 1 : -1) * 50 * s, fy, s, there);
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     for (let i = 0; i < m; i++) {
@@ -156,6 +159,42 @@ export function createShoals(seed: number) {
         const qa = q * 1.7 + i;
         glow(ctx, x + Math.cos(qa + t * 0.9) * 6 * s * far, y + Math.sin(qa * 1.3 + t * 0.7) * 3.5 * s * far, 5 * s * far, '160,215,255', Math.min(1, 0.85 * a));
       }
+    }
+    ctx.restore();
+  }
+
+  /** A ruin's far silhouette: dim, small, the shape that names it. */
+  function drawSite(ctx: CanvasRenderingContext2D, site: string, x: number, y: number, s: number, a: number): void {
+    ctx.save();
+    ctx.globalAlpha = 0.35 * a;
+    ctx.strokeStyle = '#8fa6d8';
+    ctx.fillStyle = '#5a6e9c';
+    ctx.lineWidth = 2 * s;
+    const k = 1.4 * s;
+    ctx.beginPath();
+    if (site === 'gate') {
+      ctx.ellipse(x, y, 26 * k, 22 * k, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    } else if (site === 'terraces') {
+      for (let i = 0; i < 4; i++) ctx.rect(x - 30 * k + i * 12 * k, y + 14 * k - i * 9 * k, 36 * k - i * 6 * k, 6 * k);
+      ctx.fill();
+    } else if (site === 'lamp-hall') {
+      for (let i = 0; i < 4; i++) ctx.rect(x - 24 * k + i * 15 * k, y - 18 * k, 4 * k, 36 * k);
+      ctx.rect(x - 28 * k, y - 22 * k, 56 * k, 4 * k);
+      ctx.fill();
+    } else if (site === 'wells') {
+      for (let i = 0; i < 3; i++) ctx.ellipse(x - 20 * k + i * 20 * k, y, 7 * k, 3 * k, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    } else if (site === 'midden') {
+      ctx.moveTo(x - 34 * k, y + 14 * k);
+      ctx.quadraticCurveTo(x, y - 20 * k, x + 34 * k, y + 14 * k);
+      ctx.closePath();
+      ctx.fillStyle = '#b8b2a2';
+      ctx.fill();
+    } else {
+      // Roaming: only the dark.
+      ctx.restore();
+      return;
     }
     ctx.restore();
   }

@@ -40,7 +40,7 @@ export type ReefView = {
   relics: readonly SiteId[];
   /** Animals living in the reef's homes. */
   residents: readonly ResidentId[];
-  trip: { shoals: number; since: number; left: number; side: number } | null;
+  trip: { shoals: number; since: number; left: number; side: number; site: string } | null;
   /** 0..1 of plankton's effect, for how thick the plankton motes are. */
   planktonLevel: number;
   bands: readonly string[];
