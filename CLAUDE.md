@@ -51,5 +51,5 @@ These were written by the agent, not the user; fix them when wrong.
 ## Workflow
 - Small commits, often, with tests + typecheck green. Update PROGRESS.md in the same commit.
 - After visible changes take a screenshot series and commit it (`screenshot/` is tracked).
-- Add a test with every sim feature; offline == stepped online is the key invariant.
+- Test what could really break (offline == stepped online is the key invariant); no tests of the obvious, no slow tests. Pacing/time balance is secondary for now (user, 2026-10-29): features and graphic detail first.
 - Comments describe the current state, not history.
