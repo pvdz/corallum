@@ -468,3 +468,4 @@ date, what landed, what is half-done, what's next.
 - Moment 'The slope gives way' (3500 m).
 - Feats: A garden at dawn, The elder's respect, Fluent, Kept close.
 - The line's title (Lineage header), from the memory its endings carried most (act5.ts LINE_TITLES).
+- Rare: a milky sea in the Midnight Water (every 40 min, for 2), touch stirs swirls; journal entry.

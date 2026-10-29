@@ -430,6 +430,31 @@ export function createMidnightScene(seed: number): Scene {
    * lights (krill, fish, shrimp) stream up past the reef from below, the largest journey any
    * animals make, made every night.
    */
+  /**
+   * A milky sea (rare): once every forty minutes, for two, the whole water glows a soft even blue
+   * from countless bacteria, fading in and out. Touching it stirs brighter swirls where the finger was.
+   */
+  function drawMilkySea(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 2400, length = 120;
+    const u = ((t + 900) % period) / length;
+    if (u >= 1) return;
+    sight('milky-sea');
+    const k = Math.min(1, u * 5, (1 - u) * 5);
+    spot('milky-sea', focus.x + focus.w * 0.75, focus.y + focus.h * 0.3, focus.h * 0.15);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = `rgba(90,150,255,${0.12 * k})`;
+    ctx.fillRect(focus.x, focus.y, focus.w, focus.h);
+    const touch = startled('milky-sea', t);
+    if (touch && touch.age < 4) {
+      for (let i = 0; i < 6; i++) {
+        const a = i + touch.age * 1.5;
+        glow(ctx, touch.x + Math.cos(a) * touch.age * 30, touch.y + Math.sin(a) * touch.age * 20, 40 * scale(), '140,200,255', 0.4 * (1 - touch.age / 4));
+      }
+    }
+    ctx.restore();
+  }
+
   function drawMigration(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 480, length = 40;
     const u = ((t + 150) % period) / length;
@@ -790,6 +815,7 @@ export function createMidnightScene(seed: number): Scene {
       shoals.drawFront(ctx, focus, reef, L, v, t);
       drawHatchetfish(ctx, t);
       drawBarreleye(ctx, t);
+      drawMilkySea(ctx, t);
       if (v.thorn?.kind === 'dragonfish') drawDragonfish(ctx, focus, v.thorn.u, v.thorn.side, t, scale());
       drawNearSnow(ctx, t);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);

@@ -124,6 +124,7 @@ is checked against games I know and recorded here. Absence of a known match is n
 | The Rasp elder's riddles about the story | riddles are a general device; questions are ours | OK |
 | The sun gate (Thousandfold's shallow doorway) | our own | OK |
 | Line titles ('the line of rain', 'the friends of the Rasp'…) | plain phrases | OK |
+| A milky sea (bioluminescent bacteria) | real phenomenon | OK |
 | Hard seamounts (hungry, silent, lonely, buried) as challenge runs with a lasting reward | challenge runs are a genre convention (incremental 'challenges'); names are plain descriptions | OK |
 | Moments (a dying brittle star, a lost shoal, the giant squid's eye, a whale fall, cleaners asking for a ledge, a storm breaking a branch, a sleeping turtle, a shore bird at low tide) | real reef and deep-sea events; small choice events are a genre convention; beats written for Ossel | OK |
 | Moments: a vent cracking, an anglerfish's lure beside yours, a young Rasp alone, first light | our own beats | OK |

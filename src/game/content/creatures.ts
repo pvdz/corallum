@@ -3,7 +3,7 @@
 
 export type CreatureId =
   | 'jelly' | 'tripod-fish' | 'isopod' | 'brittle-star' | 'rattail' | 'sea-pig' | 'brine-pool' | 'smokers' | 'dumbo' | 'squat-lobster' | 'sea-lily' | 'glass-sponge' | 'tube-worm'
-  | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration'
+  | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'milky-sea' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration'
   | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark'
   | 'cuttlefish' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly'
   | 'shore-bird' | 'pelican' | 'hatchlings' | 'flying-fish' | 'dolphin' | 'moon-jelly'
@@ -26,6 +26,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'glass-sponge', name: 'Glass sponges', zone: 'The Silt Floor', note: 'Vases of silica lattice, older than anything near them.' },
   { id: 'tube-worm', name: 'Tube worms', zone: 'The Silt Floor', note: 'Red plumes in white tubes, crowding the warm water of the vent.' },
   { id: 'lanternfish', name: 'Lanternfish', zone: 'The Midnight Water', note: 'Rows of lamps along their bellies; they come to the light.' },
+  { id: 'milky-sea', name: 'A milky sea', zone: 'The Midnight Water', note: 'Rare. For a while the whole water glows, soft and steady, as far as you can see.' },
   { id: 'barreleye', name: 'Barreleye', zone: 'The Midnight Water', note: 'Its head is a clear dome, and its green eyes look up through it at the faint light above.' },
   { id: 'hatchetfish', name: 'Hatchetfish', zone: 'The Midnight Water', note: 'Thin as a blade, lit along the belly so nothing below can see their shape.' },
   { id: 'comb-jelly', name: 'Comb jellies', zone: 'The Midnight Water', note: 'Rainbows ripple down their combs, made by no light of their own.' },
