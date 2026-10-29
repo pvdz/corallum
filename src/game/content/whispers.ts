@@ -124,6 +124,17 @@ export const WHISPERS: readonly Whisper[] = [
 ];
 
 /** What Ossel says when you tap it (the Silt Floor, or its wall on the Twilight Shelf), in turn. */
+/** What Ossel says when tapped and something is going on: the first that applies, in order. */
+export const OSSEL_NOW: readonly { when: (s: GameState) => boolean; text: string }[] = [
+  { when: (s) => !!s.expedition.site, text: 'The shoals are out there somewhere. I can feel the water they push.' },
+  { when: (s) => s.race.decided > 0 && s.race.decided < 5 && sisterAt(s.t) > gaugeAt(s.height), text: 'Your sister is ahead. I knew its wall too. It was always the quick one.' },
+  { when: (s) => s.race.decided > 0 && s.race.decided < 5 && sisterAt(s.t) <= gaugeAt(s.height), text: 'You are ahead of your sister. Do not gloat. Well. A little.' },
+  { when: (s) => waterAt(s).id !== 'still' && s.bands.includes('rise'), text: 'Taste that? The water has turned. Spend while it is kind.' },
+  { when: (s) => s.residents.length > 0, text: 'Your lodgers are noisy. I like them.' },
+  { when: (s) => s.meta.shards.length > 0 && s.meta.shards.length < 12, text: 'Those shards. I know that hand. I do not want to know what it says.' },
+  { when: (s) => s.meta.shards.length >= 12, text: 'Forget us gently. Yes. I think I can.' },
+];
+
 export const OSSEL_LINES: readonly string[] = [
   'Yes, I am still here. Where else would I be?',
   'Grow. Do not look at me like that. Grow.',

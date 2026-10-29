@@ -45,7 +45,7 @@ import { drawMoon } from '../game/render/draw.ts';
 import { GAUGE_MOON } from '../game/content/act5.ts';
 import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { ACT1, MILESTONES, type Milestone } from '../game/content/act1.ts';
-import { OSSEL_LINES, WHISPERS } from '../game/content/whispers.ts';
+import { OSSEL_LINES, OSSEL_NOW, WHISPERS } from '../game/content/whispers.ts';
 import { buyTrait, habitPurchase, raspSense, shoalSense, spawnLesser } from '../game/sim/prestige.ts';
 import { createFinale } from '../game/ui/finale.ts';
 import { createPanel, reefName } from '../game/ui/panel.ts';
@@ -693,8 +693,13 @@ let lastWhisper = -Infinity;
 let lastWhisperCheck = 0;
 /** Tapping Ossel: one of its lines, in turn, over the water. */
 let osselLine = 0;
+/** Ossel's lines about what is going on, said once a session each. */
+const osselSaid = new Set<string>();
 function sayOssel(): void {
-  showWhisperText(OSSEL_LINES[osselLine++ % OSSEL_LINES.length]!);
+  // Something going on gets a word first (each once a session), then the old lines in turn.
+  const now = OSSEL_NOW.find((l) => !osselSaid.has(l.text) && l.when(state));
+  if (now) osselSaid.add(now.text);
+  showWhisperText(now ? now.text : OSSEL_LINES[osselLine++ % OSSEL_LINES.length]!);
 }
 
 function whisperCheck(now: number): void {

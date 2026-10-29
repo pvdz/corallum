@@ -380,3 +380,4 @@ date, what landed, what is half-done, what's next.
 - The lantern spire redrawn: lumpy stacked-block shaft with staggered joints, shell lamps hung on threads, a lit crown.
 - The sun terrace redrawn: shaded fronts, stone seams, algae tufts swaying on top.
 - The vent garden's chimneys: larger, banded, glowing at the mouth.
+- Tapping Ossel: a word about what is going on first (trip, sister ahead/behind, the water, lodgers, shards), each once a session, then the old lines.
