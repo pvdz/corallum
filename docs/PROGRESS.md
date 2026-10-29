@@ -606,3 +606,4 @@ date, what landed, what is half-done, what's next.
 - A fourth Form dialect, Pillars (calcite ×1.25, plankton ×1.5): coral.ts form 'pillar' (attractors in five upright columns from a shared foot), its looks in the Sunlit Crown and at the Breach. speak() ignores an unknown dialect (the bot param could pass fewer than four tiers).
 - Ossel's sixth mistake, strong (600 m: 'Strength is keeping'), corrected by the Reading The kept stone.
 - A fourth kind of falling feast: a jelly fall (feast.ts drawJellyFall; feastAt picks of four).
+- Ossel's requests: milky (sweep through the next milky sea n times; asked when one is within 10 min) and lucky (touch a lucky one). Bot 7h08.

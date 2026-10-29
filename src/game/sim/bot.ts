@@ -96,7 +96,7 @@ export function botDecide(
   }
   // The bot does nothing that needs a hand on the screen (touches, intruders, shells, old stone, the rising, the
   // signal, the stars): it asks Ossel for something else.
-  if (['touch', 'intruder', 'shell', 'rising', 'signal', 'star', 'prune'].includes(s.request.kind)) skipRequest(s);
+  if (['touch', 'intruder', 'shell', 'rising', 'signal', 'star', 'prune', 'lucky'].includes(s.request.kind)) skipRequest(s);
   if (strainOpen(s)) chooseStrain(s, 'gold');
   if (sportOpen(s)) chooseSport(s, s.strain === 'gold' ? 'amber' : s.strain === 'blue' ? 'ice' : 'ultraviolet');
   while (grainsWaiting(s) > 0) chooseGrain(s, s.grains.length % 3 === 2 ? 'quick' : 'dense');
