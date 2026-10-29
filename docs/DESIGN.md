@@ -89,7 +89,8 @@ warm (ripening ×0.7), each only in the zones it suits. The panel shows the wate
 and what comes next; cards it lowers are marked. The verb is timing: buy now or save for the
 right water. Prices only, so stocks and offline are untouched. Each has a light overlay in the world.
 
-**Great works**: one per middle zone, three stages, each paid in two currencies at once (a new
+**Great works**: one per zone (the vent garden on the Silt Floor, calcite + glow, calcite ×1.05 a stage;
+the spawning pool in the Breach, calcite + bloom, spawn ×1.15 a stage; and) one per middle zone, three stages, each paid in two currencies at once (a new
 kind of purchase: both stocks must be ready). The lantern spire (Midnight; calcite + glow; lure
 +0.5 a stage), the breakwater (Twilight; calcite + sand; silt ×0.85 a stage), the sun terrace
 (Sunlit; bloom + sand; bloom ×1.15 a stage). Offered in their zone; begun ones stay. Each is drawn

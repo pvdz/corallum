@@ -184,7 +184,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     diary: [],
     favours: { clear: 0, path: 0, carry: 0 },
     race: { decided: 0, won: 0 },
-    works: { spire: 0, breakwater: 0, terrace: 0 },
+    works: { garden: 0, spire: 0, breakwater: 0, terrace: 0, pool: 0 },
     request: { kind: '', n: 0, base: 0, done: 0, paid: 0 },
     tally: { touches: 0, sweeps: 0, digs: 0, roams: 0 },
     moments: {

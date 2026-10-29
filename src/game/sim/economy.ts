@@ -233,7 +233,7 @@ export function rates(s: GameState): Rates {
     bloomK: ACT4.bloomFade * (chose(s, 'turtle', 'a') ? 0.8 : 1),
     spawnP: target >= ACT5.from
       ? lv.polyp * ACT5.spawnRate * ACT5.ripenSpawn ** lv.ripen * (speaks(s, 'broadcast') ? 2 : 1) *
-        (1 + sunlight(s, target) * lv.symbiont / 100) * (chose(s, 'bird', 'b') ? 1.1 : 1) * (has(s, 'last-spawning') ? 1.25 : 1)
+        (1 + sunlight(s, target) * lv.symbiont / 100) * (chose(s, 'bird', 'b') ? 1.1 : 1) * (has(s, 'last-spawning') ? 1.25 : 1) * 1.15 ** s.works.pool
       : 0,
     spawnK: ACT5.spawnFade * (chose(s, 'bird', 'a') ? 0.8 : 1) * (chose(s, 'first-light', 'b') ? 0.85 : 1),
     calciteBase:
@@ -245,7 +245,7 @@ export function rates(s: GameState): Rates {
       (speaks(s, 'massive') ? 1.5 : 1) *
       1.5 ** trait(s, 'deep-memory') *
       knownBonus(s) * shardBonus(s) *
-      (lives(s, 'goby') ? 1.15 : 1) * (chose(s, 'whale-fall', 'a') ? 1.1 : 1),
+      (lives(s, 'goby') ? 1.15 : 1) * (chose(s, 'whale-fall', 'a') ? 1.1 : 1) * 1.05 ** s.works.garden,
     calciteK:
       ACT1.dissolve * sm.dissolve * ACT1.latticeFactor ** lv.lattice * (ACT1.ventAcid * sm.ventAcid) ** vent * (vent > 0 && chose(s, 'vent-crack', 'a') ? 0.8 : 1) *
       (has(s, 'lattice-songs') ? 0.7 : 1) * (chose(s, 'brittle', 'a') ? 0.9 : 1) * (chose(s, 'cleaners', 'b') ? 0.9 : 1) * (speaks(s, 'massive') ? 0.5 : 1) +

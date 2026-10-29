@@ -3,7 +3,7 @@
 
 import type { Currency } from './types.ts';
 
-export type WorkId = 'spire' | 'breakwater' | 'terrace';
+export type WorkId = 'garden' | 'spire' | 'breakwater' | 'terrace' | 'pool';
 
 export type Work = {
   id: WorkId;
@@ -22,6 +22,13 @@ export type Work = {
 export const WORK_TEXT = { kicker: 'A great work', stage: 'Stage', built: 'Built', build: 'Build' } as const;
 
 export const WORKS: readonly Work[] = [
+  {
+    id: 'garden', name: 'The vent garden', zone: 1,
+    flavour: 'Small chimneys coaxed up around the old vent, each one a little warm water of your own.',
+    effect: 'calcite ×1.05 per stage',
+    stages: [{ calcite: 400, glow: 40 }, { calcite: 4000, glow: 150 }, { calcite: 40000, glow: 400 }],
+    stageNames: ['One chimney', 'A ring', 'The garden'],
+  },
   {
     id: 'spire', name: 'The lantern spire', zone: 2,
     flavour: 'A tower of stone beside the reef, hung with lamps, so the shoals can see you from twice as far.',
@@ -42,5 +49,12 @@ export const WORKS: readonly Work[] = [
     effect: 'bloom ×1.15 per stage',
     stages: [{ bloom: 1e5, sand: 30000 }, { bloom: 1e6, sand: 80000 }, { bloom: 1e7, sand: 160000 }],
     stageNames: ['One step', 'Three steps', 'The terrace'],
+  },
+  {
+    id: 'pool', name: 'The spawning pool', zone: 5,
+    flavour: 'A rim of stone just under the surface, where the spawn can ripen in still, warm water.',
+    effect: 'spawn ×1.15 per stage',
+    stages: [{ calcite: 1e12, bloom: 1e7 }, { calcite: 1e13, bloom: 3e7 }, { calcite: 1e14, bloom: 1e8 }],
+    stageNames: ['A rim', 'A basin', 'The pool'],
   },
 ];

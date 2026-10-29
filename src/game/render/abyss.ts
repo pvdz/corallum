@@ -3,6 +3,7 @@
 // seed, state and time always render the same frame — screenshots rely on that.
 
 import { sight, spot, startled } from './sightings.ts';
+import { drawGarden } from './works.ts';
 import { mulberry32, range, type Rng } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import { glow, speck } from './draw.ts';
@@ -446,6 +447,7 @@ export function createAbyssScene(seed: number): Scene {
       drawRidge(ctx, ridges[1]!);
       drawMotes(ctx, t, v);
       if (v.seamount === 'crowded') drawBuriedReefs(ctx, t);
+      drawGarden(ctx, centreX(), v.works.garden, scale(), t, floorY);
       const vent = v.vent > 0 ? life.drawVent(ctx, st, v.vent, t) : null;
       drawRidge(ctx, ridges[2]!);
       ground.draw(ctx, w, Math.min(h, focus.y + focus.h), scale(), floorY, { light: '150,160,215', dark: '0,0,8', alpha: 0.9, tracks: true },

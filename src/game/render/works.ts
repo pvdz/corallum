@@ -5,6 +5,58 @@
 import { glow } from './draw.ts';
 import type { Focus } from './scene.ts';
 
+/** The vent garden: small chimneys either side of the vent, each smoking a little, one more ring a stage. */
+export function drawGarden(ctx: CanvasRenderingContext2D, cx: number, stage: number, s: number, t: number, floor: (x: number) => number): void {
+  if (stage <= 0) return;
+  const n = [0, 1, 4, 8][stage]!;
+  ctx.save();
+  for (let k = 0; k < n; k++) {
+    const side = k % 2 ? 1 : -1;
+    const x = cx + side * (70 + Math.floor(k / 2) * 34 + (k % 3) * 6) * s;
+    const y = floor(x) + 3 * s;
+    const hgt = (18 + (k % 3) * 8) * s;
+    ctx.fillStyle = '#2b2236';
+    ctx.beginPath();
+    ctx.moveTo(x - 6 * s, y);
+    ctx.lineTo(x - 2.5 * s, y - hgt);
+    ctx.lineTo(x + 2.5 * s, y - hgt);
+    ctx.lineTo(x + 6 * s, y);
+    ctx.closePath();
+    ctx.fill();
+    // A thread of warm water above each.
+    for (let q = 0; q < 4; q++) {
+      const ph = (t * 0.4 + q * 0.25 + k * 0.17) % 1;
+      ctx.fillStyle = `rgba(150,120,150,${0.25 * (1 - ph)})`;
+      ctx.beginPath();
+      ctx.arc(x + Math.sin(t + q + k) * 3 * s, y - hgt - ph * 40 * s, (2 + ph * 5) * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, x, y - hgt, 10 * s, '255,140,90', 0.3);
+    ctx.globalCompositeOperation = 'source-over';
+  }
+  ctx.restore();
+}
+
+/** The spawning pool: a pale rim of stone just under the surface around the crown. */
+export function drawPool(ctx: CanvasRenderingContext2D, cx: number, waterY: number, stage: number, s: number, t: number): void {
+  if (stage <= 0) return;
+  const rw = [0, 60, 110, 160][stage]! * s;
+  ctx.save();
+  ctx.strokeStyle = 'rgba(120,105,90,0.55)';
+  ctx.lineWidth = (2 + stage) * s;
+  ctx.beginPath();
+  ctx.ellipse(cx, waterY + 14 * s, rw, rw * 0.12, 0, 0, Math.PI * 2);
+  ctx.stroke();
+  // Still water inside: a soft warm sheen.
+  ctx.globalCompositeOperation = 'lighter';
+  ctx.fillStyle = `rgba(255,190,200,${0.025 + 0.01 * Math.sin(t * 0.6)})`;
+  ctx.beginPath();
+  ctx.ellipse(cx, waterY + 14 * s, rw * 0.95, rw * 0.1, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
 /** The lantern spire: a tapering stone shaft from the floor, lamps hung along it at the last stage. */
 export function drawSpire(ctx: CanvasRenderingContext2D, F: Focus, stage: number, s: number, t: number, floorY: number): void {
   if (stage <= 0) return;

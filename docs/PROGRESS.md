@@ -362,3 +362,4 @@ date, what landed, what is half-done, what's next.
 - Rebalance: band cost growth raised in zones 2–4; bot back to 7h28 for the whole game; pacing test bound restored to 6–11 h.
 - Your own bands: state.diary ('t|h|key|arg' strings, capped 200), economy remember() hooked into feasts, homecoming, meet, house, build, dig, trialCheck, requests, read, judgeMark; client adds first sightings; Bands tab card (content/diary.ts).
 - While shoals search a ruin, its silhouette shows faintly where their lights hang (gate ring, terrace steps, hall pillars, wells, the pale midden); roams show only the dark.
+- Great works for the Silt Floor (the vent garden: small chimneys) and the Breach (the spawning pool: a stone rim under the surface). The garden is ×1.05 a stage (×1.1 pushed the b/massive path under 6 h). Bot: 6h50 default, 6h11 b/massive.

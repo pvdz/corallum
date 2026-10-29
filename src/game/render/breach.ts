@@ -3,6 +3,7 @@
 // at the release they rise in their millions through the moonlight and spread on the surface.
 
 import { drawResidents } from './residents.ts';
+import { drawPool } from './works.ts';
 import { palette } from '../content/palettes.ts';
 import { drawRelics } from './relics.ts';
 import { sight, spot, startled } from './sightings.ts';
@@ -706,6 +707,7 @@ export function createBreachScene(seed: number): Scene {
       drawMoonJellies(ctx, t);
       drawWaitingFish(ctx, t, v, this.crownAt);
       drawDolphins(ctx, t);
+      drawPool(ctx, L.cx, waterY(), v.works.pool, scale(), t);
       drawTop(ctx, v, reef.crown(L));
       reef.draw(ctx, L, v, t);
       drawRelics(ctx, reef, L, v.relics, t);
