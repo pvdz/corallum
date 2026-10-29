@@ -642,6 +642,7 @@ function takePortrait(): void {
     const f = closeUp ? { x: 0, y: 0, w: canvas.width, h: canvas.height } : focusNow;
     if (x - side / 2 < f.x || x + side / 2 > f.x + f.w || y - side / 2 < f.y || y + side / 2 > f.y + f.h) continue;
     portraits.capture(p.id, canvas, x, y, side, closeUp);
+    if (closeUp && !state.meta.seen.includes('did:closeup')) state.meta.seen.push('did:closeup');
     return;
   }
 }
