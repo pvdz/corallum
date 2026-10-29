@@ -87,7 +87,14 @@ export function giftOf(id: CreatureId): GiftStock {
 }
 
 /** Trust: touches remembered by the line. Levels at 1, 5 and 15 touches; gifts grow with it. */
-export const TRUST = { at: [1, 5, 15], names: ['', 'known', 'familiar', 'a friend'], gift: [1, 1, 1.5, 2] } as const;
+export const TRUST = {
+  at: [1, 5, 15], names: ['', 'known', 'familiar', 'a friend'], gift: [1, 1, 1.5, 2],
+  /** Trust grows at most once per this many sim seconds per creature (no tapping it up). */
+  every: 60,
+  /** Lineage the first time a creature becomes a friend of the line. */
+  friendLineage: 1,
+  friendNote: 'A friend of the line',
+} as const;
 export function trustLevel(touches: number): number {
   return TRUST.at.filter((n) => touches >= n).length;
 }

@@ -1223,7 +1223,12 @@ export function sweep(s: GameState): number {
  */
 export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: number } | null {
   s.tally.touches++;
-  s.meta.trust[id] = (s.meta.trust[id] ?? 0) + 1;
+  // Trust grows at most once a minute per creature; the first time one becomes a friend, the line gains.
+  if (s.t - (s.trusted[id] ?? -1e9) >= TRUST.every) {
+    s.trusted[id] = s.t;
+    s.meta.trust[id] = (s.meta.trust[id] ?? 0) + 1;
+    if (s.meta.trust[id] === TRUST.at[2]) s.meta.lineage += TRUST.friendLineage;
+  }
   dig(s, 'touch');
   if (s.t - s.gifts[id] < GIFT.cooldown) return null;
   const r = rates(s);

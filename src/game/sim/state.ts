@@ -143,6 +143,8 @@ export type GameState = {
   heirloom: SiteId | '';
   /** Ruins searched this run (content/expeditions.ts), in order. */
   relics: SiteId[];
+  /** Sim time each creature's trust last grew (once a minute at most). */
+  trusted: Record<CreatureId, number>;
   /** Sim time each creature last gave a gift when touched (content/creatures.ts GIFT). */
   gifts: Record<CreatureId, number>;
   /** The boon this reef chose ('' none yet; only after the first reef). */
@@ -206,6 +208,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
       'young-rasp': '', eggs: '', storm: '', turtle: '', 'first-light': '', 'last-night': '', bird: '',
     },
     gifts: Object.fromEntries(CREATURES.map((c) => [c.id, -1e9])) as Record<CreatureId, number>,
+    trusted: Object.fromEntries(CREATURES.map((c) => [c.id, -1e9])) as Record<CreatureId, number>,
     seamount: 'plain',
     boon: '',
     earned: { calcite: 0, glow: 0, murmurs: 0 },

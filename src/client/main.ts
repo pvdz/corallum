@@ -889,7 +889,12 @@ canvas.addEventListener('pointerdown', (e) => {
         buzz([20, 30, 20]);
       }
     }
+    const trustBefore = who.id !== 'ossel' ? state.meta.trust[who.id] ?? 0 : 0;
     const g = frozenT === null && who.id !== 'ossel' ? gift(state, who.id) : null;
+    if (who.id !== 'ossel' && trustBefore < TRUST.at[2] && (state.meta.trust[who.id] ?? 0) >= TRUST.at[2]) {
+      showJournalNote(TRUST.friendNote, `${CREATURES.find((c) => c.id === who.id)?.name ?? ''} · +${TRUST.friendLineage} lineage`);
+      audio.cue('shard');
+    }
     if (g) floatText(e.clientX, e.clientY - 26, `+${num(g.amount)} ${GIFT_TEXT[g.stock]}`, 'feast-float');
     // A light tick on phones; a double one when it brought a gift.
     if (who.id !== 'ossel') buzz(g ? [8, 40, 8] : 8);
