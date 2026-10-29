@@ -3,7 +3,7 @@
 
 import type { Currency } from './types.ts';
 
-export type WorkId = 'garden' | 'spire' | 'dome' | 'breakwater' | 'terrace' | 'pool';
+export type WorkId = 'garden' | 'spire' | 'dome' | 'breakwater' | 'lawn' | 'terrace' | 'pool';
 
 export type Work = {
   id: WorkId;
@@ -50,6 +50,13 @@ export const WORKS: readonly Work[] = [
     effect: 'silt falls ×0.85 per stage',
     stages: [{ calcite: 5e8, sand: 10000 }, { calcite: 5e9, sand: 30000 }, { calcite: 5e10, sand: 80000 }],
     stageNames: ['A first course', 'A long arc', 'The crest'],
+  },
+  {
+    id: 'lawn', name: 'The grazing lawn', zone: 3, from: 3400,
+    flavour: 'A flat of old stone downslope, left dead on purpose and kept clear, where the Rasp can graze without touching you.',
+    effect: 'sand ×1.15 per stage',
+    stages: [{ calcite: 2e9, sand: 20000 }, { calcite: 2e10, sand: 50000 }, { calcite: 2e11, sand: 120000 }],
+    stageNames: ['A clearing', 'A meadow of stone', 'The lawn'],
   },
   {
     id: 'terrace', name: 'The sun terrace', zone: 4, from: 3820,

@@ -7,7 +7,7 @@ import { createSlugs } from './slugs.ts';
 import { drawGhosts } from './ghosts.ts';
 import { drawSisterFar } from './sister.ts';
 import { drawThorn } from './thorn.ts';
-import { drawBreakwater } from './works.ts';
+import { drawBreakwater, drawLawn } from './works.ts';
 import { drawRelics } from './relics.ts';
 import { drawResidents } from './residents.ts';
 import { sight, speaking, spot, startled } from './sightings.ts';
@@ -1725,6 +1725,7 @@ export function createTwilightScene(seed: number): Scene {
       drawGhosts(ctx, focus, v.ancestors, v.height, t, scale(), 'rgba(190,210,240,1)');
       drawSisterFar(ctx, focus, v.sister - v.gauge, t, scale(), true, v.sisterLit);
       drawBreakwater(ctx, focus, v.works.breakwater, scale(), slopeY);
+      drawLawn(ctx, focus, v.works.lawn, scale(), slopeY);
       if (night > 0) drawNight(ctx, t, night, 0.5);
       reef.draw(ctx, L, v, t);
       drawRelics(ctx, reef, L, v.relics, t, v.moments['old-lamp'] === 'a');

@@ -267,3 +267,29 @@ export function drawTerrace(ctx: CanvasRenderingContext2D, cx: number, unit: num
   }
   ctx.restore();
 }
+
+/** The grazing lawn: a pale flat of dead stone on the slope, grazed into stripes, wider by stages. */
+export function drawLawn(ctx: CanvasRenderingContext2D, F: Focus, stage: number, s: number, slope: (u: number) => number): void {
+  if (stage <= 0) return;
+  const x = (u: number) => F.x - F.w * 0.1 + u * F.w * 1.2;
+  const u0 = 0.06, u1 = 0.06 + 0.07 * stage;
+  ctx.save();
+  ctx.fillStyle = 'rgba(205,200,180,0.35)';
+  ctx.beginPath();
+  for (let i = 0; i <= 16; i++) { const u = u0 + (u1 - u0) * (i / 16); if (i) ctx.lineTo(x(u), slope(u) - 3 * s); else ctx.moveTo(x(u), slope(u) - 3 * s); }
+  for (let i = 16; i >= 0; i--) { const u = u0 + (u1 - u0) * (i / 16); ctx.lineTo(x(u), slope(u) + 8 * s); }
+  ctx.closePath();
+  ctx.fill();
+  // Beak marks: short pale scrapes in rows.
+  ctx.strokeStyle = 'rgba(240,235,220,0.45)';
+  ctx.lineWidth = 1 * s;
+  for (let i = 0; i < 18 * stage; i++) {
+    const u = u0 + (u1 - u0) * ((i * 0.618) % 1);
+    const y = slope(u) + ((i * 0.37) % 1) * 8 * s - 2 * s;
+    ctx.beginPath();
+    ctx.moveTo(x(u) - 3 * s, y);
+    ctx.lineTo(x(u) + 3 * s, y + 0.8 * s);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
