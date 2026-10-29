@@ -77,6 +77,7 @@ export const PAIRS: readonly { a: ResidentId; b: ResidentId; name: string; effec
   { a: 'feather-duster', b: 'damselfish', name: 'A garden in the light', effect: 'bloom ×1.15' },
   { a: 'cleaner-wrasse', b: 'feather-duster', name: 'Clean water', effect: 'plankton ×1.15' },
   { a: 'boxer-crab', b: 'guard-crab', name: 'All claws', effect: 'intruders driven off pay ×1.3 more' },
+  { a: 'decorator-crab', b: 'cleaner-wrasse', name: 'A busy station', effect: 'gifts from neighbours ×1.3' },
 ];
 
 /** Homes the reef has at this height. */

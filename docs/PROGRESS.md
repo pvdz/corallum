@@ -649,3 +649,4 @@ date, what landed, what is half-done, what's next.
 - Rasp favour Grind a hollow (20000 sand, once): +1 resident home.
 - Resident: a decorator crab (3000 m): lucky neighbours ×1.5; drawn at the reef's foot in its sponge and weed (freezes when touched).
 - Four more dreams (twelve).
+- Resident pair A busy station (decorator crab + cleaner wrasse): gifts ×1.3.
