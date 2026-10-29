@@ -14,12 +14,13 @@ import { CREATURES } from '../content/creatures.ts';
 import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
 import { upgradeIcon } from './icons.ts';
 import { FEATS } from '../content/feats.ts';
+import { EXPEDITION, site, type Site } from '../content/expeditions.ts';
 import { canSpawnLesser, lineageFor, traitCost, traitMaxed } from '../sim/prestige.ts';
 import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -28,6 +29,8 @@ export type PanelHooks = {
   buy(id: UpgradeId): void;
   assign(job: Job, delta: 1 | -1): void;
   read(id: ReadingId): void;
+  /** Send shoals to the next ruin. */
+  send(): void;
   setRasp(n: number): void;
   choose(id: MeetingId, choice: Choice): void;
   speak(id: DialectId): void;
@@ -252,6 +255,26 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   }
   grow.append(shoalBox);
 
+  // ---------- Expeditions ----------
+  const tripCard = el('article', 'card expedition');
+  tripCard.hidden = true;
+  const tripHead = el('header');
+  const tripTitle = el('h3');
+  tripHead.append(tripTitle, el('span', 'level', 'Expedition'));
+  const tripHint = el('p', 'flavour');
+  const tripEffect = el('p', 'effect');
+  const tripBar = el('div', 'milestone-bar trip-bar');
+  tripBar.append(el('div', 'milestone-fill'));
+  const tripFoot = el('footer');
+  const tripCost = el('span', 'cost');
+  const tripBtn = button('buy shoals', '', () => hooks.send());
+  tripBtn.append(tripCost);
+  const tripEta = el('span', 'eta');
+  tripFoot.append(tripBtn, tripEta);
+  tripCard.append(tripHead, tripHint, tripEffect, tripBar, tripFoot);
+  tripCard.title = EXPEDITION.intro;
+  grow.append(tripCard);
+
   // ---------- Upgrade cards ----------
   const cards = new Map<UpgradeId, Card>();
   const milestoneBars = new Map<UpgradeId, HTMLElement>();
@@ -459,6 +482,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let currentReading: Reading | undefined;
   let lastBandCount = 0;
   let lastReadingCount = 0;
+  let lastRelicCount = 0;
   const truceSeen = new Set<MeetingId>();
   const dialectSeen = new Set<DialectId>();
 
@@ -822,6 +846,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (anchor) anchor.before(li);
     else bandList.prepend(li);
   }
+  function relicStory(x: Site): Story {
+    return { kicker: `${EXPEDITION.kicker} · ${x.name}`, title: x.relic, text: x.text };
+  }
+  function appendRelic(x: Site): void {
+    bandList.prepend(storyItem('found', x.name, relicStory(x), 'is-relic'));
+  }
   function appendReading(r: Reading): void {
     bandList.prepend(storyItem('read', r.title, readingStory(r), 'is-reading'));
   }
@@ -966,7 +996,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       shoalBox.hidden = shoals === 0;
       if (shoals > 0) {
         const idle = idleShoals(s);
-        shoalIdle.textContent = idle > 0 ? `${idle} idle of ${shoals}` : `${shoals}`;
+        const gone = awayShoals(s);
+        shoalIdle.textContent = (idle > 0 ? `${idle} idle · ` : '') + (gone > 0 ? `${gone} away · ` : '') + (idle > 0 || gone > 0 ? `of ${shoals}` : `${shoals}`);
         shoalBox.classList.toggle('has-idle', idle > 0);
         const perFeed = s.jobs.feed > 0 ? r.planktonP / s.jobs.feed : 0;
         const perLight = s.jobs.light > 0
@@ -987,6 +1018,32 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
             : j.id === 'feed' ? (perFeed ? `${rate(perFeed)} plankton each` : 'herd plankton to the polyps') + gainText(jobGains.feed)
             : j.id === 'light' ? (perLight ? `${rate(perLight)} glow each` : 'swim the glow pattern') + gainText(jobGains.light)
             : perScout ? `${rate(perScout)} murmurs each` : 'listen at buried bands';
+        }
+      }
+
+      // Expeditions: the next ruin, or the shoals away at one.
+      const away = s.expedition.site ? site(s.expedition.site) : undefined;
+      const ahead = away ?? nextSite(s);
+      tripCard.hidden = !ahead;
+      if (ahead) {
+        tripTitle.textContent = ahead.name;
+        tripHint.textContent = ahead.hint;
+        tripBar.hidden = !away;
+        if (away) {
+          const left = Math.max(0, s.expedition.back - s.t);
+          (tripBar.firstChild as HTMLElement).style.width = `${(1 - left / away.seconds) * 100}%`;
+          tripEffect.textContent = `${away.shoals} shoals ${EXPEDITION.away} · bringing ${away.relic.toLowerCase()} (${away.effect})`;
+          tripCost.textContent = 'Away';
+          tripBtn.disabled = true;
+          tripEta.textContent = `back in ${duration(left)}`;
+          tripCard.classList.remove('ready');
+        } else {
+          tripEffect.textContent = `${duration(ahead.seconds)} away · a relic: ${ahead.effect}`;
+          tripCost.textContent = `${ahead.shoals} shoals`;
+          const ok = canSend(s);
+          tripBtn.disabled = !ok;
+          tripCard.classList.toggle('ready', ok);
+          tripEta.textContent = ok ? 'they stop their work while away' : `you have ${s.levels.shoal}`;
         }
       }
 
@@ -1081,6 +1138,16 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           if (!s.meta.seen.includes(id)) showStory(readingStory(rd));
         }
         lastReadingCount = s.readings.length;
+      }
+      if (s.relics.length !== lastRelicCount) {
+        for (const id of s.relics.slice(lastRelicCount)) {
+          const x = site(id);
+          if (!x) continue;
+          appendRelic(x);
+          storyCount++;
+          if (primed && !s.meta.seen.includes(`x:${id}`)) showStory(relicStory(x));
+        }
+        lastRelicCount = s.relics.length;
       }
       for (const mt of MEETINGS) {
         const c = s.truce[mt.id];

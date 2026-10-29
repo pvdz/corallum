@@ -24,7 +24,7 @@ export function canSpawnLesser(s: GameState): boolean {
 
 /** Every story id this run has seen, for the meta's memory of what not to pop again. */
 function storiesOf(s: GameState): string[] {
-  const out = [...s.bands, ...s.readings];
+  const out = [...s.bands, ...s.readings, ...s.relics.map((id) => `x:${id}`)];
   for (const m of MEETINGS) if (s.truce[m.id]) out.push(`truce:${m.id}`);
   for (const d of DIALECTS) if (s.dialects[d.tier] === d.id) out.push(`dialect:${d.id}`);
   return out;

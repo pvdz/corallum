@@ -1,6 +1,7 @@
 // Feats: small goals across all runs. Each is earned once per lineage (meta.seen 'f:<id>') and
 // adds one lineage. Creatures touched are kept as 't:<id>'. Conditions are pure functions of the state.
 
+import { SITES } from './expeditions.ts';
 import type { GameState } from '../sim/state.ts';
 import { CREATURES } from './creatures.ts';
 
@@ -22,6 +23,7 @@ export const FEATS: readonly Feat[] = [
   { id: 'feast', name: 'Something fell', text: 'Catch a falling feast.', when: (s) => s.feasts >= 1 },
   { id: 'feasts', name: 'Scavenger', text: 'Catch 20 feasts in one reef.', when: (s) => s.feasts >= 20 },
   { id: 'shoals', name: 'A city of lamps', text: 'Call 30 lanternfish shoals.', when: (s) => s.levels.shoal >= 30 },
+  { id: 'ruins', name: 'Out in the black', text: 'Bring back a relic from every ruin.', when: (s) => s.relics.length >= SITES.length },
   { id: 'readings', name: 'Every band read', text: 'Read all of Thousandfold’s bands.', when: (s) => s.readings.length >= 9 },
   { id: 'truce', name: 'Terms', text: 'Settle all three truce meetings.', when: (s) => !!s.truce.wall },
   { id: 'meadows', name: 'Gardener', text: 'Sow 6 seagrass meadows.', when: (s) => s.levels.meadow >= 6 },

@@ -123,6 +123,43 @@ export function createShoals(seed: number) {
     ctx.restore();
   }
 
+  /**
+   * Shoals away at a ruin: they stream off toward the edge of the water and shrink into the
+   * distance, hang there as a few far specks while they search, and stream back before they arrive.
+   */
+  function drawTrip(ctx: CanvasRenderingContext2D, F: Focus, reef: Reef, L: ReefLayout, v: ReefView, t: number): void {
+    const trip = v.trip;
+    if (!trip) return;
+    const s = L.s;
+    const gs = L.glowScale ?? 1;
+    const LEG = 45;
+    // 0 at the reef, 1 at the ruin: the lights leave one after another, and come home the same way.
+    const raw = Math.min(trip.since, trip.left) / LEG;
+    const [crx, cry] = reef.crown(L);
+    const fx = F.x + F.w * (trip.side > 0 ? 0.96 : 0.04), fy = F.y + F.h * 0.28;
+    const m = Math.min(16, trip.shoals);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < m; i++) {
+      const di = Math.max(0, Math.min(1, raw * 1.35 - (i / m) * 0.35));
+      const e = di * di * (3 - 2 * di);
+      const wob = Math.sin(t * 1.3 + i * 2.1) * (14 + 30 * (1 - e)) * s;
+      const x = crx + (fx - crx) * e + Math.cos(i * 1.7) * 26 * s * (1 - e) + wob * 0.4;
+      const y = (cry + 60 * s) + (fy - cry - 60 * s) * e + Math.sin(i * 2.3 + t * 0.8) * 10 * s * (1 - e * 0.7);
+      const far = 1 - 0.82 * e;
+      // Far away they are a faint flicker, now and then.
+      const flick = e > 0.95 ? 0.35 + 0.65 * Math.max(0, Math.sin(t * 0.7 + i * 1.9)) ** 4 : 1;
+      // A shoal is a soft halo with a few bright lamps in it, smaller and dimmer with distance.
+      const a = gs * flick * (0.45 + 0.55 * far);
+      glow(ctx, x, y, 18 * s * far, '120,190,255', 0.22 * a);
+      for (let q = 0; q < 4; q++) {
+        const qa = q * 1.7 + i;
+        glow(ctx, x + Math.cos(qa + t * 0.9) * 6 * s * far, y + Math.sin(qa * 1.3 + t * 0.7) * 3.5 * s * far, 5 * s * far, '160,215,255', Math.min(1, 0.85 * a));
+      }
+    }
+    ctx.restore();
+  }
+
   function counts(v: ReefView): Record<Job, number> {
     const k = Math.min(MAX_DRAWN_SHOALS, v.shoals) / Math.max(1, v.shoals);
     return { feed: Math.round(v.jobs.feed * k), light: Math.round(v.jobs.light * k), scout: Math.round(v.jobs.scout * k) };
@@ -135,6 +172,7 @@ export function createShoals(seed: number) {
       for (let i = 0; i < c.scout; i++) drawFishShoal(ctx, F, reef, 'scout', i, c.scout, t, L, body);
       for (let i = 0; i < c.feed; i += 2) drawFishShoal(ctx, F, reef, 'feed', i, c.feed, t, L, body);
       drawPlankton(ctx, F, t, v, L);
+      drawTrip(ctx, F, reef, L, v, t);
     },
     /** The other feeders and the light-swimmers: drawn in front of the reef. */
     drawFront(ctx: CanvasRenderingContext2D, F: Focus, reef: Reef, L: ReefLayout, v: ReefView, t: number, body = '#16233f'): void {

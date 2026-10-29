@@ -241,6 +241,9 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .buy.murmurs { border-color: rgba(201, 178, 255, 0.5); color: var(--murmurs); background: rgba(160, 130, 255, 0.10); }
 .buy.murmurs:not(:disabled):hover { background: rgba(160, 130, 255, 0.2); box-shadow: 0 0 16px rgba(170, 140, 255, 0.35); }
 .band.is-reading .band-depth { color: var(--murmurs); }
+.band.is-relic .band-depth { color: #9fd8ff; }
+.card.expedition { border-color: rgba(140, 200, 255, 0.28); }
+.trip-bar .milestone-fill { background: linear-gradient(90deg, rgba(140, 200, 255, 0.4), #a8dcff); }
 
 /* ---------- Zone title card ---------- */
 #zone-title {

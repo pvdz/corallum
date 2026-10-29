@@ -21,6 +21,8 @@ export type ReefView = {
   vent: number;
   shoals: number;
   jobs: Record<Job, number>;
+  /** Shoals away at a ruin: how many, sim seconds since they left and until they are back, which side they went. */
+  trip: { shoals: number; since: number; left: number; side: number } | null;
   /** 0..1 of plankton's effect, for how thick the plankton motes are. */
   planktonLevel: number;
   bands: readonly string[];

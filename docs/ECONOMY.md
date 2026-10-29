@@ -71,6 +71,11 @@ in it); accepted for now.
 once sand bars outgrew it; now the Rasp dial matters in Act IV too (more grazers, more sand, less
 calcite held). Band growth for zones 4 and 5 retuned to 1.135 / 1.028; bot 8h08, paths 7h13–8h35.
 
+## Expeditions (Act II–III)
+A trip removes `shoals` from the jobs for `seconds`; the return is a breakpoint: `advance` splits
+dt at `expedition.back`, so offline equals stepped online (test/sim/expedition.test.ts). Pay on
+return: murmurs = 0.5 × shoals × seconds, plus the relic's multiplier (economy.ts `found()`).
+
 ## Readings spread out
 Reading costs 40/900/1800/3000/4500/6000/8000/7000/7500 murmurs (were 25…16000 with five under
 1100, so five stories landed within four minutes). Now one every 5–15 min through Act II. Act II

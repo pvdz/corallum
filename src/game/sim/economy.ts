@@ -24,6 +24,7 @@ import { act, actAt, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
 import { CREATURES, GIFT, giftOf, type CreatureId, type GiftStock } from '../content/creatures.ts';
 import { LINEAGE, SEAMOUNTS, type Seamount, type TraitId } from '../content/lineage.ts';
 import { FEAST } from '../content/events.ts';
+import { EXPEDITION, SITES, type Site, type SiteId } from '../content/expeditions.ts';
 import type { Band, Currency, UpgradeDef, UpgradeId } from '../content/types.ts';
 import { UPGRADES } from '../content/upgrades.ts';
 import { equilibrium, relax } from './ode.ts';
@@ -130,6 +131,10 @@ export function settleRate(s: GameState): number {
   return ACT1.settleRate * (trait(s, 'settling') ? 2 : 1);
 }
 
+function found(s: GameState, id: SiteId): boolean {
+  return s.relics.includes(id);
+}
+
 function has(s: GameState, id: ReadingId): boolean {
   return s.readings.includes(id);
 }
@@ -183,14 +188,14 @@ export function rates(s: GameState): Rates {
     glowK: ACT1.glowFade,
     planktonP: ACT2.feedRate * s.jobs.feed * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
       (speaks(s, 'sweepers') ? 3 : 1),
-    planktonK: ACT2.planktonEaten * (has(s, 'slow-currents') ? 0.6 : 1),
-    murmurP: ACT2.scoutRate * s.jobs.scout * (has(s, 'beaked') ? 1.5 : 1),
-    murmurK: ACT2.murmurFade,
+    planktonK: ACT2.planktonEaten * (has(s, 'slow-currents') ? 0.6 : 1) * (found(s, 'terraces') ? 0.75 : 1),
+    murmurP: ACT2.scoutRate * s.jobs.scout * (has(s, 'beaked') ? 1.5 : 1) * (found(s, 'wells') ? 1.25 : 1),
+    murmurK: ACT2.murmurFade * (found(s, 'wells') ? 0.5 : 1),
     siltP: onShelf
       ? ACT3.siltFall * (1 + (target - ACT3.from) / ACT3.siltGrowthPer) * (s.truce.wall === 'a' ? 0.6 : 1) * sm.silt
       : 0,
     siltK: ACT3.naturalSweep + ACT3.flowSweep * lv.sandbar + LINEAGE.glassSweep * trait(s, 'glass-gardeners') + (ACT3.raspSweep * rasp * (s.truce.story === 'a' ? 2 : 1) * (s.truce.terms === 'b' ? 1.5 : 1)) * (speaks(s, 'mucus') ? 2 : 1),
-    sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1),
+    sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1) * (found(s, 'midden') ? 1.3 : 1),
     sandK: ACT3.sandSettle,
     bloomP: sunlight(s, target) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * ACT4.meadowBloom ** lv.meadow *
       (speaks(s, 'fluorescent') ? 1.5 : 1),
@@ -213,7 +218,8 @@ export function rates(s: GameState): Rates {
       ACT1.dissolve * sm.dissolve * ACT1.latticeFactor ** lv.lattice * (ACT1.ventAcid * sm.ventAcid) ** vent *
       (has(s, 'lattice-songs') ? 0.7 : 1) * (speaks(s, 'massive') ? 0.5 : 1) +
       (speaks(s, 'mucus') ? 0 : ACT3.raspEat * rasp * (s.truce.terms === 'b' ? ACT3.politeEat : 1)),
-    lureMax: ACT1.lureMax + ACT1.lureMaxPerPattern * lv.lure + (has(s, 'fear') ? 1 : 0) + (speaks(s, 'fluorescent') ? 2 : 0),
+    lureMax: ACT1.lureMax + ACT1.lureMaxPerPattern * lv.lure + (has(s, 'fear') ? 1 : 0) + (speaks(s, 'fluorescent') ? 2 : 0) +
+      (found(s, 'lamp-hall') ? 1 : 0),
     reachPower: ACT2.reachPower + (s.truce.story === 'b' ? 0.05 : 0),
     heightTarget: target,
   };
@@ -360,8 +366,21 @@ type Upstream = 'glow' | 'plankton' | 'height' | 'silt' | 'bloom';
 /**
  * Advance the world by dt simulated seconds. Mutates and returns s. `stepFraction` trades
  * accuracy for speed in look-ahead probes; the game itself always uses the default.
+ * Shoals coming home from an expedition change the rates, so time is split at that moment.
  */
 export function advance(s: GameState, dt: number, stepFraction = STEP_FRACTION): GameState {
+  if (!(dt > 0)) return s;
+  const ex = s.expedition;
+  if (ex.site && ex.back < s.t + dt) {
+    const first = Math.max(0, ex.back - s.t);
+    flow(s, first, stepFraction);
+    homecoming(s);
+    return flow(s, dt - first, stepFraction);
+  }
+  return flow(s, dt, stepFraction);
+}
+
+function flow(s: GameState, dt: number, stepFraction: number): GameState {
   if (!(dt > 0)) return s;
   const r = rates(s);
   const kH = settleRate(s);
@@ -440,7 +459,7 @@ export function cost(s: GameState, id: UpgradeId): number {
   const u = upgrade(id);
   const l = s.levels[id];
   if (id === 'skeleton') {
-    const discount = (has(s, 'walls') ? 0.75 : 1) * (speaks(s, 'branching') ? 0.6 : 1);
+    const discount = (has(s, 'walls') ? 0.75 : 1) * (speaks(s, 'branching') ? 0.6 : 1) * (found(s, 'gate') ? 0.85 : 1);
     return Math.ceil(u.baseCost * BAND_COST[Math.min(MAX_BANDS, l)]! * discount);
   }
   const discount = id === 'polyp' ? 0.85 ** trait(s, 'quick-budding') : 1;
@@ -510,7 +529,7 @@ export function buy(s: GameState, id: UpgradeId): boolean {
 // ---------- Shoals ----------
 
 export function idleShoals(s: GameState): number {
-  return s.levels.shoal - s.jobs.feed - s.jobs.light - s.jobs.scout;
+  return s.levels.shoal - s.jobs.feed - s.jobs.light - s.jobs.scout - awayShoals(s);
 }
 
 /** Move one shoal into (delta +1, from the idle pool) or out of (delta -1) a job. */
@@ -538,6 +557,63 @@ export function reassign(s: GameState, from: Job, to: Job): boolean {
   s.jobs[to] += 1;
   s.lastJob = to;
   return true;
+}
+
+// ---------- Expeditions ----------
+
+/** Shoals away at a ruin. */
+export function awayShoals(s: GameState): number {
+  const ex = s.expedition;
+  return ex.site ? ex.feed + ex.light + ex.scout + idleAway(s) : 0;
+}
+/** Idle shoals that went along (they come back idle): the trip's size minus the ones taken from jobs. */
+function idleAway(s: GameState): number {
+  const ex = s.expedition;
+  const sz = SITES.find((x) => x.id === ex.site)?.shoals ?? 0;
+  return Math.max(0, sz - ex.feed - ex.light - ex.scout);
+}
+
+/** The next ruin the shoals could search: the first not yet found, once the reef has reached it. */
+export function nextSite(s: GameState): Site | undefined {
+  const x = SITES.find((v) => !found(s, v.id));
+  return x && s.height >= x.metres && s.levels.shoal > 0 ? x : undefined;
+}
+
+/** Whether the shoals can set out for the next ruin now. */
+export function canSend(s: GameState): boolean {
+  const x = nextSite(s);
+  return !!x && !s.expedition.site && s.levels.shoal >= x.shoals;
+}
+
+/** Send shoals to the next ruin: idle ones first, then scouts, light-swimmers, feeders. */
+export function send(s: GameState): boolean {
+  const x = nextSite(s);
+  if (!x || !canSend(s)) return false;
+  let need = x.shoals - Math.min(x.shoals, idleShoals(s));
+  const took = { feed: 0, light: 0, scout: 0 };
+  for (const j of ['scout', 'light', 'feed'] as const) {
+    const n = Math.min(need, s.jobs[j]);
+    s.jobs[j] -= n;
+    took[j] = n;
+    need -= n;
+  }
+  s.expedition = { site: x.id, back: s.t + x.seconds, ...took };
+  return true;
+}
+
+/** The shoals come home: back to the jobs they left, with a relic and what they heard. */
+function homecoming(s: GameState): void {
+  const ex = s.expedition;
+  const x = SITES.find((v) => v.id === ex.site);
+  s.jobs.feed += ex.feed;
+  s.jobs.light += ex.light;
+  s.jobs.scout += ex.scout;
+  s.expedition = { site: '', back: 0, feed: 0, light: 0, scout: 0 };
+  if (!x) return;
+  const heard = EXPEDITION.heard * x.shoals * x.seconds;
+  s.murmurs += heard;
+  s.earned.murmurs += heard;
+  if (!found(s, x.id)) s.relics.push(x.id);
 }
 
 // ---------- Readings ----------

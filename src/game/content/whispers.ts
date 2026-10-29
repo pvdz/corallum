@@ -5,7 +5,7 @@
 import type { GameState } from '../sim/state.ts';
 import { actAt } from './acts.ts';
 import {
-  calciteHold, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
+  calciteHold, canSend, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
 } from '../sim/economy.ts';
 
 export type Whisper = { id: string; when: (s: GameState) => boolean; text: string };
@@ -65,6 +65,10 @@ export const WHISPERS: readonly Whisper[] = [
   {
     id: 'touch-dolphin', when: (s) => metNot(s, 'dolphin', [5]),
     text: 'When the dolphins leap, reach for them. They like to be asked.',
+  },
+  {
+    id: 'ruin', when: (s) => s.relics.length === 0 && canSend(s),
+    text: 'The shoals have seen something out in the black: a ring of stone. Send some of them. I want to know what it is.',
   },
   {
     id: 'idle', when: (s) => idleShoals(s) > 0,

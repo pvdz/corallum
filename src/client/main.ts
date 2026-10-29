@@ -24,7 +24,8 @@ import { createTaps } from '../game/render/taps.ts';
 import { drawFeast, feastPos, feastReach } from '../game/render/feast.ts';
 import { zoom, type EffectKind, type Focus, type ReefView, type Scene } from '../game/render/scene.ts';
 import { runBot } from '../game/sim/bot.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
+import { SITES } from '../game/content/expeditions.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -195,6 +196,12 @@ const panel = createPanel(ui, {
   setRasp(n) {
     setRasp(state, n);
   },
+  send() {
+    if (!send(state)) return;
+    audio.cue('choice');
+    buzz(20);
+    save();
+  },
   spawnLesser(where) {
     const next = spawnLesser(state, where);
     if (!next) return;
@@ -358,6 +365,8 @@ if (botT === null && frozenT === null) {
 if (params.has('skip')) catchUp(Number(params.get('skip')));
 
 let speed = Number(params.get('speed') ?? 1);
+/** Relics found so far (a homecoming while watching gets the reading's light). */
+let relicsSeen = state.relics.length;
 /** Rolling average milliseconds per frame (read from the console: corallum.prof). */
 const prof = { draw: 0, panel: 0 };
 window.corallum = {
@@ -399,6 +408,14 @@ function resize(): void {
   focusNow = focus;
 }
 
+function tripView(): ReefView['trip'] {
+  const ex = state.expedition;
+  const x = ex.site ? SITES.find((v) => v.id === ex.site) : undefined;
+  if (!x) return null;
+  const i = SITES.indexOf(x);
+  return { shoals: x.shoals, since: x.seconds - (ex.back - state.t), left: ex.back - state.t, side: i % 2 ? -1 : 1 };
+}
+
 function view(): ReefView {
   const r = rates(state);
   return {
@@ -412,6 +429,7 @@ function view(): ReefView {
     vent: state.levels.vent,
     shoals: state.levels.shoal,
     jobs: state.jobs,
+    trip: tripView(),
     planktonLevel: Math.min(1, (feeding(state.plankton) - 1) / 2),
     bands: state.bands,
     readings: state.readings.length,
@@ -943,6 +961,12 @@ function frame(now: number): void {
     // A long gap means the tab slept; treat it like being away.
     if (dt > AWAY_NOTICE) catchUp(dt * speed);
     else advance(state, dt * speed);
+    if (state.relics.length > relicsSeen) {
+      scene.effect('reading');
+      audio.cue('story');
+      buzz([30, 60, 30]);
+    }
+    relicsSeen = state.relics.length;
     animT += Math.min(dt, 0.1) * (reducedMotion.matches || calm.get() ? 0.3 : 1);
     qualityCheck(dt);
   }
