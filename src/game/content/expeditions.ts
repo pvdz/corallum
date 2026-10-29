@@ -89,6 +89,13 @@ export const ROAM = {
   effect: 'murmurs, and perhaps a shard', back: 'Back from roaming',
 } as const;
 
+/** The map of the buried city in the Bands tab: where each ruin lies (0..1 across, 0..1 down). */
+export const CITY_MAP = {
+  label: 'Thousandfold, as the shoals have seen it',
+  where: { gate: [0.18, 0.55], terraces: [0.36, 0.78], 'lamp-hall': [0.55, 0.42], wells: [0.68, 0.66], midden: [0.86, 0.3] } as Record<SiteId, [number, number]>,
+  roams: 'roams through the dark',
+} as const;
+
 export function site(id: string): Site | undefined {
   return SITES.find((x) => x.id === id);
 }

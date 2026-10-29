@@ -364,3 +364,4 @@ date, what landed, what is half-done, what's next.
 - While shoals search a ruin, its silhouette shows faintly where their lights hang (gate ring, terrace steps, hall pillars, wells, the pale midden); roams show only the dark.
 - Great works for the Silt Floor (the vent garden: small chimneys) and the Breach (the spawning pool: a stone rim under the surface). The garden is ×1.05 a stage (×1.1 pushed the b/massive path under 6 h). Bot: 6h50 default, 6h11 b/massive.
 - The water line forecasts two slots ahead ('then the same, then carrying').
+- A map of Thousandfold in the Bands tab (content CITY_MAP, panel drawCity): wall rings from above, searched ruins lit and named, roam paths, the roam count.

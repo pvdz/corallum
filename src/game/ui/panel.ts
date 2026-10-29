@@ -23,7 +23,7 @@ import { PALETTES, PALETTE_TEXT } from '../content/palettes.ts';
 import { SHARD, SHARD_LINES } from '../content/shards.ts';
 import { MOMENT, MOMENTS, type Moment, type MomentId } from '../content/moments.ts';
 import { RESIDENT, RESIDENTS, type ResidentId } from '../content/residents.ts';
-import { EXPEDITION, site, type Site } from '../content/expeditions.ts';
+import { CITY_MAP, EXPEDITION, SITES, site, type Site } from '../content/expeditions.ts';
 import { canSpawnLesser, lineageFor, traitCost, traitMaxed } from '../sim/prestige.ts';
 import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
@@ -614,7 +614,23 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       diaryList.append(li);
     }
   }
-  bandsPage.append(codex, journal, readingCard, tablet, diary, bandsIntro, bandList);
+  // The map of Thousandfold: the ruins the shoals have searched, lit on the buried city.
+  const cityCard = el('article', 'card codex city');
+  const cityHead = el('h3', '', CITY_MAP.label);
+  const cityCanvas = el('canvas', 'city-map') as HTMLCanvasElement;
+  const cityNote = el('p', 'hint');
+  cityCard.append(cityHead, cityCanvas, cityNote);
+  collapsible(cityCard, cityHead);
+  let cityKey = '';
+  function renderCity(s: GameState): void {
+    cityCard.hidden = s.relics.length === 0 && s.tally.roams === 0;
+    const key = `${s.relics.join()}|${s.tally.roams}`;
+    if (cityCard.hidden || key === cityKey) return;
+    cityKey = key;
+    cityNote.textContent = s.tally.roams ? `${s.tally.roams} ${CITY_MAP.roams}` : '';
+    drawCity(cityCanvas, s.relics, s.tally.roams, s.seed);
+  }
+  bandsPage.append(codex, journal, readingCard, tablet, cityCard, diary, bandsIntro, bandList);
   let codexKey = '';
   function codexRow(term: string, value: string): void {
     codexList.append(el('dt', '', term), el('dd', '', value));
@@ -1521,6 +1537,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       renderChart(s);
       renderTablet(s);
       renderDiary(s);
+      renderCity(s);
       renderFeats(s);
       renderLine(s);
       habitToggle.hidden = !s.meta.traits['old-habits'] && !s.meta.traits['shoal-sense'] && !s.meta.traits['rasp-sense'];
@@ -1710,6 +1727,61 @@ function etaText(t: number): string {
 function setEta(eta: HTMLElement, t: number): void {
   eta.textContent = etaText(t);
   eta.classList.toggle('never', !Number.isFinite(t));
+}
+
+/** The buried city from above: concentric wall rings, the five ruins (lit when searched), roam paths. */
+function drawCity(c: HTMLCanvasElement, found: readonly string[], roams: number, seed: number): void {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const W = c.clientWidth || 300, H = 150;
+  c.width = W * dpr;
+  c.height = H * dpr;
+  const g = c.getContext('2d')!;
+  g.scale(dpr, dpr);
+  g.clearRect(0, 0, W, H);
+  // Wall upon wall: rough rings around the city's heart.
+  const cx = W * 0.5, cy = H * 0.52;
+  g.strokeStyle = 'rgba(160,180,220,0.18)';
+  g.lineWidth = 1;
+  for (let ring = 1; ring <= 7; ring++) {
+    g.beginPath();
+    for (let a = 0; a <= 64; a++) {
+      const th = (a / 64) * Math.PI * 2;
+      const r = ring * 0.065 * W * (1 + 0.06 * Math.sin(th * 5 + ring * 1.3));
+      const x = cx + Math.cos(th) * r, y = cy + Math.sin(th) * r * 0.42;
+      if (a === 0) g.moveTo(x, y);
+      else g.lineTo(x, y);
+    }
+    g.stroke();
+  }
+  // Roams: faint wandering lines out from the reef (bottom centre), one per roam, seeded.
+  g.strokeStyle = 'rgba(140,205,255,0.16)';
+  for (let k = 0; k < Math.min(24, roams); k++) {
+    let x = W * 0.5, y = H - 4;
+    g.beginPath();
+    g.moveTo(x, y);
+    for (let q = 0; q < 6; q++) {
+      x += Math.sin(seed * 0.001 + k * 2.3 + q * 1.7) * W * 0.07;
+      y -= H * 0.12;
+      g.lineTo(x, y);
+    }
+    g.stroke();
+  }
+  // The ruins.
+  g.font = '11px system-ui, sans-serif';
+  g.textAlign = 'center';
+  for (const x of SITES) {
+    const [u, v] = CITY_MAP.where[x.id];
+    const px = u * W, py = v * H;
+    const lit = found.includes(x.id);
+    g.fillStyle = lit ? '#ffd9a8' : 'rgba(255,255,255,0.15)';
+    g.beginPath();
+    g.arc(px, py, lit ? 4 : 3, 0, Math.PI * 2);
+    g.fill();
+    if (lit) {
+      g.fillStyle = 'rgba(255,217,168,0.85)';
+      g.fillText(x.name.replace(/^The /, ''), px, py - 8);
+    }
+  }
 }
 
 /**
