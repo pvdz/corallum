@@ -11,6 +11,9 @@ import {
 
 export type Whisper = { id: string; when: (s: GameState) => boolean; text: string };
 
+/** Who says the whispers: Ossel, or once its wall is ground down (the truce's wall answer), the sand. */
+export const WHISPER_BY = { ossel: 'Ossel', sand: 'the sand' } as const;
+
 /** Seen (in the journal) but never touched. */
 const metNot = (s: GameState, id: string, zones: readonly number[]) =>
   zones.includes(actAt(s.height)) && s.meta.seen.includes(`c:${id}`) && !s.meta.seen.includes(`t:${id}`);

@@ -53,7 +53,7 @@ import { UPWELL } from '../game/content/act3.ts';
 import { FIGURES, SKY, type FigureId } from '../game/content/sky.ts';
 import { ACT1, FLARE, GRAINS, OLD, MILESTONES, SPORTS, STRAINS, type Milestone } from '../game/content/act1.ts';
 import { diaryLine } from '../game/content/diary.ts';
-import { OSSEL_LINES, OSSEL_LINES_TRUE, OSSEL_NOW, WHISPERS } from '../game/content/whispers.ts';
+import { OSSEL_LINES, OSSEL_LINES_TRUE, OSSEL_NOW, WHISPERS, WHISPER_BY } from '../game/content/whispers.ts';
 import { NEWS, ZONE_GUIDE } from '../game/content/guide.ts';
 import { OSSEL_MISTAKE, OSSEL_MISTAKES } from '../game/content/ossel.ts';
 import { buyTrait, forgetTrait, grainSense, habitPurchase, raspSense, shoalSense, spawnLesser } from '../game/sim/prestige.ts';
@@ -1097,7 +1097,7 @@ function whisperCheck(now: number): void {
 
 /** A line from Ossel (or, once its wall is ground down, the sand) over the water. */
 function showWhisperText(text: string): void {
-  const speaker = state.truce.wall === 'a' ? 'the sand' : 'Ossel';
+  const speaker = state.truce.wall === 'a' ? WHISPER_BY.sand : WHISPER_BY.ossel;
   whisper.innerHTML = '';
   const q = document.createElement('q');
   q.textContent = text;
