@@ -221,4 +221,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | A man-o'-war at the Breach | real animal | OK |
 | Moment: egg cases of a deep skate (300 m) | real biology | OK |
 | Great work: the lagoon rim (Sunlit) | this game's own world | OK |
+| A march of brittle stars (Silt Floor) | real behaviour | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

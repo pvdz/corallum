@@ -251,6 +251,39 @@ export function createLife(seed: number) {
    * Rarely, a dumbo octopus: once in fifteen minutes a pale little octopus hovers across the
    * floor, flapping the two ear-like fins on its head.
    */
+  /** Rarely (every thirteen minutes), a march of brittle stars crossing the floor together, arm over arm. */
+  function drawStarMarch(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
+    const period = 780, length = 70;
+    const p = (t + 400) % period;
+    if (p > length) return;
+    sight('star-march');
+    const s = st.s * 1.1;
+    const fade = Math.min(1, p / 6, (length - p) / 6);
+    let first = true;
+    ctx.save();
+    ctx.globalAlpha = fade;
+    ctx.strokeStyle = 'rgba(205,160,170,0.9)';
+    ctx.lineCap = 'round';
+    for (let i = 0; i < 45; i++) {
+      const lag = (i * 0.618) % 1;
+      const u = p / length * 1.5 - lag * 0.5;
+      if (u < 0 || u > 1) continue;
+      const x = st.cx - st.w * 0.6 + u * st.w * 1.2;
+      const y = st.baseY + (2 + ((i * 0.37) % 1) * 14) * st.s;
+      if (first) { spot('star-march', x, y, 40 * s); first = false; }
+      ctx.lineWidth = 1.3 * s;
+      for (let k = 0; k < 5; k++) {
+        const a = k * (Math.PI * 2 / 5) + t * 0.8 + i;
+        const bend = Math.sin(t * 3 + k + i) * 0.5;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.quadraticCurveTo(x + Math.cos(a) * 4 * s, y + Math.sin(a) * 2 * s, x + Math.cos(a + bend) * 8 * s, y + Math.sin(a + bend) * 3.5 * s);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
   /** A giant sea spider picking its way across the floor; touched, it freezes and folds its legs in. */
   function drawSeaSpider(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
     sight('sea-spider');
@@ -923,6 +956,7 @@ export function createLife(seed: number) {
       drawDumbo(ctx, st, t);
       drawChimaera(ctx, st, t);
       drawSeaSpider(ctx, st, t);
+      drawStarMarch(ctx, st, t);
       drawJelly(ctx, st, jellies[0]!, t);
       drawJelly(ctx, st, jellies[1]!, t);
     },
