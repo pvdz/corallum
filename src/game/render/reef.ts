@@ -444,7 +444,7 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
       }
     }
     ctx.restore();
-    if (v.old && (v.old.slots.length || v.old.since < 2)) drawOld(ctx, L, v.old, t);
+    if (v.old && (v.old.slots.length || v.old.since < 2 || (v.old.fall && v.old.fall.since < 6))) drawOld(ctx, L, v.old, t);
   }
 
   /** Branch tips (no child) on screen, in a fixed scattered order: where old stone gathers. */
@@ -524,7 +524,7 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
   }
 
   /** Grey knobs of old stone on the tips (tappable), and the last one broken off tumbling down. */
-  function drawOld(ctx: CanvasRenderingContext2D, L: ReefLayout, old: { slots: number[]; slot: number; since: number }, t: number): void {
+  function drawOld(ctx: CanvasRenderingContext2D, L: ReefLayout, old: ReefView['old'], t: number): void {
     const s = L.s;
     const knob = (x: number, y: number, r: number, rot: number, a: number) => {
       ctx.save();
@@ -568,6 +568,18 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
       glow(ctx, p[0], p[1] - r * 0.5, r * 2.4, '200,190,170', 0.06 + 0.04 * Math.sin(t * 2 + slot));
       ctx.restore();
       spot('old', p[0], p[1] - r * 0.5, Math.max(22 * s, 18), slot);
+    }
+    // The release: every knob lets go, one after another, and tumbles down past the branches.
+    if (old.fall && old.fall.since >= 0 && old.fall.since < 6) {
+      old.fall.slots.forEach((slot, k) => {
+        const p = oldAt(L, slot);
+        const u = old.fall!.since - 0.5 - k * 0.6;
+        if (!p) return;
+        if (u < 0) { knob(p[0], p[1] - 6.5 * s, 13 * s, 0, 1); return; }
+        if (u > 2.5) return;
+        const y = Math.min(p[1] + 0.5 * 700 * s * u * u, L.baseY);
+        knob(p[0] + (k % 2 ? 1 : -1) * 30 * s * u, y, 13 * s, u * 4 * (k % 2 ? 1 : -1), Math.max(0, 1 - u / 2.5));
+      });
     }
     if (old.since >= 0 && old.since < 2 && old.slot >= 0) {
       const p = oldAt(L, old.slot);

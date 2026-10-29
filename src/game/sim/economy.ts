@@ -2017,6 +2017,7 @@ export function oldK(s: GameState): number {
 
 /** Knobs of old stone on the tips now. */
 export function oldKnobs(s: GameState): number {
+  if (ended(s)) return 0;
   return Math.min(OLD.max, Math.floor(s.old + 1e-9));
 }
 

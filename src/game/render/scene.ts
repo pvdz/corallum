@@ -34,7 +34,9 @@ export type ReefView = {
   /** The reef lit the way for the sister reef. */
   sisterLit: boolean;
   /** Old growth: the slots holding a grey knob now, and the last one broken off (`since` seconds ago). */
-  old: { slots: number[]; slot: number; since: number };
+  old: { slots: number[]; slot: number; since: number;
+    /** At the release all the old stone falls away together: those slots, and seconds since. */
+    fall?: { slots: number[]; since: number } };
   /** Grottoes hollowed at the reef's foot (0–2). */
   grotto: number;
   /** Levels of Sweeten the spawn: the bundles turn golden. */
