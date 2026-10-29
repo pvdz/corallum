@@ -323,3 +323,4 @@ date, what landed, what is half-done, what's next.
 - Flourishes made legible in daylight: pigment is a band of rose-gold-green light climbing the reef plus painted sparks; floor works paint puffs of sand (green for meadows). corallum.flourish(kind) plays one for checks.
 - Caustics moved into the reef (reef.drawCaustics(rgb, belowY)); the Breach gets silver moonlight caustics on the stone under the surface (by moon phase), warm ones after the dawn.
 - Feat 'A closer look': a close-up portrait taken in zoomed view mode (meta.seen 'did:closeup').
+- Upgrade cards carry small line icons (ui/icons.ts, inline SVG per upgrade).

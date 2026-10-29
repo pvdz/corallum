@@ -12,6 +12,7 @@ import { SEAMOUNTS, TRAIT_GROUPS, TRAITS, type SeamountId, type TraitId } from '
 import { MEMORIES } from '../content/act5.ts';
 import { CREATURES } from '../content/creatures.ts';
 import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
+import { upgradeIcon } from './icons.ts';
 import { FEATS } from '../content/feats.ts';
 import { canSpawnLesser, lineageFor, traitCost, traitMaxed } from '../sim/prestige.ts';
 import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
@@ -259,7 +260,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     root.hidden = true;
     const head = el('header');
     const level = el('span', 'level');
-    head.append(el('h3', '', u.name), level);
+    const title = el('h3');
+    title.append(upgradeIcon(u.id), u.name);
+    head.append(title, level);
     const flavour = el('p', 'flavour', u.flavour);
     const effect = el('p', 'effect', effectText(u.id));
     const foot = el('footer');
