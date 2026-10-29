@@ -1856,7 +1856,7 @@ export function untilSwell(s: GameState): number {
 }
 
 /**
- * Ride a swell: a tap judged against the nearest crest. Caught within the window (once per crest),
+ * Ride a swell: a tap judged against the nearest crest. Caught close enough to it (once per crest),
  * it pays SWELL.seconds of spawn; returns the pay, 0 for a miss, -1 when no swells are rolling.
  */
 export function rideSwell(s: GameState): number {
