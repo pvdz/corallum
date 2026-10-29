@@ -242,6 +242,18 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .buy.murmurs:not(:disabled):hover { background: rgba(160, 130, 255, 0.2); box-shadow: 0 0 16px rgba(170, 140, 255, 0.35); }
 .band.is-reading .band-depth { color: var(--murmurs); }
 .band.is-relic .band-depth { color: #9fd8ff; }
+.water { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; padding: 7px 12px; border-radius: var(--radius);
+  border: 1px solid rgba(150, 210, 255, 0.16); background: linear-gradient(90deg, rgba(120, 190, 255, 0.07), rgba(120, 190, 255, 0.01)); font-size: 12px; }
+.water[hidden] { display: none; }
+.water strong { font-family: var(--display); font-weight: 400; font-size: 15px; color: #cfe8ff; }
+.water-line { color: #a8dcff; }
+.water-next { margin-left: auto; color: var(--ink-dim); font-variant-numeric: tabular-nums; }
+.water[data-water='still'] strong, .water[data-water='still'] .water-line { color: var(--ink-dim); }
+.water.turned { animation: water-turn 1.6s ease; }
+@keyframes water-turn { 0% { box-shadow: 0 0 0 0 rgba(150, 210, 255, 0.5); } 100% { box-shadow: 0 0 0 14px rgba(150, 210, 255, 0); } }
+.card.watered:not(.maxed) { border-color: rgba(150, 210, 255, 0.45); }
+.card.watered:not(.maxed) .level::before { content: '≈ '; color: #a8dcff; }
+.card.watered:not(.maxed) .cost { color: #a8dcff; }
 .residents { background: rgba(255, 140, 120, 0.03); border: 1px solid rgba(255, 150, 130, 0.2); border-radius: var(--radius); padding: 10px 12px; }
 .residents[hidden], .resident[hidden] { display: none; }
 .residents header { display: flex; justify-content: space-between; align-items: baseline; }

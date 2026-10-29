@@ -37,9 +37,10 @@ test('an expedition home mid-way: offline equals online, and the jobs come back 
 
 test('the gate’s relic makes bands cheaper, and the next ruin waits for its height', () => {
   const s = atGate();
-  const before = cost(s, 'skeleton');
   send(s);
   advance(s, 3600);
-  assert.ok(cost(s, 'skeleton') < before);
+  const without = structuredClone(s);
+  without.relics = [];
+  assert.ok(cost(s, 'skeleton') < cost(without, 'skeleton'));
   assert.equal(nextSite(s)?.id === 'terraces', s.height >= 500);
 });

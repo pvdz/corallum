@@ -17,7 +17,7 @@ function midGame(): GameState {
 
 /** An Act II state with shoals on every job, readings bought, everything off equilibrium. */
 function act2Game(): GameState {
-  const { state } = runBot((s) => s.readings.length >= 3 && s.jobs.scout > 0, 6 * 3600);
+  const { state } = runBot((s) => s.readings.length >= 3 && s.jobs.scout > 0, 6 * 3600, { ventures: false });
   state.glow = 0;
   state.plankton = 0;
   state.levels.skeleton += 3; // the reef is mid-rise

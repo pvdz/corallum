@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended polish, favouring gameplay. Latest: expeditions (shoals to five ruins for relics), residents (homes for reef partners, a loadout per zone). Ideas: more Breach detail; an Act I verb; resident/relic touches in the Breach.
+NOW: Open-ended: adding features and gameplay (goal: repeat). Latest: the water's moods (timed price windows with a forecast), residents, expeditions. Ideas: an Act I verb; Breach detail; reef events with choices.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -329,3 +329,4 @@ date, what landed, what is half-done, what's next.
 - Residents: homes in the reef from 3000 m (1, 2 at 3400 m, 3 at 3800 m) for six real coral partners, each one effect (content/residents.ts, economy `house()`); panel section with Take in / Let go, tap a name for its note; drawn on the coral in Twilight, Sunlit and Breach (render/residents.ts: crabs and gobies on branches, feather dusters low on the stone, pistol shrimp and sea cucumbers on the floor, damselfish over the crown), each tappable with a reaction; journal group 'Residents'; feat 'A full house'.
 - The bot sends expeditions and keeps residents (shelf: guard crabs, gobies, pistol shrimp; light: damselfish, gobies, feather dusters); option `ventures: false` for tests of other systems. Whole game now 5h48 for the bot (pacing bound widened to 5–11 h; time balance is secondary for now).
 - Relics shown in the world: render/relics.ts sets each into the lower branches in every reef scene from the Midnight Water up (white hinge stone, lidded larva cup, the hall's lamp hanging lit, grooved well-stone, one beak).
+- The water's moods: content/waters.ts, economy waterAt/untilWaterTurns/tierCost; prices of matching upgrades, Readings/truce words or dialects ×0.7–0.8 for a 10-minute slot. Panel line at the top of Grow (water, turns in, then next), marked cards, whisper 'water', overlay render/waters.ts (motes, sparks, sound rings, sand streaks, glints, shimmer). corallum.water(id) jumps the clock to a slot of that water.

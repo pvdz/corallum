@@ -59,6 +59,13 @@ the previous act's scene is gone below the frame.
 - Trade-off: plankton grows the economy, light buys more shoals, scouting buys knowledge and
   permanent effects. No allocation is right for the whole act.
 
+**The water's moods** (from 60 m): every 10 sim minutes the water turns, seeded per reef: still,
+rich (polyps and glimmerseed ×0.7), slack (bands ×0.8), lamp (shoals, lure ×0.7), carrying (Readings
+and truce words ×0.7), a gritty tide (sand works ×0.7), clear (pigments, canopy, dialects ×0.7),
+warm (ripening ×0.7), each only in the zones it suits. The panel shows the water, when it turns
+and what comes next; cards it lowers are marked. The verb is timing: buy now or save for the
+right water. Prices only, so stocks and offline are untouched. Each has a light overlay in the world.
+
 **Expeditions** (from 150 m): shoals can be sent to a buried ruin of Thousandfold, one trip at a
 time, five sites in order (150 m → 3300 m, 6 → 24 shoals, 6 → 30 minutes). Idle shoals go first,
 then scouts, light-swimmers, feeders; while away they work no job, and at a fixed sim moment they

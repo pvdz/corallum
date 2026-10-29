@@ -25,7 +25,9 @@ import { drawFeast, feastPos, feastReach } from '../game/render/feast.ts';
 import { zoom, type EffectKind, type Focus, type ReefView, type Scene } from '../game/render/scene.ts';
 import { runBot } from '../game/sim/bot.ts';
 import { SITES } from '../game/content/expeditions.ts';
-import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, house, setRasp, smother, speak, sweep } from '../game/sim/economy.ts';
+import { WATER } from '../game/content/waters.ts';
+import { drawWater } from '../game/render/waters.ts';
+import { advance, assign, breach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, house, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -58,6 +60,8 @@ declare global {
       readonly zoom: number;
       /** The tappable creatures on screen, in CSS pixels. */
       readonly spots: { id: string; x: number; y: number }[];
+      /** Move the clock to the next time slot with this water (for checking its look). */
+      water(id: string): boolean;
     };
   }
 }
@@ -389,6 +393,15 @@ window.corallum = {
   },
   get zoom() { return zoom.k; },
   flourish: (kind: string) => scene.effect(kind as EffectKind),
+  water(id: string) {
+    const k0 = Math.floor(state.t / WATER.period);
+    for (let k = k0; k < k0 + 500; k++) {
+      if (waterAt(state, k).id !== id) continue;
+      state.t = k * WATER.period + 60;
+      return true;
+    }
+    return false;
+  },
   get spots() {
     return tappable().map((p) => ({ id: p.id, x: p.x / dpr, y: p.y / dpr }));
   },
@@ -1012,6 +1025,11 @@ function frame(now: number): void {
       zoomer.apply(ctx);
     }
   }
+  // The water's mood over the scene (screen space).
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  const wl = untilWaterTurns(state);
+  drawWater(ctx, waterAt(state).id, focusNow, tNow, WATER.period - wl, wl, dpr, actAt(state.height) >= 4);
+  zoomer.apply(ctx);
   const fe = currentFeast(state);
   if (fe) drawFeast(ctx, fe, state.t - fe.start, tNow, focusNow, dpr, feastPay(state));
   taps.draw(ctx, tNow, scene.crownAt, dpr, (x, y) => actAt(state.height) <= 2 || !!scene.darkAt?.(x, y));

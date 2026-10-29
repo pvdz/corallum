@@ -14,6 +14,7 @@ import { CREATURES } from '../content/creatures.ts';
 import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
 import { upgradeIcon } from './icons.ts';
 import { FEATS } from '../content/feats.ts';
+import { WATER } from '../content/waters.ts';
 import { RESIDENT, RESIDENTS, type ResidentId } from '../content/residents.ts';
 import { EXPEDITION, site, type Site } from '../content/expeditions.ts';
 import { canSpawnLesser, lineageFor, traitCost, traitMaxed } from '../sim/prestige.ts';
@@ -21,7 +22,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, waterAt, untilWaterTurns, tierCost, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks,
 } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
@@ -232,6 +233,16 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   raspBox.append(raspHead, raspRow, raspWhat);
   grow.append(raspBox);
   let lastState: GameState | null = null;
+
+  // ---------- The water ----------
+  const waterBox = el('div', 'water');
+  waterBox.hidden = true;
+  const waterName = el('strong');
+  const waterLine = el('span', 'water-line');
+  const waterNext = el('span', 'water-next');
+  waterBox.append(waterName, waterLine, waterNext);
+  grow.prepend(waterBox);
+  let waterShown = '';
 
   // ---------- Shoals ----------
   const shoalBox = el('section', 'shoals');
@@ -929,10 +940,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       if (tier) {
         dialectKicker.textContent = `A dialect: ${tier.title}`;
         dialectIntro.textContent = tier.intro;
-        const ok = s.bloom >= tier.cost;
+        const tc = tierCost(s, tier);
+        const ok = s.bloom >= tc;
         dialectCost.textContent = ok
-          ? `Costs ${num(tier.cost)} bloom. Choosing is permanent.`
-          : `Costs ${num(tier.cost)} bloom · ${num(s.bloom)} gathered · ${etaText(timeUntil(s, 'bloom', tier.cost))}`;
+          ? `Costs ${num(tc)} bloom. Choosing is permanent.`
+          : `Costs ${num(tc)} bloom · ${num(s.bloom)} gathered · ${etaText(timeUntil(s, 'bloom', tc))}`;
         for (const d of DIALECTS) {
           const b = dialectButtons.get(d.id)!;
           b.hidden = d.tier !== tier.tier;
@@ -1046,6 +1058,20 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         }
       }
 
+      // The water: what it lowers now, when it turns, and what comes next.
+      const water = waterAt(s);
+      waterBox.hidden = !s.bands.includes(WATER.band);
+      if (!waterBox.hidden) {
+        const k = Math.floor(s.t / WATER.period);
+        const next = waterAt(s, k + 1);
+        waterBox.dataset.water = water.id;
+        waterName.textContent = water.name;
+        waterLine.textContent = water.line;
+        waterNext.textContent = `${WATER.turns} ${duration(untilWaterTurns(s))} · ${WATER.next} ${next.name.toLowerCase()}`;
+        if (waterShown && waterShown !== water.id) { waterBox.classList.remove('turned'); void waterBox.offsetWidth; waterBox.classList.add('turned'); }
+        waterShown = water.id;
+      }
+
       // Residents: who may move in, and who has.
       const nHomes = homes(s);
       homeBox.hidden = nHomes === 0;
@@ -1133,6 +1159,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           continue;
         }
         const price = cost(s, u.id);
+        c.root.classList.toggle('watered', water.upgrades.includes(u.id));
         const cur = upgrade(u.id).currency;
         c.cost.textContent = `${num(price)} ${cur}`;
         const ok = canAfford(s, u.id);

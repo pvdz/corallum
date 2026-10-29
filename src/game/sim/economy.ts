@@ -25,6 +25,7 @@ import { CREATURES, GIFT, giftOf, type CreatureId, type GiftStock } from '../con
 import { LINEAGE, SEAMOUNTS, type Seamount, type TraitId } from '../content/lineage.ts';
 import { FEAST } from '../content/events.ts';
 import { homesAt, RESIDENTS, type ResidentId } from '../content/residents.ts';
+import { WATER, WATERS, type Water } from '../content/waters.ts';
 import { EXPEDITION, SITES, type Site, type SiteId } from '../content/expeditions.ts';
 import type { Band, Currency, UpgradeDef, UpgradeId } from '../content/types.ts';
 import { UPGRADES } from '../content/upgrades.ts';
@@ -466,12 +467,45 @@ export function cost(s: GameState, id: UpgradeId): number {
   const l = s.levels[id];
   if (id === 'skeleton') {
     const discount = (has(s, 'walls') ? 0.75 : 1) * (speaks(s, 'branching') ? 0.6 : 1) * (found(s, 'gate') ? 0.85 : 1);
-    return Math.ceil(u.baseCost * BAND_COST[Math.min(MAX_BANDS, l)]! * discount);
+    return Math.ceil(u.baseCost * BAND_COST[Math.min(MAX_BANDS, l)]! * discount * waterFactor(s, id));
   }
   const discount = id === 'polyp' ? 0.85 ** trait(s, 'quick-budding') : 1;
   const [from, gentle] = u.growthAfter ?? [Infinity, u.growth];
   const scale = l <= from ? u.growth ** l : u.growth ** from * gentle ** (l - from);
-  return Math.ceil(u.baseCost * scale * discount);
+  return Math.ceil(u.baseCost * scale * discount * waterFactor(s, id));
+}
+
+// ---------- The water's moods ----------
+
+const STILL = WATERS[0]!;
+
+/**
+ * The water in time slot k (the current one by default): seeded per reef, drawn from the kinds that
+ * come in the reef's zone, still before the reef has risen out of the silt.
+ */
+export function waterAt(s: GameState, k = Math.floor(s.t / WATER.period)): Water {
+  if (!s.bands.includes(WATER.band)) return STILL;
+  const zone = actAt(s.height);
+  const pool = WATERS.filter((w) => w.zones.includes(zone));
+  const r = mulberry32((s.seed ^ 0x3a7e1) + Math.imul(k, 0x85ebca6b));
+  let x = r() * pool.reduce((a, w) => a + w.weight, 0);
+  for (const w of pool) if ((x -= w.weight) < 0) return w;
+  return STILL;
+}
+
+/** Seconds until the water turns. */
+export function untilWaterTurns(s: GameState): number {
+  return (Math.floor(s.t / WATER.period) + 1) * WATER.period - s.t;
+}
+
+function waterFactor(s: GameState, id: UpgradeId): number {
+  const w = waterAt(s);
+  return w.upgrades.includes(id) ? w.factor : 1;
+}
+
+function murmurFactor(s: GameState): number {
+  const w = waterAt(s);
+  return w.murmurs ? w.factor : 1;
 }
 
 /**
@@ -656,12 +690,12 @@ export function nextReading(s: GameState) {
 
 /** Murmurs a Reading costs (halved by the Kept readings trait). */
 export function readingCost(s: GameState, r: { cost: number }): number {
-  return r.cost * (trait(s, 'kept-readings') ? 0.5 : 1) * seamount(s).readings;
+  return r.cost * (trait(s, 'kept-readings') ? 0.5 : 1) * seamount(s).readings * murmurFactor(s);
 }
 
 /** Murmurs it takes to learn a meeting's words. */
 export function meetingWords(s: GameState, m: { words: number }): number {
-  return m.words * (trait(s, 'kept-readings') ? 0.5 : 1);
+  return m.words * (trait(s, 'kept-readings') ? 0.5 : 1) * murmurFactor(s);
 }
 
 export function readingsRevealed(s: GameState): boolean {
@@ -715,6 +749,12 @@ export function dialect(id: DialectId) {
 }
 
 /** The tier waiting for a choice: in order, once its band is read. */
+/** Bloom a dialect tier costs now (clear water lowers it). */
+export function tierCost(s: GameState, t: { cost: number }): number {
+  const w = waterAt(s);
+  return t.cost * (w.dialects ? w.factor : 1);
+}
+
 export function nextTier(s: GameState) {
   for (const t of TIERS) {
     if (s.dialects[t.tier]) continue;
@@ -727,8 +767,8 @@ export function nextTier(s: GameState) {
 export function speak(s: GameState, id: DialectId): boolean {
   const d = dialect(id);
   const t = nextTier(s);
-  if (!t || t.tier !== d.tier || s.bloom < t.cost) return false;
-  s.bloom -= t.cost;
+  if (!t || t.tier !== d.tier || s.bloom < tierCost(s, t)) return false;
+  s.bloom -= tierCost(s, t);
   s.dialects[d.tier] = id;
   return true;
 }
