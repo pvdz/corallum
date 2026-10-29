@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended: adding features and gameplay (goal: repeat). Latest: Rasp favours, shards of Thousandfold, Ossel's requests, hard seamounts (trials), moments (eight two-way choices on the climb), the water's moods (timed price windows with a forecast), residents, expeditions. Ideas: an Act I verb; Breach detail; reef events with choices.
+NOW: Open-ended: adding features and gameplay (goal: repeat). Latest: automation traits, Rasp favours, shards of Thousandfold, Ossel's requests, hard seamounts (trials), moments (eight two-way choices on the climb), the water's moods (timed price windows with a forecast), residents, expeditions. Ideas: an Act I verb; Breach detail; reef events with choices.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -338,3 +338,4 @@ date, what landed, what is half-done, what's next.
 
 - Rasp favours: content/act3.ts FAVOURS, economy favourOpen/favourCost/favourMaxed/askFavour, state.favours; three buttons under the Rasp dial. 'Clear the silt now' was useless (silt resettles in ~10 s), so the favour turns silt aside for good instead.
 - Gifts of food follow the zone's currency (bloom in the Sunlit Crown, spawn in the Breach before the release), so touching neighbours matters late. The Breach's waiting fish are tappable one by one and the crowd bursts outward when touched.
+- Automation traits Shoal sense and Rasp sense (lineage.ts; prestige.ts shoalSense/raspSense; balanceFeedLight moved from bot.ts to economy.ts). Client runs them every 30 s while watching and sets the dial for being away on visibilitychange; the habits toggle covers all three.

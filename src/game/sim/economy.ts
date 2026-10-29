@@ -703,6 +703,24 @@ export function house(s: GameState, id: ResidentId): boolean {
   return true;
 }
 
+/** Move shoals one at a time between feeding and light while that raises settled calcite. */
+export function balanceFeedLight(s: GameState): boolean {
+  let moved = false;
+  for (let moves = 0; moves < 6; moves++) {
+    const base = steadyCalciteRate(s);
+    let best: ['feed' | 'light', 'feed' | 'light'] | null = null;
+    let bestRate = base * 1.0005;
+    for (const [from, to] of [['feed', 'light'], ['light', 'feed']] as const) {
+      if (s.jobs[from] === 0) continue;
+      const r = steadyCalciteRate({ ...s, jobs: { ...s.jobs, [from]: s.jobs[from] - 1, [to]: s.jobs[to] + 1 } });
+      if (r > bestRate) { bestRate = r; best = [from, to]; }
+    }
+    if (!best || !reassign(s, best[0], best[1])) return moved;
+    moved = true;
+  }
+  return moved;
+}
+
 // ---------- Readings ----------
 
 export function reading(id: ReadingId) {

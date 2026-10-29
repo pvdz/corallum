@@ -4,7 +4,7 @@
 import { UPGRADES } from '../content/upgrades.ts';
 import type { Job } from '../content/act2.ts';
 import type { ResidentId } from '../content/residents.ts';
-import { assign, BANDS, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil, readingCost, meetingWords, jobGain, steadyCalciteRate, bestRasp, carryAt, canSend, send, homes, house, residentsAsking, nextMoment, meet as meetMoment } from './economy.ts';
+import { assign, BANDS, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil, readingCost, meetingWords, jobGain, steadyCalciteRate, bestRasp, carryAt, balanceFeedLight, canSend, send, homes, house, residentsAsking, nextMoment, meet as meetMoment } from './economy.ts';
 import type { Choice, MeetingId } from '../content/act3.ts';
 import type { DialectId, DialectTier } from '../content/act4.ts';
 import { newGame, type GameState } from './state.ts';
@@ -107,21 +107,6 @@ export function botDecide(
   if (raspMax(s) > 0 && (s.t % 30 < 1 || s.rasp > raspMax(s))) setRasp(s, bestRasp(s));
   if (sweeps) sweep(s);
   return bought;
-}
-
-/** Move shoals one at a time between feeding and light while that raises settled calcite. */
-function balanceFeedLight(s: GameState): void {
-  for (let moves = 0; moves < 6; moves++) {
-    const base = steadyCalciteRate(s);
-    let best: ['feed' | 'light', 'feed' | 'light'] | null = null;
-    let bestRate = base * 1.0005;
-    for (const [from, to] of [['feed', 'light'], ['light', 'feed']] as const) {
-      if (s.jobs[from] === 0) continue;
-      const r = steadyCalciteRate({ ...s, jobs: { ...s.jobs, [from]: s.jobs[from] - 1, [to]: s.jobs[to] + 1 } });
-      if (r > bestRate) { bestRate = r; best = [from, to]; }
-    }
-    if (!best || !reassign(s, best[0], best[1])) return;
-  }
 }
 
 /** Run the bot until `until(s)` or `maxT` sim seconds. Returns the state and a milestone log. */

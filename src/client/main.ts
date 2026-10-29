@@ -45,7 +45,7 @@ import { GAUGE_MOON } from '../game/content/act5.ts';
 import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { ACT1, MILESTONES, type Milestone } from '../game/content/act1.ts';
 import { OSSEL_LINES, WHISPERS } from '../game/content/whispers.ts';
-import { buyTrait, habitPurchase, spawnLesser } from '../game/sim/prestige.ts';
+import { buyTrait, habitPurchase, raspSense, shoalSense, spawnLesser } from '../game/sim/prestige.ts';
 import { createFinale } from '../game/ui/finale.ts';
 import { createPanel, reefName } from '../game/ui/panel.ts';
 import { setting } from './settings.ts';
@@ -988,6 +988,7 @@ let last = performance.now();
 let lastSave = last;
 let lastTitle = 0;
 let lastHabit = 0;
+let lastSense = 0;
 /** When each rare visitor was last on screen (ms), so a visit is announced once. */
 const rarePassing = new Map<string, number>();
 let lastJournal = 0;
@@ -1150,6 +1151,12 @@ function frame(now: number): void {
     const id = habitPurchase(state);
     if (id) purchase(id);
   }
+  // Shoal sense and Rasp sense: the line's settled habits, every half minute while watching.
+  if (habits.get() && frozenT === null && now - lastSense > 30_000) {
+    lastSense = now;
+    shoalSense(state);
+    raspSense(state, false);
+  }
   replay.hidden = !ended(state);
   title.classList.toggle('faded', state.levels.polyp > 0 || state.t > 25);
   hint.classList.toggle('show', state.meta.spawnings === 0 && state.earned.calcite < 40 && reader() && state.t > 2);
@@ -1172,6 +1179,10 @@ function relayout(): void {
 }
 window.addEventListener('resize', relayout);
 new ResizeObserver(relayout).observe(panel.element);
-document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
+document.addEventListener('visibilitychange', () => {
+  // Rasp sense: set the dial for being away as the page goes, and back for income on return.
+  if (habits.get()) raspSense(state, document.hidden);
+  if (document.hidden) save();
+});
 window.addEventListener('pagehide', save);
 requestAnimationFrame(frame);

@@ -20,7 +20,7 @@ export const LINEAGE = {
 
 export type TraitId =
   | 'deep-memory' | 'quick-budding' | 'old-bands' | 'remembered-shoals' | 'glimmer' | 'kept-readings' | 'settling'
-  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table';
+  | 'early-shoals' | 'rasp-kin' | 'glass-gardeners' | 'old-habits' | 'tide-reader' | 'shared-table' | 'shoal-sense' | 'rasp-sense';
 
 export type Trait = {
   id: TraitId;
@@ -146,6 +146,16 @@ export const TRAITS: readonly Trait[] = [
     id: 'shared-table', name: 'Shared table', effect: 'a feast nobody eats is eaten for you as it sinks away: half of it reaches the reef',
     flavour: 'The small lights that pick at the dead have learned where your stone is, and carry some of it home.',
     cost: 8, growth: 1, max: 1, kind: 'way',
+  },
+  {
+    id: 'shoal-sense', name: 'Shoal sense', effect: 'while you watch, idle shoals find their own work, and feeders and light-swimmers shift to where they are worth most',
+    flavour: 'The lanternfish learned your rhythm so long ago they no longer wait to be told.',
+    cost: 10, growth: 1, max: 1, kind: 'way',
+  },
+  {
+    id: 'rasp-sense', name: 'Rasp sense', effect: 'while you watch, the Rasp dial keeps to the best setting for income; when you leave, to the best for being away',
+    flavour: 'Your children and the Rasp have an understanding about how much is enough.',
+    cost: 10, growth: 1, max: 1, kind: 'way',
   },
 ];
 

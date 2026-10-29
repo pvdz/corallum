@@ -4,7 +4,7 @@ import { MOMENTS } from '../content/moments.ts';
 import { MEETINGS } from '../content/act3.ts';
 import { DIALECTS } from '../content/act4.ts';
 import { HABIT_SHARE, LINEAGE, TRAITS, type SeamountId, type Trait, type TraitId } from '../content/lineage.ts';
-import { cost, ended, revealed, spawnTarget } from './economy.ts';
+import { assign, balanceFeedLight, cost, ended, idleShoals, jobGain, raspMax, raspSettings, revealed, setRasp, spawnTarget } from './economy.ts';
 import { newGame, type GameState, type Meta } from './state.ts';
 
 /** Lineage a spawning released now would bring. */
@@ -60,6 +60,21 @@ export function habitPurchase(s: GameState): 'polyp' | 'symbiont' | null {
   const p = cheap('polyp'), g = cheap('symbiont');
   if (p && g) return cost(s, 'polyp') <= cost(s, 'symbiont') ? 'polyp' : 'symbiont';
   return p ? 'polyp' : g ? 'symbiont' : null;
+}
+
+/** Shoal sense: place idle shoals and rebalance feed/light. Returns whether anything moved. */
+export function shoalSense(s: GameState): boolean {
+  if (!s.meta.traits['shoal-sense']) return false;
+  let moved = false;
+  while (idleShoals(s) > 0 && assign(s, jobGain(s, 'feed') >= jobGain(s, 'light') ? 'feed' : 'light', 1)) moved = true;
+  return balanceFeedLight(s) || moved;
+}
+
+/** Rasp sense: the dial to the best setting for watching (income) or for being away (hold). */
+export function raspSense(s: GameState, away: boolean): void {
+  if (!s.meta.traits['rasp-sense'] || raspMax(s) === 0) return;
+  const best = raspSettings(s);
+  setRasp(s, away ? best.forHold : best.forIncome);
 }
 
 export function traitDef(id: TraitId): Trait {

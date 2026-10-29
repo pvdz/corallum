@@ -180,7 +180,9 @@ the release also sets the lineage for beginning again.
   - *Ways* (routes): Lamps in the snow (shoals in Act I) · Rasp kin (sand economy in Act II) ·
     Glass gardeners (a no-Rasp route) · Old habits (auto-buys cheap polyps/glimmerseed while
     watching) · Tide-reader (every full moon a great tide) · Shared table (missed feasts
-    are eaten for you at half: tapping becomes optional).
+    are eaten for you at half: tapping becomes optional) · Shoal sense (idle shoals placed and feed/light
+    rebalanced every 30 s while watching) · Rasp sense (dial at best-for-income while watching, best-for-hold
+    when the page is left).
 - **Seamounts**: each spawning chooses where to settle: plain, warm (active-friendly), cold
   (idle-friendly), crowded (fast story, more silt). See ECONOMY.md for numbers.
 - **Hard seamounts (trials)**, offered from the second reef on: hungry (polyps feed ×0.5, goal
