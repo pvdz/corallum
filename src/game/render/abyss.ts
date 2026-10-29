@@ -505,6 +505,25 @@ export function createAbyssScene(seed: number): Scene {
       if (v.seamount === 'crowded') drawBuriedReefs(ctx, t);
       drawGarden(ctx, centreX(), v.works.garden, scale(), t, floorY);
       const vent = v.vent > 0 ? life.drawVent(ctx, st, v.vent, t) : null;
+      // Heat shimmer over the vent: faint wavering bands of warmer water rising from the chimneys.
+      if (vent) {
+        const sc = scale();
+        ctx.save();
+        ctx.lineWidth = 1.4 * sc;
+        for (let i = 0; i < 9; i++) {
+          const u = (t * 0.18 + i / 9) % 1;
+          const y = vent.y - u * focus.h * 0.35;
+          ctx.strokeStyle = `rgba(255,190,150,${0.12 * Math.sin(u * Math.PI)})`;
+          ctx.beginPath();
+          for (let k = -6; k <= 6; k++) {
+            const x = vent.x + k * 4 * sc * (1 + u * 2) + Math.sin(t * 2 + i + k * 0.7) * 3 * sc;
+            const yy = y + Math.sin(t * 3 + k * 0.9 + i) * 2.5 * sc;
+            if (k === -6) ctx.moveTo(x, yy); else ctx.lineTo(x, yy);
+          }
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
       // The vent crack (a moment): left open it glows and smokes; grown over, a pale patch of new stone.
       if (vent && v.moments['vent-crack']) {
         const sc = scale();
