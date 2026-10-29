@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended goal (user): add content, gameplay and graphics, keep going. Latest: feeding motes, fry, quick-one Reading, Ossel remembers answers, chronicle flags, benthic storm, Helping habit, drift, blue moon, rescues, spectacles in every zone. Bot ~7h28; 7 browser tests + sim tests green. Run e2e with `timeout 300` per test.
+NOW: Open-ended goal (user): add content, gameplay and graphics, keep going. Latest: tidal seamount, lucky/kind days, ghosts in every zone, the first larva, squalls, Ossel's far light in the Midnight Water, sister spawns with you, wishes/garden e2e. Bot ~7h28; 7 browser tests + sim tests green. Run e2e with `timeout 400` per test (a run once stalled when the machine paused).
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
