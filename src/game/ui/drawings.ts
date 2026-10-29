@@ -166,7 +166,7 @@ export function drawTablet(c: HTMLCanvasElement, got: readonly number[]): void {
 /** Seamount colours for the line's charts. */
 export const SEAMOUNT_TINT: Record<string, string> = {
   plain: '#c98a9a', warm: '#e0886a', cold: '#8ab8e0', crowded: '#b49ad8', hungry: '#b8ae96', silent: '#7f86a8',
-  lonely: '#9fd8ff', buried: '#a9a49a', dark: '#6a6a90', shallow: '#f0c080', thorny: '#c06a8a', heavy: '#8f8a80',
+  lonely: '#9fd8ff', buried: '#a9a49a', dark: '#6a6a90', shallow: '#f0c080', thorny: '#c06a8a', heavy: '#8f8a80', gleaming: '#ffe6a0',
 };
 
 /**

@@ -5,7 +5,7 @@
 export type MomentId = 'brittle' | 'vent-crack' | 'snow' | 'lost-shoal' | 'hunters' | 'angler' | 'squid' | 'whale-fall' | 'old-lamp' | 'cleaners'
   | 'young-rasp' | 'slope' | 'eggs' | 'storm' | 'turtle' | 'first-light' | 'last-night' | 'bird'
   | 'fire-body' | 'seep' | 'rising-stop' | 'split-shoal' | 'heatwave' | 'pups' | 'king-tide' | 'outbreak'
-  | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes' | 'heavy-crown' | 'cold-slide' | 'dust' | 'bowed';
+  | 'krill' | 'echo' | 'far-light' | 'drifts' | 'eyes' | 'heavy-crown' | 'cold-slide' | 'dust' | 'bowed' | 'mirror';
 
 export type MomentOption = { label: string; effect: string; text: string };
 export type Moment = { id: MomentId; metres: number; title: string; text: string; a: MomentOption; b: MomentOption;
@@ -260,6 +260,12 @@ export const MOMENTS: readonly Moment[] = [
     text: 'Your youngest branch has bent nearly to the rock under the grey on its tips. It will snap, or it will learn to carry it.',
     a: { label: 'Prop it with stone', effect: 'calcite dissolves ×0.9', text: 'You lay a buttress under it, band by band. It holds, and so does everything after.' },
     b: { label: 'Let it snap', effect: 'old stone pays ×1.5', text: 'It breaks with a sound like a shell. The rest of you stands lighter, and learns not to hold so hard.' },
+  },
+  {
+    id: 'mirror', metres: 1000, seamount: 'gleaming', title: 'The water like glass',
+    text: 'The water above is so clear that, looking up, you see a faint second reef hanging in the dark: yourself, mirrored in the still layer of the sea.',
+    a: { label: 'Shine back at it', effect: 'glow ×1.15', text: 'You blaze, and the reef in the water blazes back. Your light learns it can be twice as much.' },
+    b: { label: 'Look away', effect: 'calcite dissolves ×0.9', text: 'You turn your crown down to the stone. Better to be solid than to be seen.' },
   },
   {
     id: 'eyes', metres: 700, seamount: 'dark', title: 'Eyes in the dark',

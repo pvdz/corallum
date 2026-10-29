@@ -38,7 +38,7 @@ export type Trait = {
  * Where a lesser spawning settles. Each seamount bends the economy one way; the plain one is the
  * first reef's. Multipliers are read by sim/economy.ts.
  */
-export type SeamountId = 'plain' | 'warm' | 'cold' | 'crowded' | 'hungry' | 'silent' | 'lonely' | 'buried' | 'dark' | 'shallow' | 'thorny' | 'heavy';
+export type SeamountId = 'plain' | 'warm' | 'cold' | 'crowded' | 'hungry' | 'silent' | 'lonely' | 'buried' | 'dark' | 'shallow' | 'thorny' | 'heavy' | 'gleaming';
 export type Seamount = {
   id: SeamountId; name: string; text: string; effect: string;
   ventBoost: number; ventAcid: number; dissolve: number; polyp: number; readings: number; silt: number;
@@ -56,6 +56,10 @@ export type Seamount = {
   thorns?: number;
   /** Old stone gathers this many times as fast (heavy). */
   old?: number;
+  /** Lucky neighbours come this many times as often (gleaming). */
+  lucky?: number;
+  /** Nothing falls from above: no feasts (gleaming). */
+  noFeasts?: boolean;
 };
 
 /** Hard seamounts are offered once the line has spawned this many times. */
@@ -94,6 +98,9 @@ export const SEAMOUNTS: readonly Seamount[] = [
   { id: 'heavy', name: 'A heavy seamount', text: 'Everything that grows here grows old too soon, and the old stone weighs on the young.', effect: 'old stone gathers ×3 as fast, polyps feed ×0.7',
     ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 0.7, readings: 1, silt: 1, old: 3,
     trial: { goal: 3000, reward: 'Stone-light: old stone pays ×2 when let go, on every reef after' } },
+  { id: 'gleaming', name: 'A gleaming seamount', text: 'The water here is clear as glass and empty above: nothing falls, but everything that lives here shines.', effect: 'lucky neighbours ×3, no falling feasts',
+    ventBoost: 1, ventAcid: 1, dissolve: 1, polyp: 1, readings: 1, silt: 1, lucky: 3, noFeasts: true,
+    trial: { goal: 3500, reward: 'Fortune’s child: lucky neighbours ×1.5 on every reef after' } },
 ];
 
 /**

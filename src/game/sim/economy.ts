@@ -202,7 +202,7 @@ export function rates(s: GameState): Rates {
   const onShelf = target >= ACT3.from;
   return {
     glowP: (ACT1.symbiontGlow * lv.symbiont * milestoneMult('symbiont', lv.symbiont) * (1 + ACT2.lightAmplify * s.jobs.light) +
-      lightGlow * s.jobs.light * seasoned(s) * (chose(s, 'hunters', 'b') ? 1.2 : 1)) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1) * (chose(s, 'vent-crack', 'b') ? 1.15 : 1) * (sm.glow ?? 1) * (passed(s, 'dark') ? 1.25 : 1) * (s.strain === 'blue' ? 1.3 : 1) * (boon(s, 'warm-heart') ? 1.3 : 1) * (chose(s, 'old-lamp', 'a') ? 1.1 : 1) * (chose(s, 'echo', 'b') ? 1.15 : 1) * grainMult(s, 'bright') * today(s, 'bright', 1.2) * (s.sport === 'ice' ? 1.25 : 1) * (chose(s, 'fire-body', 'a') ? 1.15 : 1) * 1.04 ** nursed(s, 'b'),
+      lightGlow * s.jobs.light * seasoned(s) * (chose(s, 'hunters', 'b') ? 1.2 : 1)) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1) * (chose(s, 'vent-crack', 'b') ? 1.15 : 1) * (sm.glow ?? 1) * (passed(s, 'dark') ? 1.25 : 1) * (s.strain === 'blue' ? 1.3 : 1) * (boon(s, 'warm-heart') ? 1.3 : 1) * (chose(s, 'old-lamp', 'a') ? 1.1 : 1) * (chose(s, 'echo', 'b') ? 1.15 : 1) * grainMult(s, 'bright') * today(s, 'bright', 1.2) * (s.sport === 'ice' ? 1.25 : 1) * (chose(s, 'fire-body', 'a') ? 1.15 : 1) * 1.04 ** nursed(s, 'b') * (chose(s, 'mirror', 'a') ? 1.15 : 1),
     glowK: ACT1.glowFade * (chose(s, 'squid', 'a') ? 0.8 : 1) * (chose(s, 'eyes', 'b') ? 0.8 : 1) * (chose(s, 'rising-stop', 'b') ? 0.85 : 1),
     planktonP: today(s, 'rich', 1.2) * (onShelf ? 1 - CURRENT.planktonPerStep * s.current : 1) * (chose(s, 'krill', 'b') ? 1.2 : 1) * (chose(s, 'seep', 'a') ? 1.15 : 1) * (paired(s, 'cleaner-wrasse', 'feather-duster') ? 1.15 : 1) * seasoned(s) * ACT2.feedRate * s.jobs.feed * ACT2.netPlankton ** lv.net * (chose(s, 'far-light', 'a') ? 1.15 : 1) * (chose(s, 'dust', 'b') ? 1.15 : 1) * (speaks(s, 'pillar') ? 1.5 : 1) * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
       (speaks(s, 'sweepers') ? 3 : 1) * (lives(s, 'feather-duster') ? 1.3 : 1),
@@ -236,7 +236,7 @@ export function rates(s: GameState): Rates {
       (boon(s, 'currents') ? 1.15 : 1) * today(s, 'calm', 1.1),
     calciteK:
       ACT1.dissolve * sm.dissolve * ACT1.latticeFactor ** lv.lattice * (ACT1.ventAcid * sm.ventAcid) ** vent * (vent > 0 && chose(s, 'vent-crack', 'a') ? 0.8 : 1) *
-      (has(s, 'lattice-songs') ? 0.7 : 1) * (chose(s, 'brittle', 'a') ? 0.9 : 1) * (chose(s, 'cleaners', 'b') ? 0.9 : 1) * (chose(s, 'snow', 'b') ? 0.95 : 1) * (chose(s, 'drifts', 'b') ? 0.9 : 1) * (chose(s, 'heavy-crown', 'b') ? 0.92 : 1) * 0.97 ** nursed(s, 'd') * (chose(s, 'bowed', 'a') ? 0.9 : 1) * (chose(s, 'seep', 'b') ? 0.95 : 1) * (chose(s, 'last-night', 'a') ? 0.9 : 1) * (boon(s, 'roots') ? 0.85 : 1) * (speaks(s, 'massive') ? 0.5 : 1) * grainMult(s, 'dense') +
+      (has(s, 'lattice-songs') ? 0.7 : 1) * (chose(s, 'brittle', 'a') ? 0.9 : 1) * (chose(s, 'cleaners', 'b') ? 0.9 : 1) * (chose(s, 'snow', 'b') ? 0.95 : 1) * (chose(s, 'drifts', 'b') ? 0.9 : 1) * (chose(s, 'heavy-crown', 'b') ? 0.92 : 1) * 0.97 ** nursed(s, 'd') * (chose(s, 'bowed', 'a') ? 0.9 : 1) * (chose(s, 'mirror', 'b') ? 0.9 : 1) * (chose(s, 'seep', 'b') ? 0.95 : 1) * (chose(s, 'last-night', 'a') ? 0.9 : 1) * (boon(s, 'roots') ? 0.85 : 1) * (speaks(s, 'massive') ? 0.5 : 1) * grainMult(s, 'dense') +
       (speaks(s, 'mucus') ? 0 : ACT3.raspEat * rasp * (s.truce.terms === 'b' ? ACT3.politeEat : 1) * (lives(s, 'guard-crab') ? 0.5 : 1) * (chose(s, 'young-rasp', 'a') ? 0.8 : 1) * (paired(s, 'guard-crab', 'goby') ? 0.8 : 1)),
     lureMax: ACT1.lureMax + ACT1.lureMaxPerPattern * lv.lure + (has(s, 'fear') ? 1 : 0) + (speaks(s, 'fluorescent') ? 2 : 0) +
       (relic(s, 'lamp-hall') ? 1 : 0) + 0.5 * s.works.spire + (chose(s, 'angler', 'a') ? 0.5 : 0) + (chose(s, 'eyes', 'a') ? 0.5 : 0) + (s.sport === 'lamp' ? 1 : 0),
@@ -1604,7 +1604,7 @@ export function lucky(s: GameState, id: string): boolean {
   let h = 2166136261;
   for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 16777619);
   const win = Math.floor(s.t / LUCKY.span);
-  return s.luckySpan !== win && mulberry32((h ^ s.seed ^ Math.imul(win, 0x9e3779b1)) >>> 0)() < LUCKY.chance * (trait(s, 'lucky-line') ? 2 : 1);
+  return s.luckySpan !== win && mulberry32((h ^ s.seed ^ Math.imul(win, 0x9e3779b1)) >>> 0)() < LUCKY.chance * (trait(s, 'lucky-line') ? 2 : 1) * (seamount(s).lucky ?? 1) * (passed(s, 'gleaming') ? 1.5 : 1);
 }
 
 /**
@@ -1905,7 +1905,7 @@ function requestOpen(s: GameState, kind: RequestKind): boolean {
   if ((kind === 'sweep' || kind === 'milky') && s.vows.includes('still')) return false;
   switch (kind) {
     case 'bands': return !maxed(s, 'skeleton');
-    case 'feast': return s.bands.includes(FEAST.band);
+    case 'feast': return s.bands.includes(FEAST.band) && !seamount(s).noFeasts;
     case 'prune': return s.old >= 0.5;
     case 'milky': return untilMilky(s) < 600;
     case 'lucky': return s.tally.touches >= 5;
@@ -2205,7 +2205,7 @@ function feastAt(seed: number, k: number): Feast {
 
 /** The feast sinking past right now, if there is one still uneaten. */
 export function currentFeast(s: GameState): Feast | null {
-  if (!s.bands.includes(FEAST.band)) return null;
+  if (!s.bands.includes(FEAST.band) || seamount(s).noFeasts) return null;
   const k = Math.floor(s.t / FEAST.period);
   if (k <= s.feasted) return null;
   const f = feastAt(s.seed, k);
@@ -2214,7 +2214,7 @@ export function currentFeast(s: GameState): Feast | null {
 
 /** Seconds until the next feast starts falling (0 while one is falling; Infinity before feasts come). */
 export function untilFeast(s: GameState): number {
-  if (!s.bands.includes(FEAST.band)) return Infinity;
+  if (!s.bands.includes(FEAST.band) || seamount(s).noFeasts) return Infinity;
   if (currentFeast(s)) return 0;
   for (let k = Math.floor(s.t / FEAST.period); k < Math.floor(s.t / FEAST.period) + 3; k++) {
     if (k <= s.feasted) continue;
