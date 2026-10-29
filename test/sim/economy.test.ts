@@ -342,4 +342,7 @@ test('gifts: a touched neighbour gives its own stock once per cooldown, calcite 
   assert.equal(gift(s, 'rasp')?.stock, 'calcite');
   s.t += GIFT.cooldown;
   assert.equal(gift(s, 'jelly')?.stock, 'glow', 'again after the cooldown');
+  // A rare visitor gives several times a common one's calcite.
+  const common = gift(s, 'rattail')!.amount;
+  assert.ok(Math.abs(gift(s, 'giant-squid')!.amount / common - GIFT.rare) < 1e-9);
 });

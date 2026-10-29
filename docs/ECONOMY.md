@@ -44,7 +44,7 @@ constant within a run, so offline stays exact. Shared table (a way): a feast lef
 eaten for 0.5 × its value in its last second in reach, while watching.
 Gifts (active only): touching a creature gives 30 s of its stock's production (glow for the
 glowing ones, sand from the Rasp, plankton from shoals, calcite otherwise or when the reef makes
-none), capped at 0.3 × what the reef holds of it, once per 180 s per creature (state.gifts).
+none), capped at 0.3 × what the reef holds of it, ×3 from rare visitors, once per 180 s per creature (state.gifts).
 
 ## Milestones (polyps and glimmerseed)
 Each milestone doubles everything its kind makes (`ACT1.milestoneFactor`, `MILESTONES` in content/act1.ts):

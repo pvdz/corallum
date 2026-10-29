@@ -55,9 +55,9 @@ export const CREATURES: readonly Creature[] = [
 /**
  * Gifts: touching a creature now and then brings a little of what it lives by. Each creature gives
  * once per cooldown, `seconds` of the reef's production of that stock (calcite if it makes none),
- * at most `holdShare` of what the reef can hold of it.
+ * at most `holdShare` of what the reef can hold of it; rare visitors give `rare` times as much.
  */
-export const GIFT = { seconds: 30, cooldown: 180, holdShare: 0.3 } as const;
+export const GIFT = { seconds: 30, cooldown: 180, holdShare: 0.3, rare: 3 } as const;
 export type GiftStock = 'calcite' | 'glow' | 'plankton' | 'sand';
 const GLOWING: readonly CreatureId[] = [
   'jelly', 'comb-jelly', 'siphonophore', 'anglerfish', 'vampire-squid', 'pyrosome', 'moon-jelly', 'sea-firefly',

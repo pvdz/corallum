@@ -305,3 +305,4 @@ date, what landed, what is half-done, what's next.
 - Touch sounds by kind: a shimmer of high bells for glowing creatures, a gritty crunch for the Rasp, the answering pair for the rest, the whale's call for the whale.
 - Late Midnight Water (last quarter of the zone): the first grey light reaches down in faint shafts, foreshadowing the Twilight Shelf.
 - Rare visitors already in the journal are announced each time they come by ('Passing now' note, quiet whisper cue), once per visit.
+- Rare visitors' gifts are three times a common one's.

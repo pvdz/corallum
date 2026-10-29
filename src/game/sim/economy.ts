@@ -21,7 +21,7 @@ import { ACT3, BANDS_ACT3, MEETINGS, type Choice, type Meeting, type MeetingId }
 import { ACT4, BANDS_ACT4, DIALECTS, TIERS, type DialectId, type DialectTier } from '../content/act4.ts';
 import { ACT5, BANDS_ACT5, MEMORIES, type Memory, type MemoryId } from '../content/act5.ts';
 import { act, actAt, LAST_PLAYABLE_ACT, SURFACE } from '../content/acts.ts';
-import { GIFT, giftOf, type CreatureId, type GiftStock } from '../content/creatures.ts';
+import { CREATURES, GIFT, giftOf, type CreatureId, type GiftStock } from '../content/creatures.ts';
 import { LINEAGE, SEAMOUNTS, type Seamount, type TraitId } from '../content/lineage.ts';
 import { FEAST } from '../content/events.ts';
 import type { Band, Currency, UpgradeDef, UpgradeId } from '../content/types.ts';
@@ -797,7 +797,9 @@ export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: 
   const k = stock === 'glow' ? r.glowK : stock === 'plankton' ? r.planktonK : r.sandK;
   if (!(made > 0)) stock = 'calcite';
   // Never more than a share of what the reef can hold of it (P/k), or it would only wash away.
-  const amount = stock === 'calcite' ? calciteRate(s, r) * GIFT.seconds : Math.min(made * GIFT.seconds, GIFT.holdShare * made / k);
+  // Rare visitors give more: catching one is luck as well as attention.
+  const rare = CREATURES.find((c) => c.id === id)?.note.startsWith('Rare.') ? GIFT.rare : 1;
+  const amount = rare * (stock === 'calcite' ? calciteRate(s, r) * GIFT.seconds : Math.min(made * GIFT.seconds, GIFT.holdShare * made / k));
   if (!(amount > 0)) return null;
   s.gifts[id] = s.t;
   if (stock === 'calcite') {
