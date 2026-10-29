@@ -10,7 +10,8 @@ import { SIGNAL } from '../content/events.ts';
 import { BOON_TEXT } from '../content/lineage.ts';
 import { FIGURES, SKY } from '../content/sky.ts';
 import { QUESTION, type Question } from '../content/ossel.ts';
-import { osselAsks, currentEncounter, grainsWaiting, sportOpen, boonsOffered, figureOpen, skyOpen, currentRiddle, currentSignal, forkOpen, othersCap, othersSpawning, strainOpen } from '../sim/economy.ts';
+import { SISTER } from '../content/sister.ts';
+import { lightOpen, osselAsks, currentEncounter, grainsWaiting, sportOpen, boonsOffered, figureOpen, skyOpen, currentRiddle, currentSignal, forkOpen, othersCap, othersSpawning, strainOpen } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { button, el } from './dom.ts';
 import { num } from './format.ts';
@@ -29,6 +30,19 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
   }
   strainBox.append(el('p', 'truce-kicker', STRAIN.kicker), el('p', 'truce-text', STRAIN.text), strainChoices);
   grow.prepend(strainBox);
+
+  // ---------- Lighting the way for the sister reef ----------
+  const sisterBox = el('section', 'truce moment sister-light');
+  sisterBox.hidden = true;
+  const sisterChoices = el('div', 'truce-choices');
+  for (const yes of [true, false]) {
+    const w = yes ? SISTER.light : SISTER.alone;
+    const b = button('choice', '', () => hooks.lightSister(yes));
+    b.append(el('strong', '', w.label), el('span', '', w.effect));
+    sisterChoices.append(b);
+  }
+  sisterBox.append(el('p', 'truce-kicker', SISTER.lightKicker), el('p', 'truce-text', SISTER.lightText), sisterChoices);
+  grow.prepend(sisterBox);
 
   // ---------- Ossel's questions ----------
   const askBoxQ = el('section', 'truce moment ossel-asks');
@@ -191,6 +205,7 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
 
   return {
     update(s: GameState): void {
+      setShown(sisterBox, lightOpen(s));
       const q = osselAsks(s);
       setShown(askBoxQ, !!q);
       if (q && q !== asking) {

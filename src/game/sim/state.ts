@@ -185,7 +185,7 @@ export type GameState = {
   /** Stages built of each great work (content/works.ts). */
   works: Record<WorkId, number>;
   /** The race with the sister reef: marks decided so far (content/sister.ts), and how many were won. */
-  race: { decided: number; won: number; cousin: number };
+  race: { decided: number; won: number; cousin: number; lit: number; declined: boolean };
   /** The elder's riddles: '' not yet asked or answered, then how it went. */
   riddles: Record<RiddleId, '' | 'right' | 'wrong'>;
   /** Favours asked of the Rasp, by kind (content/act3.ts FAVOURS). */
@@ -277,7 +277,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     others: { last: -1, joined: 0 },
     favours: { clear: 0, path: 0, carry: 0 },
     riddles: { silt: '', wall: '', walls: '', song: '', beaks: '', shallows: '', rule: '', ripple: '', end: '', children: '' },
-    race: { decided: 0, won: 0, cousin: 0 },
+    race: { decided: 0, won: 0, cousin: 0, lit: 0, declined: false },
     works: { garden: 0, spire: 0, breakwater: 0, terrace: 0, pool: 0 },
     request: { kind: '', n: 0, base: 0, done: 0, paid: 0, skipped: -1e9, streak: 0 },
     tally: { touches: 0, sweeps: 0, digs: 0, roams: 0, intruders: 0, carcass: 0, shells: 0, risings: 0 },

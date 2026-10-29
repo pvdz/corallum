@@ -140,7 +140,8 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
     const stars = FIGURES.filter((f) => s.sky[f.id]).map((f) => f.name);
     if (stars.length) out.push(SKY.ending.replace('{names}', stars.length > 1 ? `${stars.slice(0, -1).join(', ')} and ${stars.at(-1)}` : stars[0]!));
     // The sister reef: ahead of it at the surface, or behind.
-    if (s.race.decided >= 5) out.push(s.diary.some((d) => d.includes('|ahead|the surface')) ? ENDING.sisterAhead : ENDING.sisterBehind);
+    if (s.race.lit) out.push(ENDING.sisterLit);
+    else if (s.race.decided >= 5) out.push(s.diary.some((d) => d.includes('|ahead|the surface')) ? ENDING.sisterAhead : ENDING.sisterBehind);
     // The secret page: every mistake of Ossel's found, and the tablet whole.
     if (OSSEL_MISTAKES.every((m) => s.meta.seen.includes(`o:${m.id}`)) && s.meta.shards.length >= SHARD_LINES.length) out.push(ENDING.remembered);
     out.push(s.truce.wall === 'b' ? ENDING.closingKept : ENDING.closingLetGo);

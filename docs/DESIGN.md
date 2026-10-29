@@ -113,6 +113,10 @@ it brings +1 lineage (the surface +2), judged at the exact crossing moment so of
 agree. A pacer: something to race inside every run. Once the line has reached an ending a second racer
 joins, the quick cousin (the surface in 5 h): beating it to a mark pays double.
 
+**Lighting the way** (the sister reef): on the shelf or above, while ahead of her and the race still on, a
+choice: light the way (she climbs ×1.25 faster from then on, so later marks are harder; +3 lineage at the
+release, and the ending has both reefs spawning under the same moon) or climb on alone.
+
 **Expeditions** (from 150 m): shoals can be sent to a buried ruin of Thousandfold, one trip at a
 time, five sites in order (150 m → 3300 m, 6 → 24 shoals, 6 → 30 minutes). Idle shoals go first,
 then scouts, light-swimmers, feeders; while away they work no job, and at a fixed sim moment they

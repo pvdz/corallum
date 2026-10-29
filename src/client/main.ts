@@ -32,7 +32,7 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, sisterNow, lightSister, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -326,6 +326,11 @@ const panel = createPanel(ui, {
   },
   feedRising: sendFeeders,
   flare: flareLure,
+  lightSister(yes) {
+    if (!lightSister(state, yes)) return;
+    audio.cue(yes ? 'shimmer' : 'choice');
+    save();
+  },
   blessed: () => elderBlessed(state),
   signalStreak: () => state.signal.streak,
   answerOssel(id, i) {
@@ -839,7 +844,7 @@ function view(): ReefView {
     palette: state.meta.palette,
     nurseries: state.levels.daughter,
     works: state.works,
-    sister: sisterAt(state.t),
+    sister: sisterNow(state, state.t),
     current: state.current,
     song: state.dialects.song,
     garden: state.garden,
@@ -1329,7 +1334,7 @@ function gaugeAt(h: number): number {
 let gaugeShown = -1;
 function updateGauge(): void {
   updateGaugeMoon();
-  gaugeSister.style.bottom = `${sisterAt(state.t) * 100}%`;
+  gaugeSister.style.bottom = `${sisterNow(state, state.t) * 100}%`;
   gaugeSister.hidden = ended(state);
   gaugeCousin.hidden = ended(state) || !cousinRaces(state);
   gaugeCousin.style.bottom = `${sisterAt(state.t, COUSIN.schedule) * 100}%`;

@@ -166,4 +166,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Christmas tree worms (on the Sunlit reef) | real animals (Spirobranchus) | OK |
 | A meteor shower over the Breach | real sky | OK |
 | Dream vignettes (eight short dreams of the reef) | this game's own world | OK |
+| Lighting the way for the sister reef; both spawning under one moon | this game's own characters | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

@@ -86,6 +86,7 @@ export type PanelHooks = {
   closeUp(closed: boolean): void;
   dream(): void;
   flare(): void;
+  lightSister(yes: boolean): void;
   /** Every riddle of the elder answered rightly. */
   blessed(): boolean;
   signalStreak(): number;

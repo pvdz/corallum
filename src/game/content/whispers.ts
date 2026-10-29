@@ -6,7 +6,7 @@ import type { GameState } from '../sim/state.ts';
 import { actAt } from './acts.ts';
 import { OSSEL_MISTAKES } from './ossel.ts';
 import {
-  calciteHold, canSend, inFlurry, inHeat, inRising, currentUpwelling, currentSwell, grainsWaiting, skyOpen, canFlare, glowHold, waterAt, homes, workOpen, sisterAt, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
+  calciteHold, canSend, inFlurry, inHeat, inRising, currentUpwelling, currentSwell, grainsWaiting, skyOpen, canFlare, glowHold, waterAt, homes, workOpen, sisterNow, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
 } from '../sim/economy.ts';
 
 export type Whisper = { id: string; when: (s: GameState) => boolean; text: string };
@@ -118,7 +118,7 @@ export const WHISPERS: readonly Whisper[] = [
     text: 'Someone small is asking to live in your branches. Let them in; they will earn their keep.',
   },
   {
-    id: 'sister', when: (s) => s.height > 100 && s.race.decided < 5 && sisterAt(s.t) > gaugeAt(s.height),
+    id: 'sister', when: (s) => s.height > 100 && s.race.decided < 5 && sisterNow(s, s.t) > gaugeAt(s.height),
     text: 'There is another reef on the next seamount. Ours, from the old wall. It is ahead of you. Do not let it reach the light first.',
   },
   {
@@ -166,8 +166,8 @@ export const WHISPERS: readonly Whisper[] = [
 /** What Ossel says when tapped and something is going on: the first that applies, in order. */
 export const OSSEL_NOW: readonly { when: (s: GameState) => boolean; text: string }[] = [
   { when: (s) => !!s.expedition.site, text: 'The shoals are out there somewhere. I can feel the water they push.' },
-  { when: (s) => s.race.decided > 0 && s.race.decided < 5 && sisterAt(s.t) > gaugeAt(s.height), text: 'Your sister is ahead. I knew its wall too. It was always the quick one.' },
-  { when: (s) => s.race.decided > 0 && s.race.decided < 5 && sisterAt(s.t) <= gaugeAt(s.height), text: 'You are ahead of your sister. Do not gloat. Well. A little.' },
+  { when: (s) => s.race.decided > 0 && s.race.decided < 5 && sisterNow(s, s.t) > gaugeAt(s.height), text: 'Your sister is ahead. I knew its wall too. It was always the quick one.' },
+  { when: (s) => s.race.decided > 0 && s.race.decided < 5 && sisterNow(s, s.t) <= gaugeAt(s.height), text: 'You are ahead of your sister. Do not gloat. Well. A little.' },
   { when: (s) => waterAt(s).id !== 'still' && s.bands.includes('rise'), text: 'Taste that? The water has turned. Spend while it is kind.' },
   { when: (s) => s.residents.length > 0, text: 'Your lodgers are noisy. I like them.' },
   { when: (s) => s.meta.shards.length > 0 && s.meta.shards.length < 12, text: 'Those shards. I know that hand. I do not want to know what it says.' },

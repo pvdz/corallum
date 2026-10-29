@@ -209,6 +209,9 @@ export const ENDING = {
   remembered: 'Before dawn Ossel speaks once more, and for the first time without being sure. “We fought them. We shut ' +
     'the gate. We were afraid every day, and we kept everything, and it was too much to carry. That is what we were.” ' +
     'It sounds lighter for saying it. “Tell them that. Tell them all of it, and then let them forget it gently.”',
+  /** The sister reef, when the reef lit the way for her. */
+  sisterLit: 'On the next seamount, under the same moon, the sister reef spawns too: you lit its way, and it came up in time. ' +
+    'The two clouds of spawn drift toward each other in the dark, and mix, and go on together.',
   /** The sister reef, by who reached the surface first. */
   sisterAhead: 'On the next seamount the sister reef is still climbing, a few metres under the light. ' +
     'Some of your spawn drifts over it on the way out. It will be there next moon. It will not be alone.',

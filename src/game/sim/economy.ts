@@ -681,7 +681,7 @@ export function nextSite(s: GameState): Site | undefined {
   const x = SITES.find((v) => !found(s, v.id));
   if (x && s.height >= x.metres && s.levels.shoal > 0) return x;
   // The sister reef near your depth: a visit, once per zone.
-  if (s.levels.shoal >= ROAM.minShoals * 2 && Math.abs(sisterAt(s.t) - gaugeAt(s.height)) < VISIT.near && !s.visits.includes(actAt(s.height))) {
+  if (s.levels.shoal >= ROAM.minShoals * 2 && Math.abs(sisterNow(s, s.t) - gaugeAt(s.height)) < VISIT.near && !s.visits.includes(actAt(s.height))) {
     return { ...roamSite(s), id: 'visit' as SiteId, name: VISIT.name, hint: VISIT.hint, effect: VISIT.effect, seconds: VISIT.seconds };
   }
   // The whale fall, once it has come down: one trip.
@@ -979,6 +979,25 @@ export function remember(s: GameState, key: string, arg = '', at = s.t): void {
 // ---------- The sister reef ----------
 
 /** Judge the next mark, reached at sim time `at`: won if the sister is still below it then. */
+/** The sister reef's place at sim time t: faster from the moment the reef lit the way for her. */
+export function sisterNow(s: GameState, t: number): number {
+  const lit = s.race.lit;
+  return lit > 0 && t > lit ? sisterAt(lit + (t - lit) * SISTER.lightSpeed) : sisterAt(t);
+}
+
+/** Lighting the way can be offered: on the shelf or above, ahead of her, the race still on, not yet decided. */
+export function lightOpen(s: GameState): boolean {
+  return s.height >= 3000 && s.race.decided < SISTER.marks.length && !s.race.lit && !s.race.declined && sisterNow(s, s.t) < gaugeAt(s.height);
+}
+
+/** Light the way for the sister (or decline): once a reef. */
+export function lightSister(s: GameState, yes: boolean): boolean {
+  if (!lightOpen(s)) return false;
+  if (yes) s.race.lit = s.t;
+  else s.race.declined = true;
+  return true;
+}
+
 function judgeMark(s: GameState, at: number): void {
   const i = s.race.decided;
   const mark = SISTER.marks[i]!;
@@ -987,7 +1006,7 @@ function judgeMark(s: GameState, at: number): void {
   const best = s.meta.records[i] ?? 0;
   if (!best || at < best) s.meta.records[i] = at;
   const where = mark >= SURFACE ? 'the surface' : (ACTS.find((a) => a.from === mark)?.name ?? `${mark} m`);
-  if (sisterAt(at) < gaugeAt(mark) - 1e-9) {
+  if (sisterNow(s, at) < gaugeAt(mark) - 1e-9) {
     s.race.won++;
     s.meta.lineage += SISTER.lineage[i]!;
     remember(s, 'ahead', where, at);
@@ -1263,6 +1282,7 @@ export function breach(s: GameState, memories: MemoryId[]): boolean {
   }
   s.released = s.spawn;
   s.spawn = 0;
+  if (s.race.lit) s.meta.lineage += SISTER.lightLineage;
   s.carried = unique;
   s.breachedAt = s.t;
   s.meta.carriedEver = [...new Set([...s.meta.carriedEver, ...unique])];
