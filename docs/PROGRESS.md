@@ -648,3 +648,4 @@ date, what landed, what is half-done, what's next.
 - Today's visitor wears a slow silver halo in the world until touched.
 - Rasp favour Grind a hollow (20000 sand, once): +1 resident home.
 - Resident: a decorator crab (3000 m): lucky neighbours ×1.5; drawn at the reef's foot in its sponge and weed (freezes when touched).
+- Four more dreams (twelve).

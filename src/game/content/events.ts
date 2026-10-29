@@ -75,6 +75,10 @@ export const DREAM = {
     'You dream of the shoals, each lamp a word, and for a moment you can read the whole sentence.',
     'You dream of nothing at all, for a quarter of an hour, and grow.',
     'You dream that Ossel is young again, a wall of the city, proud of keeping everything. You do not wake it.',
+    'You dream that every grey knob on your tips is a door, and behind each one is a day you had forgotten. You open none of them.',
+    'You dream of a milky sea that never ends, and of sweeping through it forever, and of never being tired.',
+    'You dream of falling stars sinking all the way down to the floor, still burning, and the brittle stars gathering round them to warm.',
+    'You dream of your sister reef. She is dreaming of you too, and in her dream you are the one ahead.',
   ],
 } as const;
 
