@@ -178,3 +178,4 @@ date, what landed, what is half-done, what's next.
 - Sunlit Crown: an anemone with two clownfish weaving around it (journal: 23 creatures).
 - Midnight Water: a vampire squid drifts past, cloak of arms opening and closing, glowing fin tips (journal: 24 creatures).
 - Feats (content/feats.ts): 24 goals across runs (heights, polyps, feasts, readings, truce, meadows, seeing every creature of a zone, endings, seamounts), each +1 lineage once per lineage; toast top-left; list in the Lineage tab.
+- The Breach: glowing surf, blue plankton sparks running outward along the waterline from the reef's emerged top with each wave.

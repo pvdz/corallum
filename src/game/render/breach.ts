@@ -240,6 +240,29 @@ export function createBreachScene(seed: number): Scene {
    * A shore bird standing on the crown where it breaks the air ("Birds walk on you"), pecking now
    * and then. When the spawn is released it lifts off and flies away over the water.
    */
+  /**
+   * Glowing surf: where little waves break against the reef's emerged top, the plankton in the
+   * water flashes blue, in pulses that run along the waterline with each wave.
+   */
+  function drawGlowSurf(ctx: CanvasRenderingContext2D, t: number, crown: readonly [number, number]): void {
+    const s = scale();
+    const wy = waterY();
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < 40; i++) {
+      const side = i % 2 ? 1 : -1;
+      const d = (8 + (i * 13) % 90) * s;
+      const x = crown[0] + side * d;
+      // Each wave runs outward from the stone; a spark lights as it passes.
+      const wave = ((t * 0.45 - d / (120 * s)) % 1 + 1) % 1;
+      const a = Math.max(0, 1 - wave * 3) * (1 - d / (110 * s));
+      if (a <= 0.02) continue;
+      glow(ctx, x, wy + Math.sin(i) * 2 * s, 12 * s, '70,190,255', 0.9 * a);
+      glow(ctx, x, wy + Math.sin(i) * 2 * s, 3 * s, '210,245,255', a);
+    }
+    ctx.restore();
+  }
+
   /** Now and then a pod of dolphins arcs out of the moonlit water, one after another. */
   function drawDolphins(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 75;
@@ -481,6 +504,7 @@ export function createBreachScene(seed: number): Scene {
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
       drawWaves(ctx, t);
+      if (v.bands.includes('air')) drawGlowSurf(ctx, t, this.crownAt);
       drawSpawn(ctx, t, v, L, reef);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
       // After the glow pass, so the crown's light does not swallow its silhouette.
