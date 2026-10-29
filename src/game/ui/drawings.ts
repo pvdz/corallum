@@ -226,3 +226,56 @@ export function drawSeaChart(c: HTMLCanvasElement, chronicle: readonly string[])
     g.fillText(String(i + 1), x, y - r - 6);
   });
 }
+
+/** Colours of the reef's own bands by what they remember (diary keys). */
+const RING_TINT: Record<string, string> = {
+  feast: '#e8b07a', seen: '#9fd8ff', relic: '#ffd9a8', moment: '#c9a0ff', resident: '#8fe0b0', work: '#d8c3a5',
+  shard: '#f0e6c0', ahead: '#ff9db8', cousin: '#ff9db8', behind: '#a88fb0', trial: '#ffd27a', request: '#b8d0e8',
+  reading: '#b39dff', roam: '#7fb8d8', mistake: '#ff8a7a', asked: '#ffe0f0', carcass: '#c8b8a8', visit: '#ffb3c9',
+};
+
+/**
+ * The reef's own bands as a cross-section of its stone: one ring per thing it laid down, the first
+ * at the heart, each tinted by what it remembers; `hi` (an index into `lines`) is drawn bright.
+ * Returns the ring radii so a tap can be matched to a band.
+ */
+export function drawRings(c: HTMLCanvasElement, lines: readonly string[], hi: number): { cx: number; cy: number; r0: number; step: number } {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const W = c.clientWidth || 300, H = 170;
+  c.width = W * dpr;
+  c.height = H * dpr;
+  const g = c.getContext('2d')!;
+  g.scale(dpr, dpr);
+  g.clearRect(0, 0, W, H);
+  const cx = W / 2, cy = H / 2;
+  const R = H * 0.46, r0 = 6;
+  const n = Math.max(1, lines.length);
+  const step = (R - r0) / n;
+  // The stone itself.
+  const stone = g.createRadialGradient(cx, cy, 0, cx, cy, R);
+  stone.addColorStop(0, '#4a3a40');
+  stone.addColorStop(1, '#2a2028');
+  g.fillStyle = stone;
+  g.beginPath();
+  g.arc(cx, cy, R + 2, 0, Math.PI * 2);
+  g.fill();
+  lines.forEach((line, i) => {
+    const key = line.split('|')[2] ?? '';
+    const r = r0 + (i + 0.5) * step;
+    g.strokeStyle = RING_TINT[key] ?? '#c0b0b8';
+    g.globalAlpha = i === hi ? 1 : 0.55;
+    g.lineWidth = Math.max(1, step * (i === hi ? 0.9 : 0.6));
+    g.beginPath();
+    // Slightly wobbling, as stone grows.
+    for (let a = 0; a <= 72; a++) {
+      const th = (a / 72) * Math.PI * 2;
+      const rr = r + step * (0.3 * Math.sin(th * 3 + i * 1.7) + 0.15 * Math.sin(th * 7 + i));
+      const x = cx + Math.cos(th) * rr, y = cy + Math.sin(th) * rr * 0.92;
+      if (a === 0) g.moveTo(x, y);
+      else g.lineTo(x, y);
+    }
+    g.stroke();
+  });
+  g.globalAlpha = 1;
+  return { cx, cy, r0, step };
+}

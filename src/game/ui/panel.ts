@@ -19,7 +19,7 @@ import { upgradeIcon } from './icons.ts';
 import { SHELL, SHELLS } from '../content/shells.ts';
 import { button, el } from './dom.ts';
 import { createChoices } from './choices.ts';
-import { drawCity, drawTablet, drawSeaChart, SEAMOUNT_TINT } from './drawings.ts';
+import { drawCity, drawTablet, drawSeaChart, SEAMOUNT_TINT, drawRings } from './drawings.ts';
 import { FEATS } from '../content/feats.ts';
 import { AWAY_CYCLES, AWAY_PREP, DAYS, DREAM, NOTIFY, SWELL, TODAY, WELCOME, intruderOf } from '../content/events.ts';
 import { WATER } from '../content/waters.ts';
@@ -735,14 +735,36 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const diary = el('article', 'card codex diary');
   const diaryHead = el('h3', '', DIARY_TEXT.label);
   const diaryList = el('ol', 'diary-list');
-  diary.append(diaryHead, el('p', 'hint', DIARY_TEXT.intro), diaryList);
+  // The bands as a cross-section of the stone: tap a ring to read it.
+  const ringCanvas = el('canvas', 'city-map rings') as HTMLCanvasElement;
+  const ringNote = el('p', 'hint ring-note', DIARY_TEXT.tap);
+  let ringLines: string[] = [];
+  let ringGeo = { cx: 0, cy: 0, r0: 0, step: 1 };
+  let ringW = 0;
+  ringCanvas.addEventListener('pointerdown', (e) => {
+    const b = ringCanvas.getBoundingClientRect();
+    const x = e.clientX - b.left - ringGeo.cx, y = (e.clientY - b.top - ringGeo.cy) / 0.92;
+    const i = Math.floor((Math.hypot(x, y) - ringGeo.r0) / ringGeo.step);
+    if (i < 0 || i >= ringLines.length) return;
+    ringGeo = drawRings(ringCanvas, ringLines, i);
+    const [t, h] = ringLines[i]!.split('|');
+    ringNote.textContent = `${duration(Number(t))} · ${metres(Number(h))} · ${diaryLine(ringLines[i]!)}`;
+  });
+  diary.append(diaryHead, el('p', 'hint', DIARY_TEXT.intro), ringCanvas, ringNote, diaryList);
   collapsible(diary, diaryHead);
   let diaryLen = -1;
   function renderDiary(s: GameState): void {
     diary.hidden = s.diary.length === 0;
+    // The rings are drawn at the canvas's size: again when it opens or the panel changes width.
+    if (ringCanvas.clientWidth && ringCanvas.clientWidth !== ringW) {
+      ringW = ringCanvas.clientWidth;
+      ringGeo = drawRings(ringCanvas, ringLines, -1);
+    }
     if (s.diary.length === diaryLen) return;
     diaryLen = s.diary.length;
     diaryHead.textContent = `${DIARY_TEXT.label} · ${s.diary.length}`;
+    ringLines = s.diary.slice(-60);
+    ringGeo = drawRings(ringCanvas, ringLines, -1);
     diaryList.innerHTML = '';
     for (const line of [...s.diary].reverse()) {
       const [t, h] = line.split('|');

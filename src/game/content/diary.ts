@@ -29,4 +29,4 @@ export function diaryLine(line: string): string {
   return (DIARY[key!] ?? '{a}').replace('{a}', arg ?? '');
 }
 
-export const DIARY_TEXT = { label: 'Your own bands', intro: 'What this reef laid down in its stone, newest first.', max: 200 } as const;
+export const DIARY_TEXT = { label: 'Your own bands', intro: 'What this reef laid down in its stone, newest first.', tap: 'The stone cut through: the first band at the heart. Tap a ring to read it.', max: 200 } as const;

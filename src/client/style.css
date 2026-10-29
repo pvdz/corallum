@@ -347,6 +347,7 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 .diary-what { font-family: var(--display); color: #efe6d6; }
 .city[hidden] { display: none; }
 .city-map { display: block; width: 100%; height: 150px; margin: 4px 0; }
+.city-map.rings { height: 170px; cursor: pointer; }
 .sea-chart { height: 140px; border-radius: 8px; }
 .welcome[hidden] { display: none; }
 .welcome { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0 4px; }

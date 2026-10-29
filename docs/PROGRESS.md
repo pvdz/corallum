@@ -609,3 +609,4 @@ date, what landed, what is half-done, what's next.
 - Ossel's requests: milky (sweep through the next milky sea n times; asked when one is within 10 min) and lucky (touch a lucky one). Bot 7h08.
 - The release is more visible: bundles bigger and pinker, drifting wide as they rise, and the water goes pink at the height of it. Ossel no longer asks questions after the ending.
 - NEWS updated (news:2026-10-29c) for the recent additions.
+- Your own bands as a cross-section of the stone (drawings.ts drawRings): one ring per diary entry (last 60), the first at the heart, tinted by kind; tap a ring to read it. Redrawn when the card opens.
