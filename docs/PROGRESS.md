@@ -708,3 +708,4 @@ date, what landed, what is half-done, what's next.
 - Moment egg-cases (300 m: gifts ×1.25 or calcite ×1.05).
 - A second Sunlit great work, the lagoon rim (from 3900 m; bloom+sand; spawn ×1.1 per stage), drawn as a low arc of stones on the sand. Bot 7h28.
 - Rare on the Silt Floor: a march of brittle stars crossing the floor together every 13 min.
+- Feat Homecoming (5 lost shoals); A full shelf now counts every kind (12).

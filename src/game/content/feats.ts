@@ -7,6 +7,7 @@ import type { GameState } from '../sim/state.ts';
 import { CREATURES } from './creatures.ts';
 import { FIGURES } from './sky.ts';
 import { MOMENTS } from './moments.ts';
+import { SHELLS } from './shells.ts';
 import { ended, vowLineage } from '../sim/economy.ts';
 import { VOWS } from './lineage.ts';
 
@@ -43,7 +44,7 @@ export const FEATS: readonly Feat[] = [
   { id: 'riddles', name: 'The elder’s respect', text: 'Answer all six of the elder’s riddles rightly in one reef.', when: (s) => Object.values(s.riddles).every((r) => r === 'right') },
   { id: 'signals', name: 'Fluent', text: 'Answer ten of the shoals’ signals in one reef.', when: (s) => s.signal.answered >= 10, progress: (s) => [s.signal.answered, 10] },
   { id: 'companion', name: 'Kept close', text: 'Keep a creature close as your companion.', when: (s) => s.meta.companion !== '' },
-  { id: 'shells', name: 'A full shelf', text: 'Keep all eight kinds of shell.', when: (s) => s.meta.shells.length >= 8, progress: (s) => [s.meta.shells.length, 8] },
+  { id: 'shells', name: 'A full shelf', text: 'Keep every kind of shell.', when: (s) => s.meta.shells.length >= SHELLS.length, progress: (s) => [s.meta.shells.length, SHELLS.length] },
   { id: 'readings', name: 'Every band read', text: 'Read every band the scouts can find.', when: (s) => s.readings.length >= 12, progress: (s) => [s.readings.length, 12] },
   { id: 'truce', name: 'Terms', text: 'Settle all three truce meetings.', when: (s) => !!s.truce.wall },
   { id: 'meadows', name: 'Gardener', text: 'Sow 6 seagrass meadows.', when: (s) => s.levels.meadow >= 6 },
@@ -78,6 +79,7 @@ export const FEATS: readonly Feat[] = [
   { id: 'heard-it-all', name: 'Ossel heard it all', text: 'Answer all of Ossel’s questions on one reef.', when: (s) => Object.values(s.asked).every((a) => a !== '') },
   { id: 'both-ways', name: 'Both ways', text: 'Across the line, meet every moment both ways.', when: (s) => MOMENTS.every((m) => s.meta.seen.includes(`m:${m.id}:a`) && s.meta.seen.includes(`m:${m.id}:b`)), progress: (s) => [s.meta.seen.filter((k) => k.startsWith('m:')).length, MOMENTS.length * 2] },
   { id: 'vowed', name: 'Every vow kept', text: 'Reach the surface and spawn under all three vows, all kept.', hidden: true, when: (s) => ended(s) && s.vows.length === VOWS.length && vowLineage(s) === VOWS.reduce((a, v) => a + v.lineage, 0) },
+  { id: 'homecoming', name: 'Homecoming', text: 'Call five lost shoals home on one reef.', when: (s) => s.tally.strays >= 5, progress: (s) => [s.tally.strays, 5] },
   { id: 'many-reefs', name: 'A reef of many reefs', text: 'Take in five drifting fragments on one reef.', when: (s) => s.fragments >= 5, progress: (s) => [s.fragments, 5] },
   { id: 'album', name: 'An album', text: 'Take a picture of the reef in every zone, across the line.', when: (s) => [1, 2, 3, 4, 5].every((z) => s.meta.seen.includes(`did:photo-z${z}`)), progress: (s) => [[1, 2, 3, 4, 5].filter((z) => s.meta.seen.includes(`did:photo-z${z}`)).length, 5] },
   { id: 'rare-sights', name: 'Rare sights', text: 'See ten rare creatures, across the line.', when: (s) => CREATURES.filter((c) => c.note.startsWith('Rare.') && s.meta.seen.includes(`c:${c.id}`)).length >= 10, progress: (s) => [CREATURES.filter((c) => c.note.startsWith('Rare.') && s.meta.seen.includes(`c:${c.id}`)).length, 10] },
