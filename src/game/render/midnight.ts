@@ -414,6 +414,38 @@ export function createMidnightScene(seed: number): Scene {
   }
 
   /**
+   * The cold seep beside the reef (a moment): a crack at the bottom of the frame ringed with white
+   * mats, a slow stream of bubbles going up; built over, it is crusted chalk-white instead.
+   */
+  function drawSeep(ctx: CanvasRenderingContext2D, t: number, L: ReefLayout, built: boolean): void {
+    const s = scale();
+    const x = L.cx + focus.w * 0.24, y = focus.y + focus.h * 0.985;
+    ctx.save();
+    ctx.fillStyle = built ? 'rgba(235,230,215,0.85)' : 'rgba(230,235,240,0.55)';
+    for (let k = 0; k < 9; k++) {
+      ctx.beginPath();
+      ctx.ellipse(x + (k - 4) * 9 * s + Math.sin(k * 2.3) * 4 * s, y - Math.abs(Math.sin(k * 1.7)) * 4 * s, (8 + (k % 3) * 3) * s, 3 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.fillStyle = 'rgba(8,10,16,0.9)';
+    ctx.beginPath();
+    ctx.ellipse(x, y, 7 * s, 2 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    if (!built) {
+      ctx.strokeStyle = 'rgba(200,220,255,0.5)';
+      ctx.lineWidth = 0.8 * s;
+      for (let k = 0; k < 10; k++) {
+        const u = ((t * 0.12 + k * 0.137) % 1);
+        const bx = x + Math.sin(t * 1.5 + k) * 4 * s + u * 10 * s, by = y - u * focus.h * 0.5;
+        ctx.beginPath();
+        ctx.arc(bx, by, (1.5 + u * 2) * s, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  /**
    * The fire-body the reef kept (a moment): a shorter glowing tube hung across the branches below
    * the crown, rippling slowly, still alive.
    */
@@ -968,6 +1000,7 @@ export function createMidnightScene(seed: number): Scene {
       drawGhosts(ctx, focus, v.ancestors, v.height, t, scale(), 'rgba(170,180,230,1)');
       drawSisterFar(ctx, focus, v.sister - v.gauge, t, scale(), false);
       drawSpire(ctx, focus, v.works.spire, scale(), t, focus.y + focus.h * 0.99);
+      if (v.moments.seep) drawSeep(ctx, t, L, v.moments.seep === 'b');
       reef.draw(ctx, L, v, t);
       drawRelics(ctx, reef, L, v.relics, t, v.moments['old-lamp'] === 'a');
       if (v.nets > 0) drawNets(ctx, reef, L, v.nets, t);
