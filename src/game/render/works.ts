@@ -163,7 +163,8 @@ export function drawBreakwater(ctx: CanvasRenderingContext2D, F: Focus, stage: n
 }
 
 /** The sun terrace: flat stepped slabs either side of the reef's foot, green with algae on top. */
-export function drawTerrace(ctx: CanvasRenderingContext2D, cx: number, unit: number, stage: number, s: number, floor: (x: number) => number): void {
+export function drawTerrace(ctx: CanvasRenderingContext2D, cx: number, unit: number, stage: number, s: number, floor: (x: number) => number,
+  t = 0): void {
   if (stage <= 0) return;
   const steps = [0, 1, 3, 5][stage]!;
   ctx.save();
@@ -171,11 +172,34 @@ export function drawTerrace(ctx: CanvasRenderingContext2D, cx: number, unit: num
     for (const side of [-1, 1]) {
       const x = cx + side * (0.16 + k * 0.05) * unit;
       const y = floor(x) - (steps - k) * 5 * s;
-      const w = 0.06 * unit, h = 6 * s;
-      ctx.fillStyle = '#c9b48c';
-      ctx.fillRect(x - w / 2, y, w, h + (steps - k) * 5 * s);
-      ctx.fillStyle = 'rgba(110,170,90,0.75)';
+      const w = 0.06 * unit, h = 6 * s + (steps - k) * 5 * s;
+      // The slab: a lit top face and a shaded front.
+      ctx.fillStyle = '#d8c49a';
+      ctx.fillRect(x - w / 2, y, w, h);
+      ctx.fillStyle = 'rgba(80,60,40,0.25)';
+      ctx.fillRect(x - w / 2, y + 3 * s, w, h - 3 * s);
+      // Seams between the set stones.
+      ctx.strokeStyle = 'rgba(90,70,50,0.35)';
+      ctx.lineWidth = 0.8 * s;
+      ctx.beginPath();
+      ctx.moveTo(x - w * 0.1, y + 3 * s);
+      ctx.lineTo(x - w * 0.1, y + h);
+      ctx.moveTo(x + w * 0.3, y + 3 * s);
+      ctx.lineTo(x + w * 0.3, y + h);
+      ctx.stroke();
+      // Algae along the top, tufts swaying.
+      ctx.fillStyle = 'rgba(110,170,90,0.8)';
       ctx.fillRect(x - w / 2, y - 1.5 * s, w, 3 * s);
+      ctx.strokeStyle = 'rgba(120,190,100,0.85)';
+      ctx.lineWidth = 1.2 * s;
+      ctx.beginPath();
+      for (let q = 0; q < 5; q++) {
+        const tx = x - w / 2 + (q + 0.5) * (w / 5);
+        const sway = Math.sin(t * 1.1 + q + k * 2 + side) * 2 * s;
+        ctx.moveTo(tx, y - 1 * s);
+        ctx.quadraticCurveTo(tx + sway * 0.5, y - 5 * s, tx + sway, y - 8 * s);
+      }
+      ctx.stroke();
     }
   }
   ctx.restore();

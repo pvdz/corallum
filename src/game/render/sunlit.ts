@@ -923,7 +923,7 @@ export function createSunlitScene(seed: number): Scene {
       if (night > 0) drawNight(ctx, t, night, 0.6);
       if (v.othersSpawn) drawOthersSpawn(ctx, t);
       drawSleepers(ctx, t, v.rasp, night);
-      drawTerrace(ctx, L.cx, L.unit, v.works.terrace, scale(), (x) => floorY(Math.min(1, Math.max(0, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2)))));
+      drawTerrace(ctx, L.cx, L.unit, v.works.terrace, scale(), (x) => floorY(Math.min(1, Math.max(0, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2)))), t);
       reef.draw(ctx, L, v, t);
       drawRelics(ctx, reef, L, v.relics, t);
       if (turtleRests) {
