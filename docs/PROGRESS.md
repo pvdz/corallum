@@ -536,3 +536,4 @@ date, what landed, what is half-done, what's next.
 - Mantis shrimp at a burrow on the Twilight slope (twilight.ts drawMantis): banded, eyes swivelling apart; touched, it strikes with a flash and a ring.
 - Vent shrimp crowd the vent chimney (life.ts drawVentShrimp, more per tier); touched, they scatter and drift back.
 - Hard seamount 'thorny' (Seamount.thorns 0.5 → economy thornPeriod in currentThorn/untilThorn); trial to 3700 m → passed('thorny') pays intruders ×1.5; moment 'outbreak' (calcite ×1.1 / thorn stars off for half).
+- On a thorny seamount, thorn stars dot the Twilight slope all the time (twilight.ts drawSlopeThorns).

@@ -744,6 +744,30 @@ export function createTwilightScene(seed: number): Scene {
    * Garden eels: a colony of thin eels standing out of their burrows in the sand, all leaning into
    * the current to catch drifting food, and ducking down in waves when something passes.
    */
+  /** On a thorny seamount, crown-of-thorns starfish dot the slope all the time, creeping slowly. */
+  function drawSlopeThorns(ctx: CanvasRenderingContext2D, t: number): void {
+    const s = scale();
+    for (let k = 0; k < 7; k++) {
+      const u = ((k * 0.137 + 0.05 + t * 0.0006 * (k % 2 ? 1 : -1)) % 1 + 1) % 1;
+      const x = focus.x - focus.w * 0.1 + u * focus.w * 1.2, y = slopeY(u) + 1 * s;
+      const r = (8 + (k % 3) * 1.5) * s;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(1, 0.45);
+      ctx.fillStyle = k % 2 ? '#9a3f62' : '#7c4a8a';
+      ctx.beginPath();
+      for (let a = 0; a < 14; a++) {
+        const ang = (a / 14) * Math.PI * 2 + k;
+        const rr = a % 2 ? r * 0.6 : r * 1.2;
+        if (a === 0) ctx.moveTo(Math.cos(ang) * rr, Math.sin(ang) * rr);
+        else ctx.lineTo(Math.cos(ang) * rr, Math.sin(ang) * rr);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
   /**
    * A mantis shrimp at the mouth of its burrow on the slope: a bright banded head and forelimbs out
    * of the hole, stalked eyes swivelling on their own. Touched, it strikes: a white flash and a ring.
@@ -1442,6 +1466,7 @@ export function createTwilightScene(seed: number): Scene {
       drawSeaFans(ctx, t);
       drawGardenEels(ctx, t);
       drawMantis(ctx, t);
+      if (v.seamount === 'thorny') drawSlopeThorns(ctx, t);
       drawMoray(ctx, t);
       drawCurrent(ctx, t, v.current);
       if (v.upwell) drawUpwell(ctx, t, v.upwell);
