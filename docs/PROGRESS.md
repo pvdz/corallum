@@ -675,3 +675,4 @@ date, what landed, what is half-done, what's next.
 - The chronicle marks endings under a blue moon (blue ring on the chart) and with all vows kept (gold ring).
 - Trait Helping habit (habit, 6): while watching, a creature left in trouble 20 s is freed by the reef itself for half (economy helpTangle).
 - The jelly bloom, once met, leaves small pale bells pulsing through the Midnight Water. Request 'visitor' (touch today's visitor).
+- The epilogue garden matures: each child grows to twice its size over the two hours after the release.

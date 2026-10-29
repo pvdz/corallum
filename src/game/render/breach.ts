@@ -1408,7 +1408,9 @@ export function createBreachScene(seed: number): Scene {
         const side = k % 2 ? 1 : -1;
         const gx = L.cx + side * (110 + Math.floor(k / 2) * 46 + (k % 3) * 8) * scale();
         const kind = GARDEN.kinds.find((x) => x.id === v.gardenKinds[k]);
-        drawColony(ctx, gx, waterY() + (70 + (k % 4) * 14) * scale(), scale() * (0.8 + (k % 3) * 0.15), t,
+        // The garden matures over the hours after the release: each child up to twice its first size.
+        const grown = 1 + Math.min(1, Math.max(0, v.sinceBreach - 300 * k) / 7200);
+        drawColony(ctx, gx, waterY() + (70 + (k % 4) * 14) * scale(), scale() * (0.8 + (k % 3) * 0.15) * grown, t,
           kind?.colours ?? { branch: '#b0607a', tip: '#e8a0b8', polyp: 'rgba(255,225,235,0.95)' }, seed + k * 131);
       }
       drawTop(ctx, v, reef.crown(L));
