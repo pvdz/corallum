@@ -3,7 +3,7 @@
 
 export type CreatureId =
   | 'jelly' | 'brittle-star' | 'rattail' | 'sea-pig' | 'sea-lily' | 'glass-sponge' | 'tube-worm'
-  | 'lanternfish' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid'
+  | 'lanternfish' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall'
   | 'rasp' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch'
   | 'reef-fish' | 'whale' | 'turtle' | 'clownfish'
   | 'shore-bird' | 'dolphin';
@@ -24,6 +24,7 @@ export const CREATURES: readonly Creature[] = [
   { id: 'siphonophore', name: 'The long animal', zone: 'The Midnight Water', note: 'One animal, and also a colony: a chain of bells longer than the reef.' },
   { id: 'anglerfish', name: 'Anglerfish', zone: 'The Midnight Water', note: 'A lure of light on a rod, and a mouth of needles behind it.' },
   { id: 'vampire-squid', name: 'Vampire squid', zone: 'The Midnight Water', note: 'A red cloak of arms, blue eyes, and lights at the tips of its fins.' },
+  { id: 'whale-fall', name: 'A whale fall', zone: 'The Midnight Water', note: 'Bones on the flank, and a whole small world living off them.' },
   { id: 'rasp', name: 'The Rasp', zone: 'The Twilight Shelf', note: 'Blunt beaks that grind dead stone into sand.' },
   { id: 'manta', name: 'Manta', zone: 'The Twilight Shelf', note: 'Wings as wide as the reef is tall, gliding through the light.' },
   { id: 'garden-eel', name: 'Garden eels', zone: 'The Twilight Shelf', note: 'A colony standing out of the sand, ducking all at once.' },

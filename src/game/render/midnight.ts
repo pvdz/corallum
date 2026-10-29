@@ -154,6 +154,37 @@ export function createMidnightScene(seed: number): Scene {
     ctx.strokeStyle = 'rgba(110,130,210,0.18)';
     ctx.lineWidth = 1.2 * dpr;
     ctx.stroke();
+    // A whale fall on the flank: an old skeleton, the spine and the arcs of the ribs, pale in the dark.
+    const s = scale() * 1.4;
+    const wx = focus.x + focus.w * 0.2, wy = base - focus.h * 0.035;
+    if (wy < h) {
+      sight('whale-fall');
+      ctx.save();
+      ctx.strokeStyle = 'rgba(200,205,225,0.55)';
+      ctx.lineCap = 'round';
+      ctx.lineWidth = 2.2 * s;
+      ctx.beginPath();
+      ctx.moveTo(wx - 60 * s, wy + 2 * s);
+      ctx.quadraticCurveTo(wx, wy - 4 * s, wx + 64 * s, wy + 3 * s);
+      ctx.stroke();
+      ctx.lineWidth = 1.5 * s;
+      for (let k = 0; k < 11; k++) {
+        const rx = wx - 44 * s + k * 7.5 * s;
+        const rh = (14 - Math.abs(k - 4) * 1.4) * s;
+        ctx.beginPath();
+        ctx.moveTo(rx, wy - 1 * s);
+        ctx.quadraticCurveTo(rx + 5 * s, wy - rh, rx + 2 * s, wy - rh * 1.25);
+        ctx.stroke();
+      }
+      // The skull, and the lights of the small things living on it.
+      ctx.fillStyle = 'rgba(200,205,225,0.45)';
+      ctx.beginPath();
+      ctx.ellipse(wx + 74 * s, wy, 13 * s, 6 * s, 0.1, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalCompositeOperation = 'lighter';
+      for (let k = 0; k < 6; k++) glow(ctx, wx - 40 * s + k * 20 * s, wy - 4 * s, 4 * s, '255,140,180', 0.4);
+      ctx.restore();
+    }
   }
 
   /**

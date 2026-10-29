@@ -191,3 +191,4 @@ date, what landed, what is half-done, what's next.
 - View mode has a camera button: saves the scene as a PNG named after the reef and its height.
 - Twilight Shelf: three swaying sea fans (gorgonians) on the slope.
 - Grow tab ends with "Coming up: <next hidden upgrade> — <what opens it>".
+- Midnight Water: a whale fall (spine, ribs, skull, small pink lights living on it) on the seamount's flank early in the zone (journal: 25).
