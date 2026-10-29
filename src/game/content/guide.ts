@@ -13,7 +13,7 @@ export const GUIDE: readonly [string, string][] = [
   ['Shards', 'Sweeping, catching what falls, touching neighbours and the shoals’ journeys sometimes turn up a shard of an old tablet. The whole line keeps them.'],
   ['Residents', 'From the Twilight Shelf, small animals ask for a home in your branches. Homes are few: choose who suits the water you are in.'],
   ['Great works', 'One large thing to build in each middle zone, in stages, each paid in two kinds at once.'],
-  ['Tangles', 'Now and then a small fish gets caught in a jelly’s threads near the reef (at the Breach, stranded on your crown). Tap it free for a burst.'],
+  ['Tangles', 'Now and then a small fish gets caught in a jelly’s threads near the reef (on the floor, a brittle star under a stone; at the Breach, a fish stranded on your crown). Tap it free for a burst.'],
   ['Intruders', 'Something comes to eat the reef in every zone: a snail, a dragonfish, a thorn star, a gull. Tap it away for a burst.'],
   ['The signal', 'The shoals sometimes flash a pattern of lights. Watch, then press the same lamps (or keys 7–0).'],
   ['The elder', 'Once the truce begins, the Rasp elder asks about what the bands told. Answer rightly for lineage.'],

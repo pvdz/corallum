@@ -659,3 +659,4 @@ date, what landed, what is half-done, what's next.
 - Tangles (events.ts TANGLE; economy currentTangle/freeTangle; render/tangle.ts): in the Midnight Water to the Sunlit Crown, one slot every 7 min a small fish is caught in a jelly's threads near the reef for 35 s; tap it free for 40 s of the zone's currency. Whisper, request 'free', feat Untangler (10), guide row; sim test.
 - At the Breach the tangle slot is a fish stranded on the crown at low water (breach.ts drawStranded; ReefView stranded): tap to toss it back.
 - systems e2e frees a tangled fish (debug hook corallum.tangle()).
+- On the Silt Floor the rescue slot is a brittle star pinned under a fallen stone (tangle.ts drawPinned): every zone now has a small creature to help.

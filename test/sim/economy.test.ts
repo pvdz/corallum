@@ -670,7 +670,7 @@ test("today's visitor: one of the zone's creatures; its first touch today brings
   assert.ok(!visited(s));
 });
 
-test('a tangled fish: one per slot in the middle zones, freed once for a burst', () => {
+test('a creature in trouble: one per slot, freed once for a burst', () => {
   const s = newGame(61);
   s.height = 500;
   s.levels.polyp = 5;
@@ -680,7 +680,4 @@ test('a tangled fish: one per slot in the middle zones, freed once for a burst',
   assert.ok(freeTangle(s) > 0);
   assert.equal(currentTangle(s), null);
   assert.equal(freeTangle(s), 0);
-  s.height = 10;
-  s.t += 420;
-  assert.equal(currentTangle(s), null, 'not on the Silt Floor');
 });

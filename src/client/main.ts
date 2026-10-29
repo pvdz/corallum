@@ -17,7 +17,7 @@ import type { UpgradeId } from '../game/content/types.ts';
 import { ACTS, act, actAt } from '../game/content/acts.ts';
 import { createAbyssScene } from '../game/render/abyss.ts';
 import { createMidnightScene } from '../game/render/midnight.ts';
-import { drawTangle } from '../game/render/tangle.ts';
+import { drawPinned, drawTangle } from '../game/render/tangle.ts';
 import { createBreachScene, lightningAt } from '../game/render/breach.ts';
 import { createSunlitScene } from '../game/render/sunlit.ts';
 import { createTwilightScene } from '../game/render/twilight.ts';
@@ -1321,7 +1321,7 @@ canvas.addEventListener('pointerdown', (e) => {
     if (frozenT === null) {
       const gain = freeTangle(state);
       if (gain > 0) {
-        floatText(e.clientX, e.clientY - 20, `+${num(gain)} ${feastPay(state)} ${actAt(state.height) === 5 ? TANGLE.tossed : TANGLE.float}`, 'feast-float');
+        floatText(e.clientX, e.clientY - 20, `+${num(gain)} ${feastPay(state)} ${actAt(state.height) === 5 ? TANGLE.tossed : actAt(state.height) === 1 ? TANGLE.lifted : TANGLE.float}`, 'feast-float');
         audio.cue('shimmer');
         buzz([10, 30, 10]);
         save();
@@ -1849,7 +1849,8 @@ function frame(now: number): void {
   const fe = currentFeast(state);
   if (fe) drawFeast(ctx, fe, state.t - fe.start, tNow, focusNow, dpr, feastPay(state));
   const tg = currentTangle(state);
-  if (tg && actAt(state.height) !== 5) drawTangle(ctx, tg, TANGLE.life, tNow, focusNow, dpr);
+  if (tg && actAt(state.height) === 1) drawPinned(ctx, tg, TANGLE.life, tNow, focusNow, dpr);
+  else if (tg && actAt(state.height) !== 5) drawTangle(ctx, tg, TANGLE.life, tNow, focusNow, dpr);
   taps.draw(ctx, tNow, scene.crownAt, dpr, (x, y) => actAt(state.height) <= 2 || !!scene.darkAt?.(x, y));
   drawLucky(tNow);
   ctx.setTransform(1, 0, 0, 1, 0, 0);

@@ -60,3 +60,47 @@ export function drawTangle(ctx: CanvasRenderingContext2D, tg: { k: number; x: nu
   glow(ctx, fx, fy, 20 * s, '255,220,160', 0.15);
   ctx.restore();
 }
+
+/** On the Silt Floor: a brittle star pinned under a fallen stone, its free arms waving. */
+export function drawPinned(ctx: CanvasRenderingContext2D, tg: { k: number; x: number; age: number }, life: number, t: number, focus: Focus, dpr: number): void {
+  const s = Math.min(focus.w, focus.h) / 700 * 1.6;
+  const a = Math.min(1, tg.age / 2, (life - tg.age) / 3);
+  if (a <= 0) return;
+  const x = focus.x + focus.w * tg.x, y = focus.y + focus.h * 0.86;
+  spot('tangle', x, y - 6 * s, Math.max(36 * s, 30 * dpr));
+  ctx.save();
+  ctx.globalAlpha = a;
+  // Three free arms waving out from under the stone.
+  ctx.strokeStyle = 'rgba(230,170,150,0.95)';
+  ctx.lineCap = 'round';
+  ctx.lineWidth = 1.8 * s;
+  for (let i = 0; i < 3; i++) {
+    const base = Math.PI * (0.9 + i * 0.3);
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    let px = x, py = y;
+    for (let j = 1; j <= 6; j++) {
+      const ang = base + Math.sin(t * 2.5 + i * 2 + j * 0.5) * 0.35;
+      px += Math.cos(ang) * 3 * s;
+      py += Math.sin(ang) * 1.6 * s - 0.4 * s;
+      ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+  }
+  // The stone across it.
+  ctx.fillStyle = '#3a3d52';
+  ctx.beginPath();
+  ctx.ellipse(x + 4 * s, y - 3 * s, 11 * s, 7 * s, 0.2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(160,170,210,0.25)';
+  ctx.beginPath();
+  ctx.ellipse(x + 2 * s, y - 6 * s, 6 * s, 2.5 * s, 0.2, 0, Math.PI * 2);
+  ctx.fill();
+  const p = (t * 0.6) % 1;
+  ctx.strokeStyle = `rgba(255,235,200,${0.35 * (1 - p)})`;
+  ctx.lineWidth = 1.2 * dpr;
+  ctx.beginPath();
+  ctx.arc(x, y - 4 * s, (18 + 14 * p) * s, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+}

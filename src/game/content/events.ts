@@ -162,8 +162,10 @@ export const FEAST = {
  * a fish stranded on the crown; while you watch): one slot every `period` seconds, there for `life`. Freed, it pays `seconds` of the zone's currency.
  */
 export const TANGLE = {
-  period: 420, life: 35, seconds: 40, zones: [2, 3, 4, 5] as readonly number[],
+  period: 420, life: 35, seconds: 40, zones: [1, 2, 3, 4, 5] as readonly number[],
   float: '· freed',
   /** At the Breach it is a fish stranded on the crown at low water, tossed back. */
   tossed: '· back in the sea',
+  /** On the Silt Floor it is a brittle star pinned under a fallen stone, lifted off. */
+  lifted: '· the stone lifted',
 } as const;
