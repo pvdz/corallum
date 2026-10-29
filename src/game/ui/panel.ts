@@ -405,7 +405,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const name = el('strong', '', known ? c.name : 'Not yet seen');
         if (known && s.meta.seen.includes(`t:${c.id}`)) name.append(el('em', 'touched', ' · touched'));
         text.append(name,
-          el('span', '', known ? c.note : c.note.startsWith('Rare.') ? 'Rare: watch for it.' : (/Only on [^.]*\./.exec(c.note)?.[0] ?? '')));
+          el('span', '', known ? c.note : c.note.startsWith('Rare.') ? 'Rare: watch for it.' : (/Only (?:on|after) [^.]*\./.exec(c.note)?.[0] ?? '')));
         row.append(text);
         journalList.append(row);
       }
