@@ -242,4 +242,7 @@ export const OSSEL_LINES: readonly string[] = [
   'Every reef dies a little at the tips and a little at the heart. The trick is to keep growing in between.',
   'Some days the shoals sing. Fish cannot sing. And yet.',
   'If you meet something lucky, touch it. Luck does not wait in the dark.',
+  'The fish that get caught in the jellies are always the young ones. We were young once too, and caught in worse.',
+  'When the moon is blue, every reef in the sea feels it. Nobody knows why. Nobody has to.',
+  'I used to count the bands. Now I just listen to them.',
 ];
