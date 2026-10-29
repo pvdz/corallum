@@ -576,9 +576,11 @@ export function createMidnightScene(seed: number): Scene {
     }
   }
 
-  function drawSnow(ctx: CanvasRenderingContext2D, t: number): void {
+  /** Marine snow; above the snowline (that band) the Long Silt thins to a third. */
+  function drawSnow(ctx: CanvasRenderingContext2D, t: number, thin: boolean): void {
     ctx.fillStyle = 'rgba(190,205,240,0.35)';
-    for (const f of flakes) {
+    for (const [i, f] of flakes.entries()) {
+      if (thin && i % 3) continue;
       const y = ((f.y + t * f.speed) % 1) * (h + 10) - 5;
       const x = (((f.x + Math.sin(t * 0.25 + f.phase) * 0.003) % 1) + 1) % 1 * w;
       speck(ctx, x, y, f.r);
@@ -665,7 +667,7 @@ export function createMidnightScene(seed: number): Scene {
       drawMigration(ctx, t);
       if (v.bands.includes('glass')) for (let i = 0; i < 4; i++) swimShrimp(ctx, t, i);
       if (v.bands.includes('siphon')) drawSiphonophore(ctx, t);
-      drawSnow(ctx, t);
+      drawSnow(ctx, t, v.bands.includes('snowline'));
       shoals.drawBack(ctx, focus, reef, L, v, t);
       drawFlank(ctx, p, t);
       reef.draw(ctx, L, v, t);

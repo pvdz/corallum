@@ -312,3 +312,4 @@ date, what landed, what is half-done, what's next.
 - Breach sky: a faint Milky Way band (soft dust, a dark lane, ~700 faint stars), cached once per size, fading with the dawn.
 - Sunlit storms (after the band 'Storm'): 50 s in every 12 min, the surface torn white, the light greys and shakes, sand stirred on the surge, broken branches tumbling past.
 - The Breach: after 'The waiting fish' band, bright reef fish crowd under the crown turning slow circles, and spread out to feed after the release.
+- Midnight marine snow thins to a third after the band 'Above the snowline'.
