@@ -1731,7 +1731,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           if (after.id !== next.id && ut + WATER.period < 1200) marks.push([ut + WATER.period, after.name.toLowerCase()]);
           marks.sort((a, b) => a[0] - b[0]);
         }
-        const key = marks.map(([t, w]) => `${Math.round(t / 12)}${w}`).join('|');
+        const key = `${turning}|` + marks.map(([t, w]) => `${Math.round(t / 12)}${w}`).join('|');
         if (key !== almanacKey) {
           almanacKey = key;
           almanac.innerHTML = '';
