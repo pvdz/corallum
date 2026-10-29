@@ -34,6 +34,7 @@ import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS } from '../game/content/lineage.ts';
 import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
 import { createPortraits } from './portraits.ts';
+import { createZoom } from './zoom.ts';
 import { drawMoon } from '../game/render/draw.ts';
 import { GAUGE_MOON } from '../game/content/act5.ts';
 import { creatureAt, endFrameSpots, startle, tappable, takeSightings } from '../game/render/sightings.ts';
@@ -699,7 +700,7 @@ function eatFeast(share = 1): boolean {
 
 // Tapping the water sweeps the tentacles: a small burst of calcite. Tapping a falling feast eats it.
 canvas.addEventListener('pointerdown', (e) => {
-  if (pinchDown(e)) return;
+  if (zoomer.pinchDown(e)) return;
   // The world point under the finger (the view may be zoomed).
   const [wx, wy] = toWorld(e.clientX * dpr, e.clientY * dpr);
   // Tapping a creature names it (the sweep still happens).
@@ -813,7 +814,7 @@ viewBtn.title = 'Hide the panel (H)';
 viewBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>';
 function setViewMode(on: boolean): void {
   viewMode = on;
-  if (!on) zoom.k = 1;
+  if (!on) zoomer.reset();
   document.documentElement.classList.toggle('view-mode', on);
   viewBtn.setAttribute('aria-pressed', String(on));
   viewBtn.title = on ? 'Show the panel (H) · scroll, pinch or + / − to look closer' : 'Hide the panel (H)';
@@ -821,73 +822,8 @@ function setViewMode(on: boolean): void {
 }
 viewBtn.addEventListener('click', () => setViewMode(!viewMode));
 
-// View-mode zoom: up to 3× into the world, by wheel, pinch or + / −. The scene is drawn under the
-// transform (not upscaled), so the detail stays sharp. zoomC is the world point at the centre.
-const ZOOM_MAX = 3;
-let zoomCx = 0, zoomCy = 0;
-function zoomOffset(): [number, number] {
-  if (zoom.k === 1) return [0, 0];
-  return [canvas.width / 2 - zoom.k * zoomCx, canvas.height / 2 - zoom.k * zoomCy];
-}
-function applyZoom(c: CanvasRenderingContext2D): void {
-  const [ex, ey] = zoomOffset();
-  c.setTransform(zoom.k, 0, 0, zoom.k, ex, ey);
-}
-function toWorld(sx: number, sy: number): [number, number] {
-  const [ex, ey] = zoomOffset();
-  return [(sx - ex) / zoom.k, (sy - ey) / zoom.k];
-}
-function toScreen(wx: number, wy: number): [number, number] {
-  const [ex, ey] = zoomOffset();
-  return [wx * zoom.k + ex, wy * zoom.k + ey];
-}
-/** Zoom to `k`, keeping the world point under screen point (sx, sy) where it is; the view stays inside the world. */
-function zoomAt(k: number, sx: number, sy: number): void {
-  const [wx, wy] = toWorld(sx, sy);
-  zoom.k = Math.min(ZOOM_MAX, Math.max(1, k));
-  const W = canvas.width, H = canvas.height;
-  zoomCx = wx - (sx - W / 2) / zoom.k;
-  zoomCy = wy - (sy - H / 2) / zoom.k;
-  zoomCx = Math.min(W - W / (2 * zoom.k), Math.max(W / (2 * zoom.k), zoomCx));
-  zoomCy = Math.min(H - H / (2 * zoom.k), Math.max(H / (2 * zoom.k), zoomCy));
-}
-canvas.addEventListener('wheel', (e) => {
-  if (!viewMode) return;
-  e.preventDefault();
-  zoomAt(zoom.k * Math.exp(-e.deltaY * 0.0015), e.clientX * dpr, e.clientY * dpr);
-}, { passive: false });
-// Pinch: two fingers zoom about their midpoint, and moving the midpoint pans.
-const fingers = new Map<number, [number, number]>();
-let pinch: { d: number; mx: number; my: number } | null = null;
-function pinchState(): { d: number; mx: number; my: number } {
-  const [a, b] = [...fingers.values()] as [[number, number], [number, number]];
-  return { d: Math.hypot(a[0] - b[0], a[1] - b[1]), mx: (a[0] + b[0]) / 2, my: (a[1] + b[1]) / 2 };
-}
-/** A finger went down; true when it starts a pinch (in view mode), which is not a tap. */
-function pinchDown(e: PointerEvent): boolean {
-  if (!viewMode || e.pointerType !== 'touch') return false;
-  fingers.set(e.pointerId, [e.clientX * dpr, e.clientY * dpr]);
-  if (fingers.size !== 2) return false;
-  pinch = pinchState();
-  return true;
-}
-canvas.addEventListener('pointermove', (e) => {
-  if (!fingers.has(e.pointerId)) return;
-  fingers.set(e.pointerId, [e.clientX * dpr, e.clientY * dpr]);
-  if (!pinch || fingers.size !== 2) return;
-  const now = pinchState();
-  // Pan by the midpoint's travel, then zoom about the new midpoint.
-  zoomCx -= (now.mx - pinch.mx) / zoom.k;
-  zoomCy -= (now.my - pinch.my) / zoom.k;
-  zoomAt(zoom.k * (now.d / Math.max(1, pinch.d)), now.mx, now.my);
-  pinch = now;
-});
-for (const type of ['pointerup', 'pointercancel'] as const) {
-  canvas.addEventListener(type, (e) => {
-    fingers.delete(e.pointerId);
-    if (fingers.size < 2) pinch = null;
-  });
-}
+const zoomer = createZoom(canvas, () => viewMode, () => dpr);
+const { toWorld, toScreen } = zoomer;
 ui.append(viewBtn);
 
 // A photo of the reef: the canvas as it is now, saved as a PNG (shown in view mode).
@@ -950,7 +886,7 @@ window.addEventListener('keydown', (e) => {
   if (/^[1-4]$/.test(e.key) && panel.showTabAt(Number(e.key))) return;
   if (viewMode && (e.key === '+' || e.key === '=' || e.key === '-' || e.key === '0')) {
     const k = e.key === '0' ? 1 : zoom.k * (e.key === '-' ? 1 / 1.25 : 1.25);
-    zoomAt(k, canvas.width / 2, canvas.height / 2);
+    zoomer.zoomAt(k, canvas.width / 2, canvas.height / 2);
     return;
   }
   if (e.key.toLowerCase() === 'h') {
@@ -1019,14 +955,14 @@ function frame(now: number): void {
     lastWhisper = Math.max(lastWhisper, now - 80_000 + 10_000);
   }
   const p0 = performance.now();
-  applyZoom(ctx);
+  zoomer.apply(ctx);
   scene.draw(ctx, tNow, v);
   const p1 = performance.now();
   if (fadingFrom) {
     const k = (tNow - fadeStart) / FADE;
     if (k >= 1) fadingFrom = null;
     else {
-      applyZoom(fadeCtx);
+      zoomer.apply(fadeCtx);
       fadingFrom.draw(fadeCtx, tNow, v);
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.save();
@@ -1034,7 +970,7 @@ function frame(now: number): void {
       ctx.drawImage(fadeCanvas, 0, 0);
       ctx.restore();
       drawAscent(k);
-      applyZoom(ctx);
+      zoomer.apply(ctx);
     }
   }
   const fe = currentFeast(state);

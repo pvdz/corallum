@@ -315,3 +315,4 @@ date, what landed, what is half-done, what's next.
 - Midnight marine snow thins to a third after the band 'Above the snowline'.
 - Gauge moon has a faint rim so a new moon reads as a shape. Fixed the series' sunlit-night shots (were day).
 - Close-up portraits: zoomed 2× or more in view mode, a creature large in view (radius ≥ 60 px) gets a sharper portrait, once per creature (corallum.portraits.close). Measured zoom cost: steady ~2.6 ms at 1× view, ~3.6 ms zoomed (the 20 ms readings were a post-relayout transient).
+- Refactor: view-mode zoom moved to client/zoom.ts (createZoom: apply, toWorld, toScreen, zoomAt, pinchDown, reset); main.ts 1132 → 1068 lines. Smoke, play, feast, pinch and wheel checks pass.
