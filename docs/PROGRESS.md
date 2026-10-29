@@ -324,3 +324,4 @@ date, what landed, what is half-done, what's next.
 - Caustics moved into the reef (reef.drawCaustics(rgb, belowY)); the Breach gets silver moonlight caustics on the stone under the surface (by moon phase), warm ones after the dawn.
 - Feat 'A closer look': a close-up portrait taken in zoomed view mode (meta.seen 'did:closeup').
 - Upgrade cards carry small line icons (ui/icons.ts, inline SVG per upgrade).
+- Your line: a little chart of the generations, one small coral per reef as tall as it grew (gauge spacing), tinted by seamount, a moon over those that spawned at the surface, the living reef last.

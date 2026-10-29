@@ -546,7 +546,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   // Your line: every earlier reef, oldest first.
   const lineCard = el('article', 'card codex line');
   const lineList = el('dl', 'codex-list');
-  lineCard.append(el('h3', '', 'Your line'), lineList);
+  // One small coral per generation, as tall as it grew (zones spaced as on the gauge), the living
+  // reef last; a moon over those that reached the surface.
+  const lineChart = el('canvas', 'line-chart');
+  lineCard.append(el('h3', '', 'Your line'), lineChart, lineList);
   lineagePage.append(lineCard);
   let lineKey: string | null = null;
   function renderLine(s: GameState): void {
@@ -555,6 +558,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (key === lineKey) return;
     lineKey = key;
     lineList.innerHTML = '';
+    drawLine(s);
     if (s.meta.fastest > 0) lineList.append(el('dt', '', 'Record'), el('dd', '', `The surface in ${duration(s.meta.fastest)} of reef time`));
     s.meta.ancestors.forEach((a, i) => {
       const [h, sm, form, end] = a.split('|');
@@ -565,6 +569,57 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         `${end === '1' ? 'reached the surface and spawned' : `let go at ${metres(Number(h))}`} · ${where}${shape ? ` · ${shape}` : ''}`));
     });
   }
+  function drawLine(s: GameState): void {
+    const gens = s.meta.ancestors.map((a) => a.split('|')).map(([h, sm, , end]) => ({ h: Number(h), sm, end: end === '1' }));
+    gens.push({ h: s.height, sm: s.seamount, end: ended(s) });
+    lineChart.hidden = gens.length < 2;
+    if (lineChart.hidden) return;
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const W = lineChart.clientWidth || 300, H = 80;
+    lineChart.width = W * dpr;
+    lineChart.height = H * dpr;
+    const c = lineChart.getContext('2d')!;
+    c.scale(dpr, dpr);
+    const tint: Record<string, string> = { plain: '#c98a9a', warm: '#e0886a', cold: '#8ab8e0', crowded: '#b49ad8' };
+    const step = Math.min(34, (W - 8) / gens.length);
+    gens.forEach((g, i) => {
+      const x = 4 + step * (i + 0.5);
+      const top = (H - 6) - (H - 20) * gaugeFraction(Math.max(1, g.h));
+      const last = i === gens.length - 1;
+      c.strokeStyle = tint[g.sm ?? 'plain'] ?? '#c98a9a';
+      c.globalAlpha = last ? 1 : 0.75;
+      c.lineCap = 'round';
+      // A trunk and a few branches, scaled to its height.
+      const hgt = (H - 6) - top;
+      c.lineWidth = 2.2;
+      c.beginPath();
+      c.moveTo(x, H - 6);
+      c.lineTo(x, top);
+      for (const f of [0.35, 0.6, 0.8]) {
+        if (hgt * f < 6) continue;
+        const y = H - 6 - hgt * f;
+        c.moveTo(x, y);
+        c.lineTo(x - 5, y - 6);
+        c.moveTo(x, y + 3);
+        c.lineTo(x + 5, y - 3);
+      }
+      c.stroke();
+      if (g.end) {
+        c.fillStyle = '#f4f1dc';
+        c.beginPath();
+        c.arc(x, 6, 3.2, 0, Math.PI * 2);
+        c.fill();
+      }
+      if (last) {
+        c.fillStyle = '#ffe2d6';
+        c.beginPath();
+        c.arc(x, top, 2.6, 0, Math.PI * 2);
+        c.fill();
+      }
+    });
+    c.globalAlpha = 1;
+  }
+
   // The next upgrade still hidden, and what opens it.
   const comingUp = el('p', 'hint coming-up');
   grow.append(comingUp);
