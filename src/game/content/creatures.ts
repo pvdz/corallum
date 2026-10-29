@@ -6,7 +6,7 @@ export type CreatureId =
   | 'lanternfish' | 'hatchetfish' | 'barreleye' | 'milky-sea' | 'comb-jelly' | 'glass-shrimp' | 'siphonophore' | 'anglerfish' | 'vampire-squid' | 'whale-fall' | 'pyrosome' | 'giant-squid' | 'migration'
   | 'rasp' | 'moray' | 'nautilus' | 'frogfish' | 'sardine-run' | 'manta' | 'garden-eel' | 'octopus' | 'nudibranch' | 'grouper' | 'whale-shark'
   | 'cuttlefish' | 'eagle-rays' | 'sea-snake' | 'dugong' | 'reef-shark' | 'reef-fish' | 'whale' | 'turtle' | 'clownfish' | 'seahorse' | 'mola' | 'bait-ball' | 'sea-firefly'
-  | 'shore-bird' | 'pelican' | 'hatchlings' | 'green-flash' | 'flying-fish' | 'dolphin' | 'moon-jelly'
+  | 'shore-bird' | 'pelican' | 'hatchlings' | 'green-flash' | 'flying-fish' | 'dolphin' | 'moon-jelly' | 'sailors' | 'petrel' | 'sea-sparkle'
   | 'thorn-star' | 'dragonfish' | 'drill-snail' | 'gull' | 'guard-crab' | 'goby' | 'feather-duster' | 'pistol-shrimp' | 'sea-cucumber' | 'damselfish' | 'host-anemone';
 
 export type Creature = { id: CreatureId; name: string; zone: string; note: string };
@@ -68,6 +68,9 @@ export const CREATURES: readonly Creature[] = [
   { id: 'pelican', name: 'Pelican', zone: 'The Breach', note: 'Only after dawn. It glides along the swell, folds itself up, and drops like a stone.' },
   { id: 'hatchlings', name: 'Turtle hatchlings', zone: 'The Breach', note: 'Only after the release, at dawn. A beach somewhere let them go the same night you did.' },
   { id: 'flying-fish', name: 'Flying fish', zone: 'The Breach', note: 'They leave the sea entirely, for a few seconds at a time, on fins like wings.' },
+  { id: 'sailors', name: 'By-the-wind sailors', zone: 'The Breach', note: 'A fleet of blue floats, each with a little stiff sail set at a slant. Wherever the wind goes, they go.' },
+  { id: 'petrel', name: 'Storm petrels', zone: 'The Breach', note: 'Birds no bigger than a fist, fluttering so low their feet patter on the water as if walking on it.' },
+  { id: 'sea-sparkle', name: 'Sea sparkle', zone: 'The Breach', note: 'Only at night. Tiny drifting cells that flash blue when the water moves: every wavelet lights up. Stir it.' },
   { id: 'shore-bird', name: 'Shore bird', zone: 'The Breach', note: 'It walks on your crown at low tide, as if it owned it.' },
   { id: 'gull', name: 'Gull', zone: 'The Breach', note: 'It has learned that reefs ripen pink before a full moon. Wave it off.' },
   { id: 'drill-snail', name: 'Drill snail', zone: 'The Silt Floor', note: 'A small snail that bores into living coral and eats it from inside. Pick it off.' },
@@ -90,7 +93,7 @@ export const CREATURES: readonly Creature[] = [
 export const GIFT = { seconds: 30, cooldown: 180, holdShare: 0.3, rare: 3 } as const;
 export type GiftStock = 'calcite' | 'glow' | 'plankton' | 'sand' | 'bloom' | 'spawn';
 const GLOWING: readonly CreatureId[] = [
-  'jelly', 'comb-jelly', 'siphonophore', 'anglerfish', 'vampire-squid', 'pyrosome', 'moon-jelly', 'sea-firefly',
+  'jelly', 'comb-jelly', 'siphonophore', 'anglerfish', 'vampire-squid', 'pyrosome', 'moon-jelly', 'sea-firefly', 'sea-sparkle',
 ];
 export function giftOf(id: CreatureId): GiftStock {
   if (GLOWING.includes(id)) return 'glow';

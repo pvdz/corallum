@@ -16,6 +16,7 @@ import { createBloom, type Bloom } from './bloom.ts';
 import type { CoralForm } from './coral.ts';
 import { drawMoon, glow } from './draw.ts';
 import { FIGURES, type Figure } from '../content/sky.ts';
+import { drawPetrels, drawSailors, drawSeaSparkle, type Surface } from './surface.ts';
 import { createLayerCache } from './layer.ts';
 import { drawCraft, FLUORESCENT_POLYP } from './craft.ts';
 import { createReef, type Reef, type ReefLayout } from './reef.ts';
@@ -988,6 +989,10 @@ export function createBreachScene(seed: number): Scene {
       drawWaitingFish(ctx, t, v, this.crownAt);
       drawDolphins(ctx, t);
       drawFlyingFish(ctx, t);
+      const sf: Surface = { focus, wy: waterY(), s: scale(), dpr, dawn };
+      drawSailors(ctx, t, sf);
+      drawPetrels(ctx, t, sf);
+      drawSeaSparkle(ctx, t, sf, this.crownAt[0]);
       if (v.sinceBreach >= 0) drawHatchlings(ctx, t, v.sinceBreach);
       if (v.sinceBreach >= 60) drawPelican(ctx, t);
       if (v.sinceBreach >= 0) drawGreenFlash(ctx, v.sinceBreach);

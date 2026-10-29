@@ -1,0 +1,162 @@
+// Small life of the night surface over the Breach: a fleet of by-the-wind sailors, storm petrels
+// pattering on the water, and sea sparkle lighting the wavelets blue. Drawn as functions of the
+// scene clock; each reports itself to the journal and can be tapped.
+
+import { mulberry32, range } from '../sim/rng.ts';
+import { glow } from './draw.ts';
+import type { Focus } from './scene.ts';
+import { sight, spot, startled } from './sightings.ts';
+
+/** Where the surface is and how big things are, from the Breach scene. */
+export type Surface = { focus: Focus; wy: number; s: number; dpr: number; dawn: number };
+
+/**
+ * By-the-wind sailors: every two minutes a fleet drifts across on the surface for most of a minute,
+ * blue floats with slanted clear sails. Tapped, the fleet bobs and its sails flash in the light.
+ */
+export function drawSailors(ctx: CanvasRenderingContext2D, t: number, sf: Surface): void {
+  const period = 120, pass = 70;
+  const lap = Math.floor(t / period);
+  const u = (t - lap * period) / pass;
+  if (u < 0 || u > 1) return;
+  sight('sailors');
+  const { focus, wy, s } = sf;
+  const r = mulberry32(lap * 7919 + 13);
+  const dir = lap % 2 ? 1 : -1;
+  const touch = startled('sailors', t);
+  const bob = touch && touch.age < 2 ? Math.sin(touch.age * 9) * (1 - touch.age / 2) : 0;
+  const n = 7;
+  for (let i = 0; i < n; i++) {
+    const off = range(r, -0.08, 0.08), lag = range(r, 0, 0.12), size = range(r, 0.8, 1.2);
+    const p = u * 1.2 - lag;
+    const x = focus.x + focus.w * (dir > 0 ? -0.05 + p * 1.1 : 1.05 - p * 1.1) + off * focus.w * 0.3;
+    const y = wy + Math.sin(t * 1.6 + i) * 1.5 * s + bob * 3 * s - 1 * s;
+    if (i === 0) spot('sailors', x, y - 4 * s, 22 * s);
+    const z = s * 2.8 * size;
+    ctx.save();
+    ctx.translate(x, y);
+    // The float: a deep-blue oval with concentric rings, riding the water.
+    ctx.fillStyle = '#1f4fa8';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 5 * z, 1.8 * z, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(120,170,255,0.6)';
+    ctx.lineWidth = 0.5 * z;
+    ctx.beginPath();
+    ctx.ellipse(0, -0.2 * z, 3.2 * z, 1 * z, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    // The sail: a stiff clear triangle set across the float at a slant (all of a fleet lean one way).
+    ctx.fillStyle = `rgba(210,230,255,${0.35 + 0.4 * Math.max(0, bob)})`;
+    ctx.strokeStyle = 'rgba(230,240,255,0.7)';
+    ctx.lineWidth = 0.4 * z;
+    ctx.beginPath();
+    ctx.moveTo(-3.5 * z * dir, -0.6 * z);
+    ctx.lineTo(1 * z * dir, -6.5 * z);
+    ctx.lineTo(3.5 * z * dir, -0.6 * z);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
+/**
+ * Storm petrels: a pair every minute, fluttering along just above the water with their feet
+ * pattering on it. Tapped, they lift off and away.
+ */
+export function drawPetrels(ctx: CanvasRenderingContext2D, t: number, sf: Surface): void {
+  const period = 60, pass = 16;
+  const lap = Math.floor(t / period);
+  const u = (t - lap * period) / pass;
+  if (u < 0 || u > 1) return;
+  sight('petrel');
+  const { focus, wy, s } = sf;
+  const dir = lap % 2 ? -1 : 1;
+  const touch = startled('petrel', t);
+  const lift = touch && t - touch.age >= lap * period ? touch.age : 0;
+  for (let k = 0; k < 2; k++) {
+    const uk = u - k * 0.06;
+    if (uk < 0) continue;
+    const x = focus.x + focus.w * (dir > 0 ? 0.1 + uk * 0.8 : 0.9 - uk * 0.8) + lift * dir * 30 * s;
+    const hover = 14 * s + Math.abs(Math.sin(t * 2.3 + k)) * 5 * s;
+    const y = wy - hover - lift * lift * 18 * s;
+    if (k === 0) spot('petrel', x, y, 20 * s);
+    const z = s * 2.6;
+    const flap = Math.sin(t * 22 + k * 2);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(dir, 1);
+    // Wings: dark, long, beating fast.
+    ctx.strokeStyle = '#1a1c24';
+    ctx.lineCap = 'round';
+    ctx.lineWidth = 1.4 * z;
+    ctx.beginPath();
+    ctx.moveTo(-1 * z, 0);
+    ctx.quadraticCurveTo(-5 * z, -4 * z * flap - 1 * z, -9 * z, -6 * z * flap);
+    ctx.moveTo(1 * z, 0);
+    ctx.quadraticCurveTo(-2 * z, -3 * z * flap - 1 * z, -5 * z, -5 * z * flap + 1 * z);
+    ctx.stroke();
+    // Body, and the white rump patch.
+    ctx.fillStyle = '#20222c';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 4 * z, 1.6 * z, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#e8ecf2';
+    ctx.beginPath();
+    ctx.ellipse(-3 * z, -0.4 * z, 0.9 * z, 0.7 * z, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Legs dangling to the water, feet pattering (little rings where they touch).
+    if (!lift) {
+      ctx.strokeStyle = '#20222c';
+      ctx.lineWidth = 0.5 * z;
+      ctx.beginPath();
+      ctx.moveTo(0, 1 * z);
+      ctx.lineTo(0.5 * z, hover);
+      ctx.stroke();
+    }
+    ctx.restore();
+    if (!lift && Math.sin(t * 11 + k) > 0.6) {
+      ctx.strokeStyle = 'rgba(200,220,255,0.5)';
+      ctx.lineWidth = 0.6 * sf.dpr;
+      ctx.beginPath();
+      ctx.ellipse(x + 0.5 * z * dir, wy, 3 * z, 0.8 * z, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+  }
+}
+
+/**
+ * Sea sparkle: at night the wavelets near the reef light blue where they break, in a patch that
+ * drifts along; touched, the whole patch flares out in a ring from the touch.
+ */
+export function drawSeaSparkle(ctx: CanvasRenderingContext2D, t: number, sf: Surface, crownX: number): void {
+  if (sf.dawn > 0.5) return;
+  const { focus, wy, s, dpr } = sf;
+  const fade = 1 - sf.dawn * 2;
+  const cx = crownX + Math.sin(t * 0.05) * focus.w * 0.25;
+  sight('sea-sparkle');
+  spot('sea-sparkle', cx, wy + 4 * s, 40 * s);
+  const touch = startled('sea-sparkle', t);
+  const flare = touch && touch.age < 3 ? 1 - touch.age / 3 : 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 70; i++) {
+    const r = mulberry32(i * 2654435761);
+    const dx = range(r, -1, 1) * focus.w * 0.18, dy = range(r, 0, 1) * 10 * s;
+    // Each spark lights as a wavelet passes over it, then dims.
+    const ph = (t * range(r, 0.6, 1.2) + range(r, 0, 10)) % 3;
+    let a = ph < 0.4 ? Math.sin((ph / 0.4) * Math.PI) : 0;
+    const x = cx + dx + Math.sin(t + i) * 2 * s, y = wy + 1.5 * s + dy;
+    if (flare > 0 && touch) {
+      // The flare runs outward from the touch.
+      const d = Math.hypot(x - touch.x, y - touch.y) / (focus.w * 0.3);
+      const front = (1 - flare) * 1.4;
+      a = Math.max(a, Math.max(0, 1 - Math.abs(d - front) * 4) * flare);
+    }
+    if (a <= 0.02) continue;
+    glow(ctx, x, y, 9 * s, '90,190,255', 0.7 * a * fade);
+    ctx.fillStyle = `rgba(190,235,255,${0.8 * a * fade})`;
+    ctx.fillRect(x - dpr, y - dpr, 2 * dpr, 2 * dpr);
+  }
+  ctx.restore();
+}

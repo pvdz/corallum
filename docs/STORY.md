@@ -136,4 +136,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Sun-shy (trait): the reef folds before warm water | plain description of the mechanic | OK |
 | Naming the stars after the run (Ossel's Cup, the Beak, the Two Branches, the Falling Whale, the Sleeper, the Lamp); tap-to-connect constellations | connect-the-stars minigames exist in many games (a mechanic, not lore); every name comes from this game's own events | OK |
 | The rising (the deep's life climbing past to feed; send the feeders in) | real diel vertical migration; no game beat I know | OK |
+| By-the-wind sailors, storm petrels, sea sparkle (Breach creatures) | real animals (Velella, Hydrobatidae, Noctiluca) under plain names | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |
