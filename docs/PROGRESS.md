@@ -676,3 +676,4 @@ date, what landed, what is half-done, what's next.
 - Trait Helping habit (habit, 6): while watching, a creature left in trouble 20 s is freed by the reef itself for half (economy helpTangle).
 - The jelly bloom, once met, leaves small pale bells pulsing through the Midnight Water. Request 'visitor' (touch today's visitor).
 - The epilogue garden matures: each child grows to twice its size over the two hours after the release.
+- Ossel remembers answers in later whispers (asked-silt at 2000 m, asked-keep at 3600 m, asked-sister once her way is lit).

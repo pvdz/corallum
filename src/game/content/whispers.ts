@@ -125,6 +125,18 @@ export const WHISPERS: readonly Whisper[] = [
     text: 'Look up. Stars are falling into the sea. You may ask for one thing while they fall. Only one.',
   },
   {
+    id: 'asked-silt', when: (s) => s.asked.silt === '0' && s.height >= 2000,
+    text: 'You told me the silt was for nothing. I have been thinking about it for a thousand metres. I still think you are right, and I still do not like it.',
+  },
+  {
+    id: 'asked-keep', when: (s) => s.asked.keep === '0' && s.height >= 3600,
+    text: 'You said you would keep me. Nobody ever said that to a wall. I wanted you to know I remember.',
+  },
+  {
+    id: 'asked-sister', when: (s) => s.asked.sister === '1' && s.race.lit > 0,
+    text: 'Company, you said, not a race. And then you lit her way. You meant it. Thousandfold never meant anything like that.',
+  },
+  {
     id: 'guard', when: (s) => s.height >= 3800 && s.levels.shoal >= 8 && !guarding(s) && !!currentThorn(s),
     text: 'Something is at the reef again. Up here the shoals could stand guard: four of them, circling, and nothing gets close.',
   },
