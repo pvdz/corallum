@@ -296,3 +296,4 @@ date, what landed, what is half-done, what's next.
 - Sunlit night: sea fireflies (ostracods) lay rising strings of blue pearls over the reef; a new journal creature (39), tappable: touched, every string flares.
 - Journal hint 'Only after dark.' for unseen night creatures. Error sweep: ?bot every 2500 s to 30000 on desktop and mobile, touching every creature on screen, zooming in view mode: no console errors.
 - Ossel's whispers point at neighbours worth touching (lanternfish, octopus, clownfish, dolphins), in their own zone, once seen and not yet touched.
+- Album: tap (or Enter on) a journal portrait to see it large with its name, note and zone; tap or Escape closes. Portraits are 160 px now.

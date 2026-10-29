@@ -546,6 +546,20 @@ html.view-mode #photo { display: grid; }
   flex: none; width: 52px; height: 52px; border-radius: 8px; object-fit: cover;
   border: 1px solid var(--edge); box-shadow: 0 0 10px rgba(80, 160, 255, 0.15);
 }
+.journal-entry img.portrait { cursor: zoom-in; }
+.lightbox {
+  position: fixed; inset: 0; z-index: 40; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 16px; background: rgba(2, 4, 16, 0.78); backdrop-filter: blur(3px); cursor: zoom-out;
+}
+.lightbox[hidden] { display: none; }
+.lightbox img {
+  width: min(320px, 80vw); aspect-ratio: 1; border-radius: 14px; object-fit: cover;
+  border: 1px solid var(--edge); box-shadow: 0 0 40px rgba(80, 160, 255, 0.25);
+}
+.lightbox figcaption { max-width: 320px; display: flex; flex-direction: column; gap: 4px; text-align: center; }
+.lightbox strong { font-family: var(--display); font-weight: 400; font-size: 20px; color: #eaf6ff; }
+.lightbox span { font-size: 13px; color: #dbe6f5; line-height: 1.4; }
+.lightbox em { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; font-style: normal; color: var(--glowc); }
 .journal-entry .portrait.none { background: radial-gradient(circle at 50% 40%, rgba(120, 170, 255, 0.12), rgba(10, 16, 40, 0.6)); }
 .journal-text { display: flex; flex-direction: column; gap: 1px; }
 .journal-text strong { font-weight: 400; color: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.1em; font-size: 10.5px; }

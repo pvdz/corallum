@@ -369,6 +369,22 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     c.fill();
     c.shadowBlur = 0;
   }
+  // A portrait, large: tap anywhere (or Escape) to close.
+  const lightbox = el('figure', 'lightbox');
+  lightbox.hidden = true;
+  const lightImg = el('img');
+  const lightCap = el('figcaption');
+  lightbox.append(lightImg, lightCap);
+  lightbox.addEventListener('click', () => { lightbox.hidden = true; });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') lightbox.hidden = true; });
+  host.append(lightbox);
+  function showPortrait(src: string, name: string, note: string, zone: string): void {
+    lightImg.src = src;
+    lightImg.alt = name;
+    lightCap.innerHTML = '';
+    lightCap.append(el('strong', '', name), el('span', '', note), el('em', '', zone));
+    lightbox.hidden = false;
+  }
   // The journal of creatures seen (kept across spawnings).
   const journal = el('article', 'card codex journal');
   const journalHead = el('h3', '', 'Creatures seen');
@@ -398,7 +414,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         if (pic) {
           const img = el('img', 'portrait');
           img.src = pic;
-          img.alt = '';
+          img.alt = `${c.name}, as you first saw it`;
+          img.tabIndex = 0;
+          const enlarge = () => showPortrait(pic, c.name, c.note, c.zone);
+          img.addEventListener('click', enlarge);
+          img.addEventListener('keydown', (e) => { if (e.key === 'Enter') enlarge(); });
           row.append(img);
         } else row.append(el('div', 'portrait none'));
         const text = el('div', 'journal-text');

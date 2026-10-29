@@ -3,7 +3,7 @@
 // (?bot, ?t, ?fresh), so debugging never overwrites a player's album.
 
 const KEY = 'corallum.portraits';
-const SIZE = 112;
+const SIZE = 160;
 
 export function createPortraits(persist: boolean) {
   let album: Record<string, string> = {};
