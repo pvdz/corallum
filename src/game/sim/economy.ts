@@ -945,6 +945,7 @@ export function choose(s: GameState, id: MeetingId, choice: Choice): boolean {
 
 /** Ossel's next question, once the reef is tall enough (one at a time, in order). */
 export function osselAsks(s: GameState): Question | undefined {
+  if (ended(s)) return undefined;
   return QUESTIONS.find((q) => !s.asked[q.id] && s.height >= q.metres);
 }
 

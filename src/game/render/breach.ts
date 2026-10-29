@@ -472,12 +472,20 @@ export function createBreachScene(seed: number): Scene {
         if (age < 0) continue;
         const u = (age * b.speed * 1.4) % 1;
         const wobble = brooding ? Math.sin(t * 4 + b.delay * 3) * 9 * s * u : 0;
-        const x = x0 + b.drift * u * u * focus.w * 0.12 + Math.sin(t * 1.5 + b.delay) * 5 * s * u + wobble;
+        const x = x0 + b.drift * u * focus.w * 0.4 + Math.sin(t * 1.5 + b.delay) * 5 * s * u + wobble;
         const y = y0 - u * (y0 - wy);
         const a = Math.min(1, u * 8) * (1 - u * 0.6);
         const size = b.size * (brooding ? 1.9 : 1);
-        glow(ctx, x, y, 13 * s * size, brooding ? '255,175,150' : bundle, 0.85 * a);
-        glow(ctx, x, y, 2.5 * s * size, '255,235,245', 0.9 * a);
+        glow(ctx, x, y, 17 * s * size, brooding ? '255,175,150' : bundle, 0.9 * a);
+        glow(ctx, x, y, 4 * s * size, brooding ? '255,215,190' : '255,190,220', 0.95 * a);
+      }
+      // While the release is at its height the water itself goes pink with it.
+      if (burst > 0) {
+        const veil = ctx.createLinearGradient(0, wy, 0, h);
+        veil.addColorStop(0, `rgba(255,140,190,${0.16 * burst})`);
+        veil.addColorStop(1, `rgba(255,140,190,${0.04 * burst})`);
+        ctx.fillStyle = veil;
+        ctx.fillRect(0, wy, w, h - wy);
       }
       // The slick spreading on the surface.
       const spread = Math.min(1, v.sinceBreach / 60);
