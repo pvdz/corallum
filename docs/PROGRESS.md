@@ -709,3 +709,4 @@ date, what landed, what is half-done, what's next.
 - A second Sunlit great work, the lagoon rim (from 3900 m; bloom+sand; spawn ×1.1 per stage), drawn as a low arc of stones on the sand. Bot 7h28.
 - Rare on the Silt Floor: a march of brittle stars crossing the floor together every 13 min.
 - Feat Homecoming (5 lost shoals); A full shelf now counts every kind (12).
+- systems e2e calls a lost shoal home and catches a fragment (debug hooks corallum.stray()/fragment()).

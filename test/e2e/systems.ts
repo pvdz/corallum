@@ -147,4 +147,28 @@ await withGame(async (open) => {
   check((await page.evaluate(() => window.corallum!.state.meta.lineage)) === before + 1, 'a wish on falling stars, for the line');
   check(errors.length === 0, 'no console errors (Breach)');
 });
+await withGame(async (open) => {
+  // The Midnight Water: call a lost shoal home. The Twilight Shelf: catch a drifting fragment.
+  for (const [q, hook, id, read, what] of [
+    ['?bot=4000&at=60', 'stray', 'stray', 'levels.shoal', 'a lost shoal called home'],
+    ['?bot=9000&at=60', 'fragment', 'fragment', 'fragments', 'a drifting fragment taken in'],
+  ] as const) {
+    const { page, errors } = await open(VIEWPORTS[0]!, q);
+    await page.waitForTimeout(2000);
+    for (let i = 0; i < 12 && (await page.locator('.reader:not([hidden])').count()); i++)
+      await page.locator('.reader:not([hidden]) button').first().click().catch(() => {});
+    const get = () => page.evaluate((r) => r.split('.').reduce((o: any, k) => o[k], window.corallum!.state) as number, read);
+    const before = await get();
+    await page.evaluate((h) => (window.corallum as any)[h](), hook);
+    await page.waitForTimeout(500);
+    for (let i = 0; i < 12 && (await page.locator('.reader:not([hidden]), .away:not([hidden])').count()); i++)
+      await page.locator('.reader:not([hidden]) button, .away:not([hidden]) button').first().click().catch(() => {});
+    const p = await page.evaluate((x) => window.corallum!.spots.find((s) => s.id === x), id);
+    if (p) await page.mouse.click(p.x, p.y);
+    await page.waitForTimeout(200);
+    check((await get()) === before + 1, what);
+    check(errors.length === 0, `no console errors (${hook})`);
+    await page.close();
+  }
+});
 process.exitCode = failed ? 1 : 0;

@@ -81,6 +81,9 @@ declare global {
       shell(): boolean;
       /** Move the clock into the next tangle (a fish to free). */
       tangle(): boolean;
+      /** Move the clock into the next lost shoal, or the next drifting fragment. */
+      stray(): boolean;
+      fragment(): boolean;
       /** Move the clock to the next shoal signal; returns its pattern (for checking it). */
       signal(): number[] | null;
       /** Move the clock into the next thorn star's climb (for checking it). */
@@ -640,6 +643,24 @@ window.corallum = {
   },
   get zoom() { return zoom.k; },
   flourish: (kind: string) => scene.effect(kind as EffectKind),
+  stray() {
+    const t0 = state.t;
+    for (let dt = 0; dt < 5000; dt += 2) {
+      state.t = t0 + dt;
+      if (currentStray(state)) { state.t += 5; return true; }
+    }
+    state.t = t0;
+    return false;
+  },
+  fragment() {
+    const t0 = state.t;
+    for (let dt = 0; dt < 5000; dt += 2) {
+      state.t = t0 + dt;
+      if (currentFragment(state)) { state.t += 5; return true; }
+    }
+    state.t = t0;
+    return false;
+  },
   tangle() {
     const t0 = state.t;
     for (let dt = 0; dt < 5000; dt += 2) {
