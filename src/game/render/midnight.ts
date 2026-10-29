@@ -590,6 +590,59 @@ export function createMidnightScene(seed: number): Scene {
     }
   }
 
+  /**
+   * Hatchetfish: a small school of silver blades drifting together, belly lights pointing down.
+   * Touched, every belly light flares at once and the school scatters, then gathers again.
+   */
+  function drawHatchetfish(ctx: CanvasRenderingContext2D, t: number): void {
+    sight('hatchetfish');
+    const s = scale() * 1.2;
+    const touch = startled('hatchetfish', t);
+    const scatter = touch && touch.age < 5 ? Math.sin(Math.min(1, touch.age / 5) * Math.PI) : 0;
+    const flare = touch && touch.age < 1.5 ? 1 - touch.age / 1.5 : 0;
+    const cx = focus.x + focus.w * (0.72 + 0.06 * Math.sin(t * 0.05)), cy = focus.y + focus.h * (0.34 + 0.04 * Math.sin(t * 0.08));
+    spot('hatchetfish', cx, cy, 50 * s);
+    for (let i = 0; i < 9; i++) {
+      const a = i * 2.39;
+      const ox = Math.cos(a) * (14 + (i % 3) * 9) * s * (1 + scatter * 3), oy = Math.sin(a) * (8 + (i % 2) * 6) * s * (1 + scatter * 3);
+      const x = cx + ox + Math.sin(t * 0.7 + i) * 3 * s, y = cy + oy + Math.cos(t * 0.5 + i) * 2 * s;
+      ctx.save();
+      ctx.translate(x, y);
+      if (i % 2) ctx.scale(-1, 1);
+      // The blade: deep at the front, a thin tail.
+      const g = ctx.createLinearGradient(0, -5 * s, 0, 5 * s);
+      g.addColorStop(0, '#9fb0c8');
+      g.addColorStop(1, '#4a5872');
+      ctx.fillStyle = g;
+      // Arched back, a deep keel of a belly, a small forked tail.
+      ctx.beginPath();
+      ctx.moveTo(5 * s, -1 * s);
+      ctx.quadraticCurveTo(2 * s, -4 * s, -2 * s, -3 * s);
+      ctx.lineTo(-5 * s, -1 * s);
+      ctx.lineTo(-8 * s, -2.6 * s);
+      ctx.lineTo(-7 * s, 0 * s);
+      ctx.lineTo(-8 * s, 1.8 * s);
+      ctx.lineTo(-5 * s, 0.6 * s);
+      ctx.quadraticCurveTo(-1 * s, 7 * s, 4 * s, 3 * s);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(220,235,255,0.5)';
+      ctx.lineWidth = 0.5 * s;
+      ctx.beginPath();
+      ctx.moveTo(3.5 * s, -0.5 * s);
+      ctx.quadraticCurveTo(0, 2 * s, -4 * s, 0);
+      ctx.stroke();
+      ctx.fillStyle = '#1a1e2a';
+      ctx.beginPath();
+      ctx.arc(3.2 * s, -1.4 * s, 1.1 * s, 0, Math.PI * 2);
+      ctx.fill();
+      // Belly lights pointing down.
+      ctx.globalCompositeOperation = 'lighter';
+      for (let q = 0; q < 4; q++) glow(ctx, (2.5 - q * 1.6) * s, (3.2 - q * 0.4) * s, (2 + flare * 4) * s, '120,170,255', 0.45 + flare * 0.5);
+      ctx.restore();
+    }
+  }
+
   function drawSiphonophore(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
     const period = 140;
@@ -679,6 +732,7 @@ export function createMidnightScene(seed: number): Scene {
       this.crownAt = reef.crown(L);
       reef.drawEffects(ctx, L, v, effects.live(t));
       shoals.drawFront(ctx, focus, reef, L, v, t);
+      drawHatchetfish(ctx, t);
       if (v.thorn?.kind === 'dragonfish') drawDragonfish(ctx, focus, v.thorn.u, v.thorn.side, t, scale());
       drawNearSnow(ctx, t);
       if (this.bloomStrength > 0) (bloom ??= createBloom()).apply(ctx, this.bloomStrength);

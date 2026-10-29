@@ -388,3 +388,4 @@ date, what landed, what is half-done, what's next.
 - 'Soon' line in the water box: the next feast, intruder and full moon with countdowns (economy untilFeast/untilThorn); fixed min-height so it never shifts the cards.
 - New creature: the cuttlefish (Sunlit, by day): colour bands running down the mantle, rippling fin, W-pupil; touched it flashes white, jets back and inks.
 - New creature: the tripod fish on the Silt Floor (stilts of fin-rays, feelers into the current; touched it lifts off and resettles).
+- New creature: hatchetfish in the Midnight Water (silver keel-bellied school, belly lights; touched they flare and scatter).
