@@ -351,6 +351,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const waterSoon = el('span', 'water-soon');
   // The next twenty minutes as a strip: a mark for each thing coming, labels above and below.
   const almanac = el('div', 'almanac');
+  // Tapped (phones have no tooltips), a mark says what it is and when.
+  const almanacNote = el('span', 'almanac-note');
   let almanacKey = '';
   // Warm spells in the Sunlit Crown: open to the sun, or closed against the heat.
   const heatRow = el('div', 'heat-row');
@@ -368,7 +370,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const riseButton = button('heat-toggle', RISING.send, () => hooks.feedRising());
   riseRow.append(riseText, riseButton, riseWhat);
   const todayLine = el('span', 'water-today');
-  waterBox.append(waterName, waterLine, waterNext, waterSoon, almanac, todayLine, heatRow, riseRow);
+  waterBox.append(waterName, waterLine, waterNext, waterSoon, almanac, almanacNote, todayLine, heatRow, riseRow);
   grow.prepend(waterBox);
   let waterShown = '';
   // Ossel's request: one small thing to do, with its progress.
@@ -1737,6 +1739,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           almanac.innerHTML = '';
           // A new reef has little to plan: the strip waits until the water turns and two things are coming.
           almanac.hidden = !turning || marks.length < 2;
+          almanacNote.hidden = almanac.hidden;
           // Each label goes in the first of three rows where it does not run into the last one there.
           const W = almanac.clientWidth || 300;
           const rowEnd = [-1e9, -1e9, -1e9];
@@ -1754,6 +1757,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
             const f = Math.max(0, t) / 1200;
             m.style.transform = f < 0.08 ? 'translateX(-4px)' : f > 0.92 ? 'translateX(calc(-100% + 4px))' : '';
             m.title = `${w} ${t > 0 ? `in ${duration(t)}` : WATER.now}`;
+            m.addEventListener('click', () => { almanacNote.textContent = m.title; });
             m.append(el('i'));
             if (row >= 0) m.append(el('b', '', label));
             almanac.append(m);

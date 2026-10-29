@@ -813,3 +813,6 @@ html.view-mode #photo { display: grid; }
 .almanac .mark.row1 b { margin-top: 15px; }
 .almanac .mark.row2 b { margin-top: 28px; }
 .shell-chip .shell-pic { display: block; width: 44px; height: 30px; }
+.almanac-note { flex: 1 0 100%; font-size: 11px; color: rgba(210, 225, 245, 0.8); min-height: 0; }
+.almanac-note:empty { display: none; }
+.almanac .mark { cursor: pointer; }
