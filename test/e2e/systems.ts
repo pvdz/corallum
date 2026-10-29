@@ -65,6 +65,12 @@ await withGame(async (open) => {
   await page.locator('section.grain button').first().click();
   check((await st()).grains.length === g0 && (await st()).grains.at(-1) === 'dense', 'a band set with its grain');
 
+  // The sport: unchoose it, then keep the first one this strain throws.
+  await page.evaluate(() => { window.corallum!.state.sport = ''; });
+  await page.waitForTimeout(400);
+  await page.locator('section.sport button:not([hidden])').first().click();
+  check((await st()).sport !== '', 'the strain\'s sport chosen');
+
   // The shoals' signal: repeat the pattern.
   const pattern = await page.evaluate(() => window.corallum!.signal());
   check(!!pattern, 'a signal comes');

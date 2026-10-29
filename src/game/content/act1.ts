@@ -23,6 +23,25 @@ export const GRAINS: readonly { id: GrainId; name: string; effect: string; flavo
   { id: 'bright', name: 'Bright', effect: 'glow ×1.04 (each)', flavour: 'Glimmerseed sealed into the stone, still faintly lit.', rgb: '140,200,255', each: 1.04 },
 ];
 
+/**
+ * The sport: at the Twilight Shelf the strain kept since 15 m throws a mutation, one of two per
+ * strain. The early choice becomes a branch.
+ */
+export type SportId = 'ice' | 'lamp' | 'amber' | 'sun' | 'ultraviolet' | 'dusk';
+export const SPORT = {
+  metres: 3000,
+  kicker: 'Your glimmerseed are changing',
+  text: (strain: string) => `Up here, in the first grey light, the ${strain.toLowerCase()} glimmerseed have begun to throw sports: a few of them breed something new. Which do you keep?`,
+} as const;
+export const SPORTS: readonly { id: SportId; strain: StrainId; name: string; effect: string; flavour: string; rgb: string }[] = [
+  { id: 'ice', strain: 'blue', name: 'Ice blue', effect: 'glow ×1.25', flavour: 'Paler and harder, like light through deep ice.', rgb: '190,235,255' },
+  { id: 'lamp', strain: 'blue', name: 'Lamp blue', effect: 'lure +1', flavour: 'They gather in clusters at the tips, like the lamps of a street.', rgb: '90,150,255' },
+  { id: 'amber', strain: 'gold', name: 'Amber', effect: 'polyps feed ×1.12', flavour: 'Dark gold and slow, all their light turned inward to feeding.', rgb: '230,150,60' },
+  { id: 'sun', strain: 'gold', name: 'Sun gold', effect: 'bloom ×1.2 (in the Sunlit Crown)', flavour: 'They have tasted the grey light above and want more of it.', rgb: '255,230,120' },
+  { id: 'ultraviolet', strain: 'violet', name: 'Ultraviolet', effect: 'murmurs ×1.3', flavour: 'Gone past violet, past seeing. The old stone hears them perfectly.', rgb: '170,110,255' },
+  { id: 'dusk', strain: 'violet', name: 'Dusk', effect: 'Readings and the Rasp’s words cost ×0.8', flavour: 'The colour of the sky at the moment it forgets the sun.', rgb: '210,140,200' },
+];
+
 export const STRAIN = {
   metres: 15,
   kicker: 'Your glimmerseed are settling',

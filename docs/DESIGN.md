@@ -160,6 +160,11 @@ stone (5% of each second away's calcite production, at most 8 h of it) or a sear
 **The glimmerseed strain** (Act I's choice, at 15 m): blue (glow ×1.3), gold (polyps ×1.15) or violet
 (scouts ×1.4 later); kept for the run and seen in the colour of the symbiont specks.
 
+**The sport** (at 3000 m): the glimmerseed strain kept since 15 m throws a mutation, one of two per
+strain: blue → ice (glow ×1.25) or lamp (lure +1); gold → amber (polyps feed ×1.12) or sun gold
+(bloom ×1.2); violet → ultraviolet (murmurs ×1.3) or dusk (Readings and truce words ×0.8). The
+symbiont specks take the sport's colour.
+
 **The grain of the stone** (all run): every tenth band laid waits for its grain: dense (calcite
 dissolves ×0.98 each), quick (the reef rises ×1.05 as fast after a band, each) or bright (glow
 ×1.04 each). Unset grains wait without blocking; the choices stack over the run, so the reef's

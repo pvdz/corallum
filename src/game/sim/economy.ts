@@ -15,7 +15,7 @@
 // settled the production is constant and the rest of any span is a single exact step — so a
 // month offline costs a few hundred iterations and ends exactly where the dynamics settle.
 
-import { ACT1, BANDS_ACT1, FLURRY, GRAIN, GRAINS, type GrainId, MILESTONES, STRAIN, type Milestone, type StrainId } from '../content/act1.ts';
+import { ACT1, BANDS_ACT1, FLURRY, GRAIN, GRAINS, SPORT, SPORTS, type GrainId, type SportId, MILESTONES, STRAIN, type Milestone, type StrainId } from '../content/act1.ts';
 import { ACT2, RISING, BANDS_ACT2, daughterCount, READINGS, type Job, type ReadingId } from '../content/act2.ts';
 import { ACT3, BANDS_ACT3, CURRENT, FAVOURS, MEETINGS, RIDDLE, RIDDLES, type RiddleId, type FavourId, type Choice, type Meeting, type MeetingId } from '../content/act3.ts';
 import { FIGURES, SKY, type FigureId } from '../content/sky.ts';
@@ -201,12 +201,12 @@ export function rates(s: GameState): Rates {
   const onShelf = target >= ACT3.from;
   return {
     glowP: (ACT1.symbiontGlow * lv.symbiont * milestoneMult('symbiont', lv.symbiont) * (1 + ACT2.lightAmplify * s.jobs.light) +
-      lightGlow * s.jobs.light * seasoned(s) * (chose(s, 'hunters', 'b') ? 1.2 : 1)) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1) * (chose(s, 'vent-crack', 'b') ? 1.15 : 1) * (sm.glow ?? 1) * (passed(s, 'dark') ? 1.25 : 1) * (s.strain === 'blue' ? 1.3 : 1) * (boon(s, 'warm-heart') ? 1.3 : 1) * (chose(s, 'old-lamp', 'a') ? 1.1 : 1) * (chose(s, 'echo', 'b') ? 1.15 : 1) * grainMult(s, 'bright'),
+      lightGlow * s.jobs.light * seasoned(s) * (chose(s, 'hunters', 'b') ? 1.2 : 1)) * 1.5 ** trait(s, 'glimmer') * (chose(s, 'squid', 'b') ? 1.2 : 1) * (chose(s, 'vent-crack', 'b') ? 1.15 : 1) * (sm.glow ?? 1) * (passed(s, 'dark') ? 1.25 : 1) * (s.strain === 'blue' ? 1.3 : 1) * (boon(s, 'warm-heart') ? 1.3 : 1) * (chose(s, 'old-lamp', 'a') ? 1.1 : 1) * (chose(s, 'echo', 'b') ? 1.15 : 1) * grainMult(s, 'bright') * (s.sport === 'ice' ? 1.25 : 1),
     glowK: ACT1.glowFade * (chose(s, 'squid', 'a') ? 0.8 : 1) * (chose(s, 'eyes', 'b') ? 0.8 : 1),
     planktonP: (onShelf ? 1 - CURRENT.planktonPerStep * s.current : 1) * (chose(s, 'krill', 'b') ? 1.2 : 1) * seasoned(s) * ACT2.feedRate * s.jobs.feed * (chose(s, 'far-light', 'a') ? 1.15 : 1) * (has(s, 'tidebooks') ? 2 : 1) * ACT3.channelPlankton ** lv.channel *
       (speaks(s, 'sweepers') ? 3 : 1) * (lives(s, 'feather-duster') ? 1.3 : 1),
     planktonK: ACT2.planktonEaten * (has(s, 'slow-currents') ? 0.6 : 1) * (relic(s, 'terraces') ? 0.75 : 1) * (chose(s, 'angler', 'b') ? 0.85 : 1),
-    murmurP: ACT2.scoutRate * s.jobs.scout * (has(s, 'beaked') ? 1.5 : 1) * (relic(s, 'wells') ? 1.25 : 1) * (chose(s, 'lost-shoal', 'b') ? 1.2 : 1) * (passed(s, 'silent') ? 1.3 : 1) * (s.strain === 'violet' ? 1.4 : 1),
+    murmurP: ACT2.scoutRate * s.jobs.scout * (has(s, 'beaked') ? 1.5 : 1) * (relic(s, 'wells') ? 1.25 : 1) * (chose(s, 'lost-shoal', 'b') ? 1.2 : 1) * (passed(s, 'silent') ? 1.3 : 1) * (s.strain === 'violet' ? 1.4 : 1) * (s.sport === 'ultraviolet' ? 1.3 : 1),
     murmurK: ACT2.murmurFade * (relic(s, 'wells') ? 0.5 : 1) * (chose(s, 'echo', 'a') ? 0.5 : 1),
     siltP: onShelf
       ? ACT3.siltFall * (1 + (target - ACT3.from) / ACT3.siltGrowthPer) * (s.truce.wall === 'a' ? 0.6 : 1) * sm.silt * (passed(s, 'buried') ? 0.8 : 1) * 0.85 ** s.works.breakwater
@@ -215,7 +215,7 @@ export function rates(s: GameState): Rates {
     sandP: ACT3.raspSand * rasp * (s.truce.terms === 'a' ? 1.25 : 1) * (relic(s, 'midden') ? 1.3 : 1) * (lives(s, 'sea-cucumber') ? 1.4 : 1) * (chose(s, 'turtle', 'b') ? 1.25 : 1) * (has(s, 'rasp-song') ? 1.3 : 1) * (chose(s, 'young-rasp', 'b') ? 1.15 : 1) * (paired(s, 'pistol-shrimp', 'sea-cucumber') ? 1.2 : 1),
     sandK: ACT3.sandSettle,
     bloomP: sunlight(s, target) * heatSun(s) * lv.symbiont * ACT4.pigmentBloom ** lv.pigment * ACT4.meadowBloom ** lv.meadow *
-      (speaks(s, 'fluorescent') ? 1.5 : 1) * (lives(s, 'damselfish') ? 1.3 : 1) * (chose(s, 'storm', 'b') ? 1.15 : 1) * 1.15 ** s.works.terrace * (has(s, 'light-walls') ? 1.25 : 1) * (relic(s, 'sun-gate') ? 1.2 : 1) * (chose(s, 'first-light', 'a') ? 1.15 : 1) * (paired(s, 'feather-duster', 'damselfish') ? 1.15 : 1),
+      (speaks(s, 'fluorescent') ? 1.5 : 1) * (lives(s, 'damselfish') ? 1.3 : 1) * (chose(s, 'storm', 'b') ? 1.15 : 1) * 1.15 ** s.works.terrace * (has(s, 'light-walls') ? 1.25 : 1) * (relic(s, 'sun-gate') ? 1.2 : 1) * (s.sport === 'sun' ? 1.2 : 1) * (chose(s, 'first-light', 'a') ? 1.15 : 1) * (paired(s, 'feather-duster', 'damselfish') ? 1.15 : 1),
     bloomK: ACT4.bloomFade * (inHeat(s) && !closedNow(s) ? HEAT.openFade : 1) * (chose(s, 'turtle', 'a') ? 0.8 : 1) * (speaks(s, 'lullaby') ? 0.7 : 1),
     spawnP: target >= ACT5.from
       ? lv.polyp * ACT5.spawnRate * ACT5.ripenSpawn ** lv.ripen * (speaks(s, 'broadcast') ? 2 : 1) *
@@ -223,7 +223,7 @@ export function rates(s: GameState): Rates {
       : 0,
     spawnK: ACT5.spawnFade * (chose(s, 'bird', 'a') ? 0.8 : 1) * (chose(s, 'first-light', 'b') ? 0.85 : 1),
     calciteBase:
-      (ACT1.trickle + ACT1.polypRate * sm.polyp * (passed(s, 'hungry') ? 1.1 : 1) * (s.strain === 'gold' ? 1.15 : 1) * lv.polyp * milestoneMult('polyp', lv.polyp) * (has(s, 'city') ? 1.5 : 1)) *
+      (ACT1.trickle + ACT1.polypRate * sm.polyp * (passed(s, 'hungry') ? 1.1 : 1) * (s.strain === 'gold' ? 1.15 : 1) * (s.sport === 'amber' ? 1.12 : 1) * lv.polyp * milestoneMult('polyp', lv.polyp) * (has(s, 'city') ? 1.5 : 1)) *
       (ACT1.ventBoost * sm.ventBoost) ** vent *
       (has(s, 'inside-the-wall') ? 2 : 1) *
       (s.truce.wall === 'b' ? 1.25 : 1) *
@@ -238,7 +238,7 @@ export function rates(s: GameState): Rates {
       (has(s, 'lattice-songs') ? 0.7 : 1) * (chose(s, 'brittle', 'a') ? 0.9 : 1) * (chose(s, 'cleaners', 'b') ? 0.9 : 1) * (chose(s, 'snow', 'b') ? 0.95 : 1) * (chose(s, 'drifts', 'b') ? 0.9 : 1) * (chose(s, 'last-night', 'a') ? 0.9 : 1) * (boon(s, 'roots') ? 0.85 : 1) * (speaks(s, 'massive') ? 0.5 : 1) * grainMult(s, 'dense') +
       (speaks(s, 'mucus') ? 0 : ACT3.raspEat * rasp * (s.truce.terms === 'b' ? ACT3.politeEat : 1) * (lives(s, 'guard-crab') ? 0.5 : 1) * (chose(s, 'young-rasp', 'a') ? 0.8 : 1) * (paired(s, 'guard-crab', 'goby') ? 0.8 : 1)),
     lureMax: ACT1.lureMax + ACT1.lureMaxPerPattern * lv.lure + (has(s, 'fear') ? 1 : 0) + (speaks(s, 'fluorescent') ? 2 : 0) +
-      (relic(s, 'lamp-hall') ? 1 : 0) + 0.5 * s.works.spire + (chose(s, 'angler', 'a') ? 0.5 : 0) + (chose(s, 'eyes', 'a') ? 0.5 : 0),
+      (relic(s, 'lamp-hall') ? 1 : 0) + 0.5 * s.works.spire + (chose(s, 'angler', 'a') ? 0.5 : 0) + (chose(s, 'eyes', 'a') ? 0.5 : 0) + (s.sport === 'lamp' ? 1 : 0),
     reachPower: ACT2.reachPower + (s.truce.story === 'b' ? 0.05 : 0),
     heightTarget: target,
   };
@@ -857,12 +857,12 @@ export function nextReading(s: GameState) {
 
 /** Murmurs a Reading costs (halved by the Kept readings trait). */
 export function readingCost(s: GameState, r: { cost: number }): number {
-  return r.cost * (trait(s, 'kept-readings') ? 0.5 : 1) * seamount(s).readings * murmurFactor(s);
+  return r.cost * (trait(s, 'kept-readings') ? 0.5 : 1) * seamount(s).readings * murmurFactor(s) * (s.sport === 'dusk' ? 0.8 : 1);
 }
 
 /** Murmurs it takes to learn a meeting's words. */
 export function meetingWords(s: GameState, m: { words: number }): number {
-  return m.words * (trait(s, 'kept-readings') ? 0.5 : 1) * murmurFactor(s);
+  return m.words * (trait(s, 'kept-readings') ? 0.5 : 1) * murmurFactor(s) * (s.sport === 'dusk' ? 0.8 : 1);
 }
 
 export function readingsRevealed(s: GameState): boolean {
@@ -1520,6 +1520,18 @@ export function plant(s: GameState): boolean {
 }
 
 // ---------- The glimmerseed strain ----------
+
+/** The strain's sport can be chosen: a strain kept, the Twilight Shelf reached, none chosen yet. */
+export function sportOpen(s: GameState): boolean {
+  return !!s.strain && !s.sport && s.height >= SPORT.metres;
+}
+
+export function chooseSport(s: GameState, id: SportId): boolean {
+  const sp = SPORTS.find((x) => x.id === id);
+  if (!sportOpen(s) || !sp || sp.strain !== s.strain) return false;
+  s.sport = id;
+  return true;
+}
 
 export function strainOpen(s: GameState): boolean {
   return !s.strain && s.height >= STRAIN.metres;

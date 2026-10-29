@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended goal (user): add features and gameplay, repeat. Latest: seamount moments; warm water in the Sunlit Crown (+ Sun-shy trait); the night sky at the Breach (trace figures); the rising (Midnight/Twilight active haul); grain of the stone; 4th-order calcite step. Keep a backlog in PLAN.md. Bot ~7 h; 7 browser tests + 55 sim tests green.
+NOW: Open-ended goal (user): add features and gameplay, repeat. Latest: seamount moments; warm water in the Sunlit Crown (+ Sun-shy trait); the night sky at the Breach (trace figures); the rising (Midnight/Twilight active haul); grain of the stone; 4th-order calcite step; the strain's sport. Keep a backlog in PLAN.md. Bot ~7 h; 7 browser tests + 55 sim tests green.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -491,3 +491,4 @@ date, what landed, what is half-done, what's next.
 - Keys: R sends the feeders into the rising, C closes/opens the polyps (main.ts sendFeeders/setClosed, also the panel hooks); feat 'Into the rising' (ten risings).
 - Breach creatures: by-the-wind sailors (a fleet drifting across, bobs when tapped), storm petrels (patter on the water, lift off when tapped), sea sparkle (night wavelets flash blue; a touch sends a flare ring out) in render/surface.ts.
 - Grain of the stone (act1.ts GRAIN/GRAINS; economy grainsWaiting/chooseGrain/grainMult; state.grains): card in choices.ts, tinted rings on the Silt Floor (ReefLayout.grains), bot picks dense, dense, quick. The grains changed the bot's Act IV state and exposed a 2e-5 offline gap: the calcite step relaxed with the plain mean production (2nd order). Now Simpson of the decay-weighted production (4th order): the gap is 3e-9.
+- The sport (act1.ts SPORT/SPORTS; economy sportOpen/chooseSport; state.sport): card in choices.ts (only the strain's two shown; `.boon-choices .choice[hidden]` now really hides), specks take its colour, bot keeps amber/ice/ultraviolet.

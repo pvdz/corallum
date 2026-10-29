@@ -1,6 +1,6 @@
 // The whole game state. Plain JSON-able data so saving is a stringify.
 
-import type { GrainId } from '../content/act1.ts';
+import type { GrainId, SportId } from '../content/act1.ts';
 import type { FigureId } from '../content/sky.ts';
 import type { Job, ReadingId } from '../content/act2.ts';
 import type { StrainId } from '../content/act1.ts';
@@ -118,6 +118,8 @@ export type GameState = {
   truce: Record<MeetingId, '' | 'a' | 'b'>;
   /** The glimmerseed strain ('' until chosen at 15 m). */
   strain: StrainId | '';
+  /** The strain's sport, chosen at the Twilight Shelf ('' until then). */
+  sport: SportId | '';
   /** Figures named in the night sky over the Breach. */
   sky: Record<FigureId, boolean>;
   /** The half-hour cycle whose rising the feeders were last sent into (−1: never). */
@@ -218,6 +220,7 @@ export function newGame(seed: number, meta: Meta = newMeta()): GameState {
     dialects: { form: '', craft: '', spawn: '', song: '' },
     height: 0,
     strain: '',
+    sport: '',
     closed: false,
     grains: [],
     rose: -1,

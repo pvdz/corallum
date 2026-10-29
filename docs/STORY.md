@@ -138,4 +138,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | The rising (the deep's life climbing past to feed; send the feeders in) | real diel vertical migration; no game beat I know | OK |
 | By-the-wind sailors, storm petrels, sea sparkle (Breach creatures) | real animals (Velella, Hydrobatidae, Noctiluca) under plain names | OK |
 | The grain of the stone (dense / quick / bright bands) | plain words; corals really lay down denser and lighter bands by season | OK |
+| The glimmerseed sport (ice, lamp blue, amber, sun gold, ultraviolet, dusk) | 'sport' is the gardeners' word for a mutation; colour names are plain | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

@@ -2,7 +2,7 @@
 // the fork on a trip, the shoals' signal and the full-moon spawning. Built once; update() shows
 // whichever is open now.
 
-import { GRAIN, GRAINS, STRAIN, STRAINS } from '../content/act1.ts';
+import { GRAIN, GRAINS, SPORT, SPORTS, STRAIN, STRAINS } from '../content/act1.ts';
 import { RIDDLE } from '../content/act3.ts';
 import { OTHERS } from '../content/act4.ts';
 import { actAt } from '../content/acts.ts';
@@ -10,7 +10,7 @@ import { SIGNAL } from '../content/events.ts';
 import { EXPEDITION } from '../content/expeditions.ts';
 import { BOON_TEXT } from '../content/lineage.ts';
 import { FIGURES, SKY } from '../content/sky.ts';
-import { grainsWaiting, boonsOffered, figureOpen, skyOpen, currentRiddle, currentSignal, forkOpen, othersCap, othersSpawning, strainOpen } from '../sim/economy.ts';
+import { grainsWaiting, sportOpen, boonsOffered, figureOpen, skyOpen, currentRiddle, currentSignal, forkOpen, othersCap, othersSpawning, strainOpen } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { button, el } from './dom.ts';
 import { num } from './format.ts';
@@ -29,6 +29,21 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
   }
   strainBox.append(el('p', 'truce-kicker', STRAIN.kicker), el('p', 'truce-text', STRAIN.text), strainChoices);
   grow.prepend(strainBox);
+
+  // ---------- The strain's sport (at the Twilight Shelf) ----------
+  const sportBox = el('section', 'truce moment sport');
+  sportBox.hidden = true;
+  const sportText = el('p', 'truce-text');
+  const sportChoices = el('div', 'boon-choices');
+  const sportButtons = SPORTS.map((sp) => {
+    const b = button('choice', '', () => hooks.chooseSport(sp.id));
+    b.style.borderColor = `rgba(${sp.rgb},0.55)`;
+    b.append(el('strong', '', sp.name), el('em', '', sp.flavour), el('span', '', sp.effect));
+    sportChoices.append(b);
+    return { sp, b };
+  });
+  sportBox.append(el('p', 'truce-kicker', SPORT.kicker), sportText, sportChoices);
+  grow.prepend(sportBox);
 
   // ---------- The grain of the stone (every tenth band) ----------
   const grainBox = el('section', 'truce moment grain');
@@ -153,6 +168,11 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
 
   return {
     update(s: GameState): void {
+      setShown(sportBox, sportOpen(s));
+      if (sportOpen(s)) {
+        sportText.textContent = SPORT.text(STRAINS.find((x) => x.id === s.strain)?.name ?? '');
+        for (const x of sportButtons) x.b.hidden = x.sp.strain !== s.strain;
+      }
       const waiting = grainsWaiting(s);
       setShown(grainBox, waiting > 0);
       if (waiting > 0) {
