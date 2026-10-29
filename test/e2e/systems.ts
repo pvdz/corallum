@@ -71,6 +71,15 @@ await withGame(async (open) => {
   await page.locator('section.sport button:not([hidden])').first().click();
   check((await st()).sport !== '', 'the strain\'s sport chosen');
 
+  // A dream: the reef sleeps a quarter of an hour forward, and says what happened.
+  await page.evaluate(() => { window.corallum!.state.meta.dreams = 1; });
+  await page.waitForTimeout(400);
+  const t0 = (await st()).t;
+  await page.locator('.prep-row .dream').click();
+  check((await st()).t >= t0 + 900 && (await st()).meta.dreams === 0, 'a dream sleeps the reef forward');
+  await page.locator('.away:not([hidden]) button').last().click().catch(() => {});
+  await dismiss();
+
   // The shoals' signal: repeat the pattern.
   const pattern = await page.evaluate(() => window.corallum!.signal());
   check(!!pattern, 'a signal comes');

@@ -144,4 +144,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Cleaner wrasse (resident: a cleaning station; gifts ×2, twice as often) | real cleaning-station behaviour (Labroides) | OK |
 | A shallow seamount (long warm spells; Sun-hardened reward); its moment: the water will not cool | real marine heatwaves; plain names | OK |
 | Trip encounters: a giant squid asleep across a street, lost lamps in a side tunnel, a hall of glass sponges | plain deep-sea sights in this game's ruined city | OK |
+| Dreams (the reef sleeps forward, as Ossel does) | a time-skip is a genre convention; framed by this game's own band 'Ossel dreams' | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

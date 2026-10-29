@@ -506,3 +506,4 @@ date, what landed, what is half-done, what's next.
 - Setting 'notify' (off by default; asks permission when turned on, turns itself off if refused): main.ts notifyWaiting checks once a second and notifies only while the tab is hidden, each thing once as it begins.
 - Four more riddles (rule, ripple, end, children): ten in all, each about a band already read.
 - The line remembers its stars (meta.seen 'sky:<id>'): later Breaches draw those figures as faint dotted outlines and the sky card says 'named before'.
+- Dreams (events.ts DREAM; meta.dreams; economy dream; dailyGift adds one, max 3): a Dream (n) button in the prep row; main.ts runs catchUp(900).

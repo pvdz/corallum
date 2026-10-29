@@ -33,6 +33,14 @@ export const NOTIFY = {
 /** A new day: the first visit of each calendar day brings a small gift. */
 export const DAILY = { seconds: 600, kicker: 'A new day', text: 'Ossel has been keeping something for you.' } as const;
 
+/** Dreams: the reef sleeps a quarter of an hour forward at once. One comes with each new day, at most `max` kept. */
+export const DREAM = {
+  seconds: 900, max: 3,
+  label: (n: number) => `Dream (${n})`,
+  title: 'Sleep as Ossel sleeps: the reef dreams a quarter of an hour forward, all at once',
+  gained: 'and a dream',
+} as const;
+
 export const WELCOME = {
   /** Offered after this long away (sim seconds). */
   after: 3600,

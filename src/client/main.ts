@@ -32,12 +32,12 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio, type Cue } from '../game/audio/audio.ts';
-import { AWAY_CYCLES, AWAY_PREP, DAILY, NOTIFY, FEAST, SIGNAL, THORN, WELCOME } from '../game/content/events.ts';
+import { AWAY_CYCLES, AWAY_PREP, DAILY, DREAM, NOTIFY, FEAST, SIGNAL, THORN, WELCOME } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS, TRIAL_TEXT } from '../game/content/lineage.ts';
 import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, giftOf, TRUST, trustLevel, COMPANION, type CreatureId } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
@@ -323,6 +323,12 @@ const panel = createPanel(ui, {
     if (tracing) audio.cue('shimmer');
   },
   feedRising: sendFeeders,
+  dream() {
+    if (!dream(state)) return;
+    audio.cue('whisper');
+    catchUp(DREAM.seconds);
+    save();
+  },
   closeUp: setClosed,
   setCurrent(c) {
     setCurrent(state, c);
@@ -430,7 +436,7 @@ if (frozenT === null && botT === null) {
   const now0 = new Date();
   const day = Math.floor((now0.getTime() - now0.getTimezoneOffset() * 60_000) / 86_400_000);
   const pay = dailyGift(state, day);
-  if (pay > 0) setTimeout(() => showJournalNote(DAILY.kicker, `${DAILY.text} +${num(pay)} ${feastPay(state)}`), 2500);
+  if (pay > 0) setTimeout(() => showJournalNote(DAILY.kicker, `${DAILY.text} +${num(pay)} ${feastPay(state)} ${DREAM.gained}`), 2500);
 }
 // Once after an update: what is new (not on a brand-new reef, which meets everything as it comes).
 if (!state.meta.seen.includes(NEWS.id) && (state.t > 600 || state.meta.spawnings > 0) && frozenT === null && botT === null) {

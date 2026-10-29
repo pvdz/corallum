@@ -57,6 +57,8 @@ export type Meta = {
   palette: string;
   /** Shards of Thousandfold's tablet found by the line (indices into content/shards.ts). */
   shards: number[];
+  /** Dreams kept (each sleeps the reef DREAM.seconds forward). */
+  dreams: number;
 };
 
 export function newMeta(): Meta {
@@ -75,6 +77,7 @@ export function newMeta(): Meta {
     carriedEver: [],
     endings: 0,
     shards: [],
+    dreams: 0,
     palette: '',
     companion: '',
     lastDay: 0,

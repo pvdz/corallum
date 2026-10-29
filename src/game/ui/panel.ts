@@ -20,7 +20,7 @@ import { button, el } from './dom.ts';
 import { createChoices } from './choices.ts';
 import { drawCity, drawTablet } from './drawings.ts';
 import { FEATS } from '../content/feats.ts';
-import { AWAY_CYCLES, AWAY_PREP, NOTIFY, WELCOME, intruderOf } from '../content/events.ts';
+import { AWAY_CYCLES, AWAY_PREP, DREAM, NOTIFY, WELCOME, intruderOf } from '../content/events.ts';
 import { WATER } from '../content/waters.ts';
 import { REQUEST } from '../content/requests.ts';
 import { WORKS, WORK_TEXT, type WorkId } from '../content/works.ts';
@@ -83,6 +83,7 @@ export type PanelHooks = {
   /** Turn the current (−2 … +2). */
   setCurrent(c: number): void;
   closeUp(closed: boolean): void;
+  dream(): void;
   feedRising(): void;
   /** Trace a figure of the night sky (again: stop). */
   trace(id: FigureId): void;
@@ -371,8 +372,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const prepBtn = button('plain prep-away', AWAY_PREP.label, () => { prepNote.textContent = hooks.prepareAway(); });
   prepBtn.title = AWAY_PREP.title;
   const prepNote = el('span', 'hint prep-note');
+  // Dreams: sleep the reef forward, one kept dream at a time.
+  const dreamBtn = button('plain dream', '', () => hooks.dream());
+  dreamBtn.title = DREAM.title;
   const prepRow = el('div', 'prep-row');
-  prepRow.append(prepBtn, prepNote);
+  prepRow.append(prepBtn, dreamBtn, prepNote);
   prepRow.hidden = true;
   askBox.after(prepRow);
 
@@ -1599,7 +1603,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         if (primed) showStory(st);
       }
 
-      prepRow.hidden = !(raspMax(s) > 0 || s.levels.shoal > 0);
+      prepRow.hidden = !(raspMax(s) > 0 || s.levels.shoal > 0 || s.meta.dreams > 0);
+      prepBtn.hidden = !(raspMax(s) > 0 || s.levels.shoal > 0);
+      dreamBtn.hidden = s.meta.dreams <= 0 || ended(s);
+      dreamBtn.textContent = DREAM.label(s.meta.dreams);
 
       // Residents: who may move in, and who has.
       const nHomes = homes(s);

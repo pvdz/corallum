@@ -200,6 +200,7 @@ Tick items as they land; keep this list honest. Add items freely.
   - [x] Sun-shy trait: an open reef closes itself in warm water
   - [x] the rising in the Midnight Water and Twilight Shelf: send the feeders in for a haul
   - [x] Breach creatures: sailors, storm petrels, sea sparkle
+  - [x] dreams: a daily 15-minute sleep forward (at most three kept)
   - [x] four more riddles from the elder (ten)
   - [x] optional background notifications (rising, warm water on an open reef, shoals home, the full moon)
   - [x] trip encounters: four seeded forks with two ways each

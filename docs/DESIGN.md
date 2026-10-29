@@ -176,6 +176,9 @@ build leans one way. On the Silt Floor the grain bands show as coloured rings in
 **Flurries** (Silt Floor): every four minutes the Long Silt falls thick for 30 s; sweeps catch ×3 then
 (on the sim clock, so the snow and the pay agree; the Soon line counts down to the next).
 
+**Dreams**: each new calendar day brings one with the morning gift (at most three kept). A dream sleeps
+the reef a quarter of an hour forward at once (the exact offline advance) and shows the away summary.
+
 **The rising** (Midnight Water and Twilight Shelf, while watching): for three minutes in every half
 hour (half a cycle after the Sunlit's warm water) the deep's small life streams up past the reef.
 The feeders can be sent into it once: four minutes of calcite times the share of shoals feeding, so
