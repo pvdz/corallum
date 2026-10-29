@@ -35,6 +35,10 @@ export function createTwilightScene(seed: number): Scene {
   let focus: Focus = { x: 0, y: 0, w: 1, h: 1 };
   const reef = createReef(Math.floor(rng() * 1e9));
   const shoals = createShoals(seed ^ 0x3c);
+  // A garden eel colony on the slope, away from the reef's foot.
+  const eels = Array.from({ length: 22 }, (_, i) => ({
+    u: (i < 11 ? 0.12 : 0.72) + rng() * 0.16, len: range(rng, 22, 36), light: rng() < 0.6,
+  }));
   const water = createLayerCache(0.5);
   const ruins = createRuins(seed);
   const effects = createEffects();
@@ -231,6 +235,35 @@ export function createTwilightScene(seed: number): Scene {
     }
   }
 
+  /**
+   * Garden eels: a colony of thin eels standing out of their burrows in the sand, all leaning into
+   * the current to catch drifting food, and ducking down in waves when something passes.
+   */
+  function drawGardenEels(ctx: CanvasRenderingContext2D, t: number): void {
+    const s = scale();
+    for (const [k, e] of eels.entries()) {
+      const x = focus.x - focus.w * 0.1 + e.u * focus.w * 1.2;
+      const base = slopeY(e.u) + 3 * s;
+      // Every so often a wave of ducking runs through the colony.
+      const wave = Math.max(0, Math.sin(t * 0.25 - e.u * 6));
+      const out = 1 - Math.pow(wave, 6) * 0.85;
+      const len = e.len * s * out;
+      const lean = 0.35 + 0.12 * Math.sin(t * 0.7 + k);
+      ctx.strokeStyle = e.light ? 'rgba(235,225,200,0.9)' : 'rgba(150,140,120,0.9)';
+      ctx.lineWidth = 2.8 * s;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(x, base);
+      ctx.quadraticCurveTo(x + lean * len * 0.2, base - len * 0.6, x + lean * len * 0.6, base - len * 0.85);
+      ctx.stroke();
+      // Head bent toward the current, a dark eye.
+      ctx.fillStyle = 'rgba(30,30,30,0.9)';
+      ctx.beginPath();
+      ctx.arc(x + lean * len * 0.6 + 1.2 * s, base - len * 0.85, 0.8 * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
   /** A manta gliding through the light shafts every few minutes, wings rising and falling slowly. */
   function drawManta(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 230, crossing = 75;
@@ -398,6 +431,7 @@ export function createTwilightScene(seed: number): Scene {
       drawMotes(ctx, t, v.siltLevel);
       shoals.drawBack(ctx, focus, reef, L, v, t, '#1d3557');
       drawShelf(ctx, v.sandBars, v.siltLevel);
+      drawGardenEels(ctx, t);
       drawWall(ctx, t, v.wall);
       drawRasp(ctx, t, v.rasp, v.raspTrust, v.raspPolite);
       if (v.gardeners) drawGardeners(ctx, t);
