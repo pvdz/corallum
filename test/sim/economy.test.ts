@@ -630,3 +630,10 @@ test('shooting stars at the Breach: one wish per shower; for the line at most th
   s.height = 3000;
   assert.ok(!wishOpen(s), 'only at the Breach');
 });
+
+test('a silent seamount is not held at the Midnight Water by a Reading it cannot read', () => {
+  const s = newGame(31);
+  assert.ok(heightCap(s) <= 3000);
+  s.seamount = 'silent';
+  assert.ok(heightCap(s) > 3000);
+});
