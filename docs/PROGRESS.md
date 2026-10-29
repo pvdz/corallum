@@ -356,3 +356,4 @@ date, what landed, what is half-done, what's next.
 - Lineage ways for the new systems: Old maps (tripSeconds halves trips), Open house (+1 home), Water-wise (deep(): discounts 0.1 deeper; the water line shows the real factor).
 - Sections appearing during play (shoals, expedition, residents, works, a moment) rise in with a brief glow (panel setShown, CSS .fresh).
 - Every memory carried across the line's endings adds a closing page to the ending (ENDING.everything) and the feat 'Nothing lost, nothing kept'.
+- Whispers for great works, residents, the sister reef ahead, the first shard and growing trust.

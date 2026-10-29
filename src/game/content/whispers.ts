@@ -5,7 +5,7 @@
 import type { GameState } from '../sim/state.ts';
 import { actAt } from './acts.ts';
 import {
-  calciteHold, canSend, waterAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
+  calciteHold, canSend, waterAt, homes, workOpen, sisterAt, gaugeAt, cost, currentFeast, idleShoals, raspSettings, moonFull, nextReading, readingsRevealed, smother, untilFullMoon,
 } from '../sim/economy.ts';
 
 export type Whisper = { id: string; when: (s: GameState) => boolean; text: string };
@@ -69,6 +69,26 @@ export const WHISPERS: readonly Whisper[] = [
   {
     id: 'water', when: (s) => waterAt(s).id === 'rich' && s.levels.polyp > 10,
     text: 'Taste the water. It is rich today. Bud now, while it is easy; it will not last.',
+  },
+  {
+    id: 'work', when: (s) => (['spire', 'breakwater', 'terrace'] as const).some((w) => workOpen(s, w) && s.works[w] === 0),
+    text: 'Something this big takes more than one kind of wealth. Gather both, then build.',
+  },
+  {
+    id: 'resident', when: (s) => homes(s) > 0 && s.residents.length === 0,
+    text: 'Someone small is asking to live in your branches. Let them in; they will earn their keep.',
+  },
+  {
+    id: 'sister', when: (s) => s.height > 100 && s.race.decided < 5 && sisterAt(s.t) > gaugeAt(s.height),
+    text: 'There is another reef on the next seamount. Ours, from the old wall. It is ahead of you. Do not let it reach the light first.',
+  },
+  {
+    id: 'shard', when: (s) => s.meta.shards.length === 1,
+    text: 'That stone has writing on it. Thousandfold’s. There will be more of it in the silt.',
+  },
+  {
+    id: 'trust', when: (s) => Object.values(s.meta.trust).some((n) => n >= 5 && n < 8),
+    text: 'They know you now. Things that know you give more freely.',
   },
   {
     id: 'ruin', when: (s) => s.relics.length === 0 && canSend(s),
