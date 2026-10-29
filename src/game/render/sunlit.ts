@@ -190,6 +190,31 @@ export function createSunlitScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** Specks of drifting matter caught glittering in the sun shafts (drawn every frame, unlike the shafts). */
+  function drawShaftMotes(ctx: CanvasRenderingContext2D, t: number, day: number): void {
+    if (day <= 0) return;
+    const sx = cx() + focus.w * 0.18;
+    const s = scale();
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < 6; i++) {
+      const bx = sx + focus.w * ((i - 3) * 0.12) + Math.sin(t * 0.08 + i * 2.1) * focus.w * 0.03;
+      for (let j = 0; j < 14; j++) {
+        const v = ((j * 0.618034 + i * 0.37 + t * 0.006 * (1 + (j % 3) * 0.4)) % 1);
+        const y = v * h * 0.85;
+        // Within the shaft, which leans and widens with depth.
+        const x = bx - focus.w * 0.1 * v + (((j * 0.381966 + i * 0.5) % 1) - 0.5) * focus.w * (0.02 + 0.08 * v) + Math.sin(t * 0.5 + j) * 3 * s;
+        const tw = Math.max(0, Math.sin(t * (1.1 + (j % 5) * 0.3) + j * 1.7 + i));
+        if (tw < 0.3) continue;
+        const al = (tw - 0.3) * day * (1 - v * 0.6);
+        glow(ctx, x, y, 5 * s, '255,250,215', 0.5 * al);
+        ctx.fillStyle = `rgba(255,255,240,${al})`;
+        ctx.fillRect(x - 1.2 * s, y - 1.2 * s, 2.4 * s, 2.4 * s);
+      }
+    }
+    ctx.restore();
+  }
+
   function drawFloor(ctx: CanvasRenderingContext2D, t: number): void {
     const x0 = focus.x - focus.w * 0.1, span = focus.w * 1.2;
     ctx.beginPath();
@@ -1649,6 +1674,7 @@ export function createSunlitScene(seed: number): Scene {
       if (v.heat.warm > 0) drawHeat(ctx, t, v.heat.warm);
       if (night < 0.5) drawCloudShadow(ctx, t, 1 - night * 2);
       if (v.moments.dust) drawDust(ctx, t, 1 - night * 0.7);
+      drawShaftMotes(ctx, t, 1 - night);
       drawGoldenHour(ctx, t);
       if (night > 0) drawNight(ctx, t, night, 0.3);
       drawPearls(ctx, t, night);
