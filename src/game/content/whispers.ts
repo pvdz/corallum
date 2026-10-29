@@ -184,6 +184,9 @@ export const WHISPERS: readonly Whisper[] = [
 /** What Ossel says when you tap it (the Silt Floor, or its wall on the Twilight Shelf), in turn. */
 /** What Ossel says when tapped and something is going on: the first that applies, in order. */
 export const OSSEL_NOW: readonly { when: (s: GameState) => boolean; text: string }[] = [
+  { when: (s) => s.carried.length > 0 && s.garden >= 12, text: 'Twelve of them, holding on in the shallows. I never had a garden. I had a wall.' },
+  { when: (s) => s.carried.length > 0 && s.garden > 0, text: 'Look at them, taking hold. Was I ever that small? I must have been.' },
+  { when: (s) => s.carried.length > 0, text: 'It is done, little mouth. Everything you let go is out there in the dark, finding somewhere to settle. Rest.' },
   { when: (s) => oldKnobs(s) >= 5, text: 'So much grey on you. I know how that feels. Let some of it go, little mouth.' },
   { when: (s) => inMilky(s), text: 'The sea is burning cold and white. Sweep. Sweep!' },
   { when: (s) => s.vows.includes('still'), text: 'You promised not to reach for anything. It is hard. I never managed it.' },
