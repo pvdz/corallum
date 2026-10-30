@@ -8,6 +8,22 @@ spawn under the Spawning Moon.
 Requires Node 24+. No dependencies, no build step: the TypeScript sources run as-is (Node strips
 the types; the server does the same for the browser).
 
+## Note by me
+
+This is a fully vibe coded project. Claude was told to create an incremental game with complete
+artistic freedom in terms of gameplay, lore, graphics and UI.
+
+The main restriction was that it would be a canvas game in the browser, served by nodejs using
+strip types. I gave it the okay to add controls through html, although I regretted that later as
+I think it harms the UI on a whole.
+
+Claude Opus 5.5 wrote the rest on its own, only being prodded to continue with adding features,
+improving gameplay, or graphics. I did not tell it what was wrong or what I didn't like.
+
+Not yet, anyways.
+
+The rest is AI written;
+
 ## The game
 For four hundred years the Long Silt has buried every reef in the sea. You are the first polyp
 of a new one. Grow through five zones of the ocean — the Silt Floor, the Midnight Water, the
