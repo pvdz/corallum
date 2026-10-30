@@ -645,6 +645,7 @@ html.calm *:not(#zone-title):not(#milestone):not(#whisper):not(#journal-note) { 
 #journal-note span { font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--glowc); }
 #journal-note strong { font-weight: 400; font-size: 17px; color: #eaf6ff; text-shadow: 0 0 12px rgba(120, 220, 255, 0.5); }
 #journal-note.show { animation: journal-note 3s ease both; }
+html.view-mode #journal-note { left: calc(max(12px, env(safe-area-inset-left)) + 146px); }
 @keyframes journal-note { 0% { opacity: 0; transform: translateY(-4px); } 15%, 75% { opacity: 1; transform: none; } 100% { opacity: 0; } }
 .codex-list .unknown { opacity: 0.45; font-style: italic; }
 .name-row { display: flex; align-items: center; gap: 10px; margin: 2px 0 10px; }
