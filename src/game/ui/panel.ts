@@ -1515,6 +1515,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   host.append(reader);
   const queue: Story[] = [];
   let held = false;
+  let heldUntil = 0;
   /** The story on screen, so the away summary can put it back in line. */
   let current: Story | null = null;
   function openStory(st: Story): void {
@@ -2387,12 +2388,17 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     },
     /** Keep stories queued for a while (a new reef shows the open water before the first one). */
     holdStories(ms: number): void {
+      // Holds overlap: the latest end wins, so an earlier, shorter hold cannot cut a later one short.
+      heldUntil = Math.max(heldUntil, performance.now() + ms);
       held = true;
-      setTimeout(() => {
+      const release = () => {
+        const left = heldUntil - performance.now();
+        if (left > 5) { setTimeout(release, left); return; }
         held = false;
         const next = reader.hidden && away.hidden ? queue.shift() : undefined;
         if (next) openStory(next);
-      }, ms);
+      };
+      setTimeout(release, ms);
     },
     /** Open a story card (or queue it behind the one showing). */
     story(kicker: string, title: string, text: string): void {

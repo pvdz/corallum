@@ -1951,8 +1951,8 @@ function frameBody(now: number): void {
       setTimeout(() => panel.story('A new zone', zg.title, zg.text), 5000);
     }
     audio.cue('zone');
-    // Let the new zone arrive (title, ascent) before the band that tells it opens.
-    panel.holdStories(4000);
+    // Let the new zone arrive (its title is up for about five seconds) before the band that tells it opens.
+    panel.holdStories(6000);
     whisper.classList.remove('show');
     lastWhisper = Math.max(lastWhisper, now - 80_000 + 10_000);
   }
