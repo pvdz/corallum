@@ -893,3 +893,4 @@ date, what landed, what is half-done, what's next.
 - The memory choice on a phone: twelve memories run ~2,000 px, with "1 of 3", Not yet and Let go at the very end; that footer now stays at the bottom of the screen as the list scrolls.
 - The quick-buy row sits on the panel at rest (no box of its own) and takes an opaque backdrop of the zone's tint only once the list scrolls under it (a translucent one let the cards' text show through).
 - On a phone held sideways (≤ 500 px tall) the quick buys are one line each and scroll away with the list instead of sticking (they took a quarter of the ~200 px card area there).
+- A creature's label (tapped for) and one of Ossel's whispers could show at once, the whisper's words peeking out around the label card (seen at the Sunlit Crown on a phone); the whisper steps back while a label is up.

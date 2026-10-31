@@ -1036,3 +1036,5 @@ html.view-mode #photo { display: grid; }
   .page-grow:has(> .quick-buy:not([hidden])) > section { scroll-margin-top: 0; }
   .quick-buy .buy.quick { flex-direction: row; justify-content: center; gap: 6px; padding: 4px 6px; }
 }
+/* A creature's label (asked for by a tap) comes first: a whisper behind it steps back. */
+#ui:has(#creature-label.show) #whisper { opacity: 0 !important; }
