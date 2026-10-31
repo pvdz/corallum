@@ -163,7 +163,7 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] offline catch-up stays cheap at any absence (60 days: ≤21 ms at the Breach)
 - [x] weather line tells "Now:" from "Soon:" (it said "full moon now" under Soon)
 - [x] frame budget per zone measured headless (`tools/perf.ts`) and the worst zone brought down: the Breach blitted its galaxy cache over the whole frame (10.6 → 3.3 ms draw; every zone now 3–4.5 ms desktop)
-- [~] late-game panel: finished upgrades and works fold into one "Finished · n" line (Twilight Grow tab 4104 → 3502 px); still long (Residents 440 px, Rasp 386 px)
+- [x] late-game panel: finished upgrades and works fold into one "Finished · n" line (Twilight Grow tab 4104 → 3502 px); the Rasp, Shoals and Residents fold to their header on a tap, remembered (Sunlit Grow tab on a phone 3459 → 2423 px)
 - [x] proofread every player-facing string (content/) for typos and voice: repeated words, spacing, and every one-off word (717) scanned; none found
 - [x] version + credits line in the Reef tab (0.9)
 - [x] a full browser playthrough (?bot at each zone + ending) with no console errors: `tools/sweep.ts` desktop + mobile clean

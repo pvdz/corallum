@@ -328,6 +328,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const raspHead = el('header');
   const raspCount = el('span', 'level');
   raspHead.append(el('h3', '', 'The Rasp'), raspCount);
+  foldable(raspBox, raspHead, 'rasp');
   const raspRow = el('div', 'rasp-row');
   const raspMinus = button('step', '−', () => hooks.setRasp((lastState?.rasp ?? 0) - 1));
   const raspSlider = el('input', 'rasp-slider');
@@ -437,6 +438,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const shoalTitle = el('h3', '', 'Shoals');
   const shoalIdle = el('span', 'level');
   shoalHead.append(shoalTitle, shoalIdle);
+  foldable(shoalBox, shoalHead, 'shoals');
   shoalBox.append(shoalHead);
   const jobRows = new Map<Job, { row: HTMLElement; count: HTMLElement; what: HTMLElement; minus: HTMLButtonElement; plus: HTMLButtonElement }>();
   for (const j of JOBS) {
@@ -461,6 +463,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const homeHead = el('header');
   const homeCount = el('span', 'level');
   homeHead.append(el('h3', '', RESIDENT.label), homeCount);
+  foldable(homeBox, homeHead, 'residents');
   homeBox.append(homeHead, el('p', 'rasp-what', RESIDENT.intro));
   const homeRows = new Map<ResidentId, { row: HTMLElement; btn: HTMLButtonElement }>();
   for (const r of RESIDENTS) {
@@ -1998,6 +2001,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       if (nHomes > 0) {
         const asking = residentsAsking(s);
         homeCount.textContent = `${s.residents.length} of ${nHomes} home${nHomes === 1 ? '' : 's'}`;
+        // Folded, it still says when someone asks to move in and there is room.
+        homeBox.classList.toggle('calls', s.residents.length < nHomes && asking.some((r) => !s.residents.includes(r.id)));
         // Pairings: the ones living now, else a hint at those within reach.
         const live = PAIRS.filter((p) => s.residents.includes(p.a) && s.residents.includes(p.b));
         pairLine.textContent = live.length ? live.map((p) => `${p.name}: ${p.effect}`).join(' · ') : nHomes >= 2 ? RESIDENT.pairHint : '';
@@ -2469,6 +2474,33 @@ function collapsible(card: HTMLElement, head: HTMLElement): void {
   };
   head.addEventListener('click', toggle);
   head.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+}
+
+/**
+ * A Grow-tab section the player can fold to its header (title and count stay), remembered per
+ * browser under `corallum.fold.<id>`. Open by default, so nothing is hidden from a new player.
+ */
+function foldable(box: HTMLElement, head: HTMLElement, id: string): void {
+  const key = `corallum.fold.${id}`;
+  box.classList.add('foldable');
+  head.setAttribute('role', 'button');
+  head.tabIndex = 0;
+  const set = (folded: boolean) => {
+    box.classList.toggle('folded', folded);
+    head.setAttribute('aria-expanded', String(!folded));
+  };
+  let start = false;
+  try { start = localStorage.getItem(key) === '1'; } catch { /* no storage */ }
+  set(start);
+  const toggle = (e: Event) => {
+    // The header's own buttons (if any) keep their job.
+    if ((e.target as HTMLElement).closest('button') && (e.target as HTMLElement).closest('button') !== head) return;
+    const folded = !box.classList.contains('folded');
+    set(folded);
+    try { localStorage.setItem(key, folded ? '1' : '0'); } catch { /* no storage */ }
+  };
+  head.addEventListener('click', toggle);
+  head.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(e); } });
 }
 
 /** What opens a hidden upgrade, in words. */
