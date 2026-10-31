@@ -245,6 +245,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     pages.append(page);
     tabPages.set(id, page);
   }
+  // A choice opened while another tab was showing: the Grow tab says so until it is looked at.
+  const growDot = el('span', 'dot');
+  growDot.hidden = true;
+  tabButtons.get('grow')!.append(growDot);
+  let growSeen = new Set<string>();
   const bandsDot = el('span', 'dot');
   tabButtons.get('bands')!.append(bandsDot);
   const reefDot = el('span', 'dot');
@@ -1683,6 +1688,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     // Which choice a box holds: its kicker and title (one box shows many moments under one kicker).
     const choiceKey = (sec: HTMLElement) => `${sec.querySelector('.truce-kicker')?.textContent ?? ''}|${sec.querySelector('h3')?.textContent ?? ''}`;
     const key = open.map((x) => choiceKey(x.sec)).join('||');
+    const keys = open.map((x) => choiceKey(x.sec));
+    if (currentTab === 'grow' || !keys.length) growSeen = new Set(keys);
+    // Only something new calls (answering one leaves the rest as they were seen).
+    const unseen = keys.some((k) => !growSeen.has(k));
+    if (growDot.hidden === unseen) growDot.hidden = !unseen;
     if (key === waitKey) return;
     waitKey = key;
     // A choice that may wait can be folded to its kicker ("Later"); a new choice in the same box opens unfolded.

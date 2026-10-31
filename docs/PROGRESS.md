@@ -878,3 +878,4 @@ date, what landed, what is half-done, what's next.
 - Lineage tab: mid-run, the lesser spawning (an option, not the point) is folded to one line, "Release a lesser spawning · +32 lineage ▸", until tapped open; after the ending (Begin again is the main action) it stays open. The traits come ~400 px sooner on a phone. prestige e2e opens it first.
 - Bands tab: "Your reef" folds like the cards under it (it was the only open one, ~440 px on a phone before the stories); the growth chart redraws at the card's width when opened.
 - The Rasp's four favours sit 2×2 instead of 3 + 1 (names and effects wrapped word by word in the narrow thirds).
+- The Grow tab shows a dot when a new choice (a moment, a question, the signal…) opens while another tab is showing, until Grow is looked at; the choices already seen do not call again.
