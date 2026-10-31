@@ -89,7 +89,7 @@ export function createSunlitScene(seed: number): Scene {
     const tall = form === 'massive' ? 0.7 : form === 'plating' ? 0.75 : 0.8;
     const pal = palette(v.palette);
     return {
-      cx: cx(), baseY: focus.y + focus.h * 0.97, unit: focus.h * tall, s: scale(), dpr,
+      cx: cx(), baseY: focus.y + focus.h * 0.97, unit: Math.min(focus.h * tall, focus.w * 1.5), s: scale(), dpr,
       top: 0.35 + 0.65 * progress(v.height), bandStep: 0,
       encrustColours: pal.pigments.slice(0, 2 + Math.min(pal.pigments.length - 2, Math.floor(v.pigments / 2))),
       polyp: v.craft === 'fluorescent' ? FLUORESCENT_POLYP : (pal.polyp as [string, string] | null) ?? FORM_LOOK[form].polyp,

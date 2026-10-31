@@ -625,7 +625,8 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 .codex-list dd { margin: 0; color: #dbe6f5; }
 
 /* ---------- Panel width, and short landscape screens (phones on their side) ---------- */
-:root { --panel-w: min(400px, 36vw); }
+/* At least 340 px: a narrower panel (an iPad upright, 36vw = 295 px) runs the stock values into their neighbours. */
+:root { --panel-w: clamp(340px, 36vw, 400px); }
 /* The panel's width on screen: wider than --panel-w when Larger text zooms it. Things beside it use this. */
 :root { --panel-out: var(--panel-w); }
 html.big { --panel-out: calc(var(--panel-w) * 1.15); }

@@ -100,7 +100,8 @@ export function createBreachScene(seed: number): Scene {
 
   function layout(v: ReefView, form: CoralForm): ReefLayout {
     // The crown rises from just under the surface to break it.
-    const unit = focus.h * 0.8;
+    // A tall, narrow frame (an iPad upright beside the panel) caps the reef by width, as in every zone.
+    const unit = Math.min(focus.h * 0.8, focus.w * 1.5);
     // The reef stands on the seamount, not on the water: it is placed against the still level.
     const crownY = stillY() + focus.h * (0.12 - 0.16 * progress(v.height));
     return {

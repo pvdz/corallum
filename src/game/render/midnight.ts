@@ -757,7 +757,7 @@ export function createMidnightScene(seed: number): Scene {
 
   function layout(v: ReefView): ReefLayout {
     return {
-      cx: cx(), baseY: focus.y + focus.h * 1.04, unit: focus.h * 0.8, s: scale(), dpr,
+      cx: cx(), baseY: focus.y + focus.h * 1.04, unit: Math.min(focus.h * 0.8, focus.w * 1.5), s: scale(), dpr,
       top: 0.4 + 0.6 * progress(v.height), bandStep: 0,
       encrust: 0.3 * progress(v.height), encrustColours: ['#5a3a6e', '#7e6aa8', '#c9b8e8'],
       palette: ['#170c1f', '#62344a', 'rgba(255,170,170,0.2)'],

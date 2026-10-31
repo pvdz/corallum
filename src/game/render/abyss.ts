@@ -443,7 +443,7 @@ export function createAbyssScene(seed: number): Scene {
 
   function layout(v: ReefView): ReefLayout {
     return {
-      cx: centreX(), baseY: baseY(), unit: focus.h * 0.62, s: scale(), dpr,
+      cx: centreX(), baseY: baseY(), unit: Math.min(focus.h * 0.62, focus.w * 1.5), s: scale(), dpr,
       top: Math.min(1.05, v.height / FRAME_METRES), bandStep: 3 / FRAME_METRES, grains: v.grains,
     };
   }
