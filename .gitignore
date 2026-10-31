@@ -3,3 +3,4 @@ node_modules/
 .DS_Store
 /tmp/
 /test-results/
+/core.[0-9]*
