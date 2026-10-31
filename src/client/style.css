@@ -910,9 +910,9 @@ html.view-mode #photo { display: grid; }
      the water line keeps the next thing and leaves the rest to the strip. */
   .stock-value { font-size: 17px; }
   .stock-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 10px; }
-  /* Three to a row: the rate, then what the stock holds, each on its own line. */
-  .stocks.many .stock-sep { display: none; }
-  .stocks.many .stock-rate, .stocks.many .stock-rest { display: block; overflow: hidden; text-overflow: ellipsis; }
+  /* Height is what a phone on its side lacks: one line each, even where a portrait phone takes two. */
+  .panel .stocks.many .stock-sep { display: inline; }
+  .panel .stocks.many .stock-rate, .panel .stocks.many .stock-rest { display: inline; }
   .wait-chip { font-size: 11px; }
   .charted .soon-rest { display: none; }
 }
