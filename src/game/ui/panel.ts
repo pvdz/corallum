@@ -1935,7 +1935,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       // Ossel's request.
       const rq = currentRequest(s);
       // Its slot is kept from the start for the same reason; empty until the first request.
-      askBox.hidden = false;
+      // A reef vowed to quiet hears no requests: no slot for them either.
+      askBox.hidden = s.vows.includes('quiet');
       askBox.classList.toggle('waiting', !rq);
       if (rq) {
         askText.textContent = rq.n === 1 && rq.def.one ? rq.def.one : rq.def.ask.replace('{n}', String(rq.n));
