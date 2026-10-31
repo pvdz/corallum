@@ -797,3 +797,5 @@ date, what landed, what is half-done, what's next.
 - Sound switched off suspends the audio context after its fade (the pad kept synthesising at zero volume).
 - The spawn stock's note says "enough for the moon" once it holds the spawn the breach needs (it read "3.01B · of 1.00M").
 - Journal notes also wait while the ending's pages are up (a "seen for the first time" note popped in over the release); after the ending the spawn note drops "enough for the moon".
+- Seamounts timed by the bot (table in ECONOMY.md): every trial goal is reached; silent and lonely are walls for a full ending (fine as trials). On a silent seamount the murmurs stock no longer stays up after the truce (there are no Readings to buy).
+- `?bot=` takes `&seamount=`; console-error sweeps of the dark, tidal, gleaming, silent, heavy and shallow seamounts.

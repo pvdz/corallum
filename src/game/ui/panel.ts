@@ -1597,7 +1597,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       plankton.value.textContent = num(s.plankton);
       plankton.sub.textContent = `${rate(planktonNet(s, r))} · ×${feeding(s.plankton).toFixed(2)} calcite`;
       // Murmurs pay for Readings and the truce's words; once both are done the stock leaves the panel.
-      const murmursWanted = s.readings.length < READINGS.length || MEETINGS.some((m) => !s.truce[m.id]);
+      // Murmurs buy Readings (none on a silent seamount) and the truce's words.
+      const murmursWanted = (!seamountDef(s.seamount).noReadings && s.readings.length < READINGS.length) || MEETINGS.some((m) => !s.truce[m.id]);
       murmurs.row.hidden = !(s.jobs.scout > 0 || (s.murmurs > 0.05 && murmursWanted));
       // Three or more stocks: a tighter grid (one-line rates, up to four to a row on a phone), so the cards keep their room.
       const shown = [...stocks.children].filter((c) => !(c as HTMLElement).hidden && !c.classList.contains('height')).length;
