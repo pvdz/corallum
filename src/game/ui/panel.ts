@@ -201,6 +201,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   // A stock that jumps in a frame (a haul, a feast, a gift) brightens and swells for a moment; one a
   // purchase takes a bite out of dims for a blink. Not under reduced motion or the calm setting.
   const lastValue = new Map<HTMLElement, number>();
+  /** When each upgrade's button last glowed for becoming affordable. */
+  const shimmered = new Map<string, number>();
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   function pulse(value: HTMLElement, v: number): void {
     const prev = lastValue.get(value);
@@ -2108,6 +2110,15 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const ok = canAfford(s, u.id);
         c.btn.disabled = !ok;
         if (c.max) c.max.hidden = !ok;
+        // Just affordable: the button glows once (not on the first frame, and once in 8 s per card,
+        // so holding a buy button does not flicker it).
+        if (ok && !c.root.classList.contains('ready') && primed && !reducedMotion.matches && !hooks.calm.get() && c.btn.animate) {
+          const now = performance.now();
+          if (now - (shimmered.get(u.id) ?? -1e9) > 8000) {
+            shimmered.set(u.id, now);
+            c.btn.animate([{ boxShadow: '0 0 0 0 rgba(150, 240, 255, 0)' }, { boxShadow: '0 0 16px 3px rgba(150, 240, 255, 0.55)' }, { boxShadow: '0 0 0 0 rgba(150, 240, 255, 0)' }], { duration: 900, easing: 'ease-out' });
+          }
+        }
         c.root.classList.toggle('ready', ok);
         const due = etaSlot++ === etaTurn || !c.eta.textContent;
         if (ok) {
