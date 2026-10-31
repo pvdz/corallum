@@ -42,7 +42,9 @@ async function loadFile(abs: string): Promise<Buffer> {
 
 /** Map a request path to an absolute file path, or null when it is outside the served dirs. */
 export function resolveRequest(urlPath: string): string | null {
-  let path = decodeURIComponent(urlPath.split('?')[0] ?? '/');
+  let path: string;
+  // A malformed escape (%E0%A4%A) is a bad request, not a crash.
+  try { path = decodeURIComponent(urlPath.split('?')[0] ?? '/'); } catch { return null; }
   if (path === '/' || path === '/index.html') path = '/src/client/index.html';
   if (path === '/favicon.ico') path = '/src/client/favicon.svg';
   const abs = normalize(join(ROOT, path));

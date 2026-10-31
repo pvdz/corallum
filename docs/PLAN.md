@@ -166,6 +166,8 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] proofread every player-facing string (content/) for typos and voice: repeated words, spacing, and every one-off word (717) scanned; none found
 - [x] version + credits line in the Reef tab (0.9)
 - [x] a full browser playthrough (?bot at each zone + ending) with no console errors: `tools/sweep.ts` desktop + mobile clean
+- [x] server: a malformed URL escape (%E0%A4%A) crashed the whole server; now a 404 (test/sim/server.test.ts); traversal refused
+- [x] no external requests (fonts, scripts, analytics): checked
 - [ ] perf on a real phone (needs the user; see M6)
 
 ### M0 Scaffold
