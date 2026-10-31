@@ -60,7 +60,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   }
 }
 
-.stocks { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; }
+.stocks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 14px; }
 .stock { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 0 8px; min-width: 0; }
 .stock[hidden] { display: none; }
 .stock[title] { cursor: help; }

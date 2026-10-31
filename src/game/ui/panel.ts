@@ -174,11 +174,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const value = el('span', 'stock-value', '0');
     // The rate, then what it holds or does: two parts, so a phone can put them on two lines.
     const sub = el('span', 'stock-sub', '');
-    const rateEl = el('span', 'stock-rate', ''), sep = el('span', 'stock-sep', ' · '), restEl = el('span', 'stock-rest', '');
+    // A no-break space before each dot: a wrapped line never starts with "·".
+    const rateEl = el('span', 'stock-rate', ''), sep = el('span', 'stock-sep', '\u00a0· '), restEl = el('span', 'stock-rest', '');
     sub.append(rateEl, sep, restEl);
     const setSub = (text: string) => {
       const i = text.indexOf(' · ');
-      const a = i < 0 ? text : text.slice(0, i), b = i < 0 ? '' : text.slice(i + 3);
+      const a = i < 0 ? text : text.slice(0, i), b = i < 0 ? '' : text.slice(i + 3).replaceAll(' · ', '\u00a0· ');
       if (rateEl.textContent !== a) rateEl.textContent = a;
       if (restEl.textContent !== b) restEl.textContent = b;
       sep.hidden = !b;
@@ -1736,7 +1737,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       spawn.row.hidden = !(r.spawnP > 0 || s.spawn > 0.5);
       spawn.value.textContent = num(s.spawn);
       // Toward the spawn the moon needs, or (once there) that it is enough; nothing more after the ending.
-      spawn.setSub(`${rate(spawnNet(s, r))} · ${ended(s) ? '' : s.spawn >= spawnTarget(s) ? `${UI.spawnEnough} · ` : `of ${num(spawnTarget(s))} · `}holds ~${num(spawnHold(s, r))}`);
+      // Once there is enough for the moon, that is all it needs to say.
+      spawn.setSub(`${rate(spawnNet(s, r))} · ${ended(s) ? `holds ~${num(spawnHold(s, r))}` : s.spawn >= spawnTarget(s) ? UI.spawnEnough : `of ${num(spawnTarget(s))} · holds ~${num(spawnHold(s, r))}`}`);
       for (const [st, v] of [[calcite, s.calcite], [glow, s.glow], [plankton, s.plankton], [murmurs, s.murmurs], [silt, s.silt], [sand, s.sand], [bloom, s.bloom], [spawn, s.spawn]] as const) {
         if (!st.row.hidden) pulse(st.value, v);
       }
