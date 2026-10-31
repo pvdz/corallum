@@ -157,6 +157,12 @@ export const BANDS_ACT3: readonly Band[] = [
       'on everyone forever.',
   },
   {
+    id: 'other-water', metres: 3575, title: 'Other water',
+    text: 'A current tops the shelf edge from the open sea, and it tastes of other reefs: dozens of ' +
+      'them, far off, every one different. The silt buried every reef in the sea, Ossel told you once. ' +
+      '“Most,” it says now. “I said most.”',
+  },
+  {
     id: 'shelf-edge', metres: 3650, title: 'The shelf edge',
     text: 'The water above you is blue now, properly blue, and full of moving shapes. The ripple ' +
       'far overhead has become a ceiling of light. Ossel has been silent for three bands.',
@@ -166,6 +172,12 @@ export const BANDS_ACT3: readonly Band[] = [
     text: 'A Rasp, very old, its beak worn down to a stub, lies on the slope by your foot and does ' +
       'not get up. By morning the others have ground it into the sand bars, the way they grind ' +
       'everything. Nobody mourns. “Or that is the mourning,” Ossel says, very quietly.',
+  },
+  {
+    id: 'warmth', metres: 3775, title: 'Warmth',
+    text: 'For the first time the water at your crown is warmer than the water at your foot. The polyps ' +
+      'up there open wider and lay their stone quick and light; the Rasp grind slower in it. Ossel, who ' +
+      'has never once been warm, asks what it is like. You try, and cannot tell it.',
   },
   {
     id: 'colour', metres: 3800, title: 'Colour',
