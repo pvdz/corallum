@@ -775,3 +775,4 @@ date, what landed, what is half-done, what's next.
 - tools/sweep.ts takes extra URL params; the other story paths (truce bbb with massive/mucus/brooding, abb with plating/fluorescent/fragmenting) run without console errors on desktop and mobile.
 - Soak: a page at ×100 from a new reef and ×30 from the Sunlit Crown for 4 min each: heap 6–8 MB and flat, DOM nodes and listeners flat.
 - The 'best buy' badge only shows when there are at least two calcite upgrades to compare (it sat on the only card at the start).
+- Home screen and sharing: PNG icons (180 apple-touch, 192, 512, maskable 512) rendered from the favicon by tools/icons.ts and listed in the manifest (iOS ignores an SVG touch icon); meta description and og:title/description.
