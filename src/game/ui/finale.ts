@@ -2,7 +2,7 @@
 
 import { QUESTIONS } from '../content/ossel.ts';
 import { VOWS } from '../content/lineage.ts';
-import { UI } from '../content/ui.ts';
+import { memoryCount, UI } from '../content/ui.ts';
 import { FIGURES, SKY } from '../content/sky.ts';
 import { ACT5, ENDING, MEMORIES, type MemoryId } from '../content/act5.ts';
 import { CREATURES, trustLevel } from '../content/creatures.ts';
@@ -11,7 +11,7 @@ import { SHARD_LINES } from '../content/shards.ts';
 import { SURFACE } from '../content/acts.ts';
 import {
   breachReady, canBreach, ended, memoriesAvailable, moonFull, moonPhase, rates, spawnHold, spawnNet, spawnTarget,
-  untilFullMoon, carryAt, greatTide, untilGreatMoon, vowKept, blueMoon,
+  untilFullMoon, carryAt, greatTide, untilGreatTide, vowKept, blueMoon,
 } from '../sim/economy.ts';
 import { drawMoon } from '../render/draw.ts';
 import type { GameState } from '../sim/state.ts';
@@ -208,7 +208,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
       const great = greatTide(s, s.t + wait);
       const blue = blueMoon(s.t + wait);
       status.textContent = (full
-        ? (great ? UI.greatFull : UI.moonFull)
+        ? (great ? UI.greatFull(carryAt(s, s.t)) : UI.moonFull)
         : `${phase < 0.5 ? UI.waxing : UI.waning} · ${UI.fullIn} ${duration(wait)}${great ? ` · ${UI.aGreatTide}` : ''}`) + (blue ? ` · ${UI.blueMoon}` : '');
       const r = rates(s);
       const target = spawnTarget(s);
@@ -228,7 +228,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
         if (full) parts.push(`Released now: +${now} lineage for the next reef${then - now >= 2 ? `; at the next full moon about +${then}` : ''}.`);
         else parts.push(`Released at this moon: about +${then} lineage for the next reef.`);
         // The wait-or-go choice: a great tide carries one more memory into the ending.
-        if (!great) parts.push(`The next great tide, carrying four memories, is in ${duration(untilGreatMoon(s.t))}.`);
+        if (!great) { const g = untilGreatTide(s); parts.push(`The next great tide, carrying ${memoryCount(carryAt(s, s.t + g))}, is in ${duration(g)}.`); }
       }
       need.textContent = parts.join(' ');
       const key = Math.floor(s.t / 30);
@@ -240,7 +240,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
           const great = greatTide(s, at);
           const wait = at - s.t;
           const item = el('span', great ? 'moon-day great' : 'moon-day', wait < 1 ? 'now' : duration(wait));
-          item.title = great ? UI.greatTide : UI.threeMemories;
+          item.title = great ? UI.greatTide(carryAt(s, at)) : UI.memories(carryAt(s, at));
           calendar.append(item);
           at = (Math.floor(at / ACT5.moonPeriod) + 1 + 0.5 - ACT5.fullWindow) * ACT5.moonPeriod + 1e-6;
         }

@@ -1,6 +1,12 @@
 // Words of the panel itself: headings, settings, saves, the away card. (Story and system texts
 // live with their systems.)
 
+const COUNT = ['no', 'one', 'two', 'three', 'four', 'five'];
+/** "three memories": what a spawn carries, in words. */
+export function memoryCount(n: number): string {
+  return `${COUNT[n] ?? n} memor${n === 1 ? 'y' : 'ies'}`;
+}
+
 export const UI = {
   truceKicker: 'The truce',
   raspAria: 'Rasp admitted to graze',
@@ -76,12 +82,12 @@ export const UI = {
   carries: 'What the spawn carries',
   continue: 'Continue',
   livesOn: 'The reef lives on',
-  greatFull: 'Full, and a great tide: four memories',
+  greatFull: (n: number) => `Full, and a great tide: ${memoryCount(n)}`,
   moonFull: 'The moon is full.',
   ready: 'Everything is ready.',
   readyWait: 'Everything is ready. Wait for the moon.',
-  greatTide: 'A great tide: four memories',
-  threeMemories: 'Three memories',
+  greatTide: (n: number) => `A great tide: ${memoryCount(n)}`,
+  memories: (n: number) => { const t = memoryCount(n); return t[0]!.toUpperCase() + t.slice(1); },
   keysKicker: 'Keys',
   keysTitle: 'Shortcuts',
   keysHelp: 'Space sweeps your tentacles. 1–4 switch the panel tabs. F catches a falling feast. E sends the shoals on the next expedition. L flares the lure. R sends the feeders into the rising. S rides a swell at the Breach. C closes the polyps against warm water (or opens them). 7–0 answer the shoals’ signal. P buds a polyp, B lays a band, G hosts glimmerseed. H hides the panel to see the whole reef (leave it a while and the view drifts on its own; + and − zoom, 0 zooms back out). T replays this zone’s growth. K lets old stone go; W makes a wish when stars fall. Hold any buy button to keep buying. Tap a creature to learn its name; tap Ossel and it will answer.',

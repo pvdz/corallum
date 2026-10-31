@@ -1235,6 +1235,16 @@ export function untilGreatMoon(t: number): number {
   return Infinity;
 }
 
+/** Seconds until the next full moon that is a great tide for this reef (its seamount and traits count). */
+export function untilGreatTide(s: GameState, t = s.t): number {
+  let at = moonFull(t) ? t : t + untilFullMoon(t) + 1e-6;
+  for (let k = 0; k <= ACT5.greatEvery; k++) {
+    if (greatTide(s, at)) return at - t;
+    at = (Math.floor(at / ACT5.moonPeriod) + 1 + 0.5 - ACT5.fullWindow) * ACT5.moonPeriod + 1e-6;
+  }
+  return Infinity;
+}
+
 /** Seconds until the moon is next full (0 while it is). */
 export function untilFullMoon(t: number): number {
   if (moonFull(t)) return 0;

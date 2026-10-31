@@ -827,3 +827,4 @@ date, what landed, what is half-done, what's next.
 - Vows: Quiet leaves no empty request slot; Haste's line in "Your reef" says how long is left while it is being kept ("haste (3h 12m left)").
 - Touch screens: small buttons (pins, chips, Forget, the current's steps, Close up, Trace, seamount chips) take a finger-sized tap through an invisible margin; their look is unchanged. The sheet grabber's hit box is 120×22.
 - The memory choice says how many memories the spawn really carries: it always said three (four on a great tide), also under the vow of lightness, which carries one fewer.
+- The moon card counts memories as the reef will really carry them (vow of lightness: one fewer; it said "four" and "Three memories" regardless), and its "next great tide" line counts the seamount: untilGreatTide(s) walks the moons with greatTide (a tidal seamount's every-other-moon tides were missed). Unit test.

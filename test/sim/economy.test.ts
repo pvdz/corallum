@@ -726,3 +726,14 @@ test('the elder asks a wrongly answered riddle once more in the light, for half 
   assert.equal(s.meta.lineage, l0 + 1);
   assert.equal(currentRiddle(s), undefined, 'only once more');
 });
+
+test('the next great tide counts the seamount: a tidal one has one every other moon', async () => {
+  const { untilGreatTide, untilGreatMoon, greatTide } = await import('../../src/game/sim/economy.ts');
+  const s = newGame(1);
+  s.seamount = 'tidal';
+  for (let t = 0; t < 4 * 3600; t += 397) {
+    const w = untilGreatTide(s, t);
+    assert.ok(greatTide(s, t + w), `great at t+${w}`);
+    assert.ok(w <= untilGreatMoon(t));
+  }
+});
