@@ -746,15 +746,15 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
           // light climbing the branches, and sparks of it left behind.
           const top = Math.min(1, L.top);
           const by = L.baseY - Math.min(1, k * 1.3) * top * u;
-          const band = ctx.createLinearGradient(L.cx - u * 0.3, 0, L.cx + u * 0.3, 0);
-          const a = 0.55 * Math.sin(Math.PI * Math.min(1, k * 1.3));
-          band.addColorStop(0, 'rgba(255,110,170,0)');
-          band.addColorStop(0.25, `rgba(255,110,170,${a})`);
-          band.addColorStop(0.5, `rgba(255,215,90,${a})`);
-          band.addColorStop(0.75, `rgba(120,240,170,${a})`);
-          band.addColorStop(1, 'rgba(120,240,170,0)');
-          ctx.fillStyle = band;
-          ctx.fillRect(L.cx - u * 0.3, by - 12 * s, u * 0.6, 24 * s);
+          const a = 0.7 * Math.sin(Math.PI * Math.min(1, k * 1.3));
+          // Rose, gold and green side by side, each a soft sash that fades at every edge.
+          ctx.save();
+          ctx.translate(L.cx, by);
+          ctx.scale(1, 0.09);
+          glow(ctx, -u * 0.14, 0, u * 0.22, '255,110,170', a);
+          glow(ctx, 0, 0, u * 0.22, '255,215,90', a);
+          glow(ctx, u * 0.14, 0, u * 0.22, '120,240,170', a);
+          ctx.restore();
           for (let i = 0; i < 48; i++) {
             const node = (i * 4513 + Math.floor(fx.start * 7)) % coral.count;
             if (coral.y[node]! > Math.min(top, k * 1.3 * top)) continue;
