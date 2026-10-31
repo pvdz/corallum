@@ -1444,8 +1444,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   host.append(reader);
   const queue: Story[] = [];
   let held = false;
+  /** The story on screen, so the away summary can put it back in line. */
+  let current: Story | null = null;
   function openStory(st: Story): void {
     hooks.storyShown?.();
+    current = st;
     readerKicker.textContent = st.kicker;
     readerTitle.textContent = st.title;
     readerText.textContent = st.text;
@@ -2231,6 +2234,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     /** Show the offline summary; any bands read while away are queued behind it. */
     showAway(seconds: number, gained: { calcite: number; glow: number; metres: number; full: boolean; bands: string[]; fullAfter: number | null;
       relics?: string[]; roams?: number; shards?: number; heat?: string; risings?: string; old?: string }, gifts?: { label: string; note: string; take: () => string }[]): void {
+      // One card at a time: a story already open waits, first in line, until the summary is closed.
+      if (!reader.hidden && current) {
+        queue.unshift(current);
+        reader.hidden = true;
+      }
       // A headline, then what changed as labelled rows (like the Your reef card).
       awayText.textContent = UI.awayText(duration(seconds));
       awayList.innerHTML = '';
