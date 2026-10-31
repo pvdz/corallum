@@ -41,7 +41,7 @@ export const UI = {
   pastePrompt: 'Paste a save:',
   loadSure: (here: string, there: string) => `Load this save? It replaces the reef you have now (${here}) with the saved one (${there}). Copy or save this reef first if you want to keep it.`,
   reset: 'Let the reef go (reset)',
-  resetSure: 'Start over from a single polyp? This erases the reef.',
+  resetSure: 'Start over from a single polyp? This erases the reef and the whole line: lineage, traits, the journal and the chronicle of endings. Save to a file first to keep them.',
   backup: 'This reef lives only in this browser: clearing site data would wash it away. Save it to a file (or copy it) and keep it somewhere safe.',
   softGlow: 'Soft glow (turn off if a phone runs slow or warm)',
   namePlaceholder: 'Name your reef',
