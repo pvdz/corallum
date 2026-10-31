@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Release push (mandate 2026-10-31): working down the Release checklist in docs/PLAN.md (outranks new content). Bot ~7h28; 7 browser tests + sim tests green. Run e2e with `timeout 500` per test. `tools/perf.ts` measures frame cost per zone (`--cpu 4` throttles); `tools/monkey.ts` clicks every button across the game. Offline play via a service worker (?sw in tests). A second agent session may be committing in this checkout: stage files by path.
+NOW: Release push (mandate 2026-10-31): working down the Release checklist in docs/PLAN.md (outranks new content). Bot ~7h28; 7 browser tests + sim tests green. Run e2e with `timeout 500` per test. `tools/perf.ts` measures frame cost per zone (`--cpu 4` throttles); `tools/monkey.ts` clicks every button across the game; `tools/audit.ts <vp>` lists UI problems (hidden-but-shown, overflow, small taps, unnamed controls, contrast). Offline play via a service worker (?sw in tests). A second agent session may be committing in this checkout: stage files by path.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
