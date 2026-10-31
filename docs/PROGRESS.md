@@ -851,3 +851,4 @@ date, what landed, what is half-done, what's next.
 - Phones: a card's button column is at most 46% of the screen; a long note under it ("until another daughter settles (one per 15 polyps)", "beyond what the reef can hold") wrapped the card's name to one word per line (the held daughter card was 190 px tall, now ~125).
 - Residents with every home taken: the others (whose buttons could only say "No room") wait behind one line, "7 more would move in, if a home were free ▸", which unfolds them. A full late-game Residents box 626 → 313 px.
 - Milestone flourish ("Lanterns · Glimmerseed ×2 · …"): it shows over the reef's bright crown, where its dim subtitle was hard to read; dark shadows under every line and a lighter subtitle.
+- Phone: the title's subtitle ran edge to edge; it now keeps a margin and wraps in two balanced lines. Story and ending text wrap "pretty" (no lone last word where the browser can help it).

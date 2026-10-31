@@ -22,7 +22,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   font-size: clamp(28px, 6vw, 64px); color: #f3fbff;
   text-shadow: 0 0 18px rgba(159, 246, 255, 0.55), 0 0 60px rgba(120, 200, 255, 0.25);
 }
-#title p { margin: 0.6em 0 0; font-family: var(--display); font-style: italic; color: var(--ink-dim); font-size: clamp(13px, 1.6vw, 18px); letter-spacing: 0.08em; }
+#title p { margin: 0.6em 0 0; font-family: var(--display); font-style: italic; color: var(--ink-dim); font-size: clamp(13px, 1.6vw, 18px); letter-spacing: 0.08em; padding: 0 16px; text-wrap: balance; }
 /* Reduced motion: no movement; the title cards keep their fade, without which they never appear. */
 @media (prefers-reduced-motion: reduce) { *:not(#zone-title):not(#milestone):not(#whisper):not(#journal-note) { animation: none !important; transition: none !important; } }
 
@@ -182,7 +182,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 }
 .reader-depth { margin: 0; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--calcite); }
 .reader-card h2 { margin: 8px 0 14px; font-family: var(--display); font-weight: 400; font-size: 26px; text-shadow: 0 0 20px rgba(159, 246, 255, 0.4); }
-.reader-text { margin: 0 0 22px; font-family: var(--display); font-size: 16.5px; line-height: 1.65; color: #d8e6f8; }
+.reader-text { margin: 0 0 22px; font-family: var(--display); font-size: 16.5px; line-height: 1.65; color: #d8e6f8; text-wrap: pretty; }
 
 /* ---------- Floating numbers ---------- */
 .float {
@@ -586,7 +586,7 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 .finale.choice-screen .memory.on { background: rgba(72, 32, 68, 0.85); }
 .finale-inner { max-width: 760px; width: 100%; max-height: 100%; overflow-y: auto; text-align: center; }
 .finale h2 { font-family: var(--display); font-weight: 400; font-size: clamp(24px, 4vw, 36px); margin: 0 0 10px; text-shadow: 0 0 24px rgba(255, 158, 199, 0.5); }
-.finale-text { font-family: var(--display); font-size: clamp(16px, 2vw, 20px); line-height: 1.7; color: #ece6f2; margin: 0 auto 22px; max-width: 620px; }
+.finale-text { font-family: var(--display); font-size: clamp(16px, 2vw, 20px); line-height: 1.7; color: #ece6f2; margin: 0 auto 22px; max-width: 620px; text-wrap: pretty; }
 .finale-text.in { animation: rise-in 1.6s ease both; }
 .memory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-bottom: 18px; text-align: left; }
 .memory {
