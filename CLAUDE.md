@@ -3,6 +3,10 @@
 An incremental game: a coral reef grows from 4,000 m down to the surface to spawn under the
 Spawning Moon. Canvas world + DOM panels, served by a zero-dependency Node server on localhost.
 The agent works on this autonomously for days and is restarted often.
+**Mandate (user, 2026-10-31):** the agent is lead designer and developer, working solo for about a
+week to bring the game to a releasable product. It chooses the work (features, feel, performance,
+animation, bugs) and works down the **Release checklist** in `docs/PLAN.md`; release-readiness
+outranks adding more content.
 
 ## On every (re)start
 1. Read this file, then the `NOW:` line and last entry of `docs/PROGRESS.md`.
