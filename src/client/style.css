@@ -369,7 +369,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 @media (max-width: 799px) { .favours { grid-template-columns: 1fr 1fr 1fr; } .favour { font-size: 11px; padding: 5px 6px; } }
 .palette-box[hidden], .palette-row[hidden] { display: none; }
 .palette-box { display: flex; flex-direction: column; gap: 6px; margin: 4px 0 10px; }
-.palette-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.palette-row { display: flex; flex-wrap: wrap; gap: 20px 8px; }
 .swatch { position: relative; width: 52px; height: 34px; border-radius: 10px; border: 2px solid transparent; cursor: pointer; padding: 0; }
 .swatch span { position: absolute; left: 0; right: 0; bottom: -16px; font-size: 9.5px; color: var(--ink-dim); white-space: nowrap; text-align: center; }
 .palette-row { padding-bottom: 14px; }
