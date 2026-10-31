@@ -34,7 +34,7 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inMilky, milkyGlow, moonlitSpawn, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, currentFragment, takeFragment, currentStray, callStray, currentRaft, shelterRaft, blueMoon, helpTangle, currentTangle, freeTangle, lucky, visitor, visited, meteorShower, makeWish, prune, oldKnobs, oldHeld, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, sisterNow, lightSister, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { heightForBands, advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, untilFlurry, inMilky, milkyGlow, moonlitSpawn, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, currentFragment, takeFragment, currentStray, callStray, currentRaft, shelterRaft, blueMoon, helpTangle, currentTangle, freeTangle, lucky, visitor, visited, meteorShower, makeWish, prune, oldKnobs, oldHeld, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, sisterNow, lightSister, prepareAway, nextMoment, othersSpawning, boonsOffered, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
@@ -1839,6 +1839,7 @@ let lastWhaleLap = -1;
 // ?at=<sec> starts the scene clock there (to reach timed events such as rare creatures).
 let animT = params.has('at') ? Number(params.get('at')) : 40;
 let needResize = true;
+let lastHeight = Infinity;
 function frameBody(now: number): void {
   if (portraitAsk) { portraitAsk(); portraitAsk = null; }
   if (needResize) { resize(); needResize = false; }
@@ -1857,6 +1858,10 @@ function frameBody(now: number): void {
     // A long gap means the tab slept; treat it like being away.
     if (dt > AWAY_NOTICE) catchUp(dt * speed);
     else advance(state, dt * speed);
+    // The reef arrives at the height its bands promised: a soft pulse at the crown (not on a jump).
+    const promised = heightForBands(state.levels.skeleton);
+    if (state.height === promised && lastHeight < promised && promised - lastHeight < 2) scene.effect('settled');
+    lastHeight = state.height;
     if (state.meta.shards.length > shardsSeen) {
       showJournalNote(SHARD.found, SHARD_LINES[state.meta.shards.at(-1)!] ?? '');
       audio.cue('shard');

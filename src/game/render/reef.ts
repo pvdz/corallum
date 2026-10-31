@@ -798,6 +798,14 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
           }
           break;
         }
+        case 'settled': {
+          // The reef has reached the height of its last band: the crown brightens once and rests.
+          const [cx, cy] = crown(L);
+          const a = Math.sin(Math.PI * Math.min(1, fx.age / 1.4));
+          glow(ctx, cx, cy - 6 * s, (30 + 50 * k) * s, '255,226,200', 0.35 * a);
+          painted(() => ring(ctx, cx, cy - 6 * s, (14 + 70 * k) * s, '255,200,170', 0.35 * (1 - k), 1.2 * s));
+          break;
+        }
         case 'canopy': {
           // The branches lean open to the light: a soft gold bloom over the crown.
           const [cx, cy] = crown(L);

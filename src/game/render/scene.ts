@@ -158,7 +158,7 @@ export type ReefView = {
 };
 
 /** Purchases (by upgrade id) and story moments a scene may flourish. */
-export type EffectKind = UpgradeId | 'reading' | 'truce' | 'breach' | 'wish';
+export type EffectKind = UpgradeId | 'reading' | 'truce' | 'breach' | 'wish' | 'settled';
 
 /** The part of the canvas not covered by the panel, in device pixels. */
 export type Focus = { x: number; y: number; w: number; h: number };
