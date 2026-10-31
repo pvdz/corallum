@@ -684,7 +684,14 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
             if (coral.y[node]! > L.top) continue;
             const [tx, ty] = nodePx(L, node);
             const ease = 1 - (1 - Math.min(1, fx.age / 1.4)) ** 3;
-            glow(ctx, tx + Math.sin(i * 2.3) * 120 * s * (1 - ease), ty - 220 * s * (1 - ease), 7 * s, '120,255,210', 0.9 * (1 - k * 0.7));
+            const mx = tx + Math.sin(i * 2.3) * 120 * s * (1 - ease), my = ty - 220 * s * (1 - ease);
+            glow(ctx, mx, my, 7 * s, '120,255,210', 0.9 * (1 - k * 0.7));
+            painted(() => {
+              ctx.fillStyle = `rgba(30,190,140,${0.8 * (1 - k)})`;
+              ctx.beginPath();
+              ctx.arc(mx, my, 2.4 * s, 0, Math.PI * 2);
+              ctx.fill();
+            });
           }
           break;
         }
@@ -704,6 +711,7 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
         case 'shoal': {
           const [cx, cy] = crown(L);
           ring(ctx, cx, cy - 20 * s, (30 + k * 180) * s, '255,230,150', 0.35 * (1 - k), 1.5 * s);
+          painted(() => ring(ctx, cx, cy - 20 * s, (30 + k * 180) * s, '60,120,200', 0.3 * (1 - k), 1.2 * s));
           break;
         }
         case 'wish': {
