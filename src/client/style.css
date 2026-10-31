@@ -850,6 +850,12 @@ html.view-mode #photo { display: grid; }
   .ask .ask-skip { width: 24px; height: 24px; }
   .prep-row { margin-top: 0; }
   .prep-away { padding: 3px 12px; font-size: 12px; min-height: 0; }
+  /* Stocks: each rate on one line (tap a stock for the whole line); chips without capitals;
+     the water line keeps the next thing and leaves the rest to the strip. */
+  .stock-value { font-size: 17px; }
+  .stock-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 10px; }
+  .wait-chip { text-transform: none; letter-spacing: 0.02em; font-size: 11px; }
+  .charted .soon-rest { display: none; }
 }
 .trait .forget { margin-left: auto; padding: 2px 8px; font-size: 11px; opacity: 0.65; }
 .trait .forget:hover { opacity: 1; }

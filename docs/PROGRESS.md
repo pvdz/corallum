@@ -781,3 +781,4 @@ date, what landed, what is half-done, what's next.
 - Phone on its side (844×390): the away summary was taller than the screen, centred past both edges and not scrollable, so "Return to the reef" could not be reached. Story cards and the finale now scroll from their top (`align-items: safe center`, `overflow-y: auto`). The finale e2e runs landscape too.
 - Battery: frames are paced to at most 60 a second (120 Hz phones drew twice that) and 30 after a minute with no touch, click or key; the slow-frame quality fallback measures against the pace asked for, so idle 30 fps does not switch bloom off. Checked on a small headless viewport: 60 → 30 idle → 60 on a key.
 - After the ending the Begin again card has its own text (it said "Let go early", the lesser spawning's).
+- Phone landscape (short screens): stock rates on one line, chips in sentence case, the water line defers to its strip, as in portrait.
