@@ -768,3 +768,4 @@ date, what landed, what is half-done, what's next.
 - Phone panel: the compact four-to-a-row stock grid starts at four stocks (Midnight's four now sit in one row). With the water strip showing, the water line keeps what is happening and the next thing; the strip carries the rest (tap a dot for its time).
 - Sound sleeps while the page is hidden (AudioContext suspended) and wakes when shown or on any touch; cues are skipped while it sleeps, so they do not pile up.
 - Concurrent sessions share this checkout: commit by path (`git commit -- <paths>`), never `git add -A`.
+- Phone: the jump chips over the Grow tab are in sentence case and wrap as a flex row, two or three to a line instead of one each.
