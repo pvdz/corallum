@@ -474,7 +474,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const homeCount = el('span', 'level');
   homeHead.append(el('h3', '', RESIDENT.label), homeCount);
   foldable(homeBox, homeHead, 'residents');
-  homeBox.append(homeHead, el('p', 'rasp-what', RESIDENT.intro));
+  // What residents are, until the first has moved in.
+  const homeIntro = el('p', 'rasp-what', RESIDENT.intro);
+  homeBox.append(homeHead, homeIntro);
   const homeRows = new Map<ResidentId, { row: HTMLElement; btn: HTMLButtonElement }>();
   for (const r of RESIDENTS) {
     const row = el('div', `job resident resident-${r.id}`);
@@ -2018,6 +2020,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       if (nHomes > 0) {
         const asking = residentsAsking(s);
         homeCount.textContent = `${s.residents.length} of ${nHomes} home${nHomes === 1 ? '' : 's'}`;
+        homeIntro.hidden = s.residents.length > 0;
         // Folded, it still says when someone asks to move in and there is room.
         homeBox.classList.toggle('calls', s.residents.length < nHomes && asking.some((r) => !s.residents.includes(r.id)));
         // Pairings: the ones living now, else a hint at those within reach.
