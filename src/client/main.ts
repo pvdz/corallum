@@ -1529,7 +1529,8 @@ let autoLowRes = false;
 function qualityCheck(dt: number): void {
   if (frozenT !== null || autoLowRes) return;
   // Seconds spent in slow frames (fast frames pay it back): the slower the device, the sooner it acts.
-  slowFrames = dt > 1 / 40 && dt < 1 ? slowFrames + dt : Math.max(0, slowFrames - dt);
+  // Slow means well short of the pace asked for (60 fps, or 30 when idle; see frame()).
+  slowFrames = dt > frameGap * 1.5 / 1000 && dt < 1 ? slowFrames + dt : Math.max(0, slowFrames - dt);
   if (slowFrames <= 3) return;
   slowFrames = 0;
   if (scene.bloomStrength > 0) scene.bloomStrength = 0;
@@ -2113,7 +2114,17 @@ function frameBody(now: number): void {
 
 /** Errors already reported: a fault that repeats every frame is told once, not sixty times a second. */
 const frameFaults = new Set<string>();
+// Frame pacing: at most 60 frames a second (a 120 Hz phone would draw twice what the eye needs
+// here), and 30 after a minute with no touch, click or key: a reef left open costs half as much.
+let lastDrawn = -Infinity;
+let frameGap = 1000 / 60;
 function frame(now: number): void {
+  frameGap = now - lastInput > 60_000 ? 1000 / 30 : 1000 / 60;
+  if (frozenT === null && now - lastDrawn < frameGap - 3) {
+    requestAnimationFrame(frame);
+    return;
+  }
+  lastDrawn = now;
   // One bad frame must not stop the reef: the loop goes on and the error is reported once.
   try { frameBody(now); }
   catch (e) {
