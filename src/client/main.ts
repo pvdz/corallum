@@ -1662,7 +1662,7 @@ photoBtn.addEventListener('click', () => {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     const who = (reefName(state) || 'corallum').toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    a.download = `${who}-${Math.round(state.height)}m.png`;
+    a.download = `${who}-${Math.floor(state.height)}m.png`; // floored like the caption (metres())
     if (!state.meta.seen.includes('did:photo')) state.meta.seen.push('did:photo');
     if (actAt(state.height) === 2 && !state.meta.seen.includes('did:photo-dark')) state.meta.seen.push('did:photo-dark');
     const zoneShot = `did:photo-z${actAt(state.height)}`;
