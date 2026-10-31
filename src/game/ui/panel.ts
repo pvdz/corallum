@@ -1770,8 +1770,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const day = DAYS.find((d) => d.id === s.meta.today);
         const vis = visitor(s);
         const visName = vis ? CREATURES.find((c) => c.id === vis)?.name.toLowerCase() : '';
-        todayLine.textContent = [day ? `${TODAY.label}: ${day.name.toLowerCase()} · ${day.effect}` : '',
+        // A first reef's first minutes leave out the day and its visitor (glow, lineage: words not met yet).
+        const firstMinutes = s.meta.spawnings === 0 && s.height < 1;
+        const today = firstMinutes ? '' : [day ? `${TODAY.label}: ${day.name.toLowerCase()} · ${day.effect}` : '',
           visName ? `${TODAY.visitor}: ${visName} (${visited(s) ? TODAY.visited : TODAY.visitorGift})` : ''].filter(Boolean).join(' · ');
+        if (todayLine.textContent !== today) todayLine.textContent = today;
         const usw = untilSwell(s);
         if (usw < 1200) soon.push([usw, SWELL.word]);
         const ur = untilRising(s);
