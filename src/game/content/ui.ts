@@ -12,6 +12,8 @@ export const UI = {
   notYetSeen: 'Not yet seen',
   sisterReef: 'Sister reef',
   thisReef: 'This reef',
+  /** The reef's deeds (feasts caught, trips, requests kept), apart from its time and calcite. */
+  doneHere: 'Done here',
   theGrain: 'The grain',
   starsNamed: 'Stars named',
   bandsRead: 'Bands read',

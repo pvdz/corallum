@@ -897,7 +897,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (s.relics.length + s.tally.roams) did.push(`${s.relics.length + s.tally.roams} trip${s.relics.length + s.tally.roams === 1 ? '' : 's'}`);
     if (s.request.done) did.push(`${s.request.done} request${s.request.done === 1 ? '' : 's'} kept`);
     if (s.tally.risings) did.push(`${s.tally.risings} rising${s.tally.risings === 1 ? '' : 's'} fed on`);
-    if (did.length) codexRow(UI.thisReef, did.join(' · '));
+    if (did.length) codexRow(UI.doneHere, did.join(' · '));
     const strain = STRAINS.find((x) => x.id === s.strain), sport = SPORTS.find((x) => x.id === s.sport);
     if (strain) codexRow('Glimmerseed', sport ? `${strain.name}, sported ${sport.name.toLowerCase()} (${sport.effect})` : `${strain.name} (${strain.effect})`);
     const grains = GRAINS.map((g) => [g.name, s.grains.filter((x) => x === g.id).length] as const).filter(([, n]) => n > 0);
@@ -911,7 +911,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const spoken = TIERS.filter((t) => s.dialects[t.tier]).map((t) => DIALECTS.find((d) => d.id === s.dialects[t.tier])!.name);
     if (spoken.length) codexRow('Dialects', spoken.join(' · '));
     if (s.meta.name) codexRow('Name', reefName(s));
-    codexRow(UI.thisReef, `${duration(s.t)} growing · ${num(s.earned.calcite)} calcite gathered${s.feasts ? ` · ${s.feasts} feast${s.feasts === 1 ? '' : 's'} caught` : ''}`);
+    codexRow(UI.thisReef, `${duration(s.t)} growing · ${num(s.earned.calcite)} calcite gathered`);
     const small = [
       s.tally.pruned ? UI.tallyPruned(s.tally.pruned) : '',
       s.tally.lucky ? UI.tallyLucky(s.tally.lucky) : '',
