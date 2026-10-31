@@ -64,6 +64,8 @@ export const UI = {
   lesserText: 'Let go early. Your spawn drifts off and settles on a new seamount, and the reef begins again from a single polyp, carrying its lineage. What you have read stays read.',
   /** The same card after the ending: nothing early about it. */
   beginAgainText: 'The reef has spawned under the moon and lives on here. Some of what it let go settled on a new seamount: begin again there from a single polyp, carrying the lineage. What you have read stays read.',
+  /** The spawn stock's note once it holds what the moon needs. */
+  spawnEnough: 'enough for the moon',
   release: 'Release the spawn',
   letGo: 'Let go',
   notYet: 'Not yet',
