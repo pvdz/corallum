@@ -752,3 +752,4 @@ date, what landed, what is half-done, what's next.
 - Phone sheet grabber: a pill at the top of the bottom sheet; tap or drag up for a tall sheet (84dvh, over the scene's overlays), drag down or tap for the reef. The scene keeps its usual framing while the sheet is tall. Smoke test checks it.
 - resize() returns early when nothing moved (sheet sliding, cards growing): no canvas reallocation per transition frame.
 - Great-work cards show stages built (2/3) like an upgrade's levels; on a phone their stage pips sit in one row across the card.
+- Old stone knobs drawn as bleached skeleton (pale, pitted with empty cups, one outline, a breathing crack) instead of grey pebbles.

@@ -546,29 +546,41 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
       ctx.translate(x, y);
       ctx.rotate(rot);
       ctx.globalAlpha = a;
-      // A lumpy cluster: three or four rounded lumps, darker below, a pale cap on top.
-      const lumps: [number, number, number][] = [[0, 0, 1], [-0.7, 0.35, 0.72], [0.65, 0.4, 0.66], [0.1, -0.6, 0.6]];
+      // Bleached skeleton: a knot of pale lumps with no living tissue, pitted with empty cups.
+      const lumps: [number, number, number][] = [[0, 0, 0.9], [-0.62, 0.32, 0.64], [0.6, 0.36, 0.6], [0.08, -0.56, 0.56]];
+      // One outline under the whole knot, so the lumps read as one piece of stone.
+      ctx.fillStyle = 'rgba(40,36,30,0.45)';
+      ctx.beginPath();
+      for (const [lx, ly, lr] of lumps) { ctx.moveTo(lx * r + lr * r + 1.2 * s, ly * r); ctx.arc(lx * r, ly * r, lr * r + 1.2 * s, 0, Math.PI * 2); }
+      ctx.fill();
       for (const [lx, ly, lr] of lumps) {
-        const g = ctx.createRadialGradient(lx * r - lr * r * 0.3, ly * r - lr * r * 0.4, 0, lx * r, ly * r, lr * r);
-        g.addColorStop(0, '#b9b6af');
-        g.addColorStop(0.55, '#7d7a74');
-        g.addColorStop(1, '#45433f');
+        const g = ctx.createRadialGradient(lx * r - lr * r * 0.35, ly * r - lr * r * 0.45, 0, lx * r, ly * r, lr * r);
+        g.addColorStop(0, '#efe9dc');
+        g.addColorStop(0.6, '#c4bba9');
+        g.addColorStop(1, '#8a8274');
         ctx.fillStyle = g;
-        ctx.strokeStyle = 'rgba(20,20,24,0.7)';
-        ctx.lineWidth = Math.max(1, 1.2 * s);
         ctx.beginPath();
         ctx.arc(lx * r, ly * r, lr * r, 0, Math.PI * 2);
-        ctx.stroke();
         ctx.fill();
       }
-      // Growth lines: the years it kept.
-      ctx.strokeStyle = 'rgba(60,56,50,0.55)';
-      ctx.lineWidth = Math.max(1, 0.9 * s);
-      for (let k = 1; k <= 3; k++) {
+      // The empty cups the polyps left: small dark pits on the lit faces.
+      ctx.fillStyle = 'rgba(70,62,52,0.5)';
+      for (let k = 0; k < 11; k++) {
+        const [lx, ly, lr] = lumps[k % lumps.length]!;
+        const a = k * 2.399, d = lr * r * (0.25 + 0.5 * ((k * 0.618) % 1));
         ctx.beginPath();
-        ctx.arc(0, r * 0.9, r * (0.4 + k * 0.32), Math.PI * 1.15, Math.PI * 1.85);
-        ctx.stroke();
+        ctx.arc(lx * r + Math.cos(a) * d, ly * r + Math.sin(a) * d, Math.max(0.8, 1.3 * s), 0, Math.PI * 2);
+        ctx.fill();
       }
+      // A crack across it that breathes: it is ready to break.
+      ctx.strokeStyle = `rgba(60,48,36,${0.45 + 0.3 * Math.sin(t * 2.2 + x * 0.01)})`;
+      ctx.lineWidth = Math.max(1, 1.1 * s);
+      ctx.beginPath();
+      ctx.moveTo(-0.15 * r, -1.05 * r);
+      ctx.lineTo(0.05 * r, -0.55 * r);
+      ctx.lineTo(-0.12 * r, -0.15 * r);
+      ctx.lineTo(0.14 * r, 0.3 * r);
+      ctx.stroke();
       ctx.restore();
     };
     for (const slot of old.slots) {
