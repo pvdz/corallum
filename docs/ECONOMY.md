@@ -187,5 +187,7 @@ when the next band is under ten minutes away, as a player watching the band card
 (saver + sweeps: 3000 m at 1h07, 3800 m at 2h14, the surface at 3h07.) An attentive player who saves
 could finish in three to four hours of play, not seven to nine. Real players sit between the two,
 and time away is capped by the holds. The panel's "best buy" badge ranks calcite upgrades by
-payback and never names a band, so a player who follows it plays much like the greedy bot. Open decision (see PLAN): keep the greedy yardstick, or retune
-band cost growth so the saver lands near six hours.
+payback and never names a band, so a player who follows it plays much like the greedy bot. Raising band cost growth is the wrong lever: at
+{2: 1.24, 3: 1.36, 4: 1.27, 5: 1.05} the saver only goes 3h08 → 3h48 while the greedy bot goes
+7h28 → 30h (it starves the bands). Kept as it is: by play style the game takes three to seven and a
+half hours of play, most players somewhere between.
