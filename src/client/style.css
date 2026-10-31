@@ -231,10 +231,10 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   .stocks { touch-action: none; }
   .grabber {
     display: block; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 2;
-    width: 88px; height: 18px; padding: 0; border: 0; background: none; cursor: grab; touch-action: none;
+    width: 120px; height: 22px; padding: 0; border: 0; background: none; cursor: grab; touch-action: none;
   }
   .grabber::before {
-    content: ''; position: absolute; left: 50%; top: 5px; width: 38px; height: 4px; margin-left: -19px;
+    content: ''; position: absolute; left: 50%; top: 6px; width: 38px; height: 4px; margin-left: -19px;
     border-radius: 2px; background: var(--ink-dim); opacity: 0.45; transition: opacity 0.2s;
   }
   .grabber:hover::before, .grabber:focus-visible::before, .tall .grabber::before { opacity: 0.8; }
@@ -909,4 +909,13 @@ html.view-mode #photo { display: grid; }
   /* Big text: three to a row, so each rate still says something before it is cut. */
   html.big .stocks.many { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .stocks.many .stock-sub { font-size: 9.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+}
+
+/* Touch screens: small buttons keep their look but take a finger-sized tap (an invisible margin). */
+@media (pointer: coarse) {
+  .card .pin, .wait-chip, .forget, .current-step, .heat-toggle, .sky-trace, .seamount:not(.trial.met) { position: relative; }
+  .card .pin::after, .wait-chip::after, .forget::after, .current-step::after, .heat-toggle::after, .sky-trace::after, .seamount:not(.trial.met)::after {
+    content: ''; position: absolute; inset: -9px -4px;
+  }
+  .card .pin::after { inset: -12px -8px; }
 }

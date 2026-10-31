@@ -825,3 +825,4 @@ date, what landed, what is half-done, what's next.
 - Lineage tab: the Begin again card names the six cheapest traits the lineage would buy and counts the rest ("and 14 more"), instead of twenty names; the line's subtitle counts endings too (it read "0 spawnings" right after the great one).
 - A reef vowed to stillness: the water card no longer lists flurries and milky seas, and Ossel no longer urges sweeping (flurry, milky and moonlit whispers; the milky tap line). Checked in the browser: Begin again with Stillness, taps and Space sweep nothing, no tap hint.
 - Vows: Quiet leaves no empty request slot; Haste's line in "Your reef" says how long is left while it is being kept ("haste (3h 12m left)").
+- Touch screens: small buttons (pins, chips, Forget, the current's steps, Close up, Trace, seamount chips) take a finger-sized tap through an invisible margin; their look is unchanged. The sheet grabber's hit box is 120×22.
