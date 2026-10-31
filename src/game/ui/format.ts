@@ -13,10 +13,15 @@ export function num(x: number): string {
   const a = Math.abs(x);
   if (a < 10) return x.toFixed(1);
   if (a < 1000) return Math.floor(x).toString();
-  if (scientific) return x.toExponential(2).replace('e+', 'e');
+  // Past the last suffix, scientific whatever the setting.
+  if (scientific || a >= 1e36) return x.toExponential(2).replace('e+', 'e');
   const tier = Math.min(SUFFIXES.length - 1, Math.floor(Math.log10(a) / 3));
-  const scaled = x / 1000 ** tier;
-  return `${scaled.toFixed(scaled < 10 ? 2 : scaled < 100 ? 1 : 0)}${SUFFIXES[tier]}`;
+  const scaled = Math.abs(x) / 1000 ** tier;
+  // Cut, not rounded, like the whole numbers below 1000: 999,999 is 999k, never 1000k.
+  const digits = scaled < 10 ? 2 : scaled < 100 ? 1 : 0;
+  const p = 10 ** digits;
+  const cut = Math.floor(scaled * p * (1 + 1e-12)) / p;
+  return `${x < 0 ? '-' : ''}${cut.toFixed(digits)}${SUFFIXES[tier]}`;
 }
 
 export function rate(x: number): string {
