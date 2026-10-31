@@ -77,11 +77,11 @@ export const WHISPERS: readonly Whisper[] = [
     text: 'Taste the water. It is rich today. Bud now, while it is easy; it will not last.',
   },
   {
-    id: 'flurry', when: (s) => inFlurry(s) && s.levels.polyp >= 3,
+    id: 'flurry', when: (s) => inFlurry(s) && s.levels.polyp >= 3 && !s.vows.includes('still'),
     text: 'The snow is falling thick. Sweep now: there is more in it than silt.',
   },
   {
-    id: 'milky', when: (s) => inMilky(s),
+    id: 'milky', when: (s) => inMilky(s) && !s.vows.includes('still'),
     text: 'The whole sea is alight. Sweep through it: every touch of it is light we can keep.',
   },
   {
@@ -129,7 +129,7 @@ export const WHISPERS: readonly Whisper[] = [
     text: 'Something small is caught in a jelly’s threads, near us. Free it, little mouth.',
   },
   {
-    id: 'moonlit', when: (s) => s.height >= 3980 && moonFull(s.t) && s.carried.length === 0 && s.spawn > 0,
+    id: 'moonlit', when: (s) => s.height >= 3980 && moonFull(s.t) && s.carried.length === 0 && s.spawn > 0 && !s.vows.includes('still'),
     text: 'The moon is full. Sweep now, while it is: every reach of your tentacles ripens what you carry.',
   },
   {
@@ -220,7 +220,7 @@ export const OSSEL_NOW: readonly { when: (s: GameState) => boolean; text: string
   { when: (s) => s.carried.length > 0 && s.garden > 0, text: 'Look at them, taking hold. Was I ever that small? I must have been.' },
   { when: (s) => s.carried.length > 0, text: 'It is done, little mouth. Everything you let go is out there in the dark, finding somewhere to settle. Rest.' },
   { when: (s) => oldKnobs(s) >= 5, text: 'So much grey on you. I know how that feels. Let some of it go, little mouth.' },
-  { when: (s) => inMilky(s), text: 'The sea is burning cold and white. Sweep. Sweep!' },
+  { when: (s) => inMilky(s) && !s.vows.includes('still'), text: 'The sea is burning cold and white. Sweep. Sweep!' },
   { when: (s) => s.vows.includes('still'), text: 'You promised not to reach for anything. It is hard. I never managed it.' },
   { when: (s) => s.vows.length > 0 && !s.vows.includes('still'), text: 'Vows. Thousandfold made vows too, but only ever to keep things.' },
   { when: (s) => s.readings.includes('quick-one') && s.race.decided < 5, text: 'My sister is over there, growing. She always was the quick one. Tell her I said so, if the shoals go.' },
