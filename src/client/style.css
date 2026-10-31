@@ -39,7 +39,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   --edge-strong: rgba(160, 240, 255, 0.45);
   --calcite: #ffc2b0;
   --glowc: #8ffff0;
-  --card: rgba(255, 255, 255, 0.035);
+  --card: rgba(255, 255, 255, 0.04);
   --card-hover: rgba(255, 255, 255, 0.06);
   --radius: 14px;
 }
@@ -96,7 +96,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .page[hidden] { display: none; }
 
 .card {
-  background: var(--card); border: 1px solid var(--edge); border-radius: var(--radius);
+  background: var(--card); border: 1px solid rgba(150, 200, 255, 0.07); border-radius: var(--radius);
   padding: 10px 12px; transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
 }
 .card[hidden] { display: none; }
@@ -120,6 +120,9 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 }
 .level { font-size: 12px; color: var(--ink-dim); font-variant-numeric: tabular-nums; }
 .flavour { margin: 4px 0 6px; font-size: 12.5px; line-height: 1.4; color: var(--ink-dim); font-style: italic; }
+/* A card already bought keeps its flavour out of the way; tapping the name shows it again. */
+.card.known:not(.open) .flavour { display: none; }
+.card.known h3 { cursor: pointer; }
 .effect { margin: 0 0 8px; font-size: 13px; color: #cfe6ff; }
 .card footer { display: flex; align-items: center; gap: 10px; }
 .buy {
@@ -292,10 +295,10 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .water strong { font-family: var(--display); font-weight: 400; font-size: 15px; color: #cfe8ff; }
 .water-line { color: #a8dcff; }
 .water-soon { flex-basis: 100%; color: var(--ink-dim); font-size: 11.5px; min-height: 1.4em; }
+/* With the strip showing, it carries the later things (tap or point at a dot for its time); the line keeps the next. */
+.charted .soon-rest { display: none; }
 @media (max-width: 799px) {
   .water-soon { min-height: 2.8em; }
-  /* With the strip showing, it carries the later things (tap a dot for its time); the line keeps the next. */
-  .charted .soon-rest { display: none; }
   .charted .water-soon { min-height: 1.4em; }
 }
 .water-soon:empty { display: none; }

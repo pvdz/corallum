@@ -552,6 +552,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     btn.append(costEl);
     const eta = el('span', 'eta');
     foot.append(btn, eta);
+    const name = head.firstChild as HTMLElement;
+    name.title = w.flavour;
+    name.addEventListener('click', () => root.classList.toggle('open'));
     root.append(head, el('p', 'flavour', w.flavour), el('p', 'effect', w.effect), stages, foot);
     grow.append(root);
     return { w, root, level, pips, costEl, btn, eta };
@@ -600,6 +603,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       milestoneBars.set(u.id, bar);
     }
     flavour.addEventListener('click', () => root.classList.toggle('open'));
+    // Once bought, the flavour steps aside (the panel stays quiet); the name brings it back.
+    title.title = u.flavour;
+    title.addEventListener('click', (e) => { if (e.target !== pin) root.classList.toggle('open'); });
     grow.append(root);
     cards.set(u.id, { root, cost: costEl, level, effect, eta, btn, max });
   }
@@ -2075,6 +2081,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const n = s.works[x.w.id];
         // Stages built, like an upgrade's levels owned (the pips name the next one).
         x.level.textContent = `${n}/${x.w.stages.length}`;
+        if (x.root.classList.contains('known') !== n > 0) x.root.classList.toggle('known', n > 0);
         x.pips.forEach((p, i) => p.classList.toggle('built', i < n));
         const c = workCost(s, x.w.id);
         if (!c) {
@@ -2122,6 +2129,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         c.root.hidden = !show;
         if (!show) continue;
         const lv = s.levels[u.id];
+        if (c.root.classList.contains('known') !== lv > 0) c.root.classList.toggle('known', lv > 0);
         c.level.textContent = u.maxLevel === Infinity ? (lv ? `×${lv}` : '') : `${lv}/${u.maxLevel}`;
         if (u.id === 'skeleton') c.effect.textContent = `the reef rises ${metres(bandMetres(lv))}`;
         // What one more would really add, after every multiplier (refreshed on the card's turn).
