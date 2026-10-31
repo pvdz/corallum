@@ -102,6 +102,11 @@ const EXPORTED_KEY = 'corallum.exported';
 const BACKUP_EVERY = 3 * 86400e3;
 
 const params = new URLSearchParams(location.search);
+// Offline play: a network-first service worker (src/client/sw.ts). Left out under automation
+// (the browser tests) unless asked for with ?sw.
+if ('serviceWorker' in navigator && (!navigator.webdriver || params.has('sw'))) {
+  navigator.serviceWorker.register('/sw.js').catch(() => { /* no offline copy: the game still runs */ });
+}
 const frozenT = params.has('t') ? Number(params.get('t')) : null;
 const botT = params.has('bot') ? Number(params.get('bot')) : null;
 const ephemeral = frozenT !== null || botT !== null || params.has('fresh');

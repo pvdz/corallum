@@ -9,6 +9,7 @@ import { resolveRequest, startServer } from '../../src/server/server.ts';
 test('serves the page and sources, refuses anything outside src/ and malformed escapes', () => {
   assert.match(resolveRequest('/') ?? '', /src\/client\/index\.html$/);
   assert.match(resolveRequest('/src/client/main.ts?v=1') ?? '', /src\/client\/main\.ts$/);
+  assert.match(resolveRequest('/sw.js') ?? '', /src\/client\/sw\.ts$/);
   for (const bad of ['/../package.json', '/src/../../etc/passwd', '/%2e%2e/package.json', '/package.json', '/%E0%A4%A']) {
     assert.equal(resolveRequest(bad), null, bad);
   }

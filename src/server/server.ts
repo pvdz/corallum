@@ -59,6 +59,8 @@ export function resolveRequest(urlPath: string): string | null {
   try { path = decodeURIComponent(urlPath.split('?')[0] ?? '/'); } catch { return null; }
   if (path === '/' || path === '/index.html') path = '/src/client/index.html';
   if (path === '/favicon.ico') path = '/src/client/favicon.svg';
+  // The service worker sits at the root so its scope is the whole site.
+  if (path === '/sw.js') path = '/src/client/sw.ts';
   const abs = normalize(join(ROOT, path));
   const ok = SERVED_DIRS.some((d) => abs.startsWith(join(ROOT, d) + sep));
   return ok ? abs : null;

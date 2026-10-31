@@ -64,3 +64,20 @@ await withGame(async (open) => {
   console.log(`${ok ? 'ok  ' : 'FAIL'} mobile sheet: ${Math.round(h0)} → ${Math.round(h1)} → ${Math.round(h2)} px${errors.length ? ': ' + errors.join(' | ') : ''}`);
   if (!ok) process.exitCode = 1;
 });
+
+// Offline: with the service worker (?sw; it stays out of the other tests), a reef visited once
+// opens again with the network gone.
+await withGame(async (open) => {
+  const { page, errors } = await open(VIEWPORTS[1]!, '?sw');
+  await page.waitForFunction(() => (window as unknown as { corallum?: unknown }).corallum, null, { timeout: 30000 });
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await page.reload();
+  await page.waitForFunction(() => (window as unknown as { corallum?: unknown }).corallum && navigator.serviceWorker.controller, null, { timeout: 30000 });
+  await page.waitForTimeout(500);
+  await page.context().setOffline(true);
+  await page.reload();
+  const ok = await page.waitForFunction(() => (window as unknown as { corallum?: unknown }).corallum, null, { timeout: 30000 }).then(() => true, () => false);
+  const failed = errors.filter((e) => !/ERR_INTERNET_DISCONNECTED/.test(e));
+  console.log(`${ok && failed.length === 0 ? 'ok  ' : 'FAIL'} offline: the game opens again with the network gone${failed.length ? ': ' + failed.join(' | ') : ''}`);
+  if (!ok || failed.length) process.exitCode = 1;
+});
