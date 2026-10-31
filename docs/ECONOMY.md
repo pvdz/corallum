@@ -148,3 +148,28 @@ Its first touch that day: +1 lineage.
 ## Later works
 Listening dome (Midnight, 1500 m): scouts ×1.25 per stage. Grazing lawn (Twilight, 3400 m): sand ×1.15
 per stage. Both three stages, ×10 per stage in calcite.
+
+## Seamounts, measured (bot, no lineage, 2026-10-31)
+Whole game / 3000 m / 3800 m. Hard seamounts are trials (reach the goal, then spawn early); a full
+ending there is not expected, and a real second reef carries traits.
+
+| seamount | ending | 3000 m | 3800 m | trial goal |
+|---|---|---|---|---|
+| plain | 7h28 | 1h29 | 4h18 | – |
+| warm | 6h08 | 1h21 | 3h42 | – |
+| cold | 7h48 | 1h32 | 4h25 | – |
+| crowded | 7h09 | 1h16 | 4h02 | – |
+| hungry | 10h28 | 2h29 | 6h34 | 3000 |
+| silent | not in 20 h (3780 m at 19 h) | 3h04 | – | 2800 |
+| lonely | not in 20 h (3989 m) | 3h26 | 11h56 | 3000 |
+| buried | 7h51 | 1h29 | 4h50 | 3600 |
+| dark | 9h48 | 2h07 | 5h57 | 2500 |
+| shallow | 7h08 | 1h29 | 4h18 | 3950 |
+| thorny | 7h08 | 1h29 | 4h01 | 3700 |
+| heavy | 9h08 | 2h01 | 5h25 | 3000 |
+| gleaming | 7h08 | 1h25 | 3h59 | 3500 |
+| tidal | 7h28 | 1h29 | 4h18 | 4000 |
+
+Every trial goal is reached; the whole game on silent and lonely is a wall rather than a climb
+(silent has no Readings' multipliers; lonely caps shoals at 8). Fine as trials; revisit if a
+player is expected to finish there.
