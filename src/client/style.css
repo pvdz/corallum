@@ -387,9 +387,12 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .swatch.locked { opacity: 0.3; cursor: default; }
 .swatch.on { border-color: #fff; box-shadow: 0 0 12px rgba(255, 255, 255, 0.35); }
 html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-note { zoom: 1.15; }
-.work-stages { display: flex; gap: 6px; margin: 2px 0 8px; flex-wrap: wrap; }
-.work-pip { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px dashed var(--edge); color: var(--ink-dim); }
-.work-pip.built { border-style: solid; border-color: rgba(255, 210, 160, 0.5); color: #ffd9a8; }
+/* A work's stages as a path, not buttons: built ones lit, the rest waiting, arrows between. */
+.work-stages { display: flex; gap: 2px 0; margin: 2px 0 8px; flex-wrap: wrap; align-items: baseline; }
+.work-pip { font-size: 11.5px; color: var(--ink-dim); opacity: 0.75; }
+.work-pip + .work-pip::before { content: '→'; margin: 0 6px; opacity: 0.5; color: var(--ink-dim); }
+.work-pip.built { color: #ffd9a8; opacity: 1; }
+.work-pip.built::after { content: ' ✓'; font-size: 10px; }
 .card.work { border-color: rgba(255, 210, 160, 0.25); }
 @media (max-width: 799px) { .card.work .work-stages, .card.garden .garden-kinds { grid-column: 1 / -1; margin: 6px 0 0; } }
 .touched.trust-2 { color: #a8dcff; }
