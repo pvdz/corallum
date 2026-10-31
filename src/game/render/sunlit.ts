@@ -260,7 +260,7 @@ export function createSunlitScene(seed: number): Scene {
         ctx.strokeStyle = `rgba(255,255,235,${bright.toFixed(3)})`;
         ctx.lineWidth = (1.4 + Math.max(0, Math.sin(t * 0.9 + k * 2.7)) * 1.8) * dpr;
         ctx.beginPath();
-        for (let v = 0; v <= depth; v += 10 * dpr) {
+        for (let v = 0; v <= depth; v += 15 * dpr) {
           const wl = (18 + ((k * 7) % 5) * 5) * dpr;
           const x = (d > 0 ? k * gap + off + v * d : w - k * gap - off + v * d) + Math.sin(v / wl + t * 0.8 + k * 1.3) * 16 * dpr + Math.sin(v / (wl * 2.7) - t * 0.5 + k) * 10 * dpr + Math.sin(t * 0.3 + k) * 12 * dpr;
           if (v === 0) ctx.moveTo(x, v); else ctx.lineTo(x, v);
