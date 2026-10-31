@@ -107,3 +107,25 @@ await withGame(async (open) => {
   console.log(`${ok ? 'ok  ' : 'FAIL'} a story shows above the tall sheet${errors.length ? ': ' + errors.join(' | ') : ''}`);
   if (!ok) process.exitCode = 1;
 });
+
+// Hidden means hidden: no element with the hidden attribute still shows on any tab (a class with
+// display: flex once brought back empty cards and the vows before any ending).
+await withGame(async (open) => {
+  const { page, errors } = await open(VIEWPORTS[1]!, '?bot=12000');
+  await page.waitForFunction(() => (window as unknown as { corallum?: unknown }).corallum, null, { timeout: 60000 });
+  await page.waitForTimeout(1000);
+  const leaks = await page.evaluate(async () => {
+    const out = new Set<string>();
+    for (const tab of document.querySelectorAll<HTMLButtonElement>('.tab')) {
+      tab.click();
+      await new Promise((r) => setTimeout(r, 50));
+      for (const e of document.querySelectorAll<HTMLElement>('[hidden]')) {
+        if (getComputedStyle(e).display !== 'none') out.add(`${e.tagName.toLowerCase()}.${[...e.classList].join('.')}`);
+      }
+    }
+    return [...out];
+  });
+  const ok = leaks.length === 0 && errors.length === 0;
+  console.log(`${ok ? 'ok  ' : 'FAIL'} nothing hidden shows${leaks.length ? ': ' + leaks.join(' | ') : ''}`);
+  if (!ok) process.exitCode = 1;
+});

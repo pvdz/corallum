@@ -8,6 +8,8 @@
   --text: system-ui, -apple-system, "Segoe UI", Roboto, "Liberation Sans", "DejaVu Sans", sans-serif;
 }
 * { box-sizing: border-box; }
+/* Hidden means hidden: a class that sets display (cards, chip rows, toggles) must not bring it back. */
+[hidden] { display: none !important; }
 html, body { margin: 0; height: 100%; background: var(--abyss); color: var(--ink); overflow: hidden; }
 body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-action: manipulation; }
 #world { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
@@ -704,6 +706,7 @@ button:focus-visible, input:focus-visible, summary:focus-visible, .tab:focus-vis
 .trait-group { margin: 14px 2px 0; font-family: var(--display); font-weight: 400; font-size: 13px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--lineage); }
 html.calm *:not(#zone-title):not(#milestone):not(#whisper):not(#journal-note) { animation: none !important; transition: none !important; }
 .seamounts { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0; }
+.seamounts[hidden] { display: none; }
 .seamount {
   font: inherit; font-size: 12px; padding: 5px 10px; border-radius: 999px; cursor: pointer;
   color: var(--ink-dim); background: rgba(255, 255, 255, 0.04); border: 1px solid var(--edge);
