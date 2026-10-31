@@ -129,3 +129,18 @@ await withGame(async (open) => {
   console.log(`${ok ? 'ok  ' : 'FAIL'} nothing hidden shows${leaks.length ? ': ' + leaks.join(' | ') : ''}`);
   if (!ok) process.exitCode = 1;
 });
+
+// An iPad upright (820×1180) gets the side panel: every stock value stays inside its own cell
+// (at 36vw the panel was 295 px and the values ran into their neighbours' names).
+await withGame(async (open) => {
+  const { page, errors } = await open({ name: 'tablet', width: 820, height: 1180, scale: 1, mobile: true }, '?bot=12000');
+  await page.waitForFunction(() => (window as unknown as { corallum?: unknown }).corallum, null, { timeout: 60000 });
+  await page.waitForTimeout(1000);
+  const spill = await page.evaluate(() => [...document.querySelectorAll<HTMLElement>('.stock:not(.height)')]
+    .filter((r) => !r.hidden)
+    .filter((r) => { const v = r.querySelector('.stock-value')!.getBoundingClientRect(), b = r.getBoundingClientRect(); return v.right > b.right + 1 || v.left < b.left - 1; })
+    .map((r) => r.className));
+  const ok = spill.length === 0 && errors.length === 0;
+  console.log(`${ok ? 'ok  ' : 'FAIL'} tablet: stock values inside their cells${spill.length ? ': ' + spill.join(' | ') : ''}`);
+  if (!ok) process.exitCode = 1;
+});
