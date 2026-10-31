@@ -38,6 +38,7 @@ export function createAudio() {
   let enabled = false;
   let volume = 0.9;
   let noteIndex = 0;
+  let lastBuy = -1;
   // The melody: a wandering walk over the zone's scale, scheduled a little ahead of time.
   let nextBeat = 0;
   let step = 2;
@@ -54,9 +55,17 @@ export function createAudio() {
     fb.gain.value = 0.35;
     const wet = ctx.createGain();
     wet.gain.value = 0.25;
-    master.connect(ctx.destination);
+    // A soft limiter last: held buying stacks a dozen bells over the pad and its echo.
+    const limit = ctx.createDynamicsCompressor();
+    limit.threshold.value = -10;
+    limit.knee.value = 8;
+    limit.ratio.value = 6;
+    limit.attack.value = 0.005;
+    limit.release.value = 0.25;
+    limit.connect(ctx.destination);
+    master.connect(limit);
     delay.connect(fb).connect(delay);
-    delay.connect(wet).connect(ctx.destination);
+    delay.connect(wet).connect(limit);
     master.connect(delay);
     startPad(ctx, master);
     startSurf(ctx, master);
@@ -355,9 +364,15 @@ export function createAudio() {
       if (!enabled || !ctx || ctx.state !== 'running') return;
       const root = ZONES[zone].root * 8;
       switch (c) {
-        case 'buy':
-          bell(root * 2 ** (PENTATONIC[noteIndex++ % PENTATONIC.length]! / 12), 0.06, 1.2);
+        case 'buy': {
+          // Held buying rings at most every 100 ms, a little softer when quick.
+          const now = ctx.currentTime;
+          if (now - lastBuy < 0.1) break;
+          const quick = now - lastBuy < 0.3;
+          lastBuy = now;
+          bell(root * 2 ** (PENTATONIC[noteIndex++ % PENTATONIC.length]! / 12), quick ? 0.04 : 0.06, 1.2);
           break;
+        }
         case 'sweep':
           bubble();
           break;
