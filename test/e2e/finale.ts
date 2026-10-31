@@ -32,13 +32,14 @@ await withGame(async (open) => {
     for (let i = 0; i < 10 && (await page.locator('.reader:not([hidden])').count()); i++)
       await page.locator('.reader:not([hidden]) button').first().click();
     // Name a figure in the night sky: trace Ossel’s Cup star by star.
-    if (great) {
+    // On every screen (a phone taps: its sky is small and the corner buttons sit in it).
+    {
       await page.locator('.sky-row', { hasText: 'Ossel’s Cup' }).locator('.sky-trace').click();
       await page.waitForTimeout(300);
       const stars = await page.evaluate(() => window.corallum!.spots.filter((p) => p.id === 'star').sort((a, b) => a.n! - b.n!));
-      for (const p of stars) { await page.mouse.click(p.x, p.y); await page.waitForTimeout(80); }
+      for (const p of stars) { if (vp.mobile) await page.touchscreen.tap(p.x, p.y); else await page.mouse.click(p.x, p.y); await page.waitForTimeout(80); }
       const cup = await page.evaluate(() => window.corallum!.state.sky.cup);
-      console.log(`${cup ? 'ok  ' : 'FAIL'} a figure traced and named in the night sky (${stars.length} stars)`);
+      console.log(`${cup ? 'ok  ' : 'FAIL'} ${vp.name}: a figure traced and named in the night sky (${stars.length} stars)`);
       if (!cup) failed = true;
     }
     await page.locator('.moon-card button.release:not([disabled])').click({ timeout: 5000 });
@@ -82,7 +83,7 @@ await withGame(async (open) => {
     // Release, one per memory, the stars named, the sister reef (once the race reached the surface), Ossel, the last line.
     const sister = await page.evaluate(() => window.corallum!.state.race.decided >= 5 ? 1 : 0);
     const friends = await page.evaluate(() => Object.values(window.corallum!.state.meta.trust).some((n) => n >= 5) ? 1 : 0);
-    const named = great ? 1 : 0; // the stars page
+    const named = 1; // the stars page
     const told = 1; // what you told Ossel
     const ok = endedFlag && pages.length === carry + 4 + sister + friends + named + told && errors.length === 0;
     console.log(`${ok ? 'ok  ' : 'FAIL'} ${vp.name}: ${pages.length} ending pages${errors.length ? ' · ' + errors.join(' | ') : ''}`);

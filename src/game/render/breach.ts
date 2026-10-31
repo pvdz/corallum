@@ -494,7 +494,14 @@ export function createBreachScene(seed: number): Scene {
   function starAt(f: Figure, i: number): [number, number] {
     const top = focus.y, sky = (waterY() - top) * 0.92;
     const [u, v] = f.stars[i]!;
-    return [focus.x + focus.w * (f.at[0] + (u - 0.5) * f.size[0]), top + sky * (f.at[1] + (v - 0.5) * f.size[1])];
+    const y = top + sky * (f.at[1] + (v - 0.5) * f.size[1]);
+    // A narrow sky (a phone upright): the figures spread over the strip between the buttons in the
+    // top-left corner and the depth gauge, a little wider, so each star can take a finger.
+    if (focus.w / dpr < 700) {
+      const left = 112 * dpr, right = 52 * dpr, span = focus.w - left - right;
+      return [focus.x + left + span * f.at[0] + (u - 0.5) * f.size[0] * 1.3 * focus.w, y];
+    }
+    return [focus.x + focus.w * (f.at[0] + (u - 0.5) * f.size[0]), y];
   }
 
   /**
