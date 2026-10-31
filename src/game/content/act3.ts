@@ -168,6 +168,13 @@ export const BANDS_ACT3: readonly Band[] = [
       'far overhead has become a ceiling of light. Ossel has been silent for three bands.',
   },
   {
+    id: 'singing-bars', metres: 3690, title: 'The bars sing',
+    text: 'The sand bars have grown tall enough to hum when the current crosses them: a low note, grain ' +
+      'on grain. Young Rasp lie in their lee to listen. Every grain was a band once, and the bars keep ' +
+      'them all, loosely, giving some to each passing current and taking new ones in. It is the first ' +
+      'keeping you have met that does not hold on.',
+  },
+  {
     id: 'old-rasp', metres: 3725, title: 'How the Rasp end',
     text: 'A Rasp, very old, its beak worn down to a stub, lies on the slope by your foot and does ' +
       'not get up. By morning the others have ground it into the sand bars, the way they grind ' +

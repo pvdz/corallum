@@ -236,4 +236,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Trait "Drift-wise" | plain description | OK |
 | Twilight bands: Other water (3575), Warmth (3775) | this game's own lore | OK |
 | Rule: after the wall truce a ground-down Ossel no longer speaks in band or moment texts (only `kept` variants do); How the Rasp end, Warmth, Dust from far away and First light follow it | consistency | OK |
+| Twilight band: The bars sing (3690) | this game's own lore | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |
