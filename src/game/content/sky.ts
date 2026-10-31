@@ -25,7 +25,7 @@ export type Figure = {
 export const FIGURES: readonly Figure[] = [
   {
     id: 'cup', name: "Ossel's Cup", hint: 'always there',
-    text: 'A mouth and its tentacles, open to the sky. Ossel says it is not that good a likeness.',
+    text: 'A mouth and its tentacles, open to the sky. It is not that good a likeness, and you name it anyway.',
     when: () => true,
     stars: [[0.3, 1], [0.15, 0.45], [0, 0], [0.5, 0.3], [1, 0], [0.85, 0.45], [0.7, 1]],
     at: [0.12, 0.64], size: [0.12, 0.45],
@@ -77,7 +77,7 @@ export const WISH = {
   /** Seconds of spawn a ripening wish brings; at most `lineMax` lineage wishes per reef. */
   seconds: 240, lineMax: 3,
   kicker: 'Shooting stars',
-  text: 'Stars are falling into the sea. Ossel says that is when you ask for something, and you may ask once.',
+  text: 'Stars are falling into the sea. The old bands say that is when you ask for something, and you may ask once.',
   wishes: [
     { id: 'ripen', label: 'Ripen', effect: 'four minutes of spawn at once' },
     { id: 'tablet', label: 'A piece of the tablet', effect: 'a shard, if any are still lost (or the spawn ripens)' },
