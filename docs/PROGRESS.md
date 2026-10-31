@@ -803,3 +803,5 @@ date, what landed, what is half-done, what's next.
 - tools/monkey.ts: in-page button monkey (every visible button on every tab, four rounds, ten bot times; destructive ones skipped). Desktop and mobile: ~3,200 clicks each, no console errors.
 - News card for 0.9 (news:2026-10-31): fragments, lost shoals, weed rafts, bristlemouths, yeti crabs, the others' spawn, the phone handle, home screen and offline, the Finished fold.
 - The whisper halo takes the zone's own deep colour (teal in the Sunlit Crown) instead of navy, so it no longer reads as a dark smudge on bright water.
+- Phone garden card: the children span the card (they sat in its left column).
+- Load over a slow network (measured, not changed): 150 ms latency + 1.5 MB/s gives ready in ~2.9 s; transfer is ~0.25 s of it, the rest is 86 module requests through HTTP/1.1's six connections. modulepreload cannot beat that; only fewer requests (a bundle, which the rules forbid) or HTTP/2 (TLS) would. On a LAN it is ~0.5 s.
