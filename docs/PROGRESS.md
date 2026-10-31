@@ -785,3 +785,4 @@ date, what landed, what is half-done, what's next.
 - Reef summary: the deeds row is 'Done here' (two rows were both 'This reef'); feasts caught are no longer listed twice.
 - Journal notes (feats, gifts, shards) wait until a new reef's title has faded; on a phone a feat earned on Begin again sat right on top of "Corallum". (Sightings already waited.)
 - The tall phone sheet stacks under stories (z 9 < 10): one opening while it was drawn up showed beneath it. Smoke checks a story's Continue is on top.
+- The current's effect sits on its own line under its steps on desktop too (it was squeezed into a narrow column); a <noscript> line for browsers without JavaScript.

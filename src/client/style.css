@@ -333,14 +333,14 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .tablet-lines { margin: 0; padding-left: 1.6em; font-family: var(--display); font-size: 13.5px; line-height: 1.5; color: var(--ink-dim); }
 .tablet-lines li.found { color: #efe6d6; }
 .tablet-lines li.whole { list-style: none; margin-top: 6px; font-style: italic; color: #ffd9a8; }
-.current-row { display: grid; grid-template-columns: auto auto 1fr; align-items: center; gap: 4px 10px; margin-top: 8px; font-size: 12px; }
+/* The label and the five steps on one line, what the current does on its own line under them. */
+.current-row { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 4px 10px; margin-top: 8px; font-size: 12px; }
 .current-row[hidden] { display: none; }
 .current-label { color: var(--sand); }
 .current-steps { display: flex; gap: 3px; }
 .current-step { font: inherit; width: 30px; height: 26px; border-radius: 8px; border: 1px solid var(--edge); background: rgba(255,255,255,0.03); color: var(--ink-dim); cursor: pointer; }
 .current-step.on { border-color: var(--sand); color: var(--sand); background: rgba(242, 217, 166, 0.1); }
-.current-what { color: var(--ink-dim); font-size: 11.5px; }
-@media (max-width: 799px) { .current-row { grid-template-columns: auto 1fr; } .current-what { grid-column: 1 / -1; } }
+.current-what { grid-column: 1 / -1; color: var(--ink-dim); font-size: 11.5px; }
 .favours { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px; }
 .favours[hidden] { display: none; }
 .favour { display: flex; flex-direction: column; gap: 2px; text-align: left; font: inherit; font-size: 11.5px; padding: 6px 8px; border-radius: 10px;
@@ -632,6 +632,8 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
   padding: 0 24px; font-family: var(--display); color: #dfe8ff; display: flex; flex-direction: column; gap: 6px; align-items: center;
 }
 @media (min-width: 800px) { #whisper { right: var(--panel-w); top: 20%; } }
+/* Phones: the depth gauge and its label stand at the right edge at the whisper's height; the words keep clear. */
+@media (max-width: 799px) { html:not(.view-mode) #whisper { padding: 0 70px 0 16px; } html:not(.view-mode) #whisper q { padding: 12px 20px; } }
 /* A soft dark halo behind the words, so they read over a bright crown or a sunlit sky. */
 #whisper q {
   font-style: italic; font-size: clamp(15px, 1.8vw, 20px); max-width: 560px; padding: 12px 34px; quotes: "“" "”";
