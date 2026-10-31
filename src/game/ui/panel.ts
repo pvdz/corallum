@@ -1833,10 +1833,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const soon: [number, string][] = [];
         const fe = untilFeast(s), th = untilThorn(s), kind = intruderOf(actAt(s.height));
         if (fe < 1200) soon.push([fe, WATER.feast]);
+        // Flurries and milky seas pay sweeps: nothing to plan for on a reef vowed to stillness.
+        const sweeping = !s.vows.includes('still');
         const fl = untilFlurry(s);
-        if (fl < 1200) soon.push([fl, FLURRY.word + ' (sweeps ×3)']);
+        if (fl < 1200 && sweeping) soon.push([fl, FLURRY.word + ' (sweeps ×3)']);
         const mk = untilMilky(s);
-        if (mk < 1200) soon.push([mk, MILKY.word]);
+        if (mk < 1200 && sweeping) soon.push([mk, MILKY.word]);
         if (th < 1200 && kind) soon.push([th, WATER.intruder[kind]!]);
         const day = DAYS.find((d) => d.id === s.meta.today);
         const vis = visitor(s);
