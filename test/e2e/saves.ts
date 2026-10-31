@@ -32,6 +32,28 @@ await withGame(async (open) => {
     console.log(`${ok ? 'ok  ' : 'FAIL'} load save from a file`);
     failed ||= !ok;
   }
+  // Loading over a reef with real progress asks first; declined, the reef is kept.
+  {
+    const here = serialize(runBot((s) => s.t >= 2400, 2400).state, Date.now());
+    const { page, errors } = await open(VIEWPORTS[0]!, '', { save: here });
+    const text = exportString(runBot((s) => s.height >= 20, 3600).state, Date.now());
+    for (let i = 0; i < 20 && (await page.locator('.reader:not([hidden]), .away:not([hidden])').count()); i++) await page.keyboard.press('Escape');
+    const h0 = await page.evaluate(() => window.corallum!.state.height);
+    await page.locator('.tab', { hasText: 'Reef' }).click();
+    let asked = '';
+    page.once('dialog', (d) => { asked = d.message(); void d.dismiss(); });
+    const [c1] = await Promise.all([page.waitForEvent('filechooser'), page.locator('button', { hasText: 'Load save from a file' }).click()]);
+    await c1.setFiles({ name: 'save.txt', mimeType: 'text/plain', buffer: Buffer.from(text) });
+    await page.waitForTimeout(800);
+    const kept = (await page.evaluate(() => window.corallum!.state.height)) === h0;
+    page.once('dialog', (d) => void d.accept());
+    const [c2] = await Promise.all([page.waitForEvent('filechooser'), page.locator('button', { hasText: 'Load save from a file' }).click()]);
+    await c2.setFiles({ name: 'save.txt', mimeType: 'text/plain', buffer: Buffer.from(text) });
+    await page.waitForFunction((h) => (window.corallum?.state.height ?? h) < h, h0, { timeout: 10000 });
+    const ok = /replaces the reef/.test(asked) && kept && !errors.length;
+    console.log(`${ok ? 'ok  ' : 'FAIL'} loading over an established reef asks first; declined, it is kept`);
+    failed ||= !ok;
+  }
   // A save that cannot be read is moved aside, and the new reef still saves.
   {
     const { page, errors } = await open(VIEWPORTS[0]!, '', { save: '{"state": {"t": 12, "calc' });

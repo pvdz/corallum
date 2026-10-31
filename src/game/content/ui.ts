@@ -39,6 +39,7 @@ export const UI = {
   loadFile: 'Load save from a file…',
   loadText: 'Load save from text…',
   pastePrompt: 'Paste a save:',
+  loadSure: (here: string, there: string) => `Load this save? It replaces the reef you have now (${here}) with the saved one (${there}). Copy or save this reef first if you want to keep it.`,
   reset: 'Let the reef go (reset)',
   resetSure: 'Start over from a single polyp? This erases the reef.',
   backup: 'This reef lives only in this browser: clearing site data would wash it away. Save it to a file (or copy it) and keep it somewhere safe.',

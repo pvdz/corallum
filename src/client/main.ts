@@ -497,6 +497,8 @@ const panel = createPanel(ui, {
   importSave(text) {
     const f = importString(text);
     if (!f) return false;
+    // Loading replaces this reef: ask first, once it is more than a few minutes old.
+    if (state.t > 300 && !window.confirm(UI.loadSure(metres(state.height), metres(f.state.height)))) return true;
     state = f.state;
     save();
     location.reload();
