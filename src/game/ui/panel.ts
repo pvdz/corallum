@@ -241,10 +241,19 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   tabButtons.get('reef')!.append(reefDot);
   let seenStories = 0;
   let storyCount = 0;
+  // The tabs share one scroller: each keeps its own place, and the tab already open, tapped again,
+  // goes back to its top.
+  let currentTab = 'grow';
+  const tabScroll = new Map<string, number>();
   function showTab(id: string): void {
+    const again = id === currentTab;
+    if (!again) tabScroll.set(currentTab, pages.scrollTop);
     for (const [k, b] of tabButtons) b.classList.toggle('on', k === id);
     for (const [k, p] of tabPages) p.hidden = k !== id;
     if (id === 'bands') seenStories = storyCount;
+    if (again) pages.scrollTo({ top: 0, behavior: 'smooth' });
+    else pages.scrollTop = tabScroll.get(id) ?? 0;
+    currentTab = id;
   }
 
   const grow = tabPages.get('grow')!;
