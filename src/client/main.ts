@@ -1135,6 +1135,23 @@ function drawLucky(t: number): void {
       ctx.stroke();
     }
   }
+  // An intruder, before the line has ever driven one off: rings run outward from it, so the tap is
+  // learned (the water card already says one is here).
+  const th = currentThorn(state);
+  if (th && state.tally.intruders === 0 && state.meta.spawnings === 0) {
+    const p = tappable().find((q) => q.id === th.kind);
+    if (p) {
+      const r = Math.min(Math.max(p.r, 24 * dpr), 70 * dpr);
+      for (let k = 0; k < 2; k++) {
+        const u = (t * 0.7 + k * 0.5) % 1;
+        ctx.strokeStyle = `rgba(255,140,120,${0.55 * (1 - u)})`;
+        ctx.lineWidth = 2 * dpr;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r * (0.9 + 0.7 * u), 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+  }
   // One of its kind is the lucky one: the first drawn.
   const done = new Set<string>();
   for (const p of tappable()) {

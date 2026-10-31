@@ -817,3 +817,4 @@ date, what landed, what is half-done, what's next.
 - Bands tab: once the stories list is 20 long, chips narrow it to Bands, Moments, or Readings & choices (filtered in CSS by data-show; counts checked: 41 + 29 + 28 = 98 at the Breach).
 - The offline catch-up on load is guarded: if it throws, the error is reported and the reef opens as it was saved, instead of the page stopping before its first frame.
 - Big text on a phone: stocks sit three to a row (four left each rate cut to a few characters).
+- Until the line has driven off its first intruder, rings run outward from one (thorn star, dragonfish, drill snail, gull) so the tap is learned; gone after the first.
