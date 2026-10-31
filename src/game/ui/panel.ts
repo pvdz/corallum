@@ -1158,6 +1158,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     forget.title = FORGET.title;
     foot.append(btn, eta, forget);
     root.append(head, el('p', 'flavour', tr.flavour), effect, foot);
+    // Owned, the flavour steps aside (as on the Grow tab); the name brings it back.
+    const name = head.firstChild as HTMLElement;
+    name.title = tr.flavour;
+    name.addEventListener('click', () => root.classList.toggle('open'));
     lineagePage.append(root);
     traitCards.set(tr.id, { root, cost: costEl, level, effect, eta, btn, max: null });
     forgetButtons.set(tr.id, forget);
@@ -2355,6 +2359,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           const c = traitCards.get(tr.id)!;
           const lv = s.meta.traits[tr.id];
           forgetButtons.get(tr.id)!.hidden = lv === 0;
+          if (c.root.classList.contains('known') !== lv > 0) c.root.classList.toggle('known', lv > 0);
           c.root.classList.toggle('maxed', traitMaxed(s, tr.id));
           c.level.textContent = tr.max === Infinity ? (lv ? `×${lv}` : '') : `${lv}/${tr.max}`;
           if (traitMaxed(s, tr.id)) {
