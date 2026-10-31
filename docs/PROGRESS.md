@@ -818,3 +818,4 @@ date, what landed, what is half-done, what's next.
 - The offline catch-up on load is guarded: if it throws, the error is reported and the reef opens as it was saved, instead of the page stopping before its first frame.
 - Big text on a phone: stocks sit three to a row (four left each rate cut to a few characters).
 - Until the line has driven off its first intruder, rings run outward from one (thorn star, dragonfish, drill snail, gull) so the tap is learned; gone after the first.
+- Ossel's fate respected: once ground into sand at the wall truce, Ossel no longer speaks in later band and moment texts. How the Rasp end (3725) and Warmth (3775) get neutral texts with Ossel's lines in their `kept` variants; the moments Dust from far away and First light no longer quote Ossel (the Rasp tell of the dust).

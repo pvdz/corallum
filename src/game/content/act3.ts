@@ -171,13 +171,19 @@ export const BANDS_ACT3: readonly Band[] = [
     id: 'old-rasp', metres: 3725, title: 'How the Rasp end',
     text: 'A Rasp, very old, its beak worn down to a stub, lies on the slope by your foot and does ' +
       'not get up. By morning the others have ground it into the sand bars, the way they grind ' +
+      'everything. Nobody mourns. Or perhaps that is the mourning.',
+    kept: 'A Rasp, very old, its beak worn down to a stub, lies on the slope by your foot and does ' +
+      'not get up. By morning the others have ground it into the sand bars, the way they grind ' +
       'everything. Nobody mourns. “Or that is the mourning,” Ossel says, very quietly.',
   },
   {
     id: 'warmth', metres: 3775, title: 'Warmth',
     text: 'For the first time the water at your crown is warmer than the water at your foot. The polyps ' +
-      'up there open wider and lay their stone quick and light; the Rasp grind slower in it. Ossel, who ' +
-      'has never once been warm, asks what it is like. You try, and cannot tell it.',
+      'up there open wider and lay their stone quick and light; the Rasp grind slower in it. Down in ' +
+      'your oldest stone, where the cold has always been, nothing changes at all.',
+    kept: 'For the first time the water at your crown is warmer than the water at your foot. The polyps ' +
+      'up there open wider and lay their stone quick and light; the Rasp grind slower in it. Ossel, ' +
+      'carried up in your stone and never once warm, asks what it is like. You try, and cannot tell it.',
   },
   {
     id: 'colour', metres: 3800, title: 'Colour',

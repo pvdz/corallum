@@ -201,7 +201,7 @@ export const MOMENTS: readonly Moment[] = [
   },
   {
     id: 'dust', metres: 3750, title: 'Dust from far away',
-    text: 'Red dust settles on the water, so fine it hangs there like a haze. Ossel says it came from a land that is all sand, over the edge of the sea.',
+    text: 'Red dust settles on the water, so fine it hangs there like a haze. The Rasp say it blew from a land that is all sand, over the edge of the sea.',
     a: { label: 'Drink it in', effect: 'bloom ×1.1',
       text: 'Your symbionts take the iron in it and turn greener than you have ever seen them.' },
     b: { label: 'Let the shoals have it', effect: 'plankton ×1.15',
@@ -239,7 +239,7 @@ export const MOMENTS: readonly Moment[] = [
   },
   {
     id: 'first-light', metres: 3982, title: 'First light',
-    text: 'Above you, through less water than you have ever had over you, the sky is going pale. Ossel has no word for it either.',
+    text: 'Above you, through less water than you have ever had over you, the sky is going pale. Nothing in your oldest stone has a word for it.',
     a: { label: 'Turn toward it', effect: 'bloom ×1.15',
       text: 'Every polyp leans east. The symbionts drink the first light like water.' },
     b: { label: 'Wait for the moon', effect: 'spawn is lost ×0.85 as fast',
