@@ -1661,8 +1661,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const waitBar = el('div', 'wait-bar');
   waitBar.hidden = true;
   grow.prepend(waitBar);
-  // ---------- Quick buys (phones, from the Midnight Water on) ----------
-  // The zone's own systems push the three everyday cards far down a phone's sheet: a row of three
+  // ---------- Quick buys (from the Midnight Water on) ----------
+  // The zone's own systems push the three everyday cards far down the panel: a row of three
   // small buttons keeps them in reach (press and hold to keep buying, as on the cards).
   const quick = el('div', 'quick-buy');
   quick.hidden = true;
@@ -1674,6 +1674,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const price = el('span', 'quick-cost');
     btn.append(name, price);
     btn.setAttribute('aria-label', upgrade(id).name);
+    btn.title = `${upgrade(id).name} (${({ polyp: 'P', skeleton: 'B', symbiont: 'G' } as Record<string, string>)[id]})`;
     quick.append(btn);
     return { id, btn, price };
   });

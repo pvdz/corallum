@@ -882,3 +882,4 @@ date, what landed, what is half-done, what's next.
 - README's panel and phone images regenerated from the current build (the phone one showed the old upper-case chips and one-line stocks).
 - Short desktop windows (≤ 800 px tall, a 720p laptop): stocks sit closer and a little smaller, so the cards start ~45 px sooner.
 - Phone quick buys stay at the top of the Grow page as the list scrolls under them (a solid backdrop of the zone's tint); a choice chip scrolls its card to just below the row.
+- Quick buys on desktop too (from the Midnight Water on): by the shelf the polyp and band cards sit ~1300 px down the panel there as well; the row's tooltips teach P · B · G.
