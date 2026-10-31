@@ -68,6 +68,9 @@ export function createShoals(seed: number) {
     // Touched, a wave of light runs out through the shoal from the touch, fish to fish.
     const touch = startled('lanternfish', t);
     const wave = touch && touch.age < 1.6 && Math.hypot(touch.x - sx, touch.y - sy) < spread * 2.5 ? touch : null;
+    // Every fish of the shoal in one path, one fill: bodies are rotated ellipses, tails rotated by hand.
+    ctx.fillStyle = body;
+    ctx.beginPath();
     for (let k = 0; k < fish.length; k++) {
       const f = fish[k]!;
       const lag = k * 0.06;
@@ -80,27 +83,25 @@ export function createShoals(seed: number) {
       // A darting fish points the way it darts.
       const ang = Math.hypot(px, py) > 6 * s ? Math.atan2(py, px) : Math.atan2(y1 - y0, x1 - x0);
       const len = 9 * s * f.size;
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(ang);
-      ctx.fillStyle = body;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, len, len * 0.3, 0, 0, Math.PI * 2);
-      ctx.fill();
+      const ca = Math.cos(ang), sa = Math.sin(ang);
+      // A point (u along the fish, w across it) in screen space.
+      const px2 = (u: number, w: number) => x + u * ca - w * sa;
+      const py2 = (u: number, w: number) => y + u * sa + w * ca;
+      ctx.moveTo(px2(len, 0), py2(len, 0));
+      ctx.ellipse(x, y, len, len * 0.3, ang, 0, Math.PI * 2);
       const tail = Math.sin(t * 9 + f.ph) * len * 0.25;
-      ctx.beginPath();
-      ctx.moveTo(-len * 0.85, 0);
-      ctx.lineTo(-len * 1.45, -len * 0.35 + tail);
-      ctx.lineTo(-len * 1.45, len * 0.35 + tail);
+      // Wound the same way as the ellipse, so overlaps fill instead of cancelling (nonzero rule).
+      ctx.moveTo(px2(-len * 0.85, 0), py2(-len * 0.85, 0));
+      ctx.lineTo(px2(-len * 1.45, len * 0.35 + tail), py2(-len * 1.45, len * 0.35 + tail));
+      ctx.lineTo(px2(-len * 1.45, -len * 0.35 + tail), py2(-len * 1.45, -len * 0.35 + tail));
       ctx.closePath();
-      ctx.fill();
-      ctx.restore();
       // Photophores along the belly.
       for (let q = 0; q < 3; q++) {
         const d = (q - 1) * len * 0.45;
         lights.push([x + Math.cos(ang) * d - Math.sin(ang) * len * 0.18, y + Math.sin(ang) * d + Math.cos(ang) * len * 0.18, q]);
       }
     }
+    ctx.fill();
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     const rgb = job === 'light' ? '150,255,240' : job === 'scout' ? '190,170,255' : job === 'fan' ? '235,215,170' : job === 'guard' ? '255,200,120' : '120,200,255';
