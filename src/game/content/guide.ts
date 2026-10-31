@@ -53,7 +53,7 @@ export const NEWS = {
   text: 'Broken-off branches of other reefs tumble past on the shelf and in the light, and lost shoals flicker far off in ' +
     'the Midnight Water: tap them and they join you. Weed rafts shelter your young at the Breach, bristlemouths drift ' +
     'in the dark, yeti crabs farm the vent, and under every full moon the other reefs’ spawn rises past you. On a ' +
-    'phone, pull the panel up by its handle; the reef can live on your home screen and opens without a connection. ' +
+    'phone, pull the panel up by its handle; the reef can live on your home screen and, where the browser allows, opens without a connection. ' +
     'Finished upgrades fold away at the end of the list.',
 } as const;
 
