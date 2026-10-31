@@ -931,8 +931,10 @@ html.view-mode #photo { display: grid; }
   .stock-value { font-size: 17px; }
   .stock-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 10px; }
   /* Height is what a phone on its side lacks: one line each, even where a portrait phone takes two. */
-  .panel .stocks.many .stock-sep { display: inline; }
-  .panel .stocks.many .stock-rate, .panel .stocks.many .stock-rest { display: inline; }
+  .panel .stocks.many .stock-sub { display: flex; justify-content: flex-end; }
+  .panel .stocks.many .stock-sep { display: inline; flex: none; white-space: pre; }
+  .panel .stocks.many .stock-rate { display: inline; flex: none; }
+  .panel .stocks.many .stock-rest { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
   .wait-chip { font-size: 11px; }
   .charted .soon-rest { display: none; }
 }

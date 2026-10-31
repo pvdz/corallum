@@ -1023,8 +1023,6 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const spawnTitle = el('h3', '', UI.lesserTitle);
   const spawnGain = el('span', 'spawn-gain');
   let spawnOpened = false;
-  spawnTitle.setAttribute('role', 'button');
-  spawnTitle.tabIndex = 0;
   const spawnToggle = () => { if (!lastState || ended(lastState)) return; spawnOpened = !spawnOpened; };
   spawnTitle.addEventListener('click', spawnToggle);
   spawnTitle.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); spawnToggle(); } });
@@ -2378,7 +2376,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         if (spawnGain.textContent !== gainText) spawnGain.textContent = gainText;
         const fold = !ended(s) && !spawnOpened;
         if (spawnCard.classList.contains('folded') !== fold) spawnCard.classList.toggle('folded', fold);
-        spawnCard.classList.toggle('foldable-spawn', !ended(s));
+        if (spawnCard.classList.contains('foldable-spawn') !== !ended(s)) {
+          spawnCard.classList.toggle('foldable-spawn', !ended(s));
+          // After the ending it does not fold: no longer a button.
+          if (ended(s)) { spawnTitle.removeAttribute('role'); spawnTitle.removeAttribute('tabindex'); }
+          else { spawnTitle.setAttribute('role', 'button'); spawnTitle.tabIndex = 0; }
+        }
         spawnText.textContent = ended(s) ? UI.beginAgainText : UI.lesserText;
         spawnBtn.disabled = !can;
         spawnBtn.textContent = can ? `+${lineageFor(s)} lineage` : UI.midnightFirst;
