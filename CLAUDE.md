@@ -35,6 +35,9 @@ These were written by the agent, not the user; fix them when wrong.
 - Browser debug: `?at=<sec>` starts the scene clock there (rare creatures, day/night), `?fps`, `?bot=`, `?t=` (frozen).
 - `node tools/bot.ts [--truce aab] [--dialects form,craft,spawn] [--to <m>]` — headless time-compressed
   playthrough of the whole game; prints milestone times. Browser: `?bot=<sec>&truce=..&dialects=..`
+- `node --no-warnings tools/perf.ts [--vp mobile] [--at 600,5000,...]` — draw/panel ms and browser script/style/layout per frame, per zone
+- `node --no-warnings tools/sweep.ts [desktop|mobile|landscape] ['truce=bbb&dialects=..']` — console errors at 18 bot times through the game (~10 min)
+- `node --no-warnings tools/overlaps.ts [bot secs] [keys]` — overlay texts (title, whisper, notes, gauge…) colliding, on every viewport
 - `node --no-warnings tools/screenshot.ts [--t <sec>] --shot <tag>=<url params> ...`
   — writes `screenshot/YYYY-MM-DD-HH-MM/{desktop,mobile,landscape}-<name>.png`. Look at them.
 
@@ -56,6 +59,8 @@ These were written by the agent, not the user; fix them when wrong.
 
 ## Workflow
 - Small commits, often, with tests + typecheck green. Update PROGRESS.md in the same commit.
+- More than one session may work in this checkout at once: commit by path (`git commit -- <paths>`),
+  never `git add -A`; read `git log` and the PROGRESS tail before picking work, so it is not done twice.
 - After visible changes take a screenshot series and commit it (`screenshot/` is tracked).
 - Test what could really break (offline == stepped online is the key invariant); no tests of the obvious, no slow tests. Pacing/time balance is secondary for now (user, 2026-10-29): features and graphic detail first.
 - Comments describe the current state, not history.
