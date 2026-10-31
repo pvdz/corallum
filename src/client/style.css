@@ -933,7 +933,7 @@ html.view-mode #photo { display: grid; }
   .stocks.many .stock-sub { font-size: 9.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   /* Narrow columns: the rate, then what the stock holds (or does), each on its own line. */
   .stocks.many .stock-sep { display: none; }
-  .stocks.many .stock-rate, .stocks.many .stock-rest { display: block; overflow: hidden; text-overflow: ellipsis; }
+  .stocks.many .stock-rate, .stocks.many .stock-rest { display: block; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
 }
 
 /* Touch screens: small buttons keep their look but take a finger-sized tap (an invisible margin). */
