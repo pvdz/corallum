@@ -201,14 +201,17 @@ export const MEMORIES: readonly Memory[] = [
   },
 ];
 
+const COUNT = ['none', 'one', 'two', 'three', 'four', 'five'];
+
 export const ENDING = {
   release: 'The moon is full. Every reef in the sea lets go at once — and so do you. Pink bundles ' +
     'rise from every mouth, millions of them, up through the moonlight to the surface, where they ' +
     'break and spread and drift. You cannot keep everything. You never could.',
-  choose: 'A reef that keeps everything calcifies and dies. Your spawn can carry three memories. ' +
-    'The rest stay here, in your stone, for the Rasp and the sea.',
-  chooseGreat: 'A reef that keeps everything calcifies and dies. Tonight is a great tide, and the ' +
-    'water will lift more than usual: your spawn can carry four memories. The rest stay here.',
+  /** How many memories the spawn carries (three, four on a great tide, one fewer under the vow of lightness). */
+  choose: (n: number) => `A reef that keeps everything calcifies and dies. Your spawn can carry ${COUNT[n] ?? n} ` +
+    `memor${n === 1 ? 'y' : 'ies'}. The rest stay here, in your stone, for the Rasp and the sea.`,
+  chooseGreat: (n: number) => 'A reef that keeps everything calcifies and dies. Tonight is a great tide, and the ' +
+    `water will lift more than usual: your spawn can carry ${COUNT[n] ?? n} memor${n === 1 ? 'y' : 'ies'}. The rest stay here.`,
   closingKept: 'Ossel goes with you to the end of the night, and then, at dawn, says it is tired, ' +
     'and asks you to let the Rasp have it after all. You do. It is the last thing you learn.',
   closingLetGo: 'At dawn the sand that was Ossel washes over your crown in the surf, warm, and for ' +

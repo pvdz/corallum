@@ -59,7 +59,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
   const choice = el('div', 'finale choice-screen');
   choice.hidden = true;
   const choiceInner = el('div', 'finale-inner');
-  const choiceText = el('p', 'finale-text', ENDING.choose);
+  const choiceText = el('p', 'finale-text', ENDING.choose(ACT5.carry));
   const memoryGrid = el('div', 'memory-grid');
   const choiceFoot = el('div', 'finale-foot');
   const picked = el('span', 'picked');
@@ -78,7 +78,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
     if (!state || !canBreach(state)) return;
     chosen.clear();
     memoryGrid.innerHTML = '';
-    choiceText.textContent = greatTide(state) ? ENDING.chooseGreat : ENDING.choose;
+    choiceText.textContent = (greatTide(state) ? ENDING.chooseGreat : ENDING.choose)(carryAt(state));
     for (const m of memoriesAvailable(state)) {
       const b = el('button', 'memory');
       b.type = 'button';
