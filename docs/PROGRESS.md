@@ -762,3 +762,4 @@ date, what landed, what is half-done, what's next.
 - Storage full: a failed save drops the portrait close-ups, then all portraits, and tries again (portraits can reach ~2 MB of data URLs). saves e2e covers both cases.
 - Memory choice screen: the scene and panel behind are blurred and darker and the cards tinted, so no panel text reads through them (it did on a phone).
 - Server gzips html/ts/css/json/svg when asked (cached per body; `vary: accept-encoding`): main.ts 92 → 29 KB, the whole page ~1.25 MB → ~0.35 MB for a phone over `--lan`.
+- Server: ETag from the source file's size and mtime; an unchanged file revalidates to a bodiless 304, so a phone's reload does not fetch all 86 modules (1.28 MB) again. Server test covers it.

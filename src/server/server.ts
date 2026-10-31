@@ -72,11 +72,20 @@ export function startServer(port: number, host = '127.0.0.1'): Promise<Server> {
       return;
     }
     try {
+      // Revalidated on every load (no-cache), but an unchanged file answers 304 with no body:
+      // a reload on a phone does not fetch every module again. The tag follows the source file.
+      const { mtimeMs, size } = await stat(abs);
+      const etag = `"${size.toString(36)}-${Math.floor(mtimeMs).toString(36)}"`;
+      if (req.headers['if-none-match'] === etag) {
+        res.writeHead(304, { etag, 'cache-control': 'no-cache', vary: 'accept-encoding' }).end();
+        return;
+      }
       const body = await loadFile(abs);
       const gz = COMPRESSED.has(extname(abs)) && /\bgzip\b/.test(String(req.headers['accept-encoding'] ?? ''));
       res.writeHead(200, {
         'content-type': MIME[extname(abs)] ?? 'application/octet-stream',
         'cache-control': 'no-cache',
+        etag,
         vary: 'accept-encoding',
         ...(gz ? { 'content-encoding': 'gzip' } : {}),
       });
