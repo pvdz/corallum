@@ -1,7 +1,7 @@
 // A short guide to how the reef grows, for the Reef tab.
 
 export const GUIDE: readonly [string, string][] = [
-  ['Calcite', 'Your polyps make it. Tap the water to sweep for more; buy polyps to make it faster.'],
+  ['Calcite', 'Your polyps make it. Tap the water to sweep for more; buy polyps to make it faster. Press and hold a buy button to keep buying.'],
   ['Bands', 'Each band of stone raises the reef. Rising is the whole journey: four thousand metres to the surface.'],
   ['Holding', 'Stores fill toward what the reef can hold, then stop. A denser lattice holds more while you are away.'],
   ['Neighbours', 'Tap a creature to learn its name; some of them answer a touch. Each one seen feeds the reef a little, and a little more once touched. Now and then one is lucky (golden sparks): touch it then.'],
