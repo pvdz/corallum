@@ -652,7 +652,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const codex = el('article', 'card codex');
   const codexList = el('dl', 'codex-list');
   const chart = el('canvas', 'growth-chart') as HTMLCanvasElement;
-  codex.append(el('h3', '', UI.yourReef), codexList, chart);
+  const codexHead = el('h3', '', UI.yourReef);
+  codex.append(codexHead, codexList, chart);
+  // Folded like the cards under it, so the bands' stories come first.
+  collapsible(codex, codexHead);
+  // Opened, the chart redraws at the card's real width (folded it had none).
+  for (const ev of ['click', 'keydown'] as const) codexHead.addEventListener(ev, () => { chartLen = -1; });
   let chartLen = -1;
   /** The reef's height over this run, one point per sample, with the zone bounds as faint lines. */
   function renderChart(s: GameState): void {

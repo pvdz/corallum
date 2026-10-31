@@ -876,3 +876,4 @@ date, what landed, what is half-done, what's next.
 - Phone quick buys carry the best-buy mark (a gold edge and ✦), since on a phone the badged card is far down the sheet.
 - The reef arriving at its last band's height (now that it lands rather than creeps): the crown brightens once with a faint ring ('settled' flourish, from main.ts when height reaches heightForBands; not on jumps of 2 m or more such as a load).
 - Lineage tab: mid-run, the lesser spawning (an option, not the point) is folded to one line, "Release a lesser spawning · +32 lineage ▸", until tapped open; after the ending (Begin again is the main action) it stays open. The traits come ~400 px sooner on a phone. prestige e2e opens it first.
+- Bands tab: "Your reef" folds like the cards under it (it was the only open one, ~440 px on a phone before the stories); the growth chart redraws at the card's width when opened.
