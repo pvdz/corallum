@@ -315,6 +315,11 @@ export function createAudio() {
         void c.resume();
       }
       if (ctx && master) master.gain.setTargetAtTime(on ? volume : 0, ctx.currentTime, 0.4);
+      // Off: once faded, the sound stops working altogether (no pad playing at zero volume).
+      if (!on && ctx) {
+        const c = ctx;
+        setTimeout(() => { if (!enabled) void c.suspend(); }, 2000);
+      }
     },
     /**
      * The page hidden or shown: hidden, the sound sleeps (no pad playing to a background tab);

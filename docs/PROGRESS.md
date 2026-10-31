@@ -794,3 +794,4 @@ date, what landed, what is half-done, what's next.
 - Old stone is ash-grey skeleton (pitted, cracked) rather than bone-pale: the words around it say 'the grey on the tips'.
 - Phone stocks by count: one or two share the width in halves (rates on one line), three sit three across, four or more four to a row; the count no longer includes the height row (it made 'many' start at three stocks).
 - Two tabs on one reef: the tab that yields (it stops saving) now covers itself with a full-screen notice and ignores the shortcut keys; it used to show a small pill over the top buttons and stay fully playable, losing whatever was done in it.
+- Sound switched off suspends the audio context after its fade (the pad kept synthesising at zero volume).
