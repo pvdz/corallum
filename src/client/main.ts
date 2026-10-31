@@ -1067,8 +1067,8 @@ function showJournalNote(kicker: string, name: string, now = false): void {
     if (!journalQueue.length) { journalBusy = false; return; }
     journalBusy = true;
     // Not over the title of a new reef: the note waits until it has faded.
-    // Nor over the ending's pages.
-    if (!title.classList.contains('faded') || Number(getComputedStyle(title).opacity) > 0.05 || document.querySelector('.finale:not([hidden])')) { setTimeout(next, 500); return; }
+    // Nor behind a card (a story, the away summary, the ending's pages): it would play out unseen.
+    if (!title.classList.contains('faded') || Number(getComputedStyle(title).opacity) > 0.05 || document.querySelector('.finale:not([hidden]), .reader:not([hidden])')) { setTimeout(next, 500); return; }
     const n = journalQueue.shift()!;
     journalNote.textContent = '';
     const k = document.createElement('span');
