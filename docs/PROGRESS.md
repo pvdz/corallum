@@ -809,3 +809,4 @@ date, what landed, what is half-done, what's next.
 - Stock values pulse: a jump of 5% or more in a frame (a haul, a feast, a gift, an early sweep) brightens and swells the number for a moment; a purchase's bite dims it for a blink (Web Animations, no reflow; off under reduced motion and the calm setting).
 - An upgrade's buy button glows once as it becomes affordable (not on load, at most once in 8 s per card, off under reduced motion and calm).
 - Tabs keep their own scroll place (they share one scroller, so a tab opened partway down another's page); the open tab tapped again scrolls back to its top.
+- Phone sheet: a swipe on the stocks draws it up or lets it fall, as on the grabber (a tap still opens a stock's note). Checked with real touch events.

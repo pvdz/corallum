@@ -217,6 +217,8 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   .panel { transition: height 0.28s ease; }
   /* Drawn up, it covers the scene's overlays (gauge, whispers) but not stories (10) or dialogs above them. */
   .panel.tall { height: 84vh; height: 84dvh; z-index: 9; }
+  /* The stocks drag the sheet too, so the browser must not take the drag for a pan. */
+  .stocks { touch-action: none; }
   .grabber {
     display: block; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 2;
     width: 88px; height: 18px; padding: 0; border: 0; background: none; cursor: grab; touch-action: none;

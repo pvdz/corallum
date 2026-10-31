@@ -1433,18 +1433,28 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     grabber.setAttribute('aria-label', on ? UI.sheetDown : UI.sheetUp);
   }
   {
-    let y0 = NaN, dragged = false;
-    grabber.addEventListener('pointerdown', (e) => { y0 = e.clientY; dragged = false; grabber.setPointerCapture(e.pointerId); });
-    grabber.addEventListener('pointermove', (e) => {
-      if (Number.isNaN(y0) || dragged) return;
-      const dy = e.clientY - y0;
-      if (Math.abs(dy) < 24) return;
-      dragged = true;
-      setTall(dy < 0);
-    });
-    grabber.addEventListener('pointerup', () => { y0 = NaN; });
-    // A drag already chose; the click that follows it does not toggle back.
-    grabber.addEventListener('click', (e) => { if (dragged) { e.stopImmediatePropagation(); dragged = false; } }, { capture: true });
+    // The grabber and the stocks under it both drag: up draws the sheet up, down lets it fall.
+    // A move under 24 px is a tap (a stock's note, the grabber's toggle).
+    for (const handle of [grabber, stocks] as HTMLElement[]) {
+      let y0 = NaN, dragged = false;
+      handle.addEventListener('pointerdown', (e) => {
+        if (getComputedStyle(grabber).display === 'none') return;
+        y0 = e.clientY;
+        dragged = false;
+        handle.setPointerCapture(e.pointerId);
+      });
+      handle.addEventListener('pointermove', (e) => {
+        if (Number.isNaN(y0) || dragged) return;
+        const dy = e.clientY - y0;
+        if (Math.abs(dy) < 24) return;
+        dragged = true;
+        setTall(dy < 0);
+      });
+      handle.addEventListener('pointerup', () => { y0 = NaN; });
+      handle.addEventListener('pointercancel', () => { y0 = NaN; });
+      // A drag already chose; the click that follows it does not toggle back or open a note.
+      handle.addEventListener('click', (e) => { if (dragged) { e.stopImmediatePropagation(); dragged = false; } }, { capture: true });
+    }
     // Drawn up, a tap on the strip of scene above it brings the reef back (and is not a sweep).
     // Taps on the buttons over the scene (sound, view) still work.
     let swallow = false;
