@@ -1657,6 +1657,8 @@ function updateGauge(): void {
 let viewMode = false;
 /** When the player last did anything (performance.now): drift waits for a quiet spell. */
 let lastInput = 0;
+let lastPress = 0, panelFrame = 0;
+for (const type of ['pointerdown', 'pointerup', 'keydown'] as const) window.addEventListener(type, () => { lastPress = performance.now(); }, { passive: true });
 for (const type of ['pointerdown', 'pointermove', 'wheel', 'keydown'] as const) window.addEventListener(type, () => { lastInput = performance.now(); }, { passive: true });
 const viewBtn = document.createElement('button');
 viewBtn.id = 'view-mode';
@@ -2049,7 +2051,8 @@ function frameBody(now: number): void {
     takePortrait();
   }
   const p2 = performance.now();
-  panel.update(state);
+  // The panel's numbers read the same at half the frame rate; right after a press it keeps up.
+  if (frozenT !== null || (++panelFrame & 1) === 0 || now - lastPress < 300) panel.update(state);
   const p3 = performance.now();
   finale.update(state);
   prof.draw += (p1 - p0 - prof.draw) * 0.05;
