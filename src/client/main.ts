@@ -628,8 +628,15 @@ function catchUp(seconds: number): void {
 // Offline catch-up on load. Exact: the economy is closed-form and saturates by itself.
 if (botT === null && frozenT === null) {
   const away = (Date.now() - savedAt) / 1000;
-  if (away > AWAY_NOTICE && state.t > 0) catchUp(away);
-  else if (away > 0) advance(state, away);
+  const kept = structuredClone(state);
+  // A fault here would stop the page before it ever drew: the reef opens as it was left instead.
+  try {
+    if (away > AWAY_NOTICE && state.t > 0) catchUp(away);
+    else if (away > 0) advance(state, away);
+  } catch (e) {
+    console.error(e);
+    state = kept;
+  }
 }
 if (params.has('skip')) catchUp(Number(params.get('skip')));
 
