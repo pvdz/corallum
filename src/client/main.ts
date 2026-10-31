@@ -1060,7 +1060,7 @@ function showJournalNote(kicker: string, name: string, now = false): void {
     journalNote.classList.remove('show');
     void journalNote.offsetWidth;
     journalNote.classList.add('show');
-    setTimeout(next, 3200);
+    setTimeout(next, 4700); // the note's animation is 4.5 s
   };
   next();
 }

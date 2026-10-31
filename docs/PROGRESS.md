@@ -764,3 +764,4 @@ date, what landed, what is half-done, what's next.
 - Server gzips html/ts/css/json/svg when asked (cached per body; `vary: accept-encoding`): main.ts 92 → 29 KB, the whole page ~1.25 MB → ~0.35 MB for a phone over `--lan`.
 - Server: ETag from the source file's size and mtime; an unchanged file revalidates to a bodiless 304, so a phone's reload does not fetch all 86 modules (1.28 MB) again. Server test covers it.
 - The epilogue garden's children sit one to a row (name left, effect right) instead of three cramped columns; the whisper halo is a little stronger.
+- Journal notes (first sightings) stay 4.5 s instead of 3 and carry a dark shadow so they read over pale water.
