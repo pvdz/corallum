@@ -610,6 +610,18 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   readingCard.append(readingHead, readingHint, readingEffect, readingFoot);
   const bandsIntro = el('p', 'hint', UI.bandsIntro);
   const bandList = el('ol', 'band-list');
+  // A long list can be narrowed to one kind (filtered in CSS by data-show); hidden while short.
+  const storyFilter = el('div', 'story-filter');
+  storyFilter.hidden = true;
+  for (const [id, label] of UI.storyFilter) {
+    const b = button('wait-chip', label, () => {
+      bandList.dataset.show = id;
+      for (const c of storyFilter.children) c.classList.toggle('on', c === b);
+    });
+    if (id === 'all') b.classList.add('on');
+    storyFilter.append(b);
+  }
+  bandList.dataset.show = 'all';
   const codex = el('article', 'card codex');
   const codexList = el('dl', 'codex-list');
   const chart = el('canvas', 'growth-chart') as HTMLCanvasElement;
@@ -807,6 +819,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   }).observe(ringCanvas);
   function renderDiary(s: GameState): void {
     diary.hidden = s.diary.length === 0;
+    storyFilter.hidden = bandList.children.length < 20;
     if (s.diary.length === diaryLen) return;
     diaryLen = s.diary.length;
     diaryHead.textContent = `${DIARY_TEXT.label} · ${s.diary.length}`;
@@ -896,7 +909,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       momentList.append(el('dt', '', m.title), el('dd', '', ways.join(' · ')));
     }
   }
-  bandsPage.append(codex, journal, readingCard, tablet, shelf, cityCard, diary, momentCard, bandsIntro, bandList);
+  bandsPage.append(codex, journal, readingCard, tablet, shelf, cityCard, diary, momentCard, bandsIntro, storyFilter, bandList);
   let codexKey = '';
   function codexRow(term: string, value: string): void {
     codexList.append(el('dt', '', term), el('dd', '', value));

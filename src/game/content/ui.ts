@@ -12,6 +12,8 @@ export const UI = {
   notYetSeen: 'Not yet seen',
   sisterReef: 'Sister reef',
   thisReef: 'This reef',
+  /** The filter over the stories list: everything, the reef's own bands, moments, and the rest. */
+  storyFilter: [['all', 'All'], ['bands', 'Bands'], ['moments', 'Moments'], ['other', 'Readings & choices']] as const,
   /** The reef's deeds (feasts caught, trips, requests kept), apart from its time and calcite. */
   doneHere: 'Done here',
   theGrain: 'The grain',
