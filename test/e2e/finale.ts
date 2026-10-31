@@ -13,7 +13,7 @@ const save = serialize(state, Date.now());
 
 let failed = false;
 await withGame(async (open) => {
-  for (const vp of VIEWPORTS.slice(0, 2)) {
+  for (const vp of VIEWPORTS) {
     const { page, errors } = await open(vp, '', { save });
     await page.waitForFunction(() => window.corallum?.state.height === 4000, null, { timeout: 30000 });
     // Close any story cards that opened on load.
