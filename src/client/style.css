@@ -914,11 +914,17 @@ html.view-mode #photo { display: grid; }
 
 /* Touch screens: small buttons keep their look but take a finger-sized tap (an invisible margin). */
 @media (pointer: coarse) {
-  .card .pin, .wait-chip, .forget, .current-step, .heat-toggle, .sky-trace, .seamount:not(.trial.met) { position: relative; }
-  .card .pin::after, .wait-chip::after, .forget::after, .current-step::after, .heat-toggle::after, .sky-trace::after, .seamount:not(.trial.met)::after {
+  .card .pin, .wait-chip, .forget, .current-step, .heat-toggle, .sky-trace, .seamount:not(.trial.met), .ask-skip, .prep-away { position: relative; }
+  .card .pin::after, .wait-chip::after, .forget::after, .current-step::after, .heat-toggle::after, .sky-trace::after, .seamount:not(.trial.met)::after, .ask-skip::after, .prep-away::after {
     content: ''; position: absolute; inset: -9px -4px;
   }
   .card .pin::after { inset: -12px -8px; }
+  /* Tabs, the Finished row, sliders and text fields: at least 32 px tall to a finger. */
+  .tab { min-height: 34px; }
+  .finished > summary { padding-top: 10px; padding-bottom: 10px; }
+  label.toggle { min-height: 32px; }
+  input[type='range'] { min-height: 32px; }
+  input[type='text'], input:not([type]) { min-height: 34px; }
 }
 
 /* The sound button, once, for a player who never chose: three slow glows. */
