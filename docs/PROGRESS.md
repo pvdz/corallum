@@ -805,3 +805,4 @@ date, what landed, what is half-done, what's next.
 - The whisper halo takes the zone's own deep colour (teal in the Sunlit Crown) instead of navy, so it no longer reads as a dark smudge on bright water.
 - Phone garden card: the children span the card (they sat in its left column).
 - Load over a slow network (measured, not changed): 150 ms latency + 1.5 MB/s gives ready in ~2.9 s; transfer is ~0.25 s of it, the rest is 86 module requests through HTTP/1.1's six connections. modulepreload cannot beat that; only fewer requests (a bundle, which the rules forbid) or HTTP/2 (TLS) would. On a LAN it is ~0.5 s.
+- tools/bot.ts --saver: a bot that saves for the next band when it is under ten minutes away. It finishes in 3h08 (3h48 without sweeping) against the default greedy bot's 7h28: the pacing yardstick overstates the game about twofold. Recorded in ECONOMY.md and as an open decision in PLAN (no retune yet).

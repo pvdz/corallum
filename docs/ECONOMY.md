@@ -173,3 +173,18 @@ ending there is not expected, and a real second reef carries traits.
 Every trial goal is reached; the whole game on silent and lonely is a wall rather than a climb
 (silent has no Readings' multipliers; lonely caps shoals at 8). Fine as trials; revisit if a
 player is expected to finish there.
+
+## How long the game really takes: the greedy bot overstates it (2026-10-31)
+The pacing yardstick (and `pacing: … 6–11 h` in the tests) is the default bot, which always buys the
+cheapest thing it can afford and so never saves for a band. `tools/bot.ts --saver` holds its calcite
+when the next band is under ten minutes away, as a player watching the band card would:
+
+| bot | sweeps every tick | never sweeps |
+|---|---|---|
+| greedy (default) | 7h28 | 8h28 |
+| saver | 3h08 | 3h48 |
+
+(saver + sweeps: 3000 m at 1h07, 3800 m at 2h14, the surface at 3h07.) An attentive player who saves
+could finish in three to four hours of play, not seven to nine. Real players sit between the two,
+and time away is capped by the holds. Open decision (see PLAN): keep the greedy yardstick, or retune
+band cost growth so the saver lands near six hours.

@@ -5,7 +5,7 @@ import { UPGRADES } from '../content/upgrades.ts';
 import type { Job } from '../content/act2.ts';
 import type { ResidentId } from '../content/residents.ts';
 import { WORKS } from '../content/works.ts';
-import { assign, BANDS, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil, readingCost, meetingWords, jobGain, steadyCalciteRate, bestRasp, carryAt, balanceFeedLight, canSend, send, build, homes, house, residentsAsking, nextMoment, meet as meetMoment, skipRequest, boonsOffered, chooseBoon, setCurrent, strainOpen, chooseStrain, sportOpen, chooseSport, grainsWaiting, chooseGrain, currentRiddle, answerRiddle } from './economy.ts';
+import { assign, BANDS, maxed, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil, readingCost, meetingWords, jobGain, steadyCalciteRate, bestRasp, carryAt, balanceFeedLight, canSend, send, build, homes, house, residentsAsking, nextMoment, meet as meetMoment, skipRequest, boonsOffered, chooseBoon, setCurrent, strainOpen, chooseStrain, sportOpen, chooseSport, grainsWaiting, chooseGrain, currentRiddle, answerRiddle } from './economy.ts';
 import type { Choice, MeetingId } from '../content/act3.ts';
 import type { DialectId, DialectTier } from '../content/act4.ts';
 import { newGame, type GameState } from './state.ts';
@@ -22,6 +22,8 @@ export type BotOptions = {
   spawnAt?: number;
   /** Send expeditions and take in residents (default true; off to test other systems alone). */
   ventures?: boolean;
+  /** Save for the next band when it is under ten minutes away, as a player watching it would. */
+  saver?: boolean;
 };
 export type BotEvent = { t: number; what: string };
 
@@ -36,6 +38,7 @@ export { bestRasp };
 
 export function botDecide(
   s: GameState, sweeps: boolean, fixed?: Record<Job, number>, truce = DEFAULT_TRUCE, dialects = DEFAULT_DIALECTS, ventures = true,
+  saver = false,
 ): string[] {
   // Without a fixed split, feeders and light-swimmers go wherever they are worth most.
   const fixedSplit = fixed !== undefined;
@@ -53,8 +56,10 @@ export function botDecide(
   if (tier && speak(s, dialects[tier.tier])) bought.push(`dialect:${dialects[tier.tier]}`);
   // Save bloom for a waiting dialect rather than spending it on canopy.
   const saving = nextTier(s);
+  // A saver keeps its calcite for the next band when the band is near.
+  const bandNear = saver && !maxed(s, 'skeleton') && !canAfford(s, 'skeleton') && timeUntil(s, 'calcite', cost(s, 'skeleton')) < 600;
   for (;;) {
-    const options = UPGRADES.filter((u) => canAfford(s, u.id) && !(saving && u.currency === 'bloom')).sort(
+    const options = UPGRADES.filter((u) => canAfford(s, u.id) && !(saving && u.currency === 'bloom') && !(bandNear && u.currency === 'calcite')).sort(
       (a, b) => cost(s, a.id) - cost(s, b.id),
     );
     const pick = options[0];
@@ -137,7 +142,7 @@ export function runBot(
   maxT: number,
   opts: BotOptions = {},
 ): { state: GameState; events: BotEvent[]; total: number } {
-  const { seed = 1, tick = 1, sweeps = true, split, truce, dialects, spawnAt, seamount = 'plain', ventures = true } = opts;
+  const { seed = 1, tick = 1, sweeps = true, split, truce, dialects, spawnAt, seamount = 'plain', ventures = true, saver = false } = opts;
   let s = newGame(seed);
   s.seamount = seamount;
   let t0 = 0;
@@ -156,7 +161,7 @@ export function runBot(
       }
       events.push({ t: t0, what: `lesser spawning → ${JSON.stringify(s.meta.traits)}` });
     }
-    const did = botDecide(s, sweeps, split, truce, dialects, ventures);
+    const did = botDecide(s, sweeps, split, truce, dialects, ventures, saver);
     for (const d of did) if (d.startsWith('truce:') || d.startsWith('dialect:') || d.startsWith('breach:')) events.push({ t: t0 + s.t, what: d });
     // Coarser ticks later in the game keep long runs fast; the bot still decides often
     // relative to how fast things change.

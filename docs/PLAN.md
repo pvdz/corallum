@@ -176,6 +176,7 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] the server gzips text (cached per body): ~1.25 MB → ~0.35 MB for a phone over `--lan`; fresh load 0.4–0.5 s headless
 - [x] sound sleeps while the page is hidden (no pad in a background tab) and wakes on show or touch (iOS interrupts audio in the background and only resumes from a gesture); cues are dropped while asleep
 - [ ] Safari/Firefox: only Chromium is installed (no network to fetch others); a static scan found no unguarded Safari-missing APIs (OffscreenCanvas, vibrate, Notification are feature-tested)
+- [ ] game length (user decision): the default bot never saves, so its 7h28 overstates the game; a bot that saves for the next band finishes in 3h08 (3h48 without sweeping). Recommendation: make the saver the yardstick and raise band cost growth until it lands near six hours (ECONOMY.md)
 - [ ] distribution (user decision): today a player needs Node 24 and `node src/server/server.ts`. Options: (a) host the Node server somewhere (fits every rule as is); (b) a static export with types stripped, for itch.io or GitHub Pages: needs an exception to "no emitted JS" (the export would be a build artefact, not the source)
 - [ ] perf on a real phone (needs the user; see M6)
 
