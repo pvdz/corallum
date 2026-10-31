@@ -879,3 +879,4 @@ date, what landed, what is half-done, what's next.
 - Bands tab: "Your reef" folds like the cards under it (it was the only open one, ~440 px on a phone before the stories); the growth chart redraws at the card's width when opened.
 - The Rasp's four favours sit 2×2 instead of 3 + 1 (names and effects wrapped word by word in the narrow thirds).
 - The Grow tab shows a dot when a new choice (a moment, a question, the signal…) opens while another tab is showing, until Grow is looked at; the choices already seen do not call again.
+- README's panel and phone images regenerated from the current build (the phone one showed the old upper-case chips and one-line stocks).
