@@ -49,3 +49,17 @@ test('ids this version does not know (renamed, removed, or from a newer one) loa
   assert.equal(s.expedition.site, 'roam');
   assert.deepEqual(s.meta.chronicle, ['plain|vent,ossel|7.5']);
 });
+
+test('counts load whole and within bounds (a damaged save cannot ask for 1e30 shoals at work)', () => {
+  const { state } = runBot((s) => s.t > 3000, 4000);
+  const raw = JSON.parse(serialize(state, 1)) as { state: Record<string, any> };
+  raw.state.levels.skeleton = 0.5;
+  raw.state.levels.lure = 99;
+  raw.state.jobs.scout = 1e30;
+  raw.state.fragments = 1e30;
+  const s = deserialize(JSON.stringify(raw))!.state;
+  assert.equal(s.levels.skeleton, 0);
+  assert.equal(s.levels.lure, 6);
+  assert.ok(Object.values(s.jobs).reduce((a, b) => a + b, 0) <= s.levels.shoal);
+  assert.ok(s.fragments <= 8);
+});

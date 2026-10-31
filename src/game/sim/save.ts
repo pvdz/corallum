@@ -8,9 +8,12 @@ import { READINGS } from '../content/act2.ts';
 import { RIDDLES } from '../content/act3.ts';
 import { DIALECTS } from '../content/act4.ts';
 import { MEMORIES } from '../content/act5.ts';
-import { BOONS, SEAMOUNTS, VOWS } from '../content/lineage.ts';
+import { BOONS, SEAMOUNTS, TRAITS, VOWS } from '../content/lineage.ts';
+import { UPGRADES } from '../content/upgrades.ts';
+import { WORKS } from '../content/works.ts';
 import { REQUESTS } from '../content/requests.ts';
 import { RESIDENTS } from '../content/residents.ts';
+import { fragmentMax } from './economy.ts';
 import { newGame, SAVE_VERSION, type GameState } from './state.ts';
 
 export type SaveFile = { state: GameState; savedAt: number };
@@ -89,6 +92,18 @@ function known(s: GameState): void {
   s.vows = keep(s.vows, ids(VOWS));
   s.relics = keep(s.relics, ids(SITES));
   s.riddlesAgain = keep(s.riddlesAgain, ids(RIDDLES));
+  // Counts are whole and within what the content allows (a hand-edited or damaged save with a
+  // count of 1e30 shoals or half a band would otherwise hang the page drawing or settling them).
+  const count = (x: number, max = Infinity) => Math.min(max, Math.max(0, Math.floor(x)));
+  for (const u of UPGRADES) s.levels[u.id] = count(s.levels[u.id], u.maxLevel);
+  for (const t of TRAITS) s.meta.traits[t.id] = count(s.meta.traits[t.id], t.max);
+  for (const w of WORKS) s.works[w.id] = count(s.works[w.id], w.stages.length);
+  s.fragments = count(s.fragments, fragmentMax(s));
+  let room = s.levels.shoal;
+  for (const j of Object.keys(s.jobs) as (keyof GameState['jobs'])[]) {
+    s.jobs[j] = count(s.jobs[j], room);
+    room -= s.jobs[j];
+  }
   // The line's records keep their entries; only a seamount no longer known reads as plain.
   const plainSeamount = (line: string, at: number) => {
     const f = line.split('|');
