@@ -554,6 +554,10 @@ const finale = createFinale(ui, panel.growPage, {
     if (!breach(state, memories)) return false;
     scene.effect('breach');
     audio.cue('release');
+    // The spawning plays out alone before the ending's first page: nothing over it.
+    notesHeldUntil = performance.now() + 7000;
+    journalNote.classList.remove('show');
+    whisper.classList.remove('show');
     save();
     return true;
   },
@@ -1070,6 +1074,8 @@ journalNote.setAttribute('aria-live', 'polite');
 ui.append(journalNote);
 let journalQueue: [string, string][] = [];
 let journalBusy = false;
+/** Notes wait until then (the spawning's silent seconds before the ending's pages). */
+let notesHeldUntil = 0;
 /** A small note top-left ("Seen for the first time · Anglerfish"), one at a time; `now` goes ahead of the queue. */
 function showJournalNote(kicker: string, name: string, now = false): void {
   if (now) journalQueue.unshift([kicker, name]);
@@ -1080,7 +1086,7 @@ function showJournalNote(kicker: string, name: string, now = false): void {
     journalBusy = true;
     // Not over the title of a new reef: the note waits until it has faded.
     // Nor behind a card (a story, the away summary, the ending's pages): it would play out unseen.
-    if (!title.classList.contains('faded') || Number(getComputedStyle(title).opacity) > 0.05 || document.querySelector('.finale:not([hidden]), .reader:not([hidden])')) { setTimeout(next, 500); return; }
+    if (performance.now() < notesHeldUntil || !title.classList.contains('faded') || Number(getComputedStyle(title).opacity) > 0.05 || document.querySelector('.finale:not([hidden]), .reader:not([hidden])')) { setTimeout(next, 500); return; }
     const n = journalQueue.shift()!;
     journalNote.textContent = '';
     const k = document.createElement('span');

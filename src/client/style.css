@@ -597,9 +597,11 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 @media (min-width: 800px) { .finale.ending { right: var(--panel-out); } }
 @media (min-width: 800px) { .finale.choice-screen { padding-right: calc(var(--panel-out) + 20px); } }
 .finale.ending .finale-text { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9); }
-/* While the ending is told, the panel steps back (still there to use: it brightens under the pointer or focus). */
+/* While the ending is told, the panel steps back (still there to use: it brightens on focus). */
 .panel { transition: opacity 1.2s ease, height 0.28s ease; }
-html:has(.finale.ending:not([hidden])) .panel:not(:hover):not(:focus-within) { opacity: 0.35; }
+html:has(.finale.ending:not([hidden])) .panel:not(:focus-within) { opacity: 0.35; }
+/* Under a real pointer it brightens on hover; a touch leaves a sticky hover where the release was tapped. */
+@media (hover: hover) { html:has(.finale.ending:not([hidden])) .panel:hover { opacity: 1; } }
 @media (max-width: 799px) {
   .finale.ending { bottom: 47vh; bottom: 47dvh; padding-bottom: 16px; background: linear-gradient(180deg, rgba(2, 2, 10, 0) 20%, rgba(2, 2, 12, 0.7)); }
   .finale.ending .finale-text { font-size: 15px; line-height: 1.55; margin-bottom: 12px; }
