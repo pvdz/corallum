@@ -893,11 +893,12 @@ html.view-mode #photo { display: grid; }
 .milestone-bar[hidden] { display: none; }
 .milestone-fill { height: 100%; background: linear-gradient(90deg, rgba(255, 194, 176, 0.5), #ffc2b0); transition: width 0.4s ease; }
 @media (max-width: 799px) { .milestone-bar { grid-column: 1 / -1; margin: 4px 0 2px; } }
-.moon-calendar { display: flex; gap: 6px; flex-wrap: wrap; margin: 2px 0 8px; }
-.moon-day { font-size: 11.5px; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--edge); color: var(--ink-dim); }
-.moon-day::before { content: '○ '; }
-.moon-day.great { color: #ffd9a8; border-color: rgba(255, 210, 160, 0.5); }
-.moon-day.great::before { content: '◉ '; }
+/* The next full moons, a line of times (not buttons); a great tide is gold with a star. */
+.moon-calendar { display: flex; gap: 4px 14px; flex-wrap: wrap; align-items: baseline; margin: 2px 0 8px; font-size: 11.5px; }
+.moon-cal-label { color: var(--ink-dim); }
+.moon-day { color: #c9d6ea; font-variant-numeric: tabular-nums; }
+.moon-day.great { color: #ffd9a8; }
+.moon-day.great::before { content: '✦ '; }
 
 /* Story cards: a slice through the reef's stone across the top, banded, in the zone's colours. */
 .reader-card { position: relative; overflow: hidden; }

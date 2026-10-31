@@ -92,6 +92,8 @@ export const UI = {
   moonFull: 'The moon is full.',
   ready: 'Everything is ready.',
   readyWait: 'Everything is ready. Wait for the moon.',
+  /** Before the next four full moons on the moon card (✦ marks a great tide). */
+  fullMoons: 'Full moons:',
   greatTide: (n: number) => `A great tide: ${memoryCount(n)}`,
   memories: (n: number) => { const t = memoryCount(n); return t[0]!.toUpperCase() + t.slice(1); },
   keysKicker: 'Keys',

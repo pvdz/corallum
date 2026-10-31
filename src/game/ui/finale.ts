@@ -235,6 +235,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
       if (key !== calendarKey) {
         calendarKey = key;
         calendar.innerHTML = '';
+        calendar.append(el('span', 'moon-cal-label', UI.fullMoons));
         let at = s.t + untilFullMoon(s.t);
         for (let i = 0; i < 4; i++) {
           const great = greatTide(s, at);
