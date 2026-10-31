@@ -120,7 +120,9 @@ export const VOWS: readonly { id: VowId; name: string; effect: string; lineage: 
   { id: 'quiet', name: 'Quiet', effect: 'Ossel asks for nothing on this reef', lineage: 3 },
   { id: 'still', name: 'Stillness', effect: 'the tentacles never sweep: the reef eats only what comes to it', lineage: 5 },
 ];
-export const VOW = { hasteHours: 7, label: 'Vows', note: 'Optional: grow the next reef a harder way, for lineage at its ending if the vow is kept.', kept: 'kept', broken: 'broken' } as const;
+export const VOW = { hasteHours: 7, label: 'Vows', note: 'Optional: grow the next reef a harder way, for lineage at its ending if the vow is kept.', kept: 'kept', broken: 'broken',
+  /** A vow with a deadline, still being kept. */
+  left: (time: string) => `${time} left` } as const;
 
 /** Forgetting a trait (Lineage tab). */
 export const FORGET = { label: 'Forget', sure: 'Forget it?', title: 'Forget the last level of this trait: most of its lineage comes back' } as const;

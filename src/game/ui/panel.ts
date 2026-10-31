@@ -957,7 +957,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     ].filter(Boolean);
     if (small.length) codexRow(UI.smallThings, small.join(' · '));
     if (s.nursed) codexRow(GARDEN.nursed, GARDEN.kinds.filter((k) => s.nursed.includes(k.id)).map((k) => `${[...s.nursed].filter((c) => c === k.id).length} × ${k.name.toLowerCase().replace(/^a /, '')} (${k.effect.replace(' on the next reef', '')})`).join(' · '));
-    if (s.vows.length) codexRow(VOW.label, VOWS.filter((v) => s.vows.includes(v.id)).map((v) => `${v.name.toLowerCase()} (${vowKept(s, v.id) ? VOW.kept : VOW.broken})`).join(' · '));
+    // Haste on its way up says how long is left to keep it.
+    const vowState = (id: VowId) => {
+      if (!vowKept(s, id)) return VOW.broken;
+      return id === 'haste' && s.surfacedAt < 0 ? VOW.left(duration(VOW.hasteHours * 3600 - s.t)) : VOW.kept;
+    };
+    if (s.vows.length) codexRow(VOW.label, VOWS.filter((v) => s.vows.includes(v.id)).map((v) => `${v.name.toLowerCase()} (${vowState(v.id)})`).join(' · '));
     if (s.meta.endings > 0) codexRow(UI.theSea, `healing: the Long Silt falls ×${(0.95 ** Math.min(6, s.meta.endings)).toFixed(2)} for the endings your line has reached`);
     if (s.meta.endings > 0) codexRow('Endings', `${s.meta.endings} · ${s.meta.carriedEver.length} of ${MEMORIES.length} memories carried so far`);
     if (s.carried.length) codexRow('Carried', s.carried.map((id) => MEMORIES.find((m) => m.id === id)?.title ?? id).join(' · '));
