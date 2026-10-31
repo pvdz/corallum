@@ -105,6 +105,10 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .card.maxed { opacity: 0.55; }
 .card.done { padding-top: 6px; padding-bottom: 6px; }
 .card.done .flavour, .card.done .effect, .card.done footer { display: none; }
+.finished[hidden] { display: none; }
+.finished > summary { cursor: pointer; padding: 6px 4px; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); }
+.finished > summary:hover { color: var(--ink); }
+.finished-list { display: flex; flex-direction: column; gap: 8px; }
 .card.pop { animation: pop 0.35s ease; }
 .card header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .card h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 17px; }
@@ -182,6 +186,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .frozen *, .frozen *::before, .frozen *::after { animation: none !important; transition: none !important; }
 @media (min-width: 800px) { #title { right: var(--panel-w); } }
 
+.grabber { display: none; }
 /* ---------- Narrow screens: compact cards so two or three fit in the sheet ---------- */
 @media (max-width: 799px) {
   .panel { gap: 8px; padding-top: 10px; }
@@ -204,6 +209,19 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   .card.spawn-lesser { display: block; }
   .card.spawn-lesser .flavour { white-space: normal; }
   .card.spawn-lesser footer { display: flex; flex-direction: row; justify-content: flex-end; margin-top: 8px; }
+  /* The sheet's grabber: tap or drag up for a tall sheet (more cards), down for the reef. */
+  .panel { transition: height 0.28s ease; }
+  /* Drawn up, it covers the scene's overlays (gauge, whispers) but not the dialogs above them. */
+  .panel.tall { height: 84vh; height: 84dvh; z-index: 12; }
+  .grabber {
+    display: block; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 2;
+    width: 88px; height: 18px; padding: 0; border: 0; background: none; cursor: grab; touch-action: none;
+  }
+  .grabber::before {
+    content: ''; position: absolute; left: 50%; top: 5px; width: 38px; height: 4px; margin-left: -19px;
+    border-radius: 2px; background: var(--ink-dim); opacity: 0.45; transition: opacity 0.2s;
+  }
+  .grabber:hover::before, .grabber:focus-visible::before, .tall .grabber::before { opacity: 0.8; }
 }
 
 #yielded {
@@ -339,6 +357,7 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 .work-pip { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px dashed var(--edge); color: var(--ink-dim); }
 .work-pip.built { border-style: solid; border-color: rgba(255, 210, 160, 0.5); color: #ffd9a8; }
 .card.work { border-color: rgba(255, 210, 160, 0.25); }
+@media (max-width: 799px) { .card.work .work-stages { grid-column: 1 / -1; margin: 6px 0 0; } }
 .touched.trust-2 { color: #a8dcff; }
 .touched.trust-3 { color: #ffd9a8; }
 .lucky-mark { color: #ffd278; font-style: normal; }

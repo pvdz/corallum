@@ -733,16 +733,22 @@ window.corallum = {
 // the scene frames the reef in what is left.
 let dpr = 1;
 let focusNow: Focus = { x: 0, y: 0, w: 1, h: 1 };
+let lastDpr = 0;
 function resize(): void {
   dpr = sharp.get() && !autoLowRes ? Math.min(window.devicePixelRatio || 1, 2) : 1;
   const w = Math.round(window.innerWidth * dpr);
   const h = Math.round(window.innerHeight * dpr);
   const r = panel.element.getBoundingClientRect();
   const side = r.left > window.innerWidth * 0.3;
+  // A phone sheet drawn up tall covers the reef for a while; the scene keeps its usual framing.
+  const top = panel.element.classList.contains('tall') ? window.innerHeight * 0.53 : r.top;
   // With the panel hidden (view mode) the scene frames the whole screen.
   const focus: Focus = viewMode ? { x: 0, y: 0, w, h } : side
     ? { x: 0, y: 0, w: Math.round(r.left * dpr), h }
-    : { x: 0, y: 0, w, h: Math.round(r.top * dpr) };
+    : { x: 0, y: 0, w, h: Math.round(top * dpr) };
+  // Nothing moved (the sheet sliding, a panel card growing): the canvases and scenes stay as they are.
+  if (canvas.width === w && canvas.height === h && dpr === lastDpr && focus.x === focusNow.x && focus.y === focusNow.y && focus.w === focusNow.w && focus.h === focusNow.h) return;
+  lastDpr = dpr;
   canvas.width = fadeCanvas.width = w;
   canvas.height = fadeCanvas.height = h;
   for (const sc of scenes) sc.resize(w, h, dpr, focus);

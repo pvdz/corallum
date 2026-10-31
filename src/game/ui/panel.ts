@@ -1197,8 +1197,20 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   }
 
   // The next upgrade still hidden, and what opens it.
+  // Finished upgrades and great works, folded into one line at the end of the list.
+  const finished = el('details', 'finished') as HTMLDetailsElement;
+  const finishedHead = el('summary', '', UI.finished);
+  const finishedList = el('div', 'finished-list');
+  finished.append(finishedHead, finishedList);
+  finished.hidden = true;
+  /** Move a card that is done for good into the folded list. */
+  function finish(card: HTMLElement): void {
+    finishedList.append(card);
+    finished.hidden = false;
+    finishedHead.textContent = `${UI.finished} · ${finishedList.children.length}`;
+  }
   const comingUp = el('p', 'hint coming-up');
-  grow.append(comingUp);
+  grow.append(finished, comingUp);
 
   // ---------- Reef (settings) ----------
   const reefPage = tabPages.get('reef')!;
@@ -1384,7 +1396,30 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     backupNote.hidden = !due;
   }
 
-  panel.append(stocks, stockNote, tabs, pages);
+  // On a phone the sheet has a grabber: tap or drag it up to see more cards, down for the reef.
+  const grabber = button('grabber', '', () => setTall(!panel.classList.contains('tall')));
+  grabber.setAttribute('aria-label', UI.sheetUp);
+  grabber.setAttribute('aria-expanded', 'false');
+  function setTall(on: boolean): void {
+    panel.classList.toggle('tall', on);
+    grabber.setAttribute('aria-expanded', String(on));
+    grabber.setAttribute('aria-label', on ? UI.sheetDown : UI.sheetUp);
+  }
+  {
+    let y0 = NaN, dragged = false;
+    grabber.addEventListener('pointerdown', (e) => { y0 = e.clientY; dragged = false; grabber.setPointerCapture(e.pointerId); });
+    grabber.addEventListener('pointermove', (e) => {
+      if (Number.isNaN(y0) || dragged) return;
+      const dy = e.clientY - y0;
+      if (Math.abs(dy) < 24) return;
+      dragged = true;
+      setTall(dy < 0);
+    });
+    grabber.addEventListener('pointerup', () => { y0 = NaN; });
+    // A drag already chose; the click that follows it does not toggle back.
+    grabber.addEventListener('click', (e) => { if (dragged) { e.stopImmediatePropagation(); dragged = false; } }, { capture: true });
+  }
+  panel.append(grabber, stocks, stockNote, tabs, pages);
   host.append(panel);
   showTab('grow');
 
@@ -1929,7 +1964,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         setShown(x.root, open);
         if (!open) continue;
         const n = s.works[x.w.id];
-        x.level.textContent = `${WORK_TEXT.stage} ${Math.min(n + 1, x.w.stages.length)}/${x.w.stages.length}`;
+        // Stages built, like an upgrade's levels owned (the pips name the next one).
+        x.level.textContent = `${n}/${x.w.stages.length}`;
         x.pips.forEach((p, i) => p.classList.toggle('built', i < n));
         const c = workCost(s, x.w.id);
         if (!c) {
@@ -1940,7 +1976,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           // Built in full: to the end of the list, one line, like a finished upgrade.
           if (!x.root.classList.contains('done')) {
             x.root.classList.add('done');
-            grow.append(x.root);
+            finish(x.root);
           }
           continue;
         }
@@ -2008,7 +2044,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           // Finished for good (not just held back by a story gate): to the end of the list, one line.
           if (u.id !== 'skeleton' && !waiting && !c.root.classList.contains('done')) {
             c.root.classList.add('done');
-            grow.append(c.root);
+            finish(c.root);
           }
           continue;
         }

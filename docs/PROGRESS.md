@@ -747,3 +747,8 @@ date, what landed, what is half-done, what's next.
 - Perf: the diary's ring canvas width is watched by a ResizeObserver instead of read every frame (the read forced a synchronous layout after the panel's writes): panel 2.3–2.7 → 0.5–1.2 ms/frame headless.
 - Perf: the Breach galaxy cache was keyed on the tidal water line, so it repainted (and reallocated) every frame; now laid out on the still line and painted once: Breach draw 10.7 → 3.3 ms headless.
 - tools/perf.ts also reports the browser's script/style/layout ms per frame (CDP Performance metrics).
+- Finished upgrades and fully built great works fold into one collapsed "Finished · n" group at the end of the Grow tab.
+- tools/sweep.ts: loads the game at 18 bot times from the Silt Floor to past the ending, flips the tabs, reports console errors. Desktop and mobile clean.
+- Phone sheet grabber: a pill at the top of the bottom sheet; tap or drag up for a tall sheet (84dvh, over the scene's overlays), drag down or tap for the reef. The scene keeps its usual framing while the sheet is tall. Smoke test checks it.
+- resize() returns early when nothing moved (sheet sliding, cards growing): no canvas reallocation per transition frame.
+- Great-work cards show stages built (2/3) like an upgrade's levels; on a phone their stage pips sit in one row across the card.

@@ -43,3 +43,24 @@ await withGame(async (open) => {
   console.log(`${ok ? 'ok  ' : 'FAIL'} reduced motion: milestone card shows (opacity ${opacity})`);
   if (!ok) process.exitCode = 1;
 });
+
+// The phone sheet's grabber: a tap draws it up, a drag down puts it back; the scene keeps its framing.
+await withGame(async (open) => {
+  const { page, errors } = await open(VIEWPORTS[1]!, '?t=10');
+  await page.waitForSelector('html[data-ready="1"]', { timeout: 15000 });
+  const height = () => page.evaluate(() => document.querySelector('.panel')!.getBoundingClientRect().height);
+  const h0 = await height();
+  await page.locator('.grabber').tap();
+  await page.waitForTimeout(600);
+  const h1 = await height();
+  const b = (await page.locator('.grabber').boundingBox())!;
+  await page.mouse.move(b.x + b.width / 2, b.y + 8);
+  await page.mouse.down();
+  await page.mouse.move(b.x + b.width / 2, b.y + 80, { steps: 6 });
+  await page.mouse.up();
+  await page.waitForTimeout(600);
+  const h2 = await height();
+  const ok = h1 > h0 * 1.5 && Math.abs(h2 - h0) < 2 && errors.length === 0;
+  console.log(`${ok ? 'ok  ' : 'FAIL'} mobile sheet: ${Math.round(h0)} → ${Math.round(h1)} → ${Math.round(h2)} px${errors.length ? ': ' + errors.join(' | ') : ''}`);
+  if (!ok) process.exitCode = 1;
+});

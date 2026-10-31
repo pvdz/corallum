@@ -44,6 +44,8 @@ export const UI = {
   autosave: 'The reef saves itself every few seconds in this browser.',
   keys: 'Hold a buy button to keep buying. Keys (? lists them): Space sweeps · 1–4 switch tabs · H hides the panel · F catches a falling feast · E sends an expedition · P buds a polyp · B lays a band · G hosts glimmerseed.',
   startOver: 'Start over',
+  /** The folded list of upgrades and works done for good. */
+  finished: 'Finished',
   /** The last line of the Reef tab. */
   about: 'Corallum 0.9 · made by clauwd with Claude, 2026 · no trackers: the reef lives only in this browser',
   sound: 'Sound',
@@ -73,6 +75,9 @@ export const UI = {
   keysKicker: 'Keys',
   keysTitle: 'Shortcuts',
   keysHelp: 'Space sweeps your tentacles. 1–4 switch the panel tabs. F catches a falling feast. E sends the shoals on the next expedition. L flares the lure. R sends the feeders into the rising. S rides a swell at the Breach. C closes the polyps against warm water (or opens them). 7–0 answer the shoals’ signal. P buds a polyp, B lays a band, G hosts glimmerseed. H hides the panel to see the whole reef (leave it a while and the view drifts on its own). T replays this zone’s growth. K lets old stone go; W makes a wish when stars fall. Hold any buy button to keep buying. Tap a creature to learn its name; tap Ossel and it will answer.',
+  /** The phone sheet's grabber: drawn up for more of the panel, down for more of the reef. */
+  sheetUp: 'Show more of the panel',
+  sheetDown: 'Show more of the reef',
   soundOn: 'Sound on (click to mute)',
   soundOff: 'Sound off (click for sound)',
   driftsAway: 'Your spawn drifts away to find a new seamount.',
