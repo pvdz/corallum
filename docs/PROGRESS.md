@@ -756,3 +756,4 @@ date, what landed, what is half-done, what's next.
 - Whispers get a soft dark halo behind the words and a brighter speaker line (they were hard to read over a lit crown).
 - Two Twilight bands fill the longest story silences of Act III: Other water (3575 m; the open sea tastes of other reefs: "I said most.") and Warmth (3775 m; the crown water is warmer than the foot). Bot 2h16→2h57 and 3h31→4h18 gaps now split. The last Twilight band (3780→3800 m, 3.85e11) still takes the bot ~40 min: the bot keeps buying polyps instead of saving.
 - Proofread pass over content/: no repeated words, spacing slips or misspelt one-off words.
+- Phone, six or more stocks: four to a row with each rate cut to one line; tapping a stock shows the whole line in its note. The Breach sheet's stocks take about half the height they did.

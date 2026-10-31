@@ -180,7 +180,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const again = !stockNote.hidden && stockNote.dataset.stock === cls;
         stockNote.hidden = again;
         stockNote.dataset.stock = cls;
-        stockNote.textContent = `${name}: ${note}`;
+        // The whole rate line too: on a phone with many stocks it is cut short.
+        stockNote.textContent = `${name}: ${note} (${sub.textContent})`;
         clearTimeout(noteTimer);
         if (!again) noteTimer = window.setTimeout(() => { stockNote.hidden = true; }, 8000);
       });
