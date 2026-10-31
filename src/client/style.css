@@ -213,8 +213,8 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   .card.spawn-lesser footer { display: flex; flex-direction: row; justify-content: flex-end; margin-top: 8px; }
   /* The sheet's grabber: tap or drag up for a tall sheet (more cards), down for the reef. */
   .panel { transition: height 0.28s ease; }
-  /* Drawn up, it covers the scene's overlays (gauge, whispers) but not the dialogs above them. */
-  .panel.tall { height: 84vh; height: 84dvh; z-index: 12; }
+  /* Drawn up, it covers the scene's overlays (gauge, whispers) but not stories (10) or dialogs above them. */
+  .panel.tall { height: 84vh; height: 84dvh; z-index: 9; }
   .grabber {
     display: block; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 2;
     width: 88px; height: 18px; padding: 0; border: 0; background: none; cursor: grab; touch-action: none;

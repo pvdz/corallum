@@ -81,3 +81,21 @@ await withGame(async (open) => {
   console.log(`${ok && failed.length === 0 ? 'ok  ' : 'FAIL'} offline: the game opens again with the network gone${failed.length ? ': ' + failed.join(' | ') : ''}`);
   if (!ok || failed.length) process.exitCode = 1;
 });
+
+// A story that opens while the phone sheet is drawn up shows above it, not under it.
+await withGame(async (open) => {
+  const { page, errors } = await open(VIEWPORTS[1]!, '?fresh');
+  await page.waitForFunction(() => (window as unknown as { corallum?: unknown }).corallum, null, { timeout: 30000 });
+  await page.locator('.grabber').tap();
+  const go = page.getByRole('button', { name: 'Continue' });
+  await go.waitFor({ timeout: 15000 });
+  await page.waitForTimeout(1000);
+  const onTop = await go.evaluate((b) => {
+    const r = b.getBoundingClientRect();
+    const e = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+    return !!e && (e === b || b.contains(e));
+  });
+  const ok = onTop && errors.length === 0;
+  console.log(`${ok ? 'ok  ' : 'FAIL'} a story shows above the tall sheet${errors.length ? ': ' + errors.join(' | ') : ''}`);
+  if (!ok) process.exitCode = 1;
+});
