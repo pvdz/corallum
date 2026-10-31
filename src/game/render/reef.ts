@@ -641,6 +641,12 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     const u = L.unit;
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
+    // Light alone vanishes over bright water: some flourishes also paint a little colour.
+    const painted = (fn: () => void) => {
+      ctx.globalCompositeOperation = 'source-over';
+      fn();
+      ctx.globalCompositeOperation = 'lighter';
+    };
     for (const fx of live) {
       const k = fx.age / 2.2;
       switch (fx.kind) {
@@ -732,6 +738,7 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
           ring(ctx, L.cx, cy, (40 + k * 320) * s, '255,165,140', 0.5 * (1 - k), 2 * s);
           if (k > 0.2) ring(ctx, L.cx, cy, (40 + (k - 0.2) * 320) * s, '255,165,140', 0.35 * (1 - k), 1.2 * s);
           glow(ctx, L.cx, cy, top * u * 0.5 + 40 * s, '255,210,180', 0.2 * Math.sin(Math.PI * k));
+          painted(() => ring(ctx, L.cx, cy, (40 + k * 320) * s, '200,90,80', 0.3 * (1 - k), 1.5 * s));
           break;
         }
         case 'reading': {
@@ -739,6 +746,18 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
           const top = Math.min(1, L.top);
           const y = L.baseY - k * top * u;
           glow(ctx, L.cx, y, 80 * s, '140,200,255', 0.45 * Math.sin(Math.PI * k));
+          // The branches it passes take the colour too (painted, so it shows in daylight).
+          painted(() => {
+            ctx.fillStyle = `rgba(70,150,255,${0.75 * Math.sin(Math.PI * k)})`;
+            for (let i = 0; i < coral.count; i += 2) {
+              if (coral.y[i]! > L.top) continue;
+              const ny = L.baseY - coral.y[i]! * u;
+              if (Math.abs(ny - y) > 26 * s) continue;
+              ctx.beginPath();
+              ctx.arc(L.cx + coral.x[i]! * u, ny, 3 * s, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          });
           break;
         }
         case 'pigment': {
@@ -775,6 +794,7 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
           // The branches lean open to the light: a soft gold bloom over the crown.
           const [cx, cy] = crown(L);
           glow(ctx, cx, cy - 30 * s, (60 + 160 * k) * s, '255,240,170', 0.4 * Math.sin(Math.PI * k));
+          painted(() => ring(ctx, cx, cy - 30 * s, (40 + 200 * k) * s, '230,170,40', 0.55 * (1 - k), 2.5 * s));
           break;
         }
         case 'ripen': {
@@ -784,6 +804,15 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
             const [tx, ty] = nodePx(L, nodes[i]!);
             glow(ctx, tx, ty - 6 * s, 8 * s, '255,140,200', 0.7 * Math.sin(Math.PI * k));
           }
+          painted(() => {
+            ctx.fillStyle = `rgba(240,90,160,${0.8 * Math.sin(Math.PI * k)})`;
+            for (let i = 0; i < nodes.length; i += 3) {
+              const [tx, ty] = nodePx(L, nodes[i]!);
+              ctx.beginPath();
+              ctx.arc(tx, ty - 6 * s, 3.2 * s * (0.6 + 0.6 * Math.sin(Math.PI * k)), 0, Math.PI * 2);
+              ctx.fill();
+            }
+          });
           break;
         }
         case 'meadow':
