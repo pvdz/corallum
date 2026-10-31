@@ -350,6 +350,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const waterLine = el('span', 'water-line');
   const waterNext = el('span', 'water-next');
   const waterSoon = el('span', 'water-soon');
+  // The head (what is happening, and the next thing) and the rest: a phone hides the rest under the strip.
+  const soonHead = el('span'), soonRest = el('span', 'soon-rest');
+  waterSoon.append(soonHead, soonRest);
   // The next twenty minutes as a strip: a mark for each thing coming, labels above and below.
   const almanac = el('div', 'almanac');
   // Tapped (phones have no tooltips), a mark says what it is and when.
@@ -1577,8 +1580,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       // Murmurs pay for Readings and the truce's words; once both are done the stock leaves the panel.
       const murmursWanted = s.readings.length < READINGS.length || MEETINGS.some((m) => !s.truce[m.id]);
       murmurs.row.hidden = !(s.jobs.scout > 0 || (s.murmurs > 0.05 && murmursWanted));
-      // Many stocks at once: a tighter grid, so the cards keep their room on a phone.
-      stocks.classList.toggle('many', [...stocks.children].filter((c) => !(c as HTMLElement).hidden).length >= 6);
+      // Four or more stocks: a tighter grid (four to a row on a phone), so the cards keep their room.
+      stocks.classList.toggle('many', [...stocks.children].filter((c) => !(c as HTMLElement).hidden).length >= 4);
       murmurs.value.textContent = num(s.murmurs);
       murmurs.sub.textContent = `${rate(murmurNet(s, r))} · holds ~${num(murmurHold(s, r))}`;
       silt.row.hidden = !(r.siltP > 0 || s.silt > 0.5);
@@ -1840,10 +1843,15 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         // What is happening already is told apart from what is coming.
         const nowList = soon.filter(([t]) => t <= 0).map(([, w]) => w);
         const later = soon.filter(([t]) => t > 0).map(([t, w]) => `${w} in ${duration(t)}`);
-        waterSoon.textContent = [
+        const head = [
           nowList.length ? `${WATER.happening}: ${nowList.join(' · ')}` : '',
-          later.length ? `${WATER.soon}: ${later.join(' · ')}` : '',
+          later.length ? `${WATER.soon}: ${later[0]}` : '',
         ].filter(Boolean).join('. ');
+        const rest = later.slice(1).map((w) => ` · ${w}`).join('');
+        if (soonHead.textContent !== head) soonHead.textContent = head;
+        if (soonRest.textContent !== rest) soonRest.textContent = rest;
+        waterSoon.hidden = !head;
+        waterBox.classList.toggle('charted', !almanac.hidden);
         if (waterShown && waterShown !== water.id) { waterBox.classList.remove('turned'); void waterBox.offsetWidth; waterBox.classList.add('turned'); }
         waterShown = water.id;
       }

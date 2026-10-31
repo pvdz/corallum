@@ -274,7 +274,12 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .water strong { font-family: var(--display); font-weight: 400; font-size: 15px; color: #cfe8ff; }
 .water-line { color: #a8dcff; }
 .water-soon { flex-basis: 100%; color: var(--ink-dim); font-size: 11.5px; min-height: 1.4em; }
-@media (max-width: 799px) { .water-soon { min-height: 2.8em; } }
+@media (max-width: 799px) {
+  .water-soon { min-height: 2.8em; }
+  /* With the strip showing, it carries the later things (tap a dot for its time); the line keeps the next. */
+  .charted .soon-rest { display: none; }
+  .charted .water-soon { min-height: 1.4em; }
+}
 .water-soon:empty { display: none; }
 .water-next { margin-left: auto; color: var(--ink-dim); font-variant-numeric: tabular-nums; }
 .water[data-water='still'] strong, .water[data-water='still'] .water-line { color: var(--ink-dim); }
@@ -861,7 +866,7 @@ html.view-mode #photo { display: grid; }
 @media (max-width: 799px) {
   .stocks.many .stock-value { font-size: 17px; }
   .stocks.many .stock-name { font-size: 9.5px; letter-spacing: 0.1em; }
-  /* Six or more stocks: four to a row, each rate on one line (tap a stock for the whole line). */
+  /* Four or more stocks: four to a row, each rate on one line (tap a stock for the whole line). */
   .stocks.many { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 3px 8px; }
   .stocks.many .stock-sub { font-size: 9.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 }
