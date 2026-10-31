@@ -89,6 +89,11 @@ export function steadyCalciteRate(s: GameState): number {
 export function upgradeGain(s: GameState, id: UpgradeId): number {
   const next: GameState = { ...s, levels: { ...s.levels, [id]: s.levels[id] + 1 } };
   if (id === 'lattice') return calciteHold(next) / calciteHold(s) - 1;
+  // A band pays through the height it brings (reach): compare the reef settled at each target.
+  if (id === 'skeleton') {
+    const at = steadyCalciteRate({ ...s, height: heightForBands(s.levels.skeleton) });
+    return at > 0 ? steadyCalciteRate({ ...next, height: heightForBands(next.levels.skeleton) }) / at - 1 : 0;
+  }
   const base = steadyCalciteRate(s);
   return base > 0 ? steadyCalciteRate(next) / base - 1 : 0;
 }

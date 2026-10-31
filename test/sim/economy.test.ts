@@ -746,3 +746,9 @@ test('the reef arrives at its target in finite time, not creeping through the la
   const a = advance(structuredClone(s), 70);
   assert.equal(a.height, target);
 });
+
+test('a band is valued by the height it brings (the best-buy badge can name one)', async () => {
+  const { upgradeGain } = await import('../../src/game/sim/economy.ts');
+  const s = runBot((x) => x.t >= 1200, 1200).state;
+  assert.ok(upgradeGain(s, 'skeleton') > upgradeGain(s, 'polyp'), 'in the Midnight Water a band beats a polyp');
+});
