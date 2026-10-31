@@ -892,3 +892,4 @@ date, what landed, what is half-done, what's next.
 - The reset warning said "This erases the reef"; it erases the whole line too (lineage, traits, journal, chronicle) and now says so, with a nudge to save to a file first.
 - The memory choice on a phone: twelve memories run ~2,000 px, with "1 of 3", Not yet and Let go at the very end; that footer now stays at the bottom of the screen as the list scrolls.
 - The quick-buy row sits on the panel at rest (no box of its own) and takes an opaque backdrop of the zone's tint only once the list scrolls under it (a translucent one let the cards' text show through).
+- On a phone held sideways (≤ 500 px tall) the quick buys are one line each and scroll away with the list instead of sticking (they took a quarter of the ~200 px card area there).
