@@ -145,7 +145,7 @@ export type PanelHooks = {
 };
 
 type Card = { root: HTMLElement; cost: HTMLElement; level: HTMLElement; effect: HTMLElement; eta: HTMLElement; btn: HTMLButtonElement; max: HTMLButtonElement | null };
-type Story = { kicker: string; title: string; text: string };
+type Story = { kicker: string; title: string; text: string; rows?: readonly (readonly [string, string])[] };
 
 function bandStory(b: Band, kept = false): Story {
   return { kicker: b.metres === 0 ? UI.bandFirst : UI.bandAt(metres(b.metres)), title: b.title, text: kept && b.kept ? b.kept : b.text };
@@ -1527,11 +1527,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const readerTitle = el('h2');
   readerTitle.id = 'reader-title';
   const readerText = el('p', 'reader-text');
+  // A card with a list (the shortcuts): term and meaning, side by side.
+  const readerRows = el('dl', 'reader-rows');
+  readerRows.hidden = true;
   reader.setAttribute('role', 'dialog');
   reader.setAttribute('aria-modal', 'true');
   reader.setAttribute('aria-labelledby', 'reader-title');
   const readerClose = button('plain', 'Continue', () => closeReader());
-  readerCard.append(readerKicker, readerTitle, readerText, readerClose);
+  readerCard.append(readerKicker, readerTitle, readerRows, readerText, readerClose);
   reader.append(readerCard);
   host.append(reader);
   const queue: Story[] = [];
@@ -1545,6 +1548,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     readerKicker.textContent = st.kicker;
     readerTitle.textContent = st.title;
     readerText.textContent = st.text;
+    readerRows.replaceChildren(...(st.rows ?? []).flatMap(([k, v]) => [el('dt', '', k), el('dd', '', v)]));
+    readerRows.hidden = !st.rows;
+    readerCard.classList.toggle('has-rows', !!st.rows);
     reader.hidden = false;
     readerClose.focus({ preventScroll: true });
   }
@@ -2433,8 +2439,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       setTimeout(release, ms);
     },
     /** Open a story card (or queue it behind the one showing). */
-    story(kicker: string, title: string, text: string): void {
-      showStory({ kicker, title, text });
+    story(kicker: string, title: string, text: string, rows?: readonly (readonly [string, string])[]): void {
+      showStory({ kicker, title, text, rows });
     },
     /** A story kept in the Bands list too (Ossel's mistakes); `open` shows it now. */
     keepStory(depth: string, kicker: string, title: string, text: string, open: boolean): void {

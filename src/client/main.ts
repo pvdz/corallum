@@ -1759,8 +1759,7 @@ window.addEventListener('keydown', (e) => {
     return;
   }
   if (e.key === '?') {
-    panel.story(UI.keysKicker, UI.keysTitle,
-      UI.keysHelp);
+    panel.story(UI.keysKicker, UI.keysTitle, UI.keysHelp, UI.keyRows);
     return;
   }
   if (/^[1-4]$/.test(e.key) && panel.showTabAt(Number(e.key))) return;

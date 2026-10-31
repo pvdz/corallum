@@ -182,6 +182,11 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 }
 .reader-depth { margin: 0; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--calcite); }
 .reader-card h2 { margin: 8px 0 14px; font-family: var(--display); font-weight: 400; font-size: 26px; text-shadow: 0 0 20px rgba(159, 246, 255, 0.4); }
+/* A card that lists (the shortcuts): keys in a narrow column, what they do beside them. */
+.reader-rows { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; margin: 4px 0 16px; text-align: left; font-size: 14px; line-height: 1.4; }
+.reader-rows dt { justify-self: end; color: var(--glowc); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.reader-rows dd { margin: 0; color: #d8e6f8; }
+.reader-card.has-rows .reader-text { font-size: 13.5px; color: var(--ink-dim); }
 .reader-text { margin: 0 0 22px; font-family: var(--display); font-size: 16.5px; line-height: 1.65; color: #d8e6f8; text-wrap: pretty; }
 
 /* ---------- Floating numbers ---------- */
