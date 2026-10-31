@@ -652,14 +652,24 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
           break;
         }
         case 'skeleton': {
-          const yy = L.baseY - Math.min(1, fx.age / 1.2) * Math.min(1, L.top) * u;
-          const a = 0.45 * (1 - k);
-          const g = ctx.createLinearGradient(0, yy - 14 * s, 0, yy + 14 * s);
-          g.addColorStop(0, 'rgba(255,190,160,0)');
-          g.addColorStop(0.5, `rgba(255,190,160,${a})`);
-          g.addColorStop(1, 'rgba(255,190,160,0)');
-          ctx.fillStyle = g;
-          ctx.fillRect(L.cx - u * 0.3, yy - 14 * s, u * 0.6, 28 * s);
+          // A new band runs up through the stone: the branches light where it passes, under a
+          // soft sash of light that fades out at both sides.
+          const rise = 1 - (1 - Math.min(1, fx.age / 1.4)) ** 2;
+          const yy = L.baseY - rise * Math.min(1, L.top) * u;
+          const a = 0.5 * (1 - k);
+          ctx.save();
+          ctx.translate(L.cx, yy);
+          ctx.scale(1, 0.09);
+          glow(ctx, 0, 0, u * 0.42, '255,190,160', a);
+          ctx.restore();
+          const reach = 30 * s;
+          for (let i = 0; i < coral.count; i++) {
+            if (coral.y[i]! > L.top) continue;
+            const y = L.baseY - coral.y[i]! * u;
+            const d = Math.abs(y - yy);
+            if (d > reach) continue;
+            glow(ctx, L.cx + coral.x[i]! * u, y, 11 * s, '255,214,186', a * 1.6 * (1 - d / reach));
+          }
           break;
         }
         case 'symbiont': {
