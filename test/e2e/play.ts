@@ -3,6 +3,8 @@
 // Run with: node --no-warnings test/e2e/play.ts
 
 import assert from 'node:assert/strict';
+import { runBot } from '../../src/game/sim/bot.ts';
+import { serialize } from '../../src/game/sim/save.ts';
 import { VIEWPORTS, withGame } from '../../tools/browser.ts';
 
 await withGame(async (open) => {
@@ -51,5 +53,26 @@ await withGame(async (open) => {
     assert.equal(errors.length, 0, errors.join('\n'));
     console.log(`ok   ${vp.name} (away summary ${awayVisible ? 'shown' : 'MISSING'})`);
     if (!awayVisible) process.exitCode = 1;
+  }
+  // A phone on its side, back after a long time in the middle of the game: the summary is
+  // taller than the screen, and its button must still be reachable (the card scrolls).
+  {
+    const save = serialize(runBot((s) => s.t >= 9000, 9000).state, Date.now() - 8 * 3600_000);
+    const { page, errors } = await open(VIEWPORTS[2]!, '', { save });
+    await page.waitForSelector('.away:not([hidden])', { timeout: 15000 });
+    // What a finger needs: the overlay itself scrolls (a script could scroll even an overflow: hidden
+    // box), and the card does not start above the top of the screen.
+    const tall = await page.evaluate(() => {
+      const o = document.querySelector('.away:not([hidden])') as HTMLElement;
+      const card = o.querySelector('.reader-card')!.getBoundingClientRect();
+      const scrolls = ['auto', 'scroll'].includes(getComputedStyle(o).overflowY) && o.scrollHeight > o.clientHeight;
+      o.scrollTop = o.scrollHeight;
+      return card.height > innerHeight && card.top >= 0 && scrolls;
+    });
+    await page.locator('.away:not([hidden]) button', { hasText: 'Return to the reef' }).click({ timeout: 5000 });
+    const closed = !(await page.locator('.away:not([hidden])').count());
+    const ok = tall && closed && !errors.length;
+    console.log(`${ok ? 'ok  ' : 'FAIL'} landscape: a summary taller than the screen scrolls to its button and closes`);
+    if (!ok) process.exitCode = 1;
   }
 });
