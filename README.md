@@ -94,6 +94,9 @@ Under every full moon the other reefs spawn too, and the water fills with slow p
 Run `node src/server/server.ts --lan`; it prints an address on your network to open on the phone.
 "Add to Home Screen" installs it to open full-screen like an app. If a phone struggles, turn off
 "Full resolution" in the Reef tab.
+Once opened, it also plays with the server out of reach: the last visit's files are kept by the
+browser, and the reef lives in its storage. On a phone, drag the panel's top (or its stocks) up
+for more of the panel, down for more of the reef.
 
 Handy URL parameters: `?fps` shows a frame-rate readout, and `?bot=12000` jumps into a later zone
 (the Twilight Shelf) without playing up to it (`?bot` games are not saved).
