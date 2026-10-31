@@ -1268,6 +1268,7 @@ ui.append(creatureLabel);
 let labelTimer = 0;
 /** The journal's portraits: the first creature on screen without one, if it is well inside the scene. */
 let lastPortrait = 0;
+let portraitAsk: (() => void) | null = null;
 function takePortrait(): void {
   // Zoomed in (2× or more), a creature large in view earns a sharper close-up, once.
   const closeUp = zoom.k >= 2;
@@ -1279,7 +1280,9 @@ function takePortrait(): void {
     const side = closeUp ? Math.min(canvas.height * 0.8, r * 2.4) : Math.min(280 * dpr, Math.max(70 * dpr, r * 2.4));
     const f = closeUp ? { x: 0, y: 0, w: canvas.width, h: canvas.height } : focusNow;
     if (x - side / 2 < f.x || x + side / 2 > f.x + f.w || y - side / 2 < f.y || y + side / 2 > f.y + f.h) continue;
-    portraits.capture(p.id, canvas, x, y, side, closeUp);
+    // Taken at the start of the next frame, before anything is drawn: the canvas then holds this
+    // frame, finished, and the crop does not force its drawing through mid-frame.
+    portraitAsk = () => portraits.capture(p.id, canvas, x, y, side, closeUp);
     if (closeUp && !state.meta.seen.includes('did:closeup')) state.meta.seen.push('did:closeup');
     return;
   }
@@ -1780,6 +1783,7 @@ let lastWhaleLap = -1;
 let animT = params.has('at') ? Number(params.get('at')) : 40;
 let needResize = true;
 function frameBody(now: number): void {
+  if (portraitAsk) { portraitAsk(); portraitAsk = null; }
   if (needResize) { resize(); needResize = false; }
   const dt = Math.max(0, (now - last) / 1000);
   last = now;

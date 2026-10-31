@@ -1,6 +1,7 @@
 // Frame cost per zone, headless: loads the game at bot times reaching each zone and reads the
 // rolling draw/panel milliseconds (corallum.prof) after a few seconds of running.
-// Usage: node --no-warnings tools/perf.ts [--vp desktop|mobile|landscape] [--at 600,5000,...]
+// Usage: node --no-warnings tools/perf.ts [--vp desktop|mobile|landscape] [--at 600,5000,...] [--cpu 4]
+// --cpu N slows the page's CPU N times (CDP throttling), a rough stand-in for a phone's main thread.
 // Headless Chromium rasterises in software, so compare runs with each other, not with phones.
 
 import { VIEWPORTS, withGame } from './browser.ts';
@@ -13,6 +14,7 @@ function arg(name: string, fallback: string): string {
 const vp = VIEWPORTS.find((v) => v.name === arg('vp', 'desktop'))!;
 // Silt Floor, Midnight Water, Twilight Shelf, Sunlit Crown, the Breach.
 const times = arg('at', '600,5000,12000,19000,26000').split(',').map(Number);
+const cpu = Number(arg('cpu', '1'));
 
 await withGame(async (open) => {
   for (const at of times) {
@@ -22,6 +24,10 @@ await withGame(async (open) => {
     // The browser's own frame work over a window: script, style recalc and layout per frame.
     const cdp = await page.context().newCDPSession(page);
     await cdp.send('Performance.enable');
+    if (cpu > 1) {
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: cpu });
+      await page.waitForTimeout(3000);
+    }
     const metrics = async () => Object.fromEntries(((await cdp.send('Performance.getMetrics')) as { metrics: { name: string; value: number }[] }).metrics.map((m) => [m.name, m.value]));
     const frames = () => page.evaluate(() => new Promise<number>((done) => { let n = 0; const t0 = performance.now(); const f = () => { n++; if (performance.now() - t0 < 3000) requestAnimationFrame(f); else done(n); }; requestAnimationFrame(f); }));
     const m0 = await metrics();

@@ -769,3 +769,5 @@ date, what landed, what is half-done, what's next.
 - Sound sleeps while the page is hidden (AudioContext suspended) and wakes when shown or on any touch; cues are skipped while it sleeps, so they do not pile up.
 - Concurrent sessions share this checkout: commit by path (`git commit -- <paths>`), never `git add -A`.
 - Phone: the jump chips over the Grow tab are in sentence case and wrap as a flex row, two or three to a line instead of one each.
+- Perf: journal portraits no longer stall a frame. The crop is asked for at the end of a frame and taken at the start of the next (the canvas holds that frame, finished, so nothing is forced through mid-frame), with createImageBitmap + toBlob (encode off the main thread) and one debounced album write. Twilight headless: frame JS 883 → 713 ms per 5 s while creatures are still unseen (each first sighting cost ~35 ms).
+- tools/perf.ts --cpu N throttles the page's CPU (CDP), a rough phone stand-in. Mobile at 4×: script 21–32 ms per frame, draw 12–17 ms.

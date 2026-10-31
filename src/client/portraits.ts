@@ -25,6 +25,16 @@ export function createPortraits(persist: boolean) {
       localStorage.setItem(CLOSE_KEY, JSON.stringify([...close]));
     } catch { /* storage full: keep in memory */ }
   }
+  // The album is written a little after the last capture: one write for a burst of sightings.
+  let storeTimer = 0;
+  function storeSoon(): void {
+    clearTimeout(storeTimer);
+    storeTimer = window.setTimeout(store, 2000);
+  }
+  if (persist) window.addEventListener('pagehide', () => { if (storeTimer) store(); });
+  /** Crops being encoded (not wanted again meanwhile); a reset bumps the generation and drops them. */
+  const pending = new Set<string>();
+  let generation = 0;
 
   return {
     get(id: string): string | null {
@@ -32,6 +42,7 @@ export function createPortraits(persist: boolean) {
     },
     /** Whether a portrait is still wanted: any at all, or (zoomed in) a close-up. */
     wants(id: string, closeUp: boolean): boolean {
+      if (pending.has(`${id}|${closeUp}`)) return false;
       return closeUp ? !close.has(id) : !(id in album);
     },
     /** Changes whenever a portrait is taken (the journal redraws). */
@@ -43,17 +54,38 @@ export function createPortraits(persist: boolean) {
      * sure it lies inside the visible scene.
      */
     capture(id: string, src: HTMLCanvasElement, x: number, y: number, side: number, closeUp = false): void {
-      const c = document.createElement('canvas');
-      c.width = c.height = SIZE;
-      const g = c.getContext('2d')!;
-      g.drawImage(src, x - side / 2, y - side / 2, side, side, 0, 0, SIZE, SIZE);
-      album[id] = c.toDataURL('image/jpeg', 0.78);
-      if (closeUp) close.add(id);
-      count++;
-      store();
+      // The crop is taken without waiting for the frame (createImageBitmap) and the JPEG is
+      // encoded off the frame (toBlob): a first sighting does not stall the frame it happens in.
+      const key = `${id}|${closeUp}`, gen = generation;
+      pending.add(key);
+      const encode = (c: HTMLCanvasElement) => c.toBlob((blob) => {
+        if (!blob) { pending.delete(key); return; }
+        const read = new FileReader();
+        read.onloadend = () => {
+          pending.delete(key);
+          if (gen !== generation || typeof read.result !== 'string') return;
+          album[id] = read.result;
+          if (closeUp) close.add(id);
+          count++;
+          storeSoon();
+        };
+        read.readAsDataURL(blob);
+      }, 'image/jpeg', 0.78);
+      createImageBitmap(src, Math.round(x - side / 2), Math.round(y - side / 2), Math.round(side), Math.round(side), { resizeWidth: SIZE, resizeHeight: SIZE, resizeQuality: 'medium' })
+        .then((bmp) => {
+          const c = document.createElement('canvas');
+          c.width = c.height = SIZE;
+          c.getContext('2d')!.drawImage(bmp, 0, 0);
+          bmp.close();
+          encode(c);
+        }, () => pending.delete(key));
     },
     /** Forget them all (a full reset). */
     clear(): void {
+      generation++;
+      pending.clear();
+      clearTimeout(storeTimer);
+      storeTimer = 0;
       album = {};
       close = new Set();
       count = 0;
