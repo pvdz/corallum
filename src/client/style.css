@@ -118,7 +118,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   width: 18px; height: 18px; margin-right: 7px; vertical-align: -3px; flex: none;
   fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; opacity: 0.75;
 }
-.level { font-size: 12px; color: var(--ink-dim); font-variant-numeric: tabular-nums; }
+.level { font-size: 12px; color: var(--ink-dim); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .flavour { margin: 4px 0 6px; font-size: 12.5px; line-height: 1.4; color: var(--ink-dim); font-style: italic; }
 /* A card already bought keeps its flavour out of the way; tapping the name shows it again. */
 .card.known:not(.open) .flavour { display: none; }

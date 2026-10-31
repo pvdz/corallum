@@ -870,3 +870,4 @@ date, what landed, what is half-done, what's next.
 - Stock lines: a no-break space before every "·", so a wrapped line never starts with a dot (the desktop spawn line did); once the spawn is enough for the moon its line says just that ("+475k/s · enough for the moon"), without the hold.
 - "Flare" spent half the glow without saying so on a phone (its explanation was a hover tooltip); the button reads "Flare · ½ glow" ("Flare 45s" while it cools down).
 - Settling overshoot 0.25 → 0.6 of a band: in real play on a phone the 60 m band was bought and the reef still read "59 m · rising to 60 m" 40 s later; a band now settles in ~39 s (was ~64), easing in. Bot total unchanged (7h08: the end waits for the moon). The zone title's subtitle keeps a margin and wraps balanced on a phone (it ran off both edges).
+- A card's level ("≈ ×102") never wraps (the water mark sat alone on a line on a phone).
