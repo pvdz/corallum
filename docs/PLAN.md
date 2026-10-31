@@ -184,6 +184,7 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] game length measured both ways: greedy bot 7h08 (7h28 before the reef stopped creeping through each target's last metre), a bot that saves for the next band 3h08 (3h48 without sweeping). Raising band cost growth to lengthen the saver starves the greedy player (30 h), so the balance stays: three to seven and a half hours by play style (ECONOMY.md; the user may want it longer)
 - [ ] distribution (user decision): today a player needs Node 24 and `node src/server/server.ts`. Options: (a) host the Node server somewhere (fits every rule as is); (b) a static export with types stripped, for itch.io or GitHub Pages: needs an exception to "no emitted JS" (the export would be a build artefact, not the source). Either way, installing to a home screen with offline play needs HTTPS (or localhost): a phone on `--lan` over plain http gets neither
 - [ ] perf on a real phone (needs the user; see M6)
+- [x] feel pass, real-time play at every stage (2026-10-31 evening): the reef lands on its target instead of creeping (zone gates read "2999 m" for minutes); a quieter panel (bought cards hide flavour, choices fold with Later, full residents fold, stocks' caps legible on phones, quick buys on phones); purchase flourishes show in daylight and have no hard edges; the shortcuts card is a list; the ending is not crowded and counts bands right
 
 ### M0 Scaffold
 - [x] docs, CLAUDE.md, folders, package.json, tsconfig, .gitignore
