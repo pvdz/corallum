@@ -157,7 +157,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
     // This reef in numbers, quietly, before the last line.
     const c = ENDING.counts;
     const nums = [
-      c.time(duration(s.breachedAt || s.t)), c.polyps(s.levels.polyp), c.bands(s.bands.length),
+      c.time(duration(s.breachedAt || s.t)), c.polyps(s.levels.polyp), c.bands(s.levels.skeleton),
       s.feasts ? c.feasts(s.feasts) : '', s.relics.length ? c.relics(s.relics.length) : '',
       s.tally.intruders ? c.intruders(s.tally.intruders) : '', s.residents.length ? c.residents(s.residents.length) : '',
       s.meta.shards.length ? c.shards(s.meta.shards.length) : '', s.tally.pruned ? c.pruned(s.tally.pruned) : '',

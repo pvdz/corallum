@@ -31,9 +31,9 @@ await withGame(async (open) => {
     await page.locator('.away:not([hidden]) button').click();
     for (let i = 0; i < 10 && (await page.locator('.reader:not([hidden])').count()); i++)
       await page.locator('.reader:not([hidden]) button').first().click();
-    // Name a figure in the night sky: trace Ossel's Cup star by star.
+    // Name a figure in the night sky: trace Ossel’s Cup star by star.
     if (great) {
-      await page.locator('.sky-row', { hasText: "Ossel's Cup" }).locator('.sky-trace').click();
+      await page.locator('.sky-row', { hasText: 'Ossel’s Cup' }).locator('.sky-trace').click();
       await page.waitForTimeout(300);
       const stars = await page.evaluate(() => window.corallum!.spots.filter((p) => p.id === 'star').sort((a, b) => a.n! - b.n!));
       for (const p of stars) { await page.mouse.click(p.x, p.y); await page.waitForTimeout(80); }

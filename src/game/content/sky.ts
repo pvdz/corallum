@@ -24,7 +24,7 @@ export type Figure = {
 
 export const FIGURES: readonly Figure[] = [
   {
-    id: 'cup', name: "Ossel's Cup", hint: 'always there',
+    id: 'cup', name: 'Ossel’s Cup', hint: 'always there',
     text: 'A mouth and its tentacles, open to the sky. It is not that good a likeness, and you name it anyway.',
     when: () => true,
     stars: [[0.3, 1], [0.15, 0.45], [0, 0], [0.5, 0.3], [1, 0], [0.85, 0.45], [0.7, 1]],

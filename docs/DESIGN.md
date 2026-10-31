@@ -289,7 +289,7 @@ Entry requires the last Act II Reading (*Inside the wall*): the story turn opens
   memory, Ossel's closing (kept or let go), and the last line.
 
 **The night sky** (the Breach, before the release): no reef has seen stars, so this one names them
-after its own run: Ossel's Cup (always), the Beak (the Rasp met), the Two Branches (the sister raced),
+after its own run: Ossel’s Cup (always), the Beak (the Rasp met), the Two Branches (the sister raced),
 the Falling Whale, the Sleeper (turtle), the Lamp (lamp hall or the drifting lamp). Pick one in the
 sky card and tap its stars in order in the scene; each named adds spawn ×1.04, stays drawn in the
 sky, and the ending names them. Tracing is screen-only; only the naming is saved.
