@@ -219,7 +219,9 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   .effect { grid-area: effect; margin: 2px 0 0; font-size: 12.5px; }
   .flavour { grid-area: flavour; margin: 4px 0 0; font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .card.open .flavour { white-space: normal; }
-  .card footer { grid-area: foot; flex-direction: column; align-items: flex-end; justify-content: center; gap: 3px; }
+  /* At most half the card: a long note under the button wraps instead of squeezing the name. */
+  .card footer { grid-area: foot; flex-direction: column; align-items: flex-end; justify-content: center; gap: 3px; max-width: 46vw; }
+  .card footer .eta { text-align: right; }
   .buy { min-width: 104px; padding: 6px 12px; font-size: 12.5px; }
   .eta { font-size: 11px; }
   /* The spawning card has more parts than an upgrade: stack them, button at the bottom. */
