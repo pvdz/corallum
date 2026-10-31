@@ -1011,3 +1011,9 @@ html.view-mode #photo { display: grid; }
 .spawn-lesser.foldable-spawn.folded > h3::after { content: '\00a0▸'; }
 .spawn-lesser.folded > :not(h3) { display: none; }
 .spawn-lesser .spawn-gain { color: #cfe8a8; font-size: 0.85em; }
+/* A short desktop window (a 720p laptop): stocks closer together, so the cards start sooner. */
+@media (min-width: 800px) and (max-height: 800px) {
+  .panel { padding-top: 14px; gap: 8px; }
+  .stocks { gap: 2px 14px; }
+  .stock-value { font-size: 19px; }
+}

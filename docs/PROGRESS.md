@@ -880,3 +880,4 @@ date, what landed, what is half-done, what's next.
 - The Rasp's four favours sit 2×2 instead of 3 + 1 (names and effects wrapped word by word in the narrow thirds).
 - The Grow tab shows a dot when a new choice (a moment, a question, the signal…) opens while another tab is showing, until Grow is looked at; the choices already seen do not call again.
 - README's panel and phone images regenerated from the current build (the phone one showed the old upper-case chips and one-line stocks).
+- Short desktop windows (≤ 800 px tall, a 720p laptop): stocks sit closer and a little smaller, so the cards start ~45 px sooner.
