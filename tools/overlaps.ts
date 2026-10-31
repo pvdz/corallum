@@ -1,16 +1,18 @@
 // Overlay texts that collide: the title, zone title, milestone, journal note, whisper, hints and
 // the depth gauge, checked pairwise (and against the panel) by their words' boxes, sampled for
 // 8 s at bot times through the game on every viewport. Prints the colliding pairs per state.
-// Usage: node --no-warnings tools/overlaps.ts [comma-separated bot seconds; 5 = a fresh reef]
+// Usage: node --no-warnings tools/overlaps.ts [comma-separated bot seconds; 5 = a fresh reef] [keys to press first, e.g. h]
 
 import { VIEWPORTS, withGame } from './browser.ts';
 const IDS = ['title', 'zone-title', 'milestone', 'journal-note', 'whisper', 'sweep-hint', 'creature-label', 'depth-gauge', 'sound', 'view-mode'];
+const keys = process.argv[3] ?? '';
 const times = (process.argv[2] ?? '5,300,2000,5000,9000,13000,17000,21000,25000').split(',').map(Number);
 await withGame(async (open) => {
   for (const vp of VIEWPORTS) for (const at of times) {
     const { page } = await open(vp, at < 20 ? '?fresh' : `?bot=${at}`);
     await page.waitForFunction(() => (window as never as { corallum?: unknown }).corallum, null, { timeout: 90000 });
     const seen = new Set<string>();
+    for (const k of keys) await page.keyboard.press(k);
     await page.waitForTimeout(3000);
     for (let k = 0; k < 12; k++) {
       await page.waitForTimeout(700);

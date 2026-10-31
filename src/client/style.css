@@ -638,8 +638,8 @@ html.big { --panel-out: calc(var(--panel-w) * 1.15); }
 /* Larger text zooms the whisper, and its offsets with it: divide back to sit beside the panel. */
 @media (min-width: 800px) { html.big:not(.view-mode) #whisper { right: calc(var(--panel-out) / 1.15); } }
 /* Phones: the depth gauge and its label stand at the right edge at the whisper's height; the words keep clear. */
-@media (max-width: 799px) { html:not(.view-mode) #whisper { padding: 0 70px 0 16px; } html:not(.view-mode) #whisper q { padding: 12px 20px; } }
-@media (min-width: 800px) and (max-width: 999px) { html:not(.view-mode) #whisper { padding: 0 90px 0 16px; } html:not(.view-mode) #whisper q { padding: 12px 20px; } }
+@media (max-width: 799px) { #whisper { padding: 0 70px 0 16px; } #whisper q { padding: 12px 20px; } }
+@media (min-width: 800px) and (max-width: 999px) { #whisper { padding: 0 90px 0 16px; } #whisper q { padding: 12px 20px; } }
 /* A soft dark halo behind the words, so they read over a bright crown or a sunlit sky. */
 #whisper q {
   font-style: italic; font-size: clamp(15px, 1.8vw, 20px); max-width: 560px; padding: 12px 34px; quotes: "“" "”";
