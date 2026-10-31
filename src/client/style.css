@@ -396,10 +396,8 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 .truce.moment.boon .wait-bar { display: flex; flex-wrap: wrap; gap: 4px 6px; margin: 0 0 6px; }
 .wait-bar { display: flex; flex-wrap: wrap; gap: 4px 6px; }
 .wait-bar[hidden] { display: none; }
-.wait-chip { padding: 2px 9px; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 999px;
+.wait-chip { padding: 3px 9px; font-size: 11.5px; letter-spacing: 0.02em; border-radius: 999px;
   border: 1px solid rgba(255, 220, 170, 0.35); background: rgba(255, 210, 150, 0.06); color: var(--sand); }
-/* On a phone the chips drop the capitals: two or three fit on a line instead of one. */
-@media (max-width: 799px) { .wait-chip { text-transform: none; letter-spacing: 0.02em; font-size: 11.5px; padding: 3px 9px; } }
 .truce-kicker { color: #ffd9a8; }
 .buy-max { min-width: 0; padding: 0 9px; font-size: 11px; height: 30px; align-self: center; }
 .buy-max[hidden] { display: none; }
@@ -862,11 +860,11 @@ html.view-mode #photo { display: grid; }
   .ask .ask-skip { width: 24px; height: 24px; }
   .prep-row { margin-top: 0; }
   .prep-away { padding: 3px 12px; font-size: 12px; min-height: 0; }
-  /* Stocks: each rate on one line (tap a stock for the whole line); chips without capitals;
+  /* Stocks: each rate on one line (tap a stock for the whole line); smaller chips;
      the water line keeps the next thing and leaves the rest to the strip. */
   .stock-value { font-size: 17px; }
   .stock-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 10px; }
-  .wait-chip { text-transform: none; letter-spacing: 0.02em; font-size: 11px; }
+  .wait-chip { font-size: 11px; }
   .charted .soon-rest { display: none; }
 }
 .trait .forget { margin-left: auto; padding: 2px 8px; font-size: 11px; opacity: 0.65; }
