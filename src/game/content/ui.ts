@@ -10,6 +10,8 @@ export function memoryCount(n: number): string {
 export const UI = {
   truceKicker: 'The truce',
   raspAria: 'Rasp admitted to graze',
+  raspFewer: 'Fewer Rasp grazing',
+  raspMore: 'More Rasp grazing',
   buyMax: 'Buy as many as you can afford',
   readingHint: 'Scouting shoals listen at buried bands. Enough murmurs, and a band can be read.',
   bandsIntro: 'Each band of stone keeps what the reef saw while laying it down. Newest first.',

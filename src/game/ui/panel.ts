@@ -337,6 +337,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   raspSlider.setAttribute('aria-label', UI.raspAria);
   raspSlider.addEventListener('input', () => hooks.setRasp(Number(raspSlider.value)));
   const raspPlus = button('step', '+', () => hooks.setRasp((lastState?.rasp ?? 0) + 1));
+  raspMinus.setAttribute('aria-label', UI.raspFewer);
+  raspPlus.setAttribute('aria-label', UI.raspMore);
   raspRow.append(raspMinus, raspSlider, raspPlus);
   const raspWhat = el('p', 'rasp-what');
   // Favours: small asks paid in sand, once the truce has begun.
