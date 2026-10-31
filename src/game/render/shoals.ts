@@ -185,8 +185,19 @@ export function createShoals(seed: number) {
     const k = 1.4 * s;
     ctx.beginPath();
     if (site === 'gate') {
-      ctx.ellipse(x, y, 26 * k, 22 * k, 0, 0, Math.PI * 2);
-      ctx.stroke();
+      // A round gate of fitted blocks standing on two stubs of wall, half sunk in silt.
+      ctx.lineWidth = 6 * k;
+      for (let i = 0; i < 12; i++) {
+        const a0 = (i / 12) * Math.PI * 2 + 0.06, a1 = ((i + 1) / 12) * Math.PI * 2 - 0.06;
+        ctx.beginPath();
+        ctx.ellipse(x, y, 24 * k, 21 * k, 0, a0, a1);
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.rect(x - 34 * k, y + 8 * k, 9 * k, 18 * k);
+      ctx.rect(x + 25 * k, y + 8 * k, 9 * k, 18 * k);
+      ctx.rect(x - 40 * k, y + 24 * k, 80 * k, 4 * k);
+      ctx.fill();
     } else if (site === 'terraces') {
       for (let i = 0; i < 4; i++) ctx.rect(x - 30 * k + i * 12 * k, y + 14 * k - i * 9 * k, 36 * k - i * 6 * k, 6 * k);
       ctx.fill();
