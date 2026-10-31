@@ -556,9 +556,9 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
       ctx.fill();
       for (const [lx, ly, lr] of lumps) {
         const g = ctx.createRadialGradient(lx * r - lr * r * 0.35, ly * r - lr * r * 0.45, 0, lx * r, ly * r, lr * r);
-        g.addColorStop(0, '#dcdad5');
-        g.addColorStop(0.6, '#a3a09a');
-        g.addColorStop(1, '#6b6964');
+        g.addColorStop(0, '#c2bfb9');
+        g.addColorStop(0.6, '#8b8882');
+        g.addColorStop(1, '#55534f');
         ctx.fillStyle = g;
         ctx.beginPath();
         ctx.arc(lx * r, ly * r, lr * r, 0, Math.PI * 2);
