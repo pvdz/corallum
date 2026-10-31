@@ -39,5 +39,29 @@ await withGame(async (open) => {
     console.log(`${ok ? 'ok  ' : 'FAIL'} ${vp.name}: new reef at ${fresh.h.toFixed(1)} m, ${fresh.l} lineage, ${fresh.where} seamount${errors.length ? ' · ' + errors.join(' | ') : ''}`);
     failed ||= !ok;
   }
+  // After the ending: Begin again under the vows of stillness and quiet. The new reef sweeps
+  // nothing, keeps no slot for Ossel's requests, and its water card plans no flurries.
+  {
+    const ended = runBot((s) => s.carried.length > 0, 12 * 3600).state;
+    const { page, errors } = await open(VIEWPORTS[1]!, '', { save: serialize(ended, Date.now()) });
+    page.on('dialog', (d) => void d.accept());
+    for (let i = 0; i < 20 && (await page.locator('.reader:not([hidden])').count()); i++) await page.keyboard.press('Escape');
+    await page.locator('.tab', { hasText: 'Lineage' }).click();
+    for (const vow of ['Stillness', 'Quiet']) await page.locator('button', { hasText: new RegExp(`^${vow}$`) }).click();
+    await page.locator('.spawn-lesser button.buy').click();
+    await page.waitForLoadState('load');
+    await page.waitForFunction(() => window.corallum?.state.t !== undefined && window.corallum.state.height < 1, null, { timeout: 10000 });
+    for (let i = 0; i < 20 && (await page.locator('.reader:not([hidden])').count()); i++) await page.keyboard.press('Escape');
+    for (let i = 0; i < 4; i++) { await page.mouse.click(200, 500); await page.keyboard.press(' '); await page.waitForTimeout(250); }
+    const r = await page.evaluate(() => ({
+      vows: window.corallum!.state.vows.join(','),
+      sweeps: window.corallum!.state.tally.sweeps,
+      ask: !(document.querySelector('.ask') as HTMLElement | null)?.hidden,
+      flurry: /flurry/.test(document.querySelector('.water-soon')?.textContent ?? ''),
+    }));
+    const ok = r.vows === 'still,quiet' && r.sweeps === 0 && !r.ask && !r.flurry && errors.length === 0;
+    console.log(`${ok ? 'ok  ' : 'FAIL'} begin again under vows: ${JSON.stringify(r)}${errors.length ? ' · ' + errors.join(' | ') : ''}`);
+    failed ||= !ok;
+  }
 });
 process.exitCode = failed ? 1 : 0;
