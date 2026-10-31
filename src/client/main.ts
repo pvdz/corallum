@@ -125,7 +125,12 @@ if (botT !== null) {
   }).state;
 }
 else {
-  const loaded = params.has('fresh') ? null : deserialize(storageGet() ?? '');
+  const raw = params.has('fresh') ? null : storageGet();
+  const loaded = raw ? deserialize(raw) : null;
+  // A save that cannot be read is kept aside, not overwritten by the new reef's first autosave.
+  if (raw && !loaded) {
+    try { localStorage.setItem(`${SAVE_KEY}.unreadable`, raw); } catch { /* no storage */ }
+  }
   state = loaded?.state ?? newGame(seed);
   if (loaded) savedAt = loaded.savedAt;
 }
@@ -1753,7 +1758,7 @@ let lastWhaleLap = -1;
 // ?at=<sec> starts the scene clock there (to reach timed events such as rare creatures).
 let animT = params.has('at') ? Number(params.get('at')) : 40;
 let needResize = true;
-function frame(now: number): void {
+function frameBody(now: number): void {
   if (needResize) { resize(); needResize = false; }
   const dt = Math.max(0, (now - last) / 1000);
   last = now;
@@ -2073,6 +2078,17 @@ function frame(now: number): void {
     const pin = panel.pinnedText();
     const t = (waiting ? `● ${base}` : base) + (pin ? ` · ${pin}` : '');
     if (document.title !== t) document.title = t;
+  }
+}
+
+/** Errors already reported: a fault that repeats every frame is told once, not sixty times a second. */
+const frameFaults = new Set<string>();
+function frame(now: number): void {
+  // One bad frame must not stop the reef: the loop goes on and the error is reported once.
+  try { frameBody(now); }
+  catch (e) {
+    const key = String(e);
+    if (!frameFaults.has(key)) { frameFaults.add(key); console.error(e); }
   }
   if (frozenT === null) requestAnimationFrame(frame);
   else document.documentElement.dataset.ready = '1';

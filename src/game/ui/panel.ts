@@ -1797,7 +1797,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
             almanac.append(m);
           });
         }
-        waterSoon.textContent = soon.length ? `${WATER.soon}: ${soon.map(([t, w]) => `${w} ${t > 0 ? `in ${duration(t)}` : WATER.now}`).join(' · ')}` : '';
+        // What is happening already is told apart from what is coming.
+        const nowList = soon.filter(([t]) => t <= 0).map(([, w]) => w);
+        const later = soon.filter(([t]) => t > 0).map(([t, w]) => `${w} in ${duration(t)}`);
+        waterSoon.textContent = [
+          nowList.length ? `${WATER.happening}: ${nowList.join(' · ')}` : '',
+          later.length ? `${WATER.soon}: ${later.join(' · ')}` : '',
+        ].filter(Boolean).join('. ');
         if (waterShown && waterShown !== water.id) { waterBox.classList.remove('turned'); void waterBox.offsetWidth; waterBox.classList.add('turned'); }
         waterShown = water.id;
       }

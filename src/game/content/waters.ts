@@ -35,6 +35,8 @@ export const WATER = {
   notYet: 'the deep does not change yet',
   turns: 'turns in',
   soon: 'Soon',
+  /** Heads the things already happening. */
+  happening: 'Now',
   feast: 'something falls',
   intruder: { 'thorn-star': 'a thorn star', dragonfish: 'a dragonfish', 'drill-snail': 'a drill snail', gull: 'a gull' } as Record<string, string>,
   moon: 'full moon',

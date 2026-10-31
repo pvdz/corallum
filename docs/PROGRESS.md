@@ -732,3 +732,5 @@ date, what landed, what is half-done, what's next.
 - Graphics: under every full moon (Silt Floor to Sunlit Crown) the other reefs' spawn rises through the water as a slow pink snow (render/spawning.ts), swelling in and out with the moon; faintly lit in the deep.
 - Lineage trait Drift-wise (6): weed rafts and lost shoals pass twice as often. Bot 7h28.
 - Graphics: the Sunlit sand gets swell ripples (darker crests, spaced by perspective) and a real caustic web (three crossing families of wavering lines laid flat), replacing the old horizontal stripes.
+- A save that cannot be read is kept aside under `corallum.save.unreadable`-style key (`${SAVE_KEY}.unreadable`) instead of being overwritten by a fresh reef's first autosave.
+- Water card: what is already happening is listed under "Now", apart from "Soon".

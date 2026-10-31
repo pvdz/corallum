@@ -156,6 +156,18 @@ Commit small and often so an outage loses little; update PROGRESS.md before each
 ## Checklist
 Tick items as they land; keep this list honest. Add items freely.
 
+### Release checklist (from 2026-10-31; outranks new content)
+- [x] an unreadable save is kept aside (`corallum.save.unreadable`), never overwritten by a new reef's autosave
+- [x] one throwing frame does not stop the loop (error reported once per distinct message)
+- [x] offline catch-up stays cheap at any absence (60 days: ≤21 ms at the Breach)
+- [x] weather line tells "Now:" from "Soon:" (it said "full moon now" under Soon)
+- [ ] frame budget per zone measured headless and the worst zone brought down
+- [ ] late-game panel: chips, cards and stocks stay readable on desktop and phone
+- [ ] proofread every player-facing string (content/) for typos and voice
+- [ ] version + credits line in the Reef tab
+- [ ] a full browser playthrough (?bot at each zone + ending) with no console errors
+- [ ] perf on a real phone (needs the user; see M6)
+
 ### M0 Scaffold
 - [x] docs, CLAUDE.md, folders, package.json, tsconfig, .gitignore
 - [x] server.ts with on-the-fly type stripping
