@@ -633,6 +633,13 @@ html:has(.finale.ending:not([hidden])) .panel:not(:hover):not(:focus-within) { o
 /* The panel's width on screen: wider than --panel-w when Larger text zooms it. Things beside it use this. */
 :root { --panel-out: var(--panel-w); }
 html.big { --panel-out: calc(var(--panel-w) * 1.15); }
+/* Large screens (a 1440p monitor): the panel, stories and notes are drawn larger, as Larger text does. */
+@media (min-width: 1900px) and (min-height: 1000px) {
+  .panel, .reader-card, #whisper, #journal-note { zoom: 1.25; }
+  :root { --panel-out: calc(var(--panel-w) * 1.25); }
+  html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-note { zoom: 1.44; }
+  html.big { --panel-out: calc(var(--panel-w) * 1.44); }
+}
 @media (min-width: 800px) and (max-height: 520px) {
   :root { --panel-w: 46vw; }
   .panel { padding: 10px 12px 8px; gap: 6px; }

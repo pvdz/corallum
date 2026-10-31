@@ -50,3 +50,23 @@ export function quietRepeatedWrites(): void {
     });
   }
 }
+
+/**
+ * While a card is open over the game (a story, the away summary, the ending), Tab and Shift+Tab
+ * go round that card's own controls instead of wandering into the panel behind it.
+ */
+export function keepFocusInCards(selector: string): void {
+  window.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    const open = [...document.querySelectorAll<HTMLElement>(selector)].filter((x) => !x.hidden);
+    const card = open.at(-1);
+    if (!card) return;
+    const items = [...card.querySelectorAll<HTMLElement>('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])')]
+      .filter((x) => !(x as HTMLButtonElement).disabled && x.offsetParent !== null);
+    if (!items.length) return;
+    const i = items.indexOf(document.activeElement as HTMLElement);
+    const next = e.shiftKey ? (i <= 0 ? items.length - 1 : i - 1) : (i < 0 || i === items.length - 1 ? 0 : i + 1);
+    e.preventDefault();
+    items[next]!.focus();
+  });
+}

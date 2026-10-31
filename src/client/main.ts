@@ -62,6 +62,7 @@ import { OSSEL_MISTAKE, OSSEL_MISTAKES } from '../game/content/ossel.ts';
 import { buyTrait, forgetTrait, grainSense, habitPurchase, raspSense, shoalSense, spawnLesser } from '../game/sim/prestige.ts';
 import { createFinale } from '../game/ui/finale.ts';
 import { createPanel, reefName } from '../game/ui/panel.ts';
+import { keepFocusInCards } from '../game/ui/dom.ts';
 import { setting } from './settings.ts';
 
 declare global {
@@ -512,6 +513,7 @@ const panel = createPanel(ui, {
   },
 });
 panel.primeStories(state);
+keepFocusInCards('.reader, .finale');
 // A new day's gift (calendar days in local time; never in debug sessions).
 if (frozenT === null && botT === null) {
   const now0 = new Date();
