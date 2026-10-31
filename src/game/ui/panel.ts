@@ -2003,14 +2003,17 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
 
       // The best buy: the calcite upgrade that pays back soonest (once per round of eta updates).
       if (etaTurn === 0) {
-        let best: UpgradeId | null = null, bestBack = Infinity;
+        let best: UpgradeId | null = null, bestBack = Infinity, rivals = 0;
         const base = steadyCalciteRate(s);
         for (const u of UPGRADES) {
           if (u.currency !== 'calcite' || u.id === 'lattice' || !revealed(s, u.id) || maxed(s, u.id) || !(base > 0)) continue;
           const g = upgradeGain(s, u.id);
           const back = g >= 0.0005 ? cost(s, u.id) / (g * base) : Infinity;
+          if (back < Infinity) rivals++;
           if (back < bestBack) { bestBack = back; best = u.id; }
         }
+        // With one thing to buy there is nothing to compare: no badge.
+        if (rivals < 2) best = null;
         for (const [id, c] of cards) c.root.classList.toggle('best', id === best);
       }
 

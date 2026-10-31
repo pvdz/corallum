@@ -774,3 +774,4 @@ date, what landed, what is half-done, what's next.
 - First screen on a phone: the story card is near-opaque (the panel no longer ghosts through it), the 'best buy' badge never breaks across lines, and a first reef's first metre leaves the day/visitor line out of the water card (glow and lineage are not met yet).
 - tools/sweep.ts takes extra URL params; the other story paths (truce bbb with massive/mucus/brooding, abb with plating/fluorescent/fragmenting) run without console errors on desktop and mobile.
 - Soak: a page at ×100 from a new reef and ×30 from the Sunlit Crown for 4 min each: heap 6–8 MB and flat, DOM nodes and listeners flat.
+- The 'best buy' badge only shows when there are at least two calcite upgrades to compare (it sat on the only card at the start).
