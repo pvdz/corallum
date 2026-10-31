@@ -1429,6 +1429,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     window.addEventListener('pointerdown', (e) => {
       swallow = false;
       if (!panel.classList.contains('tall') || !(e.target instanceof HTMLCanvasElement)) return;
+      // Hidden (view mode), the sheet just drops back and the tap is a sweep as usual.
+      if (panel.getClientRects().length === 0) { setTall(false); return; }
       swallow = true;
       e.stopPropagation();
       setTall(false);
