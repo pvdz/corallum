@@ -1678,7 +1678,8 @@ ui.append(photoBtn);
 const KEYS: Record<string, UpgradeId> = { p: 'polyp', b: 'skeleton', g: 'symbiont' };
 window.addEventListener('keydown', (e) => {
   const target = e.target as HTMLElement | null;
-  if (e.ctrlKey || e.metaKey || e.altKey || target?.closest('input, textarea, button, select')) return;
+  // A tab that yielded the reef to another plays no more: it could not save what it did.
+  if (yielded || e.ctrlKey || e.metaKey || e.altKey || target?.closest('input, textarea, button, select')) return;
   if (e.key === ' ') {
     e.preventDefault();
     if (sweep(state) > 0) {

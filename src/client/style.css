@@ -232,7 +232,8 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   border: 1px solid rgba(255, 180, 160, 0.4); color: #ffd6c8; white-space: nowrap;
 }
 #yielded a { color: var(--glow); }
-.yielded #yielded { display: block; }
+#yielded p { margin: 0; max-width: 26em; }
+.yielded #yielded { display: grid; }
 
 /* ---------- Act II: plankton, murmurs, shoals, readings ---------- */
 :root { --plankton: #e9f59a; --murmurs: #c9b2ff; }
