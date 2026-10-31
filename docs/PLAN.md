@@ -173,6 +173,7 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] no leak in a long session: 4 min at ×100 from a new reef and ×30 from the Sunlit Crown, heap flat (6–8 MB), DOM nodes and listeners flat
 - [x] cards taller than the screen (away summary, stories, finale on a landscape phone) scroll instead of being cut off at both ends; one card at a time on load
 - [x] overlay texts never collide (`tools/overlaps.ts`, all viewports, through the game)
+- [x] a save naming content this version does not know still loads (future renames and removals; newer saves)
 - [x] the server gzips text (cached per body): ~1.25 MB → ~0.35 MB for a phone over `--lan`; fresh load 0.4–0.5 s headless
 - [x] sound sleeps while the page is hidden (no pad in a background tab) and wakes on show or touch (iOS interrupts audio in the background and only resumes from a gesture); cues are dropped while asleep
 - [ ] Safari/Firefox: only Chromium is installed (no network to fetch others); a static scan found no unguarded Safari-missing APIs (OffscreenCanvas, vibrate, Notification are feature-tested)

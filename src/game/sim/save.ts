@@ -3,6 +3,14 @@
 // game, so older saves keep working as the state grows; `migrate` handles real renames.
 
 import { SITES } from '../content/expeditions.ts';
+import { GRAINS, SPORTS, STRAINS } from '../content/act1.ts';
+import { READINGS } from '../content/act2.ts';
+import { RIDDLES } from '../content/act3.ts';
+import { DIALECTS } from '../content/act4.ts';
+import { MEMORIES } from '../content/act5.ts';
+import { BOONS, SEAMOUNTS, VOWS } from '../content/lineage.ts';
+import { REQUESTS } from '../content/requests.ts';
+import { RESIDENTS } from '../content/residents.ts';
 import { newGame, SAVE_VERSION, type GameState } from './state.ts';
 
 export type SaveFile = { state: GameState; savedAt: number };
@@ -46,10 +54,49 @@ function fill<T>(base: T, src: unknown): T {
 
 function migrate(s: GameState): GameState {
   s.version = SAVE_VERSION;
+  known(s);
   // A trip saved before trips recorded their size: a ruin's size is fixed.
   const ex = s.expedition;
   if (ex.site && ex.site !== 'roam' && ex.site !== 'visit' && ex.n === 0) ex.n = SITES.find((x) => x.id === ex.site)?.shoals ?? 0;
   return s;
+}
+
+/**
+ * Ids that name content must name content this version has: a save from a version where a
+ * band, a dialect or a seamount was renamed or taken out (or from a newer one) still loads.
+ * Unknown choices fall back to "not chosen", unknown entries leave their lists.
+ */
+function known(s: GameState): void {
+  const ids = (list: readonly { id: string }[]) => new Set(list.map((x) => x.id));
+  const keep = <T extends string>(xs: T[], set: Set<string>) => xs.filter((x) => set.has(x));
+  const seamounts = ids(SEAMOUNTS);
+  if (!seamounts.has(s.seamount)) s.seamount = 'plain';
+  if (s.request.kind && !REQUESTS.some((r) => r.kind === s.request.kind)) s.request.kind = '';
+  for (const tier of Object.keys(s.dialects) as (keyof GameState['dialects'])[]) {
+    const d = s.dialects[tier];
+    if (d && !DIALECTS.some((x) => x.id === d && x.tier === tier)) s.dialects[tier] = '';
+  }
+  if (s.strain && !ids(STRAINS).has(s.strain)) s.strain = '';
+  if (s.sport && !ids(SPORTS).has(s.sport)) s.sport = '';
+  if (s.boon && !ids(BOONS).has(s.boon)) s.boon = '';
+  const trips = new Set<string>([...ids(SITES), 'roam', 'visit', 'carcass']);
+  // A trip to a place no longer known becomes a roam: the shoals still come home on time.
+  if (s.expedition.site && !trips.has(s.expedition.site)) s.expedition.site = 'roam';
+  s.grains = keep(s.grains, ids(GRAINS));
+  s.readings = keep(s.readings, ids(READINGS));
+  s.carried = keep(s.carried, ids(MEMORIES));
+  s.residents = keep(s.residents, ids(RESIDENTS));
+  s.vows = keep(s.vows, ids(VOWS));
+  s.relics = keep(s.relics, ids(SITES));
+  s.riddlesAgain = keep(s.riddlesAgain, ids(RIDDLES));
+  // The line's records keep their entries; only a seamount no longer known reads as plain.
+  const plainSeamount = (line: string, at: number) => {
+    const f = line.split('|');
+    if (f.length > at && !seamounts.has(f[at]!)) f[at] = 'plain';
+    return f.join('|');
+  };
+  s.meta.chronicle = s.meta.chronicle.map((l) => plainSeamount(l, 0));
+  s.meta.ancestors = s.meta.ancestors.map((l) => plainSeamount(l, 1));
 }
 
 function isObject(x: unknown): x is Record<string, unknown> {

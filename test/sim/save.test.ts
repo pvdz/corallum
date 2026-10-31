@@ -28,3 +28,24 @@ test('non-finite numbers are rejected field by field', () => {
   assert.equal(back?.state.glow, 0);
   assert.equal(back?.savedAt, 0);
 });
+
+test('ids this version does not know (renamed, removed, or from a newer one) load as not chosen', () => {
+  const { state } = runBot((s) => s.t > 300, 1000);
+  const raw = JSON.parse(serialize(state, 1)) as { state: Record<string, any> };
+  const st = raw.state;
+  st.seamount = 'gone';
+  st.request.kind = 'gone';
+  st.dialects.form = 'gone';
+  st.grains = ['dense', 'gone'];
+  st.readings = ['gone'];
+  st.expedition.site = 'gone';
+  st.meta.chronicle = ['gone|vent,ossel|7.5'];
+  const s = deserialize(JSON.stringify(raw))!.state;
+  assert.equal(s.seamount, 'plain');
+  assert.equal(s.request.kind, '');
+  assert.equal(s.dialects.form, '');
+  assert.deepEqual(s.grains, ['dense']);
+  assert.deepEqual(s.readings, []);
+  assert.equal(s.expedition.site, 'roam');
+  assert.deepEqual(s.meta.chronicle, ['plain|vent,ossel|7.5']);
+});
