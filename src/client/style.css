@@ -757,8 +757,8 @@ html.calm *:not(#zone-title):not(#milestone):not(#whisper):not(#journal-note) { 
 }
 /* A soft shade behind the words, so they read over bright water (the Sunlit Crown, the Breach by day). */
 #journal-note::before {
-  content: ''; position: absolute; inset: -14px -40px -14px -24px; z-index: -1;
-  background: radial-gradient(closest-side, rgba(2, 12, 32, 0.5), rgba(2, 12, 32, 0));
+  content: ''; position: absolute; inset: -16px -36px -16px -36px; z-index: -1;
+  background: radial-gradient(farthest-side, rgba(2, 14, 34, 0.7) 55%, rgba(2, 14, 34, 0));
 }
 #journal-note span { font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--glowc); text-shadow: 0 1px 5px rgba(0, 0, 0, 0.8); }
 /* A dark shadow under the glow: it reads over the Sunlit Crown's pale water too. */
