@@ -157,7 +157,8 @@ Commit small and often so an outage loses little; update PROGRESS.md before each
 Tick items as they land; keep this list honest. Add items freely.
 
 ### Release checklist (from 2026-10-31; outranks new content)
-- [x] an unreadable save is kept aside (`corallum.save.unreadable`), never overwritten by a new reef's autosave
+- [x] an unreadable save is moved aside (`corallum.save.unreadable`), never overwritten; left in place it made the new reef yield as if to another tab and never save
+- [x] storage full (the journal's portraits can reach ~2 MB): the save evicts the portraits instead of silently not saving (saves e2e)
 - [x] one throwing frame does not stop the loop (error reported once per distinct message)
 - [x] offline catch-up stays cheap at any absence (60 days: ≤21 ms at the Breach)
 - [x] weather line tells "Now:" from "Soon:" (it said "full moon now" under Soon)

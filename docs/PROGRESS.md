@@ -758,3 +758,5 @@ date, what landed, what is half-done, what's next.
 - Proofread pass over content/: no repeated words, spacing slips or misspelt one-off words.
 - Phone, six or more stocks: four to a row with each rate cut to one line; tapping a stock shows the whole line in its note. The Breach sheet's stocks take about half the height they did.
 - Server: a malformed percent escape in a URL threw inside the request handler and stopped the server (Node 24 exits on an unhandled rejection), which mattered with `--lan`; now a 404. test/sim/server.test.ts covers the mapping and traversal.
+- An unreadable save is moved aside rather than copied: left in place, the new reef's first save saw a save it had not written, yielded as if to another tab, and never saved.
+- Storage full: a failed save drops the portrait close-ups, then all portraits, and tries again (portraits can reach ~2 MB of data URLs). saves e2e covers both cases.

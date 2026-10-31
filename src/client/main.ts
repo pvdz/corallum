@@ -135,9 +135,13 @@ if (botT !== null) {
 else {
   const raw = params.has('fresh') ? null : storageGet();
   const loaded = raw ? deserialize(raw) : null;
-  // A save that cannot be read is kept aside, not overwritten by the new reef's first autosave.
+  // A save that cannot be read is moved aside, so the new reef can save without overwriting it
+  // (left in place it would also look like another tab's save, and this page would never write).
   if (raw && !loaded) {
-    try { localStorage.setItem(`${SAVE_KEY}.unreadable`, raw); } catch { /* no storage */ }
+    try {
+      localStorage.setItem(`${SAVE_KEY}.unreadable`, raw);
+      localStorage.removeItem(SAVE_KEY);
+    } catch { /* no room to keep a copy: leave it where it is */ }
   }
   state = loaded?.state ?? newGame(seed);
   if (loaded) savedAt = loaded.savedAt;
