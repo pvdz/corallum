@@ -801,3 +801,4 @@ date, what landed, what is half-done, what's next.
 - `?bot=` takes `&seamount=`; console-error sweeps of the dark, tidal, gleaming, silent, heavy and shallow seamounts.
 - The line's first calendar day is only noted: a new player who reloaded in their first minutes was handed "A new day" (a burst and a 15-minute dream) on day one. Gifts start the next day.
 - tools/monkey.ts: in-page button monkey (every visible button on every tab, four rounds, ten bot times; destructive ones skipped). Desktop and mobile: ~3,200 clicks each, no console errors.
+- News card for 0.9 (news:2026-10-31): fragments, lost shoals, weed rafts, bristlemouths, yeti crabs, the others' spawn, the phone handle, home screen and offline, the Finished fold.

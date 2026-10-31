@@ -47,13 +47,14 @@ export const STOCK_NOTES: Record<string, string> = {
 
 /** Shown once (per browser line) after an update with new things to find; `id` changes per update. */
 export const NEWS = {
-  id: 'news:2026-10-29d',
+  id: 'news:2026-10-31',
   kicker: 'New in the sea',
-  title: 'Small things in trouble, and a blue moon',
-  text: 'Now and then a small creature near the reef is in trouble (a fish in a jelly’s threads, a brittle star under a ' +
-    'stone, a fish stranded on your crown): tap it free. Each day one creature is the day’s visitor. Every seventh moon ' +
-    'is blue. Rare sights wait in every zone, the line keeps a record of every moment it met, and the strip under the ' +
-    'water’s forecast shows the next twenty minutes. In view mode (H), leave the reef a while and the view drifts.',
+  title: 'Drifting things, and a reef in your pocket',
+  text: 'Broken-off branches of other reefs tumble past on the shelf and in the light, and lost shoals flicker far off in ' +
+    'the Midnight Water: tap them and they join you. Weed rafts shelter your young at the Breach, bristlemouths drift ' +
+    'in the dark, yeti crabs farm the vent, and under every full moon the other reefs’ spawn rises past you. On a ' +
+    'phone, pull the panel up by its handle; the reef can live on your home screen and opens without a connection. ' +
+    'Finished upgrades fold away at the end of the list.',
 } as const;
 
 /** The first time the line enters a zone: what is new there, in a few lines (zones 2–5). */
