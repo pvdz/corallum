@@ -176,6 +176,10 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] a save naming content this version does not know still loads (future renames and removals; newer saves)
 - [x] the server gzips text (cached per body): ~1.25 MB → ~0.35 MB for a phone over `--lan`; fresh load 0.4–0.5 s headless
 - [x] sound sleeps while the page is hidden (no pad in a background tab) and wakes on show or touch (iOS interrupts audio in the background and only resumes from a gesture); cues are dropped while asleep
+- [x] saves with absurd counts (hand-edited or damaged) load bounded instead of hanging the page
+- [x] the vows play as they say: Stillness (no sweep prompts or flurry plans), Quiet (no request slot), Haste (time left shown), Lightness (memory counts everywhere)
+- [x] Ossel's fate is respected in later texts (ground into sand → no lines of its own)
+- [x] rare paths without errors: every shortcut key, every creature tapped, sound on in every zone, six seamounts swept, a reef opened long after its ending
 - [ ] Safari/Firefox: only Chromium is installed (no network to fetch others); a static scan found no unguarded Safari-missing APIs (OffscreenCanvas, vibrate, Notification are feature-tested)
 - [x] game length measured both ways: greedy bot 7h28, a bot that saves for the next band 3h08 (3h48 without sweeping). Raising band cost growth to lengthen the saver starves the greedy player (30 h), so the balance stays: three to seven and a half hours by play style (ECONOMY.md; the user may want it longer)
 - [ ] distribution (user decision): today a player needs Node 24 and `node src/server/server.ts`. Options: (a) host the Node server somewhere (fits every rule as is); (b) a static export with types stripped, for itch.io or GitHub Pages: needs an exception to "no emitted JS" (the export would be a build artefact, not the source). Either way, installing to a home screen with offline play needs HTTPS (or localhost): a phone on `--lan` over plain http gets neither
