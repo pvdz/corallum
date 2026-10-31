@@ -150,10 +150,10 @@ Listening dome (Midnight, 1500 m): scouts ×1.25 per stage. Grazing lawn (Twilig
 per stage. Both three stages, ×10 per stage in calcite.
 
 ## Height settles with an overshoot (2026-10-31)
-Height relaxes toward `target + 0.25 × the last band's metres` at `settleRate` and stops on the
+Height relaxes toward `target + 0.6 × the last band's metres` at `settleRate` and stops on the
 target (economy.ts `settleAim`). Plain relaxation to the target crept through the last metre for
 minutes (from 30 m below, 40·ln(30 000) ≈ 7 min to cross 3000 m, most of it showing "2999 m"); with the
-overshoot one band's rise takes ~64 s and ends on the target. The greedy bot went 7h28 → 7h08 (the
+overshoot one band's rise takes ~39 s (40·ln(1.6/0.6)) and ends on the target, still easing in (0.25 took ~64 s and, in real play, held the first zone change a minute after its band was bought). The greedy bot went 7h28 → 7h08 (the
 creeping was dead time); the saver is unchanged at 3h08.
 
 ## Seamounts, measured (bot, no lineage, 2026-10-31, before the settle overshoot)
