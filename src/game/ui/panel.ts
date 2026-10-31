@@ -2063,7 +2063,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       prepRow.hidden = !(raspMax(s) > 0 || s.levels.shoal > 0 || s.meta.dreams > 0 || s.height >= FLARE.fromHeight);
       flareBtn.hidden = s.height < FLARE.fromHeight || ended(s);
       flareBtn.disabled = !canFlare(s);
-      flareBtn.textContent = canFlare(s) ? FLARE.label : `${FLARE.label} ${Math.ceil(FLARE.cooldown - (s.t - s.lastFlare))}s`;
+      flareBtn.textContent = canFlare(s) ? FLARE.label : `${FLARE.short} ${Math.ceil(FLARE.cooldown - (s.t - s.lastFlare))}s`;
       prepBtn.hidden = !(raspMax(s) > 0 || s.levels.shoal > 0);
       dreamBtn.hidden = s.meta.dreams <= 0 || ended(s);
       dreamBtn.textContent = DREAM.label(s.meta.dreams);
