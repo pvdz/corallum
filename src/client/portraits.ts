@@ -75,7 +75,8 @@ export function createPortraits(persist: boolean) {
         .then((bmp) => {
           const c = document.createElement('canvas');
           c.width = c.height = SIZE;
-          c.getContext('2d')!.drawImage(bmp, 0, 0);
+          // Sized here too: a browser that ignores the resize options hands back the full crop.
+          c.getContext('2d')!.drawImage(bmp, 0, 0, SIZE, SIZE);
           bmp.close();
           encode(c);
         }, () => pending.delete(key));
