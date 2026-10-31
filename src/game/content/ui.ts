@@ -83,6 +83,8 @@ export const UI = {
   notYet: 'Not yet',
   carries: 'What the spawn carries',
   continue: 'Continue',
+  /** "Coming up" for an upgrade opened by a count of another: what that count is called. */
+  countOf: { polyp: (n: number) => `at ${n} polyps`, symbiont: (n: number) => `at ${n} glimmerseed`, shoal: (n: number) => `at ${n} shoals` } as Record<string, (n: number) => string>,
   /** From the Midnight Water on: the three everyday buys at the top of the Grow tab. */
   quickBuy: [['polyp', 'Polyp'], ['skeleton', 'Band'], ['symbiont', 'Glimmer']] as const,
   /** A choice card folded away for now (its chip or a tap brings it back). */

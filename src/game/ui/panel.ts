@@ -2637,7 +2637,7 @@ function revealText(s: GameState, u: (typeof UPGRADES)[number]): string {
   if (r.height !== undefined) return `when the reef reaches ${metres(r.height)}`;
   if (r.level) {
     const [id, n] = r.level;
-    return `after ${n} × ${UPGRADES.find((x) => x.id === id)?.name.toLowerCase() ?? id}`;
+    return UI.countOf[id]?.(n) ?? `after ${n} × ${UPGRADES.find((x) => x.id === id)?.name.toLowerCase() ?? id}`;
   }
   if (r.earned !== undefined) return `after ${num(r.earned)} calcite gathered`;
   return 'soon';
