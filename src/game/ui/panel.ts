@@ -17,7 +17,7 @@ import { COMPANION, CREATURES, TRUST, trustLevel, LUCKY } from '../content/creat
 import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
 import { upgradeIcon } from './icons.ts';
 import { SHELL, SHELLS } from '../content/shells.ts';
-import { button, el } from './dom.ts';
+import { button, el, quietRepeatedWrites } from './dom.ts';
 import { createChoices } from './choices.ts';
 import { drawCity, drawTablet, drawSeaChart, SEAMOUNT_TINT, drawRings } from './drawings.ts';
 import { FEATS } from '../content/feats.ts';
@@ -159,6 +159,7 @@ function truceStory(m: Meeting, c: Choice): Story {
 }
 
 export function createPanel(host: HTMLElement, hooks: PanelHooks) {
+  quietRepeatedWrites();
   const panel = el('aside', 'panel');
   panel.setAttribute('aria-label', 'Reef');
 
