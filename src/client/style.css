@@ -660,7 +660,7 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 .bar .tick.passed { background: rgba(255, 245, 235, 0.85); }
 
 /* Keyboard focus: a clear ring on whatever Tab has reached (mouse and touch do not show it). */
-button:focus-visible, input:focus-visible, .tab:focus-visible {
+button:focus-visible, input:focus-visible, summary:focus-visible, .tab:focus-visible {
   outline: 2px solid var(--glowc); outline-offset: 2px; border-radius: 10px;
 }
 .trait-group { margin: 14px 2px 0; font-family: var(--display); font-weight: 400; font-size: 13px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--lineage); }
