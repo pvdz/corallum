@@ -1025,3 +1025,6 @@ html.view-mode #photo { display: grid; }
 }
 /* The keyboard's hint means nothing on a touch screen with no keyboard. */
 @media (pointer: coarse) and (hover: none) { .keys-hint { display: none; } }
+/* The memory choice: the count and the release stay in reach at the bottom while the list scrolls. */
+.finale.choice-screen .finale-foot { position: sticky; bottom: 0; z-index: 1; padding: 12px 0 max(12px, env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(4, 4, 14, 0), rgba(4, 4, 14, 0.97) 22%); }
