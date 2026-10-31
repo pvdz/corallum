@@ -609,8 +609,16 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
   padding: 0 24px; font-family: var(--display); color: #dfe8ff; display: flex; flex-direction: column; gap: 6px; align-items: center;
 }
 @media (min-width: 800px) { #whisper { right: var(--panel-w); top: 20%; } }
-#whisper q { font-style: italic; font-size: clamp(15px, 1.8vw, 20px); max-width: 560px; text-shadow: 0 0 18px rgba(150, 190, 255, 0.5), 0 2px 8px rgba(0, 0, 0, 0.8); quotes: "“" "”"; }
-#whisper span { font-size: 12px; letter-spacing: 0.14em; color: var(--ink-dim); text-transform: uppercase; }
+/* A soft dark halo behind the words, so they read over a bright crown or a sunlit sky. */
+#whisper q {
+  font-style: italic; font-size: clamp(15px, 1.8vw, 20px); max-width: 560px; padding: 12px 34px; quotes: "“" "”";
+  text-shadow: 0 0 18px rgba(150, 190, 255, 0.5), 0 2px 8px rgba(0, 0, 0, 0.8);
+  background: radial-gradient(closest-side, rgba(3, 8, 24, 0.6), rgba(3, 8, 24, 0.38) 62%, rgba(3, 8, 24, 0));
+}
+#whisper span {
+  margin-top: -8px; padding: 2px 18px; font-size: 12px; letter-spacing: 0.14em; color: #b8c6e8; text-transform: uppercase;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9); background: radial-gradient(closest-side, rgba(3, 8, 24, 0.5), rgba(3, 8, 24, 0));
+}
 #whisper.show { animation: whisper 11s ease both; }
 @keyframes whisper { 0% { opacity: 0; transform: translateY(6px); } 12%, 75% { opacity: 1; transform: none; } 100% { opacity: 0; } }
 

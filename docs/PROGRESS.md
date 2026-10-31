@@ -753,3 +753,4 @@ date, what landed, what is half-done, what's next.
 - resize() returns early when nothing moved (sheet sliding, cards growing): no canvas reallocation per transition frame.
 - Great-work cards show stages built (2/3) like an upgrade's levels; on a phone their stage pips sit in one row across the card.
 - Old stone knobs drawn as bleached skeleton (pale, pitted with empty cups, one outline, a breathing crack) instead of grey pebbles.
+- Whispers get a soft dark halo behind the words and a brighter speaker line (they were hard to read over a lit crown).
