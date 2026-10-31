@@ -2045,7 +2045,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
 
       choices.update(s);
       renderWaitBar();
-      quick.hidden = actAt(s.height) < 2;
+      quick.hidden = actAt(s.height) < 2 || ended(s);
       if (!quick.hidden) for (const q of quickBtns) {
         const gone = !revealed(s, q.id) || maxed(s, q.id);
         q.btn.hidden = gone;

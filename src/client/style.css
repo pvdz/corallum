@@ -998,7 +998,7 @@ html.view-mode #photo { display: grid; }
 /* Quick buys, from the Midnight Water on: the three everyday buys at the top of the Grow page,
    staying there as the list scrolls under them. */
 .quick-buy { display: none; }
-.quick-buy:not([hidden]) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;
+.quick-buy:not([hidden]) { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 6px;
   position: sticky; top: -4px; z-index: 3; margin: -4px -2px 0; padding: 6px 2px 6px;
   background: rgba(var(--zone-tint), 0.96);
   border-radius: 0 0 12px 12px; }
