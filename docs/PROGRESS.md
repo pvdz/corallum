@@ -885,3 +885,4 @@ date, what landed, what is half-done, what's next.
 - Quick buys on desktop too (from the Midnight Water on): by the shelf the polyp and band cards sit ~1300 px down the panel there as well; the row's tooltips teach P · B · G.
 - The Reef tab's keyboard hint is hidden on touch screens (no keyboard); the guide's Calcite line now says to press and hold a buy button to keep buying, for everyone.
 - "Coming up: Tend a daughter colony — after 100 × bud a polyp" reads "— at 100 polyps" (also glimmerseed and shoals).
+- The sticky quick-buy row has no backdrop blur: at 4× CPU it cost ~18 ms per frame while scrolling the panel (96 → 78 ms), for no visible difference at 0.96 opacity.
