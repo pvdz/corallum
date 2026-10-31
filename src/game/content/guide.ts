@@ -45,6 +45,17 @@ export const STOCK_NOTES: Record<string, string> = {
   spawn: 'Eggs and sperm in bundles, ripening for the Spawning Moon. Release it at the surface under a full moon.',
 };
 
+/** A price beyond what a stock can hold: what raises that hold. */
+export const HOLD_HINT: Record<string, string> = {
+  calcite: 'over what it holds: grow, or pack the lattice',
+  glow: 'over what it holds: more glimmerseed or light shoals',
+  murmurs: 'over what it holds: more scouts',
+  sand: 'over what it holds: more Rasp grazing',
+  bloom: 'over what it holds: pigments, glimmerseed',
+  spawn: 'over what it holds: ripen the spawn',
+};
+export const HOLD_HINT_ANY = 'beyond what the reef can hold';
+
 /** Shown once (per browser line) after an update with new things to find; `id` changes per update. */
 export const NEWS = {
   id: 'news:2026-10-31',

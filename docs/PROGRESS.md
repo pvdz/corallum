@@ -853,3 +853,4 @@ date, what landed, what is half-done, what's next.
 - Milestone flourish ("Lanterns · Glimmerseed ×2 · …"): it shows over the reef's bright crown, where its dim subtitle was hard to read; dark shadows under every line and a lighter subtitle.
 - Phone: the title's subtitle ran edge to edge; it now keeps a margin and wraps in two balanced lines. Story and ending text wrap "pretty" (no lone last word where the browser can help it).
 - Phones on their side keep one line per stock (the two-line rates left the card area 152 px tall at the Breach; back to 185). Height is what landscape lacks; tapping a stock still shows its whole line.
+- A price no store can reach said only "beyond what the reef can hold"; it now says what raises that store's hold, per currency ("over what it holds: more glimmerseed or light shoals", "…: more scouts", "…: grow, or pack the lattice"; content/guide.ts HOLD_HINT). Works with two currencies name the one that is out of reach.

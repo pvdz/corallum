@@ -14,7 +14,7 @@ import { DIALECTS, HEAT, TIERS, type DialectId } from '../content/act4.ts';
 import { BOONS, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type BoonId, type SeamountId, type TraitId, FORGET, VOW, VOWS, type VowId } from '../content/lineage.ts';
 import { GARDEN, LINE_TITLES, MEMORIES, type MemoryId, type GardenKind } from '../content/act5.ts';
 import { COMPANION, CREATURES, TRUST, trustLevel, LUCKY } from '../content/creatures.ts';
-import { GUIDE, STOCK_NOTES } from '../content/guide.ts';
+import { GUIDE, HOLD_HINT, HOLD_HINT_ANY, STOCK_NOTES } from '../content/guide.ts';
 import { upgradeIcon } from './icons.ts';
 import { SHELL, SHELLS } from '../content/shells.ts';
 import { button, el, quietRepeatedWrites } from './dom.ts';
@@ -2113,7 +2113,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         x.btn.disabled = !ok;
         x.root.classList.toggle('ready', ok);
         if (ok) setEta(x.eta, 0);
-        else if (etaTurn === 0 || !x.eta.textContent) setEta(x.eta, Math.max(...parts.map(([k, v]) => timeUntil(s, k, v))));
+        else if (etaTurn === 0 || !x.eta.textContent) {
+          const waits = parts.map(([k, v]) => [k, timeUntil(s, k, v)] as const);
+          setEta(x.eta, Math.max(...waits.map(([, w]) => w)), waits.find(([, w]) => !Number.isFinite(w))?.[0]);
+        }
       }
 
       // The best buy: the calcite upgrade that pays back soonest (once per round of eta updates).
@@ -2205,7 +2208,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
             const back = g >= 0.0005 ? price / (g * steadyCalciteRate(s)) : Infinity;
             c.eta.textContent = Number.isFinite(back) ? `pays back in ${duration(back)}` : '';
           } else if (cur !== 'calcite' || u.id === 'lattice') setEta(c.eta, 0);
-        } else if (due) setEta(c.eta, timeUntil(s, cur, price));
+        } else if (due) setEta(c.eta, timeUntil(s, cur, price), cur);
         if (u.id === pinned) pinnedText = ok ? `${u.name} ready` : `${u.name} ${c.eta.textContent}`;
       }
 
@@ -2221,7 +2224,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         readingBtn.disabled = !ok;
         readingCard.classList.toggle('ready', ok);
         if (ok) setEta(readingEta, 0);
-        else if (etaTurn === UPGRADES.length || !readingEta.textContent) setEta(readingEta, timeUntil(s, 'murmurs', rc));
+        else if (etaTurn === UPGRADES.length || !readingEta.textContent) setEta(readingEta, timeUntil(s, 'murmurs', rc), 'murmurs');
         if (!ok && s.jobs.scout === 0) readingEta.textContent = 'set shoals to scout';
       }
 
@@ -2584,12 +2587,13 @@ function marginalText(s: GameState, id: 'polyp' | 'symbiont'): string {
   return ms ? `${gain} · ×${ACT1.milestoneFactor} at ${ms.level}` : gain;
 }
 
-function etaText(t: number): string {
-  return t <= 0 ? '' : !Number.isFinite(t) ? 'beyond what the reef can hold' : t < 1 ? 'any moment' : `in ${duration(t)}`;
+function etaText(t: number, cur?: string): string {
+  return t <= 0 ? '' : !Number.isFinite(t) ? (cur && HOLD_HINT[cur]) || HOLD_HINT_ANY : t < 1 ? 'any moment' : `in ${duration(t)}`;
 }
 
-function setEta(eta: HTMLElement, t: number): void {
-  eta.textContent = etaText(t);
+/** A countdown; a price no store can reach says what would raise that store (`cur`). */
+function setEta(eta: HTMLElement, t: number, cur?: string): void {
+  eta.textContent = etaText(t, cur);
   eta.classList.toggle('never', !Number.isFinite(t));
 }
 
