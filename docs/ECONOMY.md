@@ -186,5 +186,6 @@ when the next band is under ten minutes away, as a player watching the band card
 
 (saver + sweeps: 3000 m at 1h07, 3800 m at 2h14, the surface at 3h07.) An attentive player who saves
 could finish in three to four hours of play, not seven to nine. Real players sit between the two,
-and time away is capped by the holds. Open decision (see PLAN): keep the greedy yardstick, or retune
+and time away is capped by the holds. The panel's "best buy" badge ranks calcite upgrades by
+payback and never names a band, so a player who follows it plays much like the greedy bot. Open decision (see PLAN): keep the greedy yardstick, or retune
 band cost growth so the saver lands near six hours.
