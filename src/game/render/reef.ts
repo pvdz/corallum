@@ -546,25 +546,26 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
       ctx.translate(x, y);
       ctx.rotate(rot);
       ctx.globalAlpha = a;
-      // Bleached skeleton: a knot of pale lumps with no living tissue, pitted with empty cups.
+      // Grey skeleton (the stone kept too long, 'the grey on the tips'): a knot of ashen lumps with
+      // no living tissue, pitted with empty cups.
       const lumps: [number, number, number][] = [[0, 0, 0.9], [-0.62, 0.32, 0.64], [0.6, 0.36, 0.6], [0.08, -0.56, 0.56]];
       // One outline under the whole knot, so the lumps read as one piece of stone.
-      ctx.fillStyle = 'rgba(40,36,30,0.45)';
+      ctx.fillStyle = 'rgba(30,30,32,0.45)';
       ctx.beginPath();
       for (const [lx, ly, lr] of lumps) { ctx.moveTo(lx * r + lr * r + 1.2 * s, ly * r); ctx.arc(lx * r, ly * r, lr * r + 1.2 * s, 0, Math.PI * 2); }
       ctx.fill();
       for (const [lx, ly, lr] of lumps) {
         const g = ctx.createRadialGradient(lx * r - lr * r * 0.35, ly * r - lr * r * 0.45, 0, lx * r, ly * r, lr * r);
-        g.addColorStop(0, '#efe9dc');
-        g.addColorStop(0.6, '#c4bba9');
-        g.addColorStop(1, '#8a8274');
+        g.addColorStop(0, '#dcdad5');
+        g.addColorStop(0.6, '#a3a09a');
+        g.addColorStop(1, '#6b6964');
         ctx.fillStyle = g;
         ctx.beginPath();
         ctx.arc(lx * r, ly * r, lr * r, 0, Math.PI * 2);
         ctx.fill();
       }
       // The empty cups the polyps left: small dark pits on the lit faces.
-      ctx.fillStyle = 'rgba(70,62,52,0.5)';
+      ctx.fillStyle = 'rgba(48,46,44,0.55)';
       for (let k = 0; k < 11; k++) {
         const [lx, ly, lr] = lumps[k % lumps.length]!;
         const a = k * 2.399, d = lr * r * (0.25 + 0.5 * ((k * 0.618) % 1));
@@ -573,7 +574,7 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
         ctx.fill();
       }
       // A crack across it that breathes: it is ready to break.
-      ctx.strokeStyle = `rgba(60,48,36,${0.45 + 0.3 * Math.sin(t * 2.2 + x * 0.01)})`;
+      ctx.strokeStyle = `rgba(40,38,36,${0.45 + 0.3 * Math.sin(t * 2.2 + x * 0.01)})`;
       ctx.lineWidth = Math.max(1, 1.1 * s);
       ctx.beginPath();
       ctx.moveTo(-0.15 * r, -1.05 * r);
