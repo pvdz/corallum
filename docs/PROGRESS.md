@@ -783,3 +783,4 @@ date, what landed, what is half-done, what's next.
 - After the ending the Begin again card has its own text (it said "Let go early", the lesser spawning's).
 - Phone landscape (short screens): stock rates on one line, chips in sentence case, the water line defers to its strip, as in portrait.
 - Reef summary: the deeds row is 'Done here' (two rows were both 'This reef'); feasts caught are no longer listed twice.
+- Journal notes (feats, gifts, shards) wait until a new reef's title has faded; on a phone a feat earned on Begin again sat right on top of "Corallum". (Sightings already waited.)

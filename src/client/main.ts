@@ -1056,9 +1056,11 @@ function showJournalNote(kicker: string, name: string, now = false): void {
   else journalQueue.push([kicker, name]);
   if (journalBusy) return;
   const next = () => {
-    const n = journalQueue.shift();
-    if (!n) { journalBusy = false; return; }
+    if (!journalQueue.length) { journalBusy = false; return; }
     journalBusy = true;
+    // Not over the title of a new reef: the note waits until it has faded.
+    if (!title.classList.contains('faded')) { setTimeout(next, 1000); return; }
+    const n = journalQueue.shift()!;
     journalNote.textContent = '';
     const k = document.createElement('span');
     k.textContent = n[0];
