@@ -2224,7 +2224,7 @@ export function shelterRaft(s: GameState): number {
 
 /** How many fragments the reef can take in (Foster: eight). */
 export function fragmentMax(s: GameState): number {
-  return trait(s, 'foster') ? 8 : FRAGMENT.max;
+  return trait(s, 'foster') ? FRAGMENT.fosterMax : FRAGMENT.max;
 }
 
 /** A fragment of another reef drifting past now (slot, place 0..1, seconds in), if not yet taken and there is room. */

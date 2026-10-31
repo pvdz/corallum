@@ -178,6 +178,8 @@ export const TANGLE = {
  */
 export const FRAGMENT = {
   period: 540, life: 30, max: 5, each: 1.03, zones: [3, 4] as readonly number[],
+  /** The most a reef can take in, with the Foster trait. */
+  fosterMax: 8,
   float: '· taken in',
 } as const;
 

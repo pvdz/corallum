@@ -13,7 +13,7 @@ import { UPGRADES } from '../content/upgrades.ts';
 import { WORKS } from '../content/works.ts';
 import { REQUESTS } from '../content/requests.ts';
 import { RESIDENTS } from '../content/residents.ts';
-import { fragmentMax } from './economy.ts';
+import { FRAGMENT } from '../content/events.ts';
 import { newGame, SAVE_VERSION, type GameState } from './state.ts';
 
 export type SaveFile = { state: GameState; savedAt: number };
@@ -98,7 +98,8 @@ function known(s: GameState): void {
   for (const u of UPGRADES) s.levels[u.id] = count(s.levels[u.id], u.maxLevel);
   for (const t of TRAITS) s.meta.traits[t.id] = count(s.meta.traits[t.id], t.max);
   for (const w of WORKS) s.works[w.id] = count(s.works[w.id], w.stages.length);
-  s.fragments = count(s.fragments, fragmentMax(s));
+  // The most any reef can hold: a reef that forgot Foster keeps what it took in.
+  s.fragments = count(s.fragments, FRAGMENT.fosterMax);
   let room = s.levels.shoal;
   for (const j of Object.keys(s.jobs) as (keyof GameState['jobs'])[]) {
     s.jobs[j] = count(s.jobs[j], room);
