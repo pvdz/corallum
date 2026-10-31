@@ -111,7 +111,15 @@ function storageGet(): string | null {
   try { return localStorage.getItem(SAVE_KEY); } catch { return null; }
 }
 function storageSet(text: string): void {
-  try { localStorage.setItem(SAVE_KEY, text); } catch { /* private mode: play unsaved */ }
+  try { localStorage.setItem(SAVE_KEY, text); return; } catch { /* full, or private mode */ }
+  // Storage full: the reef matters more than the journal's pictures. Close-ups go first, then the rest.
+  for (const key of ['corallum.portraits.close', 'corallum.portraits']) {
+    try {
+      localStorage.removeItem(key);
+      localStorage.setItem(SAVE_KEY, text);
+      return;
+    } catch { /* still no room: private mode, play unsaved */ }
+  }
 }
 
 let state: GameState;
