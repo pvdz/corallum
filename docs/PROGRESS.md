@@ -881,3 +881,4 @@ date, what landed, what is half-done, what's next.
 - The Grow tab shows a dot when a new choice (a moment, a question, the signal…) opens while another tab is showing, until Grow is looked at; the choices already seen do not call again.
 - README's panel and phone images regenerated from the current build (the phone one showed the old upper-case chips and one-line stocks).
 - Short desktop windows (≤ 800 px tall, a 720p laptop): stocks sit closer and a little smaller, so the cards start ~45 px sooner.
+- Phone quick buys stay at the top of the Grow page as the list scrolls under them (a solid backdrop of the zone's tint); a choice chip scrolls its card to just below the row.
