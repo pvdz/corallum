@@ -68,9 +68,12 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
   let cachedKey = '';
   let box = { x: 0, y: 0, w: 1, h: 1 };
   let steady = 0;
+  let cachedBaseY = 0;
   function drawBranchesCached(ctx: CanvasRenderingContext2D, L: ReefLayout): void {
     const w = ctx.canvas.width, h = ctx.canvas.height;
-    const key = `${w}x${h} ${L.cx} ${L.baseY} ${L.unit} ${L.top.toFixed(3)} ${L.bandStep} ${(L.palette ?? DEFAULT_PALETTE).join()} ${L.grains?.join('/') ?? ''}`;
+    // The base is keyed to 2 px: at the Breach it drifts by a fraction of a pixel every frame as the
+    // crown rises, and the cached image is shifted by that drift instead of being redrawn.
+    const key = `${w}x${h} ${L.cx} ${Math.round(L.baseY / 2)} ${L.unit} ${L.top.toFixed(3)} ${L.bandStep} ${(L.palette ?? DEFAULT_PALETTE).join()} ${L.grains?.join('/') ?? ''}`;
     // While the reef is still moving (settling after a band) the cache would be redrawn every
     // frame at extra cost: draw straight to the screen until it has held still for 30 frames.
     if (key !== branchKey) {
@@ -110,8 +113,9 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
       c.translate(-box.x, -box.y);
       drawBranches(c, L, 0);
       cachedKey = key;
+      cachedBaseY = L.baseY;
     }
-    ctx.drawImage(branchCache!, box.x, box.y);
+    ctx.drawImage(branchCache!, box.x, box.y + (L.baseY - cachedBaseY));
   }
 
   function nodePx(L: ReefLayout, i: number): [number, number] {
