@@ -1476,7 +1476,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     el('p', 'hint', UI.autosave), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn,
     group(UI.sound), volRow, buzzToggle,
     group(UI.display), button('plain', UI.timelapse, () => hooks.timelapse()), glowToggle, sharpToggle, calmToggle, bigToggle, sciToggle, quietToggle, notifyToggle, habitToggle,
-    el('p', 'hint', UI.keys),
+    el('p', 'hint keys-hint', UI.keys),
     group(UI.startOver), resetBtn,
     el('p', 'hint about', UI.about),
   );

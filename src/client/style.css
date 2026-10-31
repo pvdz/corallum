@@ -1023,3 +1023,5 @@ html.view-mode #photo { display: grid; }
   .stocks { gap: 2px 14px; }
   .stock-value { font-size: 19px; }
 }
+/* The keyboard's hint means nothing on a touch screen with no keyboard. */
+@media (pointer: coarse) and (hover: none) { .keys-hint { display: none; } }
