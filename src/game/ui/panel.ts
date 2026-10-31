@@ -1641,6 +1641,23 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const waitBar = el('div', 'wait-bar');
   waitBar.hidden = true;
   grow.prepend(waitBar);
+  // ---------- Quick buys (phones, from the Midnight Water on) ----------
+  // The zone's own systems push the three everyday cards far down a phone's sheet: a row of three
+  // small buttons keeps them in reach (press and hold to keep buying, as on the cards).
+  const quick = el('div', 'quick-buy');
+  quick.hidden = true;
+  const quickBtns = UI.quickBuy.map(([id, label]) => {
+    const btn = button(`buy quick ${upgrade(id).currency}`, '', () => { if (!held.repeated) hooks.buy(id); });
+    const held = repeatWhileHeld(btn, () => hooks.buy(id));
+    const name = el('span', 'quick-name');
+    name.append(upgradeIcon(id), label);
+    const price = el('span', 'quick-cost');
+    btn.append(name, price);
+    btn.setAttribute('aria-label', upgrade(id).name);
+    quick.append(btn);
+    return { id, btn, price };
+  });
+  grow.prepend(quick);
   let waitKey = '';
   function renderWaitBar(): void {
     const open = [...grow.querySelectorAll<HTMLElement>(':scope > section:not([hidden])')]
@@ -1999,6 +2016,15 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
 
       choices.update(s);
       renderWaitBar();
+      quick.hidden = actAt(s.height) < 2;
+      if (!quick.hidden) for (const q of quickBtns) {
+        const gone = !revealed(s, q.id) || maxed(s, q.id);
+        q.btn.hidden = gone;
+        if (gone) continue;
+        const text = num(cost(s, q.id));
+        if (q.price.textContent !== text) q.price.textContent = text;
+        q.btn.disabled = !canAfford(s, q.id);
+      }
 
       // A moment waiting for an answer, and answers given.
       const mo = nextMoment(s);

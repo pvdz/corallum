@@ -83,6 +83,8 @@ export const UI = {
   notYet: 'Not yet',
   carries: 'What the spawn carries',
   continue: 'Continue',
+  /** Phones from the Midnight Water on: the three everyday buys at the top of the Grow tab. */
+  quickBuy: [['polyp', 'Polyp'], ['skeleton', 'Band'], ['symbiont', 'Glimmer']] as const,
   /** A choice card folded away for now (its chip or a tap brings it back). */
   later: 'Later',
   livesOn: 'The reef lives on',
