@@ -502,6 +502,13 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
   box-shadow: 0 0 24px rgba(242, 200, 140, 0.12) inset; animation: rise-in 0.8s ease both;
 }
 .truce[hidden] { display: none; }
+/* A choice folded for later: only its kicker shows; a tap anywhere opens it again. */
+.truce.moment { position: relative; }
+.truce.moment > .later-btn { position: absolute; top: 6px; right: 8px; padding: 2px 8px; border: 0; background: none; font-size: 11px; color: var(--ink-dim); cursor: pointer; opacity: 0.7; }
+.truce.moment > .later-btn:hover { opacity: 1; color: var(--ink); }
+.truce.moment.later { padding-top: 8px; padding-bottom: 8px; cursor: pointer; animation: none; }
+.truce.moment.later > :not(.truce-kicker) { display: none; }
+.truce.moment.later > .truce-kicker::after { content: ' ▸'; }
 .truce-kicker { margin: 0; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sand); }
 .truce h3 { margin: 4px 0 6px; font-family: var(--display); font-weight: 400; font-size: 20px; }
 .truce-text { margin: 0 0 10px; font-family: var(--display); font-size: 14.5px; line-height: 1.55; color: #e5ddd0; }
@@ -961,6 +968,8 @@ html.view-mode #photo { display: grid; }
     content: ''; position: absolute; inset: -9px -4px;
   }
   .card .pin::after { inset: -12px -8px; }
+  /* Later on a choice card (absolutely placed already): a finger-sized margin of its own. */
+  .truce.moment > .later-btn::after { content: ''; position: absolute; inset: -10px -10px -12px; }
   /* Tabs, the Finished row, sliders and text fields: at least 32 px tall to a finger. */
   .tab { min-height: 34px; }
   .finished > summary { padding-top: 10px; padding-bottom: 10px; }
@@ -974,5 +983,5 @@ html.view-mode #photo { display: grid; }
 #sound.beckon { animation: beckon 1.6s ease-in-out 3; }
 @keyframes beckon { 0%, 100% { box-shadow: 0 0 0 0 rgba(159, 246, 255, 0); } 50% { box-shadow: 0 0 18px 4px rgba(159, 246, 255, 0.55); border-color: rgba(159, 246, 255, 0.8); } }
 /* Residents with every home taken: one quiet line for the others waiting. */
-.residents .home-more { display: block; width: 100%; margin: 4px 0 0; padding: 6px 2px; border: 0; background: none; text-align: left; font-size: 12px; color: var(--ink-dim); cursor: pointer; }
+.residents .home-more { display: block; width: 100%; margin: 4px 0 0; padding: 9px 2px; border: 0; background: none; text-align: left; font-size: 12px; color: var(--ink-dim); cursor: pointer; }
 .residents .home-more:hover { color: var(--ink); }

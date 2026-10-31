@@ -1649,9 +1649,20 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const key = open.map((x) => x.label).join('|');
     if (key === waitKey) return;
     waitKey = key;
+    // A choice that may wait can be folded to its kicker ("Later"); a new choice in the same box opens unfolded.
+    for (const { sec, label } of open) {
+      if (!sec.classList.contains('moment')) continue;
+      if (!sec.querySelector(':scope > .later-btn')) {
+        const later = button('later-btn', UI.later, () => { sec.classList.add('later'); sec.dataset.laterFor = sec.querySelector('.truce-kicker')?.textContent ?? ''; });
+        sec.append(later);
+        sec.addEventListener('click', (e) => { if (sec.classList.contains('later') && e.target !== later) { e.stopPropagation(); sec.classList.remove('later'); } }, true);
+        sec.title = '';
+      }
+      if (sec.classList.contains('later') && sec.dataset.laterFor !== label) sec.classList.remove('later');
+    }
     waitBar.hidden = open.length < 2;
     waitBar.innerHTML = '';
-    for (const x of open) waitBar.append(button('wait-chip', x.label, () => x.sec.scrollIntoView({ behavior: 'smooth', block: 'start' })));
+    for (const x of open) waitBar.append(button('wait-chip', x.label, () => { x.sec.classList.remove('later'); x.sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); }));
   }
 
   return {

@@ -83,6 +83,8 @@ export const UI = {
   notYet: 'Not yet',
   carries: 'What the spawn carries',
   continue: 'Continue',
+  /** A choice card folded away for now (its chip or a tap brings it back). */
+  later: 'Later',
   livesOn: 'The reef lives on',
   greatFull: (n: number) => `Full, and a great tide: ${memoryCount(n)}`,
   moonFull: 'The moon is full.',
