@@ -2246,7 +2246,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         for (const line of s.meta.chronicle) for (const id of (line.split('|')[1] ?? '').split(',')) if (id) counts.set(id, (counts.get(id) ?? 0) + 1);
         const top = [...counts].sort((a, b) => b[1] - a[1])[0];
         const title = top ? LINE_TITLES[top[0] as MemoryId] : undefined;
-        lineageSub.textContent = (title ? `${title} · ` : '') + `${s.meta.spawnings} spawning${s.meta.spawnings === 1 ? '' : 's'} · best reef ${metres(Math.max(s.meta.best, s.height))}` +
+        lineageSub.textContent = (title ? `${title} · ` : '') + (s.meta.endings ? `${s.meta.endings} ending${s.meta.endings === 1 ? '' : 's'} · ` : '') + `${s.meta.spawnings} spawning${s.meta.spawnings === 1 ? '' : 's'} · best reef ${metres(Math.max(s.meta.best, s.height))}` +
           (s.seamount !== 'plain' ? ` · this reef: ${seamountDef(s.seamount).name.toLowerCase()}` : '');
         const can = canSpawnLesser(s);
         spawnTitle.textContent = ended(s) ? UI.beginAgain : UI.lesserTitle;
@@ -2255,7 +2255,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         spawnBtn.textContent = can ? `+${lineageFor(s)} lineage` : UI.midnightFirst;
         // What that lineage would buy in the next run, cheapest first.
         const buys = can ? affordableTraits(s, s.meta.lineage + lineageFor(s)) : [];
-        spawnBuys.textContent = buys.length ? `Enough for: ${buys.join(', ')}` : '';
+        // The first few by price, and how many more (a long line's lineage buys twenty or so).
+        spawnBuys.textContent = buys.length ? UI.enoughFor(buys.slice(0, 6).join(', '), Math.max(0, buys.length - 6)) : '';
         spawnBuys.hidden = !buys.length;
         for (const tr of TRAITS) {
           const c = traitCards.get(tr.id)!;

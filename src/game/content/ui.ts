@@ -59,6 +59,8 @@ export const UI = {
   awayTitle: 'While you drifted',
   wordsReady: 'Your scouts have learned enough of their words.',
   beginAgain: 'Begin again',
+  /** What the lineage would buy, cheapest first: a few by name and a count of the rest. */
+  enoughFor: (names: string, more: number) => `Enough for: ${names}${more ? `, and ${more} more` : ''}`,
   midnightFirst: 'Reach the Midnight Water first',
   newBand: 'New band',
   newBands: 'New bands',
