@@ -1393,6 +1393,9 @@ function floatText(x: number, y: number, text: string, cls = ''): void {
   f.style.left = `${x}px`;
   f.style.top = `${y}px`;
   ui.append(f);
+  // Kept inside the scene, clear of the depth gauge: a long line near the edge would run under the panel or off the screen.
+  const half = f.offsetWidth / 2, right = focusNow.w / dpr;
+  if (half > 0 && right > 2 * half + 56) f.style.left = `${Math.min(Math.max(x, half + 8), right - half - 48)}px`;
   setTimeout(() => f.remove(), cls ? 2200 : 1200);
 }
 
