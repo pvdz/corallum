@@ -1003,3 +1003,9 @@ html.view-mode #photo { display: grid; }
   .quick-buy .buy.quick.best { border-color: rgba(255, 214, 150, 0.75); }
   .quick-buy .buy.quick.best .quick-name::after { content: ' ✦'; color: #ffd9a8; font-size: 10px; }
 }
+/* A lesser spawning mid-run: folded to its title and gain until opened. */
+.spawn-lesser.foldable-spawn > h3 { cursor: pointer; }
+.spawn-lesser.foldable-spawn > h3::after { content: '\00a0▾'; color: var(--ink-dim); font-size: 0.8em; }
+.spawn-lesser.foldable-spawn.folded > h3::after { content: '\00a0▸'; }
+.spawn-lesser.folded > :not(h3) { display: none; }
+.spawn-lesser .spawn-gain { color: #cfe8a8; font-size: 0.85em; }

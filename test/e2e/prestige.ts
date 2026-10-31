@@ -23,7 +23,8 @@ await withGame(async (open) => {
     await page.locator('button', { hasText: 'Copy save' }).click();
     await page.locator('.backup-note').waitFor({ state: 'hidden', timeout: 3000 });
     await page.locator('.tab', { hasText: 'Lineage' }).click();
-    // Send it to a cold seamount.
+    // Mid-run the card is folded to its title and gain; open it, and send the spawn to a cold seamount.
+    await page.locator('.spawn-lesser.folded h3', { hasText: 'lineage' }).click();
     await page.locator('.spawn-lesser button.seamount', { hasText: 'cold' }).click();
     await page.locator('.spawn-lesser button.buy').click();
     await page.waitForLoadState('load');

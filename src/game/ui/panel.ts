@@ -1011,6 +1011,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   lineageHead.append(el('span', 'stock-name', 'Lineage'), lineageCount, lineageSub);
   const spawnCard = el('article', 'card spawn-lesser');
   const spawnTitle = el('h3', '', UI.lesserTitle);
+  const spawnGain = el('span', 'spawn-gain');
+  let spawnOpened = false;
+  spawnTitle.setAttribute('role', 'button');
+  spawnTitle.tabIndex = 0;
+  const spawnToggle = () => { if (!lastState || ended(lastState)) return; spawnOpened = !spawnOpened; };
+  spawnTitle.addEventListener('click', spawnToggle);
+  spawnTitle.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); spawnToggle(); } });
   const spawnText = el('p', 'flavour',
     UI.lesserText);
   const spawnFoot = el('footer');
@@ -2349,7 +2356,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         lineageSub.textContent = (title ? `${title} · ` : '') + (s.meta.endings ? `${s.meta.endings} ending${s.meta.endings === 1 ? '' : 's'} · ` : '') + `${s.meta.spawnings} spawning${s.meta.spawnings === 1 ? '' : 's'} · best reef ${metres(Math.max(s.meta.best, s.height))}` +
           (s.seamount !== 'plain' ? ` · this reef: ${seamountDef(s.seamount).name.toLowerCase()}` : '');
         const can = canSpawnLesser(s);
-        spawnTitle.textContent = ended(s) ? UI.beginAgain : UI.lesserTitle;
+        const titleText = ended(s) ? UI.beginAgain : UI.lesserTitle;
+        // Mid-run it is an option, not the point: folded to its title and what it would bring, until opened.
+        const gainText = !ended(s) && can ? ` · +${lineageFor(s)} lineage` : '';
+        if (spawnGain.parentNode !== spawnTitle || spawnTitle.firstChild?.textContent !== titleText) spawnTitle.replaceChildren(titleText, spawnGain);
+        if (spawnGain.textContent !== gainText) spawnGain.textContent = gainText;
+        const fold = !ended(s) && !spawnOpened;
+        if (spawnCard.classList.contains('folded') !== fold) spawnCard.classList.toggle('folded', fold);
+        spawnCard.classList.toggle('foldable-spawn', !ended(s));
         spawnText.textContent = ended(s) ? UI.beginAgainText : UI.lesserText;
         spawnBtn.disabled = !can;
         spawnBtn.textContent = can ? `+${lineageFor(s)} lineage` : UI.midnightFirst;
