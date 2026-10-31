@@ -30,6 +30,11 @@ Prestige: **Lesser Spawning** → new seamount, keep **Lineage** traits and deco
 - DOM panels overlaid: desktop side panel; mobile bottom sheet with tabs.
 - System font stacks only (no network). Display: Iowan/Palatino/Georgia/DejaVu Serif.
 - Reduced-motion and quality tiers.
+- A quiet panel (the user finds the HTML panel heavy beside the canvas): what is already known
+  steps aside (owned cards hide their flavour, choices that may wait fold with Later, full
+  residents and the mid-run spawning fold to one line, finished upgrades fold away); feedback
+  belongs in the world (flourishes that show by day and night, numbers over the water). New UI
+  should earn its room on a phone sheet ~400 px tall.
 
 ## Depth and acts
 Reef height is how far the reef has climbed the seamount's flank; depth = 4000 m − height.
