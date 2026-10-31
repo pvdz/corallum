@@ -169,6 +169,8 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] a full browser playthrough (?bot at each zone + ending) with no console errors: `tools/sweep.ts` desktop + mobile clean
 - [x] server: a malformed URL escape (%E0%A4%A) crashed the whole server; now a 404 (test/sim/server.test.ts); traversal refused
 - [x] no external requests (fonts, scripts, analytics): checked
+- [x] the other story paths (truce bbb/abb, other dialects) sweep clean on desktop and mobile (`tools/sweep.ts <vp> '<params>'`)
+- [x] no leak in a long session: 4 min at ×100 from a new reef and ×30 from the Sunlit Crown, heap flat (6–8 MB), DOM nodes and listeners flat
 - [x] the server gzips text (cached per body): ~1.25 MB → ~0.35 MB for a phone over `--lan`; fresh load 0.4–0.5 s headless
 - [x] sound sleeps while the page is hidden (no pad in a background tab) and wakes on show or touch (iOS interrupts audio in the background and only resumes from a gesture); cues are dropped while asleep
 - [ ] Safari/Firefox: only Chromium is installed (no network to fetch others); a static scan found no unguarded Safari-missing APIs (OffscreenCanvas, vibrate, Notification are feature-tested)
