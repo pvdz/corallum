@@ -1838,7 +1838,10 @@ export function chooseStrain(s: GameState, id: StrainId): boolean {
 /** The day's gift, once per calendar day (the client passes the day number). Returns the pay, or 0. */
 export function dailyGift(s: GameState, day: number): number {
   if (day <= s.meta.lastDay || s.levels.polyp === 0) return 0;
+  // The line's first day is only noted: a new player is not handed "a new day" on a reload.
+  const first = s.meta.lastDay === 0;
   s.meta.lastDay = day;
+  if (first) return 0;
   s.meta.dreams = Math.min(DREAM.max, s.meta.dreams + 1);
   dig(s, 'feast');
   return burst(s, DAILY.seconds);

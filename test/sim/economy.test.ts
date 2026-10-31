@@ -307,6 +307,9 @@ test('cyclesBetween counts every spell that overlaps the absence, partial ones i
 test('dreams: one with each new day, at most three kept, each spent once', () => {
   const s = midGame();
   s.meta.lastDay = 0;
+  // The first day the line sees is only noted.
+  assert.equal(dailyGift(s, 1), 0);
+  assert.equal(s.meta.dreams, 0);
   for (let d = 1; d <= 5; d++) dailyGift(s, d);
   assert.equal(s.meta.dreams, 3);
   assert.ok(dream(s) && dream(s) && dream(s));
