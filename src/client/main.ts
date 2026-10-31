@@ -197,6 +197,9 @@ soundBtn.addEventListener('click', () => {
   renderSound();
 });
 renderSound();
+// The sound sleeps while the page is hidden, and wakes when it is shown or touched.
+document.addEventListener('visibilitychange', () => audio.wake(!document.hidden));
+window.addEventListener('pointerdown', () => audio.wake(true));
 if (soundWanted) {
   const start = () => { audio.setEnabled(true); renderSound(); };
   window.addEventListener('pointerdown', start, { once: true });

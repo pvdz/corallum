@@ -170,6 +170,8 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] server: a malformed URL escape (%E0%A4%A) crashed the whole server; now a 404 (test/sim/server.test.ts); traversal refused
 - [x] no external requests (fonts, scripts, analytics): checked
 - [x] the server gzips text (cached per body): ~1.25 MB → ~0.35 MB for a phone over `--lan`; fresh load 0.4–0.5 s headless
+- [x] sound sleeps while the page is hidden (no pad in a background tab) and wakes on show or touch (iOS interrupts audio in the background and only resumes from a gesture); cues are dropped while asleep
+- [ ] Safari/Firefox: only Chromium is installed (no network to fetch others); a static scan found no unguarded Safari-missing APIs (OffscreenCanvas, vibrate, Notification are feature-tested)
 - [ ] perf on a real phone (needs the user; see M6)
 
 ### M0 Scaffold

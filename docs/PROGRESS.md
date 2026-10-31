@@ -766,3 +766,5 @@ date, what landed, what is half-done, what's next.
 - The epilogue garden's children sit one to a row (name left, effect right) instead of three cramped columns; the whisper halo is a little stronger.
 - Journal notes (first sightings) stay 4.5 s instead of 3 and carry a dark shadow so they read over pale water.
 - Phone panel: the compact four-to-a-row stock grid starts at four stocks (Midnight's four now sit in one row). With the water strip showing, the water line keeps what is happening and the next thing; the strip carries the rest (tap a dot for its time).
+- Sound sleeps while the page is hidden (AudioContext suspended) and wakes when shown or on any touch; cues are skipped while it sleeps, so they do not pile up.
+- Concurrent sessions share this checkout: commit by path (`git commit -- <paths>`), never `git add -A`.

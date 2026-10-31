@@ -316,6 +316,16 @@ export function createAudio() {
       }
       if (ctx && master) master.gain.setTargetAtTime(on ? volume : 0, ctx.currentTime, 0.4);
     },
+    /**
+     * The page hidden or shown: hidden, the sound sleeps (no pad playing to a background tab);
+     * shown, or on any touch, it wakes. Phones interrupt audio in the background, and only
+     * resume it from a gesture, so a touch is enough to bring it back.
+     */
+    wake(visible: boolean): void {
+      if (!ctx) return;
+      if (!visible) void ctx.suspend();
+      else if (enabled && ctx.state !== 'running') void ctx.resume();
+    },
     /** Overall loudness, 0..1. */
     setVolume(v: number): void {
       volume = Math.max(0, Math.min(1, v));
@@ -337,7 +347,7 @@ export function createAudio() {
       applyZone();
     },
     cue(c: Cue): void {
-      if (!enabled || !ctx) return;
+      if (!enabled || !ctx || ctx.state !== 'running') return;
       const root = ZONES[zone].root * 8;
       switch (c) {
         case 'buy':
