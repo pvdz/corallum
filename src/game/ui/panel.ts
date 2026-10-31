@@ -1617,8 +1617,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       bloom.sub.textContent = `${rate(bloomNet(s, r))} · ×${photo(s.bloom).toFixed(2)} calcite`;
       spawn.row.hidden = !(r.spawnP > 0 || s.spawn > 0.5);
       spawn.value.textContent = num(s.spawn);
-      // Toward the spawn the moon needs, or (once there) that it is enough.
-      spawn.sub.textContent = `${rate(spawnNet(s, r))} · ${s.spawn >= spawnTarget(s) ? UI.spawnEnough : `of ${num(spawnTarget(s))}`} · holds ~${num(spawnHold(s, r))}`;
+      // Toward the spawn the moon needs, or (once there) that it is enough; nothing more after the ending.
+      spawn.sub.textContent = `${rate(spawnNet(s, r))} · ${ended(s) ? '' : s.spawn >= spawnTarget(s) ? `${UI.spawnEnough} · ` : `of ${num(spawnTarget(s))} · `}holds ~${num(spawnHold(s, r))}`;
 
       // Dialects.
       const tier = nextTier(s);

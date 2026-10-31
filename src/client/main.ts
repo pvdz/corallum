@@ -1059,7 +1059,8 @@ function showJournalNote(kicker: string, name: string, now = false): void {
     if (!journalQueue.length) { journalBusy = false; return; }
     journalBusy = true;
     // Not over the title of a new reef: the note waits until it has faded.
-    if (!title.classList.contains('faded') || Number(getComputedStyle(title).opacity) > 0.05) { setTimeout(next, 500); return; }
+    // Nor over the ending's pages.
+    if (!title.classList.contains('faded') || Number(getComputedStyle(title).opacity) > 0.05 || document.querySelector('.finale:not([hidden])')) { setTimeout(next, 500); return; }
     const n = journalQueue.shift()!;
     journalNote.textContent = '';
     const k = document.createElement('span');

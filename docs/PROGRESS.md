@@ -796,3 +796,4 @@ date, what landed, what is half-done, what's next.
 - Two tabs on one reef: the tab that yields (it stops saving) now covers itself with a full-screen notice and ignores the shortcut keys; it used to show a small pill over the top buttons and stay fully playable, losing whatever was done in it.
 - Sound switched off suspends the audio context after its fade (the pad kept synthesising at zero volume).
 - The spawn stock's note says "enough for the moon" once it holds the spawn the breach needs (it read "3.01B · of 1.00M").
+- Journal notes also wait while the ending's pages are up (a "seen for the first time" note popped in over the release); after the ending the spawn note drops "enough for the moon".
