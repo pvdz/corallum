@@ -1663,19 +1663,21 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const open = [...grow.querySelectorAll<HTMLElement>(':scope > section:not([hidden])')]
       .map((sec) => ({ sec, label: sec.querySelector('.truce-kicker')?.textContent ?? '' }))
       .filter((x) => x.label);
-    const key = open.map((x) => x.label).join('|');
+    // Which choice a box holds: its kicker and title (one box shows many moments under one kicker).
+    const choiceKey = (sec: HTMLElement) => `${sec.querySelector('.truce-kicker')?.textContent ?? ''}|${sec.querySelector('h3')?.textContent ?? ''}`;
+    const key = open.map((x) => choiceKey(x.sec)).join('||');
     if (key === waitKey) return;
     waitKey = key;
     // A choice that may wait can be folded to its kicker ("Later"); a new choice in the same box opens unfolded.
-    for (const { sec, label } of open) {
+    for (const { sec } of open) {
       if (!sec.classList.contains('moment')) continue;
       if (!sec.querySelector(':scope > .later-btn')) {
-        const later = button('later-btn', UI.later, () => { sec.classList.add('later'); sec.dataset.laterFor = sec.querySelector('.truce-kicker')?.textContent ?? ''; });
+        const later = button('later-btn', UI.later, () => { sec.classList.add('later'); sec.dataset.laterFor = choiceKey(sec); });
         sec.append(later);
         sec.addEventListener('click', (e) => { if (sec.classList.contains('later') && e.target !== later) { e.stopPropagation(); sec.classList.remove('later'); } }, true);
         sec.title = '';
       }
-      if (sec.classList.contains('later') && sec.dataset.laterFor !== label) sec.classList.remove('later');
+      if (sec.classList.contains('later') && sec.dataset.laterFor !== choiceKey(sec)) sec.classList.remove('later');
     }
     waitBar.hidden = open.length < 2;
     waitBar.innerHTML = '';
