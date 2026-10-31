@@ -198,6 +198,17 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const sand = stock('Sand', 'sand');
   const bloom = stock('Bloom', 'bloom');
   const spawn = stock('Spawn', 'spawn');
+  // A stock that jumps in a frame (a haul, a feast, a gift) brightens and swells for a moment; one a
+  // purchase takes a bite out of dims for a blink. Not under reduced motion or the calm setting.
+  const lastValue = new Map<HTMLElement, number>();
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  function pulse(value: HTMLElement, v: number): void {
+    const prev = lastValue.get(value);
+    lastValue.set(value, v);
+    if (prev === undefined || !(prev > 0) || reducedMotion.matches || hooks.calm.get() || !value.animate) return;
+    if (v > prev * 1.05) value.animate([{ transform: 'scale(1.12)', filter: 'brightness(1.7)' }, { transform: 'none', filter: 'none' }], { duration: 650, easing: 'ease-out' });
+    else if (v < prev * 0.95) value.animate([{ opacity: 0.45 }, { opacity: 1 }], { duration: 400, easing: 'ease-out' });
+  }
   const heightRow = el('div', 'stock height');
   const heightLabel = el('span', 'stock-name', 'Reef');
   const heightValue = el('span', 'stock-value', '0 m');
@@ -1620,6 +1631,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       spawn.value.textContent = num(s.spawn);
       // Toward the spawn the moon needs, or (once there) that it is enough; nothing more after the ending.
       spawn.sub.textContent = `${rate(spawnNet(s, r))} · ${ended(s) ? '' : s.spawn >= spawnTarget(s) ? `${UI.spawnEnough} · ` : `of ${num(spawnTarget(s))} · `}holds ~${num(spawnHold(s, r))}`;
+      for (const [st, v] of [[calcite, s.calcite], [glow, s.glow], [plankton, s.plankton], [murmurs, s.murmurs], [silt, s.silt], [sand, s.sand], [bloom, s.bloom], [spawn, s.spawn]] as const) {
+        if (!st.row.hidden) pulse(st.value, v);
+      }
 
       // Dialects.
       const tier = nextTier(s);
