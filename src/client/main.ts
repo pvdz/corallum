@@ -203,6 +203,16 @@ soundBtn.addEventListener('click', () => {
   renderSound();
 });
 renderSound();
+// Sound starts off. Once, if it was never chosen, the button glows a few times after the opening,
+// so the sea's music is found (remembered: it never asks again).
+setTimeout(() => {
+  try {
+    if (localStorage.getItem(SOUND_KEY) !== null || localStorage.getItem(`${SOUND_KEY}.beckoned`) || document.hidden) return;
+    localStorage.setItem(`${SOUND_KEY}.beckoned`, '1');
+  } catch { return; }
+  soundBtn.classList.add('beckon');
+  soundBtn.addEventListener('animationend', () => soundBtn.classList.remove('beckon'), { once: true });
+}, 40_000);
 // The sound sleeps while the page is hidden, and wakes when it is shown or touched.
 document.addEventListener('visibilitychange', () => audio.wake(!document.hidden));
 window.addEventListener('pointerdown', () => audio.wake(true));

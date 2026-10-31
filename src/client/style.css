@@ -920,3 +920,7 @@ html.view-mode #photo { display: grid; }
   }
   .card .pin::after { inset: -12px -8px; }
 }
+
+/* The sound button, once, for a player who never chose: three slow glows. */
+#sound.beckon { animation: beckon 1.6s ease-in-out 3; }
+@keyframes beckon { 0%, 100% { box-shadow: 0 0 0 0 rgba(159, 246, 255, 0); } 50% { box-shadow: 0 0 18px 4px rgba(159, 246, 255, 0.55); border-color: rgba(159, 246, 255, 0.8); } }
