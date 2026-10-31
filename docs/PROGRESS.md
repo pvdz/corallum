@@ -873,3 +873,4 @@ date, what landed, what is half-done, what's next.
 - A card's level ("≈ ×102") never wraps (the water mark sat alone on a line on a phone).
 - The journal note's shade is centred on the words and darker (0.7): over the Sunlit surface on a phone the first shade was too faint and off to the right, and "Pistol shrimp" could not be read.
 - Night sky on a phone: the figures to trace were ~45 px wide in a ~130 px sky, and Ossel's Cup sat under the sound and view buttons, so tracing it by touch could not be finished. On a narrow sky the figures spread over the strip between those buttons and the depth gauge, 1.3× wider. The finale e2e traces a figure on every viewport (by touch on phones); it fails without the fix.
+- Phone quick buys carry the best-buy mark (a gold edge and ✦), since on a phone the badged card is far down the sheet.

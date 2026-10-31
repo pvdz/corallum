@@ -2184,6 +2184,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         // With one thing to buy there is nothing to compare: no badge.
         if (rivals < 2) best = null;
         for (const [id, c] of cards) c.root.classList.toggle('best', id === best);
+        for (const q of quickBtns) q.btn.classList.toggle('best', q.id === best);
       }
 
       // Upgrade cards.
