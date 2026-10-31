@@ -887,3 +887,4 @@ date, what landed, what is half-done, what's next.
 - "Coming up: Tend a daughter colony — after 100 × bud a polyp" reads "— at 100 polyps" (also glimmerseed and shoals).
 - The sticky quick-buy row has no backdrop blur (nothing to see through at 0.96 opacity). Measured: scrolling the panel at 4× CPU costs the same with or without blurs (~78 ms per frame headless); a first, cold run had suggested 18 ms for the blur, which was warm-up.
 - Perf: the Sunlit sand's caustic lines are sampled every 15 device px instead of 10 (their shortest wavelength is ~18 px; no visible change): draw 14.9 → 13.3 ms at 4× CPU on a phone viewport, both runs of an A/B.
+- Measured, not changed: the Twilight Shelf draws ~1,350 glow sprites a frame (360 crown tips, 351 shoal lamps, 213 symbiont specks…); drawImage is ~7% of a headless frame. Small sprite blits are cheap on a GPU, so this waits for a real phone's numbers (Release checklist) before anything is cut.
