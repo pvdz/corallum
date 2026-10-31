@@ -800,3 +800,4 @@ date, what landed, what is half-done, what's next.
 - Seamounts timed by the bot (table in ECONOMY.md): every trial goal is reached; silent and lonely are walls for a full ending (fine as trials). On a silent seamount the murmurs stock no longer stays up after the truce (there are no Readings to buy).
 - `?bot=` takes `&seamount=`; console-error sweeps of the dark, tidal, gleaming, silent, heavy and shallow seamounts.
 - The line's first calendar day is only noted: a new player who reloaded in their first minutes was handed "A new day" (a burst and a 15-minute dream) on day one. Gifts start the next day.
+- tools/monkey.ts: in-page button monkey (every visible button on every tab, four rounds, ten bot times; destructive ones skipped). Desktop and mobile: ~3,200 clicks each, no console errors.
