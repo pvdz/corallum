@@ -966,3 +966,6 @@ html.view-mode #photo { display: grid; }
 /* The sound button, once, for a player who never chose: three slow glows. */
 #sound.beckon { animation: beckon 1.6s ease-in-out 3; }
 @keyframes beckon { 0%, 100% { box-shadow: 0 0 0 0 rgba(159, 246, 255, 0); } 50% { box-shadow: 0 0 18px 4px rgba(159, 246, 255, 0.55); border-color: rgba(159, 246, 255, 0.8); } }
+/* Residents with every home taken: one quiet line for the others waiting. */
+.residents .home-more { display: block; width: 100%; margin: 4px 0 0; padding: 6px 2px; border: 0; background: none; text-align: left; font-size: 12px; color: var(--ink-dim); cursor: pointer; }
+.residents .home-more:hover { color: var(--ink); }

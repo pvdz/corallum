@@ -25,6 +25,9 @@ export const RESIDENT = {
   full: 'No room',
   moved: '· moved in',
   pairHint: 'Some of them live well together, and the reef feels it.',
+  /** Every home taken: the others wait behind one line. */
+  waiting: (n: number) => `${n} more would move in, if a home were free ▸`,
+  waitingOpen: 'Only those at home ▴',
 } as const;
 
 export const RESIDENTS: readonly Resident[] = [

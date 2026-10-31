@@ -490,8 +490,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     homeBox.append(row);
     homeRows.set(r.id, { row, btn });
   }
+  // With every home taken, the rest wait behind this line (their buttons could only say No room).
+  let homesAll = false;
+  const homeMore = button('plain home-more', '', () => { homesAll = !homesAll; });
   const pairLine = el('p', 'rasp-what pair-line');
-  homeBox.append(pairLine);
+  homeBox.append(homeMore, pairLine);
   grow.append(homeBox);
 
   // ---------- Expeditions ----------
@@ -2026,10 +2029,15 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         // Pairings: the ones living now, else a hint at those within reach.
         const live = PAIRS.filter((p) => s.residents.includes(p.a) && s.residents.includes(p.b));
         pairLine.textContent = live.length ? live.map((p) => `${p.name}: ${p.effect}`).join(' · ') : nHomes >= 2 ? RESIDENT.pairHint : '';
+        const full = s.residents.length >= nHomes;
+        const waiting = asking.filter((r) => !s.residents.includes(r.id)).length;
+        homeMore.hidden = !full || waiting === 0;
+        const moreText = homesAll ? RESIDENT.waitingOpen : RESIDENT.waiting(waiting);
+        if (homeMore.textContent !== moreText) homeMore.textContent = moreText;
         for (const r of RESIDENTS) {
           const h = homeRows.get(r.id)!;
-          h.row.hidden = !asking.includes(r);
           const living = s.residents.includes(r.id);
+          h.row.hidden = !asking.includes(r) || (full && !living && !homesAll);
           h.row.classList.toggle('living', living);
           h.btn.textContent = living ? RESIDENT.release : s.residents.length >= nHomes ? RESIDENT.full : RESIDENT.take;
           h.btn.disabled = !living && s.residents.length >= nHomes;
