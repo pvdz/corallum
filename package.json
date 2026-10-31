@@ -1,6 +1,6 @@
 {
   "name": "corallum",
-  "version": "0.0.1",
+  "version": "0.9.0",
   "private": true,
   "description": "An incremental game about a coral reef climbing four thousand metres to the surface.",
   "type": "module",
