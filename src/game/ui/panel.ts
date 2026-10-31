@@ -1422,6 +1422,19 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     grabber.addEventListener('pointerup', () => { y0 = NaN; });
     // A drag already chose; the click that follows it does not toggle back.
     grabber.addEventListener('click', (e) => { if (dragged) { e.stopImmediatePropagation(); dragged = false; } }, { capture: true });
+    // Drawn up, a tap on the strip of scene above it brings the reef back (and is not a sweep).
+    // Taps on the buttons over the scene (sound, view) still work.
+    let swallow = false;
+    window.addEventListener('pointerdown', (e) => {
+      swallow = false;
+      if (!panel.classList.contains('tall') || !(e.target instanceof HTMLCanvasElement)) return;
+      swallow = true;
+      e.stopPropagation();
+      setTall(false);
+    }, { capture: true });
+    for (const type of ['pointerup', 'click'] as const) {
+      window.addEventListener(type, (e) => { if (swallow && e.target instanceof HTMLCanvasElement) e.stopPropagation(); if (type === 'click') swallow = false; }, { capture: true });
+    }
   }
   panel.append(grabber, stocks, stockNote, tabs, pages);
   host.append(panel);

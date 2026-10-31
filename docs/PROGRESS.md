@@ -786,3 +786,4 @@ date, what landed, what is half-done, what's next.
 - Journal notes (feats, gifts, shards) wait until a new reef's title has faded; on a phone a feat earned on Begin again sat right on top of "Corallum". (Sightings already waited.)
 - The tall phone sheet stacks under stories (z 9 < 10): one opening while it was drawn up showed beneath it. Smoke checks a story's Continue is on top.
 - The current's effect sits on its own line under its steps on desktop too (it was squeezed into a narrow column); a <noscript> line for browsers without JavaScript.
+- Phone: with the sheet drawn up, a tap on the scene strip above it puts the sheet back instead of sweeping (smoke checks it against a control tap that does sweep).

@@ -60,8 +60,16 @@ await withGame(async (open) => {
   await page.mouse.up();
   await page.waitForTimeout(600);
   const h2 = await height();
-  const ok = h1 > h0 * 1.5 && Math.abs(h2 - h0) < 2 && errors.length === 0;
-  console.log(`${ok ? 'ok  ' : 'FAIL'} mobile sheet: ${Math.round(h0)} → ${Math.round(h1)} → ${Math.round(h2)} px${errors.length ? ': ' + errors.join(' | ') : ''}`);
+  // Drawn up again, a tap on the scene above it puts it back and is not a sweep.
+  await page.locator('.grabber').tap();
+  await page.waitForTimeout(600);
+  const sweeps = () => page.evaluate(() => (window as unknown as { corallum: { state: { tally: { sweeps: number } } } }).corallum.state.tally.sweeps);
+  const s0 = await sweeps();
+  await page.touchscreen.tap(195, 60);
+  await page.waitForTimeout(600);
+  const h3 = await height(), s1 = await sweeps();
+  const ok = h1 > h0 * 1.5 && Math.abs(h2 - h0) < 2 && Math.abs(h3 - h0) < 2 && s1 === s0 && errors.length === 0;
+  console.log(`${ok ? 'ok  ' : 'FAIL'} mobile sheet: ${Math.round(h0)} → ${Math.round(h1)} → ${Math.round(h2)} px; a scene tap closes it (${Math.round(h3)} px, sweeps ${s0} → ${s1})${errors.length ? ': ' + errors.join(' | ') : ''}`);
   if (!ok) process.exitCode = 1;
 });
 
