@@ -770,13 +770,16 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   diary.append(diaryHead, el('p', 'hint', DIARY_TEXT.intro), ringCanvas, ringNote, diaryList);
   collapsible(diary, diaryHead);
   let diaryLen = -1;
+  // The rings are drawn at the canvas's size: again when it opens or the panel changes width.
+  // Watched, not read each frame: a width read after the frame's writes forces a layout.
+  new ResizeObserver(() => {
+    const w = ringCanvas.clientWidth;
+    if (!w || w === ringW) return;
+    ringW = w;
+    ringGeo = drawRings(ringCanvas, ringLines, -1);
+  }).observe(ringCanvas);
   function renderDiary(s: GameState): void {
     diary.hidden = s.diary.length === 0;
-    // The rings are drawn at the canvas's size: again when it opens or the panel changes width.
-    if (ringCanvas.clientWidth && ringCanvas.clientWidth !== ringW) {
-      ringW = ringCanvas.clientWidth;
-      ringGeo = drawRings(ringCanvas, ringLines, -1);
-    }
     if (s.diary.length === diaryLen) return;
     diaryLen = s.diary.length;
     diaryHead.textContent = `${DIARY_TEXT.label} · ${s.diary.length}`;
@@ -1372,6 +1375,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     group(UI.display), button('plain', UI.timelapse, () => hooks.timelapse()), glowToggle, sharpToggle, calmToggle, bigToggle, sciToggle, quietToggle, notifyToggle, habitToggle,
     el('p', 'hint', UI.keys),
     group(UI.startOver), resetBtn,
+    el('p', 'hint about', UI.about),
   );
 
   /** Nudge toward copying a save when the reef is worth keeping and no copy is recent. */

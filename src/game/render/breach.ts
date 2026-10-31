@@ -136,7 +136,10 @@ export function createBreachScene(seed: number): Scene {
     if (dawn < 1) {
       ctx.save();
       ctx.globalAlpha = 1 - dawn;
-      galaxy.draw(ctx, w, h, 0, 1e9, `${w}x${h}x${wy}`, (c) => drawGalaxy(c, wy));
+      // Only the sky above the highest tide: the sea is painted over everything below it. Laid out
+      // on the still water line, so the stars stay put while the tide moves (and it paints once).
+      const sy = Math.round(stillY()), top = Math.ceil(sy + focus.h * 0.012) + 2;
+      galaxy.draw(ctx, w, top, 0, 1e9, `${w}x${sy}`, (c) => drawGalaxy(c, sy));
       ctx.restore();
     }
     for (const st of stars) {

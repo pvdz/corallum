@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Open-ended goal (user): add content, gameplay and graphics, keep going. Latest: others' spawn drawn under the full moon, bristle-cloud + weed moments, yeti crabs, sargassum raft (Breach), bristlemouths, two great works in every zone (fence, beacon, rim, lawn, dome), moonlit sweeps, Quiet vow, Ossel's past memories, Long rhythm, lost shoals, fragments (+ Foster, Scattered city), hermit crab, man-o'-war, star march, fireworms, thermocline, sea spider, phone stock grid. Bot ~7h28; 7 browser tests + sim tests green. Run e2e with `timeout 500` per test.
+NOW: Release push (mandate 2026-10-31): working down the Release checklist in docs/PLAN.md (outranks new content). Bot ~7h28; 7 browser tests + sim tests green. Run e2e with `timeout 500` per test. `tools/perf.ts` measures frame cost per zone.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
@@ -734,3 +734,16 @@ date, what landed, what is half-done, what's next.
 - Graphics: the Sunlit sand gets swell ripples (darker crests, spaced by perspective) and a real caustic web (three crossing families of wavering lines laid flat), replacing the old horizontal stripes.
 - A save that cannot be read is kept aside under `corallum.save.unreadable`-style key (`${SAVE_KEY}.unreadable`) instead of being overwritten by a fresh reef's first autosave.
 - Water card: what is already happening is listed under "Now", apart from "Soon".
+
+## 2026-10-31 — release push
+- Release checklist added to docs/PLAN.md; release-readiness now outranks new content.
+- An unreadable save is copied to `corallum.save.unreadable` before a new reef starts (the first autosave used to overwrite it).
+- The frame loop survives a throwing frame: the error is logged once per distinct message and the next frame is scheduled.
+- Offline catch-up measured: 60 days away costs ≤21 ms at the Breach.
+- Weather line: things already happening are listed under "Now:", coming ones under "Soon:".
+- tools/perf.ts: draw/panel ms and the browser's per-frame script/style/layout at bot times for each zone.
+- The Breach's galaxy cache is drawn over the sky only (was full frame): Breach draw 10.6 → 3.3 ms headless desktop.
+- Reef tab ends with a version and credits line (Corallum 0.9); package.json 0.9.0.
+- Perf: the diary's ring canvas width is watched by a ResizeObserver instead of read every frame (the read forced a synchronous layout after the panel's writes): panel 2.3–2.7 → 0.5–1.2 ms/frame headless.
+- Perf: the Breach galaxy cache was keyed on the tidal water line, so it repainted (and reallocated) every frame; now laid out on the still line and painted once: Breach draw 10.7 → 3.3 ms headless.
+- tools/perf.ts also reports the browser's script/style/layout ms per frame (CDP Performance metrics).

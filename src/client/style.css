@@ -131,6 +131,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .eta.never { color: #ffb4a0; }
 
 .hint { margin: 2px 0 6px; font-size: 12.5px; color: var(--ink-dim); font-style: italic; line-height: 1.45; }
+.hint.about { margin-top: 18px; font-size: 11px; opacity: 0.7; }
 .band-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .band {
   width: 100%; display: flex; gap: 12px; align-items: baseline; text-align: left; cursor: pointer;

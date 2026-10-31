@@ -161,10 +161,10 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] one throwing frame does not stop the loop (error reported once per distinct message)
 - [x] offline catch-up stays cheap at any absence (60 days: ≤21 ms at the Breach)
 - [x] weather line tells "Now:" from "Soon:" (it said "full moon now" under Soon)
-- [ ] frame budget per zone measured headless and the worst zone brought down
+- [x] frame budget per zone measured headless (`tools/perf.ts`) and the worst zone brought down: the Breach blitted its galaxy cache over the whole frame (10.6 → 3.3 ms draw; every zone now 3–4.5 ms desktop)
 - [ ] late-game panel: chips, cards and stocks stay readable on desktop and phone
 - [ ] proofread every player-facing string (content/) for typos and voice
-- [ ] version + credits line in the Reef tab
+- [x] version + credits line in the Reef tab (0.9)
 - [ ] a full browser playthrough (?bot at each zone + ending) with no console errors
 - [ ] perf on a real phone (needs the user; see M6)
 

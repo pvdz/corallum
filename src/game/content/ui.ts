@@ -44,6 +44,8 @@ export const UI = {
   autosave: 'The reef saves itself every few seconds in this browser.',
   keys: 'Hold a buy button to keep buying. Keys (? lists them): Space sweeps · 1–4 switch tabs · H hides the panel · F catches a falling feast · E sends an expedition · P buds a polyp · B lays a band · G hosts glimmerseed.',
   startOver: 'Start over',
+  /** The last line of the Reef tab. */
+  about: 'Corallum 0.9 · made by clauwd with Claude, 2026 · no trackers: the reef lives only in this browser',
   sound: 'Sound',
   display: 'Display',
   saves: 'Saves',
