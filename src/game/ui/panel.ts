@@ -2173,6 +2173,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           (s.seamount !== 'plain' ? ` · this reef: ${seamountDef(s.seamount).name.toLowerCase()}` : '');
         const can = canSpawnLesser(s);
         spawnTitle.textContent = ended(s) ? UI.beginAgain : UI.lesserTitle;
+        spawnText.textContent = ended(s) ? UI.beginAgainText : UI.lesserText;
         spawnBtn.disabled = !can;
         spawnBtn.textContent = can ? `+${lineageFor(s)} lineage` : UI.midnightFirst;
         // What that lineage would buy in the next run, cheapest first.
