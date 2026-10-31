@@ -1679,6 +1679,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     return { id, btn, price };
   });
   grow.prepend(quick);
+  pages.addEventListener('scroll', () => { const on = pages.scrollTop > 4; if (pages.classList.contains('scrolled') !== on) pages.classList.toggle('scrolled', on); }, { passive: true });
   let waitKey = '';
   function renderWaitBar(): void {
     const open = [...grow.querySelectorAll<HTMLElement>(':scope > section:not([hidden])')]

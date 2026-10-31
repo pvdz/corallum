@@ -1000,8 +1000,10 @@ html.view-mode #photo { display: grid; }
 .quick-buy { display: none; }
 .quick-buy:not([hidden]) { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 6px;
   position: sticky; top: -4px; z-index: 3; margin: -4px -2px 0; padding: 6px 2px 6px;
-  background: rgba(var(--zone-tint), 0.96);
+  background: transparent;
   border-radius: 0 0 12px 12px; }
+/* The list scrolled under it: a backdrop of the panel's tint (at rest it sits on the panel itself). */
+.pages.scrolled .quick-buy:not([hidden]) { background: rgb(var(--zone-tint)); }
 /* A chip that scrolls to a choice stops below the row. */
 .page-grow:has(> .quick-buy:not([hidden])) > section { scroll-margin-top: 66px; }
 .quick-buy .buy.quick { min-width: 0; padding: 5px 6px; display: flex; flex-direction: column; align-items: center; gap: 1px; line-height: 1.2; }

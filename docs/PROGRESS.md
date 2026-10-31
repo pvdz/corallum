@@ -891,3 +891,4 @@ date, what landed, what is half-done, what's next.
 - Loading a save (from a file or pasted) over a reef more than five minutes old asks first, naming both heights ("replaces the reef you have now (3,421 m) with the saved one (24 m)"); declined, nothing changes. It replaced the reef silently before. Saves e2e covers decline and accept.
 - The reset warning said "This erases the reef"; it erases the whole line too (lineage, traits, journal, chronicle) and now says so, with a nudge to save to a file first.
 - The memory choice on a phone: twelve memories run ~2,000 px, with "1 of 3", Not yet and Let go at the very end; that footer now stays at the bottom of the screen as the list scrolls.
+- The quick-buy row sits on the panel at rest (no box of its own) and takes an opaque backdrop of the zone's tint only once the list scrolls under it (a translucent one let the cards' text show through).
