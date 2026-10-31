@@ -226,13 +226,14 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   .grabber:hover::before, .grabber:focus-visible::before, .tall .grabber::before { opacity: 0.8; }
 }
 
+/* Another tab took the reef: this one stops saving, so it stops taking input too, and says why. */
 #yielded {
-  display: none; position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 20;
-  padding: 8px 16px; border-radius: 999px; font-size: 13px; background: rgba(40, 20, 30, 0.9);
-  border: 1px solid rgba(255, 180, 160, 0.4); color: #ffd6c8; white-space: nowrap;
+  display: none; position: fixed; inset: 0; z-index: 60; place-content: center; padding: 24px; text-align: center;
+  background: rgba(2, 4, 16, 0.84); backdrop-filter: blur(3px);
+  font-family: var(--display); font-size: 19px; line-height: 1.6; color: #ffe2d6;
 }
-#yielded a { color: var(--glow); }
 #yielded p { margin: 0; max-width: 26em; }
+#yielded a { color: var(--glow); }
 .yielded #yielded { display: grid; }
 
 /* ---------- Act II: plankton, murmurs, shoals, readings ---------- */
@@ -496,6 +497,8 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 @media (max-width: 799px) { .truce-choices { grid-template-columns: 1fr; } .truce-text { font-size: 13.5px; } }
 @media (max-width: 799px) {
   .stocks { grid-template-columns: 1fr 1fr 1fr; gap: 4px 10px; }
+  /* One or two stocks share the width in halves, so a rate fits on one line. */
+  .stocks[data-n='1'], .stocks[data-n='2'] { grid-template-columns: 1fr 1fr; }
   .stock { grid-template-columns: 1fr; }
   .stock-name { font-size: 10px; letter-spacing: 0.1em; }
   .stock-value { text-align: left; font-size: 18px; }
@@ -887,7 +890,8 @@ html.view-mode #photo { display: grid; }
 @media (max-width: 799px) {
   .stocks.many .stock-value { font-size: 17px; }
   .stocks.many .stock-name { font-size: 9.5px; letter-spacing: 0.1em; }
-  /* Four or more stocks: four to a row, each rate on one line (tap a stock for the whole line). */
+  /* Three or more stocks: up to four to a row, each rate on one line (tap a stock for the whole line). */
   .stocks.many { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 3px 8px; }
+  .stocks.many[data-n='3'] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .stocks.many .stock-sub { font-size: 9.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 }
