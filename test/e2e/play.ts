@@ -75,4 +75,19 @@ await withGame(async (open) => {
     console.log(`${ok ? 'ok  ' : 'FAIL'} landscape: a summary taller than the screen scrolls to its button and closes`);
     if (!ok) process.exitCode = 1;
   }
+  // Back after an update and a long absence: the news and the away summary both want the screen.
+  // One card at a time: the summary first, the news when it is closed.
+  {
+    const st = runBot((s) => s.t >= 3000, 3000).state;
+    st.meta.seen = st.meta.seen.filter((k) => !k.startsWith('news:'));
+    const { page, errors } = await open(VIEWPORTS[1]!, '', { save: serialize(st, Date.now() - 3 * 3600_000) });
+    await page.waitForSelector('.away:not([hidden])', { timeout: 15000 });
+    const shown = () => page.locator('.reader:not([hidden])').count();
+    const atOnce = await shown();
+    await page.locator('.away:not([hidden]) button', { hasText: 'Return to the reef' }).click();
+    const news = await page.locator('.reader:not([hidden]) h2').first().textContent();
+    const ok = atOnce === 1 && (await shown()) === 1 && !!news && !errors.length;
+    console.log(`${ok ? 'ok  ' : 'FAIL'} one card at a time: away summary, then the news (${news})`);
+    if (!ok) process.exitCode = 1;
+  }
 });

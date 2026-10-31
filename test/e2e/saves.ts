@@ -3,7 +3,7 @@
 
 import { readFileSync } from 'node:fs';
 import { runBot } from '../../src/game/sim/bot.ts';
-import { exportString, importString } from '../../src/game/sim/save.ts';
+import { exportString, importString, serialize } from '../../src/game/sim/save.ts';
 import { VIEWPORTS, withGame } from '../../tools/browser.ts';
 
 let failed = false;
@@ -67,6 +67,27 @@ await withGame(async (open) => {
     });
     const ok = r.saved && !errors.length;
     console.log(`${ok ? 'ok  ' : 'FAIL'} storage full of portraits: the reef still saves`);
+    failed ||= !ok;
+  }
+  // Two tabs on one reef: the one that finds another tab's save yields, covers itself and takes no keys.
+  {
+    const { page } = await open(VIEWPORTS[1]!, '', { save: serialize(runBot((s) => s.t >= 600, 600).state, Date.now() - 5000) });
+    await page.waitForFunction(() => window.corallum, null, { timeout: 10000 });
+    const other = await page.context().newPage();
+    await other.goto(page.url());
+    await other.waitForFunction(() => window.corallum, null, { timeout: 10000 });
+    // The first tab saves after the second loaded: the second is now behind and yields on its next save.
+    await page.evaluate(() => window.dispatchEvent(new Event('pagehide')));
+    await other.evaluate(() => window.dispatchEvent(new Event('pagehide')));
+    // Enough calcite that P would buy, were the keys still listened to.
+    const before = await other.evaluate(() => { window.corallum!.state.calcite = 1e12; return window.corallum!.state.levels.polyp; });
+    await other.keyboard.press('p');
+    const r = await other.evaluate(() => ({
+      covered: getComputedStyle(document.getElementById('yielded')!).display !== 'none',
+      polyps: window.corallum!.state.levels.polyp,
+    }));
+    const ok = r.covered && r.polyps === before;
+    console.log(`${ok ? 'ok  ' : 'FAIL'} a tab behind another yields: covered, and P buys nothing`);
     failed ||= !ok;
   }
 });

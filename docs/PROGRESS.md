@@ -810,3 +810,4 @@ date, what landed, what is half-done, what's next.
 - An upgrade's buy button glows once as it becomes affordable (not on load, at most once in 8 s per card, off under reduced motion and calm).
 - Tabs keep their own scroll place (they share one scroller, so a tab opened partway down another's page); the open tab tapped again scrolls back to its top.
 - Phone sheet: a swipe on the stocks draws it up or lets it fall, as on the grabber (a tap still opens a stock's note). Checked with real touch events.
+- Regression tests for today's fixes: play e2e (a tall away summary on a landscape phone scrolls to its button; the news waits behind the away summary) and saves e2e (a tab behind another yields, covered, and P buys nothing). Each was checked to fail without its fix (the one-card case by how the bug showed).
