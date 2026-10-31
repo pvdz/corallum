@@ -169,6 +169,7 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] a full browser playthrough (?bot at each zone + ending) with no console errors: `tools/sweep.ts` desktop + mobile clean
 - [x] server: a malformed URL escape (%E0%A4%A) crashed the whole server; now a 404 (test/sim/server.test.ts); traversal refused
 - [x] no external requests (fonts, scripts, analytics): checked
+- [x] the server gzips text (cached per body): ~1.25 MB → ~0.35 MB for a phone over `--lan`; fresh load 0.4–0.5 s headless
 - [ ] perf on a real phone (needs the user; see M6)
 
 ### M0 Scaffold

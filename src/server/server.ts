@@ -9,6 +9,7 @@ import { stripTypeScriptTypes } from 'node:module';
 import { extname, join, normalize, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { networkInterfaces } from 'node:os';
+import { gzipSync } from 'node:zlib';
 
 const ROOT = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 const SERVED_DIRS = ['src'];
@@ -27,6 +28,17 @@ const MIME: Record<string, string> = {
 
 type CacheEntry = { mtimeMs: number; body: Buffer };
 const stripCache = new Map<string, CacheEntry>();
+/** Gzipped bodies of text files, for phones on the network; keyed by path, kept while the body is the same. */
+const gzipCache = new Map<string, { body: Buffer; gz: Buffer }>();
+const COMPRESSED = new Set(['.html', '.ts', '.js', '.css', '.json', '.svg', '.webmanifest']);
+
+function gzipped(abs: string, body: Buffer): Buffer {
+  const hit = gzipCache.get(abs);
+  if (hit && (hit.body === body || hit.body.equals(body))) return hit.gz;
+  const gz = gzipSync(body);
+  gzipCache.set(abs, { body, gz });
+  return gz;
+}
 
 async function loadFile(abs: string): Promise<Buffer> {
   const ext = extname(abs);
@@ -61,11 +73,14 @@ export function startServer(port: number, host = '127.0.0.1'): Promise<Server> {
     }
     try {
       const body = await loadFile(abs);
+      const gz = COMPRESSED.has(extname(abs)) && /\bgzip\b/.test(String(req.headers['accept-encoding'] ?? ''));
       res.writeHead(200, {
         'content-type': MIME[extname(abs)] ?? 'application/octet-stream',
         'cache-control': 'no-cache',
+        vary: 'accept-encoding',
+        ...(gz ? { 'content-encoding': 'gzip' } : {}),
       });
-      res.end(body);
+      res.end(gz ? gzipped(abs, body) : body);
     } catch (err) {
       const code = (err as NodeJS.ErrnoException).code;
       if (code === 'ENOENT' || code === 'EISDIR') res.writeHead(404).end('not found');
