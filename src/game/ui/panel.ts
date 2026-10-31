@@ -172,7 +172,17 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const stock = (name: string, cls: string) => {
     const row = el('div', `stock ${cls}`);
     const value = el('span', 'stock-value', '0');
+    // The rate, then what it holds or does: two parts, so a phone can put them on two lines.
     const sub = el('span', 'stock-sub', '');
+    const rateEl = el('span', 'stock-rate', ''), sep = el('span', 'stock-sep', ' · '), restEl = el('span', 'stock-rest', '');
+    sub.append(rateEl, sep, restEl);
+    const setSub = (text: string) => {
+      const i = text.indexOf(' · ');
+      const a = i < 0 ? text : text.slice(0, i), b = i < 0 ? '' : text.slice(i + 3);
+      if (rateEl.textContent !== a) rateEl.textContent = a;
+      if (restEl.textContent !== b) restEl.textContent = b;
+      sep.hidden = !b;
+    };
     row.append(el('span', 'stock-name', name), value, sub);
     const note = STOCK_NOTES[cls];
     if (note) {
@@ -188,7 +198,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       });
     }
     stocks.append(row);
-    return { row, value, sub };
+    return { row, value, sub, setSub };
   };
   const calcite = stock('Calcite', 'calcite');
   const glow = stock('Glow', 'glow');
@@ -1644,14 +1654,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       etaTurn = (etaTurn + 1) % (UPGRADES.length + 1);
       let etaSlot = 0;
       calcite.value.textContent = num(s.calcite);
-      calcite.sub.textContent = `${rate(calciteRate(s, r))} · holds ~${num(calciteHold(s, r))}`;
+      calcite.setSub(`${rate(calciteRate(s, r))} · holds ~${num(calciteHold(s, r))}`);
       calcite.row.classList.toggle('falling', calciteNet(s, r) < 0);
       glow.row.hidden = !(s.levels.symbiont > 0 || s.glow > 0.05);
       glow.value.textContent = num(s.glow);
-      glow.sub.textContent = `${rate(glowNet(s, r))} · holds ~${num(glowHold(s, r))}`;
+      glow.setSub(`${rate(glowNet(s, r))} · holds ~${num(glowHold(s, r))}`);
       plankton.row.hidden = !(s.jobs.feed > 0 || s.plankton > 0.05);
       plankton.value.textContent = num(s.plankton);
-      plankton.sub.textContent = `${rate(planktonNet(s, r))} · ×${feeding(s.plankton).toFixed(2)} calcite`;
+      plankton.setSub(`${rate(planktonNet(s, r))} · ×${feeding(s.plankton).toFixed(2)} calcite`);
       // Murmurs pay for Readings and the truce's words; once both are done the stock leaves the panel.
       // Murmurs buy Readings (none on a silent seamount) and the truce's words.
       const murmursWanted = (!seamountDef(s.seamount).noReadings && s.readings.length < READINGS.length) || MEETINGS.some((m) => !s.truce[m.id]);
@@ -1661,21 +1671,21 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       stocks.classList.toggle('many', shown >= 3);
       if (stocks.dataset.n !== String(shown)) stocks.dataset.n = String(shown);
       murmurs.value.textContent = num(s.murmurs);
-      murmurs.sub.textContent = `${rate(murmurNet(s, r))} · holds ~${num(murmurHold(s, r))}`;
+      murmurs.setSub(`${rate(murmurNet(s, r))} · holds ~${num(murmurHold(s, r))}`);
       silt.row.hidden = !(r.siltP > 0 || s.silt > 0.5);
       silt.value.textContent = num(s.silt);
-      silt.sub.textContent = `${rate(siltNet(s, r))} · polyps ×${smother(s.silt).toFixed(2)}`;
+      silt.setSub(`${rate(siltNet(s, r))} · polyps ×${smother(s.silt).toFixed(2)}`);
       silt.row.classList.toggle('falling', smother(s.silt) < 0.5);
       sand.row.hidden = !(r.sandP > 0 || s.sand > 0.5);
       sand.value.textContent = num(s.sand);
-      sand.sub.textContent = `${rate(sandNet(s, r))} · holds ~${num(sandHold(s, r))}`;
+      sand.setSub(`${rate(sandNet(s, r))} · holds ~${num(sandHold(s, r))}`);
       bloom.row.hidden = !(r.bloomP > 0 || s.bloom > 0.5);
       bloom.value.textContent = num(s.bloom);
-      bloom.sub.textContent = `${rate(bloomNet(s, r))} · ×${photo(s.bloom).toFixed(2)} calcite`;
+      bloom.setSub(`${rate(bloomNet(s, r))} · ×${photo(s.bloom).toFixed(2)} calcite`);
       spawn.row.hidden = !(r.spawnP > 0 || s.spawn > 0.5);
       spawn.value.textContent = num(s.spawn);
       // Toward the spawn the moon needs, or (once there) that it is enough; nothing more after the ending.
-      spawn.sub.textContent = `${rate(spawnNet(s, r))} · ${ended(s) ? '' : s.spawn >= spawnTarget(s) ? `${UI.spawnEnough} · ` : `of ${num(spawnTarget(s))} · `}holds ~${num(spawnHold(s, r))}`;
+      spawn.setSub(`${rate(spawnNet(s, r))} · ${ended(s) ? '' : s.spawn >= spawnTarget(s) ? `${UI.spawnEnough} · ` : `of ${num(spawnTarget(s))} · `}holds ~${num(spawnHold(s, r))}`);
       for (const [st, v] of [[calcite, s.calcite], [glow, s.glow], [plankton, s.plankton], [murmurs, s.murmurs], [silt, s.silt], [sand, s.sand], [bloom, s.bloom], [spawn, s.spawn]] as const) {
         if (!st.row.hidden) pulse(st.value, v);
       }
