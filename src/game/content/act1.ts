@@ -97,6 +97,11 @@ export const ACT1 = {
   bandMetres: 3,
   /** Reef height approaches its target at this rate (1/s). */
   settleRate: 1 / 40,
+  /**
+   * It aims this far past the target (as a share of the last band's metres) and stops on it, so
+   * it arrives in finite time instead of creeping through the last metre for minutes.
+   */
+  settleOvershoot: 0.25,
   /** Height that ends the act: the reef rises out of the silt into the Midnight Water. */
   goalMetres: 60,
   /** Calcite gathered by sweeping the tentacles by hand, plus seconds of production. */

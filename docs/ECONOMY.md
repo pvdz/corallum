@@ -149,7 +149,14 @@ Its first touch that day: +1 lineage.
 Listening dome (Midnight, 1500 m): scouts ×1.25 per stage. Grazing lawn (Twilight, 3400 m): sand ×1.15
 per stage. Both three stages, ×10 per stage in calcite.
 
-## Seamounts, measured (bot, no lineage, 2026-10-31)
+## Height settles with an overshoot (2026-10-31)
+Height relaxes toward `target + 0.25 × the last band's metres` at `settleRate` and stops on the
+target (economy.ts `settleAim`). Plain relaxation to the target crept through the last metre for
+minutes (from 30 m below, 40·ln(30 000) ≈ 7 min to cross 3000 m, most of it showing "2999 m"); with the
+overshoot one band's rise takes ~64 s and ends on the target. The greedy bot went 7h28 → 7h08 (the
+creeping was dead time); the saver is unchanged at 3h08.
+
+## Seamounts, measured (bot, no lineage, 2026-10-31, before the settle overshoot)
 Whole game / 3000 m / 3800 m. Hard seamounts are trials (reach the goal, then spawn early); a full
 ending there is not expected, and a real second reef carries traits.
 
@@ -181,8 +188,8 @@ when the next band is under ten minutes away, as a player watching the band card
 
 | bot | sweeps every tick | never sweeps |
 |---|---|---|
-| greedy (default) | 7h28 | 8h28 |
-| saver | 3h08 | 3h48 |
+| greedy (default) | 7h08 (7h28 before the settle overshoot) | 8h28 (before) |
+| saver | 3h08 | 3h48 (before) |
 
 (saver + sweeps: 3000 m at 1h07, 3800 m at 2h14, the surface at 3h07.) An attentive player who saves
 could finish in three to four hours of play, not seven to nine. Real players sit between the two,

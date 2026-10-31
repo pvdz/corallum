@@ -181,7 +181,7 @@ Tick items as they land; keep this list honest. Add items freely.
 - [x] Ossel's fate is respected in later texts (ground into sand → no lines of its own)
 - [x] rare paths without errors: every shortcut key, every creature tapped, sound on in every zone, six seamounts swept, a reef opened long after its ending
 - [ ] Safari/Firefox: only Chromium is installed (no network to fetch others); a static scan found no unguarded Safari-missing APIs (OffscreenCanvas, vibrate, Notification are feature-tested)
-- [x] game length measured both ways: greedy bot 7h28, a bot that saves for the next band 3h08 (3h48 without sweeping). Raising band cost growth to lengthen the saver starves the greedy player (30 h), so the balance stays: three to seven and a half hours by play style (ECONOMY.md; the user may want it longer)
+- [x] game length measured both ways: greedy bot 7h08 (7h28 before the reef stopped creeping through each target's last metre), a bot that saves for the next band 3h08 (3h48 without sweeping). Raising band cost growth to lengthen the saver starves the greedy player (30 h), so the balance stays: three to seven and a half hours by play style (ECONOMY.md; the user may want it longer)
 - [ ] distribution (user decision): today a player needs Node 24 and `node src/server/server.ts`. Options: (a) host the Node server somewhere (fits every rule as is); (b) a static export with types stripped, for itch.io or GitHub Pages: needs an exception to "no emitted JS" (the export would be a build artefact, not the source). Either way, installing to a home screen with offline play needs HTTPS (or localhost): a phone on `--lan` over plain http gets neither
 - [ ] perf on a real phone (needs the user; see M6)
 

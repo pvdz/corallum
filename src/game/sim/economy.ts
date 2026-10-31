@@ -144,6 +144,15 @@ export function settleRate(s: GameState): number {
   return ACT1.settleRate * (trait(s, 'settling') ? 2 : 1) * grainMult(s, 'quick');
 }
 
+/**
+ * Where the height relaxes toward: a little past its target, clamped at the target, so the reef
+ * arrives instead of creeping. Exact for any step (the clamp absorbs).
+ */
+export function settleAim(s: GameState, target: number): number {
+  if (s.height > target) return target;
+  return target + ACT1.settleOvershoot * bandMetres(Math.max(0, s.levels.skeleton - 1));
+}
+
 /** Meet this seamount's trial once the reef has grown to its goal. Returns true the moment it is met. */
 function trialCheck(s: GameState): boolean {
   const tr = seamount(s).trial;
@@ -432,10 +441,11 @@ function flow(s: GameState, dt: number, stepFraction: number): GameState {
   s.old = relax(s.old, OLD.max * oldK(s), oldK(s), dt);
   const r = rates(s);
   const kH = settleRate(s);
+  const aim = settleAim(s, r.heightTarget);
   // The line's record: the exact moment this reef reaches the surface, if it happens in this step.
   // Height relaxes to its target in closed form, so the crossing time is solvable.
   const surfaceAt = r.heightTarget >= SURFACE && s.height < SURFACE - 1e-3 && kH > 0
-    ? s.t + Math.log((r.heightTarget - s.height) / (r.heightTarget - (SURFACE - 1e-3))) / kH
+    ? s.t + Math.log((aim - s.height) / (aim - (SURFACE - 1e-3))) / kH
     : Infinity;
   // The race with the sister reef: each mark this step crosses is judged at its exact moment.
   while (s.race.decided < SISTER.marks.length) {
@@ -446,14 +456,14 @@ function flow(s: GameState, dt: number, stepFraction: number): GameState {
       continue;
     }
     if (!(kH > 0) || target < B - 1e-3) break;
-    const at = s.t + Math.log((r.heightTarget - s.height) / (r.heightTarget - (B - 1e-3))) / kH;
+    const at = s.t + Math.log((aim - s.height) / (aim - (B - 1e-3))) / kH;
     if (!(at <= s.t + dt)) break;
     judgeMark(s, at);
   }
-  const up: { key: Upstream; P: number; k: number; eq: number }[] = [
+  const up: { key: Upstream; P: number; k: number; eq: number; cap?: number }[] = [
     { key: 'glow', P: r.glowP, k: r.glowK, eq: equilibrium(r.glowP, r.glowK) },
     { key: 'plankton', P: r.planktonP, k: r.planktonK, eq: equilibrium(r.planktonP, r.planktonK) },
-    { key: 'height', P: kH * r.heightTarget, k: kH, eq: r.heightTarget },
+    { key: 'height', P: kH * aim, k: kH, eq: r.heightTarget, cap: r.heightTarget },
     { key: 'silt', P: r.siltP, k: r.siltK, eq: equilibrium(r.siltP, r.siltK) },
     { key: 'bloom', P: r.bloomP, k: r.bloomK, eq: equilibrium(r.bloomP, r.bloomK) },
   ];
@@ -477,6 +487,10 @@ function flow(s: GameState, dt: number, stepFraction: number): GameState {
       for (const u of up) {
         xm[u.key] = relax(x0[u.key], u.P, u.k, h / 2);
         x1[u.key] = relax(x0[u.key], u.P, u.k, h);
+        if (u.cap !== undefined && x0[u.key] <= u.cap) {
+          xm[u.key] = Math.min(u.cap, xm[u.key]);
+          x1[u.key] = Math.min(u.cap, x1[u.key]);
+        }
       }
       // Simpson over the step, of the production and of the production as the calcite still holds
       // it at the step's end (what is made early decays for the rest of the step).

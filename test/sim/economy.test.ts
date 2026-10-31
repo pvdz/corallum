@@ -737,3 +737,12 @@ test('the next great tide counts the seamount: a tidal one has one every other m
     assert.ok(w <= untilGreatMoon(t));
   }
 });
+
+test('the reef arrives at its target in finite time, not creeping through the last metre', () => {
+  const s = newGame(1);
+  s.levels.skeleton = 20;
+  const target = heightForBands(20);
+  s.height = target - bandMetres(19);
+  const a = advance(structuredClone(s), 70);
+  assert.equal(a.height, target);
+});
