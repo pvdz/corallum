@@ -22,7 +22,7 @@ import { createChoices } from './choices.ts';
 import { drawCity, drawTablet, drawSeaChart, SEAMOUNT_TINT, drawRings } from './drawings.ts';
 import { FEATS } from '../content/feats.ts';
 import { AWAY_CYCLES, AWAY_PREP, DAYS, DREAM, NOTIFY, SWELL, TODAY, WELCOME, intruderOf } from '../content/events.ts';
-import { WATER } from '../content/waters.ts';
+import { WATER, WATERS } from '../content/waters.ts';
 import { REQUEST } from '../content/requests.ts';
 import { WORKS, WORK_TEXT, type WorkId } from '../content/works.ts';
 import { SISTER } from '../content/sister.ts';
@@ -2134,17 +2134,31 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           // A new reef has little to plan: the strip waits until the water turns and two things are coming.
           almanac.hidden = !turning || marks.length < 2;
           almanacNote.hidden = almanac.hidden;
-          // Each label goes in the first of three rows where it does not run into the last one there.
+          // Each label goes in the first of three rows where it runs into no other. Things that happen
+          // (a feast, an intruder, the rising…) are placed first, the water's turns after: when room
+          // runs out, a turn of the water loses its label before something to act on does.
           const W = almanac.clientWidth || 300;
-          const rowEnd = [-1e9, -1e9, -1e9];
-          marks.forEach(([t, w]) => {
-            const label = w.replace(/^(a|an|the) /, '').split(' (')[0]!;
-            const f0 = Math.max(0, t) / 1200, cx = f0 * W, wide = label.length * 5.8 + 8;
-            // Where the label really sits: centred on its dot, kept inside the strip.
+          const labelOf = (w: string) => w.replace(/^(a|an|the) /, '').split(' (')[0]!;
+          // Where a label really sits: centred on its dot, kept inside the strip.
+          const span = (t: number, w: string): [number, number] => {
+            const cx = (Math.max(0, t) / 1200) * W, wide = labelOf(w).length * 5.8 + 8;
             const left = Math.min(Math.max(cx - wide / 2, 0), W - wide);
+            return [left, left + wide];
+          };
+          const waterNames = new Set(WATERS.map((x) => x.name.toLowerCase()));
+          const order = marks.map((_, i) => i).sort((i, j) => Number(waterNames.has(marks[i]![1])) - Number(waterNames.has(marks[j]![1])) || i - j);
+          const rows: [number, number][][] = [[], [], []];
+          const rowOf = new Map<number, number>();
+          for (const i of order) {
+            const [a, b] = span(marks[i]![0], marks[i]![1]);
             // No room in any row: the mark keeps its dot and tooltip, without a label.
-            const row = rowEnd.findIndex((end) => left > end);
-            if (row >= 0) rowEnd[row] = left + wide;
+            const r = rows.findIndex((row) => row.every(([c, d]) => b < c || a > d));
+            if (r >= 0) { rows[r]!.push([a, b]); rowOf.set(i, r); }
+          }
+          marks.forEach(([t, w], i) => {
+            const label = labelOf(w);
+            const cx = (Math.max(0, t) / 1200) * W;
+            const row = rowOf.get(i) ?? -1;
             const m = el('span', `mark row${row}${t <= 0 ? ' now' : ''}`);
             m.style.left = `${(Math.max(0, t) / 1200) * 100}%`;
             m.title = `${w} ${t > 0 ? `in ${duration(t)}` : WATER.now}`;
