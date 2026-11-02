@@ -38,7 +38,7 @@ These were written by the agent, not the user; fix them when wrong.
 - `node --no-warnings tools/perf.ts [--vp mobile] [--at 600,5000,...]` — draw/panel ms and browser script/style/layout per frame, per zone
 - `node --no-warnings tools/sweep.ts [desktop|mobile|landscape] ['truce=bbb&dialects=..']` — console errors at 18 bot times through the game (~10 min)
 - `node --no-warnings tools/overlaps.ts [bot secs] [keys]` — overlay texts (title, whisper, notes, gauge…) colliding, on every viewport
-- `node --no-warnings tools/audit.ts [desktop|mobile|landscape|small] [bot secs] [--big]` — panel problems per tab: hidden-but-shown, out of the panel, small tap targets, unnamed controls, dim text, clipped button text, text spilling out of its card
+- `node --no-warnings tools/audit.ts [desktop|mobile|landscape|small] [bot secs] [--big] [--sci]` — panel problems per tab: hidden-but-shown, out of the panel, small tap targets, unnamed controls, dim text, clipped button text, text spilling out of its card, texts drawn over each other, numbers cut short
 - `node --no-warnings tools/fuzz.ts [--vp mobile|small] [--at <sec>] [--secs 120] [--ended] [--big]` — random keys, panel clicks, scene taps mixed; console errors
 - `node --no-warnings tools/share.ts` — regenerates the link preview image (`src/client/icons/share.jpg`, og:image)
 - `node --no-warnings tools/screenshot.ts [--t <sec>] --shot <tag>=<url params> ...`
