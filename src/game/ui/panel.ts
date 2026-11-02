@@ -417,6 +417,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   // Tapped (phones have no tooltips), a mark says what it is and when.
   const almanacNote = el('span', 'almanac-note');
   let almanacKey = '';
+  let ticksPassedKey = '';
   // Warm spells in the Sunlit Crown: open to the sun, or closed against the heat.
   const heatRow = el('div', 'heat-row');
   heatRow.hidden = true;
@@ -1919,9 +1920,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       const rmax = raspMax(s);
       raspBox.hidden = rmax === 0 && s.levels.grounds === 0;
       if (!raspBox.hidden) {
-        raspSlider.max = String(rmax);
-        if (document.activeElement !== raspSlider) raspSlider.value = String(s.rasp);
-        raspCount.textContent = `${s.rasp}\u00a0of\u00a0${rmax} grazing`;
+        if (raspSlider.max !== String(rmax)) raspSlider.max = String(rmax);
+        if (document.activeElement !== raspSlider && raspSlider.value !== String(s.rasp)) raspSlider.value = String(s.rasp);
+        const graze = `${s.rasp}\u00a0of\u00a0${rmax} grazing`;
+        if (raspCount.textContent !== graze) raspCount.textContent = graze;
         raspMinus.disabled = s.rasp <= 0;
         raspPlus.disabled = s.rasp >= rmax;
         const eats = speaks(s, 'mucus') ? 0 : ACT3.raspEat * s.rasp * s.calcite * (s.truce.terms === 'b' ? ACT3.politeEat : 1);
@@ -1973,6 +1975,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       if (tickZone !== zone.from) {
         tickZone = zone.from;
         for (const tk of heightBar.querySelectorAll('.tick')) tk.remove();
+        ticksPassedKey = '';
         for (const b of BANDS) {
           if (b.metres <= zone.from || b.metres > zone.to) continue;
           const tk = el('i', 'tick');
@@ -1982,9 +1985,15 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           heightBar.append(tk);
         }
       }
-      for (const tk of heightBar.querySelectorAll<HTMLElement>('.tick')) tk.classList.toggle('passed', s.bands.includes(tk.dataset.band!));
+      // Ticks passed: marked again only when a band is read or the ticks were redrawn.
+      const passedKey = String(s.bands.length);
+      if (passedKey !== ticksPassedKey) {
+        ticksPassedKey = passedKey;
+        for (const tk of heightBar.querySelectorAll<HTMLElement>('.tick')) tk.classList.toggle('passed', s.bands.includes(tk.dataset.band!));
+      }
       heightTarget.style.width = `${frac(r.heightTarget)}%`;
-      const depth = `${Math.round(Math.max(0, SURFACE - s.height)).toLocaleString('en-US')} m down`;
+      // Thousands with a comma ("2,149 m down"), without toLocaleString (a formatter made per call: the update's dearest line).
+      const depth = `${String(Math.round(Math.max(0, SURFACE - s.height))).replace(/\B(?=(\d{3})+$)/g, ',')} m down`;
       const next = BANDS.find((b) => !s.bands.includes(b.id));
       // Reach: what the height itself does (a taller reef catches more water, more calcite).
       const reachText = s.height > 60 ? ` · reach ×${reach(s.height).toFixed(1)} calcite` : '';
@@ -2593,9 +2602,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         x.b.classList.toggle('on', x.p.id === s.meta.palette);
         // Some colours are earned by a feat.
         const locked = !!x.p.feat && !s.meta.seen.includes(`f:${x.p.feat}`);
+        const titleDue = x.b.disabled !== locked || !x.b.title;
         x.b.disabled = locked;
         x.b.classList.toggle('locked', locked);
-        x.b.title = locked ? `${x.p.name} · ${PALETTE_TEXT.locked} “${FEATS.find((f) => f.id === x.p.feat)?.name ?? ''}”` : x.p.name;
+        if (titleDue) x.b.title = locked ? `${x.p.name} · ${PALETTE_TEXT.locked} “${FEATS.find((f) => f.id === x.p.feat)?.name ?? ''}”` : x.p.name;
       }
       bandsDot.hidden = seenStories >= storyCount;
       primed = true;
