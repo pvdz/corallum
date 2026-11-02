@@ -915,3 +915,4 @@ date, what landed, what is half-done, what's next.
 - Settings: the checkboxes stand in one column (a long label shrank its box and pulled its words left) and are dark controls with a quieter teal tick, instead of glaring white boxes and bright cyan blocks.
 - The page declares a dark colour scheme, so native controls (the volume slider's track, the name field, scrollbars) are drawn dark; the volume slider takes the same quieter teal.
 - The first hint says "Click the water to sweep your tentacles" under a mouse ("Tap…" on touch screens).
+- The lesser spawning's send-off: its 60 motes rose as a regular grid of identical dots (delays repeating every 12, x stepping by a fixed fraction), like polka dots. Each mote now has its own size (3–10 px), start, speed and sideways sway; an Ossel whisper or journal note still showing is cleared so it doesn't hang over the send-off.

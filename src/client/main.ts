@@ -458,12 +458,21 @@ const panel = createPanel(ui, {
     yielded = true;
     const send = document.createElement('div');
     send.id = 'send-off';
-    for (let i = 0; i < 60; i++) {
+    // Each mote its own size, start, speed and sway (low-discrepancy fractions, so they spread
+    // evenly without falling into rows).
+    const frac = (x: number) => x - Math.floor(x);
+    for (let i = 0; i < 70; i++) {
       const m = document.createElement('i');
-      m.style.left = `${(i * 61.8) % 100}%`;
-      m.style.animationDelay = `${(i % 12) * 0.12}s`;
+      const size = 3 + 7 * frac(i * 0.7548776662);
+      m.style.left = `${frac(i * 0.6180339887) * 100}%`;
+      m.style.width = m.style.height = `${size.toFixed(1)}px`;
+      m.style.animationDelay = `${(frac(i * 0.4142135624) * 1.3).toFixed(2)}s`;
+      m.style.animationDuration = `${(1.9 + 1.2 * frac(i * 0.3247179572)).toFixed(2)}s`;
+      m.style.setProperty('--sway', `${((frac(i * 0.8660254038) - 0.5) * 60).toFixed(0)}px`);
       send.append(m);
     }
+    whisper.classList.remove('show');
+    journalNote.classList.remove('show');
     const line = document.createElement('p');
     line.textContent = UI.driftsAway;
     send.append(line);
