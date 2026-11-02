@@ -10,12 +10,15 @@
 //   console any warning or error
 // Known and intended: 'dim' on held or finished cards (dimmed on purpose), and 'small' on the
 // sheet's grabber (the stocks under it drag the sheet too).
-// Usage: node --no-warnings tools/audit.ts [desktop|mobile|landscape] [t1,t2,...]   (~1 min)
+// Usage: node --no-warnings tools/audit.ts [desktop|mobile|landscape|small] [t1,t2,...] [--big]   (~1 min)
 
 import { VIEWPORTS, withGame } from './browser.ts';
 
-const vp = VIEWPORTS.find((v) => v.name === (process.argv[2] ?? 'mobile'))!;
-const times = (process.argv[3] ?? '600,5000,12000,19000,26000').split(',');
+// 'small' is a 360×640 phone; --big turns on Larger text.
+const SMALL = { name: 'small', width: 360, height: 640, scale: 2, mobile: true };
+const vp = process.argv[2] === 'small' ? SMALL : VIEWPORTS.find((v) => v.name === (process.argv[2] ?? 'mobile'))!;
+const big = process.argv.includes('--big');
+const times = (process.argv[3] && !process.argv[3].startsWith('--') ? process.argv[3] : '600,5000,12000,19000,26000').split(',');
 
 type Finding = [kind: string, what: string];
 
@@ -23,6 +26,7 @@ await withGame(async (open) => {
   const seen = new Map<string, string>();
   for (const at of times) {
     const { page, errors } = await open(vp, `?bot=${at}`);
+    if (big) { await page.evaluate(() => localStorage.setItem('corallum.big', 'on')); await page.reload(); }
     const warnings: string[] = [];
     page.on('console', (m) => { if (m.type() === 'warning') warnings.push(m.text()); });
     await page.waitForFunction(() => (window as unknown as { corallum?: unknown }).corallum, null, { timeout: 90000 });
