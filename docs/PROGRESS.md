@@ -951,3 +951,4 @@ date, what landed, what is half-done, what's next.
 - The ending on a small phone on its side: its words keep clear of the depth gauge and are a size smaller, leaving the reef some of the height (finale run at 667×375: sky traced, 10 pages, garden).
 - The opening on a small phone on its side: the title sits below the sound and view buttons (it ran under them) at a size that fits the ~320 px scene, and the first hint is a size smaller.
 - The Reef tab's touch hint mentions dragging the panel only where there is a sheet to drag; a phone on its side (side panel) gets the line without it.
+- Card titles wrap balanced ("Release a lesser / spawning · +34 lineage ▸" instead of a lone "lineage ▸" on the second line).
