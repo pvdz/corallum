@@ -1504,9 +1504,15 @@ canvas.addEventListener('pointerdown', (e) => {
   const hit = creatureAt(wx, wy);
   // A shell on the sand: picked up for the line's shelf (no label, no gift).
   // Swells at the Breach: a tap near the crown rides the swell.
+  // Not when the tap is on something to act on (a fish stranded on the crown, old stone, an
+  // intruder, a falling feast): those come first, the swell takes the rest of the crown.
   if (currentSwell(state) && frozenT === null) {
     const [cx, cy] = scene.crownAt;
-    if (Math.hypot(wx - cx, wy - cy) < 120 * dpr && trySwell(e.clientX, e.clientY)) return;
+    const th = currentThorn(state);
+    const actOn = !!hit && (hit.id === 'raft' || hit.id === 'stray' || hit.id === 'fragment' || hit.id === 'tangle' || hit.id === 'old' || hit.id === 'shell' || (!!th && hit.id === th.kind));
+    const f = currentFeast(state);
+    const onFeast = !!f && (() => { const [fx, fy] = feastPos(f, state.t - f.start, focusNow, feastPay(state)); return Math.hypot(wx - fx, wy - fy) < feastReach(focusNow, dpr); })();
+    if (!actOn && !onFeast && Math.hypot(wx - cx, wy - cy) < 120 * dpr && trySwell(e.clientX, e.clientY)) return;
   }
   if (hit?.id === 'raft') {
     if (frozenT === null) {
