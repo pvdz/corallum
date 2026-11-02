@@ -1456,11 +1456,11 @@ const SEAMOUNT_TINT: Record<string, [string, GlobalCompositeOperation]> = {
 };
 
 /** A float of text over the water, e.g. "+12". */
-/** Floating lines started in the last moment: a new one near them stacks below instead of printing over. */
+/** Floating lines from the same tap (a gift and the sweep): a new one near them stacks below instead of printing over. */
 let recentFloats: { x: number; y: number; t: number }[] = [];
 function floatText(x: number, y: number, text: string, cls = ''): void {
   const now = performance.now();
-  recentFloats = recentFloats.filter((r) => now - r.t < 400);
+  recentFloats = recentFloats.filter((r) => now - r.t < 50);
   for (let i = 0; i < 4 && recentFloats.some((r) => Math.abs(r.x - x) < 140 && Math.abs(r.y - y) < 30); i++) y += 32;
   recentFloats.push({ x, y, t: now });
   const f = document.createElement('div');

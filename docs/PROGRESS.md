@@ -946,4 +946,4 @@ date, what landed, what is half-done, what's next.
 - Every phone sheet height (half, low) is at least the stocks, the tabs and a row of the list: on a small phone (360×640) with Larger text at the Breach the half sheet left 20 px of list, nothing to buy with. There the sheet grows (to 65% of that screen) rather than hide the list; normal sizes are unchanged (half 53%, low 66% on a 390×844).
 - Small phones (360 px): the journal note's kicker stays on one line ("SEEN FOR THE FIRST TIME" wrapped its last word), letter-spaced a little tighter there.
 - A tap on a neighbour also sweeps: its gift line ("+… a gift") and the sweep's number rose from the same point, printed over each other. The sweep's number starts under the gift's line.
-- More generally, floating lines started within 0.4 s near the same point stack 32 px apart instead of printing over each other (a gift with a sweep, the milky sea's or the moon's extra with a sweep).
+- More generally, floating lines from the same tap near the same point stack 32 px apart instead of printing over each other (a gift with a sweep, the milky sea's or the moon's extra with a sweep).
