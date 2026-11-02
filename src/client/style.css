@@ -264,6 +264,11 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   /* Low: the stocks' values (their notes folded away), the tabs and the quick buys; the reef has about
      two thirds of the screen. */
   .panel.low { height: 34vh; height: 34dvh; }
+  /* Larger text zooms the panel (1.15), its height with it: divide back, so the sheet's top stays where
+     it is without (the tall sheet rose under the sound and view buttons on a small phone). */
+  html.big .panel { height: calc(47dvh / 1.15); }
+  html.big .panel.tall { height: calc(84dvh / 1.15); }
+  html.big .panel.low { height: calc(34dvh / 1.15); }
   /* Any height, low or half: never less than the stocks, the tabs and a row of the list (the quick
      buys), however many stocks and however large the text (a small phone with Larger text kept 20 px). */
   .panel { min-height: min-content; }

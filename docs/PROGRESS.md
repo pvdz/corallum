@@ -953,3 +953,4 @@ date, what landed, what is half-done, what's next.
 - The Reef tab's touch hint mentions dragging the panel only where there is a sheet to drag; a phone on its side (side panel) gets the line without it.
 - Card titles wrap balanced ("Release a lesser / spawning · +34 lineage ▸" instead of a lone "lineage ▸" on the second line).
 - Under a mouse, an upgrade or gift row takes a faint tint (rows had no hover feedback once they lost their boxes).
+- Larger text on a phone zoomed the sheet's heights with it: drawn up tall on a small phone, its top rose under the sound and view buttons (22 px from the top instead of 16% down) and covered the first stock. The heights are divided by the zoom; the floor of stocks + tabs + a row still applies.
