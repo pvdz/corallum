@@ -1500,6 +1500,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     group(UI.sound), volRow, buzzToggle,
     group(UI.display), button('plain', UI.timelapse, () => hooks.timelapse()), glowToggle, sharpToggle, calmToggle, bigToggle, sciToggle, quietToggle, notifyToggle, habitToggle,
     el('p', 'hint keys-hint', UI.keys),
+    el('p', 'hint touch-hint', UI.touchHint),
     group(UI.startOver), resetBtn,
     el('p', 'hint about', UI.about),
   );
