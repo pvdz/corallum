@@ -401,6 +401,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .ask[hidden] { display: none; }
 /* An ask done in the panel: a tap goes to where it is done. */
 .ask.goes { cursor: pointer; }
+.ask.goes .ask-text::after { content: '\00a0›'; color: #ffd9a8; opacity: 0.7; }
 @media (hover: hover) { .ask.goes:hover .ask-text { text-decoration: underline; text-decoration-color: rgba(255, 217, 168, 0.4); text-underline-offset: 3px; } }
 .ask.waiting { visibility: hidden; }
 .ask { flex-wrap: wrap; row-gap: 0; }
@@ -408,6 +409,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .ask-text { flex: 1; font-family: var(--display); color: #f2e8d8; }
 .ask-when { margin-left: 0.5em; font-family: var(--text); font-size: 11.5px; color: var(--ink-dim); white-space: nowrap; }
 .ask-when.now { color: #ffd9a8; }
+.ask-when:empty { display: none; }
 .ask-bar[hidden] { display: none; }
 .ask-bar { width: 54px; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
 .ask-fill { display: block; height: 100%; background: #ffd9a8; transition: width 0.3s ease; }
