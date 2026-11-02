@@ -1815,8 +1815,15 @@ photoBtn.addEventListener('click', () => {
   const sc = shot.getContext('2d')!;
   sc.drawImage(canvas, 0, 0);
   const caption = `${reefName(state) || 'Corallum'} · ${metres(state.height)} · ${act(actAt(state.height)).name}`;
-  const fs = Math.round(16 * dpr);
+  let fs = Math.round(16 * dpr);
   sc.font = `${fs}px Georgia, 'Times New Roman', serif`;
+  // A long name on a phone-wide picture: the caption a size smaller until it fits.
+  const room = shot.width - fs * 3;
+  const w0 = sc.measureText(caption).width;
+  if (w0 > room) {
+    fs = Math.max(Math.round(9 * dpr), Math.floor(fs * room / w0));
+    sc.font = `${fs}px Georgia, 'Times New Roman', serif`;
+  }
   sc.textBaseline = 'bottom';
   sc.fillStyle = 'rgba(0,0,0,0.45)';
   const tw = sc.measureText(caption).width;

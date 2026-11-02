@@ -897,7 +897,9 @@ html.view-mode #journal-note { left: calc(max(12px, env(safe-area-inset-left)) +
   flex: 1; font: inherit; font-family: var(--display); font-size: 16px; padding: 6px 10px; border-radius: 10px;
   color: var(--ink); background: rgba(255, 255, 255, 0.05); border: 1px solid var(--edge);
 }
-#title .reef-name { margin-top: 0.3em; font-style: normal; letter-spacing: 0.3em; text-transform: uppercase; font-size: 13px; color: var(--calcite); }
+/* A long name (24 letters, letter-spaced) wraps, even inside a word, rather than run off a phone. */
+#title .reef-name { margin-top: 0.3em; font-style: normal; letter-spacing: 0.3em; text-transform: uppercase; font-size: 13px; color: var(--calcite);
+  padding: 0 16px; overflow-wrap: anywhere; text-wrap: balance; }
 
 /* ---------- View mode: the panel hidden, the reef on the whole screen ---------- */
 #view-mode {
