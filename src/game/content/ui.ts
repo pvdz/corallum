@@ -82,7 +82,7 @@ export const UI = {
   /** The same card after the ending: nothing early about it. */
   beginAgainText: 'The reef has spawned under the moon and lives on here. Some of what it let go settled on a new seamount: begin again there from a single polyp, carrying the lineage. What you have read stays read.',
   /** The spawn stock's note once it holds what the moon needs. */
-  spawnEnough: 'enough for the moon',
+  spawnEnough: 'enough ☾',
   /** The murmurs line with no shoal set to Scout: the stock only fades, so its hold (zero) says nothing. */
   murmursUnheard: 'no scouts',
   /** A stock line's rate when the stock sits at its hold, or neither rises nor falls. */
