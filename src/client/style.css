@@ -240,8 +240,16 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   /* Buy (and max beside it), the wait under them. */
   .card footer { grid-area: foot; flex-direction: row; flex-wrap: wrap; align-items: center; align-content: center; justify-content: flex-end; gap: 3px 6px; max-width: 46vw; }
   .card footer .eta { flex-basis: 100%; text-align: right; }
+  /* As wide as its buttons (buy and max on one line): the note adds no width of its own and wraps
+     under them, instead of taking the name's room. */
+  .card footer { width: fit-content; }
+  .card footer .eta { contain: inline-size; }
+  .card { grid-template-rows: auto 1fr; }
+  .card .effect { align-self: start; }
+  .card footer .buy { white-space: nowrap; }
   /* Larger text: stacked, so the name keeps its width. */
   html.big .card footer { flex-direction: column; align-items: flex-end; flex-wrap: nowrap; }
+  html.big .card footer .eta { contain: none; flex-basis: auto; }
   .buy { min-width: 104px; padding: 6px 12px; font-size: 12.5px; }
   .eta { font-size: 11px; }
   /* The spawning card has more parts than an upgrade: stack them, button at the bottom. */
@@ -454,7 +462,7 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 .signal-lamp.lit { animation: lamp-lit 0.5s ease; }
 /* While the shoals flash the pattern the lamps are theirs: no pointer, the numbers dimmed; on the
    player's turn they wake with a ring. */
-.signal-lamps.watching .signal-lamp { cursor: default; color: rgba(255,255,255,0.3); }
+.signal-lamps.watching .signal-lamp { cursor: default; color: rgba(255,255,255,0.45); }
 .signal-lamps.turn .signal-lamp { border-color: rgba(255,255,255,0.45); box-shadow: 0 0 10px color-mix(in srgb, var(--lamp) 40%, transparent); }
 @keyframes lamp-lit { 0% { background: var(--lamp); box-shadow: 0 0 22px var(--lamp); } 100% { background: color-mix(in srgb, var(--lamp) 22%, transparent); box-shadow: none; } }
 .zone-ring { width: 14px; height: 14px; vertical-align: -2px; margin-right: 6px; }
