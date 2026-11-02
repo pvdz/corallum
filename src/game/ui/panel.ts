@@ -2181,8 +2181,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         askWhen.classList.toggle('now', when <= 0);
         askFill.style.width = `${(rq.got / rq.n) * 100}%`;
         askCount.textContent = `${rq.got}/${rq.n}`;
-        // One-step asks need no bar; a streak goes up with the kicker, out of the text's way.
+        // One-step asks need no bar and no "0/1"; a streak goes up with the kicker, out of the text's way.
         askBar.hidden = rq.n === 1;
+        askCount.hidden = rq.n === 1;
         askKicker.textContent = s.request.streak > 1 ? `${REQUEST.kicker} · ${s.request.streak} ${REQUEST.streakWord}` : REQUEST.kicker;
         askSkip.disabled = !canSkipRequest(s);
         // Waiting to be allowed another: the tooltip says how long.
