@@ -2004,7 +2004,7 @@ function requestOpen(s: GameState, kind: RequestKind): boolean {
     case 'roam': return !s.expedition.site && nextSite(s)?.id === ('roam' as SiteId);
     case 'work': return WORKS.some((w) => workOpen(s, w.id) && workCost(s, w.id) !== null);
     case 'intruder': return untilThorn(s) < Infinity;
-    case 'read': return !!nextReading(s);
+    case 'read': return readingsRevealed(s) && !!nextReading(s);
     case 'rising': return risingZone(s) && s.levels.shoal > 0;
     case 'signal': return s.levels.shoal > 0;
     case 'star': return FIGURES.some((f) => figureOpen(s, f.id));
