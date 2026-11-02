@@ -52,3 +52,13 @@ export function upgradeIcon(id: UpgradeId): SVGSVGElement {
   svg.innerHTML = ICONS[id];
   return svg;
 }
+
+/** The pin on a card (its wait shows in the tab title): a drawing pin in the same line style. */
+export function pinIcon(): SVGSVGElement {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.classList.add('pin-icon');
+  svg.innerHTML = '<path d="M9 4h6M10 4v6l-3 4h10l-3-4V4M12 14v6"/>';
+  return svg;
+}

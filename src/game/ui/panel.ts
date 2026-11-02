@@ -15,7 +15,7 @@ import { BOONS, SEAMOUNTS, TRIALS_FROM, TRIAL_TEXT, TRAIT_GROUPS, TRAITS, type B
 import { GARDEN, LINE_TITLES, MEMORIES, type MemoryId, type GardenKind } from '../content/act5.ts';
 import { COMPANION, CREATURES, TRUST, trustLevel, LUCKY } from '../content/creatures.ts';
 import { GUIDE, HOLD_HINT, HOLD_HINT_ANY, STOCK_NOTES } from '../content/guide.ts';
-import { upgradeIcon } from './icons.ts';
+import { pinIcon, upgradeIcon } from './icons.ts';
 import { SHELL, SHELLS } from '../content/shells.ts';
 import { button, el, quietRepeatedWrites } from './dom.ts';
 import { createChoices } from './choices.ts';
@@ -575,14 +575,15 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const cards = new Map<UpgradeId, Card>();
   const milestoneBars = new Map<UpgradeId, HTMLElement>();
   for (const u of UPGRADES) {
-    const root = el('article', 'card');
+    const root = el('article', 'card upgrade');
     root.hidden = true;
     const head = el('header');
     const level = el('span', 'level');
     const title = el('h3');
     title.append(upgradeIcon(u.id), u.name);
     // A pin: this card's wait shows in the tab title.
-    const pin = button('pin', '📌', () => { pinned = pinned === u.id ? '' : u.id; for (const [id, c] of cards) c.root.classList.toggle('pinned', id === pinned); });
+    const pin = button('pin', '', () => { pinned = pinned === u.id ? '' : u.id; for (const [id, c] of cards) c.root.classList.toggle('pinned', id === pinned); });
+    pin.append(pinIcon());
     pin.title = 'Pin: show its wait in the tab title';
     pin.setAttribute('aria-label', `Pin ${u.name}`);
     title.append(pin);
@@ -616,7 +617,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     flavour.addEventListener('click', () => root.classList.toggle('open'));
     // Once bought, the flavour steps aside (the panel stays quiet); the name brings it back.
     title.title = u.flavour;
-    title.addEventListener('click', (e) => { if (e.target !== pin) root.classList.toggle('open'); });
+    title.addEventListener('click', (e) => { if (!pin.contains(e.target as Node)) root.classList.toggle('open'); });
     grow.append(root);
     cards.set(u.id, { root, cost: costEl, level, effect, eta, btn, max });
   }
