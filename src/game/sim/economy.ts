@@ -2112,6 +2112,19 @@ export function currentSignal(s: GameState): { k: number; pattern: number[] } | 
   return { k, pattern };
 }
 
+/** Seconds until the shoals next signal (0 while one is open; Infinity where they cannot). */
+export function untilSignal(s: GameState): number {
+  if (!(SIGNAL.zones as readonly number[]).includes(actAt(s.height)) || s.levels.shoal < SIGNAL.minShoals) return Infinity;
+  if (currentSignal(s)) return 0;
+  for (let k = Math.floor(s.t / SIGNAL.period); k < Math.floor(s.t / SIGNAL.period) + 3; k++) {
+    if (k <= s.signal.last) continue;
+    const r = mulberry32((s.seed ^ 0x5191) + Math.imul(k, 0x9e3779b1));
+    const start = k * SIGNAL.period + r() * (SIGNAL.period - SIGNAL.life);
+    if (start > s.t) return start - s.t;
+  }
+  return Infinity;
+}
+
 /** Answer the current signal: right pays a burst (more for longer patterns); either way the slot is spent. */
 export function answerSignal(s: GameState, answer: readonly number[]): number {
   const sig = currentSignal(s);
