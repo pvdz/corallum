@@ -1174,6 +1174,10 @@ html.view-mode #photo { display: grid; }
   .quick-buy .buy.quick { flex-direction: row; justify-content: center; align-items: center; gap: 4px; padding: 4px 4px; min-height: 30px; }
   /* Name, mark and price on one line fill a third of the panel: the icon steps aside. */
   .quick-buy .quick-name .card-icon { display: none; }
+  /* Scientific prices are longer ("7.50e10"); the best buy's mark sits closer. */
+  html.sci .quick-buy .quick-cost { font-size: 10.5px; }
+  html.sci .quick-buy .quick-name { font-size: 11px; }
+  .quick-buy .buy.quick.best .quick-name::after { content: '✦'; margin-left: 2px; }
 }
 /* A creature's label (asked for by a tap) comes first: a whisper behind it steps back. */
 #ui:has(#creature-label.show) #whisper { opacity: 0 !important; }

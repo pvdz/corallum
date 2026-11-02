@@ -12,13 +12,15 @@
 //   console any warning or error
 // Known and intended: 'dim' on held or finished cards (dimmed on purpose), and 'small' on the
 // sheet's grabber (the stocks under it drag the sheet too).
-// Usage: node --no-warnings tools/audit.ts [desktop|mobile|landscape|small] [t1,t2,...] [--big] [--sci]   (~1 min)
+// Usage: node --no-warnings tools/audit.ts [desktop|mobile|landscape|small|small-landscape] [t1,t2,...] [--big] [--sci]   (~1 min)
 
 import { VIEWPORTS, withGame } from './browser.ts';
 
 // 'small' is a 360×640 phone; --big turns on Larger text.
 const SMALL = { name: 'small', width: 360, height: 640, scale: 2, mobile: true };
-const vp = process.argv[2] === 'small' ? SMALL : VIEWPORTS.find((v) => v.name === (process.argv[2] ?? 'mobile'))!;
+// 'small-landscape': a small phone on its side (667×375).
+const SMALL_LANDSCAPE = { name: 'small-landscape', width: 667, height: 375, scale: 2, mobile: true };
+const vp = process.argv[2] === 'small' ? SMALL : process.argv[2] === 'small-landscape' ? SMALL_LANDSCAPE : VIEWPORTS.find((v) => v.name === (process.argv[2] ?? 'mobile'))!;
 const big = process.argv.includes('--big');
 const sci = process.argv.includes('--sci');
 const times = (process.argv[3] && !process.argv[3].startsWith('--') ? process.argv[3] : '600,5000,12000,19000,26000').split(',');
