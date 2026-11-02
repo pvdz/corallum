@@ -180,4 +180,23 @@ await withGame(async (open) => {
     await page.close();
   }
 });
+// The Twilight Shelf: an upwelling waits, the water box says so, and U turns the current into it (a haul).
+await withGame(async (open) => {
+  const { page, errors } = await open(VIEWPORTS[0]!, '?bot=12000');
+  await page.waitForFunction(() => window.corallum?.state.t !== undefined, null, { timeout: 60000 });
+  for (let i = 0; i < 10 && (await page.locator('.reader:not([hidden]), .away:not([hidden])').count()); i++) await page.keyboard.press('Escape');
+  for (let n = 0; n < 200 && !(await page.locator('.current-row.upwelling').count()); n++) {
+    await page.evaluate(() => window.corallum!.skip(5));
+    await page.waitForTimeout(40);
+  }
+  for (let i = 0; i < 10 && (await page.locator('.reader:not([hidden]), .away:not([hidden])').count()); i++) await page.keyboard.press('Escape');
+  const said = await page.locator('.water').first().innerText();
+  const c0 = await page.evaluate(() => window.corallum!.state.calcite);
+  await page.mouse.click(300, 400);
+  await page.keyboard.press('u');
+  await page.waitForTimeout(300);
+  const caught = (await page.evaluate(() => window.corallum!.state.calcite)) > c0 * 1.05 && !(await page.locator('.current-row.upwelling').count());
+  check(/upwelling/.test(said) && caught, 'an upwelling shown in the water box, caught with U');
+  check(errors.length === 0, 'no console errors (upwelling)');
+});
 process.exitCode = failed ? 1 : 0;
