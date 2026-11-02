@@ -71,6 +71,8 @@ export const UI = {
   wordsReady: 'Your scouts have learned enough of their words.',
   beginAgain: 'Begin again',
   /** What the lineage would buy, cheapest first: a few by name and a count of the rest. */
+  /** Several names in one line: "A and B", "A, B and C", "A, B and 3 more". */
+  namesAndMore: (names: readonly string[]) => names.length > 3 ? `${names[0]}, ${names[1]} and ${names.length - 2} more` : names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}` : names[0] ?? '',
   enoughFor: (names: string, more: number) => `Enough for: ${names}${more ? `, and ${more} more` : ''}`,
   midnightFirst: 'Reach the Midnight Water first',
   newBand: 'New band',

@@ -1119,6 +1119,14 @@ function showJournalNote(kicker: string, name: string, now = false): void {
     // Nor behind a card (a story, the away summary, the ending's pages): it would play out unseen.
     if (performance.now() < notesHeldUntil || !title.classList.contains('faded') || Number(getComputedStyle(title).opacity) > 0.05 || document.querySelector('.finale:not([hidden]), .reader:not([hidden])')) { setTimeout(next, 500); return; }
     const n = journalQueue.shift()!;
+    // A backlog of the same kind (a new zone shows a dozen creatures at once) is one note, not a
+    // minute of them: "Lanternfish, Hatchetfish and 3 more".
+    const same = journalQueue.filter((q) => q[0] === n[0]);
+    if (same.length >= 2) {
+      const names = [n[1], ...same.map((q) => q[1])];
+      for (let i = journalQueue.length - 1; i >= 0; i--) if (journalQueue[i]![0] === n[0]) journalQueue.splice(i, 1);
+      n[1] = UI.namesAndMore(names);
+    }
     journalNote.textContent = '';
     const k = document.createElement('span');
     k.textContent = n[0];
