@@ -1915,11 +1915,20 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           ? UI.raspBest(mark(raspBest))
           : UI.raspBoth(mark(raspBest), mark(raspHold));
         currentRow.hidden = actAt(s.height) < 3;
-        for (const x of currentButtons) x.b.classList.toggle('on', x.c === s.current);
-        // An upwelling waiting to be caught takes over the line under the dial.
+        // An upwelling waiting to be caught takes over the line under the dial, and the steps that
+        // would catch it beckon (a tap on one turns the current: already that way, the tap still catches).
         const up = currentUpwelling(s);
-        currentWhat.textContent = up && s.upwelled !== up.k ? UPWELL.now(up.side, duration(up.start + UPWELL.life - s.t)) : CURRENT.what(s.current);
-        currentRow.classList.toggle('upwelling', !!up && s.upwelled !== up.k);
+        const waiting = !!up && s.upwelled !== up.k;
+        for (const x of currentButtons) {
+          x.b.classList.toggle('on', x.c === s.current);
+          x.b.classList.toggle('toward', waiting && Math.sign(x.c) === up!.side);
+        }
+        currentWhat.textContent = waiting
+          ? (Math.sign(s.current) === up!.side ? UPWELL.already : UPWELL.now)(up!.side, duration(up!.start + UPWELL.life - s.t))
+          : CURRENT.what(s.current);
+        currentRow.classList.toggle('upwelling', waiting);
+        // Folded, the section still shows the current while an upwelling waits (the turn is made there).
+        raspBox.classList.toggle('calls', waiting);
         favourRow.hidden = !favourOpen(s);
         for (const x of favourButtons) {
           const done = favourMaxed(s, x.f.id);

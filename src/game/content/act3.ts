@@ -246,6 +246,8 @@ export const UPWELL = {
   period: 480, life: 60, seconds: 90,
   word: 'an upwelling',
   now: (side: number, left: string) => `Cold water welling up ${side < 0 ? 'out toward the open water' : 'along the shelf'} (${left}): turn the current that way.`,
+  /** The current already runs toward it: a tap on that side still turns it into the cold water. */
+  already: (side: number, left: string) => `Cold water welling up ${side < 0 ? 'out toward the open water' : 'along the shelf'} (${left}): the current already runs that way; tap it to lean into the cold water.`,
   caught: 'from the upwelling',
 } as const;
 

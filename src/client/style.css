@@ -413,6 +413,8 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 /* The label and the five steps on one line, what the current does on its own line under them. */
 .current-row { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 4px 10px; margin-top: 8px; font-size: 12px; }
 .current-row[hidden] { display: none; }
+/* The steps that would catch a waiting upwelling. */
+.current-step.toward { animation: beckon 1.8s ease-in-out infinite; }
 .current-label { color: var(--sand); }
 .current-steps { display: flex; gap: 3px; }
 .current-step { font: inherit; width: 30px; height: 26px; border-radius: 8px; border: 1px solid var(--edge); background: rgba(255,255,255,0.03); color: var(--ink-dim); cursor: pointer; }
@@ -995,6 +997,7 @@ html.view-mode #photo { display: grid; }
 .foldable.folded > header h3::after { content: '\00a0▸'; }
 .foldable.folded > :not(header) { display: none; }
 .foldable.folded.calls > header h3::before { content: '● '; color: var(--glowc); font-size: 0.7em; vertical-align: middle; }
+.rasp.foldable.folded.calls > .current-row:not([hidden]) { display: grid; }
 .settings-group { margin: 16px 2px 4px; font-family: var(--display); font-weight: 400; font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--ink-dim); border-top: 1px solid var(--edge); padding-top: 10px; }
 
 /* ---------- The send-off before a new seamount ---------- */
