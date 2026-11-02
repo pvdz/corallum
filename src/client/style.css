@@ -71,7 +71,8 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 }
 .stock-note[hidden] { display: none; }
 .stock-name { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim); }
-.stock-value { font-family: var(--display); font-size: 22px; text-align: right; font-variant-numeric: tabular-nums; }
+/* A jump swells the number from the side it is aligned to (its cell is wider than the text). */
+.stock-value { font-family: var(--display); font-size: 22px; text-align: right; font-variant-numeric: tabular-nums; transform-origin: right center; }
 .stock-sub { grid-column: 1 / -1; font-size: 11px; color: var(--ink-dim); text-align: right; font-variant-numeric: tabular-nums; }
 .stock.calcite .stock-value { color: var(--calcite); text-shadow: 0 0 14px rgba(255, 150, 120, 0.35); }
 .stock.glow .stock-value { color: var(--glowc); text-shadow: 0 0 14px rgba(120, 255, 230, 0.45); }
@@ -593,11 +594,11 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
   .stocks[data-n='1'], .stocks[data-n='2'] { grid-template-columns: 1fr 1fr; }
   .stock { grid-template-columns: 1fr; }
   .stock-name { font-size: 10px; letter-spacing: 0.1em; }
-  .stock-value { text-align: left; font-size: 18px; }
+  .stock-value { text-align: left; font-size: 18px; transform-origin: left center; }
   /* Narrow columns: the rate and the hold each get their own line rather than being cut off. */
   .stock-sub { text-align: left; font-size: 10px; white-space: normal; line-height: 1.3; }
   .stock.height { grid-template-columns: auto 1fr; }
-  .stock.height .stock-value { text-align: right; }
+  .stock.height .stock-value { text-align: right; transform-origin: right center; }
   .stock.height .stock-sub { text-align: right; }
 }
 
@@ -745,7 +746,7 @@ html.big { --panel-out: calc(var(--panel-w) * 1.15); }
   /* Name and value share a line, the rate sits under them: two lines per stock instead of three. */
   .stock { grid-template-columns: auto 1fr; align-items: baseline; column-gap: 6px; }
   .stock-name { font-size: 9.5px; letter-spacing: 0.08em; }
-  .stock-value { text-align: right; font-size: 16px; }
+  .stock-value { text-align: right; font-size: 16px; transform-origin: right center; }
   .stock-sub { grid-column: 1 / -1; text-align: right; font-size: 9.5px; }
   .stock.height { grid-template-columns: auto 1fr; }
   .stock.height .stock-value, .stock.height .stock-sub { text-align: right; }
