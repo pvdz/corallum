@@ -57,6 +57,7 @@ export const UI = {
   howGrows: 'How the reef grows',
   shapes: 'What shapes this reef',
   autosave: 'The reef saves itself every few seconds in this browser.',
+  touchHintSide: 'Hold a buy button to keep buying. The eye hides the panel; pinch to look closer.',
   touchHint: 'Hold a buy button to keep buying. Drag the panel’s top down for more of the reef (twice keeps just the numbers), up for more of the panel. The eye hides the panel; pinch to look closer.',
   keys: 'Hold a buy button to keep buying. Keys (? lists them): Space sweeps · 1–4 switch tabs · H hides the panel · F catches a falling feast · E sends an expedition · P buds a polyp · B lays a band · G hosts glimmerseed.',
   startOver: 'Start over',
