@@ -1069,7 +1069,8 @@ html.view-mode #photo { display: grid; }
 .almanac[hidden] { display: none; }
 .almanac::before { content: ''; position: absolute; left: 0; right: 0; top: -1px; height: 1px;
   background: linear-gradient(90deg, rgba(160, 220, 255, 0.6), rgba(160, 220, 255, 0)); }
-.almanac .mark { position: absolute; top: -4px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; pointer-events: auto; }
+/* No width of its own: the dot stands at its time and the label overflows it centred (then slides inward, panel.ts), so no box sticks out of the card. */
+.almanac .mark { position: absolute; top: -4px; width: 0; display: flex; flex-direction: column; align-items: center; pointer-events: auto; }
 .almanac .mark i { width: 7px; height: 7px; border-radius: 50%; background: #9fd8ff; box-shadow: 0 0 6px rgba(160, 220, 255, 0.8); }
 .almanac .mark.now i { background: #ffd9a8; box-shadow: 0 0 8px rgba(255, 210, 160, 0.9); }
 .almanac .mark b { font-weight: normal; font-size: 10px; white-space: nowrap; color: rgba(210, 225, 245, 0.75); margin-top: 2px; }

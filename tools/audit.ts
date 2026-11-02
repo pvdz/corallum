@@ -4,6 +4,7 @@
 //   out     an element sticking out of the panel sideways
 //   small   a tap target under 28 px on its short side (touch viewports only)
 //   name    a control with no readable name (screen readers say just "button")
+//   clip    a button whose text runs past its own edge
 //   dim     small text under 4.5:1 against the panel (disabled buttons skipped; dimmed cards show)
 //   console any warning or error
 // Known and intended: 'dim' on held or finished cards (dimmed on purpose), and 'small' on the
@@ -64,6 +65,15 @@ await withGame(async (open) => {
           if (touch && Math.min(r.width + pad, r.height + pad) < 28) out.push(['small', `${Math.round(r.width)}x${Math.round(r.height)} ${tag(b)}`]);
           const name = (b.getAttribute('aria-label') || b.title || (b as HTMLInputElement).labels?.[0]?.textContent || b.textContent || '').trim();
           if (!name || /^[^\p{L}\p{N}]+$/u.test(name)) out.push(['name', tag(b)]);
+          // Its text runs past its own edge (into the border, or out of a pill).
+          // (Measured on the text itself: a tap area widened by a pseudo-element is not text.)
+          if (b.tagName === 'BUTTON' && b.textContent!.trim()) {
+            const range = document.createRange();
+            range.selectNodeContents(b);
+            const t = range.getBoundingClientRect(), r = b.getBoundingClientRect(), bcs = getComputedStyle(b);
+            const inL = r.left + parseFloat(bcs.borderLeftWidth), inR = r.right - parseFloat(bcs.borderRightWidth);
+            if (t.width > 0 && (t.right > inR + 0.5 || t.left < inL - 0.5)) out.push(['clip', `text ${Math.round(t.left)}–${Math.round(t.right)} in ${Math.round(inL)}–${Math.round(inR)} ${tag(b)}`]);
+          }
         }
       }
       return out;
