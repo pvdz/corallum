@@ -1515,7 +1515,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (s.heirloom && !s.relics.includes(s.heirloom)) { const x = site(s.heirloom); if (x) rows.push([`${x.relic} (heirloom)`, x.effect]); }
     for (const id of s.residents) { const r = RESIDENTS.find((x) => x.id === id); if (r) rows.push([r.name, r.effect]); }
     for (const p of PAIRS) if (s.residents.includes(p.a) && s.residents.includes(p.b)) rows.push([p.name, p.effect]);
-    for (const m of MOMENTS) { const c = s.moments[m.id]; if (c) rows.push([m[c].label, m[c].effect]); }
+    // A moment by its title (choice labels repeat across moments: "Take it in", "Let it go"), the choice beside its effect.
+    for (const m of MOMENTS) { const c = s.moments[m.id]; if (c) rows.push([m.title, `${m[c].label} · ${m[c].effect}`]); }
     for (const w of WORKS) if (s.works[w.id] > 0) rows.push([`${w.name} (${s.works[w.id]}/${w.stages.length})`, w.effect]);
     if (s.favours.clear > 0) rows.push([`${FAVOURS[0]!.name} ×${s.favours.clear}`, FAVOURS[0]!.effect]);
     for (const m of SEAMOUNTS) if (m.trial && s.meta.seen.includes(`trial:${m.id}`)) rows.push([UI.learnedOn(m.name.toLowerCase()), m.trial.reward.split(': ')[1] ?? m.trial.reward]);
