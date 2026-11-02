@@ -913,3 +913,4 @@ date, what landed, what is half-done, what's next.
 - Phones: a ready card's "max" sits beside its buy button (it stacked under it, leaving a tall, half-empty card); with Larger text they stay stacked so the name keeps its width, and max no longer shrinks to a sliver there.
 - Countdowns: "in 60s" (seconds rounded up, minutes cut) read wrong just under a minute; the same at an hour ("0h 59m" for 59m 59.4s) and a day. A wait is rounded up to whole seconds (minutes, hours) once and then split: "1m 0s", "1h 0m", "1d 0h". Unit test.
 - Settings: the checkboxes stand in one column (a long label shrank its box and pulled its words left) and are dark controls with a quieter teal tick, instead of glaring white boxes and bright cyan blocks.
+- The page declares a dark colour scheme, so native controls (the volume slider's track, the name field, scrollbars) are drawn dark; the volume slider takes the same quieter teal.
