@@ -122,6 +122,7 @@ export const UI = {
     ['L', 'flare the lure'],
     ['R', 'send the feeders into the rising'],
     ['7–0', 'answer the shoals’ signal'],
+    ['U', 'turn the current toward an upwelling'],
     ['C', 'close the polyps against warm water (or open them)'],
     ['K', 'let old stone go'],
     ['S', 'ride a swell at the Breach'],

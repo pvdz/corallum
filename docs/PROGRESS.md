@@ -989,3 +989,4 @@ date, what landed, what is half-done, what's next.
 - `tools/audit.ts` also reports "spill": text running out of its card, section, stock or row (unless clipped on purpose on the way). It found the stocks above; all viewports clean of it now.
 - `tools/audit.ts small` (360×640) and `--big` (Larger text): run on small/mobile/landscape/desktop with Larger text, no clip or spill findings.
 - The ask's "Ask another" (↻) is disabled for five minutes after a skip with nothing saying why: its tooltip says "again in 3m 12s".
+- U turns the current toward a waiting upwelling and catches it (keyboard play had no way to; listed in the keys card). The panel's dial and the key share `turnCurrent`.

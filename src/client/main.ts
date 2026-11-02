@@ -401,18 +401,7 @@ const panel = createPanel(ui, {
     save();
   },
   closeUp: setClosed,
-  setCurrent(c) {
-    setCurrent(state, c);
-    audio.cue('sweep');
-    // Turned toward an upwelling while it lasts: a haul.
-    const gain = catchUpwelling(state);
-    if (gain > 0) {
-      const [x, y] = toScreen(scene.crownAt[0], scene.crownAt[1]);
-      floatText(x / dpr, y / dpr, `+${num(gain)} calcite ${UPWELL.caught}`, 'feast-float');
-      audio.cue('feast');
-    }
-    save();
-  },
+  setCurrent: turnCurrent,
   favour(id) {
     if (!askFavour(state, id)) return;
     scene.effect('grounds');
@@ -1404,6 +1393,19 @@ function takePortrait(): void {
   }
 }
 
+/** Turn the current (the panel's dial, or U); turned toward an upwelling while it lasts: a haul. */
+function turnCurrent(c: number): void {
+  setCurrent(state, c);
+  audio.cue('sweep');
+  const gain = catchUpwelling(state);
+  if (gain > 0) {
+    const [x, y] = toScreen(scene.crownAt[0], scene.crownAt[1]);
+    floatText(x / dpr, y / dpr, `+${num(gain)} calcite ${UPWELL.caught}`, 'feast-float');
+    audio.cue('feast');
+  }
+  save();
+}
+
 /** Name a creature beside where it was tapped: above it, clear of its body (`r`), or below if there
  *  is no room. Clear of the tap (`tx`, `ty`) too, where the gift's and the sweep's numbers rise. */
 function showCreatureLabel(id: string, x: number, y: number, r = 20, tx = NaN, ty = NaN): void {
@@ -1902,6 +1904,12 @@ window.addEventListener('keydown', (e) => {
   }
   if (e.key.toLowerCase() === 'r' && canFeedRising(state)) {
     sendFeeders();
+    return;
+  }
+  // U: turn the current toward a waiting upwelling (as far as it already ran that way, at least a step).
+  const up = currentUpwelling(state);
+  if (e.key.toLowerCase() === 'u' && up && state.upwelled !== up.k) {
+    turnCurrent(up.side * Math.max(1, Math.sign(state.current) === up.side ? Math.abs(state.current) : 1));
     return;
   }
   if (e.key.toLowerCase() === 'c' && Number.isFinite(untilHeat(state))) {
