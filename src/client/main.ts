@@ -47,7 +47,7 @@ import { createPortraits } from './portraits.ts';
 import { createZoom } from './zoom.ts';
 import { drawMoon, glow as glowAt } from '../game/render/draw.ts';
 import { ACT5, GAUGE_MOON } from '../game/content/act5.ts';
-import { creatureAt, endFrameSpots, hover, poke, spoke, startle, tappable, takeSightings } from '../game/render/sightings.ts';
+import { type Spot, creatureAt, endFrameSpots, hover, poke, spoke, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { HEAT } from '../game/content/act4.ts';
 import { AGAIN, QUESTION, QUESTIONS, OSSEL_PAST } from '../game/content/ossel.ts';
 import { MILKY, RISING } from '../game/content/act2.ts';
@@ -1137,6 +1137,22 @@ function lapseHeight(): number | null {
   return from + (state.height - from) * e;
 }
 
+/** The one of a kind worth marking: inside the open scene, clear of the sound and view buttons
+ *  in the top-left corner, and the biggest (nearest) of those. A far jelly drifting behind the
+ *  buttons, or a shoal fish under the phone sheet, cannot be seen or tapped. */
+function markable(id: string): Spot | undefined {
+  const bx = 110 * dpr, by = 62 * dpr;
+  let best: Spot | undefined;
+  for (const p of tappable()) {
+    if (p.id !== id) continue;
+    if (p.x < focusNow.x || p.x > focusNow.x + focusNow.w || p.y < focusNow.y || p.y > focusNow.y + focusNow.h) continue;
+    const ring = Math.min(Math.max(p.r, 22 * dpr), 70 * dpr) * 1.2;
+    if (p.x - ring < bx && p.y - ring < by) continue;
+    if (!best || p.r > best.r) best = p;
+  }
+  return best;
+}
+
 /** Lucky neighbours on screen: golden sparks circling each one (where it was drawn last frame). */
 function drawLucky(t: number): void {
   ctx.save();
@@ -1144,7 +1160,7 @@ function drawLucky(t: number): void {
   // Today's visitor, untouched yet: a slow silver halo.
   const vis = visited(state) ? null : visitor(state);
   if (vis) {
-    const p = tappable().find((q) => q.id === vis);
+    const p = markable(vis);
     if (p) {
       const r = Math.min(Math.max(p.r, 22 * dpr), 70 * dpr) * (1.1 + 0.08 * Math.sin(t * 1.5));
       glowAt(ctx, p.x, p.y, r * 1.3, '220,230,255', 0.12);
@@ -1159,7 +1175,7 @@ function drawLucky(t: number): void {
   // learned (the water card already says one is here).
   const th = currentThorn(state);
   if (th && state.tally.intruders === 0 && state.meta.spawnings === 0) {
-    const p = tappable().find((q) => q.id === th.kind);
+    const p = markable(th.kind);
     if (p) {
       const r = Math.min(Math.max(p.r, 24 * dpr), 70 * dpr);
       for (let k = 0; k < 2; k++) {
@@ -1172,11 +1188,13 @@ function drawLucky(t: number): void {
       }
     }
   }
-  // One of its kind is the lucky one: the first drawn.
+  // One of its kind is the lucky one: the one worth marking.
   const done = new Set<string>();
-  for (const p of tappable()) {
-    if (done.has(p.id) || p.id === 'ossel' || p.id === 'shell' || p.id === 'star' || p.id === 'old' || p.id === 'tangle' || p.id === 'fragment' || p.id === 'stray' || p.id === 'raft' || !lucky(state, p.id)) continue;
-    done.add(p.id);
+  for (const q of tappable()) {
+    if (done.has(q.id) || q.id === 'ossel' || q.id === 'shell' || q.id === 'star' || q.id === 'old' || q.id === 'tangle' || q.id === 'fragment' || q.id === 'stray' || q.id === 'raft' || !lucky(state, q.id)) continue;
+    done.add(q.id);
+    const p = markable(q.id);
+    if (!p) continue;
     // A soft chime the first time a lucky one shows in this span.
     const span = Math.floor(state.t / LUCKY.span);
     if (span !== luckyHeard && frozenT === null) {
