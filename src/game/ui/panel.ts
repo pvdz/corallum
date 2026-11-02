@@ -2809,9 +2809,9 @@ function foldable(box: HTMLElement, head: HTMLElement, id: string): void {
   head.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && keyed(head)) { e.preventDefault(); toggle(e); } });
 }
 
-/** Scrolls glide, except under reduced motion. */
+/** Scrolls glide, except under reduced motion (the system's, or the Calm setting's class). */
 function smoothScroll(): ScrollBehavior {
-  return matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+  return matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('calm') ? 'auto' : 'smooth';
 }
 
 /** The role="button" element a pointer last pressed (it keeps focus after a click); a Tab clears it. */

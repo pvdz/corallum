@@ -1015,3 +1015,4 @@ date, what landed, what is half-done, what's next.
 - `tools/audit.ts small-landscape` (667×375). With scientific numbers there, the one-line quick buys' prices ("Glimmer ✦ 7.50e10") ran past their buttons: scientific prices and names a size smaller in that layout, and the best buy's ✦ without the space before it. Clean at 8 points through the game, plain, Larger text and scientific.
 - A card taller than a phone's screen (the news on a 360×640 phone) started at the very top, under the sound and view buttons, which stay on top of it. Cards keep 62 px (or the safe area + 56) clear at the top. The news itself is a sentence shorter.
 - (The card's top margin applies under 600 px wide only: on a phone on its side the card is centred clear of the buttons and the height is short.)
+- Panel scrolls (a tab tapped again, a choice chip, an ask) jump instead of gliding under reduced motion or the Calm setting.
