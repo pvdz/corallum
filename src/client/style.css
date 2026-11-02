@@ -184,14 +184,15 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 /* ---------- Reader ---------- */
 .reader {
   position: absolute; inset: 0; display: grid; place-items: center; padding: 20px;
-  /* Below the sound and view buttons (they stay on top, and usable): a card taller than the screen starts under them. */
-  padding-top: max(62px, calc(env(safe-area-inset-top) + 56px));
   background: radial-gradient(ellipse at center, rgba(4, 6, 20, 0.55), rgba(2, 2, 8, 0.85));
   animation: fade-in 0.6s ease both; z-index: 10;
   /* A card taller than the screen (a phone on its side) scrolls, from its top, never cut off. */
   overflow-y: auto; overscroll-behavior: contain; align-items: safe center;
 }
 .reader[hidden] { display: none; }
+/* Narrow screens, where a card is as wide as the screen: a card taller than the screen starts below
+   the sound and view buttons (they stay on top of it, and usable). */
+@media (max-width: 599px) { .reader { padding-top: max(62px, calc(env(safe-area-inset-top) + 56px)); } }
 .reader-card {
   max-width: 520px; padding: 28px 30px 24px; border-radius: 18px; text-align: center;
   background: linear-gradient(180deg, rgba(20, 28, 62, 0.97), rgba(8, 10, 30, 0.98));
