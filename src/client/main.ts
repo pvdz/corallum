@@ -1457,7 +1457,8 @@ function showCreatureLabel(id: string, x: number, y: number, r = 20, tx = NaN, t
     [Math.min(right - lw, tx - half - lw), above >= topMin ? above : below], [Math.max(8, tx + half), above >= topMin ? above : below]];
   const [pl, pt] = tries.find(([l, t]) => l >= 8 && l + lw <= right && fits(t) && clear(l, t)) ?? [left, above >= topMin ? above : below];
   creatureLabel.style.left = `${Math.max(8, pl)}px`;
-  creatureLabel.style.top = `${pt}px`;
+  // Never past the scene's bottom (onto the phone's sheet), never above the corner buttons.
+  creatureLabel.style.top = `${Math.max(topMin, Math.min(pt, bottom - lh))}px`;
   creatureLabel.classList.add('show');
   clearTimeout(labelTimer);
   labelTimer = window.setTimeout(() => creatureLabel.classList.remove('show'), 3500);
