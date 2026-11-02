@@ -1745,7 +1745,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       stocks.classList.toggle('many', shown >= 3);
       if (stocks.dataset.n !== String(shown)) stocks.dataset.n = String(shown);
       murmurs.value.textContent = num(s.murmurs);
-      murmurs.setSub(`${rate(murmurNet(s, r))} · holds ~${num(murmurHold(s, r))}`);
+      murmurs.setSub(`${rate(murmurNet(s, r))} · ${s.jobs.scout > 0 ? `holds ~${num(murmurHold(s, r))}` : UI.murmursUnheard}`);
       silt.row.hidden = !(r.siltP > 0 || s.silt > 0.5);
       silt.value.textContent = num(s.silt);
       silt.setSub(`${rate(siltNet(s, r))} · polyps ×${smother(s.silt).toFixed(2)}`);
