@@ -939,3 +939,4 @@ date, what landed, what is half-done, what's next.
 - Sweeping with Space as a story card came up closed it unread (its Continue button takes focus, and the next Space pressed it; 6 of 6 in a scratch test). For 0.8 s after a story opens, a key press does not close it; a tap or click does at once. All 7 e2e green.
 - A phone on its side: stock lines drop the word "holds" ("+979B/s · ~1.21Qa"), which cut the number itself off ("holds ~1...."); a tap on a stock still gives the whole line.
 - Choices folded with "Later" are rows on hairlines (they were bordered pills), and the chips above them name only the choices still open: three folded choices showed their three names twice, as chips and again as pills right below.
+- "Before you go" on a phone: its note ("the Rasp set for holding") squeezed both buttons into two-line pills; the note now takes its own line under them.

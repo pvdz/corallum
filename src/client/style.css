@@ -456,9 +456,11 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 .truce-kicker { color: #ffd9a8; }
 .buy-max { flex: none; min-width: 0; padding: 0 9px; font-size: 11px; height: 30px; align-self: center; }
 .buy-max[hidden] { display: none; }
-.prep-row { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
+.prep-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 4px; }
+.prep-row .plain { white-space: nowrap; }
 .prep-row[hidden] { display: none; }
-.prep-note { margin: 0; }
+.prep-note { margin: 0; flex: 1 1 100%; }
+.prep-note:empty { display: none; }
 .companion { font: inherit; background: none; border: none; color: var(--ink-dim); cursor: pointer; padding: 0 4px; font-size: 14px; }
 .companion.on { color: #ffd9a8; }
 .truce.moment.signal { border-color: rgba(140, 205, 255, 0.4); }
