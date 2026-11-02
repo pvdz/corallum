@@ -463,6 +463,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     for (let e: HTMLElement | null = at ?? null; e && e !== tabPages.get(tab); e = e.parentElement) if (e.hidden) return null;
     return at ? { tab, at } : null;
   }
+  askBox.addEventListener('keydown', (e) => {
+    if (e.target !== askBox || (e.key !== 'Enter' && e.key !== ' ')) return;
+    e.preventDefault();
+    askBox.click();
+  });
   askBox.addEventListener('click', (e) => {
     if ((e.target as HTMLElement).closest('button')) return;
     const go = askTarget();
@@ -2149,7 +2154,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       askBox.classList.toggle('waiting', !rq);
       askKind = rq?.def.kind ?? '';
       const goes = !!askTarget();
-      if (askBox.classList.contains('goes') !== goes) askBox.classList.toggle('goes', goes);
+      if (askBox.classList.contains('goes') !== goes) {
+        askBox.classList.toggle('goes', goes);
+        // Reachable by Tab too, when it leads somewhere.
+        if (goes) { askBox.tabIndex = 0; askBox.setAttribute('role', 'button'); }
+        else { askBox.removeAttribute('tabindex'); askBox.removeAttribute('role'); }
+      }
       if (rq) {
         // An ask that waits for something in the water says when it comes ("· in 2m 10s", "· now").
         const k = rq.def.kind;
