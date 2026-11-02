@@ -941,7 +941,7 @@ html.view-mode #photo { display: grid; }
 .collapsible.folded > h3::after { content: '\00a0▸'; }
 .collapsible.folded > :not(h3) { display: none; }
 /* A folded section is a row on a hairline, like the upgrades; opened, it is a card again. */
-.panel .card.collapsible.folded, .panel .card.foldable.folded { background: transparent; border-color: transparent; box-shadow: inset 0 -1px 0 rgba(150, 200, 255, 0.08); border-radius: 0; }
+.panel .card.collapsible.folded, .panel .card.foldable.folded, .panel .card.spawn-lesser.folded { background: transparent; border-color: transparent; box-shadow: inset 0 -1px 0 rgba(150, 200, 255, 0.08); border-radius: 0; }
 /* Rasp, Shoals, Residents: tap the header to fold to it (the count stays); a dot if someone calls. */
 .foldable > header { cursor: pointer; }
 .foldable > header h3::after { content: '\00a0▾'; color: var(--ink-dim); font-size: 0.75em; }
