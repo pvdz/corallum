@@ -756,7 +756,8 @@ html.big { --panel-out: calc(var(--panel-w) * 1.15); }
 .moment .carried-before[hidden] { display: none; }
 .memory .carried-before { font-size: 11px; font-style: normal; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255, 158, 199, 0.7); }
 .toggle { display: flex; align-items: center; gap: 10px; margin: 10px 2px 4px; font-size: 13px; color: var(--ink-dim); cursor: pointer; }
-.toggle input { width: 18px; height: 18px; accent-color: #8ffff0; }
+/* Every box the same size in one column (a long label shrank its box); a quieter teal when ticked. */
+.toggle input { flex: none; margin: 0; width: 18px; height: 18px; accent-color: #5fbfb6; color-scheme: dark; }
 
 /* ---------- Milestones (a count of polyps or glimmerseed doubles them) ---------- */
 #milestone {
