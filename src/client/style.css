@@ -746,7 +746,7 @@ html.big { --panel-out: calc(var(--panel-w) * 1.15); }
 }
 
 /* A small phone on its side (600–799 px wide): the side panel takes a little more of the width,
-   the stocks sit two to a row and the quick buys put the price under the name. */
+   the stocks sit two to a row and the quick buys drop their icons. */
 @media (min-width: 600px) and (max-width: 799px) and (max-height: 500px) {
   :root { --panel-w: 52vw; }
   .stocks, .panel .stocks.many { grid-template-columns: 1fr 1fr; }
