@@ -106,10 +106,20 @@ export function createShoals(seed: number) {
     ctx.globalCompositeOperation = 'lighter';
     const rgb = job === 'light' ? '150,255,240' : job === 'scout' ? '190,170,255' : job === 'fan' ? '235,215,170' : job === 'guard' ? '255,200,120' : '120,200,255';
     const a = job === 'light' ? 0.35 + 0.4 * flicker : 0.4;
-    for (const [lx, ly] of lights) {
+    // Each fish's row of lights: one soft glow round the middle one, and the three as points, all the
+    // shoal's points in one fill (three glow sprites a fish were ~13% of the Midnight Water's draw).
+    ctx.fillStyle = `rgba(${rgb},${Math.min(1, (a * gs) * 1.4).toFixed(3)})`;
+    ctx.beginPath();
+    for (let k = 0; k < lights.length; k++) {
+      const [lx, ly] = lights[k]!;
+      const pr = 1.1 * s * (1 + 0.4 * flicker);
+      ctx.moveTo(lx + pr, ly);
+      ctx.arc(lx, ly, pr, 0, Math.PI * 2);
+      if (k % 3 !== 1) continue;
       const boost = wave ? Math.exp(-(((Math.hypot(lx - wave.x, ly - wave.y) - wave.age * 120 * s) / (14 * s)) ** 2)) * (1 - wave.age / 1.6) : 0;
-      glow(ctx, lx, ly, 3.2 * s * (1 + 0.6 * flicker + 1.2 * boost), rgb, Math.min(1, a * gs + boost));
+      glow(ctx, lx, ly, 5.2 * s * (1 + 0.6 * flicker + 1.2 * boost), rgb, Math.min(1, a * gs * 0.9 + boost));
     }
+    ctx.fill();
     ctx.restore();
   }
 
