@@ -284,7 +284,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (id === 'lineage') { traitsReadySeen = -1; lineageDot.hidden = true; }
     // The weather strip's labels were measured while hidden (no widths): laid out again.
     if (id === 'grow') almanacKey = '';
-    if (again) pages.scrollTo({ top: 0, behavior: 'smooth' });
+    if (again) pages.scrollTo({ top: 0, behavior: smoothScroll() });
     else pages.scrollTop = tabScroll.get(id) ?? 0;
     currentTab = id;
   }
@@ -478,7 +478,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const go = askTarget();
     if (!go) return;
     if (currentTab !== go.tab) showTab(go.tab);
-    go.at.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'center' });
+    go.at.scrollIntoView({ behavior: smoothScroll(), block: 'center' });
     go.at.animate?.([{ boxShadow: '0 0 0 0 rgba(255, 217, 168, 0)' }, { boxShadow: '0 0 22px 3px rgba(255, 217, 168, 0.5)' }, { boxShadow: '0 0 0 0 rgba(255, 217, 168, 0)' }], { duration: 1400, delay: 250, easing: 'ease-in-out' });
   });
   // Before you go: one tap to ready the reef for an absence (shown once there is something to set).
@@ -1819,7 +1819,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       .filter((x) => x.label);
     waitBar.hidden = open.length < 2;
     waitBar.innerHTML = '';
-    for (const x of open) waitBar.append(button('wait-chip', x.label, () => x.sec.scrollIntoView({ behavior: 'smooth', block: 'start' })));
+    for (const x of open) waitBar.append(button('wait-chip', x.label, () => x.sec.scrollIntoView({ behavior: smoothScroll(), block: 'start' })));
   }
 
   return {
@@ -2807,6 +2807,11 @@ function foldable(box: HTMLElement, head: HTMLElement, id: string): void {
   head.addEventListener('click', toggle);
   // Keys only when the keyboard put focus here: clicked with the mouse it keeps focus, and Space then sweeps.
   head.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && keyed(head)) { e.preventDefault(); toggle(e); } });
+}
+
+/** Scrolls glide, except under reduced motion. */
+function smoothScroll(): ScrollBehavior {
+  return matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
 }
 
 /** The role="button" element a pointer last pressed (it keeps focus after a click); a Tab clears it. */
