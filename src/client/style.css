@@ -898,7 +898,8 @@ html.view-mode #photo { display: grid; }
 .journal-text .touched { font-style: normal; color: var(--glowc); letter-spacing: 0.06em; text-transform: none; }
 .journal-entry.unknown { opacity: 0.45; font-style: italic; }
 .journal-entry.unknown .portrait { display: none; }
-.journal-entry.unknown .journal-text { flex-direction: row; gap: 10px; align-items: baseline; }
+.journal-entry.unknown .journal-text { flex-direction: column; gap: 1px; }
+.journal-entry.unknown strong { white-space: nowrap; }
 .journal-zone {
   grid-column: 1 / -1; margin-top: 8px; font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--glowc);
 }

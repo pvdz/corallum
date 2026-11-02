@@ -767,11 +767,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         `<circle cx="8" cy="8" r="${r}" fill="none" stroke="${f >= 1 ? '#ffd9a8' : '#a8dcff'}" stroke-width="2.5" stroke-dasharray="${(f * c).toFixed(2)} ${c.toFixed(2)}" transform="rotate(-90 8 8)" stroke-linecap="round"/>`;
       head.prepend(ring);
       journalList.append(head);
+      // The unseen ones fold into a single line under the zone: how many, and the hints worth giving.
+      const unseen = inZone.filter((c) => !seen.includes(c));
       for (const c of inZone) {
-        const known = seen.includes(c);
-        // Known: a portrait (when one was taken), the name and the note. Unknown: a one-line hint.
-        const row = el('div', known ? 'journal-entry' : 'journal-entry unknown');
-        const pic = known ? hooks.portrait?.(c.id) : null;
+        if (!seen.includes(c)) continue;
+        // A portrait (when one was taken), the name and the note.
+        const row = el('div', 'journal-entry');
+        const pic = hooks.portrait?.(c.id);
         if (pic) {
           const img = el('img', 'portrait');
           img.src = pic;
@@ -783,23 +785,35 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           row.append(img);
         } else row.append(el('div', 'portrait none'));
         const text = el('div', 'journal-text');
-        const name = el('strong', '', known ? c.name : UI.notYetSeen);
+        const name = el('strong', '', c.name);
         const tl = trustLevel(s.meta.trust[c.id] ?? 0);
-        if (known && tl > 0) name.append(el('em', `touched trust-${tl}`, ` · ${TRUST.names[tl]}`));
+        if (tl > 0) name.append(el('em', `touched trust-${tl}`, ` · ${TRUST.names[tl]}`));
         if (s.meta.seen.includes(`g:${c.id}`)) {
           const mark = el('em', 'lucky-mark', ' ✦');
           mark.title = LUCKY.seen;
           name.append(mark);
         }
         // A touched creature can be kept close as the line's companion.
-        if (known && s.meta.seen.includes(`t:${c.id}`)) {
+        if (s.meta.seen.includes(`t:${c.id}`)) {
           const mine = s.meta.companion === c.id;
           const star = button(`companion${mine ? ' on' : ''}`, mine ? '★' : '☆', () => hooks.companion(mine ? '' : c.id));
           star.title = mine ? `${COMPANION.on} · ${COMPANION.note}` : `${COMPANION.label} (${COMPANION.note})`;
           name.append(star);
         }
-        text.append(name,
-          el('span', '', known ? c.note : c.note.startsWith('Rare.') ? 'Rare: watch for it.' : (/Only (?:on|after) [^.]*\./.exec(c.note)?.[0] ?? '')));
+        text.append(name, el('span', '', c.note));
+        row.append(text);
+        journalList.append(row);
+      }
+      if (unseen.length) {
+        // "Only on a vent", "only on a cold seamount"…, then how many are rare.
+        const only = [...new Set(unseen.map((c) => /Only (?:on|after) [^.]*/.exec(c.note)?.[0]).filter((h): h is string => !!h))];
+        const rare = unseen.filter((c) => c.note.startsWith('Rare.')).length;
+        const hints = [...only, ...(rare ? [UI.rareHint(rare)] : [])].map((h, i) => (i ? h[0]!.toLowerCase() : h[0]!.toUpperCase()) + h.slice(1));
+        const row = el('div', 'journal-entry unknown');
+        row.append(el('div', 'portrait none'));
+        const text = el('div', 'journal-text');
+        text.append(el('strong', '', UI.notYetSeenCount(unseen.length)),
+          el('span', '', hints.length ? `${hints.join(' · ')}.` : ''));
         row.append(text);
         journalList.append(row);
       }

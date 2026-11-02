@@ -17,7 +17,9 @@ export const UI = {
   bandsIntro: 'Each band of stone keeps what the reef saw while laying it down. Newest first.',
   yourReef: 'Your reef',
   creaturesSeen: 'Creatures seen',
-  notYetSeen: 'Not yet seen',
+  /** A zone's unseen creatures, folded into one journal line. */
+  notYetSeenCount: (n: number) => `${n} not yet seen`,
+  rareHint: (n: number) => (n > 1 ? `${n} rare, watch for them` : 'one rare, watch for it'),
   sisterReef: 'Sister reef',
   thisReef: 'This reef',
   /** The filter over the stories list: everything, the reef's own bands, moments, and the rest. */
