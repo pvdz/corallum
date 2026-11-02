@@ -244,7 +244,7 @@ const notify = setting('notify', false, (on, initial) => {
 });
 /** Larger text: the panel, the reader and Ossel's words a size up. */
 const big = setting('big', false, (on, initial) => { document.documentElement.classList.toggle('big', on); if (!initial) relayout(); });
-const sci = setting('sci', false, (on) => setScientific(on));
+const sci = setting('sci', false, (on) => { setScientific(on); document.documentElement.classList.toggle('sci', on); });
 const volume = setting('volume', 0.9, (v) => audio.setVolume(v));
 /** Full resolution: off renders at 1× (a quarter of the pixels on a 2× screen) for slow phones. */
 const sharp = setting('sharp', true, (_, initial) => { if (!initial) relayout(); });
