@@ -129,7 +129,7 @@ export const QUESTIONS: readonly Question[] = [
 
 /** A new reef after the line has reached an ending: Ossel remembers having done this before (one per ending, once). */
 export const AGAIN = {
-  kicker: 'Again',
+  kicker: 'The line begins again',
   lines: [
     { title: 'Again', text: '“We have done this before,” Ossel says, very quietly, as the first polyp opens. “I remember the surface. I remember the moon. Let us go and see if it is still there.”' },
     { title: 'Twice now', text: '“The second time is easier,” says Ossel. “That is what I would have told you. It is not true. It is only more familiar.”' },
