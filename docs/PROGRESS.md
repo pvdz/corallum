@@ -973,3 +973,4 @@ date, what landed, what is half-done, what's next.
 - The same for three more effects: a quick child and the Quick stone boon said "bands ×0.97 / ×0.9" (prices: now "bands cost ×…"), and the Watchful branches pair said "the Rasp eat ×0.8 more", which contradicts itself ("a further ×0.8"). Every other "×0.x" effect names what it slows (dissolves, fades, as long).
 - An ask that waits on the water says when: "Catch something falling. in 2m 22s" (a feast), likewise the next rising, milky sea and intruder; "now" in amber while it is there. Before, the ask sat without a hint while the weather card further down knew the time.
 - The signal ask says when the shoals will next signal too (`untilSignal`, unit-tested against `currentSignal` opening on time).
+- A photo of a reef named in another alphabet ("珊瑚", "Ölü deniz") was saved as "-3720m.png" (only a–z and digits were kept, with no fallback): letters of any script are kept now, and a name of none is "corallum".

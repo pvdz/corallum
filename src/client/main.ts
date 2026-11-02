@@ -1812,7 +1812,8 @@ photoBtn.addEventListener('click', () => {
     if (!blob) return;
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    const who = (reefName(state) || 'corallum').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    // Letters of any script are kept (a reef named in another alphabet keeps its name); a name with none is "corallum".
+    const who = (reefName(state) || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '') || 'corallum';
     a.download = `${who}-${Math.floor(state.height)}m.png`; // floored like the caption (metres())
     if (!state.meta.seen.includes('did:photo')) state.meta.seen.push('did:photo');
     if (actAt(state.height) === 2 && !state.meta.seen.includes('did:photo-dark')) state.meta.seen.push('did:photo-dark');
