@@ -2290,7 +2290,9 @@ function frame(now: number): void {
     requestAnimationFrame(frame);
     return;
   }
-  lastDrawn = now;
+  // The schedule steps by the gap rather than restarting at each drawn frame: on a 90 Hz screen
+  // (11.1 ms frames) restarting drew every other frame, 45 a second; stepping draws two in three.
+  lastDrawn = Math.max(lastDrawn + frameGap, now - frameGap);
   // One bad frame must not stop the reef: the loop goes on and the error is reported once.
   try { frameBody(now); }
   catch (e) {
