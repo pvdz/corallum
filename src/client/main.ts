@@ -1429,10 +1429,15 @@ function showCreatureLabel(id: string, x: number, y: number, r = 20): void {
   creatureLabel.append(n, t, g);
   const reach = Math.min(r, 90);
   const lw = creatureLabel.offsetWidth || 220, lh = creatureLabel.offsetHeight || 56;
-  const left = Math.min(window.innerWidth - lw - 8, Math.max(8, x - lw / 2));
+  // Inside the scene: left of the depth gauge (and the panel), below the corner buttons and any
+  // journal note showing up there.
+  const right = (focusNow.x + focusNow.w) / dpr - 52;
+  const left = Math.min(right - lw, Math.max(8, x - lw / 2));
+  const note = journalNote.classList.contains('show') ? journalNote.getBoundingClientRect().bottom + 6 : 0;
+  const topMin = Math.max(60, note);
   const above = y - reach - 10 - lh;
-  creatureLabel.style.left = `${left}px`;
-  creatureLabel.style.top = `${above >= 8 ? above : y + reach + 10}px`;
+  creatureLabel.style.left = `${Math.max(8, left)}px`;
+  creatureLabel.style.top = `${above >= topMin ? above : Math.max(topMin, y + reach + 10)}px`;
   creatureLabel.classList.add('show');
   clearTimeout(labelTimer);
   labelTimer = window.setTimeout(() => creatureLabel.classList.remove('show'), 3500);
