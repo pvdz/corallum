@@ -2,7 +2,7 @@
 // flips, for a while, reporting console errors. Mouse and keys mixed on purpose: a button the mouse
 // clicked keeps focus, a key then lands on it (bugs keyboard-only or mouse-only tests never see).
 // Buttons that replace or reset the reef, and the release, are left alone.
-// Usage: node --no-warnings tools/fuzz.ts [--vp desktop|mobile|landscape] [--at <bot secs>] [--secs 120] [--ended]
+// Usage: node --no-warnings tools/fuzz.ts [--vp desktop|mobile|landscape|small] [--at <bot secs>] [--secs 120] [--ended]
 //   --ended starts from a reef past its ending (the garden, the chronicle, Begin again).
 
 import { runBot } from '../src/game/sim/bot.ts';
@@ -13,7 +13,8 @@ function arg(name: string, fallback: string): string {
   const i = process.argv.indexOf(`--${name}`);
   return i > 0 ? process.argv[i + 1] ?? fallback : fallback;
 }
-const vp = VIEWPORTS.find((v) => v.name === arg('vp', 'desktop'))!;
+// 'small': a 360×640 phone, a common size the standard viewports leave out.
+const vp = arg('vp', 'desktop') === 'small' ? { name: 'small', width: 360, height: 640, scale: 2, mobile: true } : VIEWPORTS.find((v) => v.name === arg('vp', 'desktop'))!;
 const at = Number(arg('at', '10000'));
 const secs = Number(arg('secs', '120'));
 const ended = process.argv.includes('--ended');
