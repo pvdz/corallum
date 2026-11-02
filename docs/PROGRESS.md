@@ -990,3 +990,4 @@ date, what landed, what is half-done, what's next.
 - `tools/audit.ts small` (360×640) and `--big` (Larger text): run on small/mobile/landscape/desktop with Larger text, no clip or spill findings.
 - The ask's "Ask another" (↻) is disabled for five minutes after a skip with nothing saying why: its tooltip says "again in 3m 12s".
 - U turns the current toward a waiting upwelling and catches it (keyboard play had no way to; listed in the keys card). The panel's dial and the key share `turnCurrent`.
+- A browser that keeps nothing for the page (private browsing in some browsers, site data blocked, storage full past the portraits) ran the reef fine but lost it on reload without a word. The first save that fails says so once, in a card: the reef cannot be kept here; Save to a file keeps it. Checked with localStorage throwing on access and on every write (card after the opening story), and not shown with storage working.

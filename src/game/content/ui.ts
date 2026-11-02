@@ -37,6 +37,9 @@ export const UI = {
   copySave: 'Copy save',
   copyPrompt: 'Copy this save:',
   saveFile: 'Save to a file',
+  /** Told once when the browser keeps nothing for the page (private browsing, site data blocked, storage full). */
+  noStorage: { kicker: 'This browser keeps nothing', title: 'The reef cannot be saved here',
+    text: 'This browser is not letting the page keep anything (private browsing, or site data blocked), so the reef will be lost when the page closes. To keep it, use Save to a file in the Reef tab now and then, and Load a file to come back to it.' },
   badSave: 'That save could not be read.',
   loadFile: 'Load a file…',
   loadText: 'Paste a save…',

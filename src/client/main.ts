@@ -116,17 +116,21 @@ const seed = Number(params.get('seed') ?? 20261026);
 function storageGet(): string | null {
   try { return localStorage.getItem(SAVE_KEY); } catch { return null; }
 }
-function storageSet(text: string): void {
-  try { localStorage.setItem(SAVE_KEY, text); return; } catch { /* full, or private mode */ }
+/** Whether the last save was kept (false: private browsing, site data blocked, or no room). */
+function storageSet(text: string): boolean {
+  try { localStorage.setItem(SAVE_KEY, text); return true; } catch { /* full, or private mode */ }
   // Storage full: the reef matters more than the journal's pictures. Close-ups go first, then the rest.
   for (const key of ['corallum.portraits.close', 'corallum.portraits']) {
     try {
       localStorage.removeItem(key);
       localStorage.setItem(SAVE_KEY, text);
-      return;
+      return true;
     } catch { /* still no room: private mode, play unsaved */ }
   }
+  return false;
 }
+/** The player has been told the reef cannot be kept here (once a page). */
+let toldNoStorage = false;
 
 let state: GameState;
 let savedAt = Date.now();
@@ -615,7 +619,10 @@ function save(): void {
     return;
   }
   savedAt = Date.now();
-  storageSet(serialize(state, savedAt));
+  if (!storageSet(serialize(state, savedAt)) && !toldNoStorage) {
+    toldNoStorage = true;
+    panel.story(UI.noStorage.kicker, UI.noStorage.title, UI.noStorage.text);
+  }
   ownSavedAt = savedAt;
   panel.setBackupDue(backupDue());
 }
