@@ -568,9 +568,9 @@ const finale = createFinale(ui, panel.growPage, {
     scene.effect('breach');
     audio.cue('release');
     document.documentElement.classList.add('releasing');
-    // A phone's sheet would take half the screen through the climax: the reef has all of it until
+    // A phone's sheet (the bottom-sheet layout, style.css) would take half the screen through the climax: the reef has all of it until
     // the ending's last page (the eye button still brings the panel back).
-    if (!viewMode && matchMedia('(max-width: 799px)').matches) {
+    if (!viewMode && matchMedia('(max-width: 599px), (max-width: 799px) and (min-height: 501px)').matches) {
       setViewMode(true);
       releaseView = true;
     }
