@@ -464,7 +464,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     return at ? { tab, at } : null;
   }
   askBox.addEventListener('keydown', (e) => {
-    if (e.target !== askBox || (e.key !== 'Enter' && e.key !== ' ')) return;
+    if (e.target !== askBox || (e.key !== 'Enter' && e.key !== ' ') || !keyed(askBox)) return;
     e.preventDefault();
     askBox.click();
   });
@@ -1091,7 +1091,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let spawnOpened = false;
   const spawnToggle = () => { if (!lastState || ended(lastState)) return; spawnOpened = !spawnOpened; };
   spawnTitle.addEventListener('click', spawnToggle);
-  spawnTitle.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); spawnToggle(); } });
+  spawnTitle.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && keyed(spawnTitle)) { e.preventDefault(); spawnToggle(); } });
   const spawnText = el('p', 'flavour',
     UI.lesserText);
   const spawnFoot = el('footer');
@@ -2756,7 +2756,7 @@ function collapsible(card: HTMLElement, head: HTMLElement): void {
     head.setAttribute('aria-expanded', String(!folded));
   };
   head.addEventListener('click', toggle);
-  head.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+  head.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && keyed(head)) { e.preventDefault(); toggle(); } });
 }
 
 /**
@@ -2783,7 +2783,17 @@ function foldable(box: HTMLElement, head: HTMLElement, id: string): void {
     try { localStorage.setItem(key, folded ? '1' : '0'); } catch { /* no storage */ }
   };
   head.addEventListener('click', toggle);
-  head.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(e); } });
+  // Keys only when the keyboard put focus here: clicked with the mouse it keeps focus, and Space then sweeps.
+  head.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && keyed(head)) { e.preventDefault(); toggle(e); } });
+}
+
+/** The role="button" element a pointer last pressed (it keeps focus after a click); a Tab clears it. */
+let pointerPressed: Element | null = null;
+window.addEventListener('pointerdown', (e) => { pointerPressed = (e.target as Element | null)?.closest?.('[role="button"]') ?? null; }, { capture: true, passive: true });
+window.addEventListener('keydown', (e) => { if (e.key === 'Tab') pointerPressed = null; }, { capture: true });
+/** Whether Enter or Space on this element is the keyboard's (focus reached by Tab), not a key after a click on it. */
+function keyed(el: Element): boolean {
+  return pointerPressed !== el;
 }
 
 /** What opens a hidden upgrade, in words. */
