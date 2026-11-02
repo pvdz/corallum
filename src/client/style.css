@@ -1165,6 +1165,8 @@ html.view-mode #photo { display: grid; }
   .quick-buy:not([hidden]) { position: static; }
   .page-grow:has(> .quick-buy:not([hidden])) > section { scroll-margin-top: 0; }
   .quick-buy .buy.quick { flex-direction: row; justify-content: center; align-items: center; gap: 6px; padding: 4px 6px; min-height: 30px; }
+  /* Larger text: name, mark and price on one line fill the button; the icon steps aside. */
+  html.big .quick-buy .quick-name .card-icon { display: none; }
 }
 /* A creature's label (asked for by a tap) comes first: a whisper behind it steps back. */
 #ui:has(#creature-label.show) #whisper { opacity: 0 !important; }

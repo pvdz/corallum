@@ -997,3 +997,5 @@ date, what landed, what is half-done, what's next.
 - "Send the shoals out to roam" leads to the expedition card too.
 - The water box lists upwellings on the Twilight Shelf ("Soon: an upwelling in 2m 17s", a mark on the strip, "Now" while one waits), as the guide's Rhythms entry said it did (`untilUpwelling`, unit-tested against `currentUpwelling`).
 - The asks for a small fish in threads, a lost shoal, a drifting fragment and a shell say when the next comes too (`untilTangle`, `untilStray`, `untilFragment`, `untilShell` over one seeded-slot helper; unit-tested against their `current*` opening on time).
+- The height line's "reach ×33.4" did not say what it multiplies: "reach ×33.4 calcite", with a tooltip (a taller reef catches more of the passing water).
+- A phone on its side with Larger text: a quick buy marked best ("Glimmer ✦ 365M", one line) ran 2 px past its button (audit "clip"); there the quick buys drop their icons, as small phones on their side already do.

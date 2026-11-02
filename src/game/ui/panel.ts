@@ -1982,7 +1982,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       heightTarget.style.width = `${frac(r.heightTarget)}%`;
       const depth = `${Math.round(Math.max(0, SURFACE - s.height)).toLocaleString('en-US')} m down`;
       const next = BANDS.find((b) => !s.bands.includes(b.id));
-      const reachText = s.height > 60 ? ` · reach ×${reach(s.height).toFixed(1)}` : '';
+      // Reach: what the height itself does (a taller reef catches more water, more calcite).
+      const reachText = s.height > 60 ? ` · reach ×${reach(s.height).toFixed(1)} calcite` : '';
+      if (heightSub.title !== UI.reachTitle) heightSub.title = UI.reachTitle;
       heightSub.textContent = r.heightTarget > s.height + 0.05
         ? `${depth} · rising to ${metres(r.heightTarget)}`
         : next ? `${depth} · next band at ${metres(next.metres)}${reachText}` : `${depth}${reachText}`;
