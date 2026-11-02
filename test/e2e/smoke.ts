@@ -203,3 +203,21 @@ await withGame(async (open) => {
   console.log(`${ok ? 'ok  ' : 'FAIL'} the Bands tab has no dot after a load${errors.length ? ': ' + errors.join(' | ') : ''}`);
   if (!ok) process.exitCode = 1;
 });
+
+// Lineage enough for a trait it could not buy before: the Lineage tab says so until looked at.
+await withGame(async (open) => {
+  const { page, errors } = await open(VIEWPORTS[0]!, '?bot=600');
+  await page.waitForFunction(() => (window as unknown as { corallum?: unknown }).corallum, null, { timeout: 30000 });
+  for (let i = 0; i < 10 && (await page.locator('.reader:not([hidden]), .away:not([hidden])').count()); i++) await page.keyboard.press('Escape');
+  const dot = () => page.locator('.tab', { hasText: 'Lineage' }).locator('.dot').isVisible();
+  await page.evaluate(() => { (window as unknown as { corallum: { state: { meta: { lineage: number } } } }).corallum.state.meta.lineage = 4; });
+  await page.waitForTimeout(800);
+  const on = await dot();
+  await page.locator('.tab', { hasText: 'Lineage' }).click();
+  await page.locator('.tab', { hasText: 'Grow' }).click();
+  await page.waitForTimeout(400);
+  const off = !(await dot());
+  const ok = on && off && errors.length === 0;
+  console.log(`${ok ? 'ok  ' : 'FAIL'} the Lineage tab calls when a trait can be bought, and stops once looked at${errors.length ? ': ' + errors.join(' | ') : ''}`);
+  if (!ok) process.exitCode = 1;
+});
