@@ -725,7 +725,7 @@ html.big { --panel-out: calc(var(--panel-w) * 1.15); }
 @media (min-width: 800px) { #whisper .say::before { inset: -10px -36px; } }
 #whisper .say::before {
   content: ''; position: absolute; inset: 0; z-index: -1;
-  background: radial-gradient(closest-side, rgba(var(--zone-tint), 0.8), rgba(var(--zone-tint), 0.62) 62%, rgba(var(--zone-tint), 0));
+  background: radial-gradient(closest-side, rgba(var(--zone-tint), 0.78), rgba(var(--zone-tint), 0.5) 62%, rgba(var(--zone-tint), 0));
 }
 #whisper span {
   margin-top: -8px; padding: 2px 18px; font-size: 12px; letter-spacing: 0.14em; color: #b8c6e8; text-transform: uppercase;
