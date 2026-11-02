@@ -240,7 +240,9 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   /* A name that wraps keeps its level beside its last word ("a band ×8"), not at the column's edge. */
   .card.upgrade header, .card.trait header, .card.work header { display: block; text-wrap: balance; }
   .card.upgrade header h3, .card.trait header h3, .card.work header h3 { display: inline; }
-  .card.upgrade header .level, .card.trait header .level, .card.work header .level { margin-left: 8px; }
+  /* An inline-block: the line may break before the level, so the last word and its level are not one
+     unbreakable piece that widens the name's column past the card. */
+  .card.upgrade header .level, .card.trait header .level, .card.work header .level { display: inline-block; margin-left: 8px; }
   .card h3 { font-size: 16px; }
   .effect { grid-area: effect; margin: 2px 0 0; font-size: 12.5px; }
   .flavour { grid-area: flavour; margin: 4px 0 0; font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1164,9 +1166,9 @@ html.view-mode #photo { display: grid; }
 @media (max-height: 500px) {
   .quick-buy:not([hidden]) { position: static; }
   .page-grow:has(> .quick-buy:not([hidden])) > section { scroll-margin-top: 0; }
-  .quick-buy .buy.quick { flex-direction: row; justify-content: center; align-items: center; gap: 6px; padding: 4px 6px; min-height: 30px; }
-  /* Larger text: name, mark and price on one line fill the button; the icon steps aside. */
-  html.big .quick-buy .quick-name .card-icon { display: none; }
+  .quick-buy .buy.quick { flex-direction: row; justify-content: center; align-items: center; gap: 4px; padding: 4px 4px; min-height: 30px; }
+  /* Name, mark and price on one line fill a third of the panel: the icon steps aside. */
+  .quick-buy .quick-name .card-icon { display: none; }
 }
 /* A creature's label (asked for by a tap) comes first: a whisper behind it steps back. */
 #ui:has(#creature-label.show) #whisper { opacity: 0 !important; }
