@@ -1510,15 +1510,31 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     backupNote.hidden = !due;
   }
 
-  // On a phone the sheet has a grabber: tap or drag it up to see more cards, down for the reef.
-  const grabber = button('grabber', '', () => setTall(!panel.classList.contains('tall')));
+  // On a phone the sheet has a grabber and three heights: low (the stocks' values, the tabs and the
+  // quick buys; the reef takes two thirds of the screen), the usual half, and tall (more cards).
+  // Drag up or down a step; a tap on the grabber goes between half and tall (from low, to half).
+  // Low is remembered: a player who likes the reef big keeps it big.
+  const grabber = button('grabber', '', () => setSheet(panel.classList.contains('tall') ? 'half' : panel.classList.contains('low') ? 'half' : 'tall'));
   grabber.setAttribute('aria-label', UI.sheetUp);
   grabber.setAttribute('aria-expanded', 'false');
-  function setTall(on: boolean): void {
-    panel.classList.toggle('tall', on);
-    grabber.setAttribute('aria-expanded', String(on));
-    grabber.setAttribute('aria-label', on ? UI.sheetDown : UI.sheetUp);
+  type Sheet = 'low' | 'half' | 'tall';
+  function sheetNow(): Sheet {
+    return panel.classList.contains('tall') ? 'tall' : panel.classList.contains('low') ? 'low' : 'half';
   }
+  function setSheet(to: Sheet): void {
+    panel.classList.toggle('tall', to === 'tall');
+    panel.classList.toggle('low', to === 'low');
+    grabber.setAttribute('aria-expanded', String(to === 'tall'));
+    grabber.setAttribute('aria-label', to === 'tall' ? UI.sheetDown : UI.sheetUp);
+    if (to !== 'tall') try { localStorage.setItem('corallum.sheet', to); } catch { /* private mode */ }
+  }
+  /** Tall, or back down from it to where the player keeps the sheet. */
+  function setTall(on: boolean): void {
+    let kept: string | null = null;
+    try { kept = localStorage.getItem('corallum.sheet'); } catch { /* private mode */ }
+    setSheet(on ? 'tall' : kept === 'low' ? 'low' : 'half');
+  }
+  try { if (localStorage.getItem('corallum.sheet') === 'low') panel.classList.add('low'); } catch { /* private mode */ }
   {
     // The grabber and the stocks under it both drag: up draws the sheet up, down lets it fall.
     // A move under 24 px is a tap (a stock's note, the grabber's toggle).
@@ -1535,7 +1551,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const dy = e.clientY - y0;
         if (Math.abs(dy) < 24) return;
         dragged = true;
-        setTall(dy < 0);
+        const now = sheetNow();
+        setSheet(dy < 0 ? (now === 'low' ? 'half' : 'tall') : now === 'tall' ? 'half' : 'low');
       });
       handle.addEventListener('pointerup', () => { y0 = NaN; });
       handle.addEventListener('pointercancel', () => { y0 = NaN; });

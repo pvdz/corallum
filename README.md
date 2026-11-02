@@ -96,7 +96,8 @@ Run `node src/server/server.ts --lan`; it prints an address on your network to o
 "Full resolution" in the Reef tab.
 Once opened, it also plays with the server out of reach: the last visit's files are kept by the
 browser, and the reef lives in its storage. On a phone, drag the panel's top (or its stocks) up
-for more of the panel, down for more of the reef.
+for more of the panel, down for more of the reef: dragged down once more it keeps just the
+numbers, the tabs and the quick buys, gives the reef two thirds of the screen, and stays so.
 
 Handy URL parameters: `?fps` shows a frame-rate readout, and `?bot=12000` jumps into a later zone
 (the Twilight Shelf) without playing up to it (`?bot` games are not saved).

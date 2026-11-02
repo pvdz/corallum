@@ -260,6 +260,10 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   .panel { transition: opacity 1.2s ease, height 0.28s ease; }
   /* Drawn up, it covers the scene's overlays (gauge, whispers) but not stories (10) or dialogs above them. */
   .panel.tall { height: 84vh; height: 84dvh; z-index: 9; }
+  /* Low: the stocks' values (their notes folded away), the tabs and the quick buys; the reef has two
+     thirds of the screen. The height matches SHEET_LOW in main.ts. */
+  .panel.low { height: 34vh; height: 34dvh; }
+  .panel.low .stock-sub { display: none; }
   /* The stocks drag the sheet too, so the browser must not take the drag for a pan. */
   .stocks { touch-action: none; }
   .grabber {

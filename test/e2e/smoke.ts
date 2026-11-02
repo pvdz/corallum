@@ -144,3 +144,30 @@ await withGame(async (open) => {
   console.log(`${ok ? 'ok  ' : 'FAIL'} tablet: stock values inside their cells${spill.length ? ': ' + spill.join(' | ') : ''}`);
   if (!ok) process.exitCode = 1;
 });
+
+// The phone sheet's low height: dragged down from the grabber, the reef is framed in two thirds of
+// the screen; it is kept over a reload.
+await withGame(async (open) => {
+  const { page, errors } = await open(VIEWPORTS[1]!, '?bot=900');
+  await page.waitForFunction(() => (window as unknown as { corallum?: unknown }).corallum, null, { timeout: 30000 });
+  const sheet = () => page.evaluate(() => document.querySelector('aside.panel')!.className);
+  const g = (await page.locator('.grabber').boundingBox())!;
+  await page.mouse.move(g.x + g.width / 2, g.y + 4);
+  await page.mouse.down();
+  await page.mouse.move(g.x + g.width / 2, g.y + 80, { steps: 5 });
+  await page.mouse.up();
+  await page.waitForTimeout(600);
+  const low = (await sheet()).includes('low');
+  const top = await page.evaluate(() => document.querySelector('aside.panel')!.getBoundingClientRect().top / innerHeight);
+  await page.reload();
+  await page.waitForFunction(() => (window as unknown as { corallum?: unknown }).corallum, null, { timeout: 30000 });
+  const kept = (await sheet()).includes('low');
+  // A tap from low goes to the usual half, a second to tall.
+  await page.locator('.grabber').click();
+  const half = !/low|tall/.test(await sheet());
+  await page.locator('.grabber').click();
+  const tall = (await sheet()).includes('tall');
+  const ok = low && top > 0.6 && kept && half && tall && errors.length === 0;
+  console.log(`${ok ? 'ok  ' : 'FAIL'} the phone sheet drops low, stays low over a reload, taps up to half and tall (top ${top.toFixed(2)})${errors.length ? ': ' + errors.join(' | ') : ''}`);
+  if (!ok) process.exitCode = 1;
+});

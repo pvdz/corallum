@@ -801,6 +801,8 @@ window.corallum = {
 
 // Layout: the panel covers the right side (wide screens) or the bottom (narrow ones);
 // the scene frames the reef in what is left.
+/** The phone sheet's low height, a fraction of the screen (style.css .panel.low). */
+const SHEET_LOW = 0.34;
 let dpr = 1;
 let focusNow: Focus = { x: 0, y: 0, w: 1, h: 1 };
 let lastDpr = 0;
@@ -811,7 +813,10 @@ function resize(): void {
   const r = panel.element.getBoundingClientRect();
   const side = r.left > window.innerWidth * 0.3;
   // A phone sheet drawn up tall covers the reef for a while; the scene keeps its usual framing.
-  const top = panel.element.classList.contains('tall') ? window.innerHeight * 0.53 : r.top;
+  // Framed from the sheet's height by its state, not its animated rect: the scenes are laid out once,
+  // not on every frame of the slide.
+  const low = panel.element.classList.contains('low');
+  const top = side ? r.top : window.innerHeight * (low ? 1 - SHEET_LOW : 0.53);
   // With the panel hidden (view mode) the scene frames the whole screen.
   const focus: Focus = viewMode ? { x: 0, y: 0, w, h } : side
     ? { x: 0, y: 0, w: Math.round(r.left * dpr), h }
