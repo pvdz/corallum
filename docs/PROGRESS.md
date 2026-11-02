@@ -988,3 +988,4 @@ date, what landed, what is half-done, what's next.
 - A phone on its side (844×390): the three stock columns are ~112 px and "PLANKTON 1.52k" needs ~117, so the plankton (and murmurs) value and rate ran ~5 px past the edge everything else keeps to. The columns are 7 px apart (were 14: a short-window rule won over the 10 meant here) and the names letter-spaced a little tighter; small phones on their side keep two columns.
 - `tools/audit.ts` also reports "spill": text running out of its card, section, stock or row (unless clipped on purpose on the way). It found the stocks above; all viewports clean of it now.
 - `tools/audit.ts small` (360×640) and `--big` (Larger text): run on small/mobile/landscape/desktop with Larger text, no clip or spill findings.
+- The ask's "Ask another" (↻) is disabled for five minutes after a skip with nothing saying why: its tooltip says "again in 3m 12s".

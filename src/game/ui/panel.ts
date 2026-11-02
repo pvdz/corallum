@@ -2165,6 +2165,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         askBar.hidden = rq.n === 1;
         askKicker.textContent = s.request.streak > 1 ? `${REQUEST.kicker} · ${s.request.streak} ${REQUEST.streakWord}` : REQUEST.kicker;
         askSkip.disabled = !canSkipRequest(s);
+        // Waiting to be allowed another: the tooltip says how long.
+        const skipTitle = askSkip.disabled ? `${REQUEST.skip}: again in ${duration(Math.max(1, s.request.skipped + REQUEST.skipEvery - s.t))}` : REQUEST.skip;
+        if (askSkip.title !== skipTitle) askSkip.title = skipTitle;
       }
 
       choices.update(s);
