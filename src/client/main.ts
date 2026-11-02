@@ -1138,17 +1138,20 @@ function lapseHeight(): number | null {
 }
 
 /** The one of a kind worth marking: inside the open scene, clear of the sound and view buttons
- *  in the top-left corner, and the biggest (nearest) of those. A far jelly drifting behind the
- *  buttons, or a shoal fish under the phone sheet, cannot be seen or tapped. */
+ *  in the top-left corner, and the biggest (nearest) of those, the most central when sizes are
+ *  alike (tap radii have a floor, so far and near jellies often tie). A far jelly drifting behind
+ *  the buttons, or a shoal fish under the phone sheet, cannot be seen or tapped. */
 function markable(id: string): Spot | undefined {
   const bx = 110 * dpr, by = 62 * dpr;
+  const cx = focusNow.x + focusNow.w / 2, cy = focusNow.y + focusNow.h / 2;
+  const score = (p: Spot) => p.r - 0.1 * Math.hypot(p.x - cx, p.y - cy);
   let best: Spot | undefined;
   for (const p of tappable()) {
     if (p.id !== id) continue;
     if (p.x < focusNow.x || p.x > focusNow.x + focusNow.w || p.y < focusNow.y || p.y > focusNow.y + focusNow.h) continue;
     const ring = Math.min(Math.max(p.r, 22 * dpr), 70 * dpr) * 1.2;
     if (p.x - ring < bx && p.y - ring < by) continue;
-    if (!best || p.r > best.r) best = p;
+    if (!best || score(p) > score(best)) best = p;
   }
   return best;
 }
