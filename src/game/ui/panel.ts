@@ -2698,6 +2698,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       };
       setTimeout(release, ms);
     },
+    /** Whether a choice waits in the Grow tab that the player has not folded for later. */
+    choiceWaiting(): boolean {
+      return [...grow.querySelectorAll<HTMLElement>(':scope > section:not([hidden]):not(.later)')].some((sec) => !!sec.querySelector('.truce-kicker'));
+    },
     /** Open a story card (or queue it behind the one showing). */
     story(kicker: string, title: string, text: string, rows?: readonly (readonly [string, string])[]): void {
       showStory({ kicker, title, text, rows });

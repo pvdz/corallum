@@ -2316,8 +2316,9 @@ function frameBody(now: number): void {
     const who = reefName(state) || 'Corallum';
     const base = ended(state) ? `${who} · spawned` : state.height < 1 ? who : `${metres(state.height)} · ${who}`;
     // Something to do right now (a feast, an intruder, a choice waiting): a dot, for background tabs.
-    const waiting = !!currentFeast(state) || !!currentThorn(state) || !!nextMoment(state) || othersSpawning(state) || boonsOffered(state).length > 0 ||
-      forkOpen(state) || strainOpen(state) || sportOpen(state) || !!currentSignal(state) || !!currentShell(state) || canFeedRising(state) || !!currentSwell(state) || (!!currentUpwelling(state) && state.upwelled !== currentUpwelling(state)!.k);
+    // Choices count unless folded for later (the player put them off on purpose).
+    const waiting = !!currentFeast(state) || !!currentThorn(state) || panel.choiceWaiting() ||
+      !!currentSignal(state) || !!currentShell(state) || canFeedRising(state) || !!currentSwell(state) || (!!currentUpwelling(state) && state.upwelled !== currentUpwelling(state)!.k);
     const pin = panel.pinnedText();
     const t = (waiting ? `● ${base}` : base) + (pin ? ` · ${pin}` : '');
     if (document.title !== t) document.title = t;
