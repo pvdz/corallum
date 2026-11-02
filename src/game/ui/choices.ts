@@ -159,6 +159,7 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
         signalState.textContent = pay > 0 ? `${SIGNAL.right} · +${num(pay)}${streak > 1 ? ` · ${streak} ${SIGNAL.streakWord}` : ''}` : SIGNAL.wrong;
         sigDone = sigK;
         sigK = -1;
+        signalLamps.classList.remove('turn');
         sigLinger = performance.now() + 4000;
       }
     });
@@ -179,8 +180,15 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
   function playPattern(): void {
     sigPlaying = true;
     signalState.textContent = SIGNAL.watch;
+    signalLamps.classList.add('watching');
+    signalLamps.classList.remove('turn');
     sigPattern.forEach((i, n) => setTimeout(() => flash(i), 400 + n * 650));
-    setTimeout(() => { sigPlaying = false; signalState.textContent = SIGNAL.answer; }, 400 + sigPattern.length * 650 + 300);
+    setTimeout(() => {
+      sigPlaying = false;
+      signalState.textContent = SIGNAL.answer;
+      signalLamps.classList.remove('watching');
+      if (sigK >= 0) signalLamps.classList.add('turn');
+    }, 400 + sigPattern.length * 650 + 300);
   }
   signalBox.append(el('p', 'truce-kicker', SIGNAL.kicker), el('p', 'truce-text', SIGNAL.text), signalLamps, signalState);
   grow.prepend(signalBox);
