@@ -551,12 +551,20 @@ if (frozenT === null && botT === null) {
 // A brand-new reef: let the title and the dark water show before the first band's story.
 if (state.bands.length === 0 && state.meta.spawnings === 0 && frozenT === null) panel.holdStories(3500);
 
+/** View mode switched on by the release (on a phone), switched off again when the ending closes. */
+let releaseView = false;
 const finale = createFinale(ui, panel.growPage, {
   breach(memories) {
     if (!breach(state, memories)) return false;
     scene.effect('breach');
     audio.cue('release');
     document.documentElement.classList.add('releasing');
+    // A phone's sheet would take half the screen through the climax: the reef has all of it until
+    // the ending's last page (the eye button still brings the panel back).
+    if (!viewMode && matchMedia('(max-width: 799px)').matches) {
+      setViewMode(true);
+      releaseView = true;
+    }
     // The moon card's release button sits in the panel; left focused, it would hold the panel up.
     if (document.activeElement instanceof HTMLElement && panel.element.contains(document.activeElement)) document.activeElement.blur();
     // The spawning plays out alone before the ending's first page: nothing over it.
@@ -568,6 +576,8 @@ const finale = createFinale(ui, panel.growPage, {
   },
   done() {
     document.documentElement.classList.remove('releasing');
+    if (releaseView && viewMode) setViewMode(false);
+    releaseView = false;
     document.documentElement.classList.add('ended');
   },
 });
