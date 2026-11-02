@@ -719,10 +719,12 @@ html.big { --panel-out: calc(var(--panel-w) * 1.15); }
   text-shadow: 0 0 18px rgba(150, 190, 255, 0.5), 0 2px 8px rgba(0, 0, 0, 0.8);
 }
 /* A soft halo of the zone's own deep colour behind the words, so they read over a bright crown or sunlit water.
-   It reaches past the words' box: an ellipse fitted inside the box leaves a long line's first and last words bare. */
+   On a wide screen it reaches past the words' box: an ellipse fitted inside the box leaves a long line's first
+   and last words bare. A phone's words wrap short inside a wide box, so there it stays within it. */
 #whisper .say { position: relative; isolation: isolate; }
+@media (min-width: 800px) { #whisper .say::before { inset: -10px -36px; } }
 #whisper .say::before {
-  content: ''; position: absolute; inset: -10px -36px; z-index: -1;
+  content: ''; position: absolute; inset: 0; z-index: -1;
   background: radial-gradient(closest-side, rgba(var(--zone-tint), 0.8), rgba(var(--zone-tint), 0.62) 62%, rgba(var(--zone-tint), 0));
 }
 #whisper span {
