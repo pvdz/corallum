@@ -457,6 +457,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       : askKind === 'read' ? readingCard
       : askKind === 'work' ? workCards.find((c) => !c.root.hidden && !c.root.classList.contains('done') && !c.root.closest('details:not([open])'))?.root
       : askKind === 'rising' ? riseRow
+      : askKind === 'roam' ? tripCard
       : undefined;
     const tab = askKind === 'read' ? 'bands' : 'grow';
     // Shown on its page (the page itself may be the tab not open).
