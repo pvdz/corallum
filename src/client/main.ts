@@ -399,7 +399,7 @@ const panel = createPanel(ui, {
   dream() {
     if (!dream(state)) return;
     audio.cue('whisper');
-    catchUp(DREAM.seconds);
+    catchUp(DREAM.seconds, true);
     const said = DREAM.dreams[(state.seed + state.tally.sweeps + Math.floor(state.t)) % DREAM.dreams.length]!;
     panel.story(DREAM.kicker, DREAM.label(state.meta.dreams).replace(/ \(\d+\)$/, ''), said);
     save();
@@ -636,7 +636,7 @@ function backupDue(): boolean {
 }
 
 /** Advance by a long span and tell the player what happened while they were gone. */
-function catchUp(seconds: number): void {
+function catchUp(seconds: number, dreamt = false): void {
   const before = { calcite: state.calcite, glow: state.glow, height: state.height, bands: state.bands.length,
     relics: state.relics.length, roams: state.tally.roams, shards: state.meta.shards.length };
   // When the stores would have filled, from the state as it was left.
@@ -657,6 +657,7 @@ function catchUp(seconds: number): void {
     heat: cycles.heat ? (start.closed ? AWAY_CYCLES.heatClosed(cycles.heat) : start.meta.traits['sun-shy'] ? AWAY_CYCLES.heatShy(cycles.heat) : AWAY_CYCLES.heatOpen(cycles.heat)) : '',
     risings: cycles.risings ? AWAY_CYCLES.risings(cycles.risings) : '',
     old: oldKnobs(state) > oldKnobs(start) ? AWAY_CYCLES.knobs(oldKnobs(state)) : '',
+    dreamt,
   }, seconds >= WELCOME.after && state.levels.polyp > 0 ? [
     { label: WELCOME.haul, note: `+${num(welcomeHaul(state, seconds))} calcite`, take: () => { const g = welcome(state, 'haul', seconds); save(); return `+${num(g)} calcite`; } },
     { label: WELCOME.search, note: WELCOME.searchNote, take: () => { const n = welcome(state, 'search', seconds); save(); return n ? `${n} shard${n > 1 ? 's' : ''}` : 'nothing this time'; } },

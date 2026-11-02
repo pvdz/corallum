@@ -176,6 +176,9 @@ export const UI = {
   raspBest: (m: string) => `Best setting: ${m}`,
   raspBoth: (income: string, hold: string) => `Best for income: ${income} · best before going away: ${hold}`,
   awayText: (d: string) => `You were gone ${d}. The reef kept growing.`,
+  /** The same summary after a dream (the player never left). */
+  dreamTitle: 'While you dreamed',
+  dreamText: (d: string) => `The reef slept ${d} forward, all at once, and grew in its sleep.`,
   chronBlue: 'a blue moon', chronVows: 'vows kept',
   moonlit: 'spawn · by moonlight',
   totalsLabel: 'The line in numbers',

@@ -1695,7 +1695,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   // A welcome-back gift after a long time away: two buttons, one to take.
   const welcomeBox = el('div', 'welcome');
   welcomeBox.hidden = true;
-  awayCard.append(el('h2', '', UI.awayTitle), awayText, awayList, welcomeBox, awayHint, awayClose);
+  const awayTitle = el('h2', '', UI.awayTitle);
+  awayCard.append(awayTitle, awayText, awayList, welcomeBox, awayHint, awayClose);
   away.append(awayCard);
   host.append(away);
   // Escape closes whichever card is open.
@@ -2597,14 +2598,15 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     },
     /** Show the offline summary; any bands read while away are queued behind it. */
     showAway(seconds: number, gained: { calcite: number; glow: number; metres: number; full: boolean; bands: string[]; fullAfter: number | null;
-      relics?: string[]; roams?: number; shards?: number; heat?: string; risings?: string; old?: string }, gifts?: { label: string; note: string; take: () => string }[]): void {
+      relics?: string[]; roams?: number; shards?: number; heat?: string; risings?: string; old?: string; dreamt?: boolean }, gifts?: { label: string; note: string; take: () => string }[]): void {
       // One card at a time: a story already open waits, first in line, until the summary is closed.
       if (!reader.hidden && current) {
         queue.unshift(current);
         reader.hidden = true;
       }
       // A headline, then what changed as labelled rows (like the Your reef card).
-      awayText.textContent = UI.awayText(duration(seconds));
+      awayTitle.textContent = gained.dreamt ? UI.dreamTitle : UI.awayTitle;
+      awayText.textContent = (gained.dreamt ? UI.dreamText : UI.awayText)(duration(seconds));
       awayList.innerHTML = '';
       const row = (term: string, value: string) => awayList.append(el('dt', '', term), el('dd', '', value));
       row('Calcite', `+${num(gained.calcite)}`);
