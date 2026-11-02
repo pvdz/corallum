@@ -1021,3 +1021,4 @@ date, what landed, what is half-done, what's next.
 - Whole audit sweep: 6 viewports (desktop, mobile, landscape, small, small-landscape, narrow-desktop) × plain / Larger text / scientific × 8 points through the game: no findings beyond the 2 known dim ones.
 - A whisper's speaker line ("— THE SAND", 12 px) sat over the crown's bright polyp tips and read faintly: a firmer backdrop and a tight dark edge to its letters.
 - Numbers rising from a tap get a tight dark edge (light on light in the sunlit water and at the surface), and a creature label's "again in 3m 0s" keeps its time on one line.
+- Every duration keeps its two parts together ("3m 0s", "1h 30m", "2d 4h" with a no-break space), wherever it appears: notes, the weather box, labels, countdowns. format test updated; e2e green.

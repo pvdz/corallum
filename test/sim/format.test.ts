@@ -17,10 +17,10 @@ test('numbers are cut at unit edges and turn scientific past the suffixes', () =
 });
 
 test('a countdown just under a minute or an hour reads as the next unit, never 60s or 60m', () => {
-  assert.equal(duration(59.5), '1m 0s');
+  assert.equal(duration(59.5), '1m\u00a00s');
   assert.equal(duration(58.2), '59s');
-  assert.equal(duration(3599.4), '1h 0m');
-  assert.equal(duration(119.1), '2m 0s');
-  assert.equal(duration(86399), '1d 0h');
-  assert.equal(duration(5400), '1h 30m');
+  assert.equal(duration(3599.4), '1h\u00a00m');
+  assert.equal(duration(119.1), '2m\u00a00s');
+  assert.equal(duration(86399), '1d\u00a00h');
+  assert.equal(duration(5400), '1h\u00a030m');
 });

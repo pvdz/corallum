@@ -1434,8 +1434,7 @@ function showCreatureLabel(id: string, x: number, y: number, r = 20, tx = NaN, t
   // What it gives when touched, and when it will give again.
   const g = document.createElement('em');
   const wait = state.gifts[c.id] + GIFT.cooldown - state.t;
-  // (The time is kept on one line: "3m 0s", not "3m / 0s".)
-  g.textContent = wait > 0 ? `${GIFT_WORD[giftOf(c.id)]} again in ${duration(wait).replaceAll(' ', '\u00a0')}` : `${GIFT_WORD[giftOf(c.id)]} when touched`;
+  g.textContent = wait > 0 ? `${GIFT_WORD[giftOf(c.id)]} again in ${duration(wait)}` : `${GIFT_WORD[giftOf(c.id)]} when touched`;
   creatureLabel.append(n, t, g);
   const reach = Math.min(r, 90);
   const lw = creatureLabel.offsetWidth || 220, lh = creatureLabel.offsetHeight || 56;

@@ -34,16 +34,17 @@ export function rate(x: number): string {
 export function duration(sec: number): string {
   if (!Number.isFinite(sec)) return 'never';
   if (sec < 1) return 'now';
+  // A no-break space inside ("3m 0s" never wraps as "3m / 0s").
   // Whole seconds, rounded up (a countdown never says 0s while time is left), then split:
   // 59.5 s is "1m 0s", not "60s".
   const c = Math.ceil(sec);
   if (c < 60) return `${c}s`;
-  if (c < 3600) return `${Math.floor(c / 60)}m ${c % 60}s`;
+  if (c < 3600) return `${Math.floor(c / 60)}m\u00a0${c % 60}s`;
   // Hours and days show whole minutes and hours, rounded up the same way.
   const m = Math.ceil(sec / 60);
-  if (m < 1440) return `${Math.floor(m / 60)}h ${m % 60}m`;
+  if (m < 1440) return `${Math.floor(m / 60)}h\u00a0${m % 60}m`;
   const h = Math.ceil(sec / 3600);
-  return `${Math.floor(h / 24)}d ${h % 24}h`;
+  return `${Math.floor(h / 24)}d\u00a0${h % 24}h`;
 }
 
 export function metres(m: number): string {
