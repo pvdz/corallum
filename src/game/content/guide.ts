@@ -58,13 +58,15 @@ export const HOLD_HINT_ANY = 'beyond what the reef can hold';
 
 /** Shown once (per browser line) after an update with new things to find; `id` changes per update. */
 export const NEWS = {
-  id: 'news:2026-11-02',
+  id: 'news:2026-11-02b',
   kicker: 'New in the sea',
   title: 'More of the reef, less of the panel',
   text: 'The everyday upgrades are a quiet list now; a card lights up when it can be bought. On a phone, drag the ' +
     'panel’s top down twice and it keeps just the numbers, the tabs and the quick buys, and the reef has two thirds of ' +
     'the screen (it stays so). At the release a phone gives the whole screen to the spawning. Shortcut keys keep working ' +
-    'after a click in the panel, and a miss on the swells says whether it was early or late.',
+    'after a click in the panel, and a miss on the swells says whether it was early or late. Ossel’s asks take a tap to ' +
+    'where they are done, and say when the water will bring what they wait for. A laptop closed or a phone put away with ' +
+    'the reef open now counts that time as time away.',
 } as const;
 
 /** The first time the line enters a zone: what is new there, in a few lines (zones 2–5). */
