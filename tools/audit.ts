@@ -6,6 +6,8 @@
 //   name    a control with no readable name (screen readers say just "button")
 //   clip    a button whose text runs past its own edge
 //   spill   text running out of its card, section or row
+//   overlap two pieces of text in one card or row drawn over each other
+//   cut     a number cut short by an ellipsis or a clip
 //   dim     small text under 4.5:1 against the panel (disabled buttons skipped; dimmed cards show)
 //   console any warning or error
 // Known and intended: 'dim' on held or finished cards (dimmed on purpose), and 'small' on the
@@ -68,6 +70,11 @@ await withGame(async (open) => {
               if (t.width > 0 && (t.right > bx.right + 0.5 || t.left < bx.left - 0.5)) out.push(['spill', `text ${Math.round(t.left)}–${Math.round(t.right)} in ${Math.round(bx.left)}–${Math.round(bx.right)} ${tag(e)}`]);
             }
           }
+          // A number cut short (an ellipsis or a clip over a value: flavour may be cut, numbers may not).
+          if (/\d/.test(e.textContent ?? '') && e.offsetParent && !e.closest('details:not([open])')) {
+            const cs0 = getComputedStyle(e);
+            if (cs0.overflowX !== 'visible' && e.scrollWidth > e.clientWidth + 1 && !e.classList.contains('flavour')) out.push(['cut', `${e.scrollWidth}>${e.clientWidth} ${tag(e)}`]);
+          }
           if (!own || (e.closest('button') as HTMLButtonElement | null)?.disabled) continue;
           const cs = getComputedStyle(e);
           const m = cs.color.match(/[\d.]+/g)!.map(Number);
@@ -76,6 +83,26 @@ await withGame(async (open) => {
           const c = [0, 1, 2].map((i) => m[i]! * a + bg[i]! * (1 - a));
           const ratio = (Math.max(lum(c), lum(bg)) + 0.05) / (Math.min(lum(c), lum(bg)) + 0.05);
           if (ratio < 4.5 && parseFloat(cs.fontSize) < 18) out.push(['dim', `${ratio.toFixed(2)} ${tag(e)}`]);
+        }
+        // Two pieces of text drawn over each other (within one card, section or row).
+        for (const box of document.querySelectorAll<HTMLElement>('.panel .card, .panel section, .panel .ask, .panel .stocks, .panel .tabs')) {
+          if (box.offsetParent === null) continue;
+          const rects: [DOMRect, Element][] = [];
+          const walker = document.createTreeWalker(box, NodeFilter.SHOW_TEXT);
+          for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+            // (Inside a closed <details> nothing is drawn, though Chrome still lays it out at the summary.)
+            const pe = n.parentElement;
+            if (!/[\p{L}\p{N}]/u.test(n.textContent!) || !pe?.offsetParent || (pe.closest('details:not([open])') && !pe.closest('summary'))) continue;
+            const range = document.createRange();
+            range.selectNodeContents(n);
+            for (const r of range.getClientRects()) if (r.width > 0 && r.height > 0) rects.push([r, n.parentElement!]);
+          }
+          for (let i = 0; i < rects.length; i++) for (let j = i + 1; j < rects.length; j++) {
+            const [a, ea] = rects[i]!, [c, ec] = rects[j]!;
+            if (ea === ec) continue;
+            const w = Math.min(a.right, c.right) - Math.max(a.left, c.left), h = Math.min(a.bottom, c.bottom) - Math.max(a.top, c.top);
+            if (w > 2 && h > Math.min(a.height, c.height) * 0.4) out.push(['overlap', `${tag(ea)} × ${tag(ec)}`]);
+          }
         }
         for (const b of document.querySelectorAll<HTMLElement>('button, input, summary, [role=button]')) {
           if (b.offsetParent === null && getComputedStyle(b).position !== 'fixed') continue;

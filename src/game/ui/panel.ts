@@ -182,10 +182,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       const a = i < 0 ? text : text.slice(0, i), b = i < 0 ? '' : text.slice(i + 3).replaceAll(' · ', '\u00a0· ');
       if (rateEl.textContent !== a) rateEl.textContent = a;
       if (restEl.textContent !== b) {
-        // "holds " is its own word, so a phone on its side can drop it and keep the number ("~2.31B").
+        // "holds " and a trailing " calcite" are words of their own, so a phone on its side can drop
+        // them and keep the number ("~2.31B", "×46.2"); a tap on the stock still gives the whole line.
         const h = b.indexOf('holds ');
-        if (h < 0) restEl.textContent = b;
-        else restEl.replaceChildren(b.slice(0, h), el('span', 'hold-word', 'holds '), b.slice(h + 6));
+        const unit = b.endsWith(' calcite') ? b.length - 8 : -1;
+        if (h < 0 && unit < 0) restEl.textContent = b;
+        else if (h >= 0) restEl.replaceChildren(b.slice(0, h), el('span', 'hold-word', 'holds '), b.slice(h + 6));
+        else restEl.replaceChildren(b.slice(0, unit), el('span', 'unit-word', ' calcite'));
       }
       sep.hidden = !b;
     };
