@@ -40,10 +40,11 @@ export function tappable(): readonly Spot[] {
   return spots;
 }
 
-/** The creature at device pixel (x, y), if any (the nearest whose radius covers it). */
-export function creatureAt(x: number, y: number): Spot | null {
+/** The creature at device pixel (x, y), if any (the nearest whose radius covers it); `only` limits it to one kind. */
+export function creatureAt(x: number, y: number, only?: Spot['id']): Spot | null {
   let best: Spot | null = null, bestD = Infinity;
   for (const p of spots) {
+    if (only && p.id !== only) continue;
     const d = Math.hypot(p.x - x, p.y - y);
     if (d < p.r && d < bestD) { best = p; bestD = d; }
   }

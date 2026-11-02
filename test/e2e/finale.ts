@@ -4,12 +4,17 @@
 
 import { runBot } from '../../src/game/sim/bot.ts';
 import { serialize } from '../../src/game/sim/save.ts';
+import { currentSwell, moonFull } from '../../src/game/sim/economy.ts';
 import { VIEWPORTS, withGame } from '../../tools/browser.ts';
 
 // A reef that has just reached the surface (independent of how the balance moves the timing).
 const { state } = runBot((s) => s.height >= 4000, 12 * 3600);
 state.asked.silt = '1'; // one of Ossel's questions answered: its line is a page of the ending
 const save = serialize(state, Date.now());
+// A full moon with a set of swells just rolling in: a tap on a star near the crown must trace the
+// figure, not ride the swell (the landscape run, whose crown sits right under the sky).
+let swellMoon = state.t;
+while (!(moonFull(swellMoon) && currentSwell({ ...state, t: swellMoon }) && swellMoon - currentSwell({ ...state, t: swellMoon })!.start < 1)) swellMoon += 1;
 
 let failed = false;
 await withGame(async (open) => {
@@ -21,7 +26,8 @@ await withGame(async (open) => {
       await page.locator('.reader:not([hidden]) button').first().click();
     // Skip to the full moon; on desktop to a great tide one (four memories instead of three).
     const great = vp.name === 'desktop';
-    await page.evaluate((great) => {
+    if (vp.name === 'landscape') await page.evaluate((t) => window.corallum!.skip(t - window.corallum!.state.t), swellMoon);
+    else await page.evaluate((great) => {
       const s = window.corallum!.state;
       const cycle = Math.floor(s.t / 1200);
       let k = (s.t / 1200) % 1 < 0.45 ? cycle : cycle + 1;

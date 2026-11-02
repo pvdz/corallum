@@ -1493,6 +1493,13 @@ canvas.addEventListener('pointerdown', (e) => {
   if (zoomer.pinchDown(e)) return;
   // The world point under the finger (the view may be zoomed).
   const [wx, wy] = toWorld(e.clientX * dpr, e.clientY * dpr);
+  // A star of a figure being traced comes first: a bird or a swell's crest passing over the sky
+  // must not take the tap (on a short screen the crown sits right under the stars).
+  const star = creatureAt(wx, wy, 'star');
+  if (star) {
+    tapStar(star.n ?? -1, e.clientX, e.clientY);
+    return;
+  }
   // Tapping a creature names it (the sweep still happens).
   const hit = creatureAt(wx, wy);
   // A shell on the sand: picked up for the line's shelf (no label, no gift).
@@ -1500,10 +1507,6 @@ canvas.addEventListener('pointerdown', (e) => {
   if (currentSwell(state) && frozenT === null) {
     const [cx, cy] = scene.crownAt;
     if (Math.hypot(wx - cx, wy - cy) < 120 * dpr && trySwell(e.clientX, e.clientY)) return;
-  }
-  if (hit?.id === 'star') {
-    tapStar(hit.n ?? -1, e.clientX, e.clientY);
-    return;
   }
   if (hit?.id === 'raft') {
     if (frozenT === null) {
