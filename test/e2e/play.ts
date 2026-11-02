@@ -91,6 +91,20 @@ await withGame(async (open) => {
     if (!ok) process.exitCode = 1;
   }
 
+  // Back after a long time and closed in a hurry (Escape), Ossel's gift is not lost: the haul is taken.
+  {
+    const st = runBot((s) => s.t >= 9000, 9000).state;
+    st.meta.seen = [...st.meta.seen, 'news:seen'];
+    const { page, errors } = await open(VIEWPORTS[0]!, '', { save: serialize(st, Date.now() - 8 * 3600_000) });
+    await page.waitForSelector('.away:not([hidden]) .welcome-gift', { timeout: 15000 });
+    const c0 = await page.evaluate(() => window.corallum!.state.calcite);
+    await page.keyboard.press('Escape');
+    const gained = (await page.evaluate(() => window.corallum!.state.calcite)) / c0;
+    const ok = gained > 1.2 && !errors.length;
+    console.log(`${ok ? 'ok  ' : 'FAIL'} an untaken welcome gift: closing takes the haul (calcite ×${gained.toFixed(2)})`);
+    if (!ok) process.exitCode = 1;
+  }
+
   // A device asleep with the page open: the frame clock stands still (macOS, Linux, Android) while
   // the wall clock runs on. Two hours on the wall and none on the frame clock is two hours away.
   {
