@@ -1099,6 +1099,19 @@ export function currentUpwelling(s: GameState): { k: number; start: number; side
   return s.t >= start && s.t < start + UPWELL.life ? { k, start, side: r() < 0.5 ? -1 : 1 } : null;
 }
 
+/** Seconds until the next upwelling (0 while one waits uncaught; Infinity off the Twilight Shelf). */
+export function untilUpwelling(s: GameState): number {
+  if (actAt(s.height) !== 3) return Infinity;
+  const up = currentUpwelling(s);
+  if (up && s.upwelled !== up.k) return 0;
+  for (let k = Math.floor(s.t / UPWELL.period); k < Math.floor(s.t / UPWELL.period) + 3; k++) {
+    const r = mulberry32((s.seed ^ 0x0b11) + Math.imul(k, 0x9e3779b1));
+    const start = k * UPWELL.period + r() * (UPWELL.period - UPWELL.life);
+    if (start > s.t) return start - s.t;
+  }
+  return Infinity;
+}
+
 /** The current turned toward an upwelling while it lasts catches it, once: a haul. Returns the pay. */
 export function catchUpwelling(s: GameState): number {
   const up = currentUpwelling(s);
