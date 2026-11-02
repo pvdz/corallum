@@ -933,3 +933,4 @@ date, what landed, what is half-done, what's next.
 - Measured: the low sheet costs nothing (`tools/perf.ts --sheet low`, phone at 4× CPU, two runs each: draw 15.5/17.5 ms half vs 15.6–16.0/16.4 ms low; the canvas is full-screen either way).
 - The Reef tab on touch screens says how the sheet moves (drag its top down for more reef, twice for just the numbers; up for more panel; the eye hides it; pinch to look closer), where a keyboard gets the keys line.
 - A creature label for something high in the scene (the whale at the Sunlit Crown) sat over the sound and view buttons and the journal note. Labels stay below the corner buttons and any journal note, and left of the depth gauge and the panel (they were kept only inside the window).
+- The sheet's grabber takes a finger-sized 30 px (it was 22 px, an audit finding), reaching 8 px above the sheet; the pill is drawn where it was. Audit: 2 standing findings, both dimmed on purpose.
