@@ -211,7 +211,8 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 /* ---------- Floating numbers ---------- */
 .float {
   position: absolute; pointer-events: none; transform: translate(-50%, -50%); font-family: var(--display);
-  font-size: 18px; color: #ffd2c2; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7), 0 0 12px rgba(255, 150, 120, 0.8);
+  /* A tight dark edge first: in the sunlit water and at the surface the numbers are light on light. */
+  font-size: 18px; color: #ffd2c2; text-shadow: 0 0 2px rgba(20, 10, 20, 0.85), 0 1px 4px rgba(0, 0, 0, 0.7), 0 0 12px rgba(255, 150, 120, 0.8);
   animation: float-up 1.2s ease-out forwards;
 }
 .float.feast-float { font-size: 22px; color: #ffe2c4; white-space: nowrap; animation-duration: 2.2s; }
