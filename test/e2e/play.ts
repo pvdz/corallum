@@ -125,8 +125,17 @@ await withGame(async (open) => {
     await page.keyboard.press(' ');
     const sound = await page.locator('#sound').getAttribute('aria-pressed');
     const swept = (await page.evaluate(() => window.corallum!.state.tally.sweeps)) - sweeps0;
-    const ok = bought === 1 && sound === 'true' && swept === 1 && !errors.length;
-    console.log(`${ok ? 'ok  ' : 'FAIL'} keys after the mouse: P buys (${bought}), Space sweeps (${swept}), sound stays ${sound === 'true' ? 'on' : 'off'}`);
+    // A folding header the mouse clicked keeps focus: Space sweeps and does not fold it back.
+    await page.locator('section.shoals > header').click();
+    const folded = () => page.evaluate(() => document.querySelector('section.shoals')!.classList.contains('folded'));
+    const f0 = await folded();
+    await page.waitForTimeout(600); // the last sweep's cooldown
+    const sw1 = await page.evaluate(() => window.corallum!.state.tally.sweeps);
+    await page.keyboard.press(' ');
+    const f1 = await folded(), sw2 = await page.evaluate(() => window.corallum!.state.tally.sweeps);
+    const headerOk = f1 === f0 && sw2 - sw1 === 1;
+    const ok = bought === 1 && sound === 'true' && swept === 1 && headerOk && !errors.length;
+    console.log(`${ok ? 'ok  ' : 'FAIL'} keys after the mouse: P buys (${bought}), Space sweeps (${swept}), sound stays ${sound === 'true' ? 'on' : 'off'}, a clicked header ${headerOk ? 'keeps its fold' : 'took the Space'}`);
     if (!ok) process.exitCode = 1;
   }
 });
