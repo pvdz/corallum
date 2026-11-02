@@ -79,6 +79,9 @@ polyps, take in glimmerseed, lay bands, catch a feast, touch neighbours, sweep, 
 sand bar, grow a pigment, ripen), picked from the seed among the kinds that make sense in the zone,
 a little more each time. Kept, it pays 120 s of the zone's currency (as a feast does) and the next
 comes. Short goals inside the long ones (principle 4); never needed. Feat: 20 in one reef.
+Only asks that can come true now are picked (a Reading once readings are open, the signal from five
+shoals), never for more than can be had (a seamount's shoal cap, the height cap). An ask done in the
+panel leads there on a tap (and glows it); one that waits on the water says when it comes.
 
 **Moments**: twenty-four small happenings on the way up (25 m to 3990 m, at least one per zone), plus one of its own on each
 hard seamount (krill on the hungry one, an echo on the silent, the far light on the lonely, the drifts on the buried,
