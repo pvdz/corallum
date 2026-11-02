@@ -756,6 +756,10 @@ html.big { --panel-out: calc(var(--panel-w) * 1.15); }
   html #journal-note span { white-space: normal; letter-spacing: 0.12em; }
   html #whisper { top: 36%; }
   html.big #whisper { top: 46%; }
+  /* The opening title below the corner buttons, and smaller; the first hint too. */
+  html #title { top: 58px; }
+  html #title h1 { font-size: 24px; letter-spacing: 0.25em; text-indent: 0.25em; }
+  html #sweep-hint { font-size: 14px; padding: 0 12px; }
   /* The ending's words: clear of the depth gauge, a size that leaves the reef some of the height. */
   html .finale.ending { padding: 12px 56px 6vh 16px; }
   html .finale.ending .finale-text { font-size: 14.5px; line-height: 1.5; margin-bottom: 10px; }
