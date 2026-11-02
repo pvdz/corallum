@@ -587,6 +587,7 @@ const finale = createFinale(ui, panel.growPage, {
     document.documentElement.classList.remove('releasing');
     if (releaseView && viewMode) setViewMode(false);
     releaseView = false;
+    panel.growTop();
     document.documentElement.classList.add('ended');
   },
 });

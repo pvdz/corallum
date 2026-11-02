@@ -2552,6 +2552,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       bandList.prepend(storyItem(depth, title, st, 'is-moment'));
       if (open) showStory(st);
     },
+    /** The Grow tab at its top (the ending closed: the garden waits there). */
+    growTop(): void {
+      showTab('grow');
+      pages.scrollTop = 0;
+    },
     /** Switch to the n-th visible tab (1-based); false if there is none. */
     showTabAt(n: number): boolean {
       const ids = [...tabButtons].filter(([, b]) => !b.hidden).map(([id]) => id);
