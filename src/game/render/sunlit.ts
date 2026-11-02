@@ -256,6 +256,9 @@ export function createSunlitScene(seed: number): Scene {
     for (const d of [-1, 0.35, 1]) {
       for (let k = -Math.ceil(depth / gap); k < Math.ceil(w / gap) + 2; k++) {
         const off = (((k * 0.618 + d) % 1) + 1) % 1 * gap * 0.7;
+        // A line wholly off the screen (it wavers at most 38 px either side of its slant) is skipped.
+        const xa = d > 0 ? k * gap + off : w - k * gap - off, xb = xa + depth * d;
+        if (Math.max(xa, xb) < -40 * dpr || Math.min(xa, xb) > w + 40 * dpr) continue;
         const bright = 0.09 + 0.1 * Math.max(0, Math.sin(t * 0.7 + k * 1.9 + d * 3));
         ctx.strokeStyle = `rgba(255,255,235,${bright.toFixed(3)})`;
         ctx.lineWidth = (1.4 + Math.max(0, Math.sin(t * 0.9 + k * 2.7)) * 1.8) * dpr;
