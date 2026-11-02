@@ -3,7 +3,7 @@
 // scene clock; each reports itself to the journal and can be tapped.
 
 import { mulberry32, range } from '../sim/rng.ts';
-import { glow } from './draw.ts';
+import { glow, speck } from './draw.ts';
 import type { Focus } from './scene.ts';
 import { sight, spot, startled } from './sightings.ts';
 
@@ -156,7 +156,7 @@ export function drawSeaSparkle(ctx: CanvasRenderingContext2D, t: number, sf: Sur
     if (a <= 0.02) continue;
     glow(ctx, x, y, 9 * s, '90,190,255', 0.7 * a * fade);
     ctx.fillStyle = `rgba(190,235,255,${0.8 * a * fade})`;
-    ctx.fillRect(x - dpr, y - dpr, 2 * dpr, 2 * dpr);
+    speck(ctx, x - dpr, y - dpr, 2 * dpr);
   }
   ctx.restore();
 }

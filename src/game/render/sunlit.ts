@@ -15,7 +15,7 @@ import type { DialectId } from '../content/act4.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import type { CoralForm } from './coral.ts';
-import { glow, drawOsselSand } from './draw.ts';
+import { glow, drawOsselSand, speck } from './draw.ts';
 import { drawCraft, FLUORESCENT_POLYP } from './craft.ts';
 import { drawColony, drawDaughters } from './daughters.ts';
 import { createLayerCache } from './layer.ts';
@@ -209,7 +209,7 @@ export function createSunlitScene(seed: number): Scene {
         const al = (tw - 0.3) * day * (1 - v * 0.6);
         glow(ctx, x, y, 5 * s, '255,250,215', 0.5 * al);
         ctx.fillStyle = `rgba(255,255,240,${al})`;
-        ctx.fillRect(x - 1.2 * s, y - 1.2 * s, 2.4 * s, 2.4 * s);
+        speck(ctx, x - 1.2 * s, y - 1.2 * s, 2.4 * s);
       }
     }
     ctx.restore();
@@ -486,7 +486,7 @@ export function createSunlitScene(seed: number): Scene {
       const fx = (i * 0.618) % 1, fy = (i * 0.37) % 1;
       const x = ((fx + surge * 0.05 + t * 0.01) % 1 + 1) % 1 * w;
       const y = focus.y + focus.h * (0.45 + fy * 0.5) + Math.sin(t * 2 + i) * 6 * s;
-      ctx.fillRect(x, y, 1.6 * s, 1.6 * s);
+      speck(ctx, x, y, 1.6 * s);
     }
     // Broken branches tumbling down from the crown and away.
     for (let b = 0; b < 3; b++) {

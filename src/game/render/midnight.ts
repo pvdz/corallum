@@ -743,7 +743,7 @@ export function createMidnightScene(seed: number): Scene {
         const hue = (t * 120 + q * 40 + row * 25) % 360;
         const a = Math.min(1, (0.25 + 0.35 * Math.max(0, Math.sin(t * (4 + 8 * beat) - q * 0.8 + row)) + 0.6 * beat) * (0.5 + 0.5 * bow));
         ctx.fillStyle = `hsla(${hue},100%,70%,${a})`;
-        ctx.fillRect(px - 1.1 * s, py - 1.1 * s, 2.2 * s, 2.2 * s);
+        speck(ctx, px - 1.1 * s, py - 1.1 * s, 2.2 * s);
       }
     }
     ctx.restore();
@@ -1213,7 +1213,7 @@ export function createMidnightScene(seed: number): Scene {
       const a = Math.max(0, Math.sin(t * (1.2 + (i % 7) * 0.3) + i * 2.1));
       if (a < 0.4) continue;
       ctx.fillStyle = `rgba(210,240,255,${0.8 * (a - 0.4)})`;
-      ctx.fillRect(x, y, 2.5 * s, 2.5 * s);
+      speck(ctx, x, y, 2.5 * s);
     }
     ctx.restore();
   }

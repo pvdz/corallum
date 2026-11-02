@@ -4,7 +4,7 @@
 
 import type { DialectId } from '../content/act4.ts';
 import type { Reef, ReefLayout } from './reef.ts';
-import { glow } from './draw.ts';
+import { glow, speck } from './draw.ts';
 
 /** Fluorescent polyps: proteins that turn sunlight into colour. */
 export const FLUORESCENT_POLYP: [string, string] = ['#4dffb4', 'rgba(255,110,215,0.95)'];
@@ -49,7 +49,7 @@ function drawMucus(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, t: 
     ctx.fillStyle = `rgba(255,255,240,${a + 0.15})`;
     for (let q = 2; q <= 5; q += 2) {
       const u = q / 6;
-      ctx.fillRect(x + current * len * u - 1 * s, y + Math.sin(t * 1.3 + ph + u * 4) * 5 * s * u + u * 6 * s - 1 * s, 2 * s, 2 * s);
+      speck(ctx, x + current * len * u - 1 * s, y + Math.sin(t * 1.3 + ph + u * 4) * 5 * s * u + u * 6 * s - 1 * s, 2 * s);
     }
   }
   ctx.restore();

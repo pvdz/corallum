@@ -4,6 +4,7 @@
 
 import type { Focus } from './scene.ts';
 import { mulberry32, range } from '../sim/rng.ts';
+import { speck } from './draw.ts';
 
 type Riser = { x: number; phase: number; speed: number; wob: number; kind: 0 | 1 | 2; size: number };
 
@@ -37,7 +38,7 @@ export function drawRising(ctx: CanvasRenderingContext2D, t: number, w: number, 
     if (q.kind === 0) {
       // A copepod: a speck with two long feelers swept back.
       ctx.fillStyle = lit ? `rgba(150,200,255,${0.75 * a})` : `rgba(30,40,55,${0.6 * a})`;
-      ctx.fillRect(x - 1.2 * z, y - 1.2 * z, 2.4 * z, 2.4 * z);
+      speck(ctx, x - 1.2 * z, y - 1.2 * z, 2.4 * z);
       ctx.strokeStyle = lit ? `rgba(150,200,255,${0.35 * a})` : `rgba(30,40,55,${0.3 * a})`;
       ctx.lineWidth = 0.6 * dpr;
       ctx.beginPath();
@@ -50,7 +51,7 @@ export function drawRising(ctx: CanvasRenderingContext2D, t: number, w: number, 
       ctx.beginPath();
       ctx.arc(x, y + 3 * z, 4 * z, -Math.PI * 0.6, Math.PI * 0.35);
       ctx.stroke();
-      if (lit) { ctx.fillStyle = `rgba(160,220,255,${0.8 * a})`; ctx.fillRect(x - 0.8 * z, y - 0.8 * z, 1.6 * z, 1.6 * z); }
+      if (lit) { ctx.fillStyle = `rgba(160,220,255,${0.8 * a})`; speck(ctx, x - 0.8 * z, y - 0.8 * z, 1.6 * z); }
     } else {
       // A small lanternfish climbing, its row of lights along the belly.
       ctx.fillStyle = lit ? `rgba(40,60,90,${0.8 * a})` : `rgba(35,45,60,${0.7 * a})`;
@@ -59,7 +60,7 @@ export function drawRising(ctx: CanvasRenderingContext2D, t: number, w: number, 
       ctx.fill();
       if (lit) {
         ctx.fillStyle = `rgba(140,230,255,${0.9 * a})`;
-        for (let k = -1; k <= 1; k++) ctx.fillRect(x + 1.2 * z, y + k * 3 * z, 1.4 * z, 1.4 * z);
+        for (let k = -1; k <= 1; k++) speck(ctx, x + 1.2 * z, y + k * 3 * z, 1.4 * z);
       }
     }
   }
