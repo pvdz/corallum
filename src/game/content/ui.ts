@@ -72,7 +72,7 @@ export const UI = {
   beginAgain: 'Begin again',
   /** What the lineage would buy, cheapest first: a few by name and a count of the rest. */
   /** Several names in one line: "A and B", "A, B and C", "A, B and 3 more". */
-  namesAndMore: (names: readonly string[]) => names.length > 3 ? `${names[0]}, ${names[1]} and ${names.length - 2} more` : names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}` : names[0] ?? '',
+  namesAndMore: (all: readonly string[]) => { const names = all.map((n, i) => (i && /^(A|An|The) /.test(n) ? n[0]!.toLowerCase() + n.slice(1) : n)); return names.length > 3 ? `${names[0]}, ${names[1]} and ${names.length - 2} more` : names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}` : names[0] ?? ''; },
   enoughFor: (names: string, more: number) => `Enough for: ${names}${more ? `, and ${more} more` : ''}`,
   midnightFirst: 'Reach the Midnight Water first',
   newBand: 'New band',
