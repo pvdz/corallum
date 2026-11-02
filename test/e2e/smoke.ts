@@ -171,3 +171,21 @@ await withGame(async (open) => {
   console.log(`${ok ? 'ok  ' : 'FAIL'} the phone sheet drops low, stays low over a reload, taps up to half and tall (top ${top.toFixed(2)})${errors.length ? ': ' + errors.join(' | ') : ''}`);
   if (!ok) process.exitCode = 1;
 });
+
+// A pinch on the scene (outside view mode) belongs to the game: the page itself must not zoom, or
+// the layout stays magnified with no way back but another pinch.
+await withGame(async (open) => {
+  const { page, errors } = await open(VIEWPORTS[1]!, '?bot=600');
+  await page.waitForFunction(() => (window as unknown as { corallum?: unknown }).corallum, null, { timeout: 30000 });
+  for (let i = 0; i < 10 && (await page.locator('.reader:not([hidden])').count()); i++) await page.keyboard.press('Escape');
+  const cdp = await page.context().newCDPSession(page);
+  const pts = (d: number) => [{ x: 195 - d, y: 300, id: 0 }, { x: 195 + d, y: 300, id: 1 }];
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: pts(20) });
+  for (let d = 20; d <= 150; d += 10) await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: pts(d) });
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await page.waitForTimeout(300);
+  const scale = await page.evaluate(() => visualViewport!.scale);
+  const ok = scale === 1 && errors.length === 0;
+  console.log(`${ok ? 'ok  ' : 'FAIL'} a pinch on the scene does not zoom the page (scale ${scale})${errors.length ? ': ' + errors.join(' | ') : ''}`);
+  if (!ok) process.exitCode = 1;
+});
