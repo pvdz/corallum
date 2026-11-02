@@ -468,7 +468,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const go = askTarget();
     if (!go) return;
     if (currentTab !== go.tab) showTab(go.tab);
-    go.at.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    go.at.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'center' });
     go.at.animate?.([{ boxShadow: '0 0 0 0 rgba(255, 217, 168, 0)' }, { boxShadow: '0 0 22px 3px rgba(255, 217, 168, 0.5)' }, { boxShadow: '0 0 0 0 rgba(255, 217, 168, 0)' }], { duration: 1400, delay: 250, easing: 'ease-in-out' });
   });
   // Before you go: one tap to ready the reef for an absence (shown once there is something to set).

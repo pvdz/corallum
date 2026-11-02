@@ -813,8 +813,9 @@ test('an ask for more shoals or bands never asks for more than can be had', () =
     s.request.kind = '';
     s.request.done = k + 20;
     checkRequest(s);
-    if (s.request.kind === 'shoals') { asked.shoals++; assert.equal(s.request.n, 1, `asked for ${s.request.n} shoals with room for 1`); }
-    if (s.request.kind === 'bands') {
+    const kind: string = s.request.kind;
+    if (kind === 'shoals') { asked.shoals++; assert.equal(s.request.n, 1, `asked for ${s.request.n} shoals with room for 1`); }
+    if (kind === 'bands') {
       asked.bands++;
       let room = 0;
       while (!maxed({ ...s, levels: { ...s.levels, skeleton: s.levels.skeleton + room } }, 'skeleton')) room++;
