@@ -217,14 +217,22 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
         if (ring === Math.floor(coral.y[p]! / L.bandStep)) continue;
         const [x, y] = nodePx(L, i);
         const rw = Math.max(minW, r * u * 1.1);
-        // Every tenth band carries the grain it set with, as a stronger coloured ring.
+        // Every tenth band carries the grain it set with, as a stronger coloured ring round the
+        // stem: the front half of an ellipse, so zoomed in it wraps the branch instead of lying
+        // across it as a flat bar.
         const grain = ring % 10 === 0 && ring > 0 ? L.grains?.[ring / 10 - 1] : undefined;
         if (grain) {
-          ctx.fillStyle = 'rgba(30,14,24,0.55)';
-          ctx.fillRect(x - rw * 1.15, y + L.dpr * 1.4, rw * 2.3, Math.max(1, L.dpr));
-          ctx.fillStyle = `rgba(${grain},0.95)`;
-          ctx.fillRect(x - rw * 1.15, y - L.dpr * 1.2, rw * 2.3, Math.max(2, L.dpr * 2.6));
-          ctx.fillStyle = 'rgba(255,215,200,0.16)';
+          const th = Math.max(2, L.dpr * 2.6), ry = rw * 0.28;
+          ctx.lineWidth = Math.max(1, L.dpr);
+          ctx.strokeStyle = 'rgba(30,14,24,0.5)';
+          ctx.beginPath();
+          ctx.ellipse(x, y + th * 0.75, rw * 1.04, ry, 0, 0, Math.PI);
+          ctx.stroke();
+          ctx.lineWidth = th;
+          ctx.strokeStyle = `rgba(${grain},0.9)`;
+          ctx.beginPath();
+          ctx.ellipse(x, y - ry * 0.4, rw * 1.04, ry, 0, 0, Math.PI);
+          ctx.stroke();
         } else ctx.fillRect(x - rw, y, rw * 2, Math.max(1, L.dpr * 0.7));
       }
     }
