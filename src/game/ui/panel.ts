@@ -41,7 +41,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, steadyCalciteRate, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilSignal, untilUpwelling, untilThorn, untilFlurry, untilMilky, untilHeat, heatLeft, closedNow, untilRising, untilSwell, currentUpwelling, canFlare, risingLeft, canFeedRising, risingHaul, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks, vowKept, visitor, visited } from '../sim/economy.ts';
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilSignal, untilUpwelling, untilTangle, untilStray, untilFragment, untilShell, untilThorn, untilFlurry, untilMilky, untilHeat, heatLeft, closedNow, untilRising, untilSwell, currentUpwelling, canFlare, risingLeft, canFeedRising, risingHaul, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks, vowKept, visitor, visited } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
 
@@ -2166,7 +2166,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       if (rq) {
         // An ask that waits for something in the water says when it comes ("· in 2m 10s", "· now").
         const k = rq.def.kind;
-        const when = k === 'feast' ? untilFeast(s) : k === 'intruder' ? untilThorn(s) : k === 'milky' ? untilMilky(s) : k === 'rising' ? untilRising(s) : k === 'signal' ? untilSignal(s) : Infinity;
+        const when = k === 'feast' ? untilFeast(s) : k === 'intruder' ? untilThorn(s) : k === 'milky' ? untilMilky(s) : k === 'rising' ? untilRising(s) : k === 'signal' ? untilSignal(s)
+          : k === 'free' ? untilTangle(s) : k === 'stray' ? untilStray(s) : k === 'fragment' ? untilFragment(s) : k === 'shell' ? untilShell(s) : Infinity;
         const whenText = when <= 0 ? WATER.now : when < 3600 ? `in ${duration(when)}` : '';
         const askLine = rq.n === 1 && rq.def.one ? rq.def.one : rq.def.ask.replace('{n}', String(rq.n));
         if (askText.firstChild?.textContent !== askLine) askText.replaceChildren(askLine, askWhen);

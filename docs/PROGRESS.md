@@ -996,3 +996,4 @@ date, what landed, what is half-done, what's next.
 - View mode (the panel hidden) still brought the panel up to date every other frame: ~2 ms a frame on a phone at 4× CPU for nothing on screen. Hidden, it is updated four times a second (stories and choices it opens still come in time) and at once when it comes back: 2.0 → 0.6 ms (Twilight Shelf, phone, 4× CPU). Finale e2e (whole-screen release) and fuzz clean.
 - "Send the shoals out to roam" leads to the expedition card too.
 - The water box lists upwellings on the Twilight Shelf ("Soon: an upwelling in 2m 17s", a mark on the strip, "Now" while one waits), as the guide's Rhythms entry said it did (`untilUpwelling`, unit-tested against `currentUpwelling`).
+- The asks for a small fish in threads, a lost shoal, a drifting fragment and a shell say when the next comes too (`untilTangle`, `untilStray`, `untilFragment`, `untilShell` over one seeded-slot helper; unit-tested against their `current*` opening on time).

@@ -2301,6 +2301,45 @@ export function currentFragment(s: GameState): { k: number; x: number; age: numb
   return { k, x: r(), age: s.t - start };
 }
 
+/** Seconds until the next seeded slot event opens (one per `period`, starting within `span` of its
+ *  slot, seeded by `salt`), skipping slots up to `done`. */
+function untilSlot(s: GameState, period: number, span: number, salt: number, done: number): number {
+  for (let k = Math.floor(s.t / period); k < Math.floor(s.t / period) + 3; k++) {
+    if (k <= done) continue;
+    const start = k * period + mulberry32((s.seed ^ salt) + Math.imul(k, 0x9e3779b1))() * span;
+    if (start > s.t) return start - s.t;
+  }
+  return Infinity;
+}
+
+/** Seconds until a small fish is next caught in threads (0 while one is). */
+export function untilTangle(s: GameState): number {
+  if (!TANGLE.zones.includes(actAt(s.height))) return Infinity;
+  return currentTangle(s) ? 0 : untilSlot(s, TANGLE.period, TANGLE.period - TANGLE.life, 0x7a96, s.untangled);
+}
+
+/** Seconds until a lost shoal's lights next show (0 while they do; Infinity where none come). */
+export function untilStray(s: GameState): number {
+  if (actAt(s.height) !== STRAY.zone || !revealed(s, 'shoal') || s.levels.shoal >= (seamount(s).shoalCap ?? Infinity)) return Infinity;
+  if (currentStray(s)) return 0;
+  const period = STRAY.period / (chose(s, 'bristle-cloud', 'a') ? 2 : 1) / (trait(s, 'drift-wise') ? 2 : 1);
+  return untilSlot(s, period, period - STRAY.life, 0x57a7, s.strayed);
+}
+
+/** Seconds until a fragment of another reef next drifts past (0 while one does). */
+export function untilFragment(s: GameState): number {
+  if (!FRAGMENT.zones.includes(actAt(s.height)) || s.fragments >= fragmentMax(s)) return Infinity;
+  return currentFragment(s) ? 0 : untilSlot(s, FRAGMENT.period, FRAGMENT.period - FRAGMENT.life, 0xf4a9, s.fragmentSlot);
+}
+
+/** Seconds until a shell next washes up (0 while one lies there). */
+export function untilShell(s: GameState): number {
+  if (actAt(s.height) !== SHELL.zone) return Infinity;
+  if (currentShell(s)) return 0;
+  const period = SHELL.period / (lives(s, 'hermit-crab') ? 2 : 1);
+  return untilSlot(s, period, period - SHELL.life * 2, 0x5e11, s.shelled);
+}
+
 /** Take the drifting fragment in: it grows at the reef's foot (calcite ×FRAGMENT.each). */
 export function takeFragment(s: GameState): boolean {
   const f = currentFragment(s);
