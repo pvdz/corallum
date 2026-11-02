@@ -1,6 +1,6 @@
 // Frame cost per zone, headless: loads the game at bot times reaching each zone and reads the
 // rolling draw/panel milliseconds (corallum.prof) after a few seconds of running.
-// Usage: node --no-warnings tools/perf.ts [--vp desktop|mobile|landscape] [--at 600,5000,...] [--cpu 4]
+// Usage: node --no-warnings tools/perf.ts [--vp desktop|mobile|landscape] [--at 600,5000,...] [--cpu 4] [--sheet low]
 // --cpu N slows the page's CPU N times (CDP throttling), a rough stand-in for a phone's main thread.
 // Headless Chromium rasterises in software, so compare runs with each other, not with phones.
 
@@ -15,10 +15,13 @@ const vp = VIEWPORTS.find((v) => v.name === arg('vp', 'desktop'))!;
 // Silt Floor, Midnight Water, Twilight Shelf, Sunlit Crown, the Breach.
 const times = arg('at', '600,5000,12000,19000,26000').split(',').map(Number);
 const cpu = Number(arg('cpu', '1'));
+/** --sheet low: a phone with its sheet kept low (the scene drawn over two thirds of the screen). */
+const sheet = arg('sheet', '');
 
 await withGame(async (open) => {
   for (const at of times) {
     const { page, errors } = await open(vp, `?bot=${at}`);
+    if (sheet) { await page.evaluate((v) => localStorage.setItem('corallum.sheet', v), sheet); await page.reload(); }
     await page.waitForFunction(() => (window as unknown as { corallum?: unknown }).corallum, null, { timeout: 60000 });
     await page.waitForTimeout(4000);
     // The browser's own frame work over a window: script, style recalc and layout per frame.
