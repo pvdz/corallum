@@ -1927,6 +1927,7 @@ function fpsTick(now: number, dt: number): void {
 }
 
 let last = performance.now();
+let lastWall = Date.now();
 let lastSave = last;
 let lastTitle = 0;
 let lastHabit = 0;
@@ -1947,6 +1948,12 @@ function frameBody(now: number): void {
   if (needResize) { resize(); needResize = false; }
   const dt = Math.max(0, (now - last) / 1000);
   last = now;
+  // The frame clock stands still while the device sleeps (a closed laptop, a phone in a pocket, on
+  // macOS, Linux and Android): the wall clock counts that time, as a reload would.
+  const wallNow = Date.now();
+  const wallDt = (wallNow - lastWall) / 1000;
+  lastWall = wallNow;
+  const simDt = wallDt > dt + 2 ? wallDt : dt;
   // Drift: in view mode, left alone a while, the camera wanders slowly round the reef.
   if (viewMode && now - lastInput > 25_000 && !(reducedMotion.matches || calm.get())) {
     const [crx, cry] = scene.crownAt;
@@ -1958,8 +1965,8 @@ function frameBody(now: number): void {
   }
   if (frozenT === null) {
     // A long gap means the tab slept; treat it like being away.
-    if (dt > AWAY_NOTICE) catchUp(dt * speed);
-    else advance(state, dt * speed);
+    if (simDt > AWAY_NOTICE) catchUp(simDt * speed);
+    else advance(state, simDt * speed);
     // The reef arrives at the height its bands promised: a soft pulse at the crown (not on a jump).
     const promised = heightForBands(state.levels.skeleton);
     if (state.height === promised && lastHeight < promised && promised - lastHeight < 2) scene.effect('settled');

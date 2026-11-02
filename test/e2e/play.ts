@@ -91,6 +91,22 @@ await withGame(async (open) => {
     if (!ok) process.exitCode = 1;
   }
 
+  // A device asleep with the page open: the frame clock stands still (macOS, Linux, Android) while
+  // the wall clock runs on. Two hours on the wall and none on the frame clock is two hours away.
+  {
+    const { page, errors } = await open(VIEWPORTS[0]!, '', { save: serialize(runBot((s) => s.t >= 3000, 3000).state, Date.now()) });
+    await page.waitForFunction(() => window.corallum?.state.t !== undefined, null, { timeout: 30000 });
+    for (let i = 0; i < 10 && (await page.locator('.reader:not([hidden])').count()); i++) await page.keyboard.press('Escape');
+    const t0 = await page.evaluate(() => window.corallum!.state.t);
+    await page.evaluate(() => { const real = Date.now; Date.now = () => real() + 2 * 3600_000; });
+    await page.waitForSelector('.away:not([hidden])', { timeout: 5000 }).catch(() => {});
+    const gained = (await page.evaluate(() => window.corallum!.state.t)) - t0;
+    const away = await page.locator('.away:not([hidden])').count();
+    const ok = gained > 7000 && away === 1 && !errors.length;
+    console.log(`${ok ? 'ok  ' : 'FAIL'} a device asleep: ${Math.round(gained)} s of the reef's time, away summary ${away ? 'shown' : 'missing'}`);
+    if (!ok) process.exitCode = 1;
+  }
+
   // Keys after the mouse: a button the mouse clicked keeps focus, and must not swallow the
   // shortcuts (P after a tab click buys; Space after the sound button sweeps, sound stays on).
   {
