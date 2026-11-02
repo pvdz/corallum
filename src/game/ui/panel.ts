@@ -279,6 +279,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     for (const [k, p] of tabPages) p.hidden = k !== id;
     if (id === 'bands') seenStories = storyCount;
     if (id === 'lineage') { traitsReadySeen = -1; lineageDot.hidden = true; }
+    // The weather strip's labels were measured while hidden (no widths): laid out again.
+    if (id === 'grow') almanacKey = '';
     if (again) pages.scrollTo({ top: 0, behavior: 'smooth' });
     else pages.scrollTop = tabScroll.get(id) ?? 0;
     currentTab = id;
@@ -2096,16 +2098,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           marks.forEach(([t, w]) => {
             const label = w.replace(/^(a|an|the) /, '').split(' (')[0]!;
             const f0 = Math.max(0, t) / 1200, cx = f0 * W, wide = label.length * 5.8 + 8;
-            // Where the label really sits: anchored at the ends, centred elsewhere.
-            const left = f0 < 0.08 ? cx - 4 : f0 > 0.92 ? cx + 4 - wide : cx - wide / 2;
+            // Where the label really sits: centred on its dot, kept inside the strip.
+            const left = Math.min(Math.max(cx - wide / 2, 0), W - wide);
             // No room in any row: the mark keeps its dot and tooltip, without a label.
             const row = rowEnd.findIndex((end) => left > end);
             if (row >= 0) rowEnd[row] = left + wide;
             const m = el('span', `mark row${row}${t <= 0 ? ' now' : ''}`);
             m.style.left = `${(Math.max(0, t) / 1200) * 100}%`;
-            // Labels at the ends keep inside the card.
-            const f = Math.max(0, t) / 1200;
-            m.style.transform = f < 0.08 ? 'translateX(-4px)' : f > 0.92 ? 'translateX(calc(-100% + 4px))' : '';
             m.title = `${w} ${t > 0 ? `in ${duration(t)}` : WATER.now}`;
             m.addEventListener('click', () => {
               almanacNote.textContent = m.title;
@@ -2114,8 +2113,15 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
               setTimeout(() => { if (almanacNote.textContent === said) almanacNote.textContent = ''; }, 5000);
             });
             m.append(el('i'));
-            if (row >= 0) m.append(el('b', '', label));
+            const lb = row >= 0 ? el('b', '', label) : null;
+            if (lb) m.append(lb);
             almanac.append(m);
+            // The dot stays on its time; a label near an end slides inward to keep inside the card.
+            if (lb) {
+              const bw = lb.offsetWidth;
+              const shift = Math.min(Math.max(cx - bw / 2, 0), W - bw) - (cx - bw / 2);
+              if (shift) lb.style.transform = `translateX(${shift}px)`;
+            }
           });
         }
         // What is happening already is told apart from what is coming.
