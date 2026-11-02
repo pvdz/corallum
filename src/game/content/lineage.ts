@@ -362,7 +362,7 @@ export type BoonId = 'currents' | 'lamps' | 'quick-stone' | 'warm-heart' | 'root
 export const BOONS: readonly { id: BoonId; name: string; effect: string }[] = [
   { id: 'currents', name: 'Rich currents', effect: 'calcite ×1.15 on this reef' },
   { id: 'lamps', name: 'Early lamps', effect: 'start with 4 shoals feeding' },
-  { id: 'quick-stone', name: 'Quick stone', effect: 'bands ×0.9 on this reef' },
+  { id: 'quick-stone', name: 'Quick stone', effect: 'bands cost ×0.9 on this reef' },
   { id: 'warm-heart', name: 'A warm heart', effect: 'glow ×1.3 on this reef' },
   { id: 'roots', name: 'Deep roots', effect: 'calcite dissolves ×0.85 on this reef' },
   { id: 'welcome', name: 'A welcoming sea', effect: 'gifts from neighbours ×2 on this reef' },
