@@ -435,6 +435,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const askBox = el('div', 'ask');
   askBox.hidden = true;
   const askText = el('span', 'ask-text');
+  const askWhen = el('span', 'ask-when');
   const askBar = el('span', 'ask-bar');
   const askFill = el('span', 'ask-fill');
   askBar.append(askFill);
@@ -2126,7 +2127,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       const goes = !!askTarget();
       if (askBox.classList.contains('goes') !== goes) askBox.classList.toggle('goes', goes);
       if (rq) {
-        askText.textContent = rq.n === 1 && rq.def.one ? rq.def.one : rq.def.ask.replace('{n}', String(rq.n));
+        // An ask that waits for something in the water says when it comes ("· in 2m 10s", "· now").
+        const k = rq.def.kind;
+        const when = k === 'feast' ? untilFeast(s) : k === 'intruder' ? untilThorn(s) : k === 'milky' ? untilMilky(s) : k === 'rising' ? untilRising(s) : Infinity;
+        const whenText = when <= 0 ? WATER.now : when < 3600 ? `in ${duration(when)}` : '';
+        const askLine = rq.n === 1 && rq.def.one ? rq.def.one : rq.def.ask.replace('{n}', String(rq.n));
+        if (askText.firstChild?.textContent !== askLine) askText.replaceChildren(askLine, askWhen);
+        if (askWhen.textContent !== whenText) askWhen.textContent = whenText;
+        askWhen.classList.toggle('now', when <= 0);
         askFill.style.width = `${(rq.got / rq.n) * 100}%`;
         askCount.textContent = `${rq.got}/${rq.n}`;
         // One-step asks need no bar; a streak goes up with the kicker, out of the text's way.

@@ -398,6 +398,8 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .ask { flex-wrap: wrap; row-gap: 0; }
 .ask em { flex-basis: 100%; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #ffd9a8; font-style: normal; white-space: nowrap; }
 .ask-text { flex: 1; font-family: var(--display); color: #f2e8d8; }
+.ask-when { margin-left: 0.5em; font-family: var(--text); font-size: 11.5px; color: var(--ink-dim); white-space: nowrap; }
+.ask-when.now { color: #ffd9a8; }
 .ask-bar[hidden] { display: none; }
 .ask-bar { width: 54px; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
 .ask-fill { display: block; height: 100%; background: #ffd9a8; transition: width 0.3s ease; }
