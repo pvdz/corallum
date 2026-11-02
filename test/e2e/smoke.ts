@@ -189,3 +189,17 @@ await withGame(async (open) => {
   console.log(`${ok ? 'ok  ' : 'FAIL'} a pinch on the scene does not zoom the page (scale ${scale})${errors.length ? ': ' + errors.join(' | ') : ''}`);
   if (!ok) process.exitCode = 1;
 });
+
+// The Bands tab's dot calls only for a story not yet shown: after loading a reef (all its stories
+// listed, none new) and after a new band's card is read, it is off.
+await withGame(async (open) => {
+  const { page, errors } = await open(VIEWPORTS[0]!, '?bot=12000');
+  await page.waitForFunction(() => (window as unknown as { corallum?: unknown }).corallum, null, { timeout: 30000 });
+  await page.waitForTimeout(1500);
+  for (let i = 0; i < 10 && (await page.locator('.reader:not([hidden]), .away:not([hidden])').count()); i++) await page.keyboard.press('Escape');
+  const dot = () => page.locator('.tab', { hasText: 'Bands' }).locator('.dot').isVisible();
+  const afterLoad = await dot();
+  const ok = !afterLoad && errors.length === 0;
+  console.log(`${ok ? 'ok  ' : 'FAIL'} the Bands tab has no dot after a load${errors.length ? ': ' + errors.join(' | ') : ''}`);
+  if (!ok) process.exitCode = 1;
+});
