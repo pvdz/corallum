@@ -1122,7 +1122,7 @@ function showJournalNote(kicker: string, name: string, now = false): void {
     // A backlog of the same kind (a new zone shows a dozen creatures at once) is one note, not a
     // minute of them: "Lanternfish, Hatchetfish and 3 more".
     const same = journalQueue.filter((q) => q[0] === n[0]);
-    if (same.length >= 2) {
+    if (same.length >= 2 && (n[0] === UI.seenFirst || n[0] === JOURNAL_PASSING || n[0] === 'Feat · +1 lineage')) {
       const names = [n[1], ...same.map((q) => q[1])];
       for (let i = journalQueue.length - 1; i >= 0; i--) if (journalQueue[i]![0] === n[0]) journalQueue.splice(i, 1);
       n[1] = UI.namesAndMore(names);
