@@ -1674,7 +1674,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const awayText = el('p', 'reader-text');
   const awayList = el('dl', 'codex-list away-list');
   const awayHint = el('p', 'hint');
+  // Ossel's gift left untaken (closed in a hurry, or by Escape) is not lost: the first, the haul, is taken.
+  let untakenGift: (() => void) | null = null;
   const awayClose = button('plain', UI.awayClose, () => {
+    untakenGift?.();
+    untakenGift = null;
     away.hidden = true;
     const next = queue.shift();
     if (next) openStory(next);
@@ -2597,6 +2601,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         welcomeBox.append(el('p', 'welcome-head', WELCOME.head));
         const buttons = gifts.map((g) => {
           const b = button('choice welcome-gift', '', () => {
+            untakenGift = null;
             const said = g.take();
             for (const x of buttons) x.disabled = true;
             b.classList.add('taken');
@@ -2606,7 +2611,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           welcomeBox.append(b);
           return b;
         });
-      }
+        untakenGift = () => buttons[0]!.click();
+      } else untakenGift = null;
       away.hidden = false;
     },
     /** List the bands and readings of a loaded save without opening the reader for each. */
