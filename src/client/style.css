@@ -108,6 +108,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 /* The everyday upgrades (and the lineage's gifts) read as a list, not a stack of boxes: no fill, a hairline between them;
    one that can be bought now lights up as a card. */
 .panel .card.upgrade:not(.ready), .panel .card.trait:not(.ready) { background: transparent; border-color: transparent; box-shadow: inset 0 -1px 0 rgba(150, 200, 255, 0.08); border-radius: 0; }
+@media (hover: hover) { .panel .card.upgrade:not(.ready):hover, .panel .card.trait:not(.ready):hover { background: rgba(150, 200, 255, 0.035); } }
 .card.maxed { opacity: 0.55; }
 .card.done { padding-top: 6px; padding-bottom: 6px; }
 .card.done .flavour, .card.done .effect, .card.done footer { display: none; }
