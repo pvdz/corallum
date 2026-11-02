@@ -1687,19 +1687,22 @@ function gaugeAt(h: number): number {
   const a = ACTS[n - 1]!;
   return (n - 1 + Math.min(1, (h - a.from) / (a.to - a.from))) / ACTS.length;
 }
-let gaugeShown = -1;
+let gaugeShown = '';
 function updateGauge(): void {
   updateGaugeMoon();
   gaugeSister.style.bottom = `${sisterNow(state, state.t) * 100}%`;
   gaugeSister.hidden = ended(state);
   gaugeCousin.hidden = ended(state) || !cousinRaces(state);
   gaugeCousin.style.bottom = `${sisterAt(state.t, COUSIN.schedule) * 100}%`;
-  const h = Math.round(state.height * 10) / 10;
-  if (h === gaugeShown) return;
-  gaugeShown = h;
+  // Redrawn when the label or the marker's place would change (keyed on what is shown: a key
+  // rounded otherwise could hold "59 m" on a reef that has settled at 60).
+  const f0 = gaugeAt(state.height);
+  const key = `${metres(state.height)}|${f0.toFixed(4)}|${state.height < 1}`;
+  if (key === gaugeShown) return;
+  gaugeShown = key;
   // A brand-new reef keeps the opening clear: the gauge appears with the first metre of stone.
   gauge.hidden = state.height < 1;
-  const f = gaugeAt(state.height);
+  const f = f0;
   gaugeMarker.style.bottom = `${f * 100}%`;
   gaugeLabel.style.bottom = `${f * 100}%`;
   gaugeLabel.textContent = metres(state.height);
