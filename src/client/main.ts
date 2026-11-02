@@ -1456,7 +1456,13 @@ const SEAMOUNT_TINT: Record<string, [string, GlobalCompositeOperation]> = {
 };
 
 /** A float of text over the water, e.g. "+12". */
+/** Floating lines started in the last moment: a new one near them stacks below instead of printing over. */
+let recentFloats: { x: number; y: number; t: number }[] = [];
 function floatText(x: number, y: number, text: string, cls = ''): void {
+  const now = performance.now();
+  recentFloats = recentFloats.filter((r) => now - r.t < 400);
+  for (let i = 0; i < 4 && recentFloats.some((r) => Math.abs(r.x - x) < 140 && Math.abs(r.y - y) < 30); i++) y += 32;
+  recentFloats.push({ x, y, t: now });
   const f = document.createElement('div');
   f.className = `float ${cls}`;
   f.textContent = text;
@@ -1640,8 +1646,7 @@ canvas.addEventListener('pointerdown', (e) => {
   if (lit > 0) floatText(e.clientX + 30, e.clientY - 18, `+${num(lit)} ${MILKY.float}`, 'feast-float');
   const moonlit = moonlitSpawn(state);
   if (moonlit > 0) floatText(e.clientX + 30, e.clientY - 18, `+${num(moonlit)} ${UI.moonlit}`, 'feast-float');
-  // Under a gift's line when the tap also touched a neighbour (both rose from the same point).
-  floatText(e.clientX, e.clientY + (who && who.id !== 'ossel' ? 22 : 0), state.combo > 1 ? `+${num(gain)} ×${(1 + ACT1.comboStep * (state.combo - 1)).toFixed(1)}` : `+${num(gain)}`);
+  floatText(e.clientX, e.clientY, state.combo > 1 ? `+${num(gain)} ×${(1 + ACT1.comboStep * (state.combo - 1)).toFixed(1)}` : `+${num(gain)}`);
 });
 
 // Quality: if frames run slow for a while, drop the bloom pass.
