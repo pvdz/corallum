@@ -391,6 +391,9 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .ask { display: flex; align-items: center; gap: 8px; padding: 6px 12px; font-size: 12.5px; border-radius: var(--radius);
   border: 1px solid rgba(255, 220, 170, 0.14); background: rgba(255, 220, 170, 0.03); }
 .ask[hidden] { display: none; }
+/* An ask done in the panel: a tap goes to where it is done. */
+.ask.goes { cursor: pointer; }
+@media (hover: hover) { .ask.goes:hover .ask-text { text-decoration: underline; text-decoration-color: rgba(255, 217, 168, 0.4); text-underline-offset: 3px; } }
 .ask.waiting { visibility: hidden; }
 .ask { flex-wrap: wrap; row-gap: 0; }
 .ask em { flex-basis: 100%; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #ffd9a8; font-style: normal; white-space: nowrap; }

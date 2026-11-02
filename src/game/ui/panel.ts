@@ -445,6 +445,29 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const askKicker = el('em', '', REQUEST.kicker);
   askBox.append(askKicker, askText, askBar, askCount, askSkip);
   waterBox.after(askBox);
+  // An ask done in the panel (bud, lay bands, read…) takes a tap to where it is done, and lights it.
+  let askKind = '';
+  const ASK_CARD: Partial<Record<string, UpgradeId>> = { bud: 'polyp', glimmer: 'symbiont', bands: 'skeleton', shoals: 'shoal', sandbar: 'sandbar', pigment: 'pigment', ripen: 'ripen' };
+  function askTarget(): { tab: string; at: HTMLElement } | null {
+    const id = ASK_CARD[askKind];
+    const at = id ? cards.get(id)?.root
+      : askKind === 'read' ? readingCard
+      : askKind === 'work' ? workCards.find((c) => !c.root.hidden && !c.root.classList.contains('done') && !c.root.closest('details:not([open])'))?.root
+      : askKind === 'rising' ? riseRow
+      : undefined;
+    const tab = askKind === 'read' ? 'bands' : 'grow';
+    // Shown on its page (the page itself may be the tab not open).
+    for (let e: HTMLElement | null = at ?? null; e && e !== tabPages.get(tab); e = e.parentElement) if (e.hidden) return null;
+    return at ? { tab, at } : null;
+  }
+  askBox.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('button')) return;
+    const go = askTarget();
+    if (!go) return;
+    if (currentTab !== go.tab) showTab(go.tab);
+    go.at.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    go.at.animate?.([{ boxShadow: '0 0 0 0 rgba(255, 217, 168, 0)' }, { boxShadow: '0 0 22px 3px rgba(255, 217, 168, 0.5)' }, { boxShadow: '0 0 0 0 rgba(255, 217, 168, 0)' }], { duration: 1400, delay: 250, easing: 'ease-in-out' });
+  });
   // Before you go: one tap to ready the reef for an absence (shown once there is something to set).
   const prepBtn = button('plain prep-away', AWAY_PREP.label, () => { prepNote.textContent = hooks.prepareAway(); });
   prepBtn.title = AWAY_PREP.title;
@@ -2099,6 +2122,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       // A reef vowed to quiet hears no requests: no slot for them either.
       askBox.hidden = s.vows.includes('quiet');
       askBox.classList.toggle('waiting', !rq);
+      askKind = rq?.def.kind ?? '';
+      const goes = !!askTarget();
+      if (askBox.classList.contains('goes') !== goes) askBox.classList.toggle('goes', goes);
       if (rq) {
         askText.textContent = rq.n === 1 && rq.def.one ? rq.def.one : rq.def.ask.replace('{n}', String(rq.n));
         askFill.style.width = `${(rq.got / rq.n) * 100}%`;
