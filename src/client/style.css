@@ -169,6 +169,8 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 }
 .plain:hover { background: var(--card-hover); border-color: var(--edge-strong); }
 .plain.danger { color: #ffb4a0; }
+.button-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.button-pair .plain { padding: 9px 10px; }
 
 /* ---------- Reader ---------- */
 .reader {

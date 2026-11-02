@@ -1474,7 +1474,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     shapes,
     guide,
     group(UI.saves),
-    el('p', 'hint', UI.autosave), backupNote, exportBtn, fileBtn, loadFileBtn, fileInput, importBtn,
+    el('p', 'hint', UI.autosave), backupNote, pair(exportBtn, fileBtn), pair(loadFileBtn, importBtn), fileInput,
     group(UI.sound), volRow, buzzToggle,
     group(UI.display), button('plain', UI.timelapse, () => hooks.timelapse()), glowToggle, sharpToggle, calmToggle, bigToggle, sciToggle, quietToggle, notifyToggle, habitToggle,
     el('p', 'hint keys-hint', UI.keys),
@@ -2589,6 +2589,13 @@ function gaugeFraction(h: number): number {
 }
 
 /** A long card that starts folded: tapping its heading opens and closes it. */
+/** Two buttons side by side, half the width each. */
+function pair(a: HTMLElement, b: HTMLElement): HTMLElement {
+  const row = el('div', 'button-pair');
+  row.append(a, b);
+  return row;
+}
+
 function collapsible(card: HTMLElement, head: HTMLElement): void {
   card.classList.add('collapsible', 'folded');
   head.setAttribute('role', 'button');

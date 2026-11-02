@@ -1,4 +1,4 @@
-// Save files in a real browser: "Save to a file" downloads the reef, "Load save from a file"
+// Save files in a real browser: "Save to a file" downloads the reef, "Load a file"
 // brings one back. Run with: node --no-warnings test/e2e/saves.ts
 
 import { readFileSync } from 'node:fs';
@@ -25,7 +25,7 @@ await withGame(async (open) => {
     for (let i = 0; i < 5 && (await page.locator('.reader:not([hidden])').count()); i++)
       await page.locator('.reader:not([hidden]) button').first().click();
     await page.locator('.tab', { hasText: 'Reef' }).click();
-    const [chooser] = await Promise.all([page.waitForEvent('filechooser'), page.locator('button', { hasText: 'Load save from a file' }).click()]);
+    const [chooser] = await Promise.all([page.waitForEvent('filechooser'), page.locator('button', { hasText: 'Load a file' }).click()]);
     await chooser.setFiles({ name: 'save.txt', mimeType: 'text/plain', buffer: Buffer.from(text) });
     await page.waitForFunction(() => (window.corallum?.state.height ?? 0) >= 20, null, { timeout: 10000 });
     const ok = !errors.length;
@@ -42,12 +42,12 @@ await withGame(async (open) => {
     await page.locator('.tab', { hasText: 'Reef' }).click();
     let asked = '';
     page.once('dialog', (d) => { asked = d.message(); void d.dismiss(); });
-    const [c1] = await Promise.all([page.waitForEvent('filechooser'), page.locator('button', { hasText: 'Load save from a file' }).click()]);
+    const [c1] = await Promise.all([page.waitForEvent('filechooser'), page.locator('button', { hasText: 'Load a file' }).click()]);
     await c1.setFiles({ name: 'save.txt', mimeType: 'text/plain', buffer: Buffer.from(text) });
     await page.waitForTimeout(800);
     const kept = (await page.evaluate(() => window.corallum!.state.height)) === h0;
     page.once('dialog', (d) => void d.accept());
-    const [c2] = await Promise.all([page.waitForEvent('filechooser'), page.locator('button', { hasText: 'Load save from a file' }).click()]);
+    const [c2] = await Promise.all([page.waitForEvent('filechooser'), page.locator('button', { hasText: 'Load a file' }).click()]);
     await c2.setFiles({ name: 'save.txt', mimeType: 'text/plain', buffer: Buffer.from(text) });
     await page.waitForFunction((h) => (window.corallum?.state.height ?? h) < h, h0, { timeout: 10000 });
     const ok = /replaces the reef/.test(asked) && kept && !errors.length;
