@@ -1640,7 +1640,8 @@ canvas.addEventListener('pointerdown', (e) => {
   if (lit > 0) floatText(e.clientX + 30, e.clientY - 18, `+${num(lit)} ${MILKY.float}`, 'feast-float');
   const moonlit = moonlitSpawn(state);
   if (moonlit > 0) floatText(e.clientX + 30, e.clientY - 18, `+${num(moonlit)} ${UI.moonlit}`, 'feast-float');
-  floatText(e.clientX, e.clientY, state.combo > 1 ? `+${num(gain)} ×${(1 + ACT1.comboStep * (state.combo - 1)).toFixed(1)}` : `+${num(gain)}`);
+  // Under a gift's line when the tap also touched a neighbour (both rose from the same point).
+  floatText(e.clientX, e.clientY + (who && who.id !== 'ossel' ? 22 : 0), state.combo > 1 ? `+${num(gain)} ×${(1 + ACT1.comboStep * (state.combo - 1)).toFixed(1)}` : `+${num(gain)}`);
 });
 
 // Quality: if frames run slow for a while, drop the bloom pass.
