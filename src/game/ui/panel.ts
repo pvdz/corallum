@@ -1773,7 +1773,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const keys = open.map((x) => choiceKey(x.sec));
     if (currentTab === 'grow' || !keys.length) growSeen = new Set(keys);
     // Only something new calls (answering one leaves the rest as they were seen).
-    const unseen = keys.some((k) => !growSeen.has(k));
+    // A rising to send the feeders into or an upwelling to turn toward (controls in the Grow tab,
+    // gone in a minute or two) calls too, while another tab is open.
+    const up = lastState ? currentUpwelling(lastState) : null;
+    const timed = !!lastState && currentTab !== 'grow' && (canFeedRising(lastState) || (!!up && lastState.upwelled !== up.k));
+    const unseen = keys.some((k) => !growSeen.has(k)) || timed;
     if (growDot.hidden === unseen) growDot.hidden = !unseen;
     if (key === waitKey) return;
     waitKey = key;
