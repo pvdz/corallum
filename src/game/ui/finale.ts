@@ -98,7 +98,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
   }
   function refreshChoice(): void {
     const n = state ? carryAt(state) : ACT5.carry;
-    picked.textContent = `${chosen.size} of ${n}`;
+    picked.textContent = `${chosen.size}\u00a0of\u00a0${n}`;
     letGo.disabled = chosen.size !== n || !state || !moonFull(state.t);
   }
   back.addEventListener('click', () => { choice.hidden = true; });

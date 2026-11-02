@@ -24,7 +24,7 @@ export const RISING = {
   now: (left: string) => `The rising: the deep comes up to feed, for ${left}.`,
   send: 'Send the feeders in',
   sent: 'The feeders are back, full.',
-  share: (feed: number, all: number) => `${feed} of ${all} shoals feeding`,
+  share: (feed: number, all: number) => `${feed}\u00a0of\u00a0${all} shoals feeding`,
   noFeeders: 'Put shoals on feeding to send them in.',
   float: 'from the rising',
 } as const;

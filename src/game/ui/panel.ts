@@ -792,7 +792,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     for (const zone of zones) {
       const inZone = CREATURES.filter((c) => c.zone === zone);
       const got = inZone.filter((c) => seen.includes(c)).length;
-      const head = el('div', 'journal-zone', `${zone} · ${got} of ${inZone.length}`);
+      const head = el('div', 'journal-zone', `${zone} · ${got}\u00a0of\u00a0${inZone.length}`);
       // A small ring: how much of the zone has been seen.
       const f = got / inZone.length, r = 6, c = 2 * Math.PI * r;
       const ring = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -868,7 +868,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const key = got.join();
     if (key === tabletKey || !got.length) return;
     tabletKey = key;
-    tabletHead.textContent = `${SHARD.label} · ${got.length} of ${SHARD_LINES.length}`;
+    tabletHead.textContent = `${SHARD.label} · ${got.length}\u00a0of\u00a0${SHARD_LINES.length}`;
     tabletLines.innerHTML = '';
     SHARD_LINES.forEach((line, i) => tabletLines.append(el('li', got.includes(i) ? 'found' : '', got.includes(i) ? line : SHARD.missing)));
     if (got.length === SHARD_LINES.length) tabletLines.append(el('li', 'whole', SHARD.whole_text));
@@ -949,7 +949,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const key = s.meta.shells.join();
     if (key === shelfKey) return;
     shelfKey = key;
-    shelfHead.textContent = `${SHELL.label} · ${s.meta.shells.length} of ${SHELLS.length} · calcite +${s.meta.shells.length + (s.meta.shells.length >= SHELLS.length ? 5 : 0)}%`;
+    shelfHead.textContent = `${SHELL.label} · ${s.meta.shells.length}\u00a0of\u00a0${SHELLS.length} · calcite +${s.meta.shells.length + (s.meta.shells.length >= SHELLS.length ? 5 : 0)}%`;
     shelfRow.innerHTML = '';
     for (const sh of SHELLS) {
       const got = s.meta.shells.includes(sh.id);
@@ -984,7 +984,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     momentKey = key;
     const met = MOMENTS.filter((m) => s.meta.seen.includes(`m:${m.id}:a`) || s.meta.seen.includes(`m:${m.id}:b`));
     momentCard.hidden = met.length === 0;
-    momentHead.textContent = `${UI.momentsLabel} · ${met.length} of ${MOMENTS.length}`;
+    momentHead.textContent = `${UI.momentsLabel} · ${met.length}\u00a0of\u00a0${MOMENTS.length}`;
     momentList.innerHTML = '';
     // Hard places' moments stay hidden until met; the others show where they wait, a run of
     // unmet ones on a single row of depths.
@@ -1017,8 +1017,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const tr = seamountDef(s.seamount).trial;
     if (tr) codexRow('Trial', `${seamountDef(s.seamount).name}: grow to ${metres(tr.goal)}${s.meta.seen.includes(`trial:${s.seamount}`) ? ` · ${TRIAL_TEXT.met}` : ''} · ${tr.reward}`);
     const wrong = s.meta.seen.filter((k) => k.startsWith('o:')).length;
-    if (wrong) codexRow('Ossel', `${wrong} of ${OSSEL_MISTAKES.length} mistakes found`);
-    if (s.race.decided > 0) codexRow(UI.sisterReef, `first to ${s.race.won} of ${s.race.decided} marks` + (s.meta.endings > 0 ? ` · ahead of the quick cousin at ${s.race.cousin}` : ''));
+    if (wrong) codexRow('Ossel', `${wrong}\u00a0of\u00a0${OSSEL_MISTAKES.length} mistakes found`);
+    if (s.race.decided > 0) codexRow(UI.sisterReef, `first to ${s.race.won}\u00a0of\u00a0${s.race.decided} marks` + (s.meta.endings > 0 ? ` · ahead of the quick cousin at ${s.race.cousin}` : ''));
     const recs = s.meta.records.map((t, i) => t > 0 ? `${metres(SISTER.marks[i]!)} in ${duration(t)}` : '').filter(Boolean);
     if (recs.length) codexRow('Line’s best', recs.join(' · '));
     const did: string[] = [];
@@ -1059,7 +1059,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     };
     if (s.vows.length) codexRow(VOW.label, VOWS.filter((v) => s.vows.includes(v.id)).map((v) => `${v.name.toLowerCase()} (${vowState(v.id)})`).join(' · '));
     if (s.meta.endings > 0) codexRow(UI.theSea, `healing: the Long Silt falls ×${(0.95 ** Math.min(6, s.meta.endings)).toFixed(2)} for the endings your line has reached`);
-    if (s.meta.endings > 0) codexRow('Endings', `${s.meta.endings} · ${s.meta.carriedEver.length} of ${MEMORIES.length} memories carried so far`);
+    if (s.meta.endings > 0) codexRow('Endings', `${s.meta.endings} · ${s.meta.carriedEver.length}\u00a0of\u00a0${MEMORIES.length} memories carried so far`);
     if (s.carried.length) codexRow('Carried', s.carried.map((id) => MEMORIES.find((m) => m.id === id)?.title ?? id).join(' · '));
     if (s.meta.spawnings) codexRow('Lineage', `${s.meta.spawnings} lesser spawning${s.meta.spawnings === 1 ? '' : 's'}, best reef ${metres(s.meta.best)}`);
   }
@@ -1167,13 +1167,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const key = done.map((f) => f.id).join() + '|' + FEATS.map((f) => (f.progress && !done.includes(f) ? f.progress(s)[0] : '')).join();
     if (key === featKey) return;
     featKey = key;
-    featHead.textContent = `Feats · ${done.length} of ${FEATS.length} · one lineage each`;
+    featHead.textContent = `Feats · ${done.length}\u00a0of\u00a0${FEATS.length} · one lineage each`;
     featList.innerHTML = '';
     for (const f of FEATS) {
       const got = done.includes(f);
       const pr = !got && f.progress ? f.progress(s) : null;
       const secret = f.hidden && !got;
-      featList.append(el('dt', got ? '' : 'unknown', secret ? '???' : f.name), el('dd', got ? '' : 'unknown', secret ? 'A secret.' : pr ? `${f.text} (${Math.min(pr[0], pr[1])} of ${pr[1]})` : f.text));
+      featList.append(el('dt', got ? '' : 'unknown', secret ? '???' : f.name), el('dd', got ? '' : 'unknown', secret ? 'A secret.' : pr ? `${f.text} (${Math.min(pr[0], pr[1])}\u00a0of\u00a0${pr[1]})` : f.text));
     }
   }
   // The chronicle: every ending the line has reached, and what each carried.
@@ -1265,9 +1265,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const feats = m.seen.filter((k) => k.startsWith('f:')).length;
     const rows: [string, string][] = [
       [UI.totReefs, String(m.spawnings + 1)], [UI.totEndings, String(m.endings)],
-      [UI.totSeen, `${seen} of ${CREATURES.length}`], [UI.totFriends, String(friends)],
-      [UI.totShells, `${m.shells.length} of ${SHELLS.length}`], [UI.totShards, `${m.shards.length} of ${SHARD_LINES.length}`],
-      [UI.totMoments, `${moments} of ${MOMENTS.length}`], [UI.totFeats, String(feats)],
+      [UI.totSeen, `${seen}\u00a0of\u00a0${CREATURES.length}`], [UI.totFriends, String(friends)],
+      [UI.totShells, `${m.shells.length}\u00a0of\u00a0${SHELLS.length}`], [UI.totShards, `${m.shards.length}\u00a0of\u00a0${SHARD_LINES.length}`],
+      [UI.totMoments, `${moments}\u00a0of\u00a0${MOMENTS.length}`], [UI.totFeats, String(feats)],
     ];
     const key = rows.map((r) => r[1]).join('|');
     totalsCard.hidden = m.spawnings === 0 && m.endings === 0;
@@ -1899,7 +1899,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       if (!raspBox.hidden) {
         raspSlider.max = String(rmax);
         if (document.activeElement !== raspSlider) raspSlider.value = String(s.rasp);
-        raspCount.textContent = `${s.rasp} of ${rmax} grazing`;
+        raspCount.textContent = `${s.rasp}\u00a0of\u00a0${rmax} grazing`;
         raspMinus.disabled = s.rasp <= 0;
         raspPlus.disabled = s.rasp >= rmax;
         const eats = speaks(s, 'mucus') ? 0 : ACT3.raspEat * s.rasp * s.calcite * (s.truce.terms === 'b' ? ACT3.politeEat : 1);
@@ -2186,7 +2186,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       setShown(homeBox, nHomes > 0);
       if (nHomes > 0) {
         const asking = residentsAsking(s);
-        homeCount.textContent = `${s.residents.length} of ${nHomes} home${nHomes === 1 ? '' : 's'}`;
+        homeCount.textContent = `${s.residents.length}\u00a0of\u00a0${nHomes} home${nHomes === 1 ? '' : 's'}`;
         homeIntro.hidden = s.residents.length > 0;
         // Folded, it still says when someone asks to move in and there is room.
         homeBox.classList.toggle('calls', s.residents.length < nHomes && asking.some((r) => !s.residents.includes(r.id)));
