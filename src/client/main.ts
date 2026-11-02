@@ -852,7 +852,7 @@ function notifyWaiting(): void {
   if (now.moon && !announced.moon) say.push(NOTIFY.moon);
   Object.assign(announced, now);
   if (!say.length || !notify.get() || !document.hidden || !('Notification' in window) || Notification.permission !== 'granted') return;
-  try { new Notification(reefName(state) || 'Corallum', { body: say.join(' '), tag: 'corallum', icon: '/favicon.ico' }); } catch { /* not allowed here */ }
+  try { new Notification(reefName(state) || 'Corallum', { body: say.join(' '), tag: 'corallum', icon: '/src/client/icons/icon-192.png' }); } catch { /* not allowed here */ }
 }
 
 /** Flare the lure (panel button or L): half the glow for a burst of calcite. */
