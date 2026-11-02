@@ -7,7 +7,7 @@ export function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls = '', text
   return e;
 }
 
-export function button(cls: string, text: string, onClick: () => void): HTMLButtonElement {
+export function button(cls: string, text: string, onClick: (e: MouseEvent) => void): HTMLButtonElement {
   const b = el('button', cls, text);
   b.type = 'button';
   b.addEventListener('click', onClick);

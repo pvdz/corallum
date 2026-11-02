@@ -1594,7 +1594,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   reader.setAttribute('role', 'dialog');
   reader.setAttribute('aria-modal', 'true');
   reader.setAttribute('aria-labelledby', 'reader-title');
-  const readerClose = button('plain', 'Continue', () => closeReader());
+  // A key press in the first moments after a story opens was meant for something else (Space
+  // sweeping as the card came up): it does not close the story unread. A tap or click does.
+  let openedAt = 0;
+  const readerClose = button('plain', 'Continue', (e) => { if (e.detail === 0 && performance.now() - openedAt < 800) return; closeReader(); });
   readerCard.append(readerKicker, readerTitle, readerRows, readerText, readerClose);
   reader.append(readerCard);
   host.append(reader);
@@ -1613,6 +1616,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     readerRows.hidden = !st.rows;
     readerCard.classList.toggle('has-rows', !!st.rows);
     reader.hidden = false;
+    openedAt = performance.now();
     readerClose.focus({ preventScroll: true });
   }
   function showStory(st: Story): void {
