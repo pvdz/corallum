@@ -1006,6 +1006,7 @@ html.view-mode #photo { display: grid; }
   .panel .stocks.many .stock-sep { display: inline; flex: none; white-space: pre; }
   .panel .stocks.many .stock-rate { display: inline; flex: none; }
   .panel .stocks.many .stock-rest { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .panel .stocks.many .hold-word { display: none; }
   .wait-chip { font-size: 11px; }
   .charted .soon-rest { display: none; }
 }

@@ -181,7 +181,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       const i = text.indexOf(' · ');
       const a = i < 0 ? text : text.slice(0, i), b = i < 0 ? '' : text.slice(i + 3).replaceAll(' · ', '\u00a0· ');
       if (rateEl.textContent !== a) rateEl.textContent = a;
-      if (restEl.textContent !== b) restEl.textContent = b;
+      if (restEl.textContent !== b) {
+        // "holds " is its own word, so a phone on its side can drop it and keep the number ("~2.31B").
+        const h = b.indexOf('holds ');
+        if (h < 0) restEl.textContent = b;
+        else restEl.replaceChildren(b.slice(0, h), el('span', 'hold-word', 'holds '), b.slice(h + 6));
+      }
       sep.hidden = !b;
     };
     row.append(el('span', 'stock-name', name), value, sub);
