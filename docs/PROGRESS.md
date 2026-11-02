@@ -1016,3 +1016,4 @@ date, what landed, what is half-done, what's next.
 - A card taller than a phone's screen (the news on a 360×640 phone) started at the very top, under the sound and view buttons, which stay on top of it. Cards keep 62 px (or the safe area + 56) clear at the top. The news itself is a sentence shorter.
 - (The card's top margin applies under 600 px wide only: on a phone on its side the card is centred clear of the buttons and the height is short.)
 - Panel scrolls (a tab tapped again, a choice chip, an ask) jump instead of gliding under reduced motion or the Calm setting.
+- The height line at a narrow side panel (820 px window) broke as "… reach ×33.4 / calcite": "reach ×33.4 calcite" is now one piece, and the dots stay at the end of a line, never starting one (as the stock lines do).

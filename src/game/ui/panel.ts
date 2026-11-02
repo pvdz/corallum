@@ -1996,11 +1996,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       const depth = `${String(Math.round(Math.max(0, SURFACE - s.height))).replace(/\B(?=(\d{3})+$)/g, ',')} m down`;
       const next = BANDS.find((b) => !s.bands.includes(b.id));
       // Reach: what the height itself does (a taller reef catches more water, more calcite).
-      const reachText = s.height > 60 ? ` · reach ×${reach(s.height).toFixed(1)} calcite` : '';
+      // (No-break spaces inside: it wraps as a whole, never leaving "calcite" on a line of its own.)
+      const reachText = s.height > 60 ? `\u00a0· reach\u00a0×${reach(s.height).toFixed(1)}\u00a0calcite` : '';
       if (heightSub.title !== UI.reachTitle) heightSub.title = UI.reachTitle;
       heightSub.textContent = r.heightTarget > s.height + 0.05
         ? `${depth} · rising to ${metres(r.heightTarget)}`
-        : next ? `${depth} · next band at ${metres(next.metres)}${reachText}` : `${depth}${reachText}`;
+        : next ? `${depth}\u00a0· next band at ${metres(next.metres)}${reachText}` : `${depth}${reachText}`;
 
       // Shoals.
       const shoals = s.levels.shoal;
