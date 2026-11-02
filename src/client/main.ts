@@ -934,6 +934,11 @@ function swellView(): ReefView['swell'] {
 
 /** Try to ride the swell (a tap near the crown, or S): spawn on a caught crest, a word on a miss. */
 function trySwell(x: number, y: number): boolean {
+  // Before riding: where the nearest crest is, so a miss can say which way it was off.
+  const sw = currentSwell(state);
+  const i = sw ? Math.round((state.t - sw.start - SWELL.lead) / SWELL.gap) : 0;
+  const off = sw ? state.t - (sw.start + SWELL.lead + Math.max(0, Math.min(SWELL.waves - 1, i)) * SWELL.gap) : 0;
+  const ridden = !!sw && state.swell.k === sw.k && i >= 0 && i < SWELL.waves && (state.swell.caught & (1 << i)) !== 0;
   const pay = rideSwell(state);
   if (pay < 0) return false;
   if (pay > 0) {
@@ -941,7 +946,7 @@ function trySwell(x: number, y: number): boolean {
     audio.cue('feast');
     buzz([10, 20, 10]);
     save();
-  } else floatText(x, y - 20, SWELL.miss, 'feast-float');
+  } else floatText(x, y - 20, ridden ? SWELL.ridden : off < 0 ? SWELL.early : SWELL.late, 'feast-float');
   return true;
 }
 

@@ -40,7 +40,9 @@ export const SWELL = {
   period: 200, waves: 5, lead: 3, gap: 4, slack: 0.5, seconds: 20,
   word: 'swells',
   hit: 'up on the swell',
-  miss: 'too soon · too late',
+  early: 'too soon · wait for the crest',
+  late: 'too late · catch the next one',
+  ridden: 'already ridden · catch the next one',
 } as const;
 
 /** A new day: the first visit of each calendar day brings a small gift. */
