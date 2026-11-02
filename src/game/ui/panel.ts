@@ -1792,7 +1792,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       glow.setSub(`${flow(glowNet(s, r), s.glow, glowHold(s, r))} · holds ~${num(glowHold(s, r))}`);
       plankton.row.hidden = !(s.jobs.feed > 0 || s.plankton > 0.05);
       plankton.value.textContent = num(s.plankton);
-      plankton.setSub(`${flow(planktonNet(s, r))} · ×${feeding(s.plankton).toFixed(2)} calcite`);
+      plankton.setSub(`${flow(planktonNet(s, r))} · ×${factor(feeding(s.plankton))} calcite`);
       // Murmurs pay for Readings and the truce's words; once both are done the stock leaves the panel.
       // Murmurs buy Readings (none on a silent seamount) and the truce's words.
       const murmursWanted = (!seamountDef(s.seamount).noReadings && s.readings.length < READINGS.length) || MEETINGS.some((m) => !s.truce[m.id]);
@@ -1812,7 +1812,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       sand.setSub(`${flow(sandNet(s, r), s.sand, sandHold(s, r))} · holds ~${num(sandHold(s, r))}`);
       bloom.row.hidden = !(r.bloomP > 0 || s.bloom > 0.5);
       bloom.value.textContent = num(s.bloom);
-      bloom.setSub(`${flow(bloomNet(s, r))} · ×${photo(s.bloom).toFixed(2)} calcite`);
+      bloom.setSub(`${flow(bloomNet(s, r))} · ×${factor(photo(s.bloom))} calcite`);
       spawn.row.hidden = !(r.spawnP > 0 || s.spawn > 0.5);
       spawn.value.textContent = num(s.spawn);
       // Toward the spawn the moon needs, or (once there) that it is enough; nothing more after the ending.
@@ -2741,6 +2741,11 @@ function marginalText(s: GameState, id: 'polyp' | 'symbiont'): string {
     : `+${num(rates(next).glowP - rates(s).glowP)} glow/s`;
   const ms = nextMilestone(id, s.levels[id]);
   return ms ? `${gain} · ×${ACT1.milestoneFactor} at ${ms.level}` : gain;
+}
+
+/** A multiplier with the precision its size needs: 1.24, 39.1, 155. */
+function factor(x: number): string {
+  return x >= 100 ? x.toFixed(0) : x >= 10 ? x.toFixed(1) : x.toFixed(2);
 }
 
 /** A stock's net rate, or what the zero means: "full" at its hold, "steady" where inflow and loss balance. */
