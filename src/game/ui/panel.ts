@@ -485,7 +485,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     go.at.animate?.([{ boxShadow: '0 0 0 0 rgba(255, 217, 168, 0)' }, { boxShadow: '0 0 22px 3px rgba(255, 217, 168, 0.5)' }, { boxShadow: '0 0 0 0 rgba(255, 217, 168, 0)' }], { duration: 1400, delay: 250, easing: 'ease-in-out' });
   });
   // Before you go: one tap to ready the reef for an absence (shown once there is something to set).
-  const prepBtn = button('plain prep-away', AWAY_PREP.label, () => { prepNote.textContent = hooks.prepareAway(); });
+  // What it did, for a few seconds (left there, it would go stale as soon as the Rasp or the shoals change).
+  let prepTimer = 0;
+  const prepBtn = button('plain prep-away', AWAY_PREP.label, () => {
+    prepNote.textContent = hooks.prepareAway();
+    clearTimeout(prepTimer);
+    prepTimer = window.setTimeout(() => { prepNote.textContent = ''; }, 6000);
+  });
   prepBtn.title = AWAY_PREP.title;
   const prepNote = el('span', 'hint prep-note');
   // Dreams: sleep the reef forward, one kept dream at a time.
