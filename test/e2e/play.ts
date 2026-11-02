@@ -90,4 +90,27 @@ await withGame(async (open) => {
     console.log(`${ok ? 'ok  ' : 'FAIL'} one card at a time: away summary, then the news (${news})`);
     if (!ok) process.exitCode = 1;
   }
+
+  // Keys after the mouse: a button the mouse clicked keeps focus, and must not swallow the
+  // shortcuts (P after a tab click buys; Space after the sound button sweeps, sound stays on).
+  {
+    const { page, errors } = await open(VIEWPORTS[0]!, '?bot=3000');
+    await page.waitForFunction(() => window.corallum?.state.t !== undefined, null, { timeout: 30000 });
+    for (let i = 0; i < 10 && (await page.locator('.reader:not([hidden])').count()); i++) await page.keyboard.press('Escape');
+    await page.evaluate(() => { window.corallum!.state.calcite = 1e12; });
+    const polyps = () => page.evaluate(() => window.corallum!.state.levels.polyp);
+    const p0 = await polyps();
+    await page.locator('button.tab', { hasText: 'Bands' }).click();
+    await page.locator('button.tab', { hasText: 'Grow' }).click();
+    await page.keyboard.press('p');
+    const bought = (await polyps()) - p0;
+    await page.locator('#sound').click();
+    const sweeps0 = await page.evaluate(() => window.corallum!.state.tally.sweeps);
+    await page.keyboard.press(' ');
+    const sound = await page.locator('#sound').getAttribute('aria-pressed');
+    const swept = (await page.evaluate(() => window.corallum!.state.tally.sweeps)) - sweeps0;
+    const ok = bought === 1 && sound === 'true' && swept === 1 && !errors.length;
+    console.log(`${ok ? 'ok  ' : 'FAIL'} keys after the mouse: P buys (${bought}), Space sweeps (${swept}), sound stays ${sound === 'true' ? 'on' : 'off'}`);
+    if (!ok) process.exitCode = 1;
+  }
 });

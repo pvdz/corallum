@@ -1812,10 +1812,24 @@ ui.append(photoBtn);
 
 // Keyboard: Space sweeps; F eats a falling feast; P, B and G buy a polyp, a band and glimmerseed.
 const KEYS: Record<string, UpgradeId> = { p: 'polyp', b: 'skeleton', g: 'symbiont' };
+/** The button the pointer last pressed (focus stays on it in Chrome); a Tab means the keyboard moved on. */
+let pointerButton: Element | null = null;
+window.addEventListener('pointerdown', (e) => { pointerButton = (e.target as Element | null)?.closest?.('button') ?? null; }, { capture: true, passive: true });
+window.addEventListener('keydown', (e) => { if (e.key === 'Tab') pointerButton = null; }, { capture: true });
 window.addEventListener('keydown', (e) => {
   const target = e.target as HTMLElement | null;
   // A tab that yielded the reef to another plays no more: it could not save what it did.
-  if (yielded || e.ctrlKey || e.metaKey || e.altKey || target?.closest('input, textarea, button, select')) return;
+  if (yielded || e.ctrlKey || e.metaKey || e.altKey || target?.closest('input, textarea, select')) return;
+  // A button keeps its keys only where they belong to it: in a story, a dialog or the ending, and
+  // Space or Enter on a panel or corner button the keyboard reached. One the mouse last clicked
+  // (a buy, a tab, sound) stays focused in Chrome, and must not swallow the shortcuts.
+  const btn = target?.closest('button') as HTMLButtonElement | null;
+  if (btn) {
+    const ours = !!btn.closest('.panel') || btn === soundBtn || btn === viewBtn || btn === photoBtn;
+    if (!ours || ((e.key === ' ' || e.key === 'Enter') && btn !== pointerButton)) return;
+    if (e.key === 'Enter') return;
+    if (e.key === ' ') btn.blur();
+  }
   if (e.key === ' ') {
     e.preventDefault();
     if (sweep(state) > 0) {
