@@ -954,3 +954,4 @@ date, what landed, what is half-done, what's next.
 - Card titles wrap balanced ("Release a lesser / spawning · +34 lineage ▸" instead of a lone "lineage ▸" on the second line).
 - Under a mouse, an upgrade or gift row takes a faint tint (rows had no hover feedback once they lost their boxes).
 - Larger text on a phone zoomed the sheet's heights with it: drawn up tall on a small phone, its top rose under the sound and view buttons (22 px from the top instead of 16% down) and covered the first stock. The heights are divided by the zoom; the floor of stocks + tabs + a row still applies.
+- The Lineage tab has a dot when lineage newly buys a trait: a feat early in a first reef gives lineage (the tab appears) and soon enough for Deep memory, with nothing saying it could be spent (found in a 4-minute real-time phone play). Looking at the tab clears it; what was affordable at load does not call.

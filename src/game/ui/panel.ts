@@ -260,6 +260,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const reefDot = el('span', 'dot');
   reefDot.hidden = true;
   tabButtons.get('reef')!.append(reefDot);
+  // Lineage to spend on a trait it could not buy before: the Lineage tab says so until looked at
+  // (what was already affordable when the page loaded does not call).
+  const lineageDot = el('span', 'dot');
+  lineageDot.hidden = true;
+  tabButtons.get('lineage')!.append(lineageDot);
+  let traitsReadySeen = -1;
   let seenStories = 0;
   let storyCount = 0;
   // The tabs share one scroller: each keeps its own place, and the tab already open, tapped again,
@@ -272,6 +278,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     for (const [k, b] of tabButtons) b.classList.toggle('on', k === id);
     for (const [k, p] of tabPages) p.hidden = k !== id;
     if (id === 'bands') seenStories = storyCount;
+    if (id === 'lineage') { traitsReadySeen = -1; lineageDot.hidden = true; }
     if (again) pages.scrollTo({ top: 0, behavior: 'smooth' });
     else pages.scrollTop = tabScroll.get(id) ?? 0;
     currentTab = id;
@@ -2412,6 +2419,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       // Lineage.
       const lineageOpen = canSpawnLesser(s) || s.meta.spawnings > 0 || s.meta.lineage > 0;
       tabButtons.get('lineage')!.hidden = !lineageOpen;
+      // While the tab is hidden nothing is affordable: the first lineage that buys a trait calls.
+      if (!lineageOpen) traitsReadySeen = 0;
       if (lineageOpen) {
         lineageCount.textContent = String(s.meta.lineage);
         // Hard seamounts once the line has spawned; a trial met is marked.
@@ -2450,6 +2459,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         // The first few by price, and how many more (a long line's lineage buys twenty or so).
         spawnBuys.textContent = buys.length ? UI.enoughFor(buys.slice(0, 6).join(', '), Math.max(0, buys.length - 6)) : '';
         spawnBuys.hidden = !buys.length;
+        let traitsReady = 0;
         for (const tr of TRAITS) {
           const c = traitCards.get(tr.id)!;
           const lv = s.meta.traits[tr.id];
@@ -2467,7 +2477,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           c.cost.textContent = `${price} lineage`;
           c.btn.disabled = s.meta.lineage < price;
           c.root.classList.toggle('ready', s.meta.lineage >= price);
+          if (s.meta.lineage >= price) traitsReady++;
         }
+        if (traitsReadySeen < 0 || currentTab === 'lineage' || traitsReady < traitsReadySeen) traitsReadySeen = traitsReady;
+        const call = traitsReady > traitsReadySeen;
+        if (lineageDot.hidden === call) lineageDot.hidden = !call;
       }
       renderCodex(s);
       renderJournal(s);
