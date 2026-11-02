@@ -686,6 +686,13 @@ html.releasing .panel:not(:focus-within) { opacity: 0.12; }
 .codex-list { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0; font-size: 12.5px; }
 .codex-list dt { color: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.1em; font-size: 10.5px; padding-top: 2px; }
 .codex-list dd { margin: 0; color: #dbe6f5; }
+/* The guide on a phone: each term over its explanation (a term column took a third of the width). */
+@media (max-width: 799px) {
+  .guide .codex-list { display: block; }
+  .guide .codex-list dt { margin-top: 10px; }
+  .guide .codex-list dt:first-child { margin-top: 0; }
+  .guide .codex-list dd { margin-top: 2px; line-height: 1.45; }
+}
 
 /* ---------- Panel width, and short landscape screens (phones on their side) ---------- */
 /* At least 340 px: a narrower panel (an iPad upright, 36vw = 295 px) runs the stock values into their neighbours. */

@@ -922,3 +922,4 @@ date, what landed, what is half-done, what's next.
 - Riding the swells (the Breach): a miss said "too soon · too late". It now says which: "too soon · wait for the crest", "too late · catch the next one", or "already ridden" for a crest already caught. Checked by pressing S through a whole set of swells.
 - After the ending's last page the panel shows the Grow tab at its top, where the garden waits (on a phone it came back scrolled into the garden card, its title and ask cut off).
 - The Lineage line read "1 ending · 0 spawnings" right after the reef had spawned: it counts lesser spawnings, and says so now ("2 lesser spawnings"), left out while there are none.
+- The guide ("How the reef grows") on a phone: each term stands over its explanation; the term column took a third of the width and wrapped every explanation into a tall narrow block.
