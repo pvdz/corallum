@@ -1404,8 +1404,9 @@ function takePortrait(): void {
   }
 }
 
-/** Name a creature beside where it was tapped: above it, clear of its body (`r`), or below if there is no room. */
-function showCreatureLabel(id: string, x: number, y: number, r = 20): void {
+/** Name a creature beside where it was tapped: above it, clear of its body (`r`), or below if there
+ *  is no room. Clear of the tap (`tx`, `ty`) too, where the gift's and the sweep's numbers rise. */
+function showCreatureLabel(id: string, x: number, y: number, r = 20, tx = NaN, ty = NaN): void {
   const c = CREATURES.find((k) => k.id === id);
   if (!c) return;
   creatureLabel.innerHTML = '';
@@ -1431,8 +1432,19 @@ function showCreatureLabel(id: string, x: number, y: number, r = 20): void {
   const note = journalNote.classList.contains('show') ? journalNote.getBoundingClientRect().bottom + 6 : 0;
   const topMin = Math.max(60, note);
   const above = y - reach - 10 - lh;
-  creatureLabel.style.left = `${Math.max(8, left)}px`;
-  creatureLabel.style.top = `${above >= topMin ? above : Math.max(topMin, y + reach + 10)}px`;
+  const bottom = (focusNow.y + focusNow.h) / dpr - 8;
+  const below = Math.max(topMin, y + reach + 10);
+  // Where the numbers rise: from just under the tap to a few lines over it, as wide as the widest
+  // line already floating from this tap (a gift's "+2.67k glow · a gift of light"), the sweep's at least.
+  const now = performance.now();
+  const half = Math.max(80, ...recentFloats.filter((f) => now - f.t < 50).map((f) => f.w / 2 + 12));
+  const clear = (l: number, t: number) => !(l < tx + half && l + lw > tx - half && t < ty + 40 && t + lh > ty - 110);
+  const fits = (t: number) => t >= topMin && t + lh <= bottom;
+  const tries: [number, number][] = [[left, above], [left, below],
+    [Math.min(right - lw, tx - half - lw), above >= topMin ? above : below], [Math.max(8, tx + half), above >= topMin ? above : below]];
+  const [pl, pt] = tries.find(([l, t]) => l >= 8 && l + lw <= right && fits(t) && clear(l, t)) ?? [left, above >= topMin ? above : below];
+  creatureLabel.style.left = `${Math.max(8, pl)}px`;
+  creatureLabel.style.top = `${pt}px`;
   creatureLabel.classList.add('show');
   clearTimeout(labelTimer);
   labelTimer = window.setTimeout(() => creatureLabel.classList.remove('show'), 3500);
@@ -1457,12 +1469,13 @@ const SEAMOUNT_TINT: Record<string, [string, GlobalCompositeOperation]> = {
 
 /** A float of text over the water, e.g. "+12". */
 /** Floating lines from the same tap (a gift and the sweep): a new one near them stacks below instead of printing over. */
-let recentFloats: { x: number; y: number; t: number }[] = [];
+let recentFloats: { x: number; y: number; t: number; w: number }[] = [];
 function floatText(x: number, y: number, text: string, cls = ''): void {
   const now = performance.now();
   recentFloats = recentFloats.filter((r) => now - r.t < 50);
   for (let i = 0; i < 4 && recentFloats.some((r) => Math.abs(r.x - x) < 140 && Math.abs(r.y - y) < 30); i++) y += 32;
-  recentFloats.push({ x, y, t: now });
+  const rec = { x, y, t: now, w: 0 };
+  recentFloats.push(rec);
   const f = document.createElement('div');
   f.className = `float ${cls}`;
   f.textContent = text;
@@ -1471,6 +1484,7 @@ function floatText(x: number, y: number, text: string, cls = ''): void {
   ui.append(f);
   // Kept inside the scene, clear of the depth gauge: a long line near the edge would run under the panel or off the screen.
   const half = f.offsetWidth / 2, right = focusNow.w / dpr;
+  rec.w = f.offsetWidth;
   if (half > 0 && right > 2 * half + 56) f.style.left = `${Math.min(Math.max(x, half + 8), right - half - 48)}px`;
   setTimeout(() => f.remove(), cls ? 2200 : 1200);
 }
@@ -1627,7 +1641,7 @@ canvas.addEventListener('pointerdown', (e) => {
     if (who.id !== 'ossel') buzz(g ? [8, 40, 8] : 8);
     if (who.id !== 'ossel') {
       const [lx, ly] = toScreen(who.x, who.y);
-      showCreatureLabel(who.id, lx / dpr, ly / dpr, (who.r * zoom.k) / dpr);
+      showCreatureLabel(who.id, lx / dpr, ly / dpr, (who.r * zoom.k) / dpr, e.clientX, e.clientY);
     }
   }
   const f = currentFeast(state);
