@@ -791,8 +791,9 @@ html.view-mode #journal-note { left: calc(max(12px, env(safe-area-inset-left)) +
 html.view-mode .panel, html.view-mode #title { display: none; }
 html.view-mode #zone-title, html.view-mode #whisper, html.view-mode #milestone { right: 0; }
 
+/* Above the floating gains: a sweep near a creature just asked about would print over its words. */
 #creature-label {
-  position: absolute; max-width: 220px; pointer-events: none; opacity: 0; transition: opacity 0.4s ease;
+  position: absolute; z-index: 2; max-width: 220px; pointer-events: none; opacity: 0; transition: opacity 0.4s ease;
   display: flex; flex-direction: column; gap: 2px; padding: 7px 10px; border-radius: 10px;
   background: rgba(6, 10, 28, 0.72); border: 1px solid var(--edge); backdrop-filter: blur(4px);
 }
