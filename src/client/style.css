@@ -834,10 +834,11 @@ html.calm *:not(#zone-title):not(#milestone):not(#whisper):not(#journal-note) { 
   content: ''; position: absolute; inset: -8px -22px -8px -22px; z-index: -1;
   background: radial-gradient(farthest-side, rgba(2, 14, 34, 0.62) 62%, rgba(2, 14, 34, 0));
 }
-#journal-note span { font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--glowc); text-shadow: 0 1px 5px rgba(0, 0, 0, 0.8); }
+#journal-note span { white-space: nowrap; font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--glowc); text-shadow: 0 1px 5px rgba(0, 0, 0, 0.8); }
 /* A dark shadow under the glow: it reads over the Sunlit Crown's pale water too. */
 #journal-note strong { text-wrap: balance; font-weight: 400; font-size: 17px; color: #eaf6ff; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.75), 0 0 12px rgba(120, 220, 255, 0.5); }
 #journal-note.show { animation: journal-note 4.5s ease both; }
+@media (max-width: 380px) { #journal-note span { letter-spacing: 0.12em; } }
 html.view-mode #journal-note { left: calc(max(12px, env(safe-area-inset-left)) + 146px); }
 @media (min-width: 800px) { html:not(.view-mode) #journal-note { max-width: calc(100vw - var(--panel-out) - 180px); } }
 @keyframes journal-note { 0% { opacity: 0; transform: translateY(-4px); } 15%, 75% { opacity: 1; transform: none; } 100% { opacity: 0; } }
