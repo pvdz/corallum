@@ -2006,7 +2006,7 @@ function requestOpen(s: GameState, kind: RequestKind): boolean {
     case 'intruder': return untilThorn(s) < Infinity;
     case 'read': return readingsRevealed(s) && !!nextReading(s);
     case 'rising': return risingZone(s) && s.levels.shoal > 0;
-    case 'signal': return s.levels.shoal > 0;
+    case 'signal': return s.levels.shoal >= SIGNAL.minShoals;
     case 'star': return FIGURES.some((f) => figureOpen(s, f.id));
     default: return true;
   }

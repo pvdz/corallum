@@ -768,3 +768,19 @@ test('Ossel never asks for a Reading before readings are open (the Silt Floor ha
   assert.ok(kinds.size > 3, `asks seen: ${[...kinds].join(', ')}`);
   assert.ok(!kinds.has('read'), 'a Silt Floor reef was asked to read a band');
 });
+
+test('Ossel asks for the signal only once enough shoals are there to give it', () => {
+  const { state } = runBot((s) => s.height >= 200, 3 * 3600);
+  for (const shoals of [1, 4]) {
+    const kinds = new Set<string>();
+    for (let k = 0; k < 200; k++) {
+      const s = clone(state);
+      s.levels.shoal = shoals;
+      s.request.kind = '';
+      s.request.done = k;
+      checkRequest(s);
+      kinds.add(s.request.kind);
+    }
+    assert.ok(!kinds.has('signal'), `asked for the signal with ${shoals} shoals`);
+  }
+});
