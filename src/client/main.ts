@@ -1316,7 +1316,10 @@ function showWhisperText(text: string): void {
   q.textContent = text;
   const who = document.createElement('span');
   who.textContent = `— ${speaker}`;
-  whisper.append(q, who);
+  const say = document.createElement('div');
+  say.className = 'say';
+  say.append(q);
+  whisper.append(say, who);
   whisper.classList.remove('show');
   void whisper.offsetWidth;
   whisper.classList.add('show');
