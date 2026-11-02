@@ -58,14 +58,13 @@ export const HOLD_HINT_ANY = 'beyond what the reef can hold';
 
 /** Shown once (per browser line) after an update with new things to find; `id` changes per update. */
 export const NEWS = {
-  id: 'news:2026-10-31',
+  id: 'news:2026-11-02',
   kicker: 'New in the sea',
-  title: 'Drifting things, and a reef in your pocket',
-  text: 'Broken-off branches of other reefs tumble past on the shelf and in the light, and lost shoals flicker far off in ' +
-    'the Midnight Water: tap them and they join you. Weed rafts shelter your young at the Breach, bristlemouths drift ' +
-    'in the dark, yeti crabs farm the vent, and under every full moon the other reefs’ spawn rises past you. On a ' +
-    'phone, pull the panel up by its handle; the reef can live on your home screen and, where the browser allows, opens without a connection. ' +
-    'Finished upgrades fold away at the end of the list.',
+  title: 'More of the reef, less of the panel',
+  text: 'The everyday upgrades are a quiet list now; a card lights up when it can be bought. On a phone, drag the ' +
+    'panel’s top down twice and it keeps just the numbers, the tabs and the quick buys, and the reef has two thirds of ' +
+    'the screen (it stays so). At the release a phone gives the whole screen to the spawning. Shortcut keys keep working ' +
+    'after a click in the panel, and a miss on the swells says whether it was early or late.',
 } as const;
 
 /** The first time the line enters a zone: what is new there, in a few lines (zones 2–5). */

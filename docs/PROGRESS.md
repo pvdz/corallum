@@ -941,3 +941,4 @@ date, what landed, what is half-done, what's next.
 - Choices folded with "Later" are rows on hairlines (they were bordered pills), and the chips above them name only the choices still open: three folded choices showed their three names twice, as chips and again as pills right below.
 - "Before you go" on a phone: its note ("the Rasp set for holding") squeezed both buttons into two-line pills; the note now takes its own line under them.
 - `tools/fuzz.ts`: random shortcut keys, panel button clicks, scene taps and view-mode flips, mixed (the shortcut bugs came from mixing mouse and keys). Run today at the shelf (desktop), the Breach (phone), after the ending (phone) and the midnight water (landscape): ~3,500 actions, no console errors.
+- The one-time news card for returning players tells of today's changes ("More of the reef, less of the panel": the quiet list, the low phone sheet, the whole screen at the release, keys after a click, the swell misses).
