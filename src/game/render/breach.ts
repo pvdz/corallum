@@ -15,7 +15,7 @@ import type { DialectId } from '../content/act4.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import type { CoralForm } from './coral.ts';
-import { drawMoon, glow, drawOsselSand } from './draw.ts';
+import { drawMoon, glow, drawOsselSand, speck } from './draw.ts';
 import { FIGURES, WISH, type Figure } from '../content/sky.ts';
 import { SWELL } from '../content/events.ts';
 import { drawPetrels, drawSailors, drawSeaSparkle, type Surface } from './surface.ts';
@@ -146,7 +146,7 @@ export function createBreachScene(seed: number): Scene {
     for (const st of stars) {
       const a = (0.4 + 0.4 * Math.sin(t * 1.3 + st.tw)) * (1 - dawn);
       ctx.fillStyle = `rgba(230,235,255,${a})`;
-      ctx.fillRect(st.x * w, st.y * wy * 0.95, st.r * dpr, st.r * dpr);
+      speck(ctx, st.x * w, st.y * wy * 0.95, st.r * dpr);
     }
     // Now and then a shooting star: a short bright streak fading along its path.
     for (let k = 0; k < 2; k++) {
