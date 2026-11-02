@@ -80,7 +80,7 @@ export const UI = {
   /** The spawn stock's note once it holds what the moon needs. */
   spawnEnough: 'enough for the moon',
   /** The murmurs line with no shoal set to Scout: the stock only fades, so its hold (zero) says nothing. */
-  murmursUnheard: 'no shoal scouting',
+  murmursUnheard: 'no scouts',
   release: 'Release the spawn',
   letGo: 'Let go',
   notYet: 'Not yet',
