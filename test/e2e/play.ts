@@ -105,6 +105,19 @@ await withGame(async (open) => {
     if (!ok) process.exitCode = 1;
   }
 
+  // A dream (a quarter hour slept forward) is summed up as a dream, not as time away.
+  {
+    const { page, errors } = await open(VIEWPORTS[0]!, '?bot=4000');
+    await page.waitForFunction(() => window.corallum?.state.t !== undefined, null, { timeout: 30000 });
+    for (let i = 0; i < 10 && (await page.locator('.reader:not([hidden]), .away:not([hidden])').count()); i++) await page.keyboard.press('Escape');
+    await page.evaluate(() => { window.corallum!.state.meta.dreams = 1; });
+    await page.locator('button', { hasText: /^Dream/ }).click();
+    const title = await page.locator('.away:not([hidden]) h2').innerText({ timeout: 5000 });
+    const ok = /dreamed/i.test(title) && !errors.length;
+    console.log(`${ok ? 'ok  ' : 'FAIL'} a dream's summary: "${title}"`);
+    if (!ok) process.exitCode = 1;
+  }
+
   // A device asleep with the page open: the frame clock stands still (macOS, Linux, Android) while
   // the wall clock runs on. Two hours on the wall and none on the frame clock is two hours away.
   {
