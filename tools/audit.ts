@@ -5,6 +5,7 @@
 //   small   a tap target under 28 px on its short side (touch viewports only)
 //   name    a control with no readable name (screen readers say just "button")
 //   clip    a button whose text runs past its own edge
+//   spill   text running out of its card, section or row
 //   dim     small text under 4.5:1 against the panel (disabled buttons skipped; dimmed cards show)
 //   console any warning or error
 // Known and intended: 'dim' on held or finished cards (dimmed on purpose), and 'small' on the
@@ -47,6 +48,18 @@ await withGame(async (open) => {
           if (r.width > 0 && (r.right > panel.right + 1 || r.left < panel.left - 1)) out.push(['out', tag(e)]);
           // Text of its own, and not just emoji (they draw in their own colours).
           const own = [...e.childNodes].some((n) => n.nodeType === 3 && /[\p{L}\p{N}]/u.test(n.textContent!));
+          // Text running out of its card, section or row (unless something on the way clips it on purpose).
+          if (own) {
+            const box = e.closest('.card, .ask, section, .stock, .chip, .heat-row, .current-row');
+            let clipped = false;
+            for (let p: HTMLElement | null = e; p && p !== box; p = p.parentElement) { const o = getComputedStyle(p); if (o.overflowX !== 'visible' || o.textOverflow === 'ellipsis') { clipped = true; break; } }
+            if (box && !clipped) {
+              const range = document.createRange();
+              range.selectNodeContents(e);
+              const t = range.getBoundingClientRect(), bx = box.getBoundingClientRect();
+              if (t.width > 0 && (t.right > bx.right + 0.5 || t.left < bx.left - 0.5)) out.push(['spill', `text ${Math.round(t.left)}–${Math.round(t.right)} in ${Math.round(bx.left)}–${Math.round(bx.right)} ${tag(e)}`]);
+            }
+          }
           if (!own || (e.closest('button') as HTMLButtonElement | null)?.disabled) continue;
           const cs = getComputedStyle(e);
           const m = cs.color.match(/[\d.]+/g)!.map(Number);
