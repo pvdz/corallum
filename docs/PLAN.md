@@ -186,6 +186,8 @@ Tick items as they land; keep this list honest. Add items freely.
 - [ ] perf on a real phone (needs the user; see M6)
 - [x] feel pass, real-time play at every stage (2026-10-31 evening): the reef lands on its target instead of creeping (zone gates read "2999 m" for minutes); a quieter panel (bought cards hide flavour, choices fold with Later, full residents fold, stocks' caps legible on phones, quick buys on phones); purchase flourishes show in daylight and have no hard edges; the shortcuts card is a list; the ending is not crowded and counts bands right
 
+- [x] quiet-panel pass (2026-11-02): upgrades, gifts, folded sections and stories are rows on hairlines (a card only when it can be bought or is open); the pin and over-the-hold notes quieted; stocks say "full"/"steady"; journal and moments fold their unknowns; dark native controls. Phones: the reef has the whole screen through the release and ending. Bugs found by real-time play: the visitor halo on a hidden jelly, the gauge stuck a metre behind, countdowns "60s"/"0h 59m", the garden scrolled out of view after the ending. Link preview image (`tools/share.ts`)
+
 ### M0 Scaffold
 - [x] docs, CLAUDE.md, folders, package.json, tsconfig, .gitignore
 - [x] server.ts with on-the-fly type stripping

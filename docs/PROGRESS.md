@@ -1,6 +1,6 @@
 # Progress log
 
-NOW: Release push (mandate 2026-10-31): the Release checklist in docs/PLAN.md is down to user-only items; working on feel, found by playing in real time with scratch Playwright scripts (readers, sweeps, buys, a screenshot every 30 s) at every stage and size. Bot ~7h08; 7 browser tests + sim tests green. Run e2e with `timeout 500` per test. `tools/perf.ts` measures frame cost per zone (`--cpu 4` throttles); `tools/monkey.ts` clicks every button across the game; `tools/audit.ts <vp>` lists UI problems; `tools/overlaps.ts` overlay collisions. Offline play via a service worker (?sw in tests). A second agent session may be committing in this checkout: stage files by path.
+NOW: Release push (mandate 2026-10-31): the Release checklist in docs/PLAN.md is down to user-only items; working on feel and a quieter panel (rows, not boxes; user's README note), found by playing in real time with scratch Playwright scripts (readers, sweeps, buys, a screenshot every 30 s) at every stage and size. Bot ~7h08; 7 browser tests + sim tests green. Run e2e with `timeout 500` per test. `tools/perf.ts` measures frame cost per zone (`--cpu 4` throttles); `tools/monkey.ts` clicks every button across the game; `tools/audit.ts <vp>` lists UI problems; `tools/overlaps.ts` overlay collisions. Offline play via a service worker (?sw in tests). A second agent session may be committing in this checkout: stage files by path.
 
 Append newest entries at the bottom. One entry per working session or milestone step:
 date, what landed, what is half-done, what's next.
