@@ -199,4 +199,21 @@ await withGame(async (open) => {
   check(/upwelling/.test(said) && caught, 'an upwelling shown in the water box, caught with U');
   check(errors.length === 0, 'no console errors (upwelling)');
 });
+// An ask done in the panel leads there on a tap: "Read a band" opens the Bands tab at the reading.
+await withGame(async (open) => {
+  const { page, errors } = await open(VIEWPORTS[1]!, '?bot=4000');
+  await page.waitForFunction(() => window.corallum?.state.t !== undefined, null, { timeout: 60000 });
+  for (let i = 0; i < 10 && (await page.locator('.reader:not([hidden]), .away:not([hidden])').count()); i++) await page.keyboard.press('Escape');
+  await page.evaluate(() => { const s = window.corallum!.state; s.request.kind = 'read'; s.request.n = 1; s.request.base = s.readings.length; });
+  await page.locator('.ask.goes').waitFor({ timeout: 3000 });
+  await page.locator('.ask-text').click();
+  await page.waitForTimeout(900);
+  const r = await page.evaluate(() => {
+    const card = document.querySelector('.card.reading') as HTMLElement, pages = document.querySelector('.pages')!.getBoundingClientRect();
+    const b = card.getBoundingClientRect();
+    return { tab: document.querySelector('.tab.on')?.textContent ?? '', inView: b.bottom > pages.top && b.top < pages.bottom };
+  });
+  check(r.tab.startsWith('Bands') && r.inView, 'an ask to read leads to the Bands tab, at the reading');
+  check(errors.length === 0, 'no console errors (ask)');
+});
 process.exitCode = failed ? 1 : 0;
