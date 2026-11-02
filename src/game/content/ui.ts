@@ -81,6 +81,9 @@ export const UI = {
   spawnEnough: 'enough for the moon',
   /** The murmurs line with no shoal set to Scout: the stock only fades, so its hold (zero) says nothing. */
   murmursUnheard: 'no scouts',
+  /** A stock line's rate when the stock sits at its hold, or neither rises nor falls. */
+  stockFull: 'full',
+  stockSteady: 'steady',
   release: 'Release the spawn',
   letGo: 'Let go',
   notYet: 'Not yet',

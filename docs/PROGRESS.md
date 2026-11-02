@@ -906,3 +906,4 @@ date, what landed, what is half-done, what's next.
 - README's panel and phone images regenerated: the Grow list as rows, at the Sunlit Crown (transient whisper and journal note hidden for the shot).
 - The whisper halo keeps its original strength (0.78 at the centre, 0.5 at 62%): with the larger ellipse the words are covered anyway, and the stronger stops made a heavy smudge over the Sunlit Crown's water.
 - "Over what it holds: more glimmerseed or light shoals" (a price beyond a stock's cap) was salmon, the panel's warning colour, on two or three cards at once through the Twilight Shelf. It is a note on what raises the hold: quiet italic ink, led by a small warm ↑.
+- Stock lines say what a zero rate means: "full · holds ~37.6k" for a stock at its hold (it read "+0.00/s · holds ~37.6k", as if stalled), "steady" where inflow and loss balance (plankton, silt). Calcite and the spawn keep their own wording.

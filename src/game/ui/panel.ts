@@ -1733,10 +1733,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       calcite.row.classList.toggle('falling', calciteNet(s, r) < 0);
       glow.row.hidden = !(s.levels.symbiont > 0 || s.glow > 0.05);
       glow.value.textContent = num(s.glow);
-      glow.setSub(`${rate(glowNet(s, r))} · holds ~${num(glowHold(s, r))}`);
+      glow.setSub(`${flow(glowNet(s, r), s.glow, glowHold(s, r))} · holds ~${num(glowHold(s, r))}`);
       plankton.row.hidden = !(s.jobs.feed > 0 || s.plankton > 0.05);
       plankton.value.textContent = num(s.plankton);
-      plankton.setSub(`${rate(planktonNet(s, r))} · ×${feeding(s.plankton).toFixed(2)} calcite`);
+      plankton.setSub(`${flow(planktonNet(s, r))} · ×${feeding(s.plankton).toFixed(2)} calcite`);
       // Murmurs pay for Readings and the truce's words; once both are done the stock leaves the panel.
       // Murmurs buy Readings (none on a silent seamount) and the truce's words.
       const murmursWanted = (!seamountDef(s.seamount).noReadings && s.readings.length < READINGS.length) || MEETINGS.some((m) => !s.truce[m.id]);
@@ -1746,17 +1746,17 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       stocks.classList.toggle('many', shown >= 3);
       if (stocks.dataset.n !== String(shown)) stocks.dataset.n = String(shown);
       murmurs.value.textContent = num(s.murmurs);
-      murmurs.setSub(`${rate(murmurNet(s, r))} · ${s.jobs.scout > 0 ? `holds ~${num(murmurHold(s, r))}` : UI.murmursUnheard}`);
+      murmurs.setSub(`${flow(murmurNet(s, r), s.murmurs, s.jobs.scout > 0 ? murmurHold(s, r) : Infinity)} · ${s.jobs.scout > 0 ? `holds ~${num(murmurHold(s, r))}` : UI.murmursUnheard}`);
       silt.row.hidden = !(r.siltP > 0 || s.silt > 0.5);
       silt.value.textContent = num(s.silt);
-      silt.setSub(`${rate(siltNet(s, r))} · polyps ×${smother(s.silt).toFixed(2)}`);
+      silt.setSub(`${flow(siltNet(s, r))} · polyps ×${smother(s.silt).toFixed(2)}`);
       silt.row.classList.toggle('falling', smother(s.silt) < 0.5);
       sand.row.hidden = !(r.sandP > 0 || s.sand > 0.5);
       sand.value.textContent = num(s.sand);
-      sand.setSub(`${rate(sandNet(s, r))} · holds ~${num(sandHold(s, r))}`);
+      sand.setSub(`${flow(sandNet(s, r), s.sand, sandHold(s, r))} · holds ~${num(sandHold(s, r))}`);
       bloom.row.hidden = !(r.bloomP > 0 || s.bloom > 0.5);
       bloom.value.textContent = num(s.bloom);
-      bloom.setSub(`${rate(bloomNet(s, r))} · ×${photo(s.bloom).toFixed(2)} calcite`);
+      bloom.setSub(`${flow(bloomNet(s, r))} · ×${photo(s.bloom).toFixed(2)} calcite`);
       spawn.row.hidden = !(r.spawnP > 0 || s.spawn > 0.5);
       spawn.value.textContent = num(s.spawn);
       // Toward the spawn the moon needs, or (once there) that it is enough; nothing more after the ending.
@@ -2680,6 +2680,13 @@ function marginalText(s: GameState, id: 'polyp' | 'symbiont'): string {
     : `+${num(rates(next).glowP - rates(s).glowP)} glow/s`;
   const ms = nextMilestone(id, s.levels[id]);
   return ms ? `${gain} · ×${ACT1.milestoneFactor} at ${ms.level}` : gain;
+}
+
+/** A stock's net rate, or what the zero means: "full" at its hold, "steady" where inflow and loss balance. */
+function flow(net: number, value = 0, hold = Infinity): string {
+  if (Number.isFinite(hold) && hold > 0 && value >= hold * 0.995) return UI.stockFull;
+  if (Math.abs(net) < 0.005) return UI.stockSteady;
+  return rate(net);
 }
 
 function etaText(t: number, cur?: string): string {
