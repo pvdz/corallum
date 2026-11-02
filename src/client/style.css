@@ -152,12 +152,14 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .band-list[data-show='moments'] li:not(:has(.is-moment)),
 .band-list[data-show='other'] li:not(:has(.is-reading, .is-truce, .is-dialect, .is-relic)) { display: none; }
 /* The stories read so far: a compact list, the kind or depth in a fixed column so the titles line up. */
-.band-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+/* The stories read as a list: rows on hairlines, lit under the pointer. */
+.band-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0; }
 .band {
   width: 100%; display: flex; gap: 10px; align-items: baseline; text-align: left; cursor: pointer;
-  background: var(--card); border: 1px solid var(--edge); border-radius: 9px; padding: 6px 12px; color: var(--ink); font: inherit;
+  background: transparent; border: none; border-bottom: 1px solid rgba(150, 200, 255, 0.08); border-radius: 0; padding: 8px 12px; color: var(--ink); font: inherit;
+  transition: background 0.2s;
 }
-.band:hover { background: var(--card-hover); }
+.band:hover { background: var(--card-hover); border-radius: 9px; }
 .band-depth { flex: 0 0 62px; font-size: 12px; color: var(--calcite); font-variant-numeric: tabular-nums; }
 .band-title { font-family: var(--display); font-size: 15px; }
 
@@ -890,6 +892,8 @@ html.view-mode #photo { display: grid; }
 .collapsible > h3::after { content: '\00a0▾'; color: var(--ink-dim); font-size: 0.8em; }
 .collapsible.folded > h3::after { content: '\00a0▸'; }
 .collapsible.folded > :not(h3) { display: none; }
+/* A folded section is a row on a hairline, like the upgrades; opened, it is a card again. */
+.panel .card.collapsible.folded, .panel .card.foldable.folded { background: transparent; border-color: transparent; box-shadow: inset 0 -1px 0 rgba(150, 200, 255, 0.08); border-radius: 0; }
 /* Rasp, Shoals, Residents: tap the header to fold to it (the count stays); a dot if someone calls. */
 .foldable > header { cursor: pointer; }
 .foldable > header h3::after { content: '\00a0▾'; color: var(--ink-dim); font-size: 0.75em; }
