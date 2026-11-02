@@ -1880,10 +1880,16 @@ window.addEventListener('keydown', (e) => {
   }
   if (e.key === ' ') {
     e.preventDefault();
-    if (sweep(state) > 0) {
+    const gain = sweep(state);
+    if (gain > 0) {
       audio.cue('sweep');
       const [x, y] = scene.crownAt;
-      taps.push(x + (Math.sin(animT * 7) > 0 ? 1 : -1) * 160 * dpr, y - 60 * dpr, animT);
+      // Beside the crown, a little above it (nearer on a small scene, a phone on its side).
+      const wx = x + (Math.sin(animT * 7) > 0 ? 1 : -1) * Math.min(160 * dpr, focusNow.w * 0.22), wy = y - 60 * dpr;
+      taps.push(wx, wy, animT);
+      // The number, as a tap shows it: kept below the corner buttons.
+      const [sx, sy] = toScreen(wx, wy);
+      floatText(sx / dpr, Math.max(sy / dpr, 96), state.combo > 1 ? `+${num(gain)} ×${(1 + ACT1.comboStep * (state.combo - 1)).toFixed(1)}` : `+${num(gain)}`);
     }
     return;
   }
