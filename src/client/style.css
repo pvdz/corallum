@@ -98,7 +98,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 
 .card {
   background: var(--card); border: 1px solid rgba(150, 200, 255, 0.07); border-radius: var(--radius);
-  padding: 10px 12px; transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
+  padding: 10px 12px; transition: border-color 0.3s, background 0.3s, box-shadow 0.3s, border-radius 0.3s;
 }
 .card[hidden] { display: none; }
 .card.new { animation: rise-in 0.8s ease both; }
