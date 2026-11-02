@@ -2,7 +2,7 @@
 // flips, for a while, reporting console errors. Mouse and keys mixed on purpose: a button the mouse
 // clicked keeps focus, a key then lands on it (bugs keyboard-only or mouse-only tests never see).
 // Buttons that replace or reset the reef, and the release, are left alone.
-// Usage: node --no-warnings tools/fuzz.ts [--vp desktop|mobile|landscape|small] [--at <bot secs>] [--secs 120] [--ended]
+// Usage: node --no-warnings tools/fuzz.ts [--vp desktop|mobile|landscape|small] [--at <bot secs>] [--secs 120] [--ended] [--big]
 //   --ended starts from a reef past its ending (the garden, the chronicle, Begin again).
 
 import { runBot } from '../src/game/sim/bot.ts';
@@ -18,6 +18,8 @@ const vp = arg('vp', 'desktop') === 'small' ? { name: 'small', width: 360, heigh
 const at = Number(arg('at', '10000'));
 const secs = Number(arg('secs', '120'));
 const ended = process.argv.includes('--ended');
+/** --big: with the Larger text setting on. */
+const big = process.argv.includes('--big');
 
 const KEYS = [' ', 'p', 'b', 'g', 'f', 'e', 'l', 'r', 'c', 'k', 's', 'w', 't', '1', '2', '3', '4', '7', '8', '9', '0', 'Escape', 'Tab', 'Enter', '?', '+', '-'];
 const SPARE = /Start over|Load|Paste|Copy save|Save to a file|Release|Begin again/;
@@ -26,6 +28,10 @@ await withGame(async (open) => {
   const save = ended ? serialize(runBot((s) => s.carried.length > 0, 12 * 3600).state, Date.now()) : undefined;
   const { page, errors } = await open(vp, ended ? '' : `?bot=${at}`, save ? { save } : {});
   page.on('dialog', (d) => void d.dismiss());
+  if (big) {
+    await page.evaluate(() => localStorage.setItem('corallum.big', 'on'));
+    await page.reload();
+  }
   page.setDefaultTimeout(800);
   await page.waitForTimeout(2500);
   let n = 0;
@@ -45,6 +51,6 @@ await withGame(async (open) => {
     n++;
     await page.waitForTimeout(60);
   }
-  console.log(`${errors.length ? 'FAIL' : 'ok  '} ${vp.name}${ended ? ' ended' : ` bot=${at}`}: ${n} actions${errors.length ? '\n' + [...new Set(errors)].join('\n') : ''}`);
+  console.log(`${errors.length ? 'FAIL' : 'ok  '} ${vp.name}${ended ? ' ended' : ` bot=${at}`}${big ? ' big' : ''}: ${n} actions${errors.length ? '\n' + [...new Set(errors)].join('\n') : ''}`);
   if (errors.length) process.exitCode = 1;
 });
