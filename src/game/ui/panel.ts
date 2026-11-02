@@ -2391,7 +2391,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         for (const line of s.meta.chronicle) for (const id of (line.split('|')[1] ?? '').split(',')) if (id) counts.set(id, (counts.get(id) ?? 0) + 1);
         const top = [...counts].sort((a, b) => b[1] - a[1])[0];
         const title = top ? LINE_TITLES[top[0] as MemoryId] : undefined;
-        lineageSub.textContent = (title ? `${title} · ` : '') + (s.meta.endings ? `${s.meta.endings} ending${s.meta.endings === 1 ? '' : 's'} · ` : '') + `${s.meta.spawnings} spawning${s.meta.spawnings === 1 ? '' : 's'} · best reef ${metres(Math.max(s.meta.best, s.height))}` +
+        lineageSub.textContent = (title ? `${title} · ` : '') + (s.meta.endings ? `${s.meta.endings} ending${s.meta.endings === 1 ? '' : 's'} · ` : '') + (s.meta.spawnings ? `${s.meta.spawnings} lesser spawning${s.meta.spawnings === 1 ? '' : 's'} · ` : '') + `best reef ${metres(Math.max(s.meta.best, s.height))}` +
           (s.seamount !== 'plain' ? ` · this reef: ${seamountDef(s.seamount).name.toLowerCase()}` : '');
         const can = canSpawnLesser(s);
         const titleText = ended(s) ? UI.beginAgain : UI.lesserTitle;

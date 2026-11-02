@@ -921,3 +921,4 @@ date, what landed, what is half-done, what's next.
 - The shoals' signal: while the pattern plays the lamps look inert (numbers dimmed, no pointer), and on "Your turn" they wake with a ring of their colour. Taps during the pattern were silently ignored, with nothing to say the lamps were not yet the player's. Systems e2e green.
 - Riding the swells (the Breach): a miss said "too soon · too late". It now says which: "too soon · wait for the crest", "too late · catch the next one", or "already ridden" for a crest already caught. Checked by pressing S through a whole set of swells.
 - After the ending's last page the panel shows the Grow tab at its top, where the garden waits (on a phone it came back scrolled into the garden card, its title and ask cut off).
+- The Lineage line read "1 ending · 0 spawnings" right after the reef had spawned: it counts lesser spawnings, and says so now ("2 lesser spawnings"), left out while there are none.
