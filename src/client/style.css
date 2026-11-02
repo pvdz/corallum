@@ -749,6 +749,13 @@ html.releasing .panel:not(:focus-within) { opacity: 0.12; }
 /* The panel's width on screen: wider than --panel-w when Larger text zooms it. Things beside it use this. */
 :root { --panel-out: var(--panel-w); }
 html.big { --panel-out: calc(var(--panel-w) * 1.15); }
+/* A narrow side panel (a window under ~1110 px wide) with scientific numbers ("7.78e10"): the values
+   a size smaller and their notes in two lines, inside their half. */
+@media (min-width: 800px) and (max-width: 1110px) and (min-height: 521px) {
+  html.sci .stock-value { font-size: 17px; }
+  html.sci .stock-sub { white-space: normal; }
+  html.sci .panel .hold-word { display: none; }
+}
 /* Large screens (a 1440p monitor): the panel, stories and notes are drawn larger, as Larger text does. */
 @media (min-width: 1900px) and (min-height: 1000px) {
   .panel, .reader-card, #whisper, #journal-note { zoom: 1.25; }

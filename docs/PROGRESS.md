@@ -1017,3 +1017,4 @@ date, what landed, what is half-done, what's next.
 - (The card's top margin applies under 600 px wide only: on a phone on its side the card is centred clear of the buttons and the height is short.)
 - Panel scrolls (a tab tapped again, a choice chip, an ask) jump instead of gliding under reduced motion or the Calm setting.
 - The height line at a narrow side panel (820 px window) broke as "… reach ×33.4 / calcite": "reach ×33.4 calcite" is now one piece, and the dots stay at the end of a line, never starting one (as the stock lines do).
+- `tools/audit.ts narrow-desktop` (820×900: a browser window beside another, the narrowest side panel). With scientific numbers its stock values and notes ran up to 10 px out of their halves; on side panels under 400 px (windows under ~1110 px) scientific values are a size smaller, their notes may take two lines and drop "holds". Clean at 8 points, plain, Larger text and scientific.
