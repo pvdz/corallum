@@ -2824,8 +2824,18 @@ function revealText(s: GameState, u: (typeof UPGRADES)[number]): string {
   return 'soon';
 }
 
-/** Names of traits the given lineage would buy, taking the cheapest step each time. */
+/** Names of traits the given lineage would buy, taking the cheapest step each time (kept until the
+ *  lineage or a trait's level changes: worked out afresh it was a tenth of the panel's update). */
+let affordableKey = '';
+let affordableLast: string[] = [];
 function affordableTraits(s: GameState, lineage: number): string[] {
+  const key = `${lineage}|${Object.values(s.meta.traits).join(',')}`;
+  if (key === affordableKey) return affordableLast;
+  affordableKey = key;
+  affordableLast = affordableTraitsNow(s, lineage);
+  return affordableLast;
+}
+function affordableTraitsNow(s: GameState, lineage: number): string[] {
   const levels = { ...s.meta.traits };
   const bought = new Map<string, number>();
   for (let guard = 0; guard < 50; guard++) {
