@@ -802,3 +802,24 @@ test('untilSignal counts down to the signal opening', () => {
   }
   assert.ok(checked > 10, `checked ${checked}`);
 });
+
+test('an ask for more shoals or bands never asks for more than can be had', () => {
+  const { state } = runBot((s) => s.height >= 200, 3 * 3600);
+  const asked = { shoals: 0, bands: 0 };
+  for (let k = 0; k < 400; k++) {
+    const s = clone(state);
+    s.seamount = 'lonely';
+    s.levels.shoal = 7;
+    s.request.kind = '';
+    s.request.done = k + 20;
+    checkRequest(s);
+    if (s.request.kind === 'shoals') { asked.shoals++; assert.equal(s.request.n, 1, `asked for ${s.request.n} shoals with room for 1`); }
+    if (s.request.kind === 'bands') {
+      asked.bands++;
+      let room = 0;
+      while (!maxed({ ...s, levels: { ...s.levels, skeleton: s.levels.skeleton + room } }, 'skeleton')) room++;
+      assert.ok(s.request.n <= room, `asked for ${s.request.n} bands with room for ${room}`);
+    }
+  }
+  assert.ok(asked.shoals > 0, 'no shoal ask came up');
+});

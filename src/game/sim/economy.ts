@@ -2012,6 +2012,24 @@ function requestOpen(s: GameState, kind: RequestKind): boolean {
   }
 }
 
+/** How many more of an asked purchase can be made (an ask for more could not be kept). */
+function requestRoom(s: GameState, kind: RequestKind): number {
+  const id: UpgradeId | null = kind === 'bud' ? 'polyp' : kind === 'glimmer' ? 'symbiont' : kind === 'shoals' ? 'shoal' : kind === 'bands' ? 'skeleton' : null;
+  if (!id) return Infinity;
+  let room = upgrade(id).maxLevel - s.levels[id];
+  if (id === 'shoal') room = Math.min(room, (seamount(s).shoalCap ?? Infinity) - s.levels.shoal);
+  if (id === 'skeleton') {
+    // Bands up to the height the reef may reach now.
+    let n = 0;
+    for (const l = s.levels.skeleton; n < 20; n++) {
+      const next = heightForBands(l + n + 1);
+      if (next > heightCap(s) || next <= heightForBands(l + n)) break;
+    }
+    room = Math.min(room, n);
+  }
+  return room;
+}
+
 /** The current request: what, how many, and how far along. */
 export function currentRequest(s: GameState) {
   const q = s.request;
@@ -2045,7 +2063,7 @@ function keepRequest(s: GameState): number {
       // The very first is always to bud: the first thing a new reef can do.
       const pick = q.done === 0 && open.some((x) => x.kind === 'bud') ? REQUESTS.find((x) => x.kind === 'bud')! : open[Math.floor(r() * open.length)]!;
       q.kind = pick.kind;
-      q.n = pick.n(q.done);
+      q.n = Math.max(1, Math.min(pick.n(q.done), requestRoom(s, pick.kind)));
       q.base = requestCount(s, pick.kind);
     }
   }
