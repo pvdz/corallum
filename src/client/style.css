@@ -242,7 +242,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   .card.spawn-lesser .flavour { white-space: normal; }
   .card.spawn-lesser footer { display: flex; flex-direction: row; justify-content: flex-end; margin-top: 8px; }
   /* The sheet's grabber: tap or drag up for a tall sheet (more cards), down for the reef. */
-  .panel { transition: height 0.28s ease; }
+  .panel { transition: opacity 1.2s ease, height 0.28s ease; }
   /* Drawn up, it covers the scene's overlays (gauge, whispers) but not stories (10) or dialogs above them. */
   .panel.tall { height: 84vh; height: 84dvh; z-index: 9; }
   /* The stocks drag the sheet too, so the browser must not take the drag for a pan. */
@@ -635,13 +635,20 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 @media (min-width: 800px) { .finale.ending { right: var(--panel-out); } }
 @media (min-width: 800px) { .finale.choice-screen { padding-right: calc(var(--panel-out) + 20px); } }
 .finale.ending .finale-text { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9); }
-/* While the ending is told, the panel steps back (still there to use: it brightens on focus). */
+/* From the release to the ending's last page the panel all but leaves the stage to the spawning
+   (still there to use: it brightens on focus). */
 .panel { transition: opacity 1.2s ease, height 0.28s ease; }
-html:has(.finale.ending:not([hidden])) .panel:not(:focus-within) { opacity: 0.35; }
+html.releasing .panel:not(:focus-within) { opacity: 0.12; }
 /* Under a real pointer it brightens on hover; a touch leaves a sticky hover where the release was tapped. */
-@media (hover: hover) { html:has(.finale.ending:not([hidden])) .panel:hover { opacity: 1; } }
+@media (hover: hover) { html.releasing .panel:hover { opacity: 1; } }
 @media (max-width: 799px) {
-  .finale.ending { bottom: 47vh; bottom: 47dvh; padding-bottom: 16px; background: linear-gradient(180deg, rgba(2, 2, 10, 0) 20%, rgba(2, 2, 12, 0.7)); }
+  /* The words stay above the sheet; the shade behind them runs on down over the faded sheet and
+     thins out, so no hard line marks the sheet's top. Taps pass through to the sheet. */
+  .finale.ending {
+    padding-bottom: calc(47dvh + 16px); pointer-events: none;
+    background: linear-gradient(180deg, rgba(2, 2, 10, 0) 12%, rgba(2, 2, 12, 0.7) 44%, rgba(2, 2, 12, 0.7) 53%, rgba(2, 2, 12, 0.35) 72%, rgba(2, 2, 12, 0.2));
+  }
+  .finale.ending .finale-inner { pointer-events: auto; }
   .finale.ending .finale-text { font-size: 15px; line-height: 1.55; margin-bottom: 12px; }
 }
 

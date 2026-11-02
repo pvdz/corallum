@@ -556,6 +556,9 @@ const finale = createFinale(ui, panel.growPage, {
     if (!breach(state, memories)) return false;
     scene.effect('breach');
     audio.cue('release');
+    document.documentElement.classList.add('releasing');
+    // The moon card's release button sits in the panel; left focused, it would hold the panel up.
+    if (document.activeElement instanceof HTMLElement && panel.element.contains(document.activeElement)) document.activeElement.blur();
     // The spawning plays out alone before the ending's first page: nothing over it.
     notesHeldUntil = performance.now() + 7000;
     journalNote.classList.remove('show');
@@ -564,6 +567,7 @@ const finale = createFinale(ui, panel.growPage, {
     return true;
   },
   done() {
+    document.documentElement.classList.remove('releasing');
     document.documentElement.classList.add('ended');
   },
 });
