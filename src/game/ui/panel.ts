@@ -1749,16 +1749,23 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     for (const { sec } of open) {
       if (!sec.classList.contains('moment')) continue;
       if (!sec.querySelector(':scope > .later-btn')) {
-        const later = button('later-btn', UI.later, () => { sec.classList.add('later'); sec.dataset.laterFor = choiceKey(sec); });
+        const later = button('later-btn', UI.later, () => { sec.classList.add('later'); sec.dataset.laterFor = choiceKey(sec); renderChips(); });
         sec.append(later);
-        sec.addEventListener('click', (e) => { if (sec.classList.contains('later') && e.target !== later) { e.stopPropagation(); sec.classList.remove('later'); } }, true);
+        sec.addEventListener('click', (e) => { if (sec.classList.contains('later') && e.target !== later) { e.stopPropagation(); sec.classList.remove('later'); renderChips(); } }, true);
         sec.title = '';
       }
       if (sec.classList.contains('later') && sec.dataset.laterFor !== choiceKey(sec)) sec.classList.remove('later');
     }
+    renderChips();
+  }
+  /** Chips to jump to the open choices; a choice folded for later is a row right there, no chip. */
+  function renderChips(): void {
+    const open = [...grow.querySelectorAll<HTMLElement>(':scope > section:not([hidden]):not(.later)')]
+      .map((sec) => ({ sec, label: sec.querySelector('.truce-kicker')?.textContent ?? '' }))
+      .filter((x) => x.label);
     waitBar.hidden = open.length < 2;
     waitBar.innerHTML = '';
-    for (const x of open) waitBar.append(button('wait-chip', x.label, () => { x.sec.classList.remove('later'); x.sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); }));
+    for (const x of open) waitBar.append(button('wait-chip', x.label, () => x.sec.scrollIntoView({ behavior: 'smooth', block: 'start' })));
   }
 
   return {

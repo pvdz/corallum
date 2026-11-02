@@ -551,6 +551,8 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 /* Room for Later beside a long kicker on a narrow phone. */
 .truce.moment:has(> .later-btn) > .truce-kicker { padding-right: 48px; }
 .truce.moment.later { padding-top: 8px; padding-bottom: 8px; cursor: pointer; animation: none; }
+/* Folded for later, a choice is a row on a hairline like the other folded things. */
+.panel .truce.moment.later { background: transparent; border-color: transparent; box-shadow: inset 0 -1px 0 rgba(150, 200, 255, 0.08); border-radius: 0; }
 .truce.moment.later > :not(.truce-kicker) { display: none; }
 .truce.moment.later > .truce-kicker::after { content: ' ▸'; }
 .truce-kicker { margin: 0; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sand); }
