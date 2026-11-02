@@ -908,3 +908,4 @@ date, what landed, what is half-done, what's next.
 - "Over what it holds: more glimmerseed or light shoals" (a price beyond a stock's cap) was salmon, the panel's warning colour, on two or three cards at once through the Twilight Shelf. It is a note on what raises the hold: quiet italic ink, led by a small warm ↑.
 - Stock lines say what a zero rate means: "full · holds ~37.6k" for a stock at its hold (it read "+0.00/s · holds ~37.6k", as if stalled), "steady" where inflow and loss balance (plankton, silt). Calcite and the spawn keep their own wording.
 - The journal ("Creatures seen") listed every unseen creature as its own "NOT YET SEEN" line (up to 20 in a row per zone, ~85 in all early on). Each zone now ends with one line: "17 not yet seen", then the hints worth giving ("Only after dark · 3 rare, watch for them.").
+- "Moments met": a run of unmet moments is one "Not yet met" row of their depths ("3750 m · 3820 m · …") instead of a row each.

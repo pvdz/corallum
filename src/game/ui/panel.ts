@@ -951,15 +951,23 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     momentCard.hidden = met.length === 0;
     momentHead.textContent = `${UI.momentsLabel} · ${met.length} of ${MOMENTS.length}`;
     momentList.innerHTML = '';
+    // Hard places' moments stay hidden until met; the others show where they wait, a run of
+    // unmet ones on a single row of depths.
+    let waiting: number[] = [];
+    const flush = () => {
+      if (waiting.length) momentList.append(el('dt', 'unknown', UI.notYetMet), el('dd', 'unknown', waiting.map(metres).join(' · ')));
+      waiting = [];
+    };
     for (const m of MOMENTS) {
       const ways = (['a', 'b'] as const).filter((c) => s.meta.seen.includes(`m:${m.id}:${c}`)).map((c) => m[c].label);
       if (!ways.length) {
-        // Hard places' moments stay hidden until met; others show a hint of where they wait.
-        if (!m.seamount) momentList.append(el('dt', 'unknown', UI.notYetMet), el('dd', '', `${metres(m.metres)}`));
+        if (!m.seamount) waiting.push(m.metres);
         continue;
       }
+      flush();
       momentList.append(el('dt', '', m.title), el('dd', '', ways.join(' · ')));
     }
+    flush();
   }
   bandsPage.append(codex, journal, readingCard, tablet, shelf, cityCard, diary, momentCard, bandsIntro, storyFilter, bandList);
   let codexKey = '';
