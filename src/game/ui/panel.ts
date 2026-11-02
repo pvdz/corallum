@@ -2184,7 +2184,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const k = rq.def.kind;
         const when = k === 'feast' ? untilFeast(s) : k === 'intruder' ? untilThorn(s) : k === 'milky' ? untilMilky(s) : k === 'rising' ? untilRising(s) : k === 'signal' ? untilSignal(s)
           : k === 'free' ? untilTangle(s) : k === 'stray' ? untilStray(s) : k === 'fragment' ? untilFragment(s) : k === 'shell' ? untilShell(s) : Infinity;
-        const whenText = when <= 0 ? WATER.now : when < 3600 ? `in ${duration(when)}` : '';
+        const whenText = when <= 0 ? WATER.now : when < 3600 ? REQUEST.comesIn(duration(when)) : '';
         const askLine = rq.n === 1 && rq.def.one ? rq.def.one : rq.def.ask.replace('{n}', String(rq.n));
         if (askText.firstChild?.textContent !== askLine) askText.replaceChildren(askLine, askWhen);
         if (askWhen.textContent !== whenText) askWhen.textContent = whenText;
@@ -2197,7 +2197,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         askKicker.textContent = s.request.streak > 1 ? `${REQUEST.kicker} · ${s.request.streak} ${REQUEST.streakWord}` : REQUEST.kicker;
         askSkip.disabled = !canSkipRequest(s);
         // Waiting to be allowed another: the tooltip says how long.
-        const skipTitle = askSkip.disabled ? `${REQUEST.skip}: again in ${duration(Math.max(1, s.request.skipped + REQUEST.skipEvery - s.t))}` : REQUEST.skip;
+        const skipTitle = askSkip.disabled ? REQUEST.skipAgain(duration(Math.max(1, s.request.skipped + REQUEST.skipEvery - s.t))) : REQUEST.skip;
         if (askSkip.title !== skipTitle) askSkip.title = skipTitle;
       }
 

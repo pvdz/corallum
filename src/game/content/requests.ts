@@ -27,6 +27,10 @@ export const REQUEST = {
   /** Ask for something else: at most once per this many sim seconds. */
   skipEvery: 300,
   skip: 'Ask another',
+  /** The skip's tooltip while it waits to be allowed again. */
+  skipAgain: (t: string) => `Ask another: again in ${t}`,
+  /** When what an ask waits for comes (beside the ask). */
+  comesIn: (t: string) => `in ${t}`,
   /** Each kept in a row adds this to the next pay, up to `streakMax` in a row (a swap breaks it). */
   streakBonus: 0.1,
   streakMax: 5,
