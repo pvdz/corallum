@@ -134,6 +134,7 @@ export const UI = {
   driftsAway: 'Your spawn drifts away to find a new seamount.',
   readAgain: 'Read the ending again',
   tapHint: 'Tap the water to sweep your tentacles',
+  clickHint: 'Click the water to sweep your tentacles',
   hidePanel: 'Hide the panel (H)',
   showPanel: 'Show the panel (H) · scroll, pinch or + / − to look closer',
   photo: 'Save a picture of the reef',

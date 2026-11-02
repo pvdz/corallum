@@ -1346,7 +1346,7 @@ function showWhisperText(text: string): void {
 // Until the first sweep, a quiet hint over the water.
 const hint = document.createElement('div');
 hint.id = 'sweep-hint';
-hint.textContent = UI.tapHint;
+hint.textContent = window.matchMedia('(pointer: coarse)').matches ? UI.tapHint : UI.clickHint;
 ui.append(hint);
 
 const taps = createTaps();

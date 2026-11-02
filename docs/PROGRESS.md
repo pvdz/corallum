@@ -914,3 +914,4 @@ date, what landed, what is half-done, what's next.
 - Countdowns: "in 60s" (seconds rounded up, minutes cut) read wrong just under a minute; the same at an hour ("0h 59m" for 59m 59.4s) and a day. A wait is rounded up to whole seconds (minutes, hours) once and then split: "1m 0s", "1h 0m", "1d 0h". Unit test.
 - Settings: the checkboxes stand in one column (a long label shrank its box and pulled its words left) and are dark controls with a quieter teal tick, instead of glaring white boxes and bright cyan blocks.
 - The page declares a dark colour scheme, so native controls (the volume slider's track, the name field, scrollbars) are drawn dark; the volume slider takes the same quieter teal.
+- The first hint says "Click the water to sweep your tentacles" under a mouse ("Tap…" on touch screens).
