@@ -2750,7 +2750,8 @@ function factor(x: number): string {
 
 /** A stock's net rate, or what the zero means: "full" at its hold, "steady" where inflow and loss balance. */
 function flow(net: number, value = 0, hold = Infinity): string {
-  if (Number.isFinite(hold) && hold > 0 && value >= hold * 0.995) return UI.stockFull;
+  // At its hold (above it, the stock drains back down and the rate says so).
+  if (Number.isFinite(hold) && hold > 0 && Math.abs(value - hold) <= hold * 0.005) return UI.stockFull;
   if (Math.abs(net) < 0.005) return UI.stockSteady;
   return rate(net);
 }
