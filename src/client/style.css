@@ -256,6 +256,8 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   .card { grid-template-rows: auto 1fr; }
   .card .effect { align-self: start; }
   .card footer .buy { white-space: nowrap; }
+  /* A great work's two-currency price is wider than the button column: it wraps before its "+". */
+  .card.work footer .buy { white-space: normal; }
   /* Larger text: stacked, so the name keeps its width. */
   html.big .card footer { flex-direction: column; align-items: flex-end; flex-wrap: nowrap; }
   html.big .card footer .eta { contain: none; flex-basis: auto; }

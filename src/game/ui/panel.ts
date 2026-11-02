@@ -2304,7 +2304,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           continue;
         }
         const parts = Object.entries(c) as [Currency, number][];
-        x.costEl.textContent = parts.map(([k, v]) => `${num(v)} ${k}`).join(' + ');
+        // Two currencies wrap, if they must, only before the "+" ("200M calcite / + 6.00k glow").
+        x.costEl.textContent = parts.map(([k, v]) => `${num(v)}\u00a0${k}`).join(' +\u00a0');
         const ok = canBuild(s, x.w.id);
         x.btn.disabled = !ok;
         x.root.classList.toggle('ready', ok);
