@@ -1033,3 +1033,4 @@ date, what landed, what is half-done, what's next.
 - `tools/audit.ts tablet` (768×1024): clean, plain, Larger text and scientific.
 - "Ask another" (↻) during its five-minute wait was a disabled button: a tap did nothing and a phone shows no tooltip. It stays tappable (`aria-disabled`, dimmed), and a tap then shows "Ask another: again in 4m 12s" beside the ask for three seconds.
 - Leak check after the evening's changes: 2 minutes at ×30 from 2400 s on a phone, sweeping: heap 5.8 → 7.9 → 8.2 → 8.6 → 8.7 MB (after GC, every 30 s), DOM nodes 3742 → ~3800 and listeners 613 → ~655, levelling off (new bands and stories joining their lists).
+- Sweeping fast, each "+number" landed on the previous one while it was still rising and visible, so a combo read as a smudge of digits. A new sweep number fades the older ones under it at once (0.12 s); gifts, hauls and other lines keep their time. Checked: five sweeps 0.43 s apart leave one number showing.

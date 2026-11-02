@@ -1483,6 +1483,8 @@ const SEAMOUNT_TINT: Record<string, [string, GlobalCompositeOperation]> = {
 /** A float of text over the water, e.g. "+12". */
 /** Floating lines from the same tap (a gift and the sweep): a new one near them stacks below instead of printing over. */
 let recentFloats: { x: number; y: number; t: number; w: number }[] = [];
+/** Sweep numbers still on screen. */
+let sweepFloats: HTMLElement[] = [];
 function floatText(x: number, y: number, text: string, cls = ''): void {
   const now = performance.now();
   recentFloats = recentFloats.filter((r) => now - r.t < 50);
@@ -1495,6 +1497,13 @@ function floatText(x: number, y: number, text: string, cls = ''): void {
   f.style.left = `${x}px`;
   f.style.top = `${y}px`;
   ui.append(f);
+  // Sweeping fast, each number lands on the last one, still rising: the older one fades at once, so
+  // the newest reads clearly (plain sweep numbers only; gifts and hauls keep their time).
+  if (!cls) {
+    for (const old of sweepFloats) if (old.isConnected && Math.abs(parseFloat(old.style.left) - x) < 140 && Math.abs(parseFloat(old.style.top) - y) < 60) old.animate?.([{ opacity: 0 }], { duration: 120, fill: 'forwards' });
+    sweepFloats = sweepFloats.filter((o) => o.isConnected);
+    sweepFloats.push(f);
+  }
   // Kept inside the scene, clear of the depth gauge: a long line near the edge would run under the panel or off the screen.
   const half = f.offsetWidth / 2, right = focusNow.w / dpr;
   rec.w = f.offsetWidth;
