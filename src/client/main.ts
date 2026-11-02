@@ -1784,6 +1784,8 @@ function setViewMode(on: boolean): void {
   viewMode = on;
   viewSince = on ? performance.now() : 0;
   if (!on) zoomer.reset();
+  // Back from view mode (where it was brought up to date only now and then): current at once.
+  if (!on) panel.update(state);
   document.documentElement.classList.toggle('view-mode', on);
   viewBtn.setAttribute('aria-pressed', String(on));
   viewBtn.title = on ? UI.showPanel : UI.hidePanel;
@@ -2199,7 +2201,9 @@ function frameBody(now: number): void {
   }
   const p2 = performance.now();
   // The panel's numbers read the same at half the frame rate; right after a press it keeps up.
-  if (frozenT !== null || (++panelFrame & 1) === 0 || now - lastPress < 300) panel.update(state);
+  // Hidden in view mode, it is brought up to date four times a second (what it opens, stories and
+  // choices, still comes in time).
+  if (frozenT !== null || ++panelFrame % (viewMode ? 15 : 2) === 0 || now - lastPress < 300) panel.update(state);
   const p3 = performance.now();
   finale.update(state);
   prof.draw += (p1 - p0 - prof.draw) * 0.05;
