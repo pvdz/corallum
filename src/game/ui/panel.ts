@@ -449,7 +449,15 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const askFill = el('span', 'ask-fill');
   askBar.append(askFill);
   const askCount = el('span', 'ask-count');
-  const askSkip = button('step ask-skip', '↻', () => hooks.skipRequest());
+  // While it may not be used yet it stays tappable (a disabled button takes no tap, and a phone shows
+  // no tooltip): a tap then says, in place of the ask's timing, how long until it may.
+  let skipSaidUntil = 0;
+  const askSkip = button('step ask-skip', '↻', () => {
+    if (askSkip.getAttribute('aria-disabled') !== 'true') { hooks.skipRequest(); return; }
+    askWhen.textContent = askSkip.title;
+    askWhen.classList.remove('now');
+    skipSaidUntil = performance.now() + 3000;
+  });
   askSkip.title = REQUEST.skip;
   askSkip.setAttribute('aria-label', REQUEST.skip);
   const askKicker = el('em', '', REQUEST.kicker);
@@ -2196,17 +2204,21 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const whenText = when <= 0 ? WATER.now : when < 3600 ? REQUEST.comesIn(duration(when)) : '';
         const askLine = rq.n === 1 && rq.def.one ? rq.def.one : rq.def.ask.replace('{n}', String(rq.n));
         if (askText.firstChild?.textContent !== askLine) askText.replaceChildren(askLine, askWhen);
-        if (askWhen.textContent !== whenText) askWhen.textContent = whenText;
-        askWhen.classList.toggle('now', when <= 0);
+        // (Unless it is saying, for a moment, when another ask may be had.)
+        if (performance.now() > skipSaidUntil) {
+          if (askWhen.textContent !== whenText) askWhen.textContent = whenText;
+          askWhen.classList.toggle('now', when <= 0);
+        }
         askFill.style.width = `${(rq.got / rq.n) * 100}%`;
         askCount.textContent = `${rq.got}/${rq.n}`;
         // One-step asks need no bar and no "0/1"; a streak goes up with the kicker, out of the text's way.
         askBar.hidden = rq.n === 1;
         askCount.hidden = rq.n === 1;
         askKicker.textContent = s.request.streak > 1 ? `${REQUEST.kicker} · ${s.request.streak} ${REQUEST.streakWord}` : REQUEST.kicker;
-        askSkip.disabled = !canSkipRequest(s);
+        const skipWaits = !canSkipRequest(s);
+        if (askSkip.getAttribute('aria-disabled') !== String(skipWaits)) askSkip.setAttribute('aria-disabled', String(skipWaits));
         // Waiting to be allowed another: the tooltip says how long.
-        const skipTitle = askSkip.disabled ? REQUEST.skipAgain(duration(Math.max(1, s.request.skipped + REQUEST.skipEvery - s.t))) : REQUEST.skip;
+        const skipTitle = skipWaits ? REQUEST.skipAgain(duration(Math.max(1, s.request.skipped + REQUEST.skipEvery - s.t))) : REQUEST.skip;
         if (askSkip.title !== skipTitle) askSkip.title = skipTitle;
       }
 
