@@ -271,6 +271,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let traitsReadySeen = -1;
   let seenStories = 0;
   let storyCount = 0;
+  /** A story joined the Bands list: it calls (the tab's dot) only if it came after the page loaded and
+   *  was not shown in its card (one shown has been read; one from before the load is old). */
+  const listed = (shown: boolean) => { if (primed && !shown) storyCount++; };
   // The tabs share one scroller: each keeps its own place, and the tab already open, tapped again,
   // goes back to its top.
   let currentTab = 'grow';
@@ -2235,7 +2238,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         momentSeen.add(m.id);
         const st = { kicker: `${MOMENT.kicker}: ${m.title}`, title: m[c].label, text: m[c].text };
         bandList.prepend(storyItem('moment', m.title, st, 'is-moment'));
-        storyCount++;
+        listed(true);
         if (primed) showStory(st);
       }
 
@@ -2466,8 +2469,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           const b = BANDS.find((x) => x.id === id);
           if (!b) continue;
           appendBand(b);
-          storyCount++;
-          if ((lastBandCount > 0 || id === 'wake') && !s.meta.seen.includes(id)) showStory(bandStory(b, s.truce.wall === 'b'));
+          const show = (lastBandCount > 0 || id === 'wake') && !s.meta.seen.includes(id);
+          listed(show);
+          if (show) showStory(bandStory(b, s.truce.wall === 'b'));
         }
         lastBandCount = s.bands.length;
       }
@@ -2476,7 +2480,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           const rd = READINGS.find((x) => x.id === id);
           if (!rd) continue;
           appendReading(rd);
-          storyCount++;
+          listed(!s.meta.seen.includes(id));
           if (!s.meta.seen.includes(id)) showStory(readingStory(rd));
         }
         lastReadingCount = s.readings.length;
@@ -2486,7 +2490,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           const x = site(id);
           if (!x) continue;
           appendRelic(x);
-          storyCount++;
+          listed(!s.meta.seen.includes(`x:${id}`));
           if (primed && !s.meta.seen.includes(`x:${id}`)) showStory(relicStory(x));
         }
         lastRelicCount = s.relics.length;
@@ -2496,7 +2500,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         if (!c || truceSeen.has(mt.id)) continue;
         truceSeen.add(mt.id);
         addChoice(storyItem('truce', mt.title, truceStory(mt, c), 'is-truce'), mt.after);
-        storyCount++;
+        listed(true);
         if (primed) showStory(truceStory(mt, c));
       }
       for (const t of TIERS) {
@@ -2506,7 +2510,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const d = DIALECTS.find((x) => x.id === id)!;
         const st = { kicker: `A dialect: ${t.title}`, title: d.name, text: `${d.flavour} You will not be the others.` };
         addChoice(storyItem('dialect', d.name, st, 'is-dialect'), t.band);
-        storyCount++;
+        listed(true);
         if (primed) showStory(st);
       }
       // Lineage.

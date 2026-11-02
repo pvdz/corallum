@@ -1023,3 +1023,4 @@ date, what landed, what is half-done, what's next.
 - Numbers rising from a tap get a tight dark edge (light on light in the sunlit water and at the surface), and a creature label's "again in 3m 0s" keeps its time on one line.
 - Every duration keeps its two parts together ("3m 0s", "1h 30m", "2d 4h" with a no-break space), wherever it appears: notes, the weather box, labels, countdowns. format test updated; e2e green.
 - The Breach's stars go through `speck()` too (round when zoomed in, as the other small lights now are).
+- The Bands tab's dot was on nearly always: every new band, reading, relic or choice was counted unread though its card had just been shown and read, and after each load the relics, truce choices, dialects and moments were counted again. A story calls now only if it joins the list after the page loaded without being shown (none do at present; the dot stays for that case). Checked at three stages: off after load, off after a new band is read.
