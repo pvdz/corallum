@@ -2,7 +2,7 @@
 // flips, for a while, reporting console errors. Mouse and keys mixed on purpose: a button the mouse
 // clicked keeps focus, a key then lands on it (bugs keyboard-only or mouse-only tests never see).
 // Buttons that replace or reset the reef, and the release, are left alone.
-// Usage: node --no-warnings tools/fuzz.ts [--vp desktop|mobile|landscape|small] [--at <bot secs>] [--secs 120] [--ended] [--big]
+// Usage: node --no-warnings tools/fuzz.ts [--vp desktop|mobile|landscape|small|tiny] [--at <bot secs>] [--secs 120] [--ended] [--big] [--calm]
 //   --ended starts from a reef past its ending (the garden, the chronicle, Begin again).
 
 import { runBot } from '../src/game/sim/bot.ts';
@@ -32,6 +32,8 @@ const SPARE = /Start over|Load|Paste|Copy save|Save to a file|Release|Begin agai
 await withGame(async (open) => {
   const save = ended ? serialize(runBot((s) => s.carried.length > 0, 12 * 3600).state, Date.now()) : undefined;
   const { page, errors } = await open(vp, ended ? '' : `?bot=${at}`, save ? { save } : {});
+  // --calm: the system asks for reduced motion (the slower, quieter paths).
+  if (process.argv.includes('--calm')) await page.emulateMedia({ reducedMotion: 'reduce' });
   page.on('dialog', (d) => void d.dismiss());
   if (big) {
     await page.evaluate(() => localStorage.setItem('corallum.big', 'on'));
