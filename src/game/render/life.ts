@@ -747,14 +747,46 @@ export function createLife(seed: number) {
         ctx.lineTo(lx + ph * 1.5 * s, 0);
         ctx.stroke();
       }
-      // The armoured back: overlapping plates.
-      for (let k = 0; k < 7; k++) {
-        const px = -9 * s + k * 3 * s;
-        ctx.fillStyle = k % 2 ? '#c4b4ac' : '#b2a29a';
-        ctx.beginPath();
-        ctx.ellipse(px, -4 * s, 2.4 * s, 4 * s - Math.abs(k - 3) * 0.35 * s, 0, Math.PI, 0);
-        ctx.fill();
+      // The armoured back: one low dome, its plates as bands across it, darker toward the edge.
+      ctx.beginPath();
+      ctx.moveTo(-10.5 * s, -1 * s);
+      ctx.bezierCurveTo(-10.5 * s, -6.6 * s, 9 * s, -6.6 * s, 10.5 * s, -1.2 * s);
+      ctx.quadraticCurveTo(11.5 * s, -0.3 * s, 10 * s, -0.4 * s);
+      ctx.lineTo(-10.5 * s, -0.4 * s);
+      ctx.closePath();
+      const g = ctx.createLinearGradient(0, -5.6 * s, 0, 0);
+      g.addColorStop(0, '#d2c2ba');
+      g.addColorStop(0.6, '#b2a29a');
+      g.addColorStop(1, '#8c7c76');
+      ctx.fillStyle = g;
+      ctx.fill();
+      ctx.save();
+      ctx.clip();
+      ctx.strokeStyle = 'rgba(80,60,60,0.45)';
+      ctx.lineWidth = 0.7 * s;
+      ctx.beginPath();
+      for (let k = 1; k < 8; k++) {
+        const px = -10.5 * s + k * 2.6 * s;
+        ctx.moveTo(px - 0.6 * s, -7 * s);
+        ctx.quadraticCurveTo(px + 0.9 * s, -3 * s, px - 0.2 * s, 0);
       }
+      ctx.stroke();
+      // A sheen along the crest.
+      ctx.strokeStyle = 'rgba(245,235,228,0.35)';
+      ctx.lineWidth = 1.1 * s;
+      ctx.beginPath();
+      ctx.moveTo(-7 * s, -4.2 * s);
+      ctx.quadraticCurveTo(0, -5.6 * s, 6 * s, -4.4 * s);
+      ctx.stroke();
+      ctx.restore();
+      // The tail fan behind.
+      ctx.fillStyle = '#a89890';
+      ctx.beginPath();
+      ctx.moveTo(9.6 * s, -1 * s);
+      ctx.lineTo(13 * s, -2 * s);
+      ctx.lineTo(13 * s, 0);
+      ctx.closePath();
+      ctx.fill();
       // Head with antennae, leading the way (to the left).
       ctx.fillStyle = '#a89890';
       ctx.beginPath();
