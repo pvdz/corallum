@@ -237,10 +237,11 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   .stock-sub { font-size: 10.5px; }
   .tab { padding: 6px 0 7px; font-size: 12px; }
   .card {
-    display: grid; grid-template-columns: 1fr auto; grid-template-areas: "head foot" "effect foot" "flavour flavour";
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "head foot" "effect foot" "flavour flavour";
     column-gap: 10px; padding: 8px 10px;
   }
-  .card header { grid-area: head; justify-content: flex-start; }
+  /* The name column may shrink (the price keeps its width): a header then wraps under its name. */
+  .card header { grid-area: head; justify-content: flex-start; flex-wrap: wrap; column-gap: 8px; }
   /* A name that wraps keeps its level beside its last word ("a band ×8"), not at the column's edge. */
   .card.upgrade header, .card.trait header, .card.work header { display: block; text-wrap: balance; }
   .card.upgrade header h3, .card.trait header h3, .card.work header h3 { display: inline; }
@@ -911,7 +912,7 @@ html.view-mode #journal-note { left: calc(max(12px, env(safe-area-inset-left)) +
 .codex-list .unknown { opacity: 0.45; font-style: italic; }
 .name-row { display: flex; align-items: center; gap: 10px; margin: 2px 0 10px; }
 .name-row input {
-  flex: 1; font: inherit; font-family: var(--display); font-size: 16px; padding: 6px 10px; border-radius: 10px;
+  flex: 1; min-width: 0; font: inherit; font-family: var(--display); font-size: 16px; padding: 6px 10px; border-radius: 10px;
   color: var(--ink); background: rgba(255, 255, 255, 0.05); border: 1px solid var(--edge);
 }
 /* A long name (24 letters, letter-spaced) wraps, even inside a word, rather than run off a phone. */
@@ -946,7 +947,7 @@ html.view-mode #zone-title, html.view-mode #whisper, html.view-mode #milestone {
   box-shadow: 0 0 0 1px rgba(150, 200, 255, 0.15);
 }
 @media (min-width: 800px), (min-width: 600px) and (max-height: 500px) { #depth-gauge { right: calc(var(--panel-out) + 18px); } }
-@media (max-width: 599px), (max-width: 799px) and (min-height: 501px) { #depth-gauge { top: 14%; bottom: auto; height: 30%; right: 10px; } }
+@media (max-width: 599px), (max-width: 799px) and (min-height: 501px) { #depth-gauge { top: 14%; bottom: auto; height: 30%; max-height: calc(var(--sheet-top, 100vh) - 14vh - 22px); right: 10px; } }
 html.view-mode #depth-gauge { right: max(18px, env(safe-area-inset-right)); }
 #depth-gauge b { flex: 1; display: block; }
 #depth-gauge .gauge-moon { position: absolute; top: -26px; left: 50%; width: 18px; height: 18px; transform: translateX(-50%); pointer-events: auto; }
@@ -1224,3 +1225,17 @@ html.live .loading { display: none; }
   100% { transform: translate(12px, 38vh); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .loading i { animation-duration: 11s; } }
+/* The narrowest phones (320 px, the first iPhone SE): four stocks to a row leave no room for
+   "holds" before the number (a tap on the stock says it). */
+@media (max-width: 340px) {
+  .panel .stocks.many .hold-word { display: none; }
+  /* The height line under the depth bar takes two lines rather than lose its numbers. */
+  .panel .stock.height .stock-sub { white-space: normal; }
+  /* With Larger text, name and price no longer fit side by side: the price goes under the name. */
+  html.big .card { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "effect" "foot" "flavour"; }
+  html.big .card footer { margin-top: 4px; }
+}
+/* The shoals' header line ("seasoned ×1.16 · 12 away · of 55") may wrap under the title where the
+   panel is narrowest (a 320 px phone with Larger text), instead of running out of the panel. */
+section.shoals > header { flex-wrap: wrap; }
+section.shoals > header .level { white-space: normal; text-align: right; margin-left: auto; }

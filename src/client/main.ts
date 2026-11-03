@@ -801,6 +801,8 @@ window.corallum = {
 let dpr = 1;
 let focusNow: Focus = { x: 0, y: 0, w: 1, h: 1 };
 let lastDpr = 0;
+/** The phone sheet's top as last given to CSS ('' with a side panel). */
+let lastSheetTop = '-';
 function resize(): void {
   dpr = sharp.get() && !autoLowRes ? Math.min(window.devicePixelRatio || 1, 2) : 1;
   const w = Math.round(window.innerWidth * dpr);
@@ -809,6 +811,9 @@ function resize(): void {
   const side = r.left > window.innerWidth * 0.3;
   // A phone sheet drawn up tall covers the reef for a while; the scene keeps its usual framing.
   const top = !side && panel.element.classList.contains('tall') ? window.innerHeight * 0.53 : r.top;
+  // The depth gauge keeps above the phone sheet, wherever its top is (CSS caps its height by it).
+  const sheetTop = side ? '' : `${Math.round(top)}px`;
+  if (sheetTop !== lastSheetTop) { lastSheetTop = sheetTop; document.documentElement.style.setProperty('--sheet-top', sheetTop || 'none'); }
   // With the panel hidden (view mode) the scene frames the whole screen.
   const focus: Focus = viewMode ? { x: 0, y: 0, w, h } : side
     ? { x: 0, y: 0, w: Math.round(r.left * dpr), h }

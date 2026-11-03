@@ -12,7 +12,7 @@
 //   console any warning or error
 // Known and intended: 'dim' on held or finished cards (dimmed on purpose), and 'small' on the
 // sheet's grabber (the stocks under it drag the sheet too).
-// Usage: node --no-warnings tools/audit.ts [desktop|mobile|landscape|small|small-landscape|narrow-desktop|tablet] [t1,t2,...] [--big] [--sci]   (~1 min)
+// Usage: node --no-warnings tools/audit.ts [desktop|mobile|landscape|small|small-landscape|narrow-desktop|tablet|tiny] [t1,t2,...] [--big] [--sci]   (~1 min)
 
 import { VIEWPORTS, withGame } from './browser.ts';
 
@@ -24,7 +24,9 @@ const SMALL_LANDSCAPE = { name: 'small-landscape', width: 667, height: 375, scal
 const NARROW_DESKTOP = { name: 'narrow-desktop', width: 820, height: 900, scale: 1, mobile: false };
 // 'tablet': an upright tablet (768×1024: the phone sheet, much wider).
 const TABLET = { name: 'tablet', width: 768, height: 1024, scale: 2, mobile: true };
-const EXTRA: Record<string, typeof SMALL> = { small: SMALL, 'small-landscape': SMALL_LANDSCAPE, 'narrow-desktop': NARROW_DESKTOP, tablet: TABLET };
+// 'tiny': the smallest phone still in use (320×568, the first iPhone SE).
+const TINY = { name: 'tiny', width: 320, height: 568, scale: 2, mobile: true };
+const EXTRA: Record<string, typeof SMALL> = { small: SMALL, 'small-landscape': SMALL_LANDSCAPE, 'narrow-desktop': NARROW_DESKTOP, tablet: TABLET, tiny: TINY };
 const vp = EXTRA[process.argv[2] ?? ''] ?? VIEWPORTS.find((v) => v.name === (process.argv[2] ?? 'mobile'))!;
 const big = process.argv.includes('--big');
 const sci = process.argv.includes('--sci');
