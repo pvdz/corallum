@@ -293,28 +293,65 @@ export function createLife(seed: number) {
     const u = ((t * 0.006) % 1);
     const x = st.cx - st.w * 0.42 + u * st.w * 0.3, y = st.baseY + 4 * st.s;
     spot('sea-spider', x, y - 6 * s, 24 * s);
-    ctx.save();
-    ctx.strokeStyle = 'rgba(225,200,170,0.9)';
-    ctx.lineCap = 'round';
-    ctx.lineWidth = 1.2 * s;
+    // A thin trunk of four segments (it walks to the right, proboscis first); four legs a side,
+    // each rooted on its own segment, rising in three joints to a high knee and reaching far out.
+    // The far legs a shade darker, drawn first; knobs at the knees.
+    const by = y - 6 * s;
+    const far = new Path2D(), near = new Path2D(), knees = new Path2D();
     for (let k = 0; k < 8; k++) {
-      const side = k < 4 ? -1 : 1, j = k % 4;
-      const step = still ? 0 : Math.sin(t * 1.2 + k * 1.3) * 0.25;
+      const side = k % 2 ? 1 : -1, j = k >> 1;
+      const rx = x - 3.6 * s + j * 2.4 * s;
+      const step = still ? 0 : Math.sin(t * 1.2 + k * 1.3) * 0.22;
       const reach = still ? 0.45 : 1;
-      // Each leg rises to a high knee and comes down well out to the side, fanned from front to back.
-      const a1 = -Math.PI / 2 + side * (0.35 + j * 0.3 + step);
-      const kx = x + Math.cos(a1) * 9 * s * reach + side * j * 2 * s, ky = y - 5 * s + Math.sin(a1) * 9 * s * reach;
-      const fx = kx + side * (6 + j * 2) * s * reach, fy = y + (j - 1.5) * 1.2 * s;
-      ctx.beginPath();
-      ctx.moveTo(x, y - 5 * s);
-      ctx.lineTo(kx, ky);
-      ctx.lineTo(fx, fy);
-      ctx.stroke();
+      // Fanned along the body: front legs reach forward, back legs back.
+      // Seen from the side, a leg's reach shows as its spread along the floor: front legs far
+      // forward, back legs far back, the middle pair splayed a little either way by side.
+      const spread = ((j - 1.5) * 9 + side * 2.5) * s;
+      const dir = Math.sign(spread) || 1;
+      const k1x = rx + (spread * 0.25 + dir * 1.5 * s) * reach, k1y = by - 5 * s * reach;
+      const k2x = rx + (spread * 0.6 + dir * 4 * s) * reach + step * 4 * s, k2y = by - 7.5 * s * reach;
+      const fx = rx + (spread + dir * 9 * s) * reach + step * 6 * s, fy = y + (side > 0 ? 1 : -0.4) * s;
+      const p = side > 0 ? near : far;
+      p.moveTo(rx, by);
+      p.lineTo(k1x, k1y);
+      p.quadraticCurveTo(k2x - (k2x - k1x) * 0.2, k2y - 1 * s, k2x, k2y);
+      p.lineTo(fx, fy);
+      if (side > 0) {
+        knees.moveTo(k1x + 0.9 * s, k1y);
+        knees.arc(k1x, k1y, 0.9 * s, 0, Math.PI * 2);
+        knees.moveTo(k2x + 0.8 * s, k2y);
+        knees.arc(k2x, k2y, 0.8 * s, 0, Math.PI * 2);
+      }
     }
-    ctx.fillStyle = 'rgba(235,210,180,0.95)';
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = 0.95 * s;
+    ctx.strokeStyle = 'rgba(170,148,124,0.85)';
+    ctx.stroke(far);
+    ctx.strokeStyle = 'rgba(232,208,176,0.95)';
+    ctx.stroke(near);
+    ctx.fillStyle = 'rgba(240,218,188,0.95)';
+    ctx.fill(knees);
+    // The trunk: segments, the proboscis ahead, and a short tail stub behind.
+    ctx.fillStyle = 'rgba(236,212,182,0.97)';
     ctx.beginPath();
-    ctx.ellipse(x, y - 5 * s, 2.6 * s, 1.6 * s, 0, 0, Math.PI * 2);
+    for (let j = 0; j < 4; j++) {
+      const cx = x - 3.6 * s + j * 2.4 * s;
+      ctx.moveTo(cx + 1.4 * s, by);
+      ctx.ellipse(cx, by, 1.4 * s, 1.05 * s, 0, 0, Math.PI * 2);
+    }
+    ctx.moveTo(x + 3.8 * s, by - 0.7 * s);
+    ctx.quadraticCurveTo(x + 7.2 * s, by - 0.5 * s, x + 7.6 * s, by + 0.2 * s);
+    ctx.quadraticCurveTo(x + 7.2 * s, by + 0.8 * s, x + 3.8 * s, by + 0.7 * s);
+    ctx.closePath();
     ctx.fill();
+    ctx.lineWidth = 0.8 * s;
+    ctx.strokeStyle = 'rgba(236,212,182,0.97)';
+    ctx.beginPath();
+    ctx.moveTo(x - 4.8 * s, by);
+    ctx.lineTo(x - 6.6 * s, by - 0.8 * s);
+    ctx.stroke();
     ctx.restore();
   }
 
