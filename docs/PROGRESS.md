@@ -1122,3 +1122,4 @@ date, what landed, what is half-done, what's next.
 - The barracuda tornado's fish were pills with a triangle: slim bodies with pointed jaws and forked tails, and on the near side of the column a dark back line and an eye.
 - The banded sea snake gets eyes on its head and the flattened, banded paddle of a tail sea snakes swim with.
 - Real-time play from a fresh reef on a phone, 5 minutes, with all of the night's changes: cards, whispers, the first flurry at 2½ min with Ossel's "Sweep now", a drill snail tapped off, a shard found; no errors.
+- Giant tube worms at the vent had red ovals on their tubes (lollipops): a soft red plume core with fine gill filaments fanning out of a pale tube lip.

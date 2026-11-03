@@ -915,10 +915,28 @@ export function createLife(seed: number) {
       ctx.quadraticCurveTo(bx + sway * 0.3, base - len * 0.5, tx, ty);
       ctx.stroke();
       if (hide > 0.9) continue;
-      ctx.fillStyle = 'rgba(220,40,60,0.95)';
+      // The plume: a soft red core with fine gill filaments fanning out of the tube's mouth.
+      const out = 1 - hide;
+      const ph = 4.4 * s * out, pw = 2.8 * s * (1 - 0.6 * hide);
+      ctx.fillStyle = 'rgba(200,30,55,0.95)';
       ctx.beginPath();
-      ctx.ellipse(tx, ty - 2 * s * (1 - hide), 2.6 * s * (1 - 0.6 * hide), 4.2 * s * (1 - hide), sway * 0.05, 0, Math.PI * 2);
+      ctx.ellipse(tx, ty - ph * 0.5, pw * 0.7, ph * 0.6, sway * 0.05, 0, Math.PI * 2);
       ctx.fill();
+      ctx.strokeStyle = 'rgba(240,70,90,0.9)';
+      ctx.lineWidth = 0.7 * s;
+      ctx.beginPath();
+      for (let f = 0; f < 7; f++) {
+        const a = -Math.PI / 2 + (f - 3) * 0.32 + Math.sin(t * 1.4 + i + f) * 0.06;
+        ctx.moveTo(tx, ty - ph * 0.2);
+        ctx.quadraticCurveTo(tx + Math.cos(a) * pw * 0.8, ty - ph * 0.2 + Math.sin(a) * ph * 0.6, tx + Math.cos(a) * pw * 1.3, ty - ph * 0.2 + Math.sin(a) * ph * 1.15);
+      }
+      ctx.stroke();
+      // The tube's lip, a pale ring.
+      ctx.strokeStyle = 'rgba(240,236,224,0.9)';
+      ctx.lineWidth = 1 * s;
+      ctx.beginPath();
+      ctx.ellipse(tx, ty + 0.4 * s, 1.5 * s, 0.6 * s, 0, 0, Math.PI * 2);
+      ctx.stroke();
     }
   }
 
