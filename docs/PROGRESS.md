@@ -1124,3 +1124,4 @@ date, what landed, what is half-done, what's next.
 - Real-time play from a fresh reef on a phone, 5 minutes, with all of the night's changes: cards, whispers, the first flurry at 2½ min with Ossel's "Sweep now", a drill snail tapped off, a shard found; no errors.
 - Giant tube worms at the vent had red ovals on their tubes (lollipops): a soft red plume core with fine gill filaments fanning out of a pale tube lip.
 - `tools/sweep.ts tablet|tiny`: console-error sweeps on an upright tablet (default path) and a 320 px phone (truce bbb, pillar/mucus/brooding), 18 points each: clean.
+- The siphonophore (a long colonial chain in the Midnight Water) was a row of fully outlined ovals ("oooo" again): a faint stem thread with tilted, filled bells along it, each lit only on its leading rim.

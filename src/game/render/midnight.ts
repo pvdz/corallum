@@ -1045,6 +1045,16 @@ export function createMidnightScene(seed: number): Scene {
     const touch = startled('siphonophore', t);
     const run = touch && touch.age < 2.5 ? touch.age / 1.8 : -1;
     ctx.save();
+    // The stem the bells hang on, a faint thread.
+    ctx.strokeStyle = 'rgba(200,230,255,0.18)';
+    ctx.lineWidth = 0.8 * s;
+    ctx.beginPath();
+    for (let k = 0; k < 34; k++) {
+      const xu = head - k * 0.018;
+      const x = focus.x + xu * focus.w, y = y0 + Math.sin(xu * 7 + t * 0.4) * 18 * s + k * 0.6 * s;
+      if (k === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
     for (let k = 0; k < 34; k++) {
       const xu = head - k * 0.018;
       if (xu < -0.1 || xu > 1.1) continue;
@@ -1052,12 +1062,16 @@ export function createMidnightScene(seed: number): Scene {
       const y = y0 + Math.sin(xu * 7 + t * 0.4) * 18 * s + k * 0.6 * s;
       const pulse = Math.min(1.6, 0.5 + 0.5 * Math.sin(t * 3 - k * 0.5) + (run >= 0 ? 1.5 * Math.exp(-((k / 34 - run) ** 2) / 0.006) : 0));
       const r = (6 + 2 * pulse) * s * (1 - k / 60);
-      ctx.fillStyle = `rgba(170,210,255,${0.10 + 0.08 * pulse})`;
-      ctx.strokeStyle = `rgba(200,230,255,${0.25 + 0.2 * pulse})`;
+      // Each member a clear bell, cupped and tilted along the chain, its rim lit only on the
+      // leading side (full outlines in a row read as a string of letters).
+      ctx.fillStyle = `rgba(170,210,255,${0.12 + 0.1 * pulse})`;
+      ctx.strokeStyle = `rgba(210,235,255,${0.3 + 0.25 * pulse})`;
       ctx.lineWidth = 0.8 * s;
       ctx.beginPath();
-      ctx.ellipse(x, y, r * 1.3, r, 0, 0, Math.PI * 2);
+      ctx.ellipse(x, y, r * 1.1, r * 0.85, -0.5, 0, Math.PI * 2);
       ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(x, y, r * 1.1, r * 0.85, -0.5, -Math.PI * 0.9, -Math.PI * 0.2);
       ctx.stroke();
       if (k % 3 === 0) {
         ctx.strokeStyle = 'rgba(200,230,255,0.12)';
