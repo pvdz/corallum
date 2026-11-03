@@ -1686,7 +1686,7 @@ canvas.addEventListener('pointerdown', (e) => {
     // over the reef for as long as the sweeping goes on.
     if (who.id !== 'ossel') {
       const now = performance.now();
-      const again = labelShown.id === who.id && now - labelShown.at < 20_000;
+      const again = labelShown.id === who.id && now - labelShown.at < 60_000;
       if (!again || g || wasVisitor) {
         const [lx, ly] = toScreen(who.x, who.y);
         showCreatureLabel(who.id, lx / dpr, ly / dpr, (who.r * zoom.k) / dpr, e.clientX, e.clientY);
