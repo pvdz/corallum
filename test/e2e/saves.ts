@@ -23,7 +23,7 @@ await withGame(async (open) => {
     const { page, errors } = await open(VIEWPORTS[1]!, '?bot=3000');
     await page.waitForFunction(() => window.corallum, null, { timeout: 30000 });
     for (let i = 0; i < 10 && (await page.locator('.reader:not([hidden])').count()); i++) await page.keyboard.press('Escape');
-    await page.locator('#view').click();
+    await page.locator('#view-mode').click();
     const shot = page.waitForEvent('download');
     await page.locator('#photo').click();
     const flash = await page.locator('.photo-flash').count();
@@ -59,13 +59,14 @@ await withGame(async (open) => {
     const [c1] = await Promise.all([page.waitForEvent('filechooser'), page.locator('button', { hasText: 'Load a file' }).click()]);
     await c1.setFiles({ name: 'save.txt', mimeType: 'text/plain', buffer: Buffer.from(text) });
     await page.waitForTimeout(800);
-    const kept = (await page.evaluate(() => window.corallum!.state.height)) === h0;
+    // Kept: the reef is still its own (it may have grown a little meanwhile), not the 20 m one.
+    const kept = (await page.evaluate(() => window.corallum!.state.height)) >= h0;
     page.once('dialog', (d) => void d.accept());
     const [c2] = await Promise.all([page.waitForEvent('filechooser'), page.locator('button', { hasText: 'Load a file' }).click()]);
     await c2.setFiles({ name: 'save.txt', mimeType: 'text/plain', buffer: Buffer.from(text) });
     await page.waitForFunction((h) => (window.corallum?.state.height ?? h) < h, h0, { timeout: 10000 });
     const ok = /replaces the reef/.test(asked) && kept && !errors.length;
-    console.log(`${ok ? 'ok  ' : 'FAIL'} loading over an established reef asks first; declined, it is kept`);
+    console.log(`${ok ? "ok  " : "FAIL"} loading over an established reef asks first; declined, it is kept${ok ? "" : ` (asked "${asked}", kept ${kept}, ${errors.join(" | ")})`}`);
     failed ||= !ok;
   }
   // A save that cannot be read is moved aside, and the new reef still saves.
