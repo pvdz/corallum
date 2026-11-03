@@ -167,4 +167,28 @@ await withGame(async (open) => {
     console.log(`${ok ? 'ok  ' : 'FAIL'} keys after the mouse: P buys (${bought}), Space sweeps (${swept}${numbered ? ', a number shown' : ', NO number'}), sound stays ${sound === 'true' ? 'on' : 'off'}, a clicked header ${headerOk ? 'keeps its fold' : 'took the Space'}`);
     if (!ok) process.exitCode = 1;
   }
+  // The back gesture with a story card open closes the card and stays in the game; a card closed
+  // by its button leaves no extra history entry behind.
+  {
+    const { page, errors } = await open(VIEWPORTS[1]!, '?bot=900');
+    await page.waitForFunction(() => window.corallum, null, { timeout: 30000 });
+    for (let i = 0; i < 10 && (await page.locator('.reader:not([hidden])').count()); i++) await page.locator('.reader:not([hidden]) button').first().click();
+    await page.locator('.tab', { hasText: 'Bands' }).click();
+    await page.locator('.band').first().click();
+    await page.locator('.reader:not([hidden])').waitFor({ timeout: 3000 });
+    await page.waitForTimeout(400);
+    const url = page.url();
+    await page.evaluate(() => history.back());
+    await page.locator('.reader:not([hidden])').waitFor({ state: 'detached', timeout: 3000 }).catch(() => {});
+    await page.waitForTimeout(300);
+    const closed = (await page.locator('.reader:not([hidden])').count()) === 0 && page.url() === url;
+    await page.locator('.band').first().click();
+    await page.waitForTimeout(400);
+    await page.locator('.reader:not([hidden]) button').first().click();
+    await page.waitForTimeout(500);
+    const clean = (await page.evaluate(() => history.state)) === null;
+    const ok = closed && clean && !errors.length;
+    console.log(`${ok ? 'ok  ' : 'FAIL'} Back closes a story card (${closed ? 'closed, still here' : 'NOT closed'}), its button leaves ${clean ? 'no' : 'an extra'} history entry`);
+    if (!ok) process.exitCode = 1;
+  }
 });

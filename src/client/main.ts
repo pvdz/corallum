@@ -1875,6 +1875,34 @@ photoBtn.addEventListener('click', () => {
 });
 ui.append(photoBtn);
 
+// The back gesture (Android, or a browser's Back) with a card open closes the card, as Escape
+// does, instead of leaving the reef. While a closeable card is up the page keeps one history
+// entry of its own on top; Back pops it, and a card closed any other way takes the entry back off.
+// (A browser skips entries pushed without a tap first, so a card open at load is not covered.)
+const CLOSEABLE = '.reader:not([hidden]), .lightbox:not([hidden]), .finale.choice-screen:not([hidden])';
+let backArmed = false;
+let backOwn = false;
+function syncBack(): void {
+  const open = !!document.querySelector(CLOSEABLE);
+  if (open && !backArmed) {
+    history.pushState({ corallumCard: 1 }, '');
+    backArmed = true;
+  } else if (!open && backArmed) {
+    backArmed = false;
+    if ((history.state as { corallumCard?: number } | null)?.corallumCard) {
+      backOwn = true;
+      history.back();
+    }
+  }
+}
+window.addEventListener('popstate', () => {
+  if (backOwn) { backOwn = false; return; }
+  if (!backArmed) return;
+  backArmed = false;
+  document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+});
+setInterval(syncBack, 200);
+
 // Keyboard: Space sweeps; F eats a falling feast; P, B and G buy a polyp, a band and glimmerseed.
 const KEYS: Record<string, UpgradeId> = { p: 'polyp', b: 'skeleton', g: 'symbiont' };
 /** The button the pointer last pressed (focus stays on it in Chrome); a Tab means the keyboard moved on. */
