@@ -1266,7 +1266,7 @@ export function createBreachScene(seed: number): Scene {
     if (v.bands.includes('waiting-fish')) sight('reef-fish');
   }
 
-  /** Moon jellies drifting under the surface: translucent saucers with four pale rings, pulsing. */
+  /** Moon jellies drifting under the surface: translucent saucers with a pale four-lobed clover, pulsing. */
   function drawMoonJellies(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
     const wy = waterY();
