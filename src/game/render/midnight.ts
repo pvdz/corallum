@@ -1085,19 +1085,34 @@ export function createMidnightScene(seed: number): Scene {
     const scatter = touch && touch.age < 6 ? Math.sin(Math.min(1, touch.age / 6) * Math.PI) : 0;
     const cx = focus.x + focus.w * (0.2 + 0.1 * Math.sin(t * 0.03)), cy = focus.y + focus.h * (0.62 + 0.05 * Math.sin(t * 0.05));
     spot('bristlemouths', cx, cy, 60 * s);
-    ctx.save();
-    ctx.strokeStyle = 'rgba(190,200,215,0.6)';
-    ctx.lineWidth = 1 * s;
-    ctx.beginPath();
+    // Each a tiny slim fish, tilted a little; the cloud mostly faces one way, and the turn runs
+    // through it as a wave. A few catch the light at any moment.
+    const bodies = new Path2D(), glints = new Path2D();
     for (let i = 0; i < 60; i++) {
       const a = i * 2.39996 + t * 0.05;
       const r = Math.sqrt(i / 60) * 55 * s * (1 + 1.6 * scatter);
       const x = cx + Math.cos(a) * r + Math.sin(t * 0.7 + i) * 3 * s, y = cy + Math.sin(a) * r * 0.5;
-      const dir = Math.sin(t * 0.2 + i * 0.3) > 0 ? 1 : -1;
-      ctx.moveTo(x, y);
-      ctx.lineTo(x + dir * 4 * s, y);
+      const dir = Math.sin(t * 0.08 - (x - cx) / (40 * s)) >= 0 ? 1 : -1;
+      const len = (3.6 + 1.6 * ((i * 0.618) % 1)) * s;
+      const tilt = Math.sin(t * 0.5 + i * 1.7) * 0.25;
+      const hx = x + dir * len * Math.cos(tilt), hy = y + len * Math.sin(tilt);
+      const nx = -Math.sin(tilt) * 0.55 * s, ny = Math.cos(tilt) * 0.55 * s;
+      bodies.moveTo(x, y);
+      bodies.lineTo((x + hx) / 2 + nx, (y + hy) / 2 + ny);
+      bodies.lineTo(hx, hy);
+      bodies.lineTo((x + hx) / 2 - nx, (y + hy) / 2 - ny);
+      bodies.closePath();
+      if (Math.sin(t * 1.3 + i * 2.1) > 0.93) {
+        const gx = (x + 2 * hx) / 3, gy = (y + 2 * hy) / 3;
+        glints.moveTo(gx + 0.9 * s, gy);
+        glints.arc(gx, gy, 0.9 * s, 0, Math.PI * 2);
+      }
     }
-    ctx.stroke();
+    ctx.save();
+    ctx.fillStyle = 'rgba(180,192,210,0.55)';
+    ctx.fill(bodies);
+    ctx.fillStyle = 'rgba(235,242,255,0.9)';
+    ctx.fill(glints);
     ctx.restore();
   }
 
