@@ -45,18 +45,28 @@ export function drawWater(ctx: CanvasRenderingContext2D, id: WaterId, F: Focus, 
       ctx.stroke();
     }
   } else if (id === 'gritty') {
-    // Fine sand carried sideways in streaks.
-    ctx.strokeStyle = light ? `rgba(150,120,80,${0.4 * a})` : `rgba(240,220,180,${0.38 * a})`;
-    ctx.lineWidth = 1.4 * s;
+    // Fine sand carried sideways in streaks: each a trail of grains, faint at its tail and
+    // densest at its head, riding a slow wave. Three paths (tail, middle, head) for all of them.
+    const rgb = light ? '236,222,186' : '240,220,180';
+    const parts = [new Path2D(), new Path2D(), new Path2D()];
     for (let i = 0; i < 90; i++) {
-      const y = F.y + F.h * ((i * 0.618034) % 1);
+      // Stirred up from the floor: thickest low down, thinning toward the surface.
+      const y = F.y + F.h * (0.2 + 0.8 * Math.sqrt((i * 0.618034) % 1));
       const x = F.x + ((t * (0.06 + (i % 7) * 0.01) + i * 0.13) % 1.2 - 0.1) * F.w;
-      const len = (14 + (i % 4) * 8) * s;
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(x + len, y + Math.sin(t + i) * 1.5 * s);
-      ctx.stroke();
+      const len = (18 + (i % 4) * 10) * s;
+      const wave = (q: number) => y + Math.sin(t * 0.8 + i + q * 2.2) * 2.2 * s;
+      for (let k = 0; k < 3; k++) {
+        const q0 = k / 3, q1 = (k + 1) / 3;
+        parts[k]!.moveTo(x + len * q0, wave(q0));
+        parts[k]!.quadraticCurveTo(x + len * (q0 + q1) / 2, wave((q0 + q1) / 2), x + len * q1, wave(q1));
+      }
     }
+    ctx.lineCap = 'round';
+    [0.1, 0.2, 0.34].forEach((k, j) => {
+      ctx.strokeStyle = `rgba(${rgb},${(k * a * (light ? 1.3 : 1)).toFixed(3)})`;
+      ctx.lineWidth = (0.8 + 0.25 * j) * s;
+      ctx.stroke(parts[j]!);
+    });
   } else if (id === 'warm') {
     // Heat shimmer: slow wavering bands.
     ctx.strokeStyle = `rgba(255,200,160,${0.12 * a})`;
