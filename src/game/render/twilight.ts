@@ -1433,36 +1433,53 @@ export function createTwilightScene(seed: number): Scene {
     g.addColorStop(0, '#3a4048');
     g.addColorStop(1, '#6a7078');
     ctx.fillStyle = g;
-    // Body: long, blunt-headed, with one dorsal fin far back and a long upper tail.
+    // Body: long and heavy, blunt-headed, tapering to a long upper tail lobe with a small lower one.
     ctx.beginPath();
-    ctx.moveTo(40 * s, 0);
-    ctx.quadraticCurveTo(36 * s, -9 * s, 10 * s, -9 * s);
-    ctx.quadraticCurveTo(-30 * s, -7 * s, -50 * s, -2 * s + sway);
-    ctx.lineTo(-78 * s, -10 * s + sway * 1.6);
-    ctx.lineTo(-70 * s, 2 * s + sway * 1.4);
-    ctx.quadraticCurveTo(-30 * s, 7 * s, 10 * s, 8 * s);
-    ctx.quadraticCurveTo(36 * s, 8 * s, 40 * s, 0);
+    ctx.moveTo(42 * s, 0.5 * s);
+    ctx.bezierCurveTo(42 * s, -6 * s, 30 * s, -9 * s, 14 * s, -9 * s);
+    ctx.quadraticCurveTo(-20 * s, -8.5 * s, -48 * s, -3 * s + sway);
+    ctx.lineTo(-58 * s, -5 * s + sway * 1.3);
+    ctx.quadraticCurveTo(-70 * s, -9 * s + sway * 1.5, -80 * s, -12 * s + sway * 1.7);
+    ctx.quadraticCurveTo(-72 * s, -3 * s + sway * 1.5, -62 * s, 0.5 * s + sway * 1.4);
+    ctx.lineTo(-66 * s, 4.5 * s + sway * 1.4);
+    ctx.lineTo(-54 * s, 2.5 * s + sway * 1.2);
+    ctx.quadraticCurveTo(-20 * s, 8 * s, 12 * s, 8.5 * s);
+    ctx.bezierCurveTo(30 * s, 8.5 * s, 42 * s, 5 * s, 42 * s, 0.5 * s);
     ctx.fill();
-    // The dorsal fin, set far back, and a pectoral.
+    // The one dorsal fin, set far back and swept, and a broad pectoral.
     ctx.beginPath();
-    ctx.moveTo(-26 * s, -7 * s);
-    ctx.lineTo(-34 * s, -16 * s);
-    ctx.lineTo(-40 * s, -6 * s);
+    ctx.moveTo(-22 * s, -7.5 * s);
+    ctx.quadraticCurveTo(-28 * s, -16 * s, -36 * s, -15.5 * s);
+    ctx.quadraticCurveTo(-34 * s, -10 * s, -38 * s, -6.2 * s);
+    ctx.closePath();
     ctx.fill();
     ctx.beginPath();
-    ctx.moveTo(14 * s, 6 * s);
-    ctx.lineTo(4 * s, 16 * s);
-    ctx.lineTo(-2 * s, 7 * s);
+    ctx.moveTo(16 * s, 6 * s);
+    ctx.quadraticCurveTo(12 * s, 14 * s, 2 * s, 17 * s);
+    ctx.quadraticCurveTo(4 * s, 11 * s, -2 * s, 7.5 * s);
+    ctx.closePath();
     ctx.fill();
+    // A paler belly line along the flank.
+    ctx.strokeStyle = 'rgba(150,158,168,0.16)';
+    ctx.lineWidth = 2 * s;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(34 * s, 4 * s);
+    ctx.quadraticCurveTo(0, 6.5 * s, -40 * s, 2 * s + sway * 0.8);
+    ctx.stroke();
     // Six gill slits.
     ctx.strokeStyle = 'rgba(20,24,30,0.7)';
     ctx.lineWidth = 0.8 * s;
     for (let k = 0; k < 6; k++) {
       ctx.beginPath();
       ctx.moveTo((24 - k * 2.6) * s, -4 * s);
-      ctx.lineTo((23 - k * 2.6) * s, 3 * s);
+      ctx.quadraticCurveTo((22.6 - k * 2.6) * s, -0.5 * s, (23.4 - k * 2.6) * s, 3 * s);
       ctx.stroke();
     }
+    ctx.fillStyle = '#0c1012';
+    ctx.beginPath();
+    ctx.arc(32 * s, -3 * s, 1.6 * s, 0, Math.PI * 2);
+    ctx.fill();
     // The green eye.
     ctx.globalCompositeOperation = 'lighter';
     glow(ctx, 32 * s, -3 * s, 5 * s, '120,255,160', 0.8);
