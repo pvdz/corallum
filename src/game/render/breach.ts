@@ -638,14 +638,16 @@ export function createBreachScene(seed: number): Scene {
     const [mx] = moonPos();
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    // Glitter path.
+    // Glitter: the moon's path caught on the wave tops, a thin band of glints along the
+    // waterline under the moon (below it the scene is under water, seen from the side).
     for (let i = 0; i < 60; i++) {
-      const yy = wy + (i / 60) * focus.h * 0.25;
-      const spread = 8 * dpr + (i / 60) * focus.w * 0.12;
+      const q = i / 60;
+      const yy = wy - 2 * dpr + q * q * focus.h * 0.03;
+      const spread = 10 * dpr + (1 - q) * focus.w * 0.1;
       const xx = mx + Math.sin(t * 2.1 + i * 1.7) * spread;
-      const a = (0.5 - i / 150) * (0.3 + 0.7 * lit) * (0.5 + 0.5 * Math.sin(t * 3 + i));
+      const a = (0.55 - q * 0.4) * (0.3 + 0.7 * lit) * (0.5 + 0.5 * Math.sin(t * 3 + i));
       ctx.fillStyle = `rgba(250,248,225,${Math.max(0, a)})`;
-      ctx.fillRect(xx, yy, (10 + i * 0.5) * dpr, 1.4 * dpr);
+      ctx.fillRect(xx, yy, (6 + (1 - q) * 14) * dpr, 1.2 * dpr);
     }
     // Moonlight shafts.
     for (let i = 0; i < 4; i++) {
