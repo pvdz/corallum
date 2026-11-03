@@ -491,16 +491,44 @@ function cucumbers(ctx: CanvasRenderingContext2D, L: ReefLayout, s: number, t: n
     ctx.beginPath();
     for (let q = 0; q < 3; q++) ctx.arc(x - side * (16 + q * 5) * s, y - 1 * s, 2 * s, 0, Math.PI * 2);
     ctx.stroke();
-    ctx.fillStyle = k ? '#5a3a2a' : '#7a4a2c';
+    // A plump, soft body, humped and lit from above, its head end (toward where it is going)
+    // a little narrower with a frill of short feeding tentacles patting the sand; warts along the back.
+    const len = 13 * s * squeeze, hgt = 4.6 * s / Math.sqrt(squeeze);
+    const dark = k ? '#4e3224' : '#6a3e24', light = k ? '#8a6248' : '#b07448';
+    const g = ctx.createLinearGradient(0, y - 3 * s - hgt, 0, y);
+    g.addColorStop(0, light);
+    g.addColorStop(1, dark);
+    ctx.fillStyle = g;
     ctx.beginPath();
-    ctx.ellipse(x, y - 3 * s, 13 * s * squeeze, 4 * s / Math.sqrt(squeeze), 0, 0, Math.PI * 2);
+    ctx.moveTo(x - side * len, y - 1 * s);
+    ctx.quadraticCurveTo(x - side * len * 1.05, y - 3 * s - hgt * 0.9, x - side * len * 0.4, y - 3 * s - hgt);
+    ctx.quadraticCurveTo(x + side * len * 0.5, y - 3 * s - hgt * 1.05, x + side * len * 0.95, y - 3 * s - hgt * 0.4);
+    ctx.quadraticCurveTo(x + side * len * 1.05, y - 0.5 * s, x + side * len * 0.8, y);
+    ctx.lineTo(x - side * len * 0.9, y);
+    ctx.closePath();
     ctx.fill();
-    ctx.fillStyle = k ? '#7a5640' : '#a06a40';
-    for (let b = -4; b <= 4; b++) {
-      ctx.beginPath();
-      ctx.arc(x + b * 2.8 * s * squeeze, y - 6 * s, 1 * s, 0, Math.PI * 2);
-      ctx.fill();
+    // Feeding tentacles at the head, patting the sand in turn.
+    ctx.strokeStyle = light;
+    ctx.lineWidth = 0.9 * s;
+    ctx.beginPath();
+    for (let q = 0; q < 5; q++) {
+      const pat = Math.max(0, Math.sin(t * 1.6 + q * 1.3)) * 1.6 * s;
+      const hx = x + side * len * 0.95, hy = y - 2.5 * s - q * 0.7 * s;
+      ctx.moveTo(hx, hy);
+      ctx.quadraticCurveTo(hx + side * 2.5 * s, hy - 1 * s, hx + side * (2.2 + q * 0.4) * s, hy + 1.6 * s + pat);
     }
+    ctx.stroke();
+    // Warts (papillae) along the back, a shade lighter, with a dark base.
+    ctx.fillStyle = light;
+    ctx.beginPath();
+    for (let b = -4; b <= 4; b++) {
+      const u = b / 4.5;
+      const bx = x + u * len * 0.85, by = y - 3 * s - hgt * (0.95 - 0.35 * u * u);
+      const br = (0.9 + 0.3 * ((b + 4) % 2)) * s;
+      ctx.moveTo(bx + br, by);
+      ctx.arc(bx, by, br, 0, Math.PI * 2);
+    }
+    ctx.fill();
   }
 }
 
