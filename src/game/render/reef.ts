@@ -177,6 +177,8 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     ctx.fillStyle = shadow;
     const rims: number[] = [];
     ctx.globalAlpha = 0.55;
+    // Pits and rims each in one path (they rarely overlap).
+    ctx.beginPath();
     for (let i = 0; i < coral.count; i++) {
       const r = radii[i]!;
       const p = coral.parent[i]!;
@@ -194,19 +196,20 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
         const along = (k + 0.5) / n;
         const px = x0 + (x1 - x0) * along + nx * across, py = y0 + (y1 - y0) * along + ny * across;
         const pr = lw * 0.07 + 0.4 * L.dpr;
-        ctx.beginPath();
+        ctx.moveTo(px + pr, py);
         ctx.arc(px, py, pr, 0, Math.PI * 2);
-        ctx.fill();
         rims.push(px - pr * 0.4, py - pr * 0.5, pr * 0.55);
       }
     }
+    ctx.fill();
     ctx.fillStyle = light;
     ctx.globalAlpha = 0.4;
+    ctx.beginPath();
     for (let k = 0; k < rims.length; k += 3) {
-      ctx.beginPath();
+      ctx.moveTo(rims[k]! + rims[k + 2]!, rims[k + 1]!);
       ctx.arc(rims[k]!, rims[k + 1]!, rims[k + 2]!, 0, Math.PI * 2);
-      ctx.fill();
     }
+    ctx.fill();
     ctx.globalAlpha = 1;
     // Growth bands: faint rings where the stone crossed each band line.
     if (L.bandStep > 0) {
@@ -337,15 +340,16 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     ctx.strokeStyle = colours[1];
     ctx.lineWidth = 2.2 * s;
     const open = 1 - flick * 0.6;
+    // The eight tentacles in one stroke.
+    ctx.beginPath();
     for (let i = 0; i < 8; i++) {
       const a = -Math.PI / 2 + lean * 0.4 + (i - 3.5) * 0.32 * open + Math.sin(t * 0.9 + i + phase) * 0.08;
       const len = (16 + Math.sin(t * 1.1 + i * 1.3 + phase) * 2) * s;
       const tx = ox + Math.cos(a) * len, ty = oy + Math.sin(a) * len;
-      ctx.beginPath();
       ctx.moveTo(ox, oy);
       ctx.quadraticCurveTo(ox + Math.cos(a - 0.4) * len * 0.6, oy + Math.sin(a - 0.4) * len * 0.6, tx, ty);
-      ctx.stroke();
     }
+    ctx.stroke();
   }
 
   /**
