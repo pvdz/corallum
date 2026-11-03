@@ -65,23 +65,47 @@ export function drawFeast(ctx: CanvasRenderingContext2D, f: Feast, age: number, 
 
 /** A drifting mat of sargassum weed: tangled golden fronds buoyed by little round floats. */
 function drawSargassum(ctx: CanvasRenderingContext2D, s: number, t: number, seed: number): void {
+  // A drifting clump of gulfweed: thin olive stems branching out, narrow serrated blades along
+  // them, and clusters of small round air bladders that keep it afloat.
   ctx.lineCap = 'round';
-  for (let i = 0; i < 14; i++) {
+  const stems = new Path2D(), blades = new Path2D(), floats = new Path2D();
+  for (let i = 0; i < 9; i++) {
     const a = i * 2.4 + seed;
-    const len = (14 + (i % 4) * 5) * s;
-    const sway = Math.sin(t * 0.9 + i) * 0.2;
-    const ex = Math.cos(a + sway) * len, ey = Math.sin(a + sway) * len * 0.55;
-    ctx.strokeStyle = i % 3 ? 'rgba(200,150,50,0.9)' : 'rgba(150,120,40,0.9)';
-    ctx.lineWidth = 2.2 * s;
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.quadraticCurveTo(ex * 0.5 + Math.sin(a) * 4 * s, ey * 0.5, ex, ey);
-    ctx.stroke();
-    ctx.fillStyle = 'rgba(230,190,80,0.95)';
-    ctx.beginPath();
-    ctx.arc(ex, ey, 1.8 * s, 0, Math.PI * 2);
-    ctx.fill();
+    const len = (16 + (i % 4) * 5) * s;
+    const sway = Math.sin(t * 0.9 + i) * 0.15;
+    const ex = Math.cos(a + sway) * len, ey = Math.sin(a + sway) * len * 0.6;
+    const cx = ex * 0.5 + Math.sin(a * 1.7) * 5 * s, cy = ey * 0.5 + Math.cos(a) * 3 * s;
+    stems.moveTo(0, 0);
+    stems.quadraticCurveTo(cx, cy, ex, ey);
+    for (let k = 1; k <= 4; k++) {
+      const u = k / 5;
+      const px = 2 * (1 - u) * u * cx + u * u * ex, py = 2 * (1 - u) * u * cy + u * u * ey;
+      const ang = a + sway + (k % 2 ? 0.9 : -0.9);
+      const bl = (7 + ((i + k) % 3) * 1.5) * s;
+      // A blade: a thin leaf off the stem.
+      const tx = px + Math.cos(ang) * bl, ty = py + Math.sin(ang) * bl * 0.8;
+      const nx = -Math.sin(ang) * 2 * s, ny = Math.cos(ang) * 2 * s;
+      blades.moveTo(px, py);
+      blades.quadraticCurveTo((px + tx) / 2 + nx, (py + ty) / 2 + ny, tx, ty);
+      blades.quadraticCurveTo((px + tx) / 2 - nx, (py + ty) / 2 - ny, px, py);
+    }
+    // Two or three bladders near the tip.
+    for (let q = 0; q < 2 + (i % 2); q++) {
+      const bx = ex + Math.cos(a + q * 2.1) * 2.6 * s, by = ey + Math.sin(a + q * 2.1) * 2 * s;
+      floats.moveTo(bx + 1.5 * s, by);
+      floats.arc(bx, by, 1.5 * s, 0, Math.PI * 2);
+    }
   }
+  ctx.strokeStyle = 'rgba(120,96,36,0.95)';
+  ctx.lineWidth = 1.3 * s;
+  ctx.stroke(stems);
+  ctx.fillStyle = 'rgba(176,140,52,0.95)';
+  ctx.fill(blades);
+  ctx.fillStyle = 'rgba(214,176,74,1)';
+  ctx.fill(floats);
+  ctx.strokeStyle = 'rgba(110,84,30,0.7)';
+  ctx.lineWidth = 0.5 * s;
+  ctx.stroke(floats);
 }
 
 /** A swarm of moon plankton: dozens of tiny silver-pink lights wheeling around one another. */
