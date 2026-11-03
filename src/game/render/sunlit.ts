@@ -951,14 +951,20 @@ export function createSunlitScene(seed: number): Scene {
       ctx.stroke();
     }
     // The fin: a rippling skirt all round the mantle.
-    ctx.fillStyle = 'rgba(240,210,190,0.45)';
+    // Body-coloured and nearly opaque (a pale wash of it read as an aura in the blue), with a
+    // light rippling edge.
+    ctx.fillStyle = 'rgba(196,132,100,0.9)';
     ctx.beginPath();
     for (let i = 0; i <= 24; i++) {
       const th = (i / 24) * Math.PI * 2;
       const r = 1 + 0.06 * Math.sin(th * 8 + t * 6);
       ctx.lineTo(Math.cos(th) * 15 * s * r - 2 * s, Math.sin(th) * 8.5 * s * r);
     }
+    ctx.closePath();
     ctx.fill();
+    ctx.strokeStyle = 'rgba(250,226,200,0.6)';
+    ctx.lineWidth = Math.max(0.8, 0.7 * s);
+    ctx.stroke();
     // The mantle, with bands of colour running down it.
     ctx.save();
     ctx.beginPath();

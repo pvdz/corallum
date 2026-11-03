@@ -1049,3 +1049,4 @@ date, what landed, what is half-done, what's next.
 - Garden eels were bare pale sticks: each is a slim edged body bent over at the top like a question mark, a thicker head facing into the current, an eye and dark speckles. The colony is drawn in six batched paths (was two to three calls an eel, 22 eels).
 - The giant clam's shell was a flat grey zigzag with a few strokes (a cardboard crown). Each valve is a fan of seven deep folds, light and shaded in turn, scalloped at the lip and tapering to the hinge, with ribs and a shade toward the sand; the back valve shows behind the mantle.
 - Seahorses were a thick stroked S with a ball for a head (a pink worm). Each is a filled silhouette: crowned head, tube snout, pot belly, armour rings, an eye, the fluttering fin on its back and a tail tapering as it curls under.
+- The cuttlefish's fin skirt was a pale peach wash that turned blue-grey over the water, an aura round it: it is body-coloured with a light rippling edge.
