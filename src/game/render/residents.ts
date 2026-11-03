@@ -163,18 +163,38 @@ function gobies(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s: num
     ctx.translate(x, y);
     ctx.scale(dir, 1);
     ctx.rotate(-0.15 - hop * 0.4);
-    ctx.fillStyle = 'rgba(200, 236, 190, 0.85)';
+    // A coral goby: a slim, slightly see-through body, a blunt head, a rounded tail, a little
+    // sail of a dorsal fin, a darker line along the side and a big eye set high.
+    ctx.fillStyle = 'rgba(200, 236, 190, 0.6)';
     ctx.beginPath();
-    ctx.ellipse(0, 0, 5.2 * s, 1.9 * s, 0, 0, Math.PI * 2);
+    ctx.moveTo(-0.5 * s, -1.6 * s);
+    ctx.quadraticCurveTo(-1.5 * s, -3.6 * s, -3.6 * s, -1.4 * s);
+    ctx.closePath();
+    ctx.moveTo(-4.4 * s, 0);
+    ctx.quadraticCurveTo(-7.8 * s, -2.2 * s, -7.6 * s, 0);
+    ctx.quadraticCurveTo(-7.8 * s, 2.2 * s, -4.4 * s, 0);
     ctx.fill();
+    ctx.fillStyle = 'rgba(200, 236, 190, 0.88)';
     ctx.beginPath();
-    ctx.moveTo(-4.6 * s, 0);
-    ctx.lineTo(-7.4 * s, -1.6 * s);
-    ctx.lineTo(-7.4 * s, 1.6 * s);
+    ctx.moveTo(5.4 * s, 0.2 * s);
+    ctx.quadraticCurveTo(5.2 * s, -1.9 * s, 2.5 * s, -1.9 * s);
+    ctx.quadraticCurveTo(-3 * s, -1.6 * s, -4.8 * s, 0);
+    ctx.quadraticCurveTo(-3 * s, 1.5 * s, 2.5 * s, 1.8 * s);
+    ctx.quadraticCurveTo(5.2 * s, 1.8 * s, 5.4 * s, 0.2 * s);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(70, 120, 80, 0.55)';
+    ctx.lineWidth = 0.5 * s;
+    ctx.beginPath();
+    ctx.moveTo(3 * s, 0.2 * s);
+    ctx.lineTo(-4.2 * s, 0.1 * s);
+    ctx.stroke();
+    ctx.fillStyle = '#f2fae8';
+    ctx.beginPath();
+    ctx.arc(3.4 * s, -0.8 * s, 1 * s, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = '#1b2a22';
     ctx.beginPath();
-    ctx.arc(3.2 * s, -0.5 * s, 0.75 * s, 0, Math.PI * 2);
+    ctx.arc(3.6 * s, -0.8 * s, 0.6 * s, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }
