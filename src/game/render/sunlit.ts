@@ -869,13 +869,32 @@ export function createSunlitScene(seed: number): Scene {
     ctx.beginPath();
     ctx.ellipse(21 * s, 0, 4 * s, 14 * s, 0, -Math.PI / 2, Math.PI / 2);
     ctx.fill();
+    // A blunt snout with a small pouting mouth, a round eye with a pale rim, the gill opening,
+    // and faint mottling over the disc.
+    ctx.fillStyle = 'rgba(70,86,98,0.18)';
+    ctx.beginPath();
+    for (const [mx, my, mr] of [[-4, -8, 4], [6, 5, 5], [-8, 7, 3.5], [10, -7, 3], [0, 0, 3]] as const) {
+      ctx.moveTo((mx + mr) * s, my * s);
+      ctx.ellipse(mx * s, my * s, mr * s, mr * 0.8 * s, 0.4, 0, Math.PI * 2);
+    }
+    ctx.fill();
+    ctx.fillStyle = '#e4ecf0';
+    ctx.beginPath();
+    ctx.arc(-13 * s, -3 * s, 2.6 * s, 0, Math.PI * 2);
+    ctx.fill();
     ctx.fillStyle = '#1c2228';
     ctx.beginPath();
-    ctx.arc(-13 * s, -3 * s, 1.8 * s, 0, Math.PI * 2);
+    ctx.arc(-13.4 * s, -3 * s, 1.5 * s, 0, Math.PI * 2);
     ctx.fill();
+    ctx.strokeStyle = 'rgba(60,74,86,0.6)';
+    ctx.lineWidth = 0.9 * s;
+    ctx.lineCap = 'round';
     ctx.beginPath();
-    ctx.arc(-21 * s, 1 * s, 1.2 * s, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.moveTo(-22 * s, 0.4 * s);
+    ctx.quadraticCurveTo(-21 * s, 1.6 * s, -20 * s, 0.6 * s);
+    ctx.moveTo(-7 * s, -2 * s);
+    ctx.quadraticCurveTo(-8.4 * s, 1 * s, -7 * s, 4 * s);
+    ctx.stroke();
     ctx.restore();
   }
 

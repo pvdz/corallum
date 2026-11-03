@@ -1118,3 +1118,4 @@ date, what landed, what is half-done, what's next.
 - The shore bird lifting off the crown at the release was a stroked "M" like the old gull: filled pointed wings bent at the wrist, a head and bill.
 - Fuzz after the last drawing changes: tiny phone at the Breach, landscape at the Twilight, desktop after the ending; ~1,270 actions, no errors. Smoke, systems and finale e2e green.
 - README scene images (docs/readme/*.jpg: Silt Floor, Midnight Water, Twilight Shelf, Sunlit Crown, Breach, full moon) and the link preview (src/client/icons/share.jpg) retaken with tonight's art; the old ones showed the grape-cluster stones, the "oooo" jellies and the glitter ladder. The desktop panel and phone shots too.
+- The mola's eye and mouth were two black dots side by side (a ghost's face): a round eye with a pale rim, a small pouting mouth at the blunt snout, the gill opening and faint mottling.
