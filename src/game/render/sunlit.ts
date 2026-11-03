@@ -1074,17 +1074,18 @@ export function createSunlitScene(seed: number): Scene {
     const open = touch && touch.age < 8 ? Math.min(1, Math.max(0, (touch.age - 2) / 6)) * 0.85 + (touch.age < 0.4 ? 1 - touch.age / 0.4 : 0) * 0.15 : 1;
     const wdt = 30 * s, gap = 9 * s * open;
     spot('giant-clam', x, y - 8 * s, 30 * s);
-    const lip = (dir: number) => {
-      ctx.beginPath();
-      ctx.moveTo(x - wdt, y);
-      for (let i = 0; i <= 10; i++) {
-        const xx = x - wdt + (i / 10) * wdt * 2;
-        const bulge = Math.sin((i / 10) * Math.PI);
-        ctx.lineTo(xx, y - 6 * s - bulge * 6 * s + dir * (gap / 2) * bulge + (i % 2 ? 2.4 : -2.4) * s * bulge);
-      }
-      ctx.lineTo(x + wdt, y);
-    };
     ctx.save();
+    // The back valve, behind the mantle: its wavy lip, tapering to the hinge like the front one.
+    ctx.fillStyle = '#b4aa94';
+    ctx.beginPath();
+    ctx.moveTo(x - wdt * 0.62, y + 1 * s);
+    for (let i = 0; i <= 10; i++) {
+      const bulge = Math.sin((i / 10) * Math.PI);
+      ctx.lineTo(x - wdt + (i / 10) * wdt * 2, y - 6 * s - bulge * 6 * s - (gap / 2) * bulge + (i % 2 ? 2.4 : -2.4) * s * bulge);
+    }
+    ctx.lineTo(x + wdt * 0.62, y + 1 * s);
+    ctx.closePath();
+    ctx.fill();
     // The mantle between the lips.
     if (open > 0.05) {
       const g = ctx.createLinearGradient(x - wdt, 0, x + wdt, 0);
@@ -1105,22 +1106,55 @@ export function createSunlitScene(seed: number): Scene {
         ctx.fill();
       }
     }
-    // The shell: two ribbed halves with wavy lips.
-    for (const dir of [1, -1]) {
-      ctx.fillStyle = dir > 0 ? '#d8d0bc' : '#c4baa4';
-      lip(dir);
+    // The shell, front valve: a fan of deep folds running down to the hinge, light and shaded in
+    // turn, each fold's lip a scallop.
+    const folds = 7;
+    const edge = (q: number) => {
+      const bulge = Math.sin(q * Math.PI);
+      return y - 6 * s - bulge * 6 * s + (gap / 2) * bulge;
+    };
+    const hx = x, hy = y + 1 * s;
+    for (let i = 0; i < folds; i++) {
+      const q0 = i / folds, q1 = (i + 1) / folds, qm = (q0 + q1) / 2;
+      const x0 = x - wdt + q0 * wdt * 2, x1 = x - wdt + q1 * wdt * 2, xm = (x0 + x1) / 2;
+      const crest = 3.2 * s * (0.4 + 0.6 * Math.sin(qm * Math.PI));
+      ctx.fillStyle = i % 2 ? '#c8bea6' : '#e0d8c2';
+      ctx.beginPath();
+      ctx.moveTo(hx + (x0 - hx) * 0.62, hy);
+      ctx.lineTo(x0, edge(q0));
+      ctx.quadraticCurveTo(xm, edge(qm) - crest * 2, x1, edge(q1));
+      ctx.lineTo(hx + (x1 - hx) * 0.62, hy);
       ctx.closePath();
       ctx.fill();
     }
-    ctx.strokeStyle = 'rgba(110,96,80,0.6)';
-    ctx.lineWidth = 1 * s;
-    for (let i = 1; i < 6; i++) {
-      const xx = x - wdt + (i / 6) * wdt * 2;
-      ctx.beginPath();
-      ctx.moveTo(xx, y);
-      ctx.lineTo(xx + (xx - x) * 0.1, y - 9 * s * Math.sin((i / 6) * Math.PI));
-      ctx.stroke();
+    // Shade toward the hinge and the sand.
+    const sh = ctx.createLinearGradient(0, y - 12 * s, 0, hy);
+    sh.addColorStop(0, 'rgba(90,76,60,0)');
+    sh.addColorStop(1, 'rgba(90,76,60,0.45)');
+    ctx.fillStyle = sh;
+    ctx.beginPath();
+    ctx.moveTo(x - wdt, edge(0));
+    for (let i = 0; i < folds; i++) {
+      const q0 = i / folds, q1 = (i + 1) / folds, qm = (q0 + q1) / 2;
+      const crest = 3.2 * s * (0.4 + 0.6 * Math.sin(qm * Math.PI));
+      ctx.quadraticCurveTo(x - wdt + qm * wdt * 2, edge(qm) - crest * 2, x - wdt + q1 * wdt * 2, edge(q1));
     }
+    ctx.lineTo(hx + wdt * 0.62, hy);
+    ctx.lineTo(hx - wdt * 0.62, hy);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(110,96,80,0.55)';
+    ctx.lineWidth = 1 * s;
+    ctx.stroke();
+    // A rib down the middle of each fold, toward the hinge.
+    ctx.strokeStyle = 'rgba(110,96,80,0.3)';
+    ctx.beginPath();
+    for (let i = 0; i < folds; i++) {
+      const qm = (i + 0.5) / folds, xm = x - wdt + qm * wdt * 2;
+      ctx.moveTo(xm, edge(qm) - 2 * s);
+      ctx.lineTo(hx + (xm - hx) * 0.62, hy);
+    }
+    ctx.stroke();
     ctx.restore();
   }
 
