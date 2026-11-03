@@ -955,19 +955,38 @@ export function createMidnightScene(seed: number): Scene {
     spot('barreleye', x, y, 20 * s);
     ctx.save();
     ctx.translate(x, y);
-    // Body: dark, with big fins held out, sculling gently.
-    ctx.fillStyle = '#1c1a26';
+    // Body: a dark barrel tapering to a forked tail, lit faintly along its back by the dome's eyes,
+    // with big fins held out, sculling gently, and a small mouth at the snout.
+    const sc = Math.sin(t * 2) * 1.5 * s;
+    const body = ctx.createLinearGradient(0, -5 * s, 0, 6 * s);
+    body.addColorStop(0, '#3a3a52');
+    body.addColorStop(1, '#16141f');
+    ctx.fillStyle = body;
     ctx.beginPath();
-    ctx.moveTo(10 * s, 0);
-    ctx.quadraticCurveTo(4 * s, 5 * s, -10 * s, 2 * s);
-    ctx.lineTo(-16 * s, 4 * s + Math.sin(t * 2) * 1.5 * s);
-    ctx.lineTo(-15 * s, -2 * s + Math.sin(t * 2) * 1.5 * s);
-    ctx.lineTo(-10 * s, -1 * s);
-    ctx.quadraticCurveTo(0, -3 * s, 10 * s, 0);
+    ctx.moveTo(12 * s, 1 * s);
+    ctx.quadraticCurveTo(12 * s, -3 * s, 6 * s, -3.5 * s);
+    ctx.quadraticCurveTo(-4 * s, -4 * s, -12 * s, -1 * s);
+    ctx.lineTo(-19 * s, -5 * s + sc);
+    ctx.quadraticCurveTo(-17 * s, 0.5 * s + sc, -19 * s, 6 * s + sc);
+    ctx.lineTo(-12 * s, 2 * s);
+    ctx.quadraticCurveTo(-2 * s, 6.5 * s, 8 * s, 4.5 * s);
+    ctx.quadraticCurveTo(12 * s, 3.5 * s, 12 * s, 1 * s);
     ctx.fill();
-    ctx.fillStyle = 'rgba(60,60,80,0.6)';
+    ctx.strokeStyle = 'rgba(120,200,170,0.28)';
+    ctx.lineWidth = 0.8 * s;
+    ctx.stroke();
+    // Pectoral fin, broad and held out, and a dorsal fin far back.
+    ctx.fillStyle = 'rgba(90,96,130,0.55)';
     ctx.beginPath();
-    ctx.ellipse(-2 * s, 3 * s, 6 * s, 2 * s, 0.4 + Math.sin(t * 1.3) * 0.2, 0, Math.PI * 2);
+    ctx.ellipse(-1 * s, 4.5 * s, 7 * s, 2.4 * s, 0.45 + Math.sin(t * 1.3) * 0.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(-6 * s, -3.4 * s);
+    ctx.quadraticCurveTo(-9 * s, -7.5 * s, -12 * s, -2 * s);
+    ctx.fill();
+    ctx.fillStyle = '#0a0a10';
+    ctx.beginPath();
+    ctx.arc(11.6 * s, 1.6 * s, 0.7 * s, 0, Math.PI * 2);
     ctx.fill();
     // The clear dome of the head.
     ctx.fillStyle = 'rgba(170,210,230,0.12)';
