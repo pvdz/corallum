@@ -119,18 +119,37 @@ export function createMidnightScene(seed: number): Scene {
     ctx.bezierCurveTo(-10 * s, 22 * s, 20 * s, 20 * s, 28 * s, 8 * s);
     ctx.closePath();
     ctx.fill();
-    // Teeth along the open jaw.
-    ctx.strokeStyle = 'rgba(220,225,240,0.6)';
+    // The mouth, gaping: a dark wedge cut back into the head, the lower jaw jutting past the upper,
+    // needle teeth along both jaws pointing in.
+    ctx.fillStyle = 'rgba(4,4,12,0.95)';
+    ctx.beginPath();
+    ctx.moveTo(27 * s, -3 * s);
+    ctx.quadraticCurveTo(14 * s, -1 * s, 8 * s, 2.5 * s);
+    ctx.quadraticCurveTo(16 * s, 7 * s, 29.5 * s, 7.5 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(225,230,245,0.75)';
     ctx.lineWidth = 0.8 * s;
+    ctx.beginPath();
     for (let k = 0; k < 6; k++) {
-      const tx = 26 * s - k * 3.2 * s;
-      ctx.beginPath();
-      ctx.moveTo(tx, -1 * s);
-      ctx.lineTo(tx - 1 * s, 4 * s);
-      ctx.moveTo(tx - 1.5 * s, 9 * s);
-      ctx.lineTo(tx - 2 * s, 4.5 * s);
-      ctx.stroke();
+      const u = k / 5;
+      const ux = 26 * s - u * 15 * s, uy = -2.6 * s + u * 4 * s;
+      ctx.moveTo(ux, uy);
+      ctx.lineTo(ux - 0.6 * s, uy + (3.2 - u * 1.4) * s);
+      const lx = 28.5 * s - u * 17 * s, ly = 7.2 * s - u * 4 * s;
+      ctx.moveTo(lx, ly);
+      ctx.lineTo(lx - 0.4 * s, ly - (3 - u * 1.2) * s);
     }
+    ctx.stroke();
+    // A small pale eye above the mouth.
+    ctx.fillStyle = 'rgba(200,210,240,0.7)';
+    ctx.beginPath();
+    ctx.arc(14 * s, -8 * s, 1.8 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#05050c';
+    ctx.beginPath();
+    ctx.arc(14.4 * s, -8 * s, 1 * s, 0, Math.PI * 2);
+    ctx.fill();
     // The rod and its bulb.
     ctx.strokeStyle = 'rgba(80,90,130,0.7)';
     ctx.lineWidth = 1.2 * s;
