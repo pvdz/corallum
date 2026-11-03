@@ -82,29 +82,48 @@ export function drawPetrels(ctx: CanvasRenderingContext2D, t: number, sf: Surfac
     const y = wy - hover - lift * lift * 18 * s;
     if (k === 0) spot('petrel', x, y, 20 * s);
     const z = s * 2.6;
-    const flap = Math.sin(t * 22 + k * 2);
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(dir, 1);
-    // Wings: dark, long, beating fast.
-    ctx.strokeStyle = '#1a1c24';
-    ctx.lineCap = 'round';
-    ctx.lineWidth = 1.4 * z;
-    ctx.beginPath();
-    ctx.moveTo(-1 * z, 0);
-    ctx.quadraticCurveTo(-5 * z, -4 * z * flap - 1 * z, -9 * z, -6 * z * flap);
-    ctx.moveTo(1 * z, 0);
-    ctx.quadraticCurveTo(-2 * z, -3 * z * flap - 1 * z, -5 * z, -5 * z * flap + 1 * z);
-    ctx.stroke();
-    // Body, and the white rump patch.
+    // Wings: dark, long and pointed, beating fast (the far one a shade darker, behind).
+    const wing = (shade: string, lag: number, reach: number) => {
+      const f = Math.sin(t * 22 + k * 2 - lag);
+      ctx.fillStyle = shade;
+      ctx.beginPath();
+      ctx.moveTo(1 * z, -0.4 * z);
+      ctx.quadraticCurveTo(0.5 * z, -4 * z * f - 0.5 * z, -2.5 * z * reach, -7 * z * f * reach - 0.6 * z);
+      ctx.quadraticCurveTo(-2.4 * z, -2.6 * z * f, -1.8 * z, 0.2 * z);
+      ctx.closePath();
+      ctx.fill();
+    };
+    wing('#12141a', 0.4, 0.8);
+    // Body, head with a short hooked bill, a forked tail, and the white rump patch.
     ctx.fillStyle = '#20222c';
     ctx.beginPath();
-    ctx.ellipse(0, 0, 4 * z, 1.6 * z, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 0, 3.6 * z, 1.4 * z, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(3.4 * z, -0.6 * z, 1.2 * z, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(4.4 * z, -0.9 * z);
+    ctx.lineTo(5.6 * z, -0.4 * z);
+    ctx.lineTo(4.4 * z, -0.1 * z);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(-3 * z, -0.6 * z);
+    ctx.lineTo(-5.6 * z, -1.3 * z);
+    ctx.lineTo(-4.6 * z, 0);
+    ctx.lineTo(-5.6 * z, 1 * z);
+    ctx.lineTo(-3 * z, 0.6 * z);
+    ctx.closePath();
     ctx.fill();
     ctx.fillStyle = '#e8ecf2';
     ctx.beginPath();
-    ctx.ellipse(-3 * z, -0.4 * z, 0.9 * z, 0.7 * z, 0, 0, Math.PI * 2);
+    ctx.ellipse(-2.6 * z, -0.3 * z, 0.9 * z, 0.7 * z, 0, 0, Math.PI * 2);
     ctx.fill();
+    wing('#262934', 0, 1);
     // Legs dangling to the water, feet pattering (little rings where they touch).
     if (!lift) {
       ctx.strokeStyle = '#20222c';
