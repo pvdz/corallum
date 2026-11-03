@@ -1,6 +1,6 @@
 // A small fish tangled in a jelly's trailing threads, drifting near the reef: tap to free it.
 
-import { glow } from './draw.ts';
+import { drawSmallFish, glow } from './draw.ts';
 import type { Focus } from './scene.ts';
 import { spot } from './sightings.ts';
 
@@ -15,10 +15,24 @@ export function drawTangle(ctx: CanvasRenderingContext2D, tg: { k: number; x: nu
   ctx.globalAlpha = a;
   // The jelly's bell, pale and pulsing.
   const pulse = 1 + 0.08 * Math.sin(t * 2.5);
-  ctx.fillStyle = 'rgba(220,210,240,0.55)';
+  // Clear at the rim, milkier at the crown, with a bright edge and the scalloped margin.
+  const bell = ctx.createRadialGradient(x, y - 9 * s, 0, x, y - 4 * s, 17 * s);
+  bell.addColorStop(0, 'rgba(235,225,250,0.6)');
+  bell.addColorStop(1, 'rgba(200,190,235,0.22)');
+  ctx.fillStyle = bell;
   ctx.beginPath();
   ctx.ellipse(x, y, 16 * s * pulse, 10 * s, 0, Math.PI, 0);
   ctx.fill();
+  ctx.strokeStyle = 'rgba(245,240,255,0.55)';
+  ctx.lineWidth = 0.9 * s;
+  ctx.stroke();
+  ctx.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const lx = x + (-16 + (i + 0.5) * (32 / 6)) * s * pulse;
+    ctx.moveTo(lx + 2.6 * s * pulse, y);
+    ctx.arc(lx, y, 2.6 * s * pulse, 0, Math.PI);
+  }
+  ctx.stroke();
   // Its threads, trailing down, snarled round the fish.
   ctx.strokeStyle = 'rgba(230,220,250,0.55)';
   ctx.lineWidth = 0.9 * s;
@@ -34,20 +48,7 @@ export function drawTangle(ctx: CanvasRenderingContext2D, tg: { k: number; x: nu
   ctx.save();
   ctx.translate(fx, fy);
   ctx.rotate(Math.sin(t * 9) * 0.35);
-  ctx.fillStyle = '#e8b050';
-  ctx.beginPath();
-  ctx.ellipse(0, 0, 7 * s, 3.4 * s, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(-6 * s, 0);
-  ctx.lineTo(-11 * s, -3.5 * s);
-  ctx.lineTo(-11 * s, 3.5 * s);
-  ctx.closePath();
-  ctx.fill();
-  ctx.fillStyle = '#111';
-  ctx.beginPath();
-  ctx.arc(3.5 * s, -0.8 * s, 0.9 * s, 0, Math.PI * 2);
-  ctx.fill();
+  drawSmallFish(ctx, s * 0.85, '#b06a20', '#e8b050', '#fbe2a8');
   ctx.restore();
   // A breathing ring, as with feasts: it can be touched.
   const p = (t * 0.6) % 1;

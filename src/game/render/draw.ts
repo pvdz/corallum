@@ -163,3 +163,48 @@ export function drawOsselSand(ctx: CanvasRenderingContext2D, x: number, y: numbe
   glow(ctx, x, y, 30 * s, '255,235,190', 0.08 + 0.25 * talk);
   ctx.restore();
 }
+
+/**
+ * A small fish at the origin, facing +x, about 21·s long: a darker back to a pale belly, a forked
+ * tail, a dorsal fin, its gill line and eye. Colours are CSS strings: back, middle, belly.
+ */
+export function drawSmallFish(ctx: CanvasRenderingContext2D, s: number, back: string, mid: string, belly: string): void {
+  const body = ctx.createLinearGradient(0, -3.4 * s, 0, 3.4 * s);
+  body.addColorStop(0, back);
+  body.addColorStop(0.5, mid);
+  body.addColorStop(1, belly);
+  ctx.fillStyle = back;
+  ctx.beginPath();
+  ctx.moveTo(-6.5 * s, 0);
+  ctx.quadraticCurveTo(-10 * s, -1.5 * s, -12.5 * s, -4 * s);
+  ctx.quadraticCurveTo(-11 * s, 0, -12.5 * s, 4 * s);
+  ctx.quadraticCurveTo(-10 * s, 1.5 * s, -6.5 * s, 0);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(1 * s, -2.8 * s);
+  ctx.quadraticCurveTo(-2 * s, -6 * s, -4 * s, -5 * s);
+  ctx.lineTo(-3 * s, -2.4 * s);
+  ctx.fill();
+  ctx.fillStyle = body;
+  ctx.beginPath();
+  ctx.moveTo(9 * s, 0.3 * s);
+  ctx.quadraticCurveTo(6 * s, -3.4 * s, 0, -3.3 * s);
+  ctx.quadraticCurveTo(-5 * s, -3 * s, -7.5 * s, 0);
+  ctx.quadraticCurveTo(-5 * s, 3 * s, 0, 3.2 * s);
+  ctx.quadraticCurveTo(6 * s, 3.2 * s, 9 * s, 0.3 * s);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(40,40,50,0.45)';
+  ctx.lineWidth = 0.6 * s;
+  ctx.beginPath();
+  ctx.moveTo(3.6 * s, -2.4 * s);
+  ctx.quadraticCurveTo(2.6 * s, 0, 3.6 * s, 2.4 * s);
+  ctx.stroke();
+  ctx.fillStyle = belly;
+  ctx.beginPath();
+  ctx.arc(5.8 * s, -0.8 * s, 1.1 * s, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#111';
+  ctx.beginPath();
+  ctx.arc(6 * s, -0.8 * s, 0.6 * s, 0, Math.PI * 2);
+  ctx.fill();
+}
