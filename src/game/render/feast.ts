@@ -147,14 +147,17 @@ function drawJellyFall(ctx: CanvasRenderingContext2D, s: number, t: number): voi
   ctx.quadraticCurveTo(R * 0.9, R * 0.95, R, 0);
   ctx.quadraticCurveTo(0, R * 0.18, -R, 0);
   ctx.fill();
-  // Its four pale rings, still showing.
-  ctx.strokeStyle = 'rgba(255,240,245,0.6)';
-  ctx.lineWidth = 1.4 * s;
+  // Its four pale lobes, a clover seen through the bell (outlined rings in a row read as portholes).
+  ctx.fillStyle = 'rgba(255,215,232,0.35)';
+  ctx.beginPath();
   for (let k = 0; k < 4; k++) {
-    ctx.beginPath();
-    ctx.ellipse((k - 1.5) * R * 0.32, R * 0.5, R * 0.11, R * 0.08, 0, 0, Math.PI * 2);
-    ctx.stroke();
+    const a = k * Math.PI / 2 + 0.4;
+    const lx = Math.cos(a) * R * 0.26, ly = R * 0.5 + Math.sin(a) * R * 0.12;
+    const rx = R * 0.17 * (0.55 + 0.45 * Math.abs(Math.sin(a))), ry = R * 0.09;
+    ctx.moveTo(lx + rx, ly);
+    ctx.ellipse(lx, ly, rx, ry, 0, 0, Math.PI * 2);
   }
+  ctx.fill();
 }
 
 /** A dead fish: pale body, the ribs showing, a clouded eye. */

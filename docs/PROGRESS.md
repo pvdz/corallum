@@ -1085,3 +1085,4 @@ date, what landed, what is half-done, what's next.
 - The fish stranded on the crown at the Breach was a flat white oval with a triangle tail (an icon in its tap ring): a small silver fish, blue-grey back to pale belly, forked tail, dorsal fin, gill line and eye.
 - The fish caught in a jelly's threads (Midnight Water, Twilight, Sunlit) had the same flat icon shape: both it and the stranded fish use one shaded small fish (`drawSmallFish` in draw.ts), gold here; the jelly's bell is clear at the rim and milkier at the crown, with a bright edge and a scalloped margin.
 - The Sunlit feast (a raft of sargassum) was fourteen bare strokes with a dot on each (a bundle of matches): thin olive stems branching out with narrow leaf blades along them and clusters of round air bladders at the tips, in three batched paths.
+- The sinking-jelly feast had the same four outlined rings in a row (portholes on a boat): soft pink clover lobes inside the bell.
