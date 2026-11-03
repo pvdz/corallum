@@ -732,18 +732,34 @@ export function createMidnightScene(seed: number): Scene {
     ctx.fill();
     ctx.stroke();
     ctx.globalCompositeOperation = 'lighter';
+    // Each comb row is a meridian of the body: a faint line, and on it short combs flashing in
+    // rainbow as the light runs down them (dashes along the row, like the beating plates).
+    const rowAt = (ax: number, f: number): [number, number] => {
+      const py = f * ry * 1.7;
+      return [ax * Math.sqrt(Math.max(0, 1 - (py / ry) ** 2)), py];
+    };
+    ctx.lineCap = 'round';
     for (let row = 0; row < 8; row++) {
       const ax = Math.sin((row / 8) * Math.PI * 2) * rx * 0.85;
       const bow = Math.cos((row / 8) * Math.PI * 2);
       if (bow < -0.3) continue;
+      ctx.strokeStyle = `rgba(190,215,255,${0.08 * (0.5 + 0.5 * bow)})`;
+      ctx.lineWidth = 0.7 * s;
+      ctx.beginPath();
+      for (let q = 0; q <= 12; q++) { const [px, py] = rowAt(ax, q / 12 * 0.94 - 0.47); if (q) ctx.lineTo(px, py); else ctx.moveTo(px, py); }
+      ctx.stroke();
+      ctx.lineWidth = 1.3 * s;
       for (let q = 0; q < 9; q++) {
         const f = q / 8 - 0.5;
-        const py = f * ry * 1.7;
-        const px = ax * Math.sqrt(Math.max(0, 1 - (py / ry) ** 2));
+        const [x0, y0] = rowAt(ax, f * 0.94 - 0.022);
+        const [x1, y1] = rowAt(ax, f * 0.94 + 0.022);
         const hue = (t * 120 + q * 40 + row * 25) % 360;
-        const a = Math.min(1, (0.25 + 0.35 * Math.max(0, Math.sin(t * (4 + 8 * beat) - q * 0.8 + row)) + 0.6 * beat) * (0.5 + 0.5 * bow));
-        ctx.fillStyle = `hsla(${hue},100%,70%,${a})`;
-        speck(ctx, px - 1.1 * s, py - 1.1 * s, 2.2 * s);
+        const a = Math.min(1, (0.2 + 0.5 * Math.max(0, Math.sin(t * (4 + 8 * beat) - q * 0.8 + row)) ** 2 + 0.6 * beat) * (0.5 + 0.5 * bow));
+        ctx.strokeStyle = `hsla(${hue},100%,72%,${a.toFixed(3)})`;
+        ctx.beginPath();
+        ctx.moveTo(x0, y0);
+        ctx.lineTo(x1, y1);
+        ctx.stroke();
       }
     }
     ctx.restore();
