@@ -597,36 +597,61 @@ export function createTwilightScene(seed: number): Scene {
       ctx.translate(hx, hy);
       ctx.rotate(-0.15);
       const g = ctx.createLinearGradient(0, -6 * s, 0, 6 * s);
-      g.addColorStop(0, '#5a6a3a');
-      g.addColorStop(1, '#3a4428');
+      g.addColorStop(0, '#647440');
+      g.addColorStop(1, '#343e24');
+      // A thick neck of even width out of the hole, then a blunt head: the upper jaw curving down
+      // to the snout, the lower jaw dropping as it breathes.
+      const neck = Math.min(4 * s, -len + 10 * s);
+      const tip = -len;
+      // The fin along the back, a pale ridge.
+      ctx.fillStyle = '#7d8a52';
+      ctx.beginPath();
+      ctx.moveTo(4 * s, -5 * s);
+      ctx.quadraticCurveTo((neck + 4 * s) / 2, -8 * s, neck - 1 * s, -5.6 * s);
+      ctx.lineTo(4 * s, -5.6 * s);
+      ctx.closePath();
+      ctx.fill();
       ctx.fillStyle = g;
       ctx.beginPath();
-      ctx.moveTo(4 * s, -6 * s);
-      ctx.quadraticCurveTo(-len * 0.5, -7 * s, -len, -2.5 * s - gape * 0.4);
-      ctx.lineTo(-len - 3 * s, -1 * s);
-      ctx.lineTo(-len + 2 * s, 0);
-      ctx.lineTo(-len - 3 * s, 1 * s);
-      ctx.lineTo(-len, 2.5 * s + gape * 0.6);
-      ctx.quadraticCurveTo(-len * 0.5, 7 * s, 4 * s, 6 * s);
+      ctx.moveTo(4 * s, -5.5 * s);
+      ctx.lineTo(neck, -5.5 * s);
+      ctx.bezierCurveTo(neck - 5 * s, -5.6 * s, tip + 1 * s, -4 * s, tip, -0.8 * s - gape * 0.3);
+      ctx.lineTo(neck - 3 * s, 0.6 * s);
+      ctx.lineTo(tip + 0.5 * s, 1 * s + gape * 0.7);
+      ctx.bezierCurveTo(tip + 2 * s, 4.5 * s, neck - 4 * s, 5.8 * s, neck, 5.5 * s);
+      ctx.lineTo(4 * s, 5.5 * s);
       ctx.closePath();
       ctx.fill();
-      // Mottling, the eye, and the open mouth's pale lining.
-      ctx.fillStyle = 'rgba(200,210,140,0.25)';
-      for (let i = 0; i < 6; i++) {
-        ctx.beginPath();
-        ctx.arc(-len * (0.2 + i * 0.12), (i % 2 ? -2 : 2) * s, 1.4 * s, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.fillStyle = '#e8e0a0';
-      ctx.beginPath();
-      ctx.arc(-len + 6 * s, -3 * s, 1.3 * s, 0, Math.PI * 2);
-      ctx.fill();
+      // The mouth's pale lining in the gape, and the jaw line running back.
       ctx.fillStyle = '#d8a0a0';
       ctx.beginPath();
-      ctx.moveTo(-len + 1 * s, 0);
-      ctx.lineTo(-len - 2 * s, -gape * 0.4);
-      ctx.lineTo(-len - 2 * s, gape * 0.6);
+      ctx.moveTo(tip + 0.5 * s, -0.6 * s - gape * 0.3);
+      ctx.lineTo(neck - 3 * s, 0.6 * s);
+      ctx.lineTo(tip + 1 * s, 0.8 * s + gape * 0.6);
       ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(20,26,14,0.7)';
+      ctx.lineWidth = Math.max(1, 0.9 * s);
+      ctx.beginPath();
+      ctx.moveTo(neck - 3 * s, 0.6 * s);
+      ctx.lineTo(neck + 1 * s, 1.2 * s);
+      ctx.stroke();
+      // Mottling: dark blotches and a few pale ones.
+      for (let i = 0; i < 9; i++) {
+        const mx = 2 * s - (len + 2 * s) * ((i * 0.618) % 1) * 0.85, my = (((i * 0.37) % 1) - 0.5) * 7 * s;
+        ctx.fillStyle = i % 3 ? 'rgba(28,34,18,0.45)' : 'rgba(210,220,150,0.25)';
+        ctx.beginPath();
+        ctx.arc(mx, my, (1 + (i % 2) * 0.5) * s, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // The eye: pale, with a dark pupil, high on the head.
+      ctx.fillStyle = '#e8e0a0';
+      ctx.beginPath();
+      ctx.arc(tip + 4.5 * s, -2.8 * s, 1.5 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#10140a';
+      ctx.beginPath();
+      ctx.arc(tip + 4.3 * s, -2.8 * s, 0.7 * s, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.restore();
