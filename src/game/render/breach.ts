@@ -1494,17 +1494,26 @@ export function createBreachScene(seed: number): Scene {
       ctx.ellipse(0, 0, 7 * s, 4 * s, -0.15, Math.PI * 1.1, Math.PI * 1.75);
       ctx.stroke();
     } else {
-      // Wings beating as it climbs away.
+      // Wings beating as it climbs away: filled, pointed, bent at the wrist.
       const flap = Math.sin(t * 9);
-      ctx.lineWidth = 1.4 * s;
       ctx.beginPath();
-      ctx.moveTo(-12 * s, -flap * 7 * s);
-      ctx.quadraticCurveTo(-5 * s, -3 * s, 0, 0);
-      ctx.quadraticCurveTo(5 * s, -3 * s, 12 * s, -flap * 7 * s);
-      ctx.stroke();
-      ctx.beginPath();
+      for (const d of [-1, 1]) {
+        ctx.moveTo(d * 1 * s, -1 * s);
+        ctx.quadraticCurveTo(d * 4 * s, (-3 - flap * 2) * s, d * 6 * s, (-3.5 - flap * 3) * s);
+        ctx.quadraticCurveTo(d * 9 * s, (-3.5 - flap * 4) * s, d * 12 * s, -flap * 7 * s);
+        ctx.quadraticCurveTo(d * 8 * s, (-1 - flap * 3) * s, d * 5 * s, (-0.5 - flap * 1.5) * s);
+        ctx.quadraticCurveTo(d * 3 * s, 0.5 * s, d * 1 * s, 1 * s);
+        ctx.closePath();
+      }
       ctx.ellipse(0, 0.5 * s, 4 * s, 1.8 * s, 0, 0, Math.PI * 2);
+      ctx.moveTo(4.6 * s, -0.4 * s);
+      ctx.arc(3.6 * s, -0.4 * s, 1.2 * s, 0, Math.PI * 2);
       ctx.fill();
+      ctx.lineWidth = 0.8 * s;
+      ctx.beginPath();
+      ctx.moveTo(4.6 * s, -0.4 * s);
+      ctx.lineTo(9 * s, 0.4 * s);
+      ctx.stroke();
     }
     ctx.restore();
   }

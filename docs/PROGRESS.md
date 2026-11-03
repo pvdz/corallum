@@ -1115,3 +1115,4 @@ date, what landed, what is half-done, what's next.
 - The drill snail (the Silt Floor's intruder) gets a head peeking from its foot, two feelers and its siphon, so it reads as alive, not a shell stuck on the branch.
 - The pelican (after dawn) was a stroked "M": long broad filled wings bent at the wrist (the far one darker), a short tail, the head on its shoulders with a pale crown and eye, and the long bill with its pouch.
 - Warm water at the Breach drew nine evenly spaced wavy lines across the whole picture, the night sky included: scan lines. Its shimmer is short wavering strands under the surface only, rising slowly and fading in and out.
+- The shore bird lifting off the crown at the release was a stroked "M" like the old gull: filled pointed wings bent at the wrist, a head and bill.
