@@ -1041,3 +1041,4 @@ date, what landed, what is half-done, what's next.
 ## 2026-11-03 (night session)
 - Real-time play of a new reef on a phone, 10 minutes (153 buys): no console errors, nothing out of place.
 - The release, the game's climax, drew each spawn bundle as two additive glows: hundreds of them summed to white bokeh, though the text says "Pink bundles rise". Each bundle is now a bead of colour (three shades of pink and salmon, golden as the spawn is sweetened; brooders' larvae peach) painted over a softer additive halo, batched into one path per shade and opacity step.
+- A phone on its side: the memory choice at the release kept clear of the (faded, blurred) panel, so twelve memories stood two to a row in half the screen and most of the list scrolled. There it takes the whole width: three to a row.
