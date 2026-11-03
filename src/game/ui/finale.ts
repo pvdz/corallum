@@ -52,7 +52,11 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
   release.addEventListener('click', () => openChoice());
   // The next few full moons, great tides marked: the wait-or-go choice at a glance.
   const calendar = el('div', 'moon-calendar');
-  card.append(head, need, calendar, release);
+  /** False until the first update: a reef loaded under a full moon does not scroll on load. */
+  let primedRelease = false;
+  const hostHidden = () => card.hidden || card.offsetParent === null;
+  // The release right under what it brings; the calendar of moons after it (it is the detail).
+  card.append(head, need, release, calendar);
   panelPage.prepend(card);
 
   // ---------- The memory choice ----------
@@ -246,7 +250,12 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
           at = (Math.floor(at / ACT5.moonPeriod) + 1 + 0.5 - ACT5.fullWindow) * ACT5.moonPeriod + 1e-6;
         }
       }
-      release.disabled = !canBreach(s);
+      const canGo = canBreach(s);
+      // The moment it can be released, the button comes into view once (a phone's sheet shows
+      // only the card's top; the panel may be scrolled anywhere).
+      if (canGo && release.disabled && primedRelease && !hostHidden()) release.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      primedRelease = true;
+      release.disabled = !canGo;
       card.classList.toggle('ready', breachReady(s));
       card.classList.toggle('full', full);
       if (!choice.hidden) refreshChoice();

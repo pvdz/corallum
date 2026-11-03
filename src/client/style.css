@@ -1048,7 +1048,7 @@ html.view-mode #photo { display: grid; }
 .milestone-fill { height: 100%; background: linear-gradient(90deg, rgba(255, 194, 176, 0.5), #ffc2b0); transition: width 0.4s ease; }
 @media (max-width: 599px), (max-width: 799px) and (min-height: 501px) { .milestone-bar { grid-column: 1 / -1; margin: 4px 0 2px; } }
 /* The next full moons, a line of times (not buttons); a great tide is gold with a star. */
-.moon-calendar { display: flex; gap: 4px 14px; flex-wrap: wrap; align-items: baseline; margin: 2px 0 8px; font-size: 11.5px; }
+.moon-calendar { display: flex; gap: 4px 14px; flex-wrap: wrap; align-items: baseline; margin: 10px 0 2px; font-size: 11.5px; }
 .moon-cal-label { color: var(--ink-dim); }
 .moon-day { color: #c9d6ea; font-variant-numeric: tabular-nums; }
 .moon-day.great { color: #ffd9a8; }
