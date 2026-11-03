@@ -1493,8 +1493,11 @@ let recentFloats: { x: number; y: number; t: number; w: number }[] = [];
 let sweepFloats: HTMLElement[] = [];
 function floatText(x: number, y: number, text: string, cls = ''): void {
   const now = performance.now();
-  recentFloats = recentFloats.filter((r) => now - r.t < 50);
-  for (let i = 0; i < 4 && recentFloats.some((r) => Math.abs(r.x - x) < 140 && Math.abs(r.y - y) < 30); i++) y += 32;
+  // A haul line stays 2.2 s: one landing near another still showing (a thorn star pried off, then
+  // the ask it kept paying out) stacks below it. Sweep numbers only look at the same tap (they fade
+  // the older ones instead).
+  recentFloats = recentFloats.filter((r) => now - r.t < (cls ? 2000 : 50));
+  for (let i = 0; i < 4 && recentFloats.some((r) => Math.abs(r.x - x) < Math.max(140, r.w / 2 + 40) && Math.abs(r.y - y) < 30); i++) y += 32;
   const rec = { x, y, t: now, w: 0 };
   recentFloats.push(rec);
   const f = document.createElement('div');
@@ -1511,9 +1514,16 @@ function floatText(x: number, y: number, text: string, cls = ''): void {
     sweepFloats.push(f);
   }
   // Kept inside the scene, clear of the depth gauge: a long line near the edge would run under the panel or off the screen.
-  const half = f.offsetWidth / 2, right = focusNow.w / dpr;
+  const right = focusNow.w / dpr;
+  // A line wider than the scene (a phone on its side, a long haul) a size smaller.
+  if (cls && f.offsetWidth > right - 56) f.style.fontSize = '17px';
+  const half = f.offsetWidth / 2;
   rec.w = f.offsetWidth;
-  if (half > 0 && right > 2 * half + 56) f.style.left = `${Math.min(Math.max(x, half + 8), right - half - 48)}px`;
+  if (half > 0 && right > 2 * half + 56) {
+    const cx = Math.min(Math.max(x, half + 8), right - half - 48);
+    f.style.left = `${cx}px`;
+    rec.x = cx;
+  }
   setTimeout(() => f.remove(), cls ? 2200 : 1200);
 }
 
