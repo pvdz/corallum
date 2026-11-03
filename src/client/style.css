@@ -1229,6 +1229,8 @@ html.live .loading { display: none; }
    "holds" before the number (a tap on the stock says it). */
 @media (max-width: 340px) {
   .panel .stocks.many .hold-word { display: none; }
+  /* Scientific values ("1.28e10") a size smaller, inside a quarter of the narrowest sheet. */
+  html.sci .panel .stocks.many .stock-value { font-size: 15px; }
   /* The height line under the depth bar takes two lines rather than lose its numbers. */
   .panel .stock.height .stock-sub { white-space: normal; }
   /* With Larger text, name and price no longer fit side by side: the price goes under the name. */
