@@ -1098,3 +1098,4 @@ date, what landed, what is half-done, what's next.
 - The krill feast was forty salmon pills: each krill a small curled body with a dark eye at its head, its tail flicking, in two batched paths.
 - Lanternfish (the shoals, on screen through the whole Midnight Water) had no eyes: each has a big one near its snout, pale rim and dark middle, two fills for the whole shoal.
 - The pistol shrimp (a resident at the reef's foot) was two pink ovals: a segmented body tapering into its burrow, antennae, an eye, and its one oversized claw with a short finger.
+- The auger and cone shells (on the Sunlit sand and the line's shelf) were straight-edged polygons with vertical bars, which on the sand read as a wooden signpost: the auger is a spire of stacked whorls, each smaller, the cone a rounded shoulder with its low spire behind, tapering, spotted.

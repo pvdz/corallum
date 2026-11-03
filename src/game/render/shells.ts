@@ -36,18 +36,49 @@ export function drawShellShape(ctx: CanvasRenderingContext2D, id: string, colour
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
+      } else if (id === 'auger') {
+        // A long spire of stacked whorls, each a little smaller, banded where they meet.
+        const whorls = 7;
+        for (let k = whorls - 1; k >= 0; k--) {
+          const u = k / (whorls - 1);
+          const cx = -4.5 * s + u * 10 * s, r = (2.3 - 1.7 * u) * s;
+          ctx.beginPath();
+          ctx.ellipse(cx, -r, r * 0.9, r, -0.25, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+        }
+        ctx.strokeStyle = dark;
+        ctx.beginPath();
+        for (let k = 0; k < whorls; k++) {
+          const u = k / (whorls - 1), cx = -4.5 * s + u * 10 * s, r = (2.3 - 1.7 * u) * s;
+          ctx.moveTo(cx - r * 0.5, -r * 1.7);
+          ctx.quadraticCurveTo(cx - r * 0.1, -r, cx - r * 0.5, -r * 0.2);
+        }
+        ctx.stroke();
       } else {
-        const wide = id === 'cone' ? 3.2 : 2.2;
-        ctx.moveTo(-6 * s, -0.2 * s);
-        ctx.lineTo(4 * s, -wide * s * 0.2);
-        ctx.lineTo(6 * s, -wide * s * 0.6);
-        ctx.lineTo(4 * s, -wide * s * 1.1);
-        ctx.lineTo(-6 * s, -wide * s * 0.8);
+        // A cone: a rounded shoulder (with its low spire behind) tapering to the aperture's end,
+        // spotted all over.
+        ctx.moveTo(-3.5 * s, -0.3 * s);
+        ctx.quadraticCurveTo(-5 * s, -4.6 * s, -2 * s, -4.4 * s);
+        ctx.quadraticCurveTo(3 * s, -3.4 * s, 6.2 * s, -1 * s);
+        ctx.quadraticCurveTo(3 * s, 0.4 * s, -3.5 * s, -0.3 * s);
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
-        ctx.strokeStyle = dark;
-        for (let k = 1; k < 5; k++) { const x = -6 * s + k * 2.2 * s; ctx.beginPath(); ctx.moveTo(x, -0.1 * s); ctx.lineTo(x + 0.8 * s, -wide * s * 0.85); ctx.stroke(); }
+        ctx.beginPath();
+        ctx.moveTo(-4.4 * s, -2.6 * s);
+        ctx.quadraticCurveTo(-6.4 * s, -2.8 * s, -6.6 * s, -2 * s);
+        ctx.quadraticCurveTo(-5.6 * s, -1.6 * s, -4.4 * s, -1.4 * s);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = dark;
+        ctx.beginPath();
+        for (let k = 0; k < 9; k++) {
+          const px = -3 * s + (k % 5) * 1.9 * s + (k > 4 ? 0.9 * s : 0), py = (k > 4 ? -1.4 : -2.8) * s + (k % 2) * 0.4 * s;
+          ctx.moveTo(px + 0.5 * s, py);
+          ctx.arc(px, py, 0.5 * s, 0, Math.PI * 2);
+        }
+        ctx.fill();
       }
     } else if (id === 'conch' || id === 'murex') {
       // A heavy spiral with a flared lip; the murex grows spines.
