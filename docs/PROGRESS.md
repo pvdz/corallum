@@ -1125,3 +1125,4 @@ date, what landed, what is half-done, what's next.
 - Giant tube worms at the vent had red ovals on their tubes (lollipops): a soft red plume core with fine gill filaments fanning out of a pale tube lip.
 - `tools/sweep.ts tablet|tiny`: console-error sweeps on an upright tablet (default path) and a 320 px phone (truce bbb, pillar/mucus/brooding), 18 points each: clean.
 - The siphonophore (a long colonial chain in the Midnight Water) was a row of fully outlined ovals ("oooo" again): a faint stem thread with tilted, filled bells along it, each lit only on its leading rim.
+- The pyrosome was a flat outlined disc: a hollow tube, rounded and closed at one end and open at the other (its dark mouth seen a little end-on), with faint rings where its animals sit in rows; its lights run along it as before.

@@ -392,12 +392,30 @@ export function createMidnightScene(seed: number): Scene {
     ctx.translate(x, y);
     ctx.rotate(-0.25 + Math.sin(t * 0.2) * 0.08);
     const len = 70 * s, rad = 9 * s;
-    ctx.fillStyle = 'rgba(160,180,255,0.08)';
-    ctx.strokeStyle = 'rgba(180,200,255,0.25)';
+    // A hollow tube, closed and rounded at one end, open at the other (its mouth seen a little end-on).
+    ctx.fillStyle = 'rgba(160,180,255,0.09)';
+    ctx.strokeStyle = 'rgba(180,200,255,0.26)';
     ctx.lineWidth = 0.8 * s;
     ctx.beginPath();
-    ctx.ellipse(0, 0, len / 2, rad, 0, 0, Math.PI * 2);
+    ctx.moveTo(len / 2, -rad * 1.05);
+    ctx.lineTo(-len / 2 + rad, -rad * 0.9);
+    ctx.arc(-len / 2 + rad, 0, rad * 0.9, -Math.PI / 2, Math.PI / 2, true);
+    ctx.lineTo(len / 2, rad * 1.05);
     ctx.fill();
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.ellipse(len / 2, 0, rad * 0.4, rad * 1.05, 0, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(10,14,40,0.35)';
+    ctx.fill();
+    ctx.stroke();
+    // Faint rings round it where the little animals sit in rows.
+    ctx.strokeStyle = 'rgba(180,200,255,0.1)';
+    ctx.beginPath();
+    for (let k = 1; k < 7; k++) {
+      const rx = -len / 2 + rad + k * (len - rad) / 7;
+      ctx.moveTo(rx, -rad);
+      ctx.quadraticCurveTo(rx + rad * 0.35, 0, rx, rad);
+    }
     ctx.stroke();
     ctx.globalCompositeOperation = 'lighter';
     // Touched, a bright wave runs the length of the colony and on into the water: each animal
