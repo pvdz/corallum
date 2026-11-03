@@ -1116,22 +1116,38 @@ export function createMidnightScene(seed: number): Scene {
     ctx.globalCompositeOperation = 'lighter';
     glow(ctx, px, py, 10 * s, '255,110,170', 0.5 + 0.4 * Math.sin(t * 3));
     ctx.globalCompositeOperation = 'source-over';
-    // The mouth: a loose pouch, hinged far back; touched, it balloons.
-    const open = 0.25 + gape * 0.9;
+    // The head: a small snout over enormous jaws hinged far back. The upper jaw a thin bony line,
+    // the lower a deep loose pouch hanging open below it (touched, it balloons), its rim pale.
+    const open = 0.35 + gape * 0.8;
+    const sx = x - 18 * s;
     ctx.fillStyle = '#1a121c';
     ctx.beginPath();
-    ctx.moveTo(x + 12 * s, y);
-    ctx.quadraticCurveTo(x - 4 * s, y - (6 + 16 * open) * s, x - 18 * s, y - 10 * open * s);
-    ctx.lineTo(x - 18 * s, y + 10 * open * s);
-    ctx.quadraticCurveTo(x - 4 * s, y + (6 + 16 * open) * s, x + 12 * s, y);
+    ctx.moveTo(x + 12 * s, y - 1 * s);
+    ctx.quadraticCurveTo(x - 2 * s, y - 5 * s, sx, y - 3 * s);
+    ctx.lineTo(sx, y - 1 * s);
+    ctx.quadraticCurveTo(sx + 2 * s, y + (8 + 14 * open) * s, x + 2 * s, y + (6 + 12 * open) * s);
+    ctx.quadraticCurveTo(x + 10 * s, y + 4 * s, x + 12 * s, y + 1 * s);
+    ctx.closePath();
     ctx.fill();
-    ctx.strokeStyle = 'rgba(120,90,130,0.6)';
-    ctx.lineWidth = 0.8 * s;
-    ctx.stroke();
-    // A tiny eye near the snout.
-    ctx.fillStyle = 'rgba(200,220,255,0.8)';
+    // The pouch's inside showing dark between the jaws, and the jaws' pale edges.
+    ctx.fillStyle = '#05030a';
     ctx.beginPath();
-    ctx.arc(x - 12 * s, y - (2 + 6 * open) * s, 1 * s, 0, Math.PI * 2);
+    ctx.moveTo(sx + 1 * s, y - 1.2 * s);
+    ctx.quadraticCurveTo(sx + 4 * s, y + (5 + 10 * open) * s, x + 4 * s, y + (3 + 8 * open) * s);
+    ctx.quadraticCurveTo(x + 2 * s, y + 0.5 * s, sx + 1 * s, y - 1.2 * s);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(150,120,160,0.7)';
+    ctx.lineWidth = 0.9 * s;
+    ctx.beginPath();
+    ctx.moveTo(x + 8 * s, y - 2 * s);
+    ctx.quadraticCurveTo(x - 4 * s, y - 4 * s, sx, y - 3 * s);
+    ctx.moveTo(sx, y - 1 * s);
+    ctx.quadraticCurveTo(sx + 2 * s, y + (8 + 14 * open) * s, x + 2 * s, y + (6 + 12 * open) * s);
+    ctx.stroke();
+    // A tiny eye at the very tip of the snout.
+    ctx.fillStyle = 'rgba(200,220,255,0.85)';
+    ctx.beginPath();
+    ctx.arc(sx + 3 * s, y - 4 * s, 1 * s, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }
