@@ -1356,27 +1356,42 @@ export function createBreachScene(seed: number): Scene {
       ctx.translate(x, y);
       ctx.rotate(ang);
       ctx.fillStyle = '#0c1028';
+      // A dolphin's side: a short beak below a rounded melon, the body thickest behind the head,
+      // a long tail stock narrowing to the flukes (seen edge-on: a thin swept crescent).
       ctx.beginPath();
-      ctx.moveTo(18 * s, 0);
-      ctx.quadraticCurveTo(10 * s, -6 * s, -10 * s, -3 * s);
-      ctx.lineTo(-16 * s, -7 * s);
-      ctx.lineTo(-14 * s, 0);
-      ctx.lineTo(-16 * s, 6 * s);
-      ctx.lineTo(-10 * s, 2 * s);
-      ctx.quadraticCurveTo(8 * s, 5 * s, 18 * s, 0);
+      ctx.moveTo(21 * s, 0.6 * s);
+      ctx.lineTo(16.5 * s, 0.2 * s);
+      ctx.quadraticCurveTo(15.5 * s, -3.6 * s, 11 * s, -4.4 * s);
+      ctx.quadraticCurveTo(0, -6.2 * s, -9 * s, -3 * s);
+      ctx.quadraticCurveTo(-13 * s, -1.6 * s, -15.5 * s, -0.8 * s);
+      ctx.quadraticCurveTo(-19 * s, -4.5 * s, -22 * s, -5.5 * s);
+      ctx.quadraticCurveTo(-20 * s, -1 * s, -17.5 * s, 0.2 * s);
+      ctx.quadraticCurveTo(-20 * s, 2 * s, -22 * s, 5 * s);
+      ctx.quadraticCurveTo(-18.5 * s, 3.6 * s, -15.5 * s, 1 * s);
+      ctx.quadraticCurveTo(-12 * s, 1.6 * s, -8 * s, 3 * s);
+      ctx.quadraticCurveTo(4 * s, 5.4 * s, 12 * s, 3 * s);
+      ctx.quadraticCurveTo(16 * s, 2 * s, 21 * s, 0.6 * s);
+      ctx.closePath();
       ctx.fill();
-      // Dorsal fin and beak.
+      // Dorsal fin, curved back, and a pectoral fin under the front.
       ctx.beginPath();
-      ctx.moveTo(2 * s, -4.5 * s);
-      ctx.lineTo(-3 * s, -10 * s);
-      ctx.lineTo(-5 * s, -3.5 * s);
+      ctx.moveTo(1 * s, -5.6 * s);
+      ctx.quadraticCurveTo(-1 * s, -10.5 * s, -6 * s, -11 * s);
+      ctx.quadraticCurveTo(-4 * s, -7.5 * s, -6 * s, -4 * s);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(8 * s, 3.4 * s);
+      ctx.quadraticCurveTo(6 * s, 7.5 * s, 2.5 * s, 8.5 * s);
+      ctx.quadraticCurveTo(4 * s, 5.5 * s, 3.5 * s, 3.8 * s);
+      ctx.closePath();
       ctx.fill();
       // Moonlight along the back.
       ctx.strokeStyle = 'rgba(220,225,255,0.35)';
       ctx.lineWidth = 1 * s;
       ctx.beginPath();
-      ctx.moveTo(14 * s, -2 * s);
-      ctx.quadraticCurveTo(6 * s, -5.5 * s, -8 * s, -3.2 * s);
+      ctx.moveTo(14 * s, -3.6 * s);
+      ctx.quadraticCurveTo(4 * s, -6.2 * s, -9 * s, -3.4 * s);
       ctx.stroke();
       ctx.restore();
       // Splash rings where it leaves and re-enters.
