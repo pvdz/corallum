@@ -713,7 +713,9 @@ window.corallum = {
   get feast() {
     const f = currentFeast(state);
     if (!f) return null;
-    const [x, y] = feastPos(f, state.t - f.start, focusNow, feastPay(state));
+    const [wx, wy] = feastPos(f, state.t - f.start, focusNow, feastPay(state));
+    // On screen (view mode's zoom applied), where a tap must land.
+    const [x, y] = toScreen(wx, wy);
     return { x: x / dpr, y: y / dpr };
   },
   get zoom() { return zoom.k; },
