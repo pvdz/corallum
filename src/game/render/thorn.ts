@@ -29,32 +29,57 @@ export function drawThorn(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayo
   ctx.translate(x, y);
   ctx.rotate(Math.sin(t * 0.3) * 0.2);
   const arms = 13;
-  // Arms, then spines along them, then the disc.
-  ctx.fillStyle = '#7a2f5c';
+  // Thick tapering arms, each curling a little, a darker body showing between them; spines in
+  // pairs along every arm, pointing out to both sides; a small raised disc in the middle.
+  const armTip = (a: number): [number, number] => {
+    const th = (a / arms) * Math.PI * 2;
+    const r = (11 + Math.sin(a * 1.7 + t) * 0.8) * s;
+    return [th + Math.sin(t * 0.5 + a) * 0.06, r];
+  };
+  ctx.fillStyle = '#6a2650';
   ctx.beginPath();
-  for (let a = 0; a < arms * 2; a++) {
-    const th = (a / (arms * 2)) * Math.PI * 2;
-    const r = (a % 2 ? 4.5 : 11 + Math.sin(a + t) * 0.6) * s;
-    ctx.lineTo(Math.cos(th) * r, Math.sin(th) * r);
-  }
-  ctx.closePath();
+  ctx.arc(0, 0, 6 * s, 0, Math.PI * 2);
   ctx.fill();
-  ctx.strokeStyle = '#e3a0c8';
-  ctx.lineWidth = 0.7 * s;
+  ctx.fillStyle = '#8a3566';
   ctx.beginPath();
   for (let a = 0; a < arms; a++) {
-    const th = (a / arms) * Math.PI * 2;
-    for (const r of [5, 8]) {
+    const [th, r] = armTip(a);
+    const w = 0.2;
+    ctx.moveTo(Math.cos(th - w) * 4 * s, Math.sin(th - w) * 4 * s);
+    ctx.quadraticCurveTo(Math.cos(th - w * 0.5) * r * 0.6, Math.sin(th - w * 0.5) * r * 0.6, Math.cos(th) * r, Math.sin(th) * r);
+    ctx.quadraticCurveTo(Math.cos(th + w * 0.5) * r * 0.6, Math.sin(th + w * 0.5) * r * 0.6, Math.cos(th + w) * 4 * s, Math.sin(th + w) * 4 * s);
+    ctx.closePath();
+  }
+  ctx.fill();
+  ctx.strokeStyle = '#f0b4d6';
+  ctx.lineWidth = 0.6 * s;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  for (let a = 0; a < arms; a++) {
+    const [th] = armTip(a);
+    for (const r of [5.2, 7.4, 9.4]) {
       const px = Math.cos(th) * r * s, py = Math.sin(th) * r * s;
-      ctx.moveTo(px, py);
-      ctx.lineTo(px + Math.cos(th + 0.8) * 2.4 * s, py + Math.sin(th + 0.8) * 2.4 * s);
+      const len = (2.4 - r * 0.12) * s;
+      for (const d of [-1, 1]) {
+        const sa = th + d * 1.1;
+        ctx.moveTo(px, py);
+        ctx.lineTo(px + Math.cos(sa) * len, py + Math.sin(sa) * len);
+      }
     }
   }
   ctx.stroke();
-  ctx.fillStyle = '#a3477c';
+  ctx.fillStyle = '#b55a8c';
   ctx.beginPath();
-  ctx.arc(0, 0, 4 * s, 0, Math.PI * 2);
+  ctx.arc(0, 0, 3 * s, 0, Math.PI * 2);
   ctx.fill();
+  ctx.strokeStyle = 'rgba(240,180,214,0.8)';
+  ctx.beginPath();
+  for (let a = 0; a < 7; a++) {
+    const th = (a / 7) * Math.PI * 2 + 0.3;
+    ctx.moveTo(Math.cos(th) * 1.2 * s, Math.sin(th) * 1.2 * s);
+    ctx.lineTo(Math.cos(th) * 2.6 * s, Math.sin(th) * 2.6 * s);
+  }
+  ctx.stroke();
   ctx.restore();
 }
 
