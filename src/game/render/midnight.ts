@@ -187,19 +187,40 @@ export function createMidnightScene(seed: number): Scene {
       ctx.moveTo(wx - 60 * s, wy + 2 * s);
       ctx.quadraticCurveTo(wx, wy - 4 * s, wx + 64 * s, wy + 3 * s);
       ctx.stroke();
-      ctx.lineWidth = 1.5 * s;
-      for (let k = 0; k < 11; k++) {
-        const rx = wx - 44 * s + k * 7.5 * s;
-        const rh = (14 - Math.abs(k - 4) * 1.4) * s;
-        ctx.beginPath();
-        ctx.moveTo(rx, wy - 1 * s);
-        ctx.quadraticCurveTo(rx + 5 * s, wy - rh, rx + 2 * s, wy - rh * 1.25);
-        ctx.stroke();
+      // Vertebrae along it: small blocks, larger toward the chest, smaller down the tail.
+      ctx.fillStyle = 'rgba(205,210,228,0.5)';
+      ctx.beginPath();
+      for (let k = 0; k < 19; k++) {
+        const u = k / 18;
+        const vx = wx - 60 * s + u * 124 * s;
+        const vy = (1 - u) * (1 - u) * (wy + 2 * s) + 2 * (1 - u) * u * (wy - 4 * s) + u * u * (wy + 3 * s);
+        const vr = (0.9 + 1.4 * Math.sin(Math.min(1, u * 1.4) * Math.PI * 0.5)) * s;
+        ctx.moveTo(vx + vr * 1.3, vy - 1 * s);
+        ctx.ellipse(vx, vy - 1 * s, vr * 1.3, vr, 0, 0, Math.PI * 2);
       }
-      // The skull, and the lights of the small things living on it.
+      ctx.fill();
+      // The ribs: longest at the chest (toward the skull), rising and leaning back a little; the
+      // first two (by the tail end) fallen half flat.
+      ctx.lineWidth = 1.5 * s;
+      ctx.beginPath();
+      for (let k = 0; k < 11; k++) {
+        const rx = wx - 14 * s + k * 6.5 * s;
+        const rh = (7 + 11 * Math.sin(((k + 1) / 12) * Math.PI) * (0.5 + 0.5 * k / 10)) * s;
+        const lean = k < 2 ? 0.45 : 1;
+        ctx.moveTo(rx, wy - 2 * s);
+        ctx.quadraticCurveTo(rx + 1.5 * s, wy - rh * lean, rx - 3.5 * s, wy - rh * 1.1 * lean);
+      }
+      ctx.stroke();
+      // The skull: a long jaw and the broad cranium behind it.
       ctx.fillStyle = 'rgba(200,205,225,0.45)';
       ctx.beginPath();
-      ctx.ellipse(wx + 74 * s, wy, 13 * s, 6 * s, 0.1, 0, Math.PI * 2);
+      ctx.ellipse(wx + 70 * s, wy - 1 * s, 9 * s, 6.5 * s, 0.1, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(wx + 74 * s, wy - 3 * s);
+      ctx.quadraticCurveTo(wx + 92 * s, wy - 2 * s, wx + 100 * s, wy + 2 * s);
+      ctx.quadraticCurveTo(wx + 88 * s, wy + 3.5 * s, wx + 74 * s, wy + 3 * s);
+      ctx.closePath();
       ctx.fill();
       // White mats of bacteria spreading over the bones and the silt beside them.
       ctx.fillStyle = 'rgba(235,240,245,0.16)';

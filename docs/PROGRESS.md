@@ -1093,3 +1093,4 @@ date, what landed, what is half-done, what's next.
 - `tools/fuzz.ts --calm` (reduced motion emulated): mobile at the Breach and desktop in the Midnight Water, ~960 actions, no errors.
 - `tools/audit.ts laptop` (1366×768, the most common laptop screen): clean, plain, Larger text and scientific.
 - Leak check after the night's drawing changes (Path2D per frame in several renderers): 2.5 min at ×30 from the Twilight on a phone, tapping: heap 8.8 → 9.3 → 9.4 → 9.3 → 9.6 MB after GC, DOM nodes ~4,635 and listeners ~719 flat.
+- The whale fall's spine was a bare bar with eleven identical hooks: vertebrae along it (largest at the chest), ribs longest at the chest and leaning back, the first two fallen half flat, and a skull with its long jaw.
