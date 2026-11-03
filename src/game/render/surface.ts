@@ -46,13 +46,14 @@ export function drawSailors(ctx: CanvasRenderingContext2D, t: number, sf: Surfac
     ctx.ellipse(0, -0.2 * z, 3.2 * z, 1 * z, 0, 0, Math.PI * 2);
     ctx.stroke();
     // The sail: a stiff clear triangle set across the float at a slant (all of a fleet lean one way).
-    ctx.fillStyle = `rgba(210,230,255,${0.35 + 0.4 * Math.max(0, bob)})`;
-    ctx.strokeStyle = 'rgba(230,240,255,0.7)';
-    ctx.lineWidth = 0.4 * z;
+    // A thin clear membrane, its leading edge curved, catching the light only along its rim.
+    ctx.fillStyle = `rgba(200,220,250,${0.16 + 0.3 * Math.max(0, bob)})`;
+    ctx.strokeStyle = 'rgba(225,238,255,0.55)';
+    ctx.lineWidth = 0.35 * z;
     ctx.beginPath();
-    ctx.moveTo(-3.5 * z * dir, -0.6 * z);
-    ctx.lineTo(1 * z * dir, -6.5 * z);
-    ctx.lineTo(3.5 * z * dir, -0.6 * z);
+    ctx.moveTo(-3.2 * z * dir, -0.6 * z);
+    ctx.quadraticCurveTo(-1.6 * z * dir, -4.6 * z, 0.6 * z * dir, -5.2 * z);
+    ctx.quadraticCurveTo(1.6 * z * dir, -2.6 * z, 3.2 * z * dir, -0.6 * z);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
