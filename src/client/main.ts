@@ -1840,20 +1840,37 @@ photoBtn.addEventListener('click', () => {
   sc.fillRect(fs * 0.8, shot.height - fs * 2.6, tw + fs * 1.2, fs * 1.8);
   sc.fillStyle = 'rgba(240,248,255,0.92)';
   sc.fillText(caption, fs * 1.4, shot.height - fs * 1.15);
+  // The shutter: a soft white flash over the scene (a faint one when motion is calmed).
+  const flash = document.createElement('div');
+  flash.className = 'photo-flash';
+  if (reducedMotion.matches || calm.get()) flash.classList.add('soft');
+  flash.addEventListener('animationend', () => flash.remove());
+  ui.append(flash);
   shot.toBlob((blob) => {
     if (!blob) return;
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
     // Letters of any script are kept (a reef named in another alphabet keeps its name); a name with none is "corallum".
     const who = (reefName(state) || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '') || 'corallum';
-    a.download = `${who}-${Math.floor(state.height)}m.png`; // floored like the caption (metres())
+    const name = `${who}-${Math.floor(state.height)}m.png`; // floored like the caption (metres())
     if (!state.meta.seen.includes('did:photo')) state.meta.seen.push('did:photo');
     if (actAt(state.height) === 2 && !state.meta.seen.includes('did:photo-dark')) state.meta.seen.push('did:photo-dark');
     const zoneShot = `did:photo-z${actAt(state.height)}`;
     if (!state.meta.seen.includes(zoneShot)) state.meta.seen.push(zoneShot);
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
     audio.cue('buy');
+    const download = () => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    };
+    // On a touch screen the share sheet (save to photos, send to someone) instead of a file in
+    // Downloads; if it is refused (no gesture left, no permission) the file is saved as before.
+    const file = typeof File === 'function' ? new File([blob], name, { type: 'image/png' }) : null;
+    if (file && matchMedia('(pointer: coarse)').matches && navigator.canShare?.({ files: [file] })) {
+      navigator.share({ files: [file], title: caption }).catch((e: unknown) => {
+        if ((e as { name?: string })?.name !== 'AbortError') download();
+      });
+    } else download();
   }, 'image/png');
 });
 ui.append(photoBtn);

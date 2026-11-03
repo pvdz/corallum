@@ -1198,3 +1198,8 @@ html.view-mode #photo { display: grid; }
 }
 /* A creature's label (asked for by a tap) comes first: a whisper behind it steps back. */
 #ui:has(#creature-label.show) #whisper { opacity: 0 !important; }
+
+/* The photo's shutter: a soft flash over everything, gone in half a second. */
+.photo-flash { position: fixed; inset: 0; z-index: 60; pointer-events: none; background: #f4f8ff; animation: photo-flash 0.5s ease-out forwards; }
+.photo-flash.soft { animation-duration: 0.3s; background: #8090a8; }
+@keyframes photo-flash { from { opacity: 0.55; } to { opacity: 0; } }

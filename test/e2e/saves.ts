@@ -1,5 +1,5 @@
 // Save files in a real browser: "Save to a file" downloads the reef, "Load a file"
-// brings one back. Run with: node --no-warnings test/e2e/saves.ts
+// brings one back; a photo of the reef downloads as a PNG. Run with: node --no-warnings test/e2e/saves.ts
 
 import { readFileSync } from 'node:fs';
 import { runBot } from '../../src/game/sim/bot.ts';
@@ -16,6 +16,20 @@ await withGame(async (open) => {
     const file = importString(readFileSync((await dl.path())!, 'utf8'));
     const ok = !!file && file.state.t >= 600 && /^corallum-\d{4}-\d\d-\d\d\.txt$/.test(dl.suggestedFilename()) && !errors.length;
     console.log(`${ok ? 'ok  ' : 'FAIL'} save to a file: ${dl.suggestedFilename()}`);
+    failed ||= !ok;
+  }
+  // A photo of the reef from view mode: a PNG named after the height, with the shutter's flash.
+  {
+    const { page, errors } = await open(VIEWPORTS[1]!, '?bot=3000');
+    await page.waitForFunction(() => window.corallum, null, { timeout: 30000 });
+    for (let i = 0; i < 10 && (await page.locator('.reader:not([hidden])').count()); i++) await page.keyboard.press('Escape');
+    await page.locator('#view').click();
+    const shot = page.waitForEvent('download');
+    await page.locator('#photo').click();
+    const flash = await page.locator('.photo-flash').count();
+    const dl = await shot;
+    const ok = /^corallum-\d+m\.png$/.test(dl.suggestedFilename()) && flash === 1 && !errors.length;
+    console.log(`${ok ? 'ok  ' : 'FAIL'} a photo of the reef: ${dl.suggestedFilename()}${flash ? ', a flash' : ', no flash'}`);
     failed ||= !ok;
   }
   // Upload.
