@@ -291,20 +291,36 @@ function hermit(ctx: CanvasRenderingContext2D, L: ReefLayout, s0: number, t: num
     ctx.arc(x - 5 * s, y - 7 * s, 0.6 * s, 0, Math.PI * 2);
     ctx.fill();
   }
-  // The borrowed shell: a spiral whorl.
-  ctx.fillStyle = '#e8d2b0';
-  ctx.beginPath();
-  ctx.ellipse(x + 1 * s, y - 4 * s, 5 * s, 4 * s, -0.2, 0, Math.PI * 2);
-  ctx.fill();
+  // The borrowed shell: a snail's, its body whorl round and full with the mouth toward the crab,
+  // the spire of smaller whorls tapering up and back to a point; lit from above, with growth lines.
+  const g = ctx.createLinearGradient(0, y - 9 * s, 0, y);
+  g.addColorStop(0, '#f2e0c2');
+  g.addColorStop(1, '#c8a880');
+  ctx.fillStyle = g;
   ctx.strokeStyle = 'rgba(120,80,50,0.7)';
   ctx.lineWidth = 0.7 * s;
   ctx.beginPath();
-  for (let a = 0; a < Math.PI * 4; a += 0.25) {
-    const r = 4 * s * (1 - a / (Math.PI * 4.4));
-    const px = x + 1.5 * s + Math.cos(a) * r, py = y - 4 * s + Math.sin(a) * r * 0.8;
-    if (a === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
-  }
+  ctx.moveTo(x - 3.6 * s, y - 1 * s);
+  ctx.quadraticCurveTo(x - 4.4 * s, y - 7 * s, x + 0.5 * s, y - 7.6 * s);
+  ctx.quadraticCurveTo(x + 4 * s, y - 8.6 * s, x + 9.5 * s, y - 10.5 * s);
+  ctx.quadraticCurveTo(x + 7.5 * s, y - 5.5 * s, x + 5.5 * s, y - 2.5 * s);
+  ctx.quadraticCurveTo(x + 3 * s, y + 0.4 * s, x - 3.6 * s, y - 1 * s);
+  ctx.closePath();
+  ctx.fill();
   ctx.stroke();
+  // The sutures between the whorls, and the mouth's dark opening (the crab's way in).
+  ctx.beginPath();
+  ctx.moveTo(x + 1 * s, y - 7.4 * s);
+  ctx.quadraticCurveTo(x + 3.5 * s, y - 5 * s, x + 6 * s, y - 3.2 * s);
+  ctx.moveTo(x + 4.6 * s, y - 8.6 * s);
+  ctx.quadraticCurveTo(x + 6 * s, y - 7 * s, x + 7.4 * s, y - 6.2 * s);
+  ctx.moveTo(x + 7.4 * s, y - 9.7 * s);
+  ctx.quadraticCurveTo(x + 8.2 * s, y - 8.8 * s, x + 8.6 * s, y - 8.2 * s);
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(60,35,25,0.8)';
+  ctx.beginPath();
+  ctx.ellipse(x - 2.4 * s, y - 3.4 * s, 1.6 * s, 2.4 * s, 0.2, 0, Math.PI * 2);
+  ctx.fill();
 }
 
 /** A decorator crab at the reef's foot, wearing sponge and weed; touched, it freezes, all legs in. */
