@@ -1299,13 +1299,21 @@ export function createBreachScene(seed: number): Scene {
       ctx.ellipse(0, 0, r * pulse, r * 0.45 / pulse, 0, Math.PI, 0);
       ctx.fill();
       ctx.stroke();
-      // Four pale rings seen through the bell.
-      ctx.strokeStyle = 'rgba(255,200,230,0.45)';
-      for (const dx of [-0.45, -0.15, 0.15, 0.45]) {
-        ctx.beginPath();
-        ctx.arc(dx * r * pulse, -r * 0.15, r * 0.12, 0, Math.PI * 2);
-        ctx.stroke();
+      // Four pale horseshoes seen through the bell: a four-leaf clover, foreshortened from the side
+      // (the near and far leaves flattened, the two side ones turned edge-on), slowly turning.
+      // Soft filled lobes, no outlines (rings read as eyes or letters).
+      ctx.fillStyle = 'rgba(255,190,225,0.2)';
+      ctx.beginPath();
+      const turn = t * 0.15 + k;
+      for (let q = 0; q < 4; q++) {
+        const a = turn + q * Math.PI / 2;
+        const lx = Math.cos(a) * r * 0.3 * pulse, ly = -r * 0.16 + Math.sin(a) * r * 0.07;
+        const rx = r * 0.2 * (0.5 + 0.5 * Math.abs(Math.sin(a))), ry = r * 0.09;
+        ctx.moveTo(lx + rx, ly);
+        ctx.ellipse(lx, ly, rx, ry, 0, 0, Math.PI * 2);
       }
+      ctx.fill();
+      ctx.lineWidth = 0.8 * s;
       // A fringe of short tentacles.
       ctx.strokeStyle = 'rgba(210,225,255,0.25)';
       for (let q = -4; q <= 4; q++) {
