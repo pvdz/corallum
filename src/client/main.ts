@@ -814,7 +814,7 @@ function resize(): void {
   // A phone sheet drawn up tall covers the reef for a while; the scene keeps its usual framing.
   const top = !side && panel.element.classList.contains('tall') ? window.innerHeight * 0.53 : r.top;
   // The depth gauge keeps above the phone sheet, wherever its top is (CSS caps its height by it).
-  const sheetTop = side ? '' : `${Math.round(top)}px`;
+  const sheetTop = side || viewMode || r.height === 0 ? '' : `${Math.round(top)}px`;
   if (sheetTop !== lastSheetTop) { lastSheetTop = sheetTop; document.documentElement.style.setProperty('--sheet-top', sheetTop || 'none'); }
   // With the panel hidden (view mode) the scene frames the whole screen.
   const focus: Focus = viewMode ? { x: 0, y: 0, w, h } : side
