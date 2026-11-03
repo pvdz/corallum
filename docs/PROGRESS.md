@@ -1119,3 +1119,4 @@ date, what landed, what is half-done, what's next.
 - Fuzz after the last drawing changes: tiny phone at the Breach, landscape at the Twilight, desktop after the ending; ~1,270 actions, no errors. Smoke, systems and finale e2e green.
 - README scene images (docs/readme/*.jpg: Silt Floor, Midnight Water, Twilight Shelf, Sunlit Crown, Breach, full moon) and the link preview (src/client/icons/share.jpg) retaken with tonight's art; the old ones showed the grape-cluster stones, the "oooo" jellies and the glitter ladder. The desktop panel and phone shots too.
 - The mola's eye and mouth were two black dots side by side (a ghost's face): a round eye with a pale rim, a small pouting mouth at the blunt snout, the gill opening and faint mottling.
+- The barracuda tornado's fish were pills with a triangle: slim bodies with pointed jaws and forked tails, and on the near side of the column a dark back line and an eye.

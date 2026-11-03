@@ -1315,16 +1315,33 @@ export function createSunlitScene(seed: number): Scene {
       const dir = -Math.sin(a) >= 0 ? 1 : -1;
       const len = 11 * s;
       const back = Math.sin(a) > 0;
+      // A long slim body with a pointed jaw, a forked tail, and (on the near side of the column)
+      // a dark back and an eye.
+      const h = len * 0.17;
       ctx.fillStyle = back ? 'rgba(150,170,185,0.75)' : 'rgba(215,228,236,0.95)';
       ctx.beginPath();
-      ctx.ellipse(x, y, len, len * 0.18, 0, 0, Math.PI * 2);
+      ctx.moveTo(x + dir * len * 1.1, y + h * 0.2);
+      ctx.quadraticCurveTo(x + dir * len * 0.6, y - h * 1.1, x - dir * len * 0.2, y - h);
+      ctx.quadraticCurveTo(x - dir * len * 0.85, y - h * 0.5, x - dir * len, y);
+      ctx.lineTo(x - dir * len * 1.4, y - len * 0.27);
+      ctx.lineTo(x - dir * len * 1.25, y);
+      ctx.lineTo(x - dir * len * 1.4, y + len * 0.27);
+      ctx.lineTo(x - dir * len, y);
+      ctx.quadraticCurveTo(x - dir * len * 0.85, y + h * 0.6, x - dir * len * 0.2, y + h);
+      ctx.quadraticCurveTo(x + dir * len * 0.6, y + h * 1.1, x + dir * len * 1.1, y + h * 0.2);
       ctx.fill();
-      ctx.beginPath();
-      ctx.moveTo(x - dir * len, y);
-      ctx.lineTo(x - dir * len * 1.4, y - len * 0.25);
-      ctx.lineTo(x - dir * len * 1.4, y + len * 0.25);
-      ctx.closePath();
-      ctx.fill();
+      if (!back) {
+        ctx.strokeStyle = 'rgba(70,90,110,0.55)';
+        ctx.lineWidth = Math.max(0.8, h * 0.5);
+        ctx.beginPath();
+        ctx.moveTo(x + dir * len * 0.6, y - h * 0.65);
+        ctx.quadraticCurveTo(x, y - h * 0.95, x - dir * len * 0.8, y - h * 0.35);
+        ctx.stroke();
+        ctx.fillStyle = '#1c2630';
+        ctx.beginPath();
+        ctx.arc(x + dir * len * 0.72, y - h * 0.15, Math.max(0.6, h * 0.3), 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
     ctx.restore();
   }
