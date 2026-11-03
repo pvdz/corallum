@@ -14,7 +14,12 @@ function arg(name: string, fallback: string): string {
   return i > 0 ? process.argv[i + 1] ?? fallback : fallback;
 }
 // 'small': a 360×640 phone, a common size the standard viewports leave out.
-const vp = arg('vp', 'desktop') === 'small' ? { name: 'small', width: 360, height: 640, scale: 2, mobile: true } : VIEWPORTS.find((v) => v.name === arg('vp', 'desktop'))!;
+// 'tiny': 320×568, the narrowest phone still in use.
+const EXTRA: Record<string, { name: string; width: number; height: number; scale: number; mobile: boolean }> = {
+  small: { name: 'small', width: 360, height: 640, scale: 2, mobile: true },
+  tiny: { name: 'tiny', width: 320, height: 568, scale: 2, mobile: true },
+};
+const vp = EXTRA[arg('vp', 'desktop')] ?? VIEWPORTS.find((v) => v.name === arg('vp', 'desktop'))!;
 const at = Number(arg('at', '10000'));
 const secs = Number(arg('secs', '120'));
 const ended = process.argv.includes('--ended');
