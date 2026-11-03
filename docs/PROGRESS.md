@@ -1106,3 +1106,4 @@ date, what landed, what is half-done, what's next.
 - The hermit crab's shell was a flat disc with a spiral drawn on (a cinnamon roll): a snail's shell, the round body whorl with its dark mouth toward the crab and a spire tapering up and back to a point, lit from above, with sutures.
 - The anglerfish had no eye and no mouth: its "teeth" were twelve parallel slashes floating on the body. A gaping dark mouth with the lower jaw jutting, needle teeth along both jaws pointing in, and a small pale eye.
 - The gulper eel's head was an outlined lens (a leaf on a whip): a small snout over enormous jaws hinged far back, the upper jaw a thin line, the lower a deep loose pouch hanging open with its dark inside showing, pale jaw edges and a tiny eye at the tip.
+- Whole audit sweep at 06:35, 9 viewports (desktop, mobile, landscape, small, small-landscape, narrow-desktop, tablet, tiny, laptop) × plain/Larger text/scientific × 8 points: only the 2 known dim findings.
