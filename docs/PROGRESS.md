@@ -1113,3 +1113,4 @@ date, what landed, what is half-done, what's next.
 - The gull (the Breach's intruder) was a stroked "M" over an oval: long filled wings bent at the wrist with black tips (the far one darker, behind), a squared tail, a round head with its eye and yellow bill.
 - The thorn star (the Twilight/Sunlit intruder) read as a sea urchin, its arms lost under long single spines: thirteen thick tapering arms over a darker body, short spines in pairs along every arm, a small raised disc.
 - The drill snail (the Silt Floor's intruder) gets a head peeking from its foot, two feelers and its siphon, so it reads as alive, not a shell stuck on the branch.
+- The pelican (after dawn) was a stroked "M": long broad filled wings bent at the wrist (the far one darker), a short tail, the head on its shoulders with a pale crown and eye, and the long bill with its pouch.

@@ -1031,34 +1031,51 @@ export function createBreachScene(seed: number): Scene {
     ctx.rotate(plunge * 1.2);
     const fold = plunge;
     const flap = Math.sin(t * 2.2) * 0.25 * (1 - fold);
-    const span = 22 * s * (1 - fold * 0.75);
-    // Wings bent at the wrist, dark against the dawn.
-    ctx.strokeStyle = '#3e3a38';
-    ctx.lineWidth = 3 * s;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.beginPath();
-    ctx.moveTo(-span, (-2 - flap * 10) * s);
-    ctx.lineTo(-span * 0.45, (-7 - flap * 6) * s);
-    ctx.lineTo(0, 0);
-    ctx.lineTo(span * 0.45, (-7 - flap * 6) * s);
-    ctx.lineTo(span, (-2 - flap * 10) * s);
-    ctx.stroke();
-    // Body, neck tucked in an S, the head and the long pouched bill.
+    const span = 30 * s * (1 - fold * 0.75);
+    // Wings: broad and long, bent at the wrist, filled, the far one darker and behind; dark
+    // against the dawn, the flight feathers a shade darker at the trailing edge.
+    const wing = (side: number, shade: string) => {
+      const wx = side * span * 0.45, wyy = (-7 - flap * 6) * s, tx = side * span, ty = (-2 - flap * 10) * s;
+      ctx.fillStyle = shade;
+      ctx.beginPath();
+      ctx.moveTo(side * 1 * s, -2 * s);
+      ctx.quadraticCurveTo(side * span * 0.2, wyy - 2 * s, wx, wyy);
+      ctx.quadraticCurveTo(side * span * 0.75, wyy - 1 * s, tx, ty);
+      ctx.quadraticCurveTo(side * span * 0.7, ty + 2.6 * s, wx, wyy + 3.6 * s);
+      ctx.quadraticCurveTo(side * span * 0.2, 1 * s, side * 1 * s, 2 * s);
+      ctx.closePath();
+      ctx.fill();
+    };
+    wing(-1, '#36312f');
+    // Body, a short tail, the neck folded back so the head sits on the shoulders, and the long bill
+    // with its pouch hanging under it.
     ctx.fillStyle = '#5a5450';
     ctx.beginPath();
     ctx.ellipse(-2 * s, 1 * s, 8 * s, 3 * s, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
+    ctx.moveTo(-9 * s, 0);
+    ctx.lineTo(-13 * s, -0.5 * s);
+    ctx.lineTo(-12.5 * s, 2.5 * s);
+    ctx.lineTo(-9 * s, 2.5 * s);
+    ctx.moveTo(9.4 * s, -1 * s);
     ctx.arc(7 * s, -1 * s, 2.4 * s, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#b08840';
+    ctx.fillStyle = '#e8e2d4';
     ctx.beginPath();
-    ctx.moveTo(8.5 * s, -1.5 * s);
-    ctx.lineTo(20 * s, 0);
-    ctx.lineTo(9 * s, 2.5 * s);
+    ctx.arc(7.2 * s, -2 * s, 1.3 * s, Math.PI, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#c09048';
+    ctx.beginPath();
+    ctx.moveTo(8.5 * s, -2 * s);
+    ctx.lineTo(21 * s, -0.4 * s);
+    ctx.lineTo(20 * s, 0.4 * s);
+    ctx.quadraticCurveTo(14 * s, 4 * s, 9 * s, 2.2 * s);
     ctx.closePath();
     ctx.fill();
+    ctx.fillStyle = '#1a1614';
+    ctx.beginPath();
+    ctx.arc(7.6 * s, -1.6 * s, 0.5 * s, 0, Math.PI * 2);
+    ctx.fill();
+    wing(1, '#4a4440');
     ctx.restore();
   }
 
