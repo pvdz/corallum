@@ -529,21 +529,26 @@ export function createSunlitScene(seed: number): Scene {
       if (k === 0) spot('tree-worms', x, y, Math.max(16 * s, 20 * dpr));
       const out = touch && touch.age < 2 + k * 0.5 ? Math.max(0, (touch.age - 1.5 - k * 0.3) / 1.2) : 1;
       if (out <= 0.05) continue;
+      // Two little spiral trees: tiers of fine plumes, widest at the foot, each tier an arc of
+      // colour over a dark edge, swaying a little.
+      const path = new Path2D();
       for (const side of [-1, 1]) {
-        ctx.beginPath();
-        for (let q = 0; q <= 12; q++) {
-          const u = q / 12, r = (5 - 3.8 * u) * s * out;
-          const px = x + side * 4 * s + Math.cos(u * 10 + t * 0.5) * r, py = y - u * 15 * s * out + Math.sin(u * 10 + t * 0.5) * r * 0.35;
-          if (q === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        const bx = x + side * 4 * s, sway = Math.sin(t * 0.8 + k + side) * 0.8 * s;
+        for (let q = 0; q < 5; q++) {
+          const u = q / 5;
+          const cy = y - (1.5 + u * 13) * s * out, rx = (4.6 - 3.4 * u) * s * out, ry = (1.5 - 0.6 * u) * s * out;
+          const cx = bx + sway * u;
+          path.moveTo(cx - rx, cy);
+          path.ellipse(cx, cy, rx, ry, 0, Math.PI, Math.PI * 2.0, true);
         }
-        // A dark edge under the colour, so the spirals read against the bright reef.
-        ctx.strokeStyle = 'rgba(20,20,30,0.6)';
-        ctx.lineWidth = 3 * s;
-        ctx.stroke();
-        ctx.strokeStyle = colours[k % colours.length]!;
-        ctx.lineWidth = 1.6 * s;
-        ctx.stroke();
       }
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = 'rgba(20,20,30,0.55)';
+      ctx.lineWidth = 2.6 * s;
+      ctx.stroke(path);
+      ctx.strokeStyle = colours[k % colours.length]!;
+      ctx.lineWidth = 1.5 * s;
+      ctx.stroke(path);
     }
     ctx.restore();
   }
