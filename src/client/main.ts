@@ -1402,10 +1402,15 @@ function takePortrait(): void {
     if (closeUp && r < 60 * dpr) continue;
     const side = closeUp ? Math.min(canvas.height * 0.8, r * 2.4) : Math.min(280 * dpr, Math.max(70 * dpr, r * 2.4));
     const f = closeUp ? { x: 0, y: 0, w: canvas.width, h: canvas.height } : focusNow;
-    if (x - side / 2 < f.x || x + side / 2 > f.x + f.w || y - side / 2 < f.y || y + side / 2 > f.y + f.h) continue;
+    if (side > f.w || side > f.h) continue;
+    // The crop is moved inside the scene, as long as the creature stays well inside the crop (those
+    // living low on the slope, like the Rasp, were otherwise never taken).
+    const cx = Math.min(Math.max(x, f.x + side / 2), f.x + f.w - side / 2);
+    const cy = Math.min(Math.max(y, f.y + side / 2), f.y + f.h - side / 2);
+    if (Math.abs(cx - x) > side * 0.3 || Math.abs(cy - y) > side * 0.3) continue;
     // Taken at the start of the next frame, before anything is drawn: the canvas then holds this
     // frame, finished, and the crop does not force its drawing through mid-frame.
-    portraitAsk = () => portraits.capture(p.id, canvas, x, y, side, closeUp);
+    portraitAsk = () => portraits.capture(p.id, canvas, cx, cy, side, closeUp);
     if (closeUp && !state.meta.seen.includes('did:closeup')) state.meta.seen.push('did:closeup');
     return;
   }
