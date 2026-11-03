@@ -723,20 +723,44 @@ export function createSunlitScene(seed: number): Scene {
       ctx.translate(fx, fy);
       ctx.scale(dir * (1 - 0.35 * hide), 1 - 0.35 * hide);
       ctx.globalAlpha = 1 - 0.6 * hide;
+      // Rounded fins edged in black, an orange body, three white bands edged black (curved to
+      // the body), and an eye with a pale rim.
+      ctx.fillStyle = '#e8601a';
+      ctx.strokeStyle = '#1a1210';
+      ctx.lineWidth = 0.5 * s;
+      ctx.beginPath();
+      ctx.moveTo(-5 * s, 0);
+      ctx.quadraticCurveTo(-9.5 * s, -4 * s, -9.2 * s, 0);
+      ctx.quadraticCurveTo(-9.5 * s, 4 * s, -5 * s, 0);
+      ctx.moveTo(2 * s, -3 * s);
+      ctx.quadraticCurveTo(-1 * s, -5.6 * s, -4.4 * s, -2 * s);
+      ctx.lineTo(1 * s, -2.6 * s);
+      ctx.fill();
+      ctx.stroke();
       ctx.fillStyle = '#ff7a1a';
       ctx.beginPath();
       ctx.ellipse(0, 0, 6 * s, 3.4 * s, 0, 0, Math.PI * 2);
       ctx.fill();
+      ctx.save();
+      ctx.clip();
+      for (const bx of [3, -0.6, -4.2]) {
+        ctx.fillStyle = '#1a1210';
+        ctx.beginPath();
+        ctx.ellipse(bx * s, 0, 1.25 * s, 3.6 * s, 0.1, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.ellipse(bx * s, 0, 0.8 * s, 3.6 * s, 0.1, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+      ctx.fillStyle = '#ffe8d0';
       ctx.beginPath();
-      ctx.moveTo(-5 * s, 0);
-      ctx.lineTo(-9 * s, -3 * s);
-      ctx.lineTo(-9 * s, 3 * s);
+      ctx.arc(4.4 * s, -0.8 * s, 0.95 * s, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = '#ffffff';
-      for (const bx of [2.5, -1.5]) ctx.fillRect(bx * s, -3.2 * s, 1.4 * s, 6.4 * s);
       ctx.fillStyle = '#111';
       ctx.beginPath();
-      ctx.arc(4 * s, -0.8 * s, 0.7 * s, 0, Math.PI * 2);
+      ctx.arc(4.5 * s, -0.8 * s, 0.6 * s, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
     }
