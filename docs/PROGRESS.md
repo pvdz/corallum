@@ -1097,3 +1097,4 @@ date, what landed, what is half-done, what's next.
 - The barreleye's body was near-black on the dark water, so only its dome and two green eyes showed (a pause icon in a bubble): a dark barrel lit faintly along its edge, a forked tail, a broad pectoral fin, a dorsal fin and a mouth.
 - The krill feast was forty salmon pills: each krill a small curled body with a dark eye at its head, its tail flicking, in two batched paths.
 - Lanternfish (the shoals, on screen through the whole Midnight Water) had no eyes: each has a big one near its snout, pale rim and dark middle, two fills for the whole shoal.
+- The pistol shrimp (a resident at the reef's foot) was two pink ovals: a segmented body tapering into its burrow, antennae, an eye, and its one oversized claw with a short finger.

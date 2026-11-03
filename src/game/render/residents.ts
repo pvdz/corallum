@@ -396,14 +396,48 @@ function shrimp(ctx: CanvasRenderingContext2D, L: ReefLayout, s: number, t: numb
   // The shrimp leans out of it, its big claw first.
   const out = 0.6 + 0.4 * Math.sin(t * 0.5);
   const sx = x + 4 * s * out, sy = y - 2.5 * s;
-  ctx.fillStyle = '#e8a088';
+  // Its body, segmented and tapering back into the hole, a pair of antennae, an eye, and the one
+  // oversized claw held out in front (the small claw tucked under).
+  ctx.fillStyle = '#e09078';
   ctx.beginPath();
-  ctx.ellipse(sx, sy, 4.5 * s, 1.8 * s, -0.15, 0, Math.PI * 2);
+  ctx.moveTo(sx + 3.5 * s, sy - 1.6 * s);
+  ctx.quadraticCurveTo(sx - 1 * s, sy - 2.4 * s, sx - 5 * s, sy - 0.6 * s);
+  ctx.lineTo(sx - 5 * s, sy + 1 * s);
+  ctx.quadraticCurveTo(sx - 1 * s, sy + 1.8 * s, sx + 3.5 * s, sy + 1.2 * s);
+  ctx.closePath();
   ctx.fill();
-  ctx.fillStyle = '#f0b8a0';
+  ctx.strokeStyle = 'rgba(150,70,60,0.55)';
+  ctx.lineWidth = 0.5 * s;
   ctx.beginPath();
-  ctx.ellipse(sx + 5 * s, sy - 0.8 * s, 3 * s, 1.9 * s, -0.3, 0, Math.PI * 2);
+  for (let k = 0; k < 3; k++) { const jx = sx - 3.6 * s + k * 1.8 * s; ctx.moveTo(jx, sy - 1.6 * s); ctx.lineTo(jx - 0.3 * s, sy + 1.2 * s); }
+  ctx.stroke();
+  ctx.strokeStyle = 'rgba(240,190,170,0.8)';
+  ctx.beginPath();
+  ctx.moveTo(sx + 3.5 * s, sy - 1.2 * s);
+  ctx.quadraticCurveTo(sx + 7 * s, sy - 5 * s + Math.sin(t * 1.7) * 0.6 * s, sx + 11 * s, sy - 4.5 * s);
+  ctx.moveTo(sx + 3.5 * s, sy - 1 * s);
+  ctx.quadraticCurveTo(sx + 6 * s, sy - 6.5 * s, sx + 9 * s, sy - 7.5 * s + Math.sin(t * 1.3) * 0.6 * s);
+  ctx.stroke();
+  ctx.fillStyle = '#141010';
+  ctx.beginPath();
+  ctx.arc(sx + 2.6 * s, sy - 1.6 * s, 0.6 * s, 0, Math.PI * 2);
   ctx.fill();
+  // The claw: an arm, then a big swollen palm with a short finger.
+  ctx.fillStyle = '#f0b098';
+  ctx.beginPath();
+  ctx.ellipse(sx + 5.8 * s, sy + 0.6 * s, 3.4 * s, 2.1 * s, -0.25, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(sx + 8.6 * s, sy - 0.4 * s);
+  ctx.lineTo(sx + 10.6 * s, sy - 0.9 * s);
+  ctx.lineTo(sx + 8.8 * s, sy + 0.6 * s);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(150,70,60,0.5)';
+  ctx.beginPath();
+  ctx.moveTo(sx + 8.4 * s, sy + 0.1 * s);
+  ctx.lineTo(sx + 10 * s, sy + 0.4 * s);
+  ctx.stroke();
   // The snap: every few seconds, or at once when touched, a flash and a bubble.
   const period = 6.5;
   const since = touch && touch.age < 1 ? touch.age : (t % period);
