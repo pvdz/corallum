@@ -37,6 +37,14 @@ export type ReefLayout = {
 
 const MAX_POLYPS = 90;
 const MAX_SPECKS = 240;
+/** `a` (#rrggbb or rgb()) mixed toward `b` by k (#rrggbb; anything else leaves `a`). */
+function mixHex(a: string, b: string, k: number): string {
+  if (!/^#[0-9a-f]{6}$/i.test(b)) return a;
+  const parts = (c: string): number[] => c.startsWith('#') ? [0, 1, 2].map((i) => parseInt(c.slice(1 + 2 * i, 3 + 2 * i), 16)) : (c.match(/\d+/g) ?? []).map(Number);
+  const pa = parts(a), pb = parts(b);
+  return `rgb(${[0, 1, 2].map((i) => Math.round(pa[i]! + (pb[i]! - pa[i]!) * k)).join(',')})`;
+}
+
 /** Old-stone knobs: points round the lump's outline. */
 const KNOB_EDGE = 22;
 const DEFAULT_PALETTE: [string, string, string] = ['#1d1026', '#6a3a50', 'rgba(255,170,160,0.22)'];
@@ -580,6 +588,12 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
   /** Grey knobs of old stone on the tips (tappable), and the last one broken off tumbling down. */
   function drawOld(ctx: CanvasRenderingContext2D, L: ReefLayout, old: ReefView['old'], t: number): void {
     const s = L.s;
+    // Ashen grey taking on the reef's own stone (whose colours each scene sets for its light), so
+    // at night the knobs are not the brightest thing on the reef.
+    const [shadow, flesh] = L.palette ?? DEFAULT_PALETTE;
+    const lum = /^#[0-9a-f]{6}$/i.test(flesh) ? (0.299 * parseInt(flesh.slice(1, 3), 16) + 0.587 * parseInt(flesh.slice(3, 5), 16) + 0.114 * parseInt(flesh.slice(5, 7), 16)) / 255 : 0.45;
+    const dark = Math.min(0.35, Math.max(0, (0.45 - lum) * 1.5));
+    const knobTone = [mixHex(mixHex('#bdb9b1', flesh, 0.2), shadow, dark), mixHex(mixHex('#85817a', flesh, 0.25), shadow, dark), mixHex('#4a4844', shadow, 0.5)] as const;
     const knob = (x: number, y: number, r: number, rot: number, a: number) => {
       ctx.save();
       ctx.translate(x, y);
@@ -599,9 +613,9 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
       ctx.strokeStyle = 'rgba(30,30,32,0.45)';
       ctx.stroke();
       const g = ctx.createRadialGradient(-0.35 * r, -0.55 * r, 0, 0, 0, 1.2 * r);
-      g.addColorStop(0, '#bdb9b1');
-      g.addColorStop(0.55, '#85817a');
-      g.addColorStop(1, '#4a4844');
+      g.addColorStop(0, knobTone[0]);
+      g.addColorStop(0.55, knobTone[1]);
+      g.addColorStop(1, knobTone[2]);
       ctx.fillStyle = g;
       ctx.fill();
       // A paler lobe where the light falls (top left): volume, without features to read as a face.
