@@ -1043,6 +1043,7 @@ export function createTwilightScene(seed: number): Scene {
     // up slowly, the bravest first.
     const touch = startled('garden-eel', t);
     for (const u of [0.2, 0.8]) spot('garden-eel', focus.x - focus.w * 0.1 + u * focus.w * 1.2, slopeY(u) - 15 * s, Math.max(36 * s, focus.w * 0.12));
+    const edge = new Path2D(), light = new Path2D(), dark = new Path2D(), heads = new Path2D(), spots = new Path2D(), eyes = new Path2D();
     for (const [k, e] of eels.entries()) {
       const x = focus.x - focus.w * 0.1 + e.u * focus.w * 1.2;
       const base = slopeY(e.u) + 3 * s;
@@ -1059,19 +1060,49 @@ export function createTwilightScene(seed: number): Scene {
       if (out < 0.04) continue;
       const len = e.len * s * out;
       const lean = 0.35 + 0.12 * Math.sin(t * 0.7 + k);
-      ctx.strokeStyle = e.light ? 'rgba(235,225,200,0.9)' : 'rgba(150,140,120,0.9)';
-      ctx.lineWidth = 2.8 * s;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(x, base);
-      ctx.quadraticCurveTo(x + lean * len * 0.2, base - len * 0.6, x + lean * len * 0.6, base - len * 0.85);
-      ctx.stroke();
-      // Head bent toward the current, a dark eye.
-      ctx.fillStyle = 'rgba(30,30,30,0.9)';
-      ctx.beginPath();
-      ctx.arc(x + lean * len * 0.6 + 1.2 * s, base - len * 0.85, 0.8 * s, 0, Math.PI * 2);
-      ctx.fill();
+      // A slim body rising out of the burrow, bent over at the top like a question mark so the
+      // head (a little thicker) faces down into the current.
+      const tx = x + lean * len * 0.6, ty = base - len * 0.85;
+      const hx = tx + 3.2 * s, hy = ty + 1.6 * s;
+      const body = e.light ? light : dark;
+      for (const p of [edge, body]) {
+        p.moveTo(x, base);
+        p.quadraticCurveTo(x + lean * len * 0.2, base - len * 0.6, tx, ty);
+      }
+      heads.moveTo(tx, ty);
+      heads.lineTo(hx, hy);
+      // Dark speckles down the body, and the eye.
+      for (let q = 0.3; q < 0.95; q += 0.22) {
+        const sx = x + 2 * (1 - q) * q * lean * len * 0.2 + q * q * (tx - x), sy = base + 2 * (1 - q) * q * -len * 0.6 + q * q * (ty - base);
+        const off = ((k + q * 10) % 2 ? 0.6 : -0.6) * s;
+        spots.moveTo(sx + off + 0.55 * s, sy);
+        spots.arc(sx + off, sy, 0.55 * s, 0, Math.PI * 2);
+      }
+      eyes.moveTo(hx - 0.3 * s + 0.75 * s, hy - 0.9 * s);
+      eyes.arc(hx - 0.3 * s, hy - 0.9 * s, 0.75 * s, 0, Math.PI * 2);
     }
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = 'rgba(40,36,30,0.55)';
+    ctx.lineWidth = 3.8 * s;
+    ctx.stroke(edge);
+    ctx.lineWidth = 2.6 * s;
+    ctx.strokeStyle = 'rgba(232,224,200,0.95)';
+    ctx.stroke(light);
+    ctx.strokeStyle = 'rgba(160,150,128,0.95)';
+    ctx.stroke(dark);
+    // The heads: the same pale, a touch thicker, with their edge.
+    ctx.strokeStyle = 'rgba(40,36,30,0.55)';
+    ctx.lineWidth = 4.6 * s;
+    ctx.stroke(heads);
+    ctx.strokeStyle = 'rgba(214,206,182,1)';
+    ctx.lineWidth = 3.4 * s;
+    ctx.stroke(heads);
+    ctx.fillStyle = 'rgba(60,52,40,0.6)';
+    ctx.fill(spots);
+    ctx.fillStyle = 'rgba(20,20,20,0.95)';
+    ctx.fill(eyes);
+    ctx.restore();
   }
 
   /** An ink cloud `age` seconds old: dark puffs billowing out and thinning into the water. */
