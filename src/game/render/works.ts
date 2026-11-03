@@ -236,31 +236,63 @@ export function drawTerrace(ctx: CanvasRenderingContext2D, cx: number, unit: num
       const x = cx + side * (0.16 + k * 0.05) * unit;
       const y = floor(x) - (steps - k) * 5 * s;
       const w = 0.06 * unit, h = 6 * s + (steps - k) * 5 * s;
-      // The slab: a lit top face and a shaded front.
-      ctx.fillStyle = '#d8c49a';
-      ctx.fillRect(x - w / 2, y, w, h);
-      ctx.fillStyle = 'rgba(80,60,40,0.25)';
-      ctx.fillRect(x - w / 2, y + 3 * s, w, h - 3 * s);
-      // Seams between the set stones.
+      // The slab: worn stone, rounded at the corners with an uneven top, a lit top face and a
+      // front shading toward the sand; each slab a little different in tone.
+      const n = ((k * 7 + (side > 0 ? 3 : 0)) * 0.618) % 1;
+      const r = 2.2 * s;
+      ctx.beginPath();
+      ctx.moveTo(x - w / 2, y + h);
+      ctx.lineTo(x - w / 2, y + r);
+      ctx.quadraticCurveTo(x - w / 2, y, x - w / 2 + r, y);
+      ctx.quadraticCurveTo(x - w * 0.1, y - (0.6 + n) * s, x + w * 0.15, y + 0.4 * s);
+      ctx.lineTo(x + w / 2 - r, y);
+      ctx.quadraticCurveTo(x + w / 2, y, x + w / 2, y + r);
+      ctx.lineTo(x + w / 2, y + h);
+      ctx.closePath();
+      const g = ctx.createLinearGradient(0, y, 0, y + h);
+      const tone = Math.round(-10 + n * 20);
+      g.addColorStop(0, `rgb(${226 + tone},${208 + tone},${168 + tone})`);
+      g.addColorStop(0.3, `rgb(${206 + tone},${186 + tone},${146 + tone})`);
+      g.addColorStop(1, `rgb(${168 + tone},${148 + tone},${112 + tone})`);
+      ctx.fillStyle = g;
+      ctx.fill();
+      // Seams between the set stones, a little askew, and a few pits.
       ctx.strokeStyle = 'rgba(90,70,50,0.35)';
       ctx.lineWidth = 0.8 * s;
       ctx.beginPath();
-      ctx.moveTo(x - w * 0.1, y + 3 * s);
-      ctx.lineTo(x - w * 0.1, y + h);
-      ctx.moveTo(x + w * 0.3, y + 3 * s);
+      ctx.moveTo(x - w * (0.1 + 0.1 * n), y + 3 * s);
+      ctx.lineTo(x - w * 0.12, y + h);
+      ctx.moveTo(x + w * (0.25 + 0.1 * n), y + 3 * s);
       ctx.lineTo(x + w * 0.3, y + h);
+      ctx.moveTo(x - w / 2, y + h * 0.55 + n * 3 * s);
+      ctx.lineTo(x - w * 0.12, y + h * 0.5 + n * 3 * s);
       ctx.stroke();
+      ctx.fillStyle = 'rgba(80,62,44,0.35)';
+      ctx.beginPath();
+      for (let q = 0; q < 3; q++) {
+        const px = x - w / 2 + w * ((n + q * 0.37) % 1), py = y + 5 * s + (h - 7 * s) * ((n * 3 + q * 0.53) % 1);
+        ctx.moveTo(px + 0.8 * s, py);
+        ctx.arc(px, py, 0.8 * s, 0, Math.PI * 2);
+      }
+      ctx.fill();
       // Algae along the top, tufts swaying.
-      ctx.fillStyle = 'rgba(110,170,90,0.8)';
-      ctx.fillRect(x - w / 2, y - 1.5 * s, w, 3 * s);
+      ctx.strokeStyle = 'rgba(110,170,90,0.8)';
+      ctx.lineWidth = 2.6 * s;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(x - w / 2 + 1.5 * s, y);
+      ctx.quadraticCurveTo(x - w * 0.1, y - (0.6 + n) * s, x + w * 0.15, y + 0.4 * s);
+      ctx.lineTo(x + w / 2 - 1.5 * s, y);
+      ctx.stroke();
       ctx.strokeStyle = 'rgba(120,190,100,0.85)';
       ctx.lineWidth = 1.2 * s;
       ctx.beginPath();
       for (let q = 0; q < 5; q++) {
         const tx = x - w / 2 + (q + 0.5) * (w / 5);
         const sway = Math.sin(t * 1.1 + q + k * 2 + side) * 2 * s;
+        const tall = (6 + 4 * ((n + q * 0.31) % 1)) * s;
         ctx.moveTo(tx, y - 1 * s);
-        ctx.quadraticCurveTo(tx + sway * 0.5, y - 5 * s, tx + sway, y - 8 * s);
+        ctx.quadraticCurveTo(tx + sway * 0.5, y - tall * 0.6, tx + sway, y - tall);
       }
       ctx.stroke();
     }
