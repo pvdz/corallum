@@ -122,7 +122,8 @@ export function createBreachScene(seed: number): Scene {
       encrust: 1, encrustColours: [...palette(v.palette).night],
       palette: NIGHT_LOOK[form].palette, polyp: v.craft === 'fluorescent' ? FLUORESCENT_POLYP : (palette(v.palette).polyp as [string, string] | null) ?? NIGHT_LOOK[form].polyp,
       // The dome's many lit nodes add up: it glows at a lower scale so the night stays a night.
-      glowScale: (form === 'massive' ? 0.3 : 0.6) * (v.craft === 'fluorescent' ? 1.5 : 1), polypScale: 1.1,
+      // By day (the dawn after the release) the light washes most of it out, as in the Sunlit Crown.
+      glowScale: (form === 'massive' ? 0.3 : 0.6) * (v.craft === 'fluorescent' ? 1.5 : 1) * (1 - 0.65 * lastDawn), polypScale: 1.1,
     };
   }
 
@@ -1642,7 +1643,8 @@ export function createBreachScene(seed: number): Scene {
       if (v.bands.includes('air')) drawGlowSurf(ctx, t, this.crownAt);
       drawSpawn(ctx, t, v, L, reef);
       if (this.bloomStrength > 0) {
-        (bloom ??= createBloom()).apply(ctx, this.bloomStrength);
+        // The glow pass fades with the dawn: over a bright sky it would blow the crown out to white.
+        (bloom ??= createBloom()).apply(ctx, this.bloomStrength * (1 - 0.6 * dawn));
         drawMoonFace(ctx, v.moonPhase, v.greatMoon, dawn, v.blueMoon);
       }
       // After the glow pass, so the crown's light does not swallow its silhouette.
