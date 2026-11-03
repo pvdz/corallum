@@ -68,15 +68,25 @@ export function drawWater(ctx: CanvasRenderingContext2D, id: WaterId, F: Focus, 
       ctx.stroke(parts[j]!);
     });
   } else if (id === 'warm') {
-    // Heat shimmer: slow wavering bands.
-    ctx.strokeStyle = `rgba(255,200,160,${0.12 * a})`;
-    ctx.lineWidth = 2 * s;
-    for (let k = 0; k < 9; k++) {
-      const y0 = F.y + F.h * (0.1 + k * 0.1);
+    // Heat shimmer under the surface (warm water comes only at the Breach, whose sea starts about a
+    // third of the way down): short wavering strands that rise slowly and fade in and out, not
+    // lines across the whole picture.
+    ctx.lineCap = 'round';
+    ctx.lineWidth = 1.4 * s;
+    const top = F.y + F.h * 0.36;
+    for (let k = 0; k < 26; k++) {
+      const fx = (k * 0.618034) % 1, ph = (k * 0.37) % 1;
+      const rise = (t * 0.012 + ph) % 1;
+      const y0 = top + (F.y + F.h - top) * (1 - rise);
+      const x0 = F.x + fx * F.w;
+      const len = (40 + (k % 4) * 18) * s;
+      const fade = Math.sin(rise * Math.PI) * (0.5 + 0.5 * Math.sin(t * 0.7 + k * 1.9));
+      if (fade <= 0.02) continue;
+      ctx.strokeStyle = `rgba(255,200,160,${(0.16 * a * fade).toFixed(3)})`;
       ctx.beginPath();
-      for (let q = 0; q <= 24; q++) {
-        const x = F.x + (q / 24) * F.w;
-        const y = y0 + Math.sin(q * 0.9 + t * 1.3 + k) * 4 * s;
+      for (let q = 0; q <= 8; q++) {
+        const x = x0 + (q / 8 - 0.5) * len;
+        const y = y0 + Math.sin(q * 1.1 + t * 1.3 + k) * 3 * s;
         if (q === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       }
