@@ -1646,24 +1646,51 @@ export function createSunlitScene(seed: number): Scene {
       ctx.save();
       ctx.translate(x, y);
       ctx.scale(dir, 1);
-      ctx.fillStyle = `hsl(${f.hue},85%,58%)`;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, len, len * 0.62, 0, 0, Math.PI * 2);
-      ctx.fill();
+      // A deep-bodied reef fish: a rounded body with a pointed snout, dorsal and anal fins a shade
+      // darker, a darker back and paler belly, a forked tail, a stripe on some, an eye with a light rim.
       const tail = Math.sin(t * 10 + f.phase * 7) * len * 0.2;
+      ctx.fillStyle = `hsl(${f.hue},70%,44%)`;
       ctx.beginPath();
-      ctx.moveTo(-len * 0.8, 0);
-      ctx.lineTo(-len * 1.4, -len * 0.5 + tail);
-      ctx.lineTo(-len * 1.4, len * 0.5 + tail);
+      ctx.moveTo(len * 0.25, -len * 0.55);
+      ctx.quadraticCurveTo(-len * 0.2, -len * 0.95, -len * 0.75, -len * 0.25);
+      ctx.lineTo(len * 0.25, -len * 0.4);
+      ctx.moveTo(-len * 0.1, len * 0.5);
+      ctx.quadraticCurveTo(-len * 0.45, len * 0.85, -len * 0.75, len * 0.25);
+      ctx.lineTo(-len * 0.1, len * 0.35);
+      ctx.moveTo(-len * 0.75, 0);
+      ctx.lineTo(-len * 1.4, -len * 0.55 + tail);
+      ctx.lineTo(-len * 1.2, tail * 0.5);
+      ctx.lineTo(-len * 1.4, len * 0.55 + tail);
       ctx.closePath();
       ctx.fill();
+      const g = ctx.createLinearGradient(0, -len * 0.62, 0, len * 0.62);
+      g.addColorStop(0, `hsl(${f.hue},80%,48%)`);
+      g.addColorStop(0.55, `hsl(${f.hue},85%,60%)`);
+      g.addColorStop(1, `hsl(${f.hue},70%,78%)`);
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.moveTo(len * 1.05, len * 0.05);
+      ctx.quadraticCurveTo(len * 0.7, -len * 0.62, 0, -len * 0.62);
+      ctx.quadraticCurveTo(-len * 0.75, -len * 0.55, -len * 0.85, 0);
+      ctx.quadraticCurveTo(-len * 0.75, len * 0.55, 0, len * 0.6);
+      ctx.quadraticCurveTo(len * 0.7, len * 0.55, len * 1.05, len * 0.05);
+      ctx.fill();
       if (f.stripe) {
-        ctx.fillStyle = 'rgba(20,20,40,0.55)';
-        ctx.fillRect(-len * 0.15, -len * 0.6, len * 0.22, len * 1.2);
+        ctx.fillStyle = 'rgba(20,20,40,0.5)';
+        ctx.beginPath();
+        ctx.moveTo(len * 0.05, -len * 0.6);
+        ctx.quadraticCurveTo(len * 0.22, 0, len * 0.05, len * 0.58);
+        ctx.lineTo(-len * 0.17, len * 0.58);
+        ctx.quadraticCurveTo(0, 0, -len * 0.17, -len * 0.6);
+        ctx.fill();
       }
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      ctx.beginPath();
+      ctx.arc(len * 0.58, -len * 0.14, len * 0.14, 0, Math.PI * 2);
+      ctx.fill();
       ctx.fillStyle = '#111';
       ctx.beginPath();
-      ctx.arc(len * 0.55, -len * 0.12, len * 0.1, 0, Math.PI * 2);
+      ctx.arc(len * 0.6, -len * 0.14, len * 0.09, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
     }
