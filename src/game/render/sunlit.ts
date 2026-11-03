@@ -1116,12 +1116,34 @@ export function createSunlitScene(seed: number): Scene {
       ctx.lineTo(nx, ny);
       ctx.stroke();
     }
-    // The head, a little wider, leading.
-    const hx = x0 + Math.sin(t * 3) * 6 * s;
+    // The paddle of a tail: flattened side-on, banded, sweeping.
+    const sign = k < 0.5 ? 1 : -1;
+    const tx = x0 + Math.sin(t * 3 - 26 * 0.45) * 6 * s, ty = y0 + 26 * 2.6 * s * sign;
+    const sweep = Math.sin(t * 3 - 26 * 0.45 + 0.6) * 0.5;
+    ctx.save();
+    ctx.translate(tx, ty);
+    ctx.rotate(sweep);
+    ctx.fillStyle = '#c8d0dc';
+    ctx.beginPath();
+    ctx.ellipse(0, sign * 3 * s, 3.2 * s, 4 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
     ctx.fillStyle = '#1c2230';
     ctx.beginPath();
-    ctx.ellipse(hx, y0 - (k < 0.5 ? 2 : -2) * s, 2.6 * s, 3.6 * s, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, sign * 4.5 * s, 3 * s, 1.6 * s, 0, 0, Math.PI * 2);
     ctx.fill();
+    ctx.restore();
+    // The head, a little wider, leading, with its eye and nostril on top.
+    const hx = x0 + Math.sin(t * 3) * 6 * s, hy = y0 - 2 * s * sign;
+    ctx.fillStyle = '#1c2230';
+    ctx.beginPath();
+    ctx.ellipse(hx, hy, 2.6 * s, 3.6 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#e8eef4';
+    for (const ex of [-1, 1]) {
+      ctx.beginPath();
+      ctx.arc(hx + ex * 1.3 * s, hy - sign * 1 * s, 0.6 * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
     ctx.restore();
   }
 
