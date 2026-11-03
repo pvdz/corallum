@@ -144,6 +144,22 @@ function drawSnail(ctx: CanvasRenderingContext2D, x: number, y: number, s: numbe
   ctx.beginPath();
   ctx.ellipse(0, 3 * s, 7 * s, 2 * s, 0, 0, Math.PI * 2);
   ctx.fill();
+  // Its head peeking out at the front of the foot, two feelers up, and the siphon.
+  ctx.strokeStyle = 'rgba(210,180,160,0.9)';
+  ctx.lineWidth = 0.8 * s;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(6 * s, 2.6 * s);
+  ctx.quadraticCurveTo(8.5 * s, 0, 9.5 * s, -1.5 * s + Math.sin(t * 1.3) * 0.5 * s);
+  ctx.moveTo(6.4 * s, 2.8 * s);
+  ctx.quadraticCurveTo(9 * s, 2, 10.5 * s, 1 * s + Math.sin(t * 1.1) * 0.5 * s);
+  ctx.moveTo(4 * s, -1 * s);
+  ctx.lineTo(6.5 * s, -3.5 * s);
+  ctx.stroke();
+  ctx.fillStyle = '#2a1a14';
+  ctx.beginPath();
+  ctx.arc(6.6 * s, 2.2 * s, 0.5 * s, 0, Math.PI * 2);
+  ctx.fill();
   const g = ctx.createLinearGradient(-6 * s, -10 * s, 6 * s, 3 * s);
   g.addColorStop(0, '#e8dcc8');
   g.addColorStop(1, '#9a7c62');

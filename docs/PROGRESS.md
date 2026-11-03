@@ -1112,3 +1112,4 @@ date, what landed, what is half-done, what's next.
 - The growth chart in "Your reef": the zone names were drawn under the curve, which struck "Midnight Water" through. They are drawn last, a little brighter, with a dark edge.
 - The gull (the Breach's intruder) was a stroked "M" over an oval: long filled wings bent at the wrist with black tips (the far one darker, behind), a squared tail, a round head with its eye and yellow bill.
 - The thorn star (the Twilight/Sunlit intruder) read as a sea urchin, its arms lost under long single spines: thirteen thick tapering arms over a darker body, short spines in pairs along every arm, a small raised disc.
+- The drill snail (the Silt Floor's intruder) gets a head peeking from its foot, two feelers and its siphon, so it reads as alive, not a shell stuck on the branch.
