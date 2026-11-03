@@ -412,6 +412,8 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     }
     const flick = Math.max(0, 1 - v.sinceSweep / 0.35);
     const tips: [number, number][] = [];
+    /** The middle of each polyp's ring of tips (one halo a polyp). */
+    const crowns: [number, number][] = [];
     // Side polyps first, crown polyp last so it sits on top.
     for (let k = nodes.length - 1; k >= 0; k--) {
       const i = nodes[k]!;
@@ -421,10 +423,14 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
       const lean = k === 0 ? 0 : leanOf(i);
       drawPolyp(ctx, x, y, ps, t, lean, i * 0.37, Math.max(flick, shy(x, y, t, 70 * s)), colours);
       const [ox, oy] = polypPose(x, y, ps, t, lean, i * 0.37);
+      let hx = 0, hy = 0;
       for (let q = 0; q < 8; q += 2) {
         const a = -Math.PI / 2 + lean * 0.4 + (q - 3.5) * 0.32;
-        tips.push([ox + Math.cos(a) * 16 * ps, oy + Math.sin(a) * 16 * ps]);
+        const tx = ox + Math.cos(a) * 16 * ps, ty = oy + Math.sin(a) * 16 * ps;
+        tips.push([tx, ty]);
+        hx += tx / 4; hy += ty / 4;
       }
+      crowns.push([hx, hy]);
     }
 
     ctx.save();
@@ -442,12 +448,27 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
         glow(ctx, mx, my, 3.5 * s, '235,255,220', 0.95 * Math.sin(u * Math.PI));
       }
     }
-    tips.forEach(([tx, ty], i) => {
-      const p = 0.6 + 0.4 * Math.sin(t * 2 + i * 0.8);
-      // A sweep combo running: the tips burn brighter with every sweep in the row.
-      const heat = Math.min(1, ((v.combo ?? 1) - 1) / 10);
-      glow(ctx, tx, ty, 8 * s * (1 + heat * 0.25), '160,250,255', Math.min(1, 0.75 * p * gs * (1 + heat * 0.4)));
+    // The tentacle tips' light: one soft halo over each polyp's ring of tips (its four glows
+    // overlapped into one anyway), and each tip a bright point, the points in a few batched fills.
+    // A sweep combo running: the tips burn brighter with every sweep in the row.
+    const heat = Math.min(1, ((v.combo ?? 1) - 1) / 10);
+    crowns.forEach(([hx, hy], k) => {
+      const p = 0.6 + 0.4 * Math.sin(t * 2 + k * 3.2);
+      glow(ctx, hx, hy, 13 * s * (1 + heat * 0.25), '160,250,255', Math.min(1, 0.8 * p * gs * (1 + heat * 0.4)));
     });
+    if (gs > 0.02) {
+      const pts = [new Path2D(), new Path2D(), new Path2D()];
+      const pr = Math.max(0.7 * L.dpr, 1.3 * s);
+      tips.forEach(([tx, ty], i) => {
+        const q = Math.min(2, Math.floor((0.5 + 0.5 * Math.sin(t * 2 + i * 0.8)) * 3));
+        pts[q]!.moveTo(tx + pr, ty);
+        pts[q]!.arc(tx, ty, pr, 0, Math.PI * 2);
+      });
+      pts.forEach((path, q) => {
+        ctx.fillStyle = `rgba(200,252,255,${Math.min(1, (0.35 + 0.25 * q) * gs * (1 + heat * 0.4)).toFixed(3)})`;
+        ctx.fill(path);
+      });
+    }
     // Glimmerseed symbionts speckle the branches.
     const specks = Math.min(MAX_SPECKS, v.symbionts * 6, Math.floor(visibleCount * 0.6));
     for (let k = 0, shown = 0; k < coral.count && shown < specks; k++) {
