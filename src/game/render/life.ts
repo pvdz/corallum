@@ -934,28 +934,56 @@ export function createLife(seed: number) {
       ctx.save();
       ctx.translate(cx, cy);
       ctx.scale(-side * 1.4, 1.4);
-      ctx.fillStyle = 'rgba(245,235,220,0.95)';
-      ctx.strokeStyle = 'rgba(245,235,220,0.95)';
       ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.ellipse(0, -2 * s, 4 * s, 2.4 * s, 0, 0, Math.PI * 2);
-      ctx.fill();
-      // Long claws held out in front, opening and closing.
-      ctx.lineWidth = 1 * s;
-      for (const dy of [-1, 1]) {
-        ctx.beginPath();
-        ctx.moveTo(-3 * s, -2 * s);
-        ctx.lineTo(-11 * s, (-5 + dy * 1.5 + wave) * s);
-        ctx.lineTo(-14 * s, (-5 + dy * 2.5 + wave) * s);
-        ctx.stroke();
-      }
+      // Legs first, gripping the chimney.
+      ctx.strokeStyle = 'rgba(205,190,170,0.9)';
       ctx.lineWidth = 0.7 * s;
+      ctx.beginPath();
       for (let l = 0; l < 3; l++) {
+        ctx.moveTo((l * 1.5 - 1) * s, -1 * s);
+        ctx.quadraticCurveTo((l * 1.5 + 0.5) * s, -0.5 * s, (l * 1.5 + 2) * s, 2 * s);
+      }
+      ctx.stroke();
+      // Long claws held out in front, each arm a slim segment and a pincer, opening and closing.
+      ctx.strokeStyle = 'rgba(240,228,210,0.95)';
+      for (const dy of [-1, 1]) {
+        const ex = -11 * s, ey = (-5 + dy * 1.5 + wave) * s;
+        ctx.lineWidth = 1.1 * s;
         ctx.beginPath();
-        ctx.moveTo(l * 1.5 * s, -1 * s);
-        ctx.lineTo((l * 1.5 + 2) * s, 2 * s);
+        ctx.moveTo(-3 * s, -2.4 * s);
+        ctx.quadraticCurveTo(-7 * s, (-4.5 + dy * 0.6) * s, ex, ey);
+        ctx.stroke();
+        const open = 0.25 + 0.2 * Math.max(0, wave);
+        ctx.lineWidth = 0.8 * s;
+        ctx.beginPath();
+        ctx.moveTo(ex, ey);
+        ctx.lineTo(ex - 3.4 * s, ey - open * 4 * s);
+        ctx.moveTo(ex, ey);
+        ctx.lineTo(ex - 3.2 * s, ey + open * 3 * s);
         ctx.stroke();
       }
+      // The body: a carapace in front, the abdomen's segments behind it, tucked down under, lit
+      // from above.
+      const g = ctx.createLinearGradient(0, -5 * s, 0, 1 * s);
+      g.addColorStop(0, 'rgba(250,242,228,0.97)');
+      g.addColorStop(1, 'rgba(200,180,160,0.97)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.ellipse(-0.5 * s, -2.5 * s, 3.2 * s, 2.3 * s, -0.1, 0, Math.PI * 2);
+      for (let k = 0; k < 3; k++) {
+        const ax = (2.4 + k * 1.6) * s, ay = (-1.8 + k * 1.2) * s, ar = (1.7 - k * 0.3) * s;
+        ctx.moveTo(ax + ar, ay);
+        ctx.ellipse(ax, ay, ar, ar * 0.8, 0.6, 0, Math.PI * 2);
+      }
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(150,120,100,0.5)';
+      ctx.lineWidth = 0.4 * s;
+      ctx.stroke();
+      // Eyes.
+      ctx.fillStyle = '#1a1210';
+      ctx.beginPath();
+      ctx.arc(-3.2 * s, -3.6 * s, 0.6 * s, 0, Math.PI * 2);
+      ctx.fill();
       ctx.restore();
     }
   }

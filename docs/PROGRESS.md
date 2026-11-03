@@ -1107,3 +1107,4 @@ date, what landed, what is half-done, what's next.
 - The anglerfish had no eye and no mouth: its "teeth" were twelve parallel slashes floating on the body. A gaping dark mouth with the lower jaw jutting, needle teeth along both jaws pointing in, and a small pale eye.
 - The gulper eel's head was an outlined lens (a leaf on a whip): a small snout over enormous jaws hinged far back, the upper jaw a thin line, the lower a deep loose pouch hanging open with its dark inside showing, pale jaw edges and a tiny eye at the tip.
 - Whole audit sweep at 06:35, 9 viewports (desktop, mobile, landscape, small, small-landscape, narrow-desktop, tablet, tiny, laptop) × plain/Larger text/scientific × 8 points: only the 2 known dim findings.
+- Squat lobsters at the vent were a white oval with stick limbs: a carapace lit from above with abdominal segments tucked under it, eyes, legs gripping the chimney, and slim arms ending in pincers that open and close.
