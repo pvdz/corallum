@@ -1610,13 +1610,18 @@ export function closeUp(s: GameState, closed: boolean): void {
 
 /** A flurry of the Long Silt is falling (Silt Floor only): sweeps catch more. */
 export function inFlurry(s: GameState): boolean {
-  return actAt(s.height) === 1 && s.t % FLURRY.period < FLURRY.length;
+  return actAt(s.height) === 1 && flurryPhase(s.t) < FLURRY.length;
+}
+
+/** Seconds into the current flurry cycle (cycles start at FLURRY.first; before it, late in one). */
+function flurryPhase(t: number): number {
+  return (((t - FLURRY.first) % FLURRY.period) + FLURRY.period) % FLURRY.period;
 }
 
 /** Seconds until the next flurry (0 while one falls; Infinity off the Silt Floor). */
 export function untilFlurry(s: GameState): number {
   if (actAt(s.height) !== 1) return Infinity;
-  const u = s.t % FLURRY.period;
+  const u = flurryPhase(s.t);
   return u < FLURRY.length ? 0 : FLURRY.period - u;
 }
 
