@@ -1036,17 +1036,22 @@ export function createTwilightScene(seed: number): Scene {
     ctx.restore();
   }
 
-  function drawGardenEels(ctx: CanvasRenderingContext2D, t: number): void {
+  /** `which` colony (the left one is the first eleven eels); `drop` lowers the burrows on the sand. */
+  function drawGardenEels(ctx: CanvasRenderingContext2D, t: number, which: 'all' | 'left' | 'right' = 'all', drop = 0): void {
     sight('garden-eel');
     const s = scale();
     // Touched, the whole colony drops into its burrows from the nearest outward, and comes back
     // up slowly, the bravest first.
     const touch = startled('garden-eel', t);
-    for (const u of [0.2, 0.8]) spot('garden-eel', focus.x - focus.w * 0.1 + u * focus.w * 1.2, slopeY(u) - 15 * s, Math.max(36 * s, focus.w * 0.12));
+    for (const u of [0.2, 0.8]) {
+      if ((which === 'left' && u > 0.5) || (which === 'right' && u < 0.5)) continue;
+      spot('garden-eel', focus.x - focus.w * 0.1 + u * focus.w * 1.2, slopeY(u) - 15 * s + (u > 0.5 ? drop : 0), Math.max(36 * s, focus.w * 0.12));
+    }
     const edge = new Path2D(), light = new Path2D(), dark = new Path2D(), heads = new Path2D(), spots = new Path2D(), eyes = new Path2D();
     for (const [k, e] of eels.entries()) {
+      if ((which === 'left' && k >= 11) || (which === 'right' && k < 11)) continue;
       const x = focus.x - focus.w * 0.1 + e.u * focus.w * 1.2;
-      const base = slopeY(e.u) + 3 * s;
+      const base = slopeY(e.u) + 3 * s + drop;
       // Every so often a wave of ducking runs through the colony.
       const wave = Math.max(0, Math.sin(t * 0.25 - e.u * 6));
       let out = 1 - Math.pow(wave, 6) * 0.85;
@@ -1904,7 +1909,10 @@ export function createTwilightScene(seed: number): Scene {
       drawDaughters(ctx, v.polyps, (u) => [focus.x - focus.w * 0.1 + u * focus.w * 1.2, slopeY(u) + 3 * scale()], scale(), t,
         { branch: '#9a5a6c', tip: '#c98292', polyp: 'rgba(255,225,235,0.9)' }, slopeSeed, v.nurseries);
       drawSeaFans(ctx, t);
-      drawGardenEels(ctx, t);
+      // The breakwater is laid over the right-hand eel bed: that colony then stands on the sand in
+      // front of it, drawn after it.
+      const walled = v.works.breakwater > 0;
+      drawGardenEels(ctx, t, walled ? 'left' : 'all');
       drawMantis(ctx, t);
       if (v.seamount === 'thorny') drawSlopeThorns(ctx, t);
       drawMoray(ctx, t);
@@ -1924,6 +1932,7 @@ export function createTwilightScene(seed: number): Scene {
       drawGhosts(ctx, focus, v.ancestors, v.height, t, scale(), 'rgba(190,210,240,1)');
       drawSisterFar(ctx, focus, v.sister - v.gauge, t, scale(), true, v.sisterLit);
       drawBreakwater(ctx, focus, v.works.breakwater, scale(), slopeY);
+      if (walled) drawGardenEels(ctx, t, 'right', 9 * scale());
       drawLawn(ctx, focus, v.works.lawn, scale(), slopeY);
       if (night > 0) drawNight(ctx, t, night, 0.5);
       reef.draw(ctx, L, v, t);
