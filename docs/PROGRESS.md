@@ -1078,3 +1078,4 @@ date, what landed, what is half-done, what's next.
 - The depth gauge on phones sat at a fixed 14–44% of the screen, and where the sheet starts higher (a short phone with Larger text) it ran down over the sheet's corner. The sheet's top goes to CSS (`--sheet-top`) and caps the gauge's height.
 - Old stone was the same pale grey in every light, the brightest flat thing on the reef at night (Midnight Water, the Breach). Its grey takes a fifth of the reef's own stone colour and darkens with a dark palette, so it sits in the scene's light and still reads ashen.
 - All seven e2e suites green after the tiny-phone and gauge changes. `tools/fuzz.ts --vp tiny` (320×568): 2400 s plain and 9000 s with Larger text, ~1,390 actions, no console errors.
+- Tried and dropped: the Sunlit caustics' ~60 line strokes gathered into ≤12 paths by brightness and width steps: 14.9 → 14.9 ms (three runs each). The cost there is the stroked area, not the calls.
