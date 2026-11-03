@@ -1095,3 +1095,4 @@ date, what landed, what is half-done, what's next.
 - Leak check after the night's drawing changes (Path2D per frame in several renderers): 2.5 min at ×30 from the Twilight on a phone, tapping: heap 8.8 → 9.3 → 9.4 → 9.3 → 9.6 MB after GC, DOM nodes ~4,635 and listeners ~719 flat.
 - The whale fall's spine was a bare bar with eleven identical hooks: vertebrae along it (largest at the chest), ribs longest at the chest and leaning back, the first two fallen half flat, and a skull with its long jaw.
 - The barreleye's body was near-black on the dark water, so only its dome and two green eyes showed (a pause icon in a bubble): a dark barrel lit faintly along its edge, a forked tail, a broad pectoral fin, a dorsal fin and a mouth.
+- The krill feast was forty salmon pills: each krill a small curled body with a dark eye at its head, its tail flicking, in two batched paths.

@@ -216,14 +216,28 @@ function drawSquid(ctx: CanvasRenderingContext2D, s: number, t: number): void {
 
 /** A drifting cloud of dying krill: dozens of small pink bodies. */
 function drawKrill(ctx: CanvasRenderingContext2D, s: number, t: number, seed: number): void {
-  ctx.fillStyle = 'rgba(255,170,150,0.85)';
+  // A swarm of krill: each a small curled, see-through pink body with a dark eye at its head, all in
+  // two batched paths (bodies stroked, eyes filled).
+  const bodies = new Path2D(), eyes = new Path2D();
   for (let i = 0; i < 40; i++) {
     const a = i * 2.399 + seed;
     const r = Math.sqrt(i / 40) * 26 * s;
     const x = Math.cos(a + t * 0.1) * r * 1.3;
     const y = Math.sin(a + t * 0.1) * r * 0.8;
-    ctx.beginPath();
-    ctx.ellipse(x, y, 2.6 * s, 1.1 * s, a, 0, Math.PI * 2);
-    ctx.fill();
+    const ca = Math.cos(a), sa = Math.sin(a);
+    const flick = Math.sin(t * 6 + i) * 0.4 * s;
+    // From the tail (curled under) to the head.
+    const tx = x - ca * 2.8 * s - sa * (1.2 * s + flick), ty = y - sa * 2.8 * s + ca * (1.2 * s + flick);
+    const hx = x + ca * 2.8 * s, hy = y + sa * 2.8 * s;
+    bodies.moveTo(tx, ty);
+    bodies.quadraticCurveTo(x - sa * 1.1 * s, y + ca * 1.1 * s, hx, hy);
+    eyes.moveTo(hx + 0.7 * s, hy);
+    eyes.arc(hx, hy, 0.7 * s, 0, Math.PI * 2);
   }
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = 'rgba(255,170,150,0.85)';
+  ctx.lineWidth = 1.9 * s;
+  ctx.stroke(bodies);
+  ctx.fillStyle = 'rgba(40,10,20,0.9)';
+  ctx.fill(eyes);
 }
