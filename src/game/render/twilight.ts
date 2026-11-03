@@ -1153,21 +1153,53 @@ export function createTwilightScene(seed: number): Scene {
     ctx.strokeStyle = `rgb(${rC},${gC},${bC})`;
     ctx.fillStyle = `rgb(${rC},${gC},${bC})`;
     ctx.lineCap = 'round';
+    // Arms: tapering from the base to a fine tip (three strokes, thinner each), the pale suckers
+    // showing along the curl near the tip.
+    const suckers = new Path2D();
     for (let a = 0; a < 8; a++) {
       const side = a < 4 ? -1 : 1;
       const k = a % 4;
       const reach = (12 + k * 3) * s * (1 + 0.3 * moving);
       const wave = Math.sin(t * (moving ? 6 : 0.8) + a * 1.3) * 3 * s;
-      ctx.lineWidth = 2.2 * s;
-      ctx.beginPath();
-      ctx.moveTo(side * 2 * s, 2 * s);
-      ctx.quadraticCurveTo(side * reach * 0.5, 6 * s + wave, side * reach, 8 * s - k * 1.5 * s + wave);
-      ctx.stroke();
+      const x0 = side * 2 * s, y0 = 2 * s, cx = side * reach * 0.5, cy = 6 * s + wave, x1 = side * reach, y1 = 8 * s - k * 1.5 * s + wave;
+      const at = (u: number): [number, number] => [(1 - u) * (1 - u) * x0 + 2 * (1 - u) * u * cx + u * u * x1, (1 - u) * (1 - u) * y0 + 2 * (1 - u) * u * cy + u * u * y1];
+      for (const [u0, u1, lw] of [[0, 0.4, 3], [0.38, 0.72, 2.1], [0.7, 1, 1.2]] as const) {
+        const [ax, ay] = at(u0), [mx, my] = at((u0 + u1) / 2), [bx, by] = at(u1);
+        ctx.lineWidth = lw * s;
+        ctx.beginPath();
+        ctx.moveTo(ax, ay);
+        ctx.quadraticCurveTo(2 * mx - (ax + bx) / 2, 2 * my - (ay + by) / 2, bx, by);
+        ctx.stroke();
+      }
+      for (const u of [0.55, 0.68, 0.8]) {
+        const [px, py] = at(u);
+        suckers.moveTo(px + 0.55 * s, py + 1 * s);
+        suckers.arc(px, py + 1 * s, 0.55 * s, 0, Math.PI * 2);
+      }
     }
-    // Mantle and eye.
+    ctx.fillStyle = `rgba(${Math.min(255, rC + 70)},${Math.min(255, gC + 60)},${Math.min(255, bC + 50)},0.5)`;
+    ctx.fill(suckers);
+    // Mantle: lit from above, with darker mottling and a short siphon at its side.
+    const mg = ctx.createRadialGradient(-2 * s, -9 * s, 0, 0, -4 * s, 10 * s);
+    mg.addColorStop(0, `rgb(${Math.min(255, rC + 30)},${Math.min(255, gC + 26)},${Math.min(255, bC + 22)})`);
+    mg.addColorStop(1, `rgb(${Math.round(rC * 0.78)},${Math.round(gC * 0.78)},${Math.round(bC * 0.78)})`);
+    ctx.fillStyle = mg;
     ctx.beginPath();
     ctx.ellipse(0, -4 * s, 7 * s, 9 * s * (1 + 0.1 * moving), -0.3, 0, Math.PI * 2);
     ctx.fill();
+    ctx.fillStyle = `rgba(${Math.round(rC * 0.6)},${Math.round(gC * 0.6)},${Math.round(bC * 0.6)},0.28)`;
+    ctx.beginPath();
+    for (const [mx, my, mr] of [[-2.5, -9, 1.3], [1.5, -7.5, 1], [-3.5, -4, 1.1], [0.5, -11.5, 0.9], [-1, -2, 0.8], [2.5, -4.2, 0.7]] as const) {
+      ctx.moveTo((mx + mr) * s, my * s);
+      ctx.arc(mx * s, my * s, mr * s, 0, Math.PI * 2);
+    }
+    ctx.fill();
+    ctx.strokeStyle = `rgb(${Math.round(rC * 0.85)},${Math.round(gC * 0.85)},${Math.round(bC * 0.85)})`;
+    ctx.lineWidth = 1.4 * s;
+    ctx.beginPath();
+    ctx.moveTo(5 * s, 1.5 * s);
+    ctx.quadraticCurveTo(7 * s, 2.2 * s, 7.6 * s, 0.8 * s + Math.sin(t * 1.1) * 0.5 * s);
+    ctx.stroke();
     ctx.fillStyle = 'rgba(250,240,200,0.9)';
     ctx.beginPath();
     ctx.arc(4 * s, -1 * s, 1.6 * s, 0, Math.PI * 2);
