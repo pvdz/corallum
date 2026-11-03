@@ -63,6 +63,7 @@ export function createShoals(seed: number) {
     const spread = (job === 'light' ? 22 : 30) * s;
     const flicker = job === 'light' ? 0.5 + 0.5 * Math.max(0, Math.sin(t * 0.35 * 4 + i)) ** 6 : 0;
     const lights: [number, number, number][] = [];
+    const eyes: number[] = [];
     const [sx, sy] = shoalCentre(F, reef, job, i, n, t, L);
     spot('lanternfish', sx, sy, spread * 1.3);
     // Touched, a wave of light runs out through the shoal from the touch, fish to fish.
@@ -95,12 +96,23 @@ export function createShoals(seed: number) {
       ctx.lineTo(px2(-len * 1.45, len * 0.35 + tail), py2(-len * 1.45, len * 0.35 + tail));
       ctx.lineTo(px2(-len * 1.45, -len * 0.35 + tail), py2(-len * 1.45, -len * 0.35 + tail));
       ctx.closePath();
+      // A big eye near the snout (lanternfish have huge eyes).
+      eyes.push(px2(len * 0.62, -len * 0.06), py2(len * 0.62, -len * 0.06), len * 0.13);
       // Photophores along the belly.
       for (let q = 0; q < 3; q++) {
         const d = (q - 1) * len * 0.45;
         lights.push([x + Math.cos(ang) * d - Math.sin(ang) * len * 0.18, y + Math.sin(ang) * d + Math.cos(ang) * len * 0.18, q]);
       }
     }
+    ctx.fill();
+    // The eyes, one fill: pale rims with dark middles read at any size as an eye.
+    ctx.fillStyle = 'rgba(200,215,235,0.55)';
+    ctx.beginPath();
+    for (let k = 0; k < eyes.length; k += 3) { ctx.moveTo(eyes[k]! + eyes[k + 2]!, eyes[k + 1]!); ctx.arc(eyes[k]!, eyes[k + 1]!, eyes[k + 2]!, 0, Math.PI * 2); }
+    ctx.fill();
+    ctx.fillStyle = 'rgba(8,10,20,0.9)';
+    ctx.beginPath();
+    for (let k = 0; k < eyes.length; k += 3) { const er = eyes[k + 2]! * 0.6; ctx.moveTo(eyes[k]! + er, eyes[k + 1]!); ctx.arc(eyes[k]!, eyes[k + 1]!, er, 0, Math.PI * 2); }
     ctx.fill();
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';

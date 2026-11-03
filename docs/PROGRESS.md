@@ -1096,3 +1096,4 @@ date, what landed, what is half-done, what's next.
 - The whale fall's spine was a bare bar with eleven identical hooks: vertebrae along it (largest at the chest), ribs longest at the chest and leaning back, the first two fallen half flat, and a skull with its long jaw.
 - The barreleye's body was near-black on the dark water, so only its dome and two green eyes showed (a pause icon in a bubble): a dark barrel lit faintly along its edge, a forked tail, a broad pectoral fin, a dorsal fin and a mouth.
 - The krill feast was forty salmon pills: each krill a small curled body with a dark eye at its head, its tail flicking, in two batched paths.
+- Lanternfish (the shoals, on screen through the whole Midnight Water) had no eyes: each has a big one near its snout, pale rim and dark middle, two fills for the whole shoal.
