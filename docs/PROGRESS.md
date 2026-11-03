@@ -1052,3 +1052,4 @@ date, what landed, what is half-done, what's next.
 - The cuttlefish's fin skirt was a pale peach wash that turned blue-grey over the water, an aura round it: it is body-coloured with a light rippling edge.
 - Yeti crabs at the vent were twenty bright hair strands an arm, crabs nine pixels apart: one cream knot. They spread up the chimney's flank, each with a shaded carapace, legs under it, a few soft strands an arm and a small claw.
 - Storm petrels were an oval with two thick stroked wings and no head: mid-beat, a stick on a blob. Each has pointed filled wings (the far one darker, a beat behind), a head with a hooked bill, a forked tail and the white rump.
+- Correcting the old-stone knob: zoomed in, its pale crescents and the pits clustered round them made a face (two eyes and a smile). It has one pale lobe where the light falls and pits spread evenly over it (a golden-angle spiral).

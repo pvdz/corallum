@@ -37,9 +37,8 @@ export type ReefLayout = {
 
 const MAX_POLYPS = 90;
 const MAX_SPECKS = 240;
-/** Old-stone knobs: points round the lump's outline, and the low bumps on it (x, y, radius in knob radii). */
+/** Old-stone knobs: points round the lump's outline. */
 const KNOB_EDGE = 22;
-const KNOB_BUMPS: readonly [number, number, number][] = [[-0.45, 0.35, 0.4], [0.38, 0.05, 0.34], [-0.05, -0.55, 0.32], [0.15, 0.6, 0.26]];
 const DEFAULT_PALETTE: [string, string, string] = ['#1d1026', '#6a3a50', 'rgba(255,170,160,0.22)'];
 
 export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
@@ -580,22 +579,18 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
       g.addColorStop(1, '#4a4844');
       ctx.fillStyle = g;
       ctx.fill();
-      // Low bumps where branches were: a pale lit crescent on top of each.
-      ctx.strokeStyle = 'rgba(220,216,206,0.35)';
-      ctx.lineWidth = Math.max(1, 1.3 * s);
-      for (const [lx, ly, lr] of KNOB_BUMPS) {
-        ctx.beginPath();
-        ctx.arc(lx * r, ly * r, lr * r, Math.PI * 1.1, Math.PI * 1.8);
-        ctx.stroke();
-      }
-      const lumps = KNOB_BUMPS;
+      // A paler lobe where the light falls (top left): volume, without features to read as a face.
+      ctx.fillStyle = 'rgba(220,216,206,0.22)';
+      ctx.beginPath();
+      ctx.ellipse(-0.3 * r, -0.45 * r, 0.5 * r, 0.36 * r, -0.5, 0, Math.PI * 2);
+      ctx.fill();
       // The empty cups the polyps left: small dark pits on the lit faces.
       ctx.fillStyle = 'rgba(48,46,44,0.5)';
       ctx.beginPath();
-      for (let k = 0; k < 11; k++) {
-        const [lx, ly, lr] = KNOB_BUMPS[k % KNOB_BUMPS.length]!;
-        const a = k * 2.399, d = lr * r * (0.25 + 0.5 * ((k * 0.618) % 1));
-        const px = lx * r + Math.cos(a) * d, py = ly * r + Math.sin(a) * d, pr = Math.max(0.6, 0.9 * s);
+      // Spread evenly over the lump (a golden-angle spiral), so no two read as a pair of eyes.
+      for (let k = 0; k < 14; k++) {
+        const a = k * 2.399, d = 0.82 * r * Math.sqrt((k + 0.5) / 14);
+        const px = Math.cos(a) * d * 0.95, py = Math.sin(a) * d * 1.05 - 0.1 * r, pr = Math.max(0.6, (0.6 + 0.4 * ((k * 0.618) % 1)) * s);
         ctx.moveTo(px + pr, py);
         ctx.arc(px, py, pr, 0, Math.PI * 2);
       }
