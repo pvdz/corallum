@@ -37,6 +37,9 @@ export type ReefLayout = {
 
 const MAX_POLYPS = 90;
 const MAX_SPECKS = 240;
+/** Old-stone knobs: points round the lump's outline, and the low bumps on it (x, y, radius in knob radii). */
+const KNOB_EDGE = 22;
+const KNOB_BUMPS: readonly [number, number, number][] = [[-0.45, 0.35, 0.4], [0.38, 0.05, 0.34], [-0.05, -0.55, 0.32], [0.15, 0.6, 0.26]];
 const DEFAULT_PALETTE: [string, string, string] = ['#1d1026', '#6a3a50', 'rgba(255,170,160,0.22)'];
 
 export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
@@ -558,33 +561,45 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
       ctx.translate(x, y);
       ctx.rotate(rot);
       ctx.globalAlpha = a;
-      // Grey skeleton (the stone kept too long, 'the grey on the tips'): a knot of ashen lumps with
-      // no living tissue, pitted with empty cups.
-      const lumps: [number, number, number][] = [[0, 0, 0.9], [-0.62, 0.32, 0.64], [0.6, 0.36, 0.6], [0.08, -0.56, 0.56]];
-      // One outline under the whole knot, so the lumps read as one piece of stone.
-      ctx.fillStyle = 'rgba(30,30,32,0.45)';
+      // Grey skeleton (the stone kept too long, 'the grey on the tips'): one ashen, knotted lump
+      // with no living tissue, its outline lumpy and a little taller than wide, lit from above.
       ctx.beginPath();
-      for (const [lx, ly, lr] of lumps) { ctx.moveTo(lx * r + lr * r + 1.2 * s, ly * r); ctx.arc(lx * r, ly * r, lr * r + 1.2 * s, 0, Math.PI * 2); }
+      for (let k = 0; k <= KNOB_EDGE; k++) {
+        const a = (k / KNOB_EDGE) * Math.PI * 2;
+        const rr = r * (1 + 0.16 * Math.sin(3 * a + 1) + 0.09 * Math.sin(5 * a + 2.3) + 0.05 * Math.sin(8 * a));
+        const px = Math.cos(a) * rr * 0.95, py = Math.sin(a) * rr * 1.08 - 0.1 * r;
+        if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.lineWidth = 2.4 * s;
+      ctx.strokeStyle = 'rgba(30,30,32,0.45)';
+      ctx.stroke();
+      const g = ctx.createRadialGradient(-0.35 * r, -0.55 * r, 0, 0, 0, 1.2 * r);
+      g.addColorStop(0, '#bdb9b1');
+      g.addColorStop(0.55, '#85817a');
+      g.addColorStop(1, '#4a4844');
+      ctx.fillStyle = g;
       ctx.fill();
-      for (const [lx, ly, lr] of lumps) {
-        const g = ctx.createRadialGradient(lx * r - lr * r * 0.35, ly * r - lr * r * 0.45, 0, lx * r, ly * r, lr * r);
-        g.addColorStop(0, '#c2bfb9');
-        g.addColorStop(0.6, '#8b8882');
-        g.addColorStop(1, '#55534f');
-        ctx.fillStyle = g;
+      // Low bumps where branches were: a pale lit crescent on top of each.
+      ctx.strokeStyle = 'rgba(220,216,206,0.35)';
+      ctx.lineWidth = Math.max(1, 1.3 * s);
+      for (const [lx, ly, lr] of KNOB_BUMPS) {
         ctx.beginPath();
-        ctx.arc(lx * r, ly * r, lr * r, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.arc(lx * r, ly * r, lr * r, Math.PI * 1.1, Math.PI * 1.8);
+        ctx.stroke();
       }
+      const lumps = KNOB_BUMPS;
       // The empty cups the polyps left: small dark pits on the lit faces.
-      ctx.fillStyle = 'rgba(48,46,44,0.55)';
+      ctx.fillStyle = 'rgba(48,46,44,0.5)';
+      ctx.beginPath();
       for (let k = 0; k < 11; k++) {
-        const [lx, ly, lr] = lumps[k % lumps.length]!;
+        const [lx, ly, lr] = KNOB_BUMPS[k % KNOB_BUMPS.length]!;
         const a = k * 2.399, d = lr * r * (0.25 + 0.5 * ((k * 0.618) % 1));
-        ctx.beginPath();
-        ctx.arc(lx * r + Math.cos(a) * d, ly * r + Math.sin(a) * d, Math.max(0.8, 1.3 * s), 0, Math.PI * 2);
-        ctx.fill();
+        const px = lx * r + Math.cos(a) * d, py = ly * r + Math.sin(a) * d, pr = Math.max(0.6, 0.9 * s);
+        ctx.moveTo(px + pr, py);
+        ctx.arc(px, py, pr, 0, Math.PI * 2);
       }
+      ctx.fill();
       // A crack across it that breathes: it is ready to break.
       ctx.strokeStyle = `rgba(40,38,36,${0.45 + 0.3 * Math.sin(t * 2.2 + x * 0.01)})`;
       ctx.lineWidth = Math.max(1, 1.1 * s);
