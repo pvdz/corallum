@@ -154,27 +154,49 @@ export function drawGull(ctx: CanvasRenderingContext2D, cx: number, waterY: numb
   ctx.save();
   ctx.translate(x, y);
   ctx.scale(Math.cos(a + Math.PI / 2) * side > 0 ? 1 : -1, 1);
-  ctx.strokeStyle = '#e8ecf0';
-  ctx.fillStyle = '#e8ecf0';
-  ctx.lineWidth = 2.2 * k;
-  ctx.lineCap = 'round';
+  // Wings: long, filled, bent at the wrist, pale grey above with black tips; the far one behind.
+  const wing = (dir: number, shade: string) => {
+    const tipY = (-4 - flap * 7) * k, wristY = (-6 - flap * 4) * k;
+    ctx.fillStyle = shade;
+    ctx.beginPath();
+    ctx.moveTo(dir * 1.5 * k, -1.2 * k);
+    ctx.quadraticCurveTo(dir * 4 * k, wristY - 1 * k, dir * 7 * k, wristY);
+    ctx.quadraticCurveTo(dir * 11 * k, wristY + 0.5 * k, dir * 15 * k, tipY);
+    ctx.quadraticCurveTo(dir * 10 * k, tipY + 3.2 * k, dir * 6.5 * k, wristY + 3 * k);
+    ctx.quadraticCurveTo(dir * 4 * k, -0.2 * k, dir * 1.5 * k, 1 * k);
+    ctx.closePath();
+    ctx.fill();
+    // The black tip.
+    ctx.fillStyle = '#26272c';
+    ctx.beginPath();
+    ctx.moveTo(dir * 12 * k, tipY + 0.4 * k);
+    ctx.lineTo(dir * 15 * k, tipY);
+    ctx.quadraticCurveTo(dir * 13 * k, tipY + 2 * k, dir * 11 * k, tipY + 2.4 * k);
+    ctx.closePath();
+    ctx.fill();
+  };
+  wing(-1, '#b9c0c8');
+  // Body, a squared tail, the head with its eye and yellow bill.
+  ctx.fillStyle = '#eef1f4';
   ctx.beginPath();
-  ctx.moveTo(-14 * k, (-4 - flap * 6) * k);
-  ctx.quadraticCurveTo(-6 * k, (-8 - flap * 4) * k, 0, 0);
-  ctx.quadraticCurveTo(6 * k, (-8 - flap * 4) * k, 14 * k, (-4 - flap * 6) * k);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.ellipse(0, 0.5 * k, 5 * k, 2 * k, 0, 0, Math.PI * 2);
+  ctx.ellipse(0, 0.5 * k, 5 * k, 1.9 * k, 0, 0, Math.PI * 2);
+  ctx.moveTo(-4.5 * k, -0.2 * k);
+  ctx.lineTo(-7.5 * k, -0.6 * k);
+  ctx.lineTo(-7.5 * k, 1.6 * k);
+  ctx.lineTo(-4.5 * k, 1.4 * k);
+  ctx.moveTo(6.4 * k, -0.4 * k);
+  ctx.arc(5 * k, -0.4 * k, 1.5 * k, 0, Math.PI * 2);
   ctx.fill();
   ctx.fillStyle = '#2a2a2e';
   ctx.beginPath();
-  ctx.arc(4 * k, -0.5 * k, 0.6 * k, 0, Math.PI * 2);
+  ctx.arc(5.4 * k, -0.8 * k, 0.45 * k, 0, Math.PI * 2);
   ctx.fill();
   ctx.fillStyle = '#e8b040';
   ctx.beginPath();
-  ctx.moveTo(5 * k, 0);
-  ctx.lineTo(8 * k, 0.6 * k);
-  ctx.lineTo(5 * k, 1.2 * k);
+  ctx.moveTo(6.3 * k, -0.6 * k);
+  ctx.lineTo(9 * k, 0);
+  ctx.lineTo(6.3 * k, 0.5 * k);
   ctx.fill();
+  wing(1, '#d4dae0');
   ctx.restore();
 }
