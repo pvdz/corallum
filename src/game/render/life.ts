@@ -928,38 +928,13 @@ export function createLife(seed: number) {
     const fold = touch && touch.age < 4 ? Math.sin(Math.min(1, touch.age / 4) * Math.PI) : 0;
     ctx.save();
     for (let i = 0; i < 1 + tier; i++) {
-      const cx = x - (16 + i * 9) * s0, cy = base - (22 + i * 7 + (i % 2) * 3) * s0;
+      // Spread up the chimney's flank, one above another, so their hairy arms do not knot together.
+      const cx = x - (17 + i * 7) * s0, cy = base - (20 + i * 13 + (i % 2) * 3) * s0;
       const side = i % 2 ? -1 : 1;
       // The wave: slow, shared, a little offset crab to crab.
       const wave = Math.sin(t * 1.1 + i * 0.5) * 0.5 * (1 - fold);
-      ctx.fillStyle = 'rgba(232,226,212,0.95)';
-      ctx.beginPath();
-      ctx.ellipse(cx, cy, 4.5 * s, 3 * s, 0, 0, Math.PI * 2);
-      ctx.fill();
-      for (const arm of [-1, 1]) {
-        const a = -Math.PI / 2 + arm * (0.7 + wave * arm * side) - fold * arm * 0.6;
-        const ex = cx + arm * 3 * s + Math.cos(a) * 9 * s, ey = cy - 1 * s + Math.sin(a) * 9 * s;
-        ctx.strokeStyle = 'rgba(232,226,212,0.95)';
-        ctx.lineWidth = 1.6 * s;
-        ctx.beginPath();
-        ctx.moveTo(cx + arm * 3 * s, cy - 1 * s);
-        ctx.lineTo(ex, ey);
-        ctx.stroke();
-        // The hair: soft strands off the arm, a little yellow with what grows in it.
-        ctx.strokeStyle = 'rgba(250,230,160,0.8)';
-        ctx.lineWidth = 0.9 * s;
-        ctx.beginPath();
-        for (let h = 1; h <= 10; h++) {
-          const u = h / 10, hx = cx + arm * 3 * s + (ex - cx - arm * 3 * s) * u, hy = cy - 1 * s + (ey - cy + 1 * s) * u;
-          ctx.moveTo(hx, hy);
-          ctx.lineTo(hx + arm * 4 * s + Math.sin(t * 2 + h + i) * 1 * s, hy + 3.5 * s);
-          ctx.moveTo(hx, hy);
-          ctx.lineTo(hx - arm * 2 * s + Math.sin(t * 1.7 + h) * 0.8 * s, hy + 3 * s);
-        }
-        ctx.stroke();
-      }
-      // Legs.
-      ctx.strokeStyle = 'rgba(210,204,190,0.8)';
+      // Legs first, under the body.
+      ctx.strokeStyle = 'rgba(200,194,180,0.8)';
       ctx.lineWidth = 0.8 * s;
       ctx.beginPath();
       for (let k = 0; k < 3; k++) for (const arm of [-1, 1]) {
@@ -967,6 +942,41 @@ export function createLife(seed: number) {
         ctx.lineTo(cx + arm * (6 + k * 1.5) * s, cy + (4 - k * 0.5) * s);
       }
       ctx.stroke();
+      // The carapace: pale, shaded underneath.
+      const g = ctx.createLinearGradient(0, cy - 3 * s, 0, cy + 3 * s);
+      g.addColorStop(0, 'rgba(240,236,224,0.97)');
+      g.addColorStop(1, 'rgba(176,168,150,0.97)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, 4.5 * s, 3 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      for (const arm of [-1, 1]) {
+        const a = -Math.PI / 2 + arm * (0.7 + wave * arm * side) - fold * arm * 0.6;
+        const sx = cx + arm * 3 * s, sy = cy - 1 * s;
+        const ex = sx + Math.cos(a) * 9 * s, ey = sy + Math.sin(a) * 9 * s;
+        // The hair: a few soft strands hanging off the arm, yellowed with what grows in it.
+        ctx.strokeStyle = 'rgba(244,224,150,0.5)';
+        ctx.lineWidth = 0.7 * s;
+        ctx.beginPath();
+        for (let h = 2; h <= 8; h++) {
+          const u = h / 9, hx = sx + (ex - sx) * u, hy = sy + (ey - sy) * u;
+          ctx.moveTo(hx, hy);
+          ctx.lineTo(hx + arm * 2.4 * s + Math.sin(t * 2 + h + i) * 0.8 * s, hy + 3 * s);
+        }
+        ctx.stroke();
+        // The arm, and a small claw at its end.
+        ctx.strokeStyle = 'rgba(232,226,212,0.95)';
+        ctx.lineWidth = 1.6 * s;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(sx, sy);
+        ctx.lineTo(ex, ey);
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(236,230,214,0.95)';
+        ctx.beginPath();
+        ctx.ellipse(ex, ey, 2 * s, 1.1 * s, a, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
     ctx.restore();
   }
