@@ -752,8 +752,6 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       const top = y(a.to), bottom = y(a.from);
       c.fillStyle = tints[i] ?? 'rgba(255,255,255,0.05)';
       c.fillRect(0, top, W, bottom - top);
-      c.fillStyle = 'rgba(190,210,240,0.35)';
-      c.fillText(a.name.replace(/^The /, ''), 4, (top + bottom) / 2);
     }
     const px = (i: number) => (i / (hist.length - 1)) * W;
     // A soft fill under the line, then the line.
@@ -784,6 +782,17 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     c.arc(W - 2.5, y(last), 2.5, 0, Math.PI * 2);
     c.fill();
     c.shadowBlur = 0;
+    // The zones' names over everything, with a dark edge so the line passing behind them does not
+    // strike them through.
+    c.lineJoin = 'round';
+    c.lineWidth = 3;
+    c.strokeStyle = 'rgba(6,10,26,0.85)';
+    c.fillStyle = 'rgba(190,210,240,0.55)';
+    for (const a of ACTS) {
+      const my = (y(a.to) + y(a.from)) / 2, name = a.name.replace(/^The /, '');
+      c.strokeText(name, 4, my);
+      c.fillText(name, 4, my);
+    }
   }
   // A portrait, large: tap anywhere (or Escape) to close.
   const lightbox = el('figure', 'lightbox');
