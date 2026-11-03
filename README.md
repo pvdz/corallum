@@ -92,10 +92,11 @@ Under every full moon the other reefs spawn too, and the water fills with slow p
 ## Playing on a phone
 
 Run `node src/server/server.ts --lan`; it prints an address on your network to open on the phone.
-"Add to Home Screen" installs it to open full-screen like an app. If a phone struggles, turn off
-"Full resolution" in the Reef tab.
-Once opened, it also plays with the server out of reach: the last visit's files are kept by the
-browser, and the reef lives in its storage. On a phone, drag the panel's top (or its stocks) up
+If a phone struggles, turn off "Full resolution" in the Reef tab. Served over HTTPS (or on
+localhost), "Add to Home Screen" installs it to open full-screen like an app, and once opened it
+plays with the server out of reach: the last visit's files are kept by the browser, and the reef
+lives in its storage. Over plain `http://` on your network browsers allow neither, so there it
+plays only while the server runs. On a phone, drag the panel's top (or its stocks) up
 for more of the panel, down for more of the reef: dragged down once more it keeps just the
 numbers, the tabs and the quick buys, gives the reef two thirds of the screen, and stays so.
 
