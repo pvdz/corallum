@@ -1264,20 +1264,10 @@ export function createBreachScene(seed: number): Scene {
       ctx.save();
       ctx.translate(x, y);
       ctx.scale(dir, 1);
-      ctx.fillStyle = `hsl(${hues[k % hues.length]},55%,46%)`;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, len, len * 0.55, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.moveTo(-len * 0.8, 0);
-      ctx.lineTo(-len * 1.4, -len * 0.45);
-      ctx.lineTo(-len * 1.4, len * 0.45);
-      ctx.closePath();
-      ctx.fill();
-      ctx.fillStyle = '#111';
-      ctx.beginPath();
-      ctx.arc(len * 0.5, -len * 0.12, len * 0.09, 0, Math.PI * 2);
-      ctx.fill();
+      // A small reef fish in its colour: darker back, pale belly, fins, eye (the shared small fish,
+      // whose length is about 21 of its units).
+      const hue = hues[k % hues.length]!;
+      drawSmallFish(ctx, len / 9, `hsl(${hue},55%,36%)`, `hsl(${hue},60%,50%)`, `hsl(${hue},55%,72%)`);
       ctx.restore();
     }
     if (v.bands.includes('waiting-fish')) sight('reef-fish');
