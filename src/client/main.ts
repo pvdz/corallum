@@ -1424,6 +1424,8 @@ function turnCurrent(c: number): void {
 
 /** Name a creature beside where it was tapped: above it, clear of its body (`r`), or below if there
  *  is no room. Clear of the tap (`tx`, `ty`) too, where the gift's and the sweep's numbers rise. */
+/** The creature whose label was last opened by a touch, and when (performance.now()). */
+let labelShown = { id: '', at: -1e9 };
 function showCreatureLabel(id: string, x: number, y: number, r = 20, tx = NaN, ty = NaN): void {
   const c = CREATURES.find((k) => k.id === id);
   if (!c) return;
@@ -1677,9 +1679,17 @@ canvas.addEventListener('pointerdown', (e) => {
     if (g) floatText(e.clientX, e.clientY - 26, `+${num(g.amount)} ${GIFT_TEXT[g.stock]}${wasLucky ? ` ${LUCKY.float}` : ''}`, 'feast-float');
     // A light tick on phones; a double one when it brought a gift.
     if (who.id !== 'ossel') buzz(g ? [8, 40, 8] : 8);
+    // Its label, unless it was shown for this creature just now and this touch brought nothing new:
+    // sweeping the crown, where the nudibranchs and gobies live, would otherwise keep a label open
+    // over the reef for as long as the sweeping goes on.
     if (who.id !== 'ossel') {
-      const [lx, ly] = toScreen(who.x, who.y);
-      showCreatureLabel(who.id, lx / dpr, ly / dpr, (who.r * zoom.k) / dpr, e.clientX, e.clientY);
+      const now = performance.now();
+      const again = labelShown.id === who.id && now - labelShown.at < 20_000;
+      if (!again || g || wasVisitor) {
+        const [lx, ly] = toScreen(who.x, who.y);
+        showCreatureLabel(who.id, lx / dpr, ly / dpr, (who.r * zoom.k) / dpr, e.clientX, e.clientY);
+        labelShown = { id: who.id, at: now };
+      }
     }
   }
   const f = currentFeast(state);
