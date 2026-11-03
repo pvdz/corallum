@@ -1203,3 +1203,24 @@ html.view-mode #photo { display: grid; }
 .photo-flash { position: fixed; inset: 0; z-index: 60; pointer-events: none; background: #f4f8ff; animation: photo-flash 0.5s ease-out forwards; }
 .photo-flash.soft { animation-duration: 0.3s; background: #8090a8; }
 @keyframes photo-flash { from { opacity: 0.55; } to { opacity: 0; } }
+
+/* While the game's modules load (seconds on a slow phone network) a few motes of silt drift down
+   under the title, so the page is plainly alive; gone with the first drawn frame. */
+.loading { position: absolute; left: 50%; top: 32%; width: 140px; height: 38vh; margin-left: -70px; pointer-events: none; }
+html.live .loading { display: none; }
+.loading i { position: absolute; top: 0; width: 3px; height: 3px; border-radius: 50%; background: #9fb3cc; opacity: 0;
+  animation: silt-fall 5.6s linear infinite; }
+.loading i:nth-child(1) { left: 12%; animation-delay: 0.2s; }
+.loading i:nth-child(2) { left: 33%; animation-delay: 1.9s; width: 2px; height: 2px; }
+.loading i:nth-child(3) { left: 51%; animation-delay: 0.9s; }
+.loading i:nth-child(4) { left: 68%; animation-delay: 3.1s; width: 2px; height: 2px; }
+.loading i:nth-child(5) { left: 85%; animation-delay: 1.4s; }
+.loading i:nth-child(6) { left: 24%; animation-delay: 4.0s; width: 2px; height: 2px; }
+.loading i:nth-child(7) { left: 77%; animation-delay: 4.7s; }
+@keyframes silt-fall {
+  0% { transform: translate(0, 0); opacity: 0; }
+  15% { opacity: 0.7; }
+  85% { opacity: 0.5; }
+  100% { transform: translate(12px, 38vh); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .loading i { animation-duration: 11s; } }

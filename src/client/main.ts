@@ -2402,6 +2402,7 @@ function frame(now: number): void {
   // (11.1 ms frames) restarting drew every other frame, 45 a second; stepping draws two in three.
   lastDrawn = Math.max(lastDrawn + frameGap, now - frameGap);
   // One bad frame must not stop the reef: the loop goes on and the error is reported once.
+  if (!live) { live = true; document.documentElement.classList.add('live'); }
   try { frameBody(now); }
   catch (e) {
     const key = String(e);
@@ -2410,6 +2411,9 @@ function frame(now: number): void {
   if (frozenT === null) requestAnimationFrame(frame);
   else document.documentElement.dataset.ready = '1';
 }
+
+/** The first frame is drawn (the loading motes go). */
+let live = false;
 
 /** Layout changed: resize on the next frame (a frozen ?t page draws just that one frame). */
 function relayout(): void {
