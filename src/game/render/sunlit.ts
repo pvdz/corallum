@@ -759,29 +759,64 @@ export function createSunlitScene(seed: number): Scene {
       ctx.strokeStyle = `rgb(${mixc(r0, 235)},${mixc(g0, 220)},${mixc(b0, 185)})`;
       ctx.fillStyle = ctx.strokeStyle;
       ctx.lineCap = 'round';
-      // Curled tail, an upright S of a body, a snout and a little fin.
-      ctx.lineWidth = 2.4 * s;
+      // An upright body with a pot belly and a crowned head, a tube of a snout, a curled tail.
+      const P = (x: number, y: number): [number, number] => [x * s, y * s];
       ctx.beginPath();
-      ctx.moveTo(0, 12 * s);
-      ctx.quadraticCurveTo(4 * s, 16 * s, 2 * s, 18 * s);
-      ctx.quadraticCurveTo(-1 * s, 19 * s, 0, 15 * s);
-      ctx.stroke();
-      ctx.lineWidth = 4.2 * s;
-      ctx.beginPath();
-      ctx.moveTo(0, 12 * s);
-      ctx.bezierCurveTo(4 * s, 6 * s, -3 * s, 0, 1 * s, -6 * s);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.ellipse(2 * s, -8 * s, 2.6 * s, 2.2 * s, 0, 0, Math.PI * 2);
+      ctx.moveTo(...P(0.5, -12.5));
+      ctx.quadraticCurveTo(...P(-1.6, -12.5), ...P(-2.2, -10.5));
+      ctx.quadraticCurveTo(...P(-3.2, -8), ...P(-2.6, -5));
+      ctx.bezierCurveTo(...P(-4.8, -2), ...P(-3.5, 6), ...P(-1.4, 9));
+      ctx.lineTo(...P(1.4, 9));
+      ctx.bezierCurveTo(...P(6.4, 6), ...P(6.4, -1), ...P(2, -4.5));
+      ctx.quadraticCurveTo(...P(1, -6), ...P(2.6, -7.2));
+      ctx.lineTo(...P(8.6, -7.4));
+      ctx.quadraticCurveTo(...P(9.6, -8.3), ...P(8.6, -9.2));
+      ctx.lineTo(...P(3.6, -9.6));
+      ctx.quadraticCurveTo(...P(3.4, -12), ...P(0.5, -12.5));
+      ctx.closePath();
       ctx.fill();
-      ctx.lineWidth = 1.6 * s;
+      // The tail, tapering as it curls under.
+      ctx.lineWidth = 2.6 * s;
       ctx.beginPath();
-      ctx.moveTo(3 * s, -8 * s);
-      ctx.lineTo(8 * s, -7 * s);
+      ctx.moveTo(...P(0, 8.5));
+      ctx.quadraticCurveTo(...P(1.8, 12.5), ...P(-0.2, 15.6));
       ctx.stroke();
+      ctx.lineWidth = 1.5 * s;
+      ctx.beginPath();
+      ctx.moveTo(...P(-0.2, 15.6));
+      ctx.quadraticCurveTo(...P(-2, 18), ...P(-3.4, 16));
+      ctx.quadraticCurveTo(...P(-3.6, 14), ...P(-1.8, 13.8));
+      ctx.stroke();
+      // The rings of its armour, the crown's points, and the eye.
+      ctx.strokeStyle = 'rgba(60,30,20,0.28)';
+      ctx.lineWidth = Math.max(0.8, 0.7 * s);
+      ctx.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const yy = -3 + i * 2;
+        ctx.moveTo(...P(-3.4 + i * 0.25, yy));
+        ctx.lineTo(...P(-1 + i * 0.2, yy + 0.8));
+      }
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(...P(-0.6, -12.3));
+      ctx.lineTo(...P(-0.2, -14));
+      ctx.lineTo(...P(0.6, -12.4));
+      ctx.lineTo(...P(1.4, -13.6));
+      ctx.lineTo(...P(1.8, -12));
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = 'rgba(255,248,230,0.85)';
+      ctx.beginPath();
+      ctx.arc(...P(1.8, -9.9), 1.15 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#20140e';
+      ctx.beginPath();
+      ctx.arc(...P(2.0, -9.9), 0.6 * s, 0, Math.PI * 2);
+      ctx.fill();
+      // The dorsal fin on its back, fluttering.
       ctx.fillStyle = 'rgba(255,240,200,0.7)';
       ctx.beginPath();
-      ctx.ellipse(-3 * s, 2 * s, 1.6 * s, 3 * s + Math.sin(t * 9) * 0.6 * s, 0.3, 0, Math.PI * 2);
+      ctx.ellipse(-4.2 * s, 2 * s, 1.5 * s, 3 * s + Math.sin(t * 9) * 0.6 * s, 0.3, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
     }
