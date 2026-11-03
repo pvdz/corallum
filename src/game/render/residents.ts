@@ -218,25 +218,50 @@ function seaStar(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s0: n
   const [x, y] = reef.nodePx(L, p);
   spot('sea-star', x, y, 12 * s);
   ctx.save();
-  ctx.fillStyle = '#d0702a';
-  ctx.strokeStyle = 'rgba(120,50,20,0.6)';
-  ctx.lineWidth = 0.7 * s;
+  // Five soft, tapering arms with rounded tips, each curling a little on its own, shaded from a
+  // paler middle, beaded along each arm.
+  const arm = (k: number): [number, number, number] => {
+    const a = -Math.PI / 2 + (k / 5) * Math.PI * 2 + Math.sin(t * 0.3) * 0.05;
+    return [a, (7.5 + Math.sin(t * 0.4 + k) * 0.6) * s, Math.sin(t * 0.25 + k * 1.7) * 0.18];
+  };
   ctx.beginPath();
-  for (let k = 0; k < 10; k++) {
-    const a = -Math.PI / 2 + (k / 10) * Math.PI * 2 + Math.sin(t * 0.3) * 0.05;
-    const r = (k % 2 ? 2.6 : 7.5 + Math.sin(t * 0.4 + k) * 0.6) * s;
-    const px = x + Math.cos(a) * r, py = y + Math.sin(a) * r;
-    if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  for (let k = 0; k < 5; k++) {
+    const [a, r, curl] = arm(k);
+    const am = a + Math.PI / 5;
+    const tip = a + curl;
+    const tx = x + Math.cos(tip) * r, ty = y + Math.sin(tip) * r;
+    const half = 1.3 * s;
+    const rx = tx + Math.sin(tip) * half, ry = ty - Math.cos(tip) * half;
+    const vx = x + Math.cos(a - Math.PI / 5) * 2.8 * s, vy = y + Math.sin(a - Math.PI / 5) * 2.8 * s;
+    if (k === 0) ctx.moveTo(vx, vy);
+    ctx.quadraticCurveTo(x + Math.cos(a - 0.2) * r * 0.55, y + Math.sin(a - 0.2) * r * 0.55, rx, ry);
+    ctx.arc(tx, ty, half, tip - Math.PI / 2, tip + Math.PI / 2);
+    ctx.quadraticCurveTo(x + Math.cos(a + 0.2) * r * 0.55, y + Math.sin(a + 0.2) * r * 0.55, x + Math.cos(am) * 2.8 * s, y + Math.sin(am) * 2.8 * s);
   }
   ctx.closePath();
+  const g = ctx.createRadialGradient(x, y, 0, x, y, 8 * s);
+  g.addColorStop(0, '#f0954a');
+  g.addColorStop(1, '#b85a22');
+  ctx.fillStyle = g;
+  ctx.strokeStyle = 'rgba(110,45,18,0.6)';
+  ctx.lineWidth = 0.7 * s;
   ctx.fill();
   ctx.stroke();
+  // Beads along each arm, and a pale spot at the middle.
   ctx.fillStyle = 'rgba(255,220,180,0.7)';
-  for (let k = 0; k < 6; k++) {
-    ctx.beginPath();
-    ctx.arc(x + Math.cos(k * 1.3) * 2.5 * s, y + Math.sin(k * 1.9) * 2.5 * s, 0.6 * s, 0, Math.PI * 2);
-    ctx.fill();
+  ctx.beginPath();
+  for (let k = 0; k < 5; k++) {
+    const [a, r, curl] = arm(k);
+    for (const u of [0.3, 0.52, 0.74]) {
+      const aa = a + curl * u;
+      const bx = x + Math.cos(aa) * r * u, by = y + Math.sin(aa) * r * u, br = (0.75 - u * 0.35) * s;
+      ctx.moveTo(bx + br, by);
+      ctx.arc(bx, by, br, 0, Math.PI * 2);
+    }
   }
+  ctx.moveTo(x + 1.1 * s, y);
+  ctx.arc(x, y, 1.1 * s, 0, Math.PI * 2);
+  ctx.fill();
   ctx.restore();
 }
 

@@ -1100,3 +1100,4 @@ date, what landed, what is half-done, what's next.
 - The pistol shrimp (a resident at the reef's foot) was two pink ovals: a segmented body tapering into its burrow, antennae, an eye, and its one oversized claw with a short finger.
 - The auger and cone shells (on the Sunlit sand and the line's shelf) were straight-edged polygons with vertical bars, which on the sand read as a wooden signpost: the auger is a spire of stacked whorls, each smaller, the cone a rounded shoulder with its low spire behind, tapering, spotted.
 - Christmas-tree worms were wavy zigzag strokes (red zigzags on the branches in every Sunlit view): each worm is two small tiered spiral trees, widest at the foot, one stroked path over a dark edge.
+- The sea star resident was a stiff ten-point geometric star: five soft tapering arms with rounded tips, each curling a little, shaded from a paler middle, beaded along the arms.
