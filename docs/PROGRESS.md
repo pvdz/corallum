@@ -1092,3 +1092,4 @@ date, what landed, what is half-done, what's next.
 - The journal's portrait of the Rasp (and of others living low on the slope) was never taken: a crop centred on the creature ran past the scene's bottom and was skipped, so the Rasp row kept an empty square all game. The crop is moved inside the scene as long as the creature stays well within it (instrumented: the Rasp, garden eels, mantis shrimp and moray now taken in the first 20 s at the Twilight). Albums missing one fill in.
 - `tools/fuzz.ts --calm` (reduced motion emulated): mobile at the Breach and desktop in the Midnight Water, ~960 actions, no errors.
 - `tools/audit.ts laptop` (1366×768, the most common laptop screen): clean, plain, Larger text and scientific.
+- Leak check after the night's drawing changes (Path2D per frame in several renderers): 2.5 min at ×30 from the Twilight on a phone, tapping: heap 8.8 → 9.3 → 9.4 → 9.3 → 9.6 MB after GC, DOM nodes ~4,635 and listeners ~719 flat.
