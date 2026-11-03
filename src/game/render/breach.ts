@@ -59,6 +59,19 @@ function formOf(id: DialectId | ''): CoralForm {
   return id === 'branching' || id === 'massive' || id === 'plating' || id === 'pillar' ? id : 'fan';
 }
 
+/** Released bundles: three shades of pink and salmon, each in a few opacity steps. */
+const BEAD_SHADES = 3;
+const BEAD_STEPS = 4;
+const PINK_SHADES: readonly [number, number, number][] = [[244, 118, 160], [255, 150, 172], [250, 132, 118]];
+const GOLD: readonly [number, number, number] = [255, 186, 86];
+/** Brooders' larvae: paler, peach. */
+const BROOD_SHADES = ['255,170,140', '255,190,160', '250,160,130'];
+/** A bead's shade, pink turning golden as the spawn is sweetened (g 0..1). */
+function beadShade(k: number, g: number): string {
+  const p = PINK_SHADES[k]!;
+  return `${Math.round(p[0] + (GOLD[0] - p[0]) * g)},${Math.round(p[1] + (GOLD[1] - p[1]) * g)},${Math.round(p[2] + (GOLD[2] - p[2]) * g)}`;
+}
+
 type Star = { x: number; y: number; r: number; tw: number };
 type Bundle = { x: number; delay: number; speed: number; drift: number; size: number };
 
@@ -734,6 +747,11 @@ export function createBreachScene(seed: number): Scene {
       const n = Math.round(bundles.length * (0.12 + 0.88 * burst) * (brooding ? 0.35 : 1));
       const coral = reef.coral;
       if (v.spawnMode === 'fragmenting') drawFragments(ctx, v, L, reef, wy);
+      // Each bundle is a bead of colour with a soft halo: the halos add up in the water (lighter),
+      // the beads are painted over (source-over), so a cloud of them stays pink, not white.
+      // Beads are batched into one path per shade and opacity step.
+      const beads: Path2D[] = Array.from({ length: BEAD_SHADES * BEAD_STEPS }, () => new Path2D());
+      const shines: Path2D[] = Array.from({ length: BEAD_STEPS }, () => new Path2D());
       for (let i = 0; i < n; i++) {
         const b = bundles[i]!;
         // Each bundle leaves a polyp on the reef and rises straight for the light.
@@ -749,9 +767,31 @@ export function createBreachScene(seed: number): Scene {
         const y = y0 - u * (y0 - wy);
         const a = Math.min(1, u * 8) * (1 - u * 0.6);
         const size = b.size * (brooding ? 1.9 : 1);
-        glow(ctx, x, y, 17 * s * size, brooding ? '255,175,150' : bundle, 0.9 * a);
-        glow(ctx, x, y, 4 * s * size, brooding ? '255,215,190' : '255,190,220', 0.95 * a);
+        glow(ctx, x, y, 15 * s * size, brooding ? '255,175,150' : bundle, 0.6 * a);
+        const step = Math.min(BEAD_STEPS - 1, Math.floor(a * BEAD_STEPS));
+        if (step <= 0) continue;
+        const r = Math.max(3.4 * s * size, 1.2 * dpr);
+        const p = beads[(i % BEAD_SHADES) * BEAD_STEPS + step]!;
+        p.moveTo(x + r, y);
+        p.arc(x, y, r, 0, Math.PI * 2);
+        const q = shines[step]!;
+        const hr = r * 0.38;
+        q.moveTo(x - r * 0.3 + hr, y - r * 0.3);
+        q.arc(x - r * 0.3, y - r * 0.3, hr, 0, Math.PI * 2);
       }
+      ctx.globalCompositeOperation = 'source-over';
+      for (let k = 0; k < BEAD_SHADES; k++) {
+        const rgb = brooding ? BROOD_SHADES[k]! : beadShade(k, g);
+        for (let st = 1; st < BEAD_STEPS; st++) {
+          ctx.fillStyle = `rgba(${rgb},${(0.9 * (st + 0.5) / BEAD_STEPS).toFixed(3)})`;
+          ctx.fill(beads[k * BEAD_STEPS + st]!);
+        }
+      }
+      for (let st = 1; st < BEAD_STEPS; st++) {
+        ctx.fillStyle = `rgba(255,236,240,${(0.8 * (st + 0.5) / BEAD_STEPS).toFixed(3)})`;
+        ctx.fill(shines[st]!);
+      }
+      ctx.globalCompositeOperation = 'lighter';
       // While the release is at its height the water itself goes pink with it.
       if (burst > 0) {
         const veil = ctx.createLinearGradient(0, wy, 0, h);

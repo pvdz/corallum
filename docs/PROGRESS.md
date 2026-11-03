@@ -1037,3 +1037,7 @@ date, what landed, what is half-done, what's next.
 - A sweep by Space showed its motes but no "+number" (a tap shows one): it does now, with its combo, beside the crown and below the corner buttons (on a phone on its side the old spot, 160 px from the crown, was over them; the offset is at most a fifth of the scene there).
 - The weather strip, short of room for every label, gave them out in time order, so a water turn ("rich water") could keep its label while an intruder ("dragonfish") lost it. Things that happen are labelled first and the water's turns after (each label takes the first of three rows where it touches no other); an unlabelled mark keeps its dot and tooltip.
 - A creature low in the scene with no room for its label above, below or beside the tap got the "below" spot unclamped: on a small phone the label (the sixgill shark's, four lines) hung over the sheet's stocks. The label is held inside the scene, below the corner buttons. Probe: 60 taps on low creatures at 360×640, 0 labels past the sheet (1 before).
+
+## 2026-11-03 (night session)
+- Real-time play of a new reef on a phone, 10 minutes (153 buys): no console errors, nothing out of place.
+- The release, the game's climax, drew each spawn bundle as two additive glows: hundreds of them summed to white bokeh, though the text says "Pink bundles rise". Each bundle is now a bead of colour (three shades of pink and salmon, golden as the spawn is sweetened; brooders' larvae peach) painted over a softer additive halo, batched into one path per shade and opacity step.
