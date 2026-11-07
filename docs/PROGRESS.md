@@ -1175,3 +1175,4 @@ date, what landed, what is half-done, what's next.
 - A folded choice showed only its kicker ("Ossel asks you something ▸"); it keeps the first line of what it asks, dim and cut to one line, so a player can tell what waits without opening it.
 - The time-lapse (T, the reef regrowing from the zone's start) left nudibranchs creeping in open water where branches had not grown back yet: a slug is drawn only on branch that is there.
 - The weather card's strip (the next twenty minutes as marks and labels, its busiest part) folds away by a tap on the water's name (▾/▸, remembered per browser, a keyboard button too); folded, the Soon line lists everything coming again (Twilight on desktop: 130 → 94 px).
+- The dead fish falling as a feast had six identical arcs across it for ribs (a row of brackets): its spine and the ribs sweeping back from it, longer at the belly and shorter toward the tail, a limp dorsal fin, the gill line and a slack jaw.

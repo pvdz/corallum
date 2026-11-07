@@ -177,16 +177,35 @@ function drawFish(ctx: CanvasRenderingContext2D, s: number): void {
   ctx.lineTo(-L * 1.15, H * 0.9);
   ctx.closePath();
   ctx.fill();
-  // Where the scavengers have been: ribs through the skin.
-  ctx.strokeStyle = 'rgba(120,90,90,0.55)';
-  ctx.lineWidth = 1.2 * s;
-  for (let k = 0; k < 6; k++) {
-    const rx = L * (0.35 - k * 0.14);
-    ctx.beginPath();
-    ctx.moveTo(rx, -H * 0.7);
-    ctx.quadraticCurveTo(rx - 3 * s, 0, rx, H * 0.7);
-    ctx.stroke();
+  // A limp dorsal fin.
+  ctx.fillStyle = 'rgba(205,192,178,0.7)';
+  ctx.beginPath();
+  ctx.moveTo(L * 0.2, -H * 0.95);
+  ctx.quadraticCurveTo(-L * 0.1, -H * 1.5, -L * 0.45, -H * 0.75);
+  ctx.lineTo(-L * 0.35, -H * 0.62);
+  ctx.closePath();
+  ctx.fill();
+  // Where the scavengers have been: the spine and its ribs showing through the skin, the ribs
+  // sweeping back from it, longer at the belly, shorter toward the tail.
+  ctx.strokeStyle = 'rgba(120,90,90,0.5)';
+  ctx.lineWidth = 1 * s;
+  ctx.beginPath();
+  ctx.moveTo(L * 0.42, -H * 0.05);
+  ctx.quadraticCurveTo(0, -H * 0.12, -L * 0.7, 0);
+  for (let k = 0; k < 7; k++) {
+    const f = k / 6, rx = L * (0.36 - f * 0.9), sy = -H * 0.08 * (1 - f);
+    const up = H * (0.55 - f * 0.25), dn = H * (0.7 - f * 0.35);
+    ctx.moveTo(rx, sy);
+    ctx.quadraticCurveTo(rx - 1.5 * s, sy - up * 0.6, rx - 3.5 * s, sy - up);
+    ctx.moveTo(rx, sy);
+    ctx.quadraticCurveTo(rx - 1.5 * s, sy + dn * 0.6, rx - 4 * s, sy + dn);
   }
+  // The gill line, and the jaw hanging slack.
+  ctx.moveTo(L * 0.5, -H * 0.6);
+  ctx.quadraticCurveTo(L * 0.42, 0, L * 0.5, H * 0.6);
+  ctx.moveTo(L * 0.98, 0.5 * s);
+  ctx.lineTo(L * 0.82, H * 0.32);
+  ctx.stroke();
   ctx.fillStyle = 'rgba(200,210,220,0.9)';
   ctx.beginPath();
   ctx.arc(L * 0.62, -H * 0.15, 2.6 * s, 0, Math.PI * 2);
