@@ -1837,7 +1837,21 @@ export function createBreachScene(seed: number): Scene {
         const kind = GARDEN.kinds.find((x) => x.id === v.gardenKinds[k]);
         // The garden matures over the hours after the release: each child up to twice its first size.
         const grown = 1 + Math.min(1, Math.max(0, v.sinceBreach - 300 * k) / 7200);
-        drawColony(ctx, gx, waterY() + (70 + (k % 4) * 14) * scale(), scale() * (0.8 + (k % 3) * 0.15) * grown, t,
+        const gy = waterY() + (70 + (k % 4) * 14) * scale(), gs = scale() * (0.8 + (k % 3) * 0.15) * grown;
+        // Each takes hold on a lump of old rubble from the reef's own flank.
+        ctx.fillStyle = 'rgba(64,58,74,0.85)';
+        ctx.beginPath();
+        ctx.moveTo(gx - 14 * gs, gy + 1 * gs);
+        ctx.quadraticCurveTo(gx - 12 * gs, gy - 5 * gs, gx - 3 * gs, gy - 4 * gs);
+        ctx.quadraticCurveTo(gx + 6 * gs, gy - 6.5 * gs, gx + 13 * gs, gy - 1 * gs);
+        ctx.quadraticCurveTo(gx + 15 * gs, gy + 4 * gs, gx + 6 * gs, gy + 5 * gs);
+        ctx.quadraticCurveTo(gx - 6 * gs, gy + 6 * gs, gx - 14 * gs, gy + 1 * gs);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(120,112,130,0.4)';
+        ctx.beginPath();
+        ctx.ellipse(gx - 2 * gs, gy - 3.6 * gs, 7 * gs, 1.4 * gs, -0.1, 0, Math.PI * 2);
+        ctx.fill();
+        drawColony(ctx, gx, gy - 3 * gs, gs, t,
           kind?.colours ?? { branch: '#b0607a', tip: '#e8a0b8', polyp: 'rgba(255,225,235,0.95)' }, seed + k * 131);
       }
       drawTop(ctx, v, reef.crown(L));
