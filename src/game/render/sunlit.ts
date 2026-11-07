@@ -2,6 +2,7 @@
 // sand, young reefs of every shape, bright reef fish, drifting larvae. The reef's own shape
 // follows its Form dialect: a fan until it chooses, then antlers, a dome, or stacked tables.
 
+import { drawParrotfish } from './rasp.ts';
 import { createSlugs } from './slugs.ts';
 import { drawSong } from './song.ts';
 import { drawThorn } from './thorn.ts';
@@ -413,24 +414,11 @@ export function createSunlitScene(seed: number): Scene {
       const dir = k % 2 ? -1 : 1;
       const breathe = 1 + 0.03 * Math.sin(t * 0.8 + k);
       spot('rasp', x, y, 18 * s);
-      // The fish, dim and still.
+      // The fish, dim and still, its tail barely moving.
       ctx.save();
       ctx.translate(x, y);
       ctx.scale(dir, 1);
-      ctx.fillStyle = `hsl(${170 + k * 12},30%,30%)`;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 9 * s, 4 * s, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.moveTo(-8 * s, 0);
-      ctx.lineTo(-13 * s, -3.5 * s);
-      ctx.lineTo(-13 * s, 3.5 * s);
-      ctx.closePath();
-      ctx.fill();
-      ctx.fillStyle = '#d8d2c0';
-      ctx.beginPath();
-      ctx.ellipse(8.5 * s, 0.5 * s, 2 * s, 1.4 * s, 0, 0, Math.PI * 2);
-      ctx.fill();
+      drawParrotfish(ctx, 9 * s, 170 + k * 12, Math.sin(t * 0.3 + k) * 0.6, s * 0.6);
       ctx.restore();
       // The cocoon: a clear bubble with a bright rim and one highlight.
       const R = 15 * s * breathe;
