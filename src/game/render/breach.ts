@@ -846,13 +846,12 @@ export function createBreachScene(seed: number): Scene {
   }
 
   /** Spawn: ripening dots on the reef before; a rising, spreading column after the release. */
-  let dbgN: number | undefined;
   function drawSpawn(ctx: CanvasRenderingContext2D, t: number, v: ReefView, L: ReefLayout, reef: Reef): void {
     const s = scale();
     // Sweetened spawn goes golden: pink toward amber with each level.
     const g = Math.min(1, v.sweeten / 6);
     const bundle = `255,${Math.round(150 + 60 * g)},${Math.round(200 - 90 * g)}`;
-    const wy = waterY(); if ((dbgN = (dbgN ?? 0) + 1) < 4) console.error("SPAWN", v.spawnLevel, v.sinceBreach);
+    const wy = waterY();
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     // Other reefs, far off, spawning on full-moon nights.
@@ -970,7 +969,7 @@ export function createBreachScene(seed: number): Scene {
     } else if (v.spawnLevel > 0) {
       // The reef sets: pink bundles swelling in the mouths along the branches, more and fuller as
       // the spawn ripens, each breathing slowly; beads like the released ones, a soft light under each.
-      const ripe = Math.min(1, v.spawnLevel); if (dbgN! < 4) console.error("RIPE", v.spawnLevel, wy, reef.coral.count);
+      const ripe = Math.min(1, v.spawnLevel);
       const coral = reef.coral;
       const n = Math.round(30 + 150 * ripe);
       const beads: Path2D[] = Array.from({ length: BEAD_SHADES }, () => new Path2D());
@@ -982,7 +981,7 @@ export function createBreachScene(seed: number): Scene {
         const b = bundles[i % bundles.length]!;
         const x = x0 + b.drift * 3 * s, y = y0 - 1.5 * s;
         const breathe = 0.85 + 0.15 * Math.sin(t * 1.3 + i * 1.7);
-        const r = Math.max((1.1 + 1.4 * ripe) * s * b.size * breathe, 0.9 * dpr);
+        const r = Math.max((1.5 + 1.9 * ripe) * s * b.size * breathe, 1.1 * dpr);
         glow(ctx, x, y, r * 4, bundle, 0.22 * (0.4 + 0.6 * ripe) * breathe);
         const p = beads[i % BEAD_SHADES]!;
         p.moveTo(x + r, y);
@@ -991,8 +990,12 @@ export function createBreachScene(seed: number): Scene {
         shine.arc(x - r * 0.3, y - r * 0.3, r * 0.35, 0, Math.PI * 2);
       }
       ctx.globalCompositeOperation = 'source-over';
+      // A thin dark rim: the beads read against a branch of their own colour.
+      ctx.strokeStyle = 'rgba(70,16,40,0.55)';
+      ctx.lineWidth = Math.max(1, 0.7 * s);
       for (let k = 0; k < BEAD_SHADES; k++) {
-        ctx.fillStyle = `rgba(${beadShade(k, g)},${(0.55 + 0.35 * ripe).toFixed(3)})`;
+        ctx.stroke(beads[k]!);
+        ctx.fillStyle = `rgba(${beadShade(k, g)},${(0.7 + 0.3 * ripe).toFixed(3)})`;
         ctx.fill(beads[k]!);
       }
       ctx.fillStyle = `rgba(255,236,240,${(0.5 * ripe).toFixed(3)})`;
