@@ -1099,17 +1099,37 @@ export function createLife(seed: number) {
     const touch = startled('vent-shrimp', t);
     const scatter = touch && touch.age < 6 ? (touch.age < 0.4 ? touch.age / 0.4 : Math.max(0, 1 - (touch.age - 0.4) / 5.6)) : 0;
     ctx.save();
+    // Each a small pale shrimp: a carapace, the tail curled under it ending in a fan, two feelers.
+    // The whole swarm in one fill and one stroke.
+    const bodies = new Path2D(), feelers = new Path2D();
     for (let i = 0; i < 18 + tier * 8; i++) {
       const h = ((i * 0.37) % 1) * 0.45, side = i % 2 ? 1 : -1;
       const hx = x + side * (9 - h * 6) * s + Math.sin(t * 1.3 + i) * 1.5 * s;
       const hy = top + hgt * (0.06 + h) + Math.sin(t * 0.9 + i * 1.7) * 2 * s;
       const away = scatter * (16 + (i % 5) * 6) * s;
       const px = hx + side * away, py = hy - away * 0.6;
-      ctx.fillStyle = 'rgba(235,225,215,0.85)';
-      ctx.beginPath();
-      ctx.ellipse(px, py, 3 * s, 1.3 * s, side * 0.8 + Math.sin(t * 3 + i) * 0.2, 0, Math.PI * 2);
-      ctx.fill();
+      const a = side * 0.8 + Math.sin(t * 3 + i) * 0.2 + (side < 0 ? Math.PI : 0);
+      const ca = Math.cos(a), sa = Math.sin(a);
+      // A point u along the shrimp (head +u), v across it (belly +v), on the page.
+      const X = (u: number, v: number) => px + (u * ca - v * sa * side) * s, Y = (u: number, v: number) => py + (u * sa + v * ca * side) * s;
+      bodies.moveTo(X(2.8, 0), Y(2.8, 0));
+      bodies.ellipse(X(0.9, 0), Y(0.9, 0), 1.9 * s, 1.15 * s, a, 0, Math.PI * 2);
+      bodies.moveTo(X(-0.6, -0.8), Y(-0.6, -0.8));
+      bodies.quadraticCurveTo(X(-3.4, -0.6), Y(-3.4, -0.6), X(-3.2, 1.2), Y(-3.2, 1.2));
+      bodies.lineTo(X(-4.2, 2.2), Y(-4.2, 2.2));
+      bodies.lineTo(X(-2.4, 2.4), Y(-2.4, 2.4));
+      bodies.quadraticCurveTo(X(-2, 0.8), Y(-2, 0.8), X(-0.4, 0.9), Y(-0.4, 0.9));
+      bodies.closePath();
+      feelers.moveTo(X(2.6, -0.2), Y(2.6, -0.2));
+      feelers.quadraticCurveTo(X(4.6, -1.6), Y(4.6, -1.6), X(6, -0.6), Y(6, -0.6));
+      feelers.moveTo(X(2.6, 0.2), Y(2.6, 0.2));
+      feelers.quadraticCurveTo(X(4.4, 1.4), Y(4.4, 1.4), X(5.6, 2), Y(5.6, 2));
     }
+    ctx.fillStyle = 'rgba(235,225,215,0.85)';
+    ctx.fill(bodies);
+    ctx.strokeStyle = 'rgba(235,225,215,0.45)';
+    ctx.lineWidth = 0.4 * s;
+    ctx.stroke(feelers);
     ctx.restore();
   }
 
