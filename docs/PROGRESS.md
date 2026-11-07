@@ -1132,3 +1132,5 @@ date, what landed, what is half-done, what's next.
 - Coral gobies (a resident) were a pale oval with a triangle: a slim see-through body with a blunt head, a rounded tail, a little sail of a dorsal fin, a line along the side and a big eye set high.
 - Clownfish were an orange oval with two white bars: three white bands edged in black, curved to the body, black-edged rounded fins and tail, and an eye with a pale rim.
 - Session 2026-11-07 (six hours, from 11:55). Real-time play from a fresh reef (desktop + phone, 8 min) and from the Midnight Water and Twilight: a finished card (Lure patterns 6/6, a built work, a maxed trait) kept the `ready` class it had when last affordable, so it stayed boxed as buyable in the Finished list. Finished cards drop it.
+- Phones: the weather card kept room for a second "Soon" line with one thing coming (an empty band under it on a fresh reef, 68 → 52 px).
+- The Breach's rain fell as one rigid sheet (160 streaks of one length, speed and brightness sliding together): three depths of drops, each at its own speed along the wind's slant and landing somewhere new each time, far ones short and faint, near ones longer and brighter.
