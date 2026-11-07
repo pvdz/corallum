@@ -1844,6 +1844,17 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           renderChips();
         });
         sec.append(later);
+        // Folded, its kicker is a button for the keyboard too.
+        const kick = sec.querySelector<HTMLElement>('.truce-kicker');
+        kick?.addEventListener('keydown', (e) => {
+          if ((e.key === 'Enter' || e.key === ' ') && sec.classList.contains('later') && keyed(kick)) {
+            e.preventDefault();
+            e.stopPropagation();
+            sec.classList.remove('later'); delete sec.dataset.auto; openChoice = picked = sec;
+            renderChips();
+            sec.querySelector<HTMLElement>('button:not(.later-btn):not([hidden])')?.focus();
+          }
+        });
         // A tap on a folded choice opens it (and takes the tap); a lamp pressed by key opens it and goes through.
         sec.addEventListener('click', (e) => {
           if (!sec.classList.contains('later') || e.target === later) return;
@@ -1883,6 +1894,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   /** Chips to jump to the open choices; a choice folded for later is a row right there, no chip. */
   function renderChips(): void {
     settleChoices();
+    for (const sec of grow.querySelectorAll<HTMLElement>(':scope > section.moment')) {
+      const kick = sec.querySelector<HTMLElement>('.truce-kicker');
+      if (!kick || !sec.querySelector(':scope > .later-btn')) continue;
+      const folded = sec.classList.contains('later');
+      if (folded) { kick.tabIndex = 0; kick.setAttribute('role', 'button'); kick.setAttribute('aria-expanded', 'false'); }
+      else if (kick.hasAttribute('role')) { kick.removeAttribute('tabindex'); kick.removeAttribute('role'); kick.removeAttribute('aria-expanded'); }
+    }
     const open = [...grow.querySelectorAll<HTMLElement>(':scope > section:not([hidden]):not(.later)')]
       .map((sec) => ({ sec, label: sec.querySelector('.truce-kicker')?.textContent ?? '' }))
       .filter((x) => x.label);
