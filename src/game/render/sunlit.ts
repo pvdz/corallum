@@ -978,60 +978,93 @@ export function createSunlitScene(seed: number): Scene {
     spot('cuttlefish', x, y, 22 * s);
     ctx.save();
     ctx.translate(x, y);
-    // Arms forward (to the right), mantle behind.
-    ctx.strokeStyle = 'rgba(190,140,120,0.9)';
-    ctx.lineWidth = 1.6 * s;
-    for (let a = 0; a < 5; a++) {
-      ctx.beginPath();
-      ctx.moveTo(10 * s, (a - 2) * 1.2 * s);
-      ctx.quadraticCurveTo(16 * s, (a - 2) * 2 * s + Math.sin(t * 2 + a) * 1.5 * s, 21 * s, (a - 2) * 2.6 * s);
-      ctx.stroke();
+    // Arms forward (to the right): a tapering bundle with a few loose tips feeling ahead.
+    ctx.fillStyle = 'rgba(184,124,96,0.95)';
+    ctx.beginPath();
+    ctx.moveTo(12 * s, -3.4 * s);
+    ctx.quadraticCurveTo(18 * s, -2 * s + Math.sin(t * 2) * 0.6 * s, 23 * s, Math.sin(t * 2.3) * 0.8 * s);
+    ctx.quadraticCurveTo(18 * s, 2 * s + Math.sin(t * 2) * 0.6 * s, 12 * s, 3.4 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(200,146,118,0.9)';
+    ctx.lineWidth = 0.9 * s;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    for (let a = 0; a < 3; a++) {
+      const yy = (a - 1) * 1.6 * s;
+      ctx.moveTo(17 * s, yy);
+      ctx.quadraticCurveTo(21 * s, yy * 1.6 + Math.sin(t * 2 + a) * 1.2 * s, 25 * s, yy * 2.2 + Math.sin(t * 2.4 + a) * 1.4 * s);
     }
-    // The fin: a rippling skirt all round the mantle.
-    // Body-coloured and nearly opaque (a pale wash of it read as an aura in the blue), with a
-    // light rippling edge.
+    ctx.stroke();
+    // The mantle: a shield, broad behind the head and tapering to a rounded tail, inside the fin.
+    const mantle = (c: CanvasRenderingContext2D) => {
+      c.beginPath();
+      c.moveTo(8 * s, -5.6 * s);
+      c.bezierCurveTo(0, -7.2 * s, -12 * s, -5.6 * s, -15.5 * s, -1.6 * s);
+      c.quadraticCurveTo(-17 * s, 0, -15.5 * s, 1.6 * s);
+      c.bezierCurveTo(-12 * s, 5.6 * s, 0, 7.2 * s, 8 * s, 5.6 * s);
+      c.quadraticCurveTo(10 * s, 0, 8 * s, -5.6 * s);
+      c.closePath();
+    };
+    // The fin: a rippling skirt all round the mantle, body-coloured, with a light edge.
     ctx.fillStyle = 'rgba(196,132,100,0.9)';
     ctx.beginPath();
-    for (let i = 0; i <= 24; i++) {
-      const th = (i / 24) * Math.PI * 2;
+    for (let i = 0; i <= 32; i++) {
+      const th = (i / 32) * Math.PI * 2;
       const r = 1 + 0.06 * Math.sin(th * 8 + t * 6);
-      ctx.lineTo(Math.cos(th) * 15 * s * r - 2 * s, Math.sin(th) * 8.5 * s * r);
+      const px = Math.cos(th) * 13.6 * s * r - 4 * s, py = Math.sin(th) * 8.6 * s * r * (1 - 0.18 * Math.max(0, -Math.cos(th)));
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
     }
     ctx.closePath();
     ctx.fill();
     ctx.strokeStyle = 'rgba(250,226,200,0.6)';
     ctx.lineWidth = Math.max(0.8, 0.7 * s);
     ctx.stroke();
-    // The mantle, with bands of colour running down it.
-    ctx.save();
-    ctx.beginPath();
-    ctx.ellipse(-2 * s, 0, 13 * s, 6.5 * s, 0, 0, Math.PI * 2);
-    ctx.clip();
     ctx.fillStyle = '#b07a5a';
-    ctx.fillRect(-16 * s, -8 * s, 30 * s, 16 * s);
-    for (let b = 0; b < 7; b++) {
-      const bx = -16 * s + (((t * 9 + b * 5) % 30) * s);
-      ctx.fillStyle = `rgba(${b % 2 ? '90,40,30' : '230,170,120'},0.55)`;
-      ctx.fillRect(bx, -8 * s, 2.5 * s, 16 * s);
+    mantle(ctx);
+    ctx.fill();
+    // Passing clouds: soft bands of dark and light rolling down the mantle, and pale mottling.
+    ctx.save();
+    mantle(ctx);
+    ctx.clip();
+    ctx.lineWidth = 2.6 * s;
+    for (let b = 0; b < 6; b++) {
+      const bx = 9 * s - (((t * 9 + b * 5) % 30) * s);
+      ctx.strokeStyle = `rgba(${b % 2 ? '90,40,30' : '232,176,128'},0.4)`;
+      ctx.beginPath();
+      ctx.moveTo(bx + 1.6 * s, -7.5 * s);
+      ctx.quadraticCurveTo(bx - 1.6 * s, 0, bx + 1.6 * s, 7.5 * s);
+      ctx.stroke();
     }
+    ctx.fillStyle = 'rgba(245,214,180,0.35)';
+    ctx.beginPath();
+    for (const [mx, my, mr] of [[-8, -2.6, 1.2], [-3, 2.8, 1], [2, -3.4, 0.9], [-11, 1.6, 0.8], [4, 1.4, 0.7]] as const) {
+      ctx.moveTo((mx + mr) * s, my * s);
+      ctx.ellipse(mx * s, my * s, mr * s, mr * 0.7 * s, 0, 0, Math.PI * 2);
+    }
+    ctx.fill();
     if (flash > 0) {
       ctx.fillStyle = `rgba(255,255,250,${0.9 * flash})`;
-      ctx.fillRect(-16 * s, -8 * s, 30 * s, 16 * s);
+      ctx.fillRect(-18 * s, -8 * s, 30 * s, 16 * s);
     }
     ctx.restore();
-    // The eye, with its W-shaped pupil.
-    ctx.fillStyle = '#f2e6c8';
+    // The head, a little narrower than the mantle's front, and its eye with the W-shaped pupil.
+    ctx.fillStyle = '#b8805e';
     ctx.beginPath();
-    ctx.arc(7 * s, -2 * s, 2.2 * s, 0, Math.PI * 2);
+    ctx.ellipse(10.5 * s, 0, 3.8 * s, 4.2 * s, 0, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = '#2a1a10';
-    ctx.lineWidth = 0.7 * s;
+    ctx.fillStyle = '#d6aa62';
     ctx.beginPath();
-    ctx.moveTo(5.8 * s, -2.6 * s);
-    ctx.lineTo(6.5 * s, -1.4 * s);
-    ctx.lineTo(7 * s, -2.2 * s);
-    ctx.lineTo(7.5 * s, -1.4 * s);
-    ctx.lineTo(8.2 * s, -2.6 * s);
+    ctx.arc(10.5 * s, -1.6 * s, 2.1 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#1e1208';
+    ctx.lineWidth = 0.9 * s;
+    ctx.beginPath();
+    ctx.moveTo(9.3 * s, -2.2 * s);
+    ctx.lineTo(10 * s, -1.0 * s);
+    ctx.lineTo(10.5 * s, -1.8 * s);
+    ctx.lineTo(11 * s, -1.0 * s);
+    ctx.lineTo(11.7 * s, -2.2 * s);
     ctx.stroke();
     // Startled: a puff of ink where it was.
     if (touch && touch.age < 4) {
