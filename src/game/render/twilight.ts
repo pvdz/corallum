@@ -8,7 +8,7 @@ import { createSlugs } from './slugs.ts';
 import { drawGhosts } from './ghosts.ts';
 import { drawSisterFar } from './sister.ts';
 import { drawThorn } from './thorn.ts';
-import { drawBreakwater, drawLawn } from './works.ts';
+import { drawBreakwater, drawLawn, drawStones, type Stone } from './works.ts';
 import { drawRelics } from './relics.ts';
 import { drawResidents } from './residents.ts';
 import { sight, speaking, spot, startled } from './sightings.ts';
@@ -132,13 +132,14 @@ export function createTwilightScene(seed: number): Scene {
     ctx.lineTo(x(0.86), slopeY(0.86) + 10 * s);
     ctx.closePath();
     ctx.fill();
+    // The rubble: broken stones of every size tumbled down the fan, the bigger ones further down.
+    const rubble: Stone[] = [];
     for (let i = 0; i < 26; i++) {
-      const u = 0.74 + r() * 0.22;
-      ctx.fillStyle = `rgba(${150 + Math.floor(r() * 40)},${150 + Math.floor(r() * 40)},${165 + Math.floor(r() * 40)},0.7)`;
-      ctx.beginPath();
-      ctx.ellipse(x(u), slopeY(u) - r() * 6 * s, (2 + r() * 4) * s, (1.5 + r() * 2.5) * s, r() * 3, 0, Math.PI * 2);
-      ctx.fill();
+      const u = 0.74 + r() * 0.22, lift = r() * 6 * s, rx = (2 + r() * 4) * s;
+      rubble.push({ x: x(u), y: slopeY(u) - lift + rx * 0.6, rx, ry: rx * (0.55 + r() * 0.25), seed: i * 1.3 });
     }
+    rubble.sort((p, q) => p.y - q.y);
+    drawStones(ctx, rubble, 'rgba(150,154,170,0.75)', 'rgba(230,235,250,0.22)', 'rgba(30,34,50,0.5)', s);
     if (channel) {
       ctx.strokeStyle = 'rgba(40,50,80,0.5)';
       ctx.lineWidth = 3 * s;

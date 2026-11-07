@@ -18,20 +18,23 @@ export function drawGhosts(ctx: CanvasRenderingContext2D, F: Focus, heights: rea
     const tall = F.h * range(r, 0.4, 0.6);
     ctx.globalAlpha = 0.1 + 0.025 * Math.sin(t * 0.2 + k);
     ctx.strokeStyle = tint;
-    // A few branches rising and forking, drawn thin and pale.
+    // A few branches rising and forking, drawn thin and pale: one path a thickness, so the faint
+    // strokes do not brighten into knots where they meet.
+    const depths = [new Path2D(), new Path2D(), new Path2D(), new Path2D()];
     const branch = (bx: number, by: number, a: number, len: number, depth: number) => {
       const ex = bx + Math.cos(a) * len, ey = by + Math.sin(a) * len;
-      ctx.lineWidth = (12 - depth * 3) * s;
-      ctx.beginPath();
-      ctx.moveTo(bx, by);
-      ctx.lineTo(ex, ey);
-      ctx.stroke();
+      depths[depth]!.moveTo(bx, by);
+      depths[depth]!.lineTo(ex, ey);
       if (depth < 3) {
         branch(ex, ey, a - range(r, 0.25, 0.5), len * 0.7, depth + 1);
         branch(ex, ey, a + range(r, 0.25, 0.5), len * 0.7, depth + 1);
       }
     };
     branch(x, base, -Math.PI / 2 + range(r, -0.1, 0.1), tall * 0.26, 0);
+    depths.forEach((p, depth) => {
+      ctx.lineWidth = (12 - depth * 3) * s;
+      ctx.stroke(p);
+    });
   });
   ctx.restore();
 }

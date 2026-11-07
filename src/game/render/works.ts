@@ -6,13 +6,13 @@ import { glow, softRing } from './draw.ts';
 import type { Focus } from './scene.ts';
 
 /** One stone in a laid course: where it sits (its base centre), its half-width and height, a seed for its shape. */
-type Stone = { x: number; y: number; rx: number; ry: number; seed: number };
+export type Stone = { x: number; y: number; rx: number; ry: number; seed: number };
 
 /**
  * Laid stones, all in one batch: each a rounded lump with a flatter base, dark round the batch's
  * outer edge, a paler cap where the light falls on top. A later batch sits in front of an earlier one.
  */
-function drawStones(ctx: CanvasRenderingContext2D, list: readonly Stone[], body: string, cap: string, joint: string, s: number): void {
+export function drawStones(ctx: CanvasRenderingContext2D, list: readonly Stone[], body: string, cap: string, joint: string, s: number): void {
   if (!list.length) return;
   const outline = new Path2D(), caps = new Path2D();
   for (const st of list) {
@@ -159,8 +159,21 @@ export function drawDome(ctx: CanvasRenderingContext2D, F: Focus, stage: number,
       ctx.arc(x, floorY, r, Math.min(a0, a1), Math.max(a0, a1));
       ctx.stroke();
     }
-    // Ribs across the shell.
-    ctx.lineWidth = 2 * s;
+    // Built whole, the shell between the ribs: thin pale stone the light shows through, brighter
+    // toward the top where it is thinnest.
+    if (arc >= 1) {
+      const shell = ctx.createRadialGradient(x - r * 0.25, floorY - r * 0.75, 0, x, floorY, r);
+      shell.addColorStop(0, 'rgba(150,170,230,0.22)');
+      shell.addColorStop(1, 'rgba(60,72,120,0.12)');
+      ctx.fillStyle = shell;
+      ctx.beginPath();
+      ctx.arc(x, floorY, r, Math.PI, 0);
+      ctx.closePath();
+      ctx.fill();
+    }
+    // Fine ribs across the shell.
+    ctx.strokeStyle = 'rgba(150,170,230,0.3)';
+    ctx.lineWidth = 1.2 * s;
     for (let k = 1; k < 4; k++) {
       ctx.beginPath();
       ctx.ellipse(x, floorY, r * (k / 4), r * arc, 0, Math.PI, 0);
@@ -399,14 +412,54 @@ export function drawBeacon(ctx: CanvasRenderingContext2D, x: number, waterY: num
   if (stage <= 0) return;
   const hgt = [0, 18, 45, 70][stage]! * s;
   ctx.save();
-  ctx.fillStyle = '#2a2c3e';
+  // A tapering stack of rough stone courses, each a little out of line with the next, lit down one
+  // side by the sky, a cup of stone at the top for the light.
+  const course = 5 * s, n = Math.max(2, Math.round((hgt + 4 * s) / course));
+  const half = (k: number) => 7 * s - (4.5 * s * k) / n;
+  const tower = new Path2D();
+  tower.moveTo(x - half(0), waterY + 4 * s);
+  for (let k = 0; k < n; k++) {
+    const y0 = waterY + 4 * s - k * course, jog = Math.sin(k * 2.3) * 0.6 * s;
+    tower.lineTo(x - half(k) + jog, y0 - course);
+  }
+  for (let k = n - 1; k >= 0; k--) {
+    const y0 = waterY + 4 * s - k * course, jog = Math.cos(k * 1.7) * 0.6 * s;
+    tower.lineTo(x + half(k) + jog, y0 - course);
+    tower.lineTo(x + half(k) + jog, y0);
+  }
+  tower.closePath();
+  const g = ctx.createLinearGradient(x - 7 * s, 0, x + 7 * s, 0);
+  g.addColorStop(0, '#46485e');
+  g.addColorStop(0.45, '#30324a');
+  g.addColorStop(1, '#1e2032');
+  ctx.fillStyle = g;
+  ctx.fill(tower);
+  ctx.save();
+  ctx.clip(tower);
+  ctx.strokeStyle = 'rgba(10,12,24,0.55)';
+  ctx.lineWidth = Math.max(1, 0.6 * s);
   ctx.beginPath();
-  ctx.moveTo(x - 7 * s, waterY + 4 * s);
-  ctx.lineTo(x - 2.5 * s, waterY - hgt);
-  ctx.lineTo(x + 2.5 * s, waterY - hgt);
-  ctx.lineTo(x + 7 * s, waterY + 4 * s);
-  ctx.closePath();
-  ctx.fill();
+  for (let k = 1; k < n; k++) {
+    const y0 = waterY + 4 * s - k * course;
+    ctx.moveTo(x - 8 * s, y0);
+    ctx.lineTo(x + 8 * s, y0);
+    const jx = x + (k % 2 ? -0.3 : 0.35) * half(k);
+    ctx.moveTo(jx, y0);
+    ctx.lineTo(jx, y0 - course);
+  }
+  ctx.stroke();
+  ctx.restore();
+  if (stage >= 3) {
+    // The cup at the top, a flared lip of stone.
+    ctx.fillStyle = '#3a3c54';
+    ctx.beginPath();
+    ctx.moveTo(x - 2.4 * s, waterY - hgt + 1 * s);
+    ctx.lineTo(x - 4 * s, waterY - hgt - 2.5 * s);
+    ctx.lineTo(x + 4 * s, waterY - hgt - 2.5 * s);
+    ctx.lineTo(x + 2.4 * s, waterY - hgt + 1 * s);
+    ctx.closePath();
+    ctx.fill();
+  }
   if (stage >= 3) {
     ctx.globalCompositeOperation = 'lighter';
     const pulse = 0.7 + 0.3 * Math.sin(t * 1.4);

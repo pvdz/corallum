@@ -351,31 +351,68 @@ export function createBreachScene(seed: number): Scene {
     const sag = touch && touch.age < 3 ? Math.sin(Math.min(1, touch.age / 3) * Math.PI) : 0;
     spot('man-o-war', x, y, 26 * s);
     ctx.save();
-    // Tentacles below the surface, long and blue, swaying.
+    // Tentacles below the surface, long and blue, swaying, beaded with batteries of stinging cells.
+    const beads = new Path2D();
     ctx.strokeStyle = 'rgba(110,140,255,0.45)';
     ctx.lineWidth = 0.8 * s;
+    ctx.beginPath();
     for (let k = 0; k < 7; k++) {
-      ctx.beginPath();
-      ctx.moveTo(x - 6 * s + k * 2 * s, wy + 2 * s);
-      ctx.quadraticCurveTo(x - 6 * s + k * 2 * s + Math.sin(t * 0.9 + k) * 10 * s, wy + 30 * s, x - 8 * s + k * 2.5 * s + Math.sin(t * 0.7 + k * 2) * 14 * s, wy + (50 + k * 6) * s);
-      ctx.stroke();
+      const x0 = x - 6 * s + k * 2 * s, y0 = wy + 3 * s;
+      const cx = x0 + Math.sin(t * 0.9 + k) * 10 * s, cy = wy + 30 * s;
+      const ex = x - 8 * s + k * 2.5 * s + Math.sin(t * 0.7 + k * 2) * 14 * s, ey = wy + (50 + k * 6) * s;
+      ctx.moveTo(x0, y0);
+      ctx.quadraticCurveTo(cx, cy, ex, ey);
+      for (let q = 0.2; q < 1; q += 0.12) {
+        const v = 1 - q, bx = v * v * x0 + 2 * v * q * cx + q * q * ex, by = v * v * y0 + 2 * v * q * cy + q * q * ey;
+        const br = (0.9 - q * 0.4) * s;
+        beads.moveTo(bx + br, by);
+        beads.arc(bx, by, br, 0, Math.PI * 2);
+      }
     }
-    // The float.
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(130,160,255,0.55)';
+    ctx.fill(beads);
+    // Under the float, the dense tufts of feeding polyps, deep blue.
+    ctx.fillStyle = 'rgba(70,90,220,0.8)';
+    ctx.beginPath();
+    for (let k = 0; k < 9; k++) {
+      const px = x - 7 * s + k * 1.7 * s, py = wy + 2.5 * s + (k % 2) * 1 * s, sw = Math.sin(t * 1.3 + k) * 0.8 * s;
+      ctx.moveTo(px + 1 * s, py);
+      ctx.ellipse(px + sw * 0.5, py + 1.2 * s, 1 * s, 2 * s, sw * 0.1, 0, Math.PI * 2);
+    }
+    ctx.fill();
+    // The float: a lopsided bladder, pointed at the back and blunt at the front, clear blue-violet
+    // with a pink blush, lit along its top.
     const g = ctx.createLinearGradient(x, y - 8 * s, x, y + 3 * s);
-    g.addColorStop(0, 'rgba(200,170,255,0.9)');
-    g.addColorStop(1, 'rgba(90,120,240,0.85)');
+    g.addColorStop(0, 'rgba(210,180,255,0.85)');
+    g.addColorStop(1, 'rgba(90,120,240,0.8)');
     ctx.fillStyle = g;
     ctx.beginPath();
-    ctx.ellipse(x, y, 11 * s, 4.5 * s, -0.1, 0, Math.PI * 2);
+    ctx.moveTo(x - 12 * s, y + 0.5 * s);
+    ctx.quadraticCurveTo(x - 9 * s, y - 4.5 * s, x - 1 * s, y - 4.6 * s);
+    ctx.quadraticCurveTo(x + 9 * s, y - 4.8 * s, x + 11 * s, y - 0.5 * s);
+    ctx.quadraticCurveTo(x + 11 * s, y + 3.6 * s, x + 2 * s, y + 3.8 * s);
+    ctx.quadraticCurveTo(x - 7 * s, y + 3.8 * s, x - 12 * s, y + 0.5 * s);
     ctx.fill();
-    // The crest, a frilled sail along the top.
-    ctx.fillStyle = 'rgba(240,150,230,0.85)';
+    ctx.fillStyle = 'rgba(255,240,255,0.35)';
     ctx.beginPath();
-    ctx.moveTo(x - 8 * s, y - 2 * s);
-    for (let k = 0; k <= 8; k++) ctx.lineTo(x - 8 * s + k * 2 * s, y - (6 + (k % 2) * 1.5) * s * (1 - 0.7 * sag) * Math.sin((k / 8) * Math.PI));
-    ctx.lineTo(x + 8 * s, y - 2 * s);
-    ctx.closePath();
+    ctx.ellipse(x + 2 * s, y - 2.8 * s, 6 * s, 1 * s, -0.05, 0, Math.PI * 2);
     ctx.fill();
+    // The crest, a ruffled sail along the top, its edge rolling in waves, magenta at the rim.
+    const crest = new Path2D();
+    crest.moveTo(x - 8 * s, y - 3 * s);
+    for (let k = 0; k < 8; k++) {
+      const f0 = k / 8, f1 = (k + 1) / 8;
+      const h0 = (6.5 + 1.2 * Math.sin(t * 2 + k)) * s * (1 - 0.7 * sag) * Math.sin(((f0 + f1) / 2) * Math.PI);
+      crest.quadraticCurveTo(x - 8 * s + (f0 + f1) * 8 * s, y - 3 * s - h0 - ((k % 2) * 1.2) * s, x - 8 * s + f1 * 16 * s, y - 3 * s - h0 * 0.8);
+    }
+    crest.lineTo(x + 8 * s, y - 3 * s);
+    crest.closePath();
+    ctx.fillStyle = 'rgba(240,150,230,0.8)';
+    ctx.fill(crest);
+    ctx.strokeStyle = 'rgba(220,80,200,0.75)';
+    ctx.lineWidth = 0.7 * s;
+    ctx.stroke(crest);
     ctx.restore();
   }
 
@@ -1376,23 +1413,42 @@ export function createBreachScene(seed: number): Scene {
     // Only the part above the water shows: a low bumpy crown, taller as the sister nears the air.
     const H = (4 + 22 * rise) * s;
     ctx.save();
-    ctx.fillStyle = `rgba(22,26,48,${0.4 + 0.4 * rise})`;
+    // A far reef's crown in silhouette: a low mound of stone and, out of it, a thicket of blunt
+    // branches forking once, the tallest in the middle; their tips glow once she is fully up.
+    const col = `rgba(22,26,48,${0.4 + 0.4 * rise})`;
+    ctx.fillStyle = col;
     ctx.beginPath();
     ctx.moveTo(x - 50 * s, y0);
-    const tips: [number, number][] = [];
-    for (let k = 0; k <= 10; k++) {
-      const u = k / 10;
-      const hk = H * Math.sin(u * Math.PI) ** 0.7 * (0.75 + 0.25 * Math.sin(k * 2.7));
-      const px = x - 50 * s + u * 100 * s, py = y0 - hk;
-      ctx.lineTo(px, py);
-      if (k % 2 === 1) tips.push([px, py]);
-    }
-    ctx.lineTo(x + 50 * s, y0);
+    ctx.quadraticCurveTo(x, y0 - H * 0.45, x + 50 * s, y0);
     ctx.closePath();
     ctx.fill();
+    ctx.strokeStyle = col;
+    ctx.lineCap = 'round';
+    const tips: [number, number][] = [];
+    ctx.beginPath();
+    for (let k = 0; k < 9; k++) {
+      const u = (k + 0.5) / 9;
+      const bx = x - 42 * s + u * 84 * s;
+      const hk = H * Math.sin(u * Math.PI) ** 0.6 * (0.7 + 0.3 * Math.sin(k * 2.7 + 1));
+      const lean = (u - 0.5) * 0.5 + Math.sin(k * 1.9) * 0.15;
+      const kx = bx + lean * hk * 0.5, ky = y0 - hk * 0.6;
+      ctx.moveTo(bx, y0);
+      ctx.lineTo(kx, ky);
+      // Some run on unforked; the others fork lopsided, one arm longer than the other.
+      const forks = k % 3 === 1 ? [0] : [-1, 1];
+      for (const fork of forks) {
+        const long = fork === (k % 2 ? 1 : -1) ? 1 : 0.55;
+        const ex = kx + (lean + fork * 0.3) * hk * 0.45 * long, ey = ky - hk * 0.42 * long;
+        ctx.moveTo(kx, ky);
+        ctx.lineTo(ex, ey);
+        tips.push([ex, ey]);
+      }
+    }
+    ctx.lineWidth = Math.max(1.5, (2 + 2.5 * rise) * s);
+    ctx.stroke();
     if (rise >= 1) {
       ctx.globalCompositeOperation = 'lighter';
-      for (const [k, [px, py]] of tips.entries()) glow(ctx, px, py, 6 * s, '255,210,230', 0.45 + 0.25 * Math.sin(t * 1.3 + k));
+      for (const [k, [px, py]] of tips.entries()) if (k % 2 === 0) glow(ctx, px, py, 6 * s, '255,210,230', 0.45 + 0.25 * Math.sin(t * 1.3 + k));
     }
     ctx.restore();
   }
@@ -1797,11 +1853,8 @@ export function createBreachScene(seed: number): Scene {
       drawWaitingFish(ctx, t, v, this.crownAt);
       drawDolphins(ctx, t);
       drawBreaching(ctx, t);
-      drawManOWar(ctx, t);
       drawFlyingFish(ctx, t);
       const sf: Surface = { focus, wy: waterY(), s: scale(), dpr, dawn };
-      drawSailors(ctx, t, sf);
-      drawPetrels(ctx, t, sf);
       drawBreathingTurtle(ctx, t, this.crownAt[0]);
       drawSeaSparkle(ctx, t, sf, this.crownAt[0]);
       if (v.sinceBreach >= 0) drawHatchlings(ctx, t, v.sinceBreach);
@@ -1822,14 +1875,41 @@ export function createBreachScene(seed: number): Scene {
         const side = k % 2 ? -1 : 1;
         const cx2 = L.cx + side * (190 + Math.floor(k / 2) * 110) * scale();
         const w2 = (60 + (k % 3) * 18) * scale(), h2 = (8 + (k % 2) * 4) * scale();
-        // Moonlit sand by night, warm by dawn.
-        ctx.fillStyle = dawn > 0.5 ? '#c9b48c' : '#5e5a66';
-        ctx.beginPath();
-        ctx.ellipse(cx2, waterY() + 2 * scale(), w2, h2, 0, Math.PI, 0);
-        ctx.fill();
-        ctx.fillStyle = 'rgba(200,210,255,0.18)';
-        ctx.fillRect(cx2 - w2 * 0.9, waterY() + 1 * scale(), w2 * 1.8, 1.5 * scale());
+        // A low uneven island of sand, moonlit by night and warm by dawn, lit along its crest, darker
+        // where the wet sand meets the water, a thin line of surf at its foot.
+        const day = dawn > 0.5, wy0 = waterY() + 2 * scale();
+        const cay = new Path2D();
+        cay.moveTo(cx2 - w2, wy0);
+        cay.bezierCurveTo(cx2 - w2 * 0.7, wy0 - h2 * 0.9, cx2 - w2 * 0.25, wy0 - h2 * 1.05, cx2 + w2 * 0.1, wy0 - h2);
+        cay.bezierCurveTo(cx2 + w2 * 0.45, wy0 - h2 * 0.95, cx2 + w2 * 0.8, wy0 - h2 * 0.6, cx2 + w2, wy0);
+        cay.closePath();
+        const g = ctx.createLinearGradient(0, wy0 - h2, 0, wy0);
+        g.addColorStop(0, day ? '#e0cca2' : '#76727e');
+        g.addColorStop(0.7, day ? '#c9b48c' : '#5e5a66');
+        g.addColorStop(1, day ? '#9a8664' : '#46424e');
+        ctx.fillStyle = g;
+        ctx.fill(cay);
+        ctx.fillStyle = 'rgba(225,232,255,0.35)';
+        ctx.fillRect(cx2 - w2 * 0.97, waterY() + 0.6 * scale(), w2 * 1.94, 1.4 * scale());
+        if (w2 > 70 * scale()) {
+          // Dune grass on the bigger cays.
+          ctx.strokeStyle = day ? 'rgba(110,120,60,0.85)' : 'rgba(60,66,60,0.85)';
+          ctx.lineWidth = 1 * scale();
+          ctx.beginPath();
+          for (let q = 0; q < 5; q++) {
+            const gx2 = cx2 - w2 * 0.3 + q * w2 * 0.13, gy2 = wy0 - h2 * 0.95 + Math.abs(q - 2) * h2 * 0.06;
+            for (const lean of [-1, 0, 1]) {
+              ctx.moveTo(gx2, gy2);
+              ctx.lineTo(gx2 + lean * 2 * scale() + Math.sin(t * 1.2 + q) * scale(), gy2 - (5 + (q % 2) * 2) * scale());
+            }
+          }
+          ctx.stroke();
+        }
       }
+      // What drifts on the surface passes in front of the cays, not behind them.
+      drawManOWar(ctx, t);
+      drawSailors(ctx, t, sf);
+      drawPetrels(ctx, t, sf);
       // The epilogue garden: children taking hold in the shallows either side of the crown.
       for (let k = 0; k < v.garden; k++) {
         const side = k % 2 ? 1 : -1;

@@ -893,23 +893,47 @@ export function createSunlitScene(seed: number): Scene {
       ctx.fill();
       ctx.restore();
     }
-    // The disc, its clipped tail, the eye and small mouth (facing left).
+    // The disc (facing left).
     ctx.beginPath();
     ctx.ellipse(0, 0, 22 * s, 17 * s, 0, 0, Math.PI * 2);
     ctx.fill();
+    // The clavus: no tail, only a stiff frill along the back of the disc, scalloped into lobes.
     ctx.fillStyle = '#5a6b78';
     ctx.beginPath();
-    ctx.ellipse(21 * s, 0, 4 * s, 14 * s, 0, -Math.PI / 2, Math.PI / 2);
+    ctx.moveTo(20 * s, -14 * s);
+    for (let k = 0; k < 7; k++) {
+      const y0 = -14 + k * 4, y1 = y0 + 4;
+      ctx.quadraticCurveTo(25.5 * s - Math.abs(k - 3) * 0.6 * s, (y0 + 2) * s, 20.5 * s + Math.abs(y1) * 0.04 * s, y1 * s);
+    }
+    ctx.lineTo(17 * s, 12 * s);
+    ctx.lineTo(17 * s, -12 * s);
+    ctx.closePath();
     ctx.fill();
-    // A blunt snout with a small pouting mouth, a round eye with a pale rim, the gill opening,
-    // and faint mottling over the disc.
-    ctx.fillStyle = 'rgba(70,86,98,0.18)';
+    // Paler mottling in uneven patches over the disc, as its skin carries.
+    ctx.fillStyle = 'rgba(215,228,236,0.16)';
     ctx.beginPath();
-    for (const [mx, my, mr] of [[-4, -8, 4], [6, 5, 5], [-8, 7, 3.5], [10, -7, 3], [0, 0, 3]] as const) {
+    for (const [mx, my, mr, ma] of [[-4, -9, 4.5, 0.4], [7, 6, 5, -0.3], [-9, 8, 3.2, 0.9], [11, -7, 3.4, 0.2], [1, 1, 2.6, -0.8], [-14, 9, 2.2, 0.3], [14, 1, 2.4, 1.2]] as const) {
       ctx.moveTo((mx + mr) * s, my * s);
-      ctx.ellipse(mx * s, my * s, mr * s, mr * 0.8 * s, 0.4, 0, Math.PI * 2);
+      ctx.ellipse(mx * s, my * s, mr * s, mr * 0.6 * s, ma, 0, Math.PI * 2);
     }
     ctx.fill();
+    // The small pectoral fin, sculling, with the gill opening in front of it.
+    ctx.fillStyle = '#7b8e9c';
+    ctx.save();
+    ctx.translate(-5 * s, 2 * s);
+    ctx.rotate(0.3 + scull * 0.8);
+    ctx.beginPath();
+    ctx.moveTo(0, -1.4 * s);
+    ctx.quadraticCurveTo(5 * s, -2.2 * s, 6 * s, 0);
+    ctx.quadraticCurveTo(5 * s, 2.2 * s, 0, 1.4 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+    ctx.fillStyle = 'rgba(40,52,62,0.7)';
+    ctx.beginPath();
+    ctx.ellipse(-7.4 * s, 2 * s, 0.8 * s, 1.5 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // A round eye with a pale rim, and the small pursed beak of a mouth at the snout.
     ctx.fillStyle = '#e4ecf0';
     ctx.beginPath();
     ctx.arc(-13 * s, -3 * s, 2.6 * s, 0, Math.PI * 2);
@@ -918,15 +942,14 @@ export function createSunlitScene(seed: number): Scene {
     ctx.beginPath();
     ctx.arc(-13.4 * s, -3 * s, 1.5 * s, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = 'rgba(60,74,86,0.6)';
-    ctx.lineWidth = 0.9 * s;
-    ctx.lineCap = 'round';
+    ctx.fillStyle = '#8a9cab';
     ctx.beginPath();
-    ctx.moveTo(-22 * s, 0.4 * s);
-    ctx.quadraticCurveTo(-21 * s, 1.6 * s, -20 * s, 0.6 * s);
-    ctx.moveTo(-7 * s, -2 * s);
-    ctx.quadraticCurveTo(-8.4 * s, 1 * s, -7 * s, 4 * s);
-    ctx.stroke();
+    ctx.ellipse(-21.4 * s, 1 * s, 1.6 * s, 1.3 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#2a343e';
+    ctx.beginPath();
+    ctx.ellipse(-22 * s, 1 * s, 0.6 * s, 0.8 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
     ctx.restore();
   }
 
@@ -1405,6 +1428,7 @@ export function createSunlitScene(seed: number): Scene {
     const s = scale();
     ctx.save();
     ctx.fillStyle = 'rgba(230,245,255,0.55)';
+    const eyes = new Path2D();
     ctx.beginPath();
     for (let g = 0; g < 3; g++) {
       const cx = L.cx + (g - 1) * L.unit * 0.12 + Math.sin(t * 0.7 + g * 2) * 20 * s;
@@ -1416,9 +1440,15 @@ export function createSunlitScene(seed: number): Scene {
         const ang = a + Math.PI / 2;
         ctx.moveTo(x + Math.cos(ang) * 2.2 * s, y + Math.sin(ang) * 2.2 * s);
         ctx.ellipse(x, y, 2.2 * s, 0.8 * s, ang, 0, Math.PI * 2);
+        // Clear as glass but for their eyes: a dark dot at the head of each.
+        const ex = x + Math.cos(ang) * 1.5 * s, ey = y + Math.sin(ang) * 1.5 * s;
+        eyes.moveTo(ex + 0.55 * s, ey);
+        eyes.arc(ex, ey, 0.55 * s, 0, Math.PI * 2);
       }
     }
     ctx.fill();
+    ctx.fillStyle = 'rgba(20,30,40,0.75)';
+    ctx.fill(eyes);
     ctx.restore();
   }
 

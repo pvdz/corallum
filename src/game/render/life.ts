@@ -375,7 +375,7 @@ export function createLife(seed: number) {
     // It swims left: a big rounded head, the body tapering to a long whip of a tail.
     const wag = Math.sin(t * 2) * 2 * s;
     // Fins behind the body: the tall first dorsal with its spine, the long low second dorsal.
-    ctx.fillStyle = 'rgba(150,140,172,0.85)';
+    ctx.fillStyle = 'rgba(122,114,146,0.85)';
     ctx.beginPath();
     ctx.moveTo(-3 * s, -5 * s);
     ctx.lineTo(0, -15 * s);
@@ -394,8 +394,8 @@ export function createLife(seed: number) {
     ctx.lineTo(0.3 * s, -16 * s);
     ctx.stroke();
     const g = ctx.createLinearGradient(0, -7 * s, 0, 6 * s);
-    g.addColorStop(0, 'rgba(214,208,228,0.95)');
-    g.addColorStop(1, 'rgba(120,112,142,0.95)');
+    g.addColorStop(0, 'rgba(172,164,190,0.95)');
+    g.addColorStop(1, 'rgba(92,84,114,0.95)');
     ctx.fillStyle = g;
     ctx.beginPath();
     ctx.moveTo(-17 * s, 0.5 * s);
@@ -429,7 +429,7 @@ export function createLife(seed: number) {
     ctx.quadraticCurveTo(52 * s, Math.sin(t * 2 + 1) * 4 * s, 64 * s, Math.sin(t * 2 + 2) * 3 * s);
     ctx.stroke();
     // A broad wing of a pectoral fin, beating slowly, its edge darker.
-    ctx.fillStyle = 'rgba(160,150,184,0.85)';
+    ctx.fillStyle = 'rgba(128,120,152,0.85)';
     ctx.strokeStyle = 'rgba(96,88,120,0.7)';
     ctx.lineWidth = 0.6 * s;
     ctx.beginPath();

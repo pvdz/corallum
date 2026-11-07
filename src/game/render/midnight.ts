@@ -367,44 +367,86 @@ export function createMidnightScene(seed: number): Scene {
     ctx.scale(dir, 1);
     ctx.rotate(-Math.PI / 2 + 0.3);
     // The cloak: a web between the arms, wider when it opens.
-    ctx.fillStyle = 'rgba(55,8,20,0.8)';
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    for (let a = 0; a <= 8; a++) {
-      const ang = Math.PI / 2 + (a / 8 - 0.5) * (0.8 + 1.4 * open);
-      ctx.lineTo(Math.cos(ang) * 16 * s, Math.sin(ang) * 16 * s);
+    // The cloak: a web stretched between eight arms, its edge scalloped between the tips, wider
+    // when it opens. Kept dark: it is a deep wine-black animal (the bloom would make it scarlet).
+    const tips: [number, number][] = [];
+    for (let a = 0; a <= 7; a++) {
+      const ang = Math.PI / 2 + (a / 7 - 0.5) * (0.8 + 1.4 * open);
+      const reach = (16 + 1.5 * Math.sin(t * 1.4 + a)) * s;
+      tips.push([Math.cos(ang + 0.15) * reach, Math.sin(ang + 0.15) * reach]);
     }
+    const web = ctx.createRadialGradient(0, 0, 2 * s, 0, 0, 17 * s);
+    web.addColorStop(0, 'rgba(40,6,14,0.94)');
+    web.addColorStop(1, 'rgba(20,2,8,0.85)');
+    ctx.fillStyle = web;
+    ctx.beginPath();
+    ctx.moveTo(4.5 * s, -1.5 * s);
+    ctx.lineTo(tips[0]![0], tips[0]![1]);
+    for (let a = 1; a < tips.length; a++) {
+      const [px, py] = tips[a - 1]!, [qx, qy] = tips[a]!;
+      ctx.quadraticCurveTo((px + qx) * 0.36, (py + qy) * 0.36, qx, qy);
+    }
+    ctx.lineTo(-4.5 * s, -1.5 * s);
     ctx.closePath();
     ctx.fill();
-    // Arm ribs through the web, curling at the tips.
-    ctx.strokeStyle = 'rgba(160,40,60,0.9)';
-    ctx.lineWidth = 1.1 * s;
-    for (let a = 0; a <= 8; a++) {
-      const ang = Math.PI / 2 + (a / 8 - 0.5) * (0.8 + 1.4 * open);
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.quadraticCurveTo(Math.cos(ang) * 12 * s, Math.sin(ang) * 12 * s, Math.cos(ang + 0.3) * 17 * s, Math.sin(ang + 0.3) * 17 * s);
-      ctx.stroke();
-    }
-    // The mantle, with its two fins.
-    ctx.fillStyle = 'rgba(130,25,45,0.95)';
+    // The arms through the web, tapering and curling at the tips, soft spines along their inner side.
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = 'rgba(62,12,22,0.95)';
+    ctx.lineWidth = 1.2 * s;
     ctx.beginPath();
-    ctx.ellipse(0, -9 * s, 5 * s, 9 * s, 0, 0, Math.PI * 2);
+    for (const [tx, ty] of tips) {
+      ctx.moveTo(0, 0);
+      ctx.quadraticCurveTo(tx * 0.7 - ty * 0.08, ty * 0.7 + tx * 0.08, tx, ty);
+    }
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(150,80,92,0.25)';
+    ctx.lineWidth = 0.4 * s;
+    ctx.beginPath();
+    for (const [tx, ty] of tips) {
+      const l = Math.hypot(tx, ty) || 1, nx = -ty / l, ny = tx / l;
+      for (let q = 0.35; q < 0.95; q += 0.15) {
+        const cx = tx * q, cy = ty * q;
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + nx * 0.9 * s, cy + ny * 0.9 * s);
+      }
+    }
+    ctx.stroke();
+    // The mantle: a soft bell, darker below, with its two ear-like fins.
+    const mg = ctx.createLinearGradient(0, -18 * s, 0, 0);
+    mg.addColorStop(0, '#3e0a18');
+    mg.addColorStop(1, '#22040c');
+    ctx.fillStyle = mg;
+    ctx.beginPath();
+    ctx.moveTo(-5 * s, 1 * s);
+    ctx.bezierCurveTo(-6 * s, -10 * s, -4 * s, -17 * s, 0, -18 * s);
+    ctx.bezierCurveTo(4 * s, -17 * s, 6 * s, -10 * s, 5 * s, 1 * s);
+    ctx.closePath();
     ctx.fill();
     for (const side of [-1, 1]) {
       ctx.beginPath();
-      ctx.ellipse(side * 5 * s, -14 * s, 4 * s, 2 * s, side * 0.6 + Math.sin(t * 3) * 0.2, 0, Math.PI * 2);
+      ctx.ellipse(side * 5.2 * s, -14 * s, 4 * s, 2 * s, side * 0.6 + Math.sin(t * 3) * 0.2, 0, Math.PI * 2);
       ctx.fill();
     }
-    // Big blue eyes.
-    ctx.fillStyle = 'rgba(120,200,255,0.9)';
+    // Big eyes: deep blue, a dark pupil and a glint.
     for (const side of [-1, 1]) {
+      const ex = side * 2.8 * s, ey = -3.5 * s;
+      ctx.fillStyle = 'rgba(46,92,150,0.85)';
       ctx.beginPath();
-      ctx.arc(side * 2.6 * s, -3 * s, 1.5 * s, 0, Math.PI * 2);
+      ctx.arc(ex, ey, 1.4 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#08060c';
+      ctx.beginPath();
+      ctx.arc(ex, ey + 0.15 * s, 0.9 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(220,235,255,0.55)';
+      ctx.beginPath();
+      ctx.arc(ex - 0.4 * s, ey - 0.5 * s, 0.25 * s, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.globalCompositeOperation = 'lighter';
+    // Lights at the fins' roots and at every arm tip.
     for (const side of [-1, 1]) glow(ctx, side * 8.5 * s, -15 * s, 5 * s, '140,200,255', 0.5 + 0.4 * open);
+    for (const [tx, ty] of tips) glow(ctx, tx, ty, 2.6 * s, '170,215,255', 0.35 + 0.3 * open);
     ctx.restore();
   }
 
@@ -423,22 +465,11 @@ export function createMidnightScene(seed: number): Scene {
   }
 
   /**
-   * A pyrosome: a glowing tube colony drifting slowly, its light rippling along its length in
-   * waves, each little animal in it flashing in turn.
+   * A pyrosome's tube at the origin along +x (open mouth at +len/2): tapering to a closed rounded
+   * tip, wide and open at the mouth (seen a little end-on), its skin knobbled all over with the
+   * little animals of the colony. Its lights are the caller's.
    */
-  function drawPyrosome(ctx: CanvasRenderingContext2D, t: number): void {
-    const s = scale() * 1.5;
-    const u = ((t * 0.006) % 1.4) - 0.2;
-    if (u < -0.15 || u > 1.15) return;
-    sight('pyrosome');
-    const x = focus.x + focus.w * (1 - u), y = focus.y + focus.h * 0.62 + Math.sin(t * 0.25) * 12 * s;
-    spot('pyrosome', x, y, 40 * s);
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(-0.25 + Math.sin(t * 0.2) * 0.08);
-    const len = 70 * s, rad = 9 * s;
-    // A hollow tube tapering to a closed rounded tip, wide and open at the mouth (seen a little
-    // end-on), its skin knobbled all over with the little animals of the colony.
+  function pyrosomeTube(ctx: CanvasRenderingContext2D, len: number, rad: number, s: number): void {
     const half = (f: number) => rad * (0.45 + 0.6 * f);
     const tube = new Path2D();
     const N = 14;
@@ -482,6 +513,24 @@ export function createMidnightScene(seed: number): Scene {
       }
     }
     ctx.fill();
+  }
+
+  /**
+   * A pyrosome: a glowing tube colony drifting slowly, its light rippling along its length in
+   * waves, each little animal in it flashing in turn.
+   */
+  function drawPyrosome(ctx: CanvasRenderingContext2D, t: number): void {
+    const s = scale() * 1.5;
+    const u = ((t * 0.006) % 1.4) - 0.2;
+    if (u < -0.15 || u > 1.15) return;
+    sight('pyrosome');
+    const x = focus.x + focus.w * (1 - u), y = focus.y + focus.h * 0.62 + Math.sin(t * 0.25) * 12 * s;
+    spot('pyrosome', x, y, 40 * s);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(-0.25 + Math.sin(t * 0.2) * 0.08);
+    const len = 70 * s, rad = 9 * s;
+    pyrosomeTube(ctx, len, rad, s);
     ctx.globalCompositeOperation = 'lighter';
     // Touched, a bright wave runs the length of the colony and on into the water: each animal
     // flashes when its neighbour does.
@@ -563,26 +612,79 @@ export function createMidnightScene(seed: number): Scene {
     const s = scale();
     const x = L.cx + focus.w * 0.24, y = focus.y + focus.h * 0.985;
     ctx.save();
-    ctx.fillStyle = built ? 'rgba(235,230,215,0.85)' : 'rgba(230,235,240,0.55)';
-    for (let k = 0; k < 9; k++) {
-      ctx.beginPath();
-      ctx.ellipse(x + (k - 4) * 9 * s + Math.sin(k * 2.3) * 4 * s, y - Math.abs(Math.sin(k * 1.7)) * 4 * s, (8 + (k % 3) * 3) * s, 3 * s, 0, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.fillStyle = 'rgba(8,10,16,0.9)';
-    ctx.beginPath();
-    ctx.ellipse(x, y, 7 * s, 2 * s, 0, 0, Math.PI * 2);
-    ctx.fill();
-    if (!built) {
-      ctx.strokeStyle = 'rgba(200,220,255,0.5)';
-      ctx.lineWidth = 0.8 * s;
-      for (let k = 0; k < 10; k++) {
-        const u = ((t * 0.12 + k * 0.137) % 1);
-        const bx = x + Math.sin(t * 1.5 + k) * 4 * s + u * 10 * s, by = y - u * focus.h * 0.5;
-        ctx.beginPath();
-        ctx.arc(bx, by, (1.5 + u * 2) * s, 0, Math.PI * 2);
-        ctx.stroke();
+    /** A flat uneven patch on the floor (a closed path), seeded by k. */
+    const patch = (p: Path2D, px: number, py: number, rx: number, ry: number, k: number) => {
+      const N = 10;
+      for (let j = 0; j <= N; j++) {
+        const a = (j / N) * Math.PI * 2, w = 1 + 0.25 * Math.sin(3 * a + k) + 0.12 * Math.sin(5 * a + k * 2.1);
+        const qx = px + Math.cos(a) * rx * w, qy = py + Math.sin(a) * ry * w;
+        if (j === 0) p.moveTo(qx, qy); else p.lineTo(qx, qy);
       }
+      p.closePath();
+    };
+    if (built) {
+      // Built over: a low crust of chalky stone, lumpy and pitted (kept below white, or the
+      // bloom turns it to a glare).
+      const crust = new Path2D();
+      for (let k = 0; k < 6; k++) patch(crust, x + (k - 2.5) * 11 * s, y - 2 * s - Math.abs(Math.sin(k * 1.7)) * 3 * s, (10 + (k % 3) * 3) * s, 4.5 * s, k);
+      const g = ctx.createLinearGradient(0, y - 10 * s, 0, y + 3 * s);
+      g.addColorStop(0, '#b8b6ae');
+      g.addColorStop(1, '#6e6c68');
+      ctx.fillStyle = g;
+      ctx.fill(crust);
+      ctx.fillStyle = 'rgba(40,40,46,0.45)';
+      ctx.beginPath();
+      for (let k = 0; k < 12; k++) {
+        const px = x + (((k * 0.618) % 1) - 0.5) * 60 * s, py = y - 2 * s - ((k * 0.37) % 1) * 5 * s, r = (0.6 + (k % 3) * 0.3) * s;
+        ctx.moveTo(px + r, py);
+        ctx.arc(px, py, r, 0, Math.PI * 2);
+      }
+      ctx.fill();
+      ctx.restore();
+      return;
+    }
+    // Mats of sulphur bacteria round the crack: grey-white, tinged yellow and orange at their edges.
+    const mats = new Path2D(), tinge = new Path2D();
+    for (let k = 0; k < 7; k++) {
+      const px = x + (k - 3) * 10 * s + Math.sin(k * 2.3) * 4 * s, py = y - Math.abs(Math.sin(k * 1.7)) * 3 * s;
+      patch(mats, px, py, (9 + (k % 3) * 3) * s, 2.8 * s, k);
+      if (k % 2) patch(tinge, px + 4 * s, py + 0.8 * s, 5 * s, 1.4 * s, k + 3);
+    }
+    ctx.fillStyle = 'rgba(196,200,206,0.55)';
+    ctx.fill(mats);
+    ctx.fillStyle = 'rgba(214,170,90,0.4)';
+    ctx.fill(tinge);
+    // A bed of dark mussels crowding the warmest ground, each with a pale lip.
+    ctx.fillStyle = '#1e1a24';
+    ctx.strokeStyle = 'rgba(170,160,150,0.5)';
+    ctx.lineWidth = 0.5 * s;
+    ctx.beginPath();
+    for (let k = 0; k < 14; k++) {
+      const px = x + (((k * 0.618) % 1) - 0.5) * 34 * s, py = y - 1.5 * s - ((k * 0.414) % 1) * 3.5 * s, a = ((k * 0.73) % 1) * 1.4 - 0.7;
+      ctx.moveTo(px + 2.6 * s * Math.cos(a), py + 2.6 * s * Math.sin(a));
+      ctx.ellipse(px, py, 2.6 * s, 1.2 * s, a, 0, Math.PI * 2);
+    }
+    ctx.fill();
+    ctx.stroke();
+    // The crack itself: a dark jagged fissure.
+    ctx.strokeStyle = 'rgba(6,8,14,0.95)';
+    ctx.lineWidth = 2.2 * s;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(x - 9 * s, y + 0.5 * s);
+    ctx.lineTo(x - 4 * s, y - 0.8 * s);
+    ctx.lineTo(x - 1 * s, y + 0.6 * s);
+    ctx.lineTo(x + 3 * s, y - 0.6 * s);
+    ctx.lineTo(x + 8 * s, y + 0.4 * s);
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(200,220,255,0.5)';
+    ctx.lineWidth = 0.8 * s;
+    for (let k = 0; k < 10; k++) {
+      const u = ((t * 0.12 + k * 0.137) % 1);
+      const bx = x + Math.sin(t * 1.5 + k) * 4 * s + u * 10 * s, by = y - u * focus.h * 0.5;
+      ctx.beginPath();
+      ctx.arc(bx, by, (1.5 + u * 2) * s, 0, Math.PI * 2);
+      ctx.stroke();
     }
     ctx.restore();
   }
@@ -597,13 +699,7 @@ export function createMidnightScene(seed: number): Scene {
     ctx.translate(x, y);
     ctx.rotate(0.5 + Math.sin(t * 0.3) * 0.04);
     const len = 46 * s, rad = 6 * s;
-    ctx.fillStyle = 'rgba(160,180,255,0.1)';
-    ctx.strokeStyle = 'rgba(180,200,255,0.3)';
-    ctx.lineWidth = 0.8 * s;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, len / 2, rad, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
+    pyrosomeTube(ctx, len, rad, s);
     ctx.globalCompositeOperation = 'lighter';
     for (let k = 0; k < 16; k++) {
       const f = k / 15;

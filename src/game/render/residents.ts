@@ -290,7 +290,8 @@ function hermit(ctx: CanvasRenderingContext2D, L: ReefLayout, s0: number, t: num
   const s = s0 * 1.7;
   const touch = startled('hermit-crab', t);
   const hide = touch && touch.age < 5;
-  const x = L.cx + 0.22 * L.unit + (hide ? 0 : Math.sin(t * 0.2) * 14 * s), y = floor(x) - 1 * s;
+  // It wanders a stretch of sand of its own, clear of the boxer crab and the cucumbers.
+  const x = L.cx + (0.25 + (hide ? 0 : 0.035 * Math.sin(t * 0.2))) * L.unit, y = floor(x) - 1 * s;
   spot('hermit-crab', x, y - 5 * s, 13 * s);
   if (!hide) {
     // Legs and a big claw out of the shell's mouth.
@@ -348,31 +349,73 @@ function decorator(ctx: CanvasRenderingContext2D, L: ReefLayout, s0: number, t: 
   const s = s0 * 1.7;
   const touch = startled('decorator-crab', t);
   const still = touch && touch.age < 4;
-  const x = L.cx - 0.17 * L.unit + (still ? 0 : Math.sin(t * 0.25) * 6 * s), y = floor(x) - 1 * s;
+  const x = L.cx - 0.11 * L.unit + (still ? 0 : Math.sin(t * 0.25) * 6 * s), y = floor(x) - 1 * s;
   spot('decorator-crab', x, y - 4 * s, 13 * s);
-  // Legs (pulled in when frozen).
+  // Legs (pulled in when frozen), jointed, the walking tips down on the floor.
   ctx.strokeStyle = '#7a5a3a';
   ctx.lineWidth = 0.9 * s;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
   for (let l = -1; l <= 1; l += 2)
     for (let q = 0; q < 3; q++) {
       const reach = still ? 2.5 : 5 + q * 0.8 + Math.sin(t * 3 + q + l) * 0.6;
-      ctx.beginPath();
-      ctx.moveTo(x + l * 2 * s, y - 2 * s);
-      ctx.lineTo(x + l * reach * s, y + 0.8 * s);
-      ctx.stroke();
+      const kx = x + l * (reach * 0.7 + 1) * s, ky = y - (3.4 - q * 0.3) * s;
+      ctx.moveTo(x + l * 2 * s, y - 2.4 * s + q * 0.4 * s);
+      ctx.lineTo(kx, ky);
+      ctx.lineTo(x + l * (reach + 0.4) * s, y + 0.8 * s);
     }
+  ctx.stroke();
+  // Two small claws held in front.
+  ctx.fillStyle = '#8a6a48';
+  ctx.beginPath();
+  for (const l of [-1, 1]) {
+    ctx.moveTo(x + l * 3.6 * s + 1.1 * s, y - 2.2 * s);
+    ctx.ellipse(x + l * 3.6 * s, y - 2.2 * s, 1.1 * s, 0.7 * s, l * 0.5, 0, Math.PI * 2);
+  }
+  ctx.fill();
   // The body, hidden under what it wears.
   ctx.fillStyle = '#8a6a48';
   ctx.beginPath();
   ctx.ellipse(x, y - 3.5 * s, 4.2 * s, 3 * s, 0, 0, Math.PI * 2);
   ctx.fill();
-  const bits: [number, number, number, string][] = [[-2.5, -5.5, 1.8, '#e0a040'], [1.5, -6.5, 2, '#c05a6a'], [3.2, -4, 1.4, '#6aa060'], [-0.5, -3, 1.5, '#d8c8a0']];
-  for (const [bx, by, br, col] of bits) {
-    ctx.fillStyle = col;
-    ctx.beginPath();
+  // What it wears: a lumpy orange sponge, a branched tuft of red weed, a little pink anemone and
+  // a pale chip of shell, stuck on all over.
+  ctx.fillStyle = '#d8902e';
+  ctx.beginPath();
+  for (const [bx, by, br] of [[-2.6, -5.4, 1.3], [-1.4, -6.2, 1.1], [-3.2, -4.2, 0.9]] as const) {
+    ctx.moveTo(x + (bx + br) * s, y + by * s);
     ctx.arc(x + bx * s, y + by * s, br * s, 0, Math.PI * 2);
-    ctx.fill();
   }
+  ctx.fill();
+  ctx.fillStyle = 'rgba(90,50,20,0.6)';
+  ctx.beginPath();
+  ctx.arc(x - 1.6 * s, y - 6.6 * s, 0.35 * s, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#b8404e';
+  ctx.lineWidth = 0.6 * s;
+  ctx.beginPath();
+  const wv = Math.sin(t * 1.4) * 0.6 * s;
+  for (const [ax, ay, bx, by] of [[1.5, -5.5, 2.4, -8.6], [2, -7, 0.8, -8.4], [2.2, -7.6, 3.6, -8.8], [1, -5, 0.2, -7.4]] as const) {
+    ctx.moveTo(x + ax * s, y + ay * s);
+    ctx.lineTo(x + bx * s + wv, y + by * s);
+  }
+  ctx.stroke();
+  ctx.strokeStyle = 'rgba(245,180,210,0.9)';
+  ctx.lineWidth = 0.45 * s;
+  ctx.beginPath();
+  for (let k = -3; k <= 3; k++) {
+    const a = -Math.PI / 2 + k * 0.3 + Math.sin(t * 2 + k) * 0.08;
+    ctx.moveTo(x + 3.4 * s, y - 4.6 * s);
+    ctx.lineTo(x + 3.4 * s + Math.cos(a) * 1.8 * s, y - 4.6 * s + Math.sin(a) * 1.8 * s);
+  }
+  ctx.stroke();
+  ctx.fillStyle = '#d8c8a0';
+  ctx.beginPath();
+  ctx.moveTo(x + 1.4 * s, y - 5.6 * s);
+  ctx.lineTo(x + 3.2 * s, y - 6.6 * s);
+  ctx.lineTo(x + 3 * s, y - 5 * s);
+  ctx.closePath();
+  ctx.fill();
   // A curl of weed waving from its back.
   ctx.strokeStyle = '#5a9a5a';
   ctx.lineWidth = 0.8 * s;
@@ -380,6 +423,16 @@ function decorator(ctx: CanvasRenderingContext2D, L: ReefLayout, s0: number, t: 
   ctx.moveTo(x - 1 * s, y - 6 * s);
   ctx.quadraticCurveTo(x - 3 * s + Math.sin(t) * 2 * s, y - 10 * s, x - 1 * s + Math.sin(t * 1.3) * 3 * s, y - 13 * s);
   ctx.stroke();
+  // Eyes on short stalks peering out from under it all, at the front corners.
+  ctx.strokeStyle = '#7a5a3a';
+  ctx.lineWidth = 0.5 * s;
+  ctx.beginPath();
+  for (const l of [-1, 1]) { ctx.moveTo(x + l * 2.6 * s, y - 2.2 * s); ctx.lineTo(x + l * 3.2 * s, y - 3.4 * s); }
+  ctx.stroke();
+  ctx.fillStyle = '#141010';
+  ctx.beginPath();
+  for (const l of [-1, 1]) { ctx.moveTo(x + l * 3.2 * s + 0.45 * s, y - 3.5 * s); ctx.arc(x + l * 3.2 * s, y - 3.5 * s, 0.45 * s, 0, Math.PI * 2); }
+  ctx.fill();
 }
 
 /** A boxer crab at the reef's foot, an anemone in each claw, waving them; touched, it shakes them hard. */
@@ -399,28 +452,44 @@ function boxer(ctx: CanvasRenderingContext2D, L: ReefLayout, s0: number, t: numb
       ctx.lineTo(x + l * (4.5 + q) * s, y + 1 * s);
       ctx.stroke();
     }
-  // A striped body.
+  // The shell: wider at the front with a point at each side, pale cream banded in red.
   ctx.fillStyle = '#f2d8a8';
   ctx.beginPath();
-  ctx.ellipse(x, y - 2.5 * s, 3.4 * s, 2.4 * s, 0, 0, Math.PI * 2);
+  ctx.moveTo(x - 3.8 * s, y - 3.4 * s);
+  ctx.lineTo(x - 4.4 * s, y - 2.6 * s);
+  ctx.quadraticCurveTo(x - 3.4 * s, y - 0.4 * s, x, y - 0.3 * s);
+  ctx.quadraticCurveTo(x + 3.4 * s, y - 0.4 * s, x + 4.4 * s, y - 2.6 * s);
+  ctx.lineTo(x + 3.8 * s, y - 3.4 * s);
+  ctx.quadraticCurveTo(x, y - 5.4 * s, x - 3.8 * s, y - 3.4 * s);
   ctx.fill();
-  ctx.strokeStyle = 'rgba(150,70,60,0.7)';
-  ctx.lineWidth = 0.5 * s;
-  for (let k = -1; k <= 1; k++) {
-    ctx.beginPath();
-    ctx.moveTo(x + k * 1.6 * s - 1 * s, y - 4.4 * s);
-    ctx.lineTo(x + k * 1.6 * s + 1 * s, y - 0.8 * s);
-    ctx.stroke();
+  ctx.save();
+  ctx.clip();
+  ctx.strokeStyle = 'rgba(190,60,60,0.85)';
+  ctx.lineWidth = 0.6 * s;
+  ctx.beginPath();
+  for (let k = -2; k <= 2; k++) {
+    ctx.moveTo(x + k * 1.6 * s - 1.2 * s, y - 5 * s);
+    ctx.quadraticCurveTo(x + k * 1.7 * s, y - 2.6 * s, x + k * 1.6 * s + 0.6 * s, y);
   }
-  // Arms up, each holding a little anemone that waves.
+  ctx.stroke();
+  ctx.restore();
+  // Arms up, jointed at the elbow, a little claw at each end gripping an anemone that waves.
   for (const side of [-1, 1]) {
     const wave = Math.sin(t * 2.2 + side) * 0.25 + shake * 0.6;
     const ax = x + side * (4 + Math.cos(wave) * 2) * s, ay = y - (6 + Math.sin(wave) * 2) * s;
+    const ex = x + side * 4.6 * s, ey = y - 2.6 * s;
     ctx.strokeStyle = '#d8a878';
     ctx.lineWidth = 0.9 * s;
     ctx.beginPath();
-    ctx.moveTo(x + side * 2 * s, y - 3.5 * s);
+    ctx.moveTo(x + side * 2.6 * s, y - 2 * s);
+    ctx.lineTo(ex, ey);
     ctx.lineTo(ax, ay);
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(190,60,60,0.85)';
+    ctx.lineWidth = 0.4 * s;
+    ctx.beginPath();
+    ctx.moveTo(ex + (ax - ex) * 0.5 - 0.5 * s, ey + (ay - ey) * 0.5);
+    ctx.lineTo(ex + (ax - ex) * 0.5 + 0.5 * s, ey + (ay - ey) * 0.5);
     ctx.stroke();
     for (let k = 0; k < 7; k++) {
       const a = -Math.PI / 2 + (k - 3) * 0.4 + Math.sin(t * 3 + k) * 0.1;
@@ -431,12 +500,21 @@ function boxer(ctx: CanvasRenderingContext2D, L: ReefLayout, s0: number, t: numb
       ctx.lineTo(ax + Math.cos(a) * 2.6 * s, ay + Math.sin(a) * 2.6 * s);
       ctx.stroke();
     }
+    ctx.fillStyle = '#e8b888';
+    ctx.beginPath();
+    ctx.ellipse(ax, ay + 0.3 * s, 0.9 * s, 0.6 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
   }
   // Eyes on stalks.
+  ctx.strokeStyle = '#d8a878';
+  ctx.lineWidth = 0.4 * s;
+  ctx.beginPath();
+  for (const ex of [-1, 1]) { ctx.moveTo(x + ex * 0.8 * s, y - 4.2 * s); ctx.lineTo(x + ex * 1.2 * s, y - 5.2 * s); }
+  ctx.stroke();
   ctx.fillStyle = '#141010';
   for (const ex of [-1, 1]) {
     ctx.beginPath();
-    ctx.arc(x + ex * 1.2 * s, y - 5.2 * s, 0.6 * s, 0, Math.PI * 2);
+    ctx.arc(x + ex * 1.2 * s, y - 5.4 * s, 0.6 * s, 0, Math.PI * 2);
     ctx.fill();
   }
 }
@@ -518,14 +596,21 @@ function cucumbers(ctx: CanvasRenderingContext2D, L: ReefLayout, s: number, t: n
   for (let k = 0; k < 2; k++) {
     const side = k ? 1 : -1;
     // They inch along the floor so slowly it hardly shows, leaving a coil of clean sand.
-    const x = L.cx + side * (0.28 + 0.03 * Math.sin(t * 0.02 + k)) * L.unit, y = floor(x) + 3 * s;
+    const x = L.cx + side * ((k ? 0.36 : 0.29) + 0.02 * Math.sin(t * 0.02 + k)) * L.unit, y = floor(x) + 3 * s;
     // Touched, they contract into a lump.
     const squeeze = touch && touch.age < 5 ? 1 - 0.4 * Math.sin(Math.min(1, touch.age / 5) * Math.PI) : 1;
     spot('sea-cucumber', x, y - 3 * s, 14 * s);
-    ctx.strokeStyle = 'rgba(235, 220, 190, 0.45)';
-    ctx.lineWidth = 1.6 * s;
+    // Its casting behind it: a coil of clean sand heaped on the floor like squeezed paste.
+    ctx.strokeStyle = 'rgba(225, 212, 182, 0.55)';
+    ctx.lineWidth = 1.4 * s;
+    ctx.lineCap = 'round';
     ctx.beginPath();
-    for (let q = 0; q < 3; q++) ctx.arc(x - side * (16 + q * 5) * s, y - 1 * s, 2 * s, 0, Math.PI * 2);
+    const ccx = x - side * 21 * s, ccy = y - 0.5 * s;
+    for (let q = 0; q <= 24; q++) {
+      const a = (q / 24) * Math.PI * 4, r = (4.5 - q * 0.12) * s;
+      const px = ccx + Math.cos(a) * r * 1.3, py = ccy + Math.sin(a) * r * 0.35 - q * 0.12 * s;
+      if (q === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
     ctx.stroke();
     // A plump, soft body, humped and lit from above, its head end (toward where it is going)
     // a little narrower with a frill of short feeding tentacles patting the sand; warts along the back.

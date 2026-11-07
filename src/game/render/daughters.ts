@@ -53,22 +53,36 @@ function branch(ctx: CanvasRenderingContext2D, r: () => number, x: number, y: nu
   s: number, t: number, style: DaughterStyle): void {
   const sway = Math.sin(t * 0.7 + depth) * 0.04;
   const ex = x + Math.cos(a + sway) * len, ey = y + Math.sin(a + sway) * len;
-  ctx.strokeStyle = depth < 2 ? style.branch : style.tip;
-  ctx.lineWidth = (5.5 - depth * 1.5) * s;
+  // A limb tapering from its fork to its tip, a little bent, its joints rounded.
+  const w0 = (5.5 - depth * 1.5) * s, w1 = Math.max(1.3 * s, (4 - depth * 1.4) * s);
+  const nx = -Math.sin(a + sway), ny = Math.cos(a + sway);
+  // The bend from where it starts, not the seeded draws, so each colony keeps its own shape.
+  const bend = Math.sin(x * 0.37 + y * 0.21 + depth * 1.7) * len * 0.09;
+  const mx = (x + ex) / 2 + nx * bend, my = (y + ey) / 2 + ny * bend;
+  ctx.fillStyle = depth < 2 ? style.branch : style.tip;
   ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.lineTo(ex, ey);
-  ctx.stroke();
+  ctx.moveTo(x + nx * w0 / 2, y + ny * w0 / 2);
+  ctx.quadraticCurveTo(mx + nx * (w0 + w1) / 4, my + ny * (w0 + w1) / 4, ex + nx * w1 / 2, ey + ny * w1 / 2);
+  ctx.arc(ex, ey, w1 / 2, Math.atan2(ny, nx), Math.atan2(ny, nx) + Math.PI, true);
+  ctx.quadraticCurveTo(mx - nx * (w0 + w1) / 4, my - ny * (w0 + w1) / 4, x - nx * w0 / 2, y - ny * w0 / 2);
+  ctx.arc(x, y, w0 / 2, Math.atan2(-ny, -nx), Math.atan2(-ny, -nx) + Math.PI, true);
+  ctx.fill();
   if (depth >= 2) {
-    // A polyp at each tip, opening and closing slowly.
+    // A polyp at each tip: a little crown of tentacles opening and closing slowly.
     const open = 0.7 + 0.3 * Math.sin(t * 1.3 + x * 0.01);
-    ctx.fillStyle = style.polyp;
-    for (let p = -2; p <= 2; p++) {
-      const pa = a + p * 0.45;
-      ctx.beginPath();
-      ctx.arc(ex + Math.cos(pa) * 2.4 * s * open, ey + Math.sin(pa) * 2.4 * s * open, 0.9 * s, 0, Math.PI * 2);
-      ctx.fill();
+    ctx.strokeStyle = style.polyp;
+    ctx.lineWidth = Math.max(0.8, 0.6 * s);
+    ctx.beginPath();
+    for (let p = -3; p <= 3; p++) {
+      const pa = a + p * 0.32 * (0.6 + 0.4 * open);
+      ctx.moveTo(ex, ey);
+      ctx.lineTo(ex + Math.cos(pa) * 3 * s * open, ey + Math.sin(pa) * 3 * s * open);
     }
+    ctx.stroke();
+    ctx.fillStyle = style.polyp;
+    ctx.beginPath();
+    ctx.arc(ex, ey, 0.9 * s, 0, Math.PI * 2);
+    ctx.fill();
     return;
   }
   const kids = 2 + (r() < 0.6 ? 1 : 0);

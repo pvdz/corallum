@@ -32,7 +32,8 @@ export function drawSailors(ctx: CanvasRenderingContext2D, t: number, sf: Surfac
     const x = focus.x + focus.w * (dir > 0 ? -0.05 + p * 1.1 : 1.05 - p * 1.1) + off * focus.w * 0.3;
     const y = wy + Math.sin(t * 1.6 + i) * 1.5 * s + bob * 3 * s - 1 * s;
     if (i === 0) spot('sailors', x, y - 4 * s, 22 * s);
-    const z = s * 2.8 * size;
+    // Small: a fleet of hand-sized floats, not boats.
+    const z = s * 1.6 * size;
     ctx.save();
     ctx.translate(x, y);
     // The fringe of short blue tentacles under the float's rim, hanging in the water.

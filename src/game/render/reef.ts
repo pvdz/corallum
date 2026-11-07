@@ -253,6 +253,30 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     }
   }
 
+  /** The holdfast: where the trunk meets the floor it spreads into a low plate gripping the stone. */
+  let rootNode = -2;
+  function drawFoot(ctx: CanvasRenderingContext2D, L: ReefLayout): void {
+    if (rootNode === -2) { rootNode = -1; for (let i = 0; i < coral.count; i++) if (coral.parent[i]! < 0) { rootNode = i; break; } }
+    if (rootNode < 0) return;
+    let r = 0;
+    for (let i = 0; i < coral.count; i++) if (coral.parent[i] === rootNode) r = Math.max(r, radii[i]!);
+    r *= L.unit;
+    if (r < 1.5 * L.dpr) return;
+    const [x, y] = nodePx(L, rootNode);
+    const [shadow, flesh] = L.palette ?? DEFAULT_PALETTE;
+    const g = ctx.createLinearGradient(0, y - 1.2 * r, 0, y + 1.8 * r);
+    g.addColorStop(0, flesh);
+    g.addColorStop(1, shadow);
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    // Wide and low, reaching below the trunk's rounded end so the trunk rises out of it.
+    ctx.moveTo(x - 3.2 * r, y + 1.5 * r);
+    ctx.bezierCurveTo(x - 2.6 * r, y + 0.2 * r, x - 1.6 * r, y - 1.1 * r, x, y - 1.2 * r);
+    ctx.bezierCurveTo(x + 1.6 * r, y - 1.1 * r, x + 2.6 * r, y + 0.2 * r, x + 3.2 * r, y + 1.5 * r);
+    ctx.quadraticCurveTo(x, y + 2.1 * r, x - 3.2 * r, y + 1.5 * r);
+    ctx.fill();
+  }
+
   /** Each encruster colour's lit and shadowed tones. */
   const tones = new Map<string, [string, string]>();
   /** The encrusters' paths for the last layout (they only move when the reef is reframed). */
@@ -484,6 +508,7 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
 
     if (form === 'plating') drawTables(ctx, L, t);
     drawBranchesCached(ctx, L);
+    drawFoot(ctx, L);
     if (L.encrust && L.encrust > 0) drawEncrusting(ctx, L, t);
     if (v.grotto > 0) drawGrottoes(ctx, L, v.grotto, t);
     if (v.lattice > 0) drawGlints(ctx, L, v.lattice, t);

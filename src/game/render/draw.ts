@@ -71,13 +71,20 @@ export function drawMoon(ctx: CanvasRenderingContext2D, x: number, y: number, r:
   ctx.fill();
   // On the lit part: grey seas, a few bright-rimmed craters, and the edge a little darker.
   ctx.clip();
-  ctx.fillStyle = 'rgba(120,124,130,0.22)';
-  for (const [mx, my, mr] of MARIA) {
-    for (const [ox, oy, f] of [[0, 0, 1], [0.35, 0.2, 0.7], [-0.3, 0.25, 0.6], [0.1, -0.35, 0.55]] as const) {
-      ctx.beginPath();
-      ctx.ellipse(x + (mx + ox * mr) * r, y + (my + oy * mr) * r, mr * f * r, mr * f * r * 0.8, mx * 2 + ox, 0, Math.PI * 2);
-      ctx.fill();
+  // The seas in one path, so their lobes merge into even, irregular patches instead of darkening
+  // where they overlap.
+  // A faint wider pass first, so each sea's edge fades instead of ending in a hard line.
+  for (const [grow, alpha] of [[1.3, 0.08], [1, 0.2]] as const) {
+    ctx.fillStyle = `rgba(120,124,130,${alpha})`;
+    ctx.beginPath();
+    for (const [mx, my, mr] of MARIA) {
+      for (const [ox, oy, f] of [[0, 0, 1], [0.35, 0.2, 0.7], [-0.3, 0.25, 0.6], [0.1, -0.35, 0.55]] as const) {
+        const ex = x + (mx + ox * mr) * r, ey = y + (my + oy * mr) * r, rot = mx * 2 + ox, rr = mr * f * r * grow;
+        ctx.moveTo(ex + Math.cos(rot) * rr, ey + Math.sin(rot) * rr);
+        ctx.ellipse(ex, ey, rr, rr * 0.8, rot, 0, Math.PI * 2);
+      }
     }
+    ctx.fill();
   }
   if (r > 12) {
     // Small pits, darker inside with a lit lower rim; one young bright crater with faint rays.
@@ -126,9 +133,11 @@ export function drawMoon(ctx: CanvasRenderingContext2D, x: number, y: number, r:
 }
 
 /** The moon's seas and craters, as offsets and radii in units of its radius. */
+/** The seas of the near side, roughly where they lie: a great ocean down the left, a chain of seas
+ *  across the upper half, two small ones apart at the right and lower left. */
 const MARIA: readonly [number, number, number][] = [
-  [-0.32, -0.38, 0.22], [0.02, -0.2, 0.17], [0.28, 0.02, 0.15], [-0.18, 0.18, 0.2], [0.42, -0.38, 0.09], [-0.52, 0.0, 0.11],
-  [0.12, 0.22, 0.1], [-0.35, -0.08, 0.12],
+  [-0.55, 0.05, 0.28], [-0.3, -0.4, 0.23], [0.1, -0.38, 0.15], [0.28, -0.1, 0.18], [0.46, 0.18, 0.12],
+  [-0.12, 0.38, 0.15], [0.64, -0.3, 0.08], [-0.42, 0.52, 0.08],
 ];
 const CRATERS: readonly [number, number, number][] = [[0.42, 0.48, 0.07], [-0.62, 0.28, 0.05], [0.58, -0.12, 0.045], [0.2, -0.66, 0.04], [-0.4, 0.62, 0.035]];
 
