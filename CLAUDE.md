@@ -42,6 +42,7 @@ These were written by the agent, not the user; fix them when wrong.
 - `node --no-warnings tools/fuzz.ts [--vp mobile|small|tiny] [--at <sec>] [--secs 120] [--ended] [--big] [--calm]` — random keys, panel clicks, scene taps mixed; console errors
 - `node --no-warnings tools/share.ts` — regenerates the link preview image (`src/client/icons/share.jpg`, og:image)
 - `node --no-warnings tools/readme.ts [name ...]` — retakes the README pictures (`docs/readme/*.jpg`) at chosen frozen moments
+- `node --no-warnings tools/closeup.ts [--at <bot secs>] [--t <scene secs>] [--scale 3] [id ...]` — close-ups of creatures (each tappable spot clipped at 3×) for art passes; lists what is on screen if an id is not
 - `node --no-warnings tools/screenshot.ts [--t <sec>] --shot <tag>=<url params> ...`
   — writes `screenshot/YYYY-MM-DD-HH-MM/{desktop,mobile,landscape}-<name>.png`. Look at them.
 
