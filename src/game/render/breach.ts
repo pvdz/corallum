@@ -1419,15 +1419,29 @@ export function createBreachScene(seed: number): Scene {
         ctx.ellipse(lx, ly, rx, ry, 0, 0, Math.PI * 2);
       }
       ctx.fill();
-      ctx.lineWidth = 0.8 * s;
-      // A fringe of short tentacles.
-      ctx.strokeStyle = 'rgba(210,225,255,0.25)';
-      for (let q = -4; q <= 4; q++) {
-        ctx.beginPath();
-        ctx.moveTo(q * r * 0.22 * pulse, 0);
-        ctx.lineTo(q * r * 0.22 * pulse + Math.sin(t + q) * 2 * s, r * 0.5);
-        ctx.stroke();
+      // The four oral arms: short frilly ribbons hanging from the middle, swaying.
+      ctx.fillStyle = 'rgba(230,220,250,0.16)';
+      ctx.beginPath();
+      for (let q = 0; q < 4; q++) {
+        const ox = (q - 1.5) * r * 0.12, sw = Math.sin(t * 0.9 + q + k) * 2 * s;
+        const len = r * (0.55 + 0.1 * (q % 2));
+        ctx.moveTo(ox - r * 0.05, 0);
+        for (let i = 1; i <= 4; i++) ctx.lineTo(ox - r * 0.05 - (i % 2) * r * 0.04 + sw * (i / 4), (i / 4) * len);
+        for (let i = 4; i >= 1; i--) ctx.lineTo(ox + r * 0.05 + (i % 2) * r * 0.04 + sw * (i / 4), (i / 4) * len);
+        ctx.closePath();
       }
+      ctx.fill();
+      // A fine fringe of many short tentacles all round the rim.
+      ctx.strokeStyle = 'rgba(210,225,255,0.22)';
+      ctx.lineWidth = 0.5 * s;
+      ctx.beginPath();
+      for (let q = 0; q <= 22; q++) {
+        const fx = (q / 22 - 0.5) * 2 * r * pulse;
+        const fl = r * (0.14 + 0.05 * Math.sin(q * 1.7));
+        ctx.moveTo(fx, 0);
+        ctx.quadraticCurveTo(fx + Math.sin(t * 1.3 + q) * 1.2 * s, fl * 0.6, fx + Math.sin(t * 1.1 + q) * 2 * s, fl);
+      }
+      ctx.stroke();
       ctx.restore();
     }
   }
