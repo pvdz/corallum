@@ -464,6 +464,18 @@ const panel = createPanel(ui, {
       m.style.setProperty('--sway', `${((frac(i * 0.8660254038) - 0.5) * 60).toFixed(0)}px`);
       send.append(m);
     }
+    // And a fine haze of small eggs among them, quicker and fainter, so it reads as a spawning.
+    for (let i = 0; i < 160; i++) {
+      const m = document.createElement('i');
+      m.className = 'fine';
+      const size = 1.5 + 2 * frac(i * 0.5698402910);
+      m.style.left = `${frac(i * 0.7071067812 + 0.13) * 100}%`;
+      m.style.width = m.style.height = `${size.toFixed(1)}px`;
+      m.style.animationDelay = `${(frac(i * 0.2360679775) * 1.6).toFixed(2)}s`;
+      m.style.animationDuration = `${(1.5 + 1.0 * frac(i * 0.1415926536)).toFixed(2)}s`;
+      m.style.setProperty('--sway', `${((frac(i * 0.5772156649) - 0.5) * 90).toFixed(0)}px`);
+      send.append(m);
+    }
     whisper.classList.remove('show');
     journalNote.classList.remove('show');
     const line = document.createElement('p');

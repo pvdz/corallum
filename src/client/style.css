@@ -1059,6 +1059,7 @@ html.view-mode #photo { display: grid; }
   position: absolute; bottom: -10px; width: 8px; height: 8px; border-radius: 50%;
   background: #ffb3cf; box-shadow: 0 0 12px 3px rgba(255, 160, 205, 0.8); animation: send-rise 2.6s ease-in both; will-change: transform;
 }
+#send-off i.fine { background: #ff9cc0; box-shadow: 0 0 4px 1px rgba(255, 150, 195, 0.6); }
 #send-off p {
   position: absolute; left: 0; right: 0; top: 42%; text-wrap: balance; text-align: center; margin: 0; padding: 0 24px;
   font-family: var(--display); font-style: italic; font-size: clamp(18px, 2.4vw, 26px); color: #ffe4f0;

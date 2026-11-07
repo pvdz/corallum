@@ -1275,3 +1275,4 @@ date, what landed, what is half-done, what's next.
 - A crowded reef's crown halos (80+ polyps in the Midnight Water) added up to a cyan-white blaze over the branches: each halo is fainter the more crowns there are (down to 55% at 90), so the branches show between them; the tips keep their light.
 - The nautilus's shell was a near-white disc with even stripes radiating like a beach ball: cream (kept below white), the tiger stripes narrow flames curling out from the coil over the shell's older part, the front by the hood plain, the rim lit along its top.
 - README pictures (tools/readme.ts) and the link preview (tools/share.ts) retaken to show the evening's changes. Console sweep on tablet and landscape (36 points): clean. Console warnings at four stages: none.
+- The lesser spawning's send-off (70 pink motes rising as the water darkens) read as a few bubbles: 160 small fainter eggs rise among them, quicker and swaying wider.
