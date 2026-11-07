@@ -1048,6 +1048,8 @@ html.view-mode #photo { display: grid; }
 .foldable.folded.calls > header h3::before { content: '● '; color: var(--glowc); font-size: 0.7em; vertical-align: middle; }
 .rasp.foldable.folded.calls > .current-row:not([hidden]) { display: grid; }
 .settings-group { margin: 16px 2px 4px; font-family: var(--display); font-weight: 400; font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--ink-dim); border-top: 1px solid var(--edge); padding-top: 10px; }
+/* Under a folded card its own hairline already divides: no second rule. */
+.card + .settings-group { border-top-color: transparent; margin-top: 10px; }
 
 /* ---------- The send-off before a new seamount ---------- */
 #send-off { position: absolute; inset: 0; z-index: 40; overflow: hidden; pointer-events: all; animation: send-dark 3.4s ease-in forwards; }
