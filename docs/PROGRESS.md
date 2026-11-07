@@ -1143,3 +1143,4 @@ date, what landed, what is half-done, what's next.
 - The Lineage tab after a spawning was a wall of boxes: every gift that could be bought was drawn as a card, and with 15+ lineage that is nearly all of them. Gifts stay rows on hairlines; the lit buy button tells which can be had.
 - Choices that run out (a wish on falling stars, the shoals' signal, the others' spawning at a full moon) take the open slot over the newest; one the player opened by hand stays open.
 - The side panel no longer stands against the sea as a wall (a hairline, a dark shadow and the hard edge of its blur): a 56 px strip of the panel's own water, tinted and blurred like it, fades in beside it, so the sea darkens into the panel. Desktop and phones on their side; gone with the panel in view mode.
+- The weather card and Ossel's ask lose their outlines: soft fills that fade to the right, the first two things under the stocks no longer two boxes.

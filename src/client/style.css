@@ -363,7 +363,7 @@ html.panel-rest .panel .pages { opacity: 0.45; transition: opacity 4s ease; }
 .band.is-reading .band-depth { color: var(--murmurs); }
 .band.is-relic .band-depth { color: #9fd8ff; }
 .water { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; padding: 7px 12px; border-radius: var(--radius);
-  border: 1px solid rgba(150, 210, 255, 0.16); background: linear-gradient(90deg, rgba(120, 190, 255, 0.07), rgba(120, 190, 255, 0.01)); font-size: 12px; }
+  border: 1px solid transparent; background: linear-gradient(90deg, rgba(120, 190, 255, 0.08), rgba(120, 190, 255, 0.01)); font-size: 12px; }
 .water[hidden] { display: none; }
 .water strong { font-family: var(--display); font-weight: 400; font-size: 15px; color: #cfe8ff; }
 .water-line { color: #a8dcff; }
@@ -410,7 +410,7 @@ html.panel-rest .panel .pages { opacity: 0.45; transition: opacity 4s ease; }
 .card.watered:not(.maxed) .level::before { content: '≈ '; color: #a8dcff; }
 .card.watered:not(.maxed) .cost { color: #a8dcff; }
 .ask { display: flex; align-items: center; gap: 8px; padding: 6px 12px; font-size: 12.5px; border-radius: var(--radius);
-  border: 1px solid rgba(255, 220, 170, 0.14); background: rgba(255, 220, 170, 0.03); }
+  border: 1px solid transparent; background: linear-gradient(90deg, rgba(255, 220, 170, 0.06), rgba(255, 220, 170, 0.01)); }
 .ask[hidden] { display: none; }
 /* An ask done in the panel: a tap goes to where it is done. */
 .ask.goes { cursor: pointer; }
