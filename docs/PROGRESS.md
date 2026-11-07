@@ -1195,3 +1195,4 @@ date, what landed, what is half-done, what's next.
 - Purchase and story flourishes (the flare, a polyp budded, a shoal called, a wish, a truce word…: draw.ts ring, 13 uses) spread as soft bands of light instead of hairline circles: pulses in the water, not UI targets.
 - The touch hints on a fish tangled in jelly threads (or pinned on the Silt Floor), a broken fragment and a lost shoal are soft pulses too: every touch hint and flourish ring now uses softRing.
 - The weed raft drifting over the Breach was a row of golden beads on straight strings (a necklace): clumps of branching gulfweed of uneven size along it, lit on top, with clustered round air bladders, and limp fronds trailing below with narrow blades along them; all in a few batched fills.
+- A lost shoal (tap to take it in) was seven sparks in a bubble: seven small lanternfish milling in a loose knot, dark bodies with the rows of lights along their bellies flickering.

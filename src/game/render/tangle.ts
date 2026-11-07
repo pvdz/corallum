@@ -141,13 +141,36 @@ export function drawStray(ctx: CanvasRenderingContext2D, st: { k: number; x: num
   const y = focus.y + focus.h * (0.18 + 0.1 * Math.sin(st.k));
   spot('stray', x, y, Math.max(40 * s, 30 * dpr));
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
+  // Seven small lanternfish milling in a loose knot, lost: dark bodies, and the rows of lights
+  // along their bellies flickering as they call.
+  const fish: [number, number, number][] = [];
+  ctx.globalAlpha = a;
+  ctx.fillStyle = 'rgba(28,40,70,0.9)';
+  ctx.beginPath();
   for (let i = 0; i < 7; i++) {
-    const px = x + Math.cos(i * 2.4 + t * 0.6) * 12 * s, py = y + Math.sin(i * 1.7 + t * 0.5) * 6 * s;
-    const flick = 0.5 + 0.5 * Math.max(0, Math.sin(t * 3.1 + i * 1.3)) ** 4;
-    glow(ctx, px, py, 7 * s, '120,200,255', 0.6 * a * flick);
-    glow(ctx, px, py, 1.6 * s, '220,245,255', a);
+    const ph = i * 2.4 + t * 0.6, ph2 = i * 1.7 + t * 0.5;
+    const px = x + Math.cos(ph) * 22 * s, py = y + Math.sin(ph2) * 11 * s;
+    const ang = Math.atan2(Math.cos(ph2) * 11 * 0.5, -Math.sin(ph) * 22 * 0.6);
+    fish.push([px, py, ang]);
+    const L = 8 * s, ca = Math.cos(ang), sa = Math.sin(ang);
+    const P = (u: number, v: number): [number, number] => [px + u * ca - v * sa, py + u * sa + v * ca];
+    const pts = [P(L, 0), P(L * 0.2, -L * 0.32), P(-L * 0.7, -L * 0.12), P(-L * 1.15, -L * 0.36), P(-L * 1.0, 0), P(-L * 1.15, L * 0.36), P(-L * 0.7, L * 0.12), P(L * 0.2, L * 0.3)];
+    ctx.moveTo(pts[0]![0], pts[0]![1]);
+    for (let q = 1; q < pts.length; q++) ctx.lineTo(pts[q]![0], pts[q]![1]);
+    ctx.closePath();
   }
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = 'lighter';
+  fish.forEach(([px, py, ang], i) => {
+    const flick = 0.5 + 0.5 * Math.max(0, Math.sin(t * 3.1 + i * 1.3)) ** 4;
+    glow(ctx, px, py, 7 * s, '120,200,255', 0.45 * a * flick);
+    const ca = Math.cos(ang), sa = Math.sin(ang);
+    for (let q = -1; q <= 1; q++) {
+      const lx = px + q * 3.2 * s * ca - 1.8 * s * sa, ly = py + q * 3.2 * s * sa + 1.8 * s * ca;
+      glow(ctx, lx, ly, 1.3 * s, '220,245,255', a * (0.6 + 0.4 * flick));
+    }
+  });
   const p = (t * 0.5) % 1;
   ctx.globalCompositeOperation = 'source-over';
   softRing(ctx, x, y, (20 + 18 * p) * s, (20 + 18 * p) * s, 6 * s, '160,220,255', (0.35 * (1 - p) * a) * 1.15);
