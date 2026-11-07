@@ -782,18 +782,30 @@ export function createTwilightScene(seed: number): Scene {
     spot('sardine-run', focus.x + focus.w * 0.5, focus.y + focus.h * 0.25, focus.h * 0.1);
     ctx.save();
     ctx.globalAlpha = k;
-    ctx.fillStyle = '#9fb4c8';
-    ctx.beginPath();
+    // Each a slim silver fish with a forked tail, swimming right; their dark backs in one stroke.
+    ctx.fillStyle = '#a9bdd0';
+    const fish = new Path2D(), backs = new Path2D();
     for (let i = 0; i < 420; i++) {
       // Packed close around a band that snakes across the water.
       const lane = ((i * 0.618034) % 1) - 0.5;
       const x = focus.x + (((t * 0.09 + i * 0.0071) % 1.2) - 0.1) * focus.w;
       const mid = focus.y + focus.h * (0.24 + 0.06 * Math.sin(x * 0.006 + t * 0.4));
       const y = mid + lane * focus.h * 0.07 * (1 - lane * lane * 2);
-      ctx.moveTo(x + 5 * s, y);
-      ctx.ellipse(x, y, 5 * s, 1.4 * s, 0.08, 0, Math.PI * 2);
+      const wag = Math.sin(t * 9 + i) * 0.5 * s;
+      fish.moveTo(x + 5 * s, y);
+      fish.quadraticCurveTo(x + 1 * s, y - 1.5 * s, x - 3.8 * s, y - 0.5 * s);
+      fish.lineTo(x - 6.8 * s, y - 1.9 * s + wag);
+      fish.lineTo(x - 5.8 * s, y + wag * 0.5);
+      fish.lineTo(x - 6.8 * s, y + 1.9 * s + wag);
+      fish.lineTo(x - 3.8 * s, y + 0.5 * s);
+      fish.quadraticCurveTo(x + 1 * s, y + 1.4 * s, x + 5 * s, y);
+      backs.moveTo(x + 3.6 * s, y - 0.6 * s);
+      backs.quadraticCurveTo(x, y - 1.3 * s, x - 3.6 * s, y - 0.4 * s);
     }
-    ctx.fill();
+    ctx.fill(fish);
+    ctx.strokeStyle = 'rgba(40,64,104,0.7)';
+    ctx.lineWidth = 0.9 * s;
+    ctx.stroke(backs);
     ctx.restore();
   }
 

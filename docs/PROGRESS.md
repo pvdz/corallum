@@ -1165,3 +1165,4 @@ date, what landed, what is half-done, what's next.
 - The blacktip reef shark gets curved, swept-back fins (dorsal, pectoral, tail), the small second dorsal and anal fins, a finer snout and its gill slits (a mouth line made it smile; left out).
 - README pictures retaken with today's art by a new `tools/readme.ts` (they were scratch shots before): each zone in view mode at a moment that shows something of it (a chimaera on the Silt Floor, the far whale over the Midnight Water, the Rasp and a manta at the Twilight, the Sunlit by day, a humpback breaching under the moon), the desktop panel at the Twilight and a phone at the Sunlit.
 - A choice waiting folded opened only to a tap: its kicker is a keyboard button while folded (Tab to it, Enter or Space opens it and focuses its first answer; Space there does not sweep).
+- The sardine run across the Twilight (420 white pills): slim silver fish with forked tails, their dark blue backs, all in one fill and one stroke.
