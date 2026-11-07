@@ -40,12 +40,17 @@ await withGame(async (open) => {
     check((await st()).residents.length === res0, 'resident taken in');
   }
 
+  // One waiting choice is open at a time; the others wait folded to their line, and a tap opens one.
+  const unfold = async (box: ReturnType<typeof page.locator>) => {
+    if (await box.evaluate((e) => e.classList.contains('later'))) await box.click();
+  };
   // A riddle (reset so one is asked), answered rightly.
   await page.evaluate(() => { const s = window.corallum!.state; for (const k of Object.keys(s.riddles)) (s.riddles as Record<string, string>)[k] = ''; });
   await page.waitForTimeout(400);
   const lin = (await st()).meta.lineage;
   const box = page.locator('section.riddle');
   check(await box.isVisible(), 'riddle card shows');
+  await unfold(box);
   const asked = await box.locator('.truce-text').textContent();
   const r = RIDDLES.find((x) => x.ask === asked)!;
   await box.locator('button').nth(r.right).click();
@@ -62,12 +67,14 @@ await withGame(async (open) => {
   const g0 = (await st()).grains.length;
   await page.evaluate(() => { window.corallum!.state.grains.pop(); });
   await page.waitForTimeout(400);
+  await unfold(page.locator('section.grain'));
   await page.locator('section.grain button').first().click();
   check((await st()).grains.length === g0 && (await st()).grains.at(-1) === 'dense', 'a band set with its grain');
 
   // The sport: unchoose it, then keep the first one this strain throws.
   await page.evaluate(() => { window.corallum!.state.sport = ''; });
   await page.waitForTimeout(400);
+  await unfold(page.locator('section.sport'));
   await page.locator('section.sport button:not([hidden])').first().click();
   check((await st()).sport !== '', 'the strain\'s sport chosen');
 
@@ -81,6 +88,7 @@ await withGame(async (open) => {
   await dismiss();
 
   // Ossel's question: answered, remembered, and answered back.
+  await unfold(page.locator('section.ossel-asks'));
   await page.locator('section.ossel-asks button').first().click();
   check((await st()).asked.silt === '0', 'Ossel asked, and answered');
   await dismiss();

@@ -1829,17 +1829,47 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     for (const { sec } of open) {
       if (!sec.classList.contains('moment')) continue;
       if (!sec.querySelector(':scope > .later-btn')) {
-        const later = button('later-btn', UI.later, () => { sec.classList.add('later'); sec.dataset.laterFor = choiceKey(sec); renderChips(); });
+        const later = button('later-btn', UI.later, () => {
+          sec.classList.add('later'); delete sec.dataset.auto; sec.dataset.laterFor = choiceKey(sec);
+          if (openChoice === sec) openChoice = null;
+          renderChips();
+        });
         sec.append(later);
-        sec.addEventListener('click', (e) => { if (sec.classList.contains('later') && e.target !== later) { e.stopPropagation(); sec.classList.remove('later'); renderChips(); } }, true);
+        // A tap on a folded choice opens it (and takes the tap); a lamp pressed by key opens it and goes through.
+        sec.addEventListener('click', (e) => {
+          if (!sec.classList.contains('later') || e.target === later) return;
+          if (e.isTrusted) e.stopPropagation();
+          sec.classList.remove('later'); delete sec.dataset.auto; openChoice = sec;
+          renderChips();
+        }, true);
         sec.title = '';
       }
-      if (sec.classList.contains('later') && sec.dataset.laterFor !== choiceKey(sec)) sec.classList.remove('later');
+      if (sec.classList.contains('later') && sec.dataset.laterFor !== choiceKey(sec)) { sec.classList.remove('later'); delete sec.dataset.auto; }
+      // The newest choice is the one shown open (a wish on falling stars does not wait).
+      if (shownKey.get(sec) !== choiceKey(sec)) { shownKey.set(sec, choiceKey(sec)); if (!sec.classList.contains('later')) openChoice = sec; }
     }
     renderChips();
   }
+  // The waiting choice shown open; the others wait folded to their one line until it is answered
+  // (a choice the player put off with Later stays folded).
+  let openChoice: HTMLElement | null = null;
+  const shownKey = new WeakMap<HTMLElement, string>();
+  function settleChoices(): void {
+    const waiting = [...grow.querySelectorAll<HTMLElement>(':scope > section.moment:not([hidden])')]
+      .filter((sec) => sec.querySelector(':scope > .later-btn') && sec.querySelector('.truce-kicker')?.textContent)
+      .filter((sec) => !sec.classList.contains('later') || sec.dataset.auto === '1');
+    const keep = openChoice && waiting.includes(openChoice) ? openChoice : waiting[0] ?? null;
+    for (const sec of waiting) {
+      const fold = sec !== keep;
+      if (sec.classList.contains('later') !== fold) sec.classList.toggle('later', fold);
+      if (fold) { sec.dataset.auto = '1'; sec.dataset.laterFor = `${sec.querySelector('.truce-kicker')?.textContent ?? ''}|${sec.querySelector('h3')?.textContent ?? ''}`; }
+      else delete sec.dataset.auto;
+    }
+    openChoice = keep;
+  }
   /** Chips to jump to the open choices; a choice folded for later is a row right there, no chip. */
   function renderChips(): void {
+    settleChoices();
     const open = [...grow.querySelectorAll<HTMLElement>(':scope > section:not([hidden]):not(.later)')]
       .map((sec) => ({ sec, label: sec.querySelector('.truce-kicker')?.textContent ?? '' }))
       .filter((x) => x.label);
