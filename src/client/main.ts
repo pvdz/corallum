@@ -1845,6 +1845,11 @@ function updateGauge(): void {
 
 // View mode: hide the panel and let the reef have the whole screen (button top-left, or H).
 let viewMode = false;
+/** The creature the idle camera is following in view mode (where it was last seen), and when to pick the next. */
+let driftFollow: { id: Spot['id']; x: number; y: number; until: number } | null = null;
+let driftNext = 0;
+/** Spots the idle camera does not go to: stars, old stone, Ossel's wall and passing debris. */
+const NO_FOLLOW = new Set<Spot['id']>(['star', 'old', 'ossel', 'fragment', 'tangle', 'raft']);
 /** When the player last did anything (performance.now): drift waits for a quiet spell. */
 let lastInput = 0;
 let lastPress = 0, panelFrame = 0;
@@ -2139,14 +2144,40 @@ function frameBody(now: number): void {
   const wallDt = (wallNow - lastWall) / 1000;
   lastWall = wallNow;
   const simDt = wallDt > dt + 2 ? wallDt : dt;
-  // Drift: in view mode, left alone a while, the camera wanders slowly round the reef.
+  // Drift: in view mode, left alone a while, the camera wanders slowly round the reef; now and then
+  // it goes to one of the creatures on screen and follows it a while, then wanders on.
   if (viewMode && now - lastInput > 25_000 && !(reducedMotion.matches || calm.get())) {
-    const [crx, cry] = scene.crownAt;
-    const tt = now / 1000;
-    const k = 1.5 + 0.45 * Math.sin(tt / 23);
-    const wx = crx + Math.sin(tt / 31) * canvas.width * 0.18;
-    const wy = cry + canvas.height * (0.15 + 0.12 * Math.sin(tt / 19));
-    zoomer.lookAt(k, wx, wy, Math.min(1, dt * 0.3));
+    if (!driftFollow && now > driftNext) {
+      const pool = tappable().filter((p) => !NO_FOLLOW.has(p.id) && p.r < canvas.width * 0.12 &&
+        p.x > canvas.width * 0.08 && p.x < canvas.width * 0.92 && p.y > canvas.height * 0.08 && p.y < canvas.height * 0.92);
+      const p = pool[Math.floor(Math.random() * pool.length)];
+      if (p) driftFollow = { id: p.id, x: p.x, y: p.y, until: now + 18_000 };
+      driftNext = now + 55_000;
+    }
+    let follow: Spot | null = null;
+    if (driftFollow) {
+      // The same creature as last frame: the nearest spot of its kind (a school has several).
+      let best = Infinity;
+      for (const p of tappable()) {
+        if (p.id !== driftFollow.id) continue;
+        const d = Math.hypot(p.x - driftFollow.x, p.y - driftFollow.y);
+        if (d < best) { best = d; follow = p; }
+      }
+      if (!follow || best > canvas.width * 0.2 || now > driftFollow.until) { driftFollow = null; follow = null; }
+      else { driftFollow.x = follow.x; driftFollow.y = follow.y; }
+    }
+    if (follow) zoomer.lookAt(2.1, follow.x, follow.y, Math.min(1, dt * 0.45));
+    else {
+      const [crx, cry] = scene.crownAt;
+      const tt = now / 1000;
+      const k = 1.5 + 0.45 * Math.sin(tt / 23);
+      const wx = crx + Math.sin(tt / 31) * canvas.width * 0.18;
+      const wy = cry + canvas.height * (0.15 + 0.12 * Math.sin(tt / 19));
+      zoomer.lookAt(k, wx, wy, Math.min(1, dt * 0.3));
+    }
+  } else if (driftFollow || now - lastInput < 25_000) {
+    driftFollow = null;
+    driftNext = Math.max(driftNext, now + 30_000);
   }
   if (frozenT === null) {
     // A long gap means the tab slept; treat it like being away.
