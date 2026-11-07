@@ -272,9 +272,11 @@ export function createTwilightScene(seed: number): Scene {
   }
 
   function layout(v: ReefView): ReefLayout {
+    // By day the reef's own light fades as it climbs toward the sun (over lit water its halos burn
+    // white); by night the polyps open wide and their light shows.
+    const dayGlow = 0.85 - 0.4 * progress(v.height), night = nightAt(lastT);
     return {
-      // By night the polyps open wide and their own light shows.
-      glowScale: 1 + 0.6 * nightAt(lastT), polypScale: 1 + 0.3 * nightAt(lastT),
+      glowScale: dayGlow + (1.6 - dayGlow) * night, polypScale: 1 + 0.3 * night,
       cx: cx(), baseY: focus.y + focus.h * 1.02, unit: Math.min(focus.h * 0.78, focus.w * 1.5), s: scale(), dpr,
       top: 0.45 + 0.55 * progress(v.height), bandStep: 0,
       encrust: 0.4 + 0.3 * progress(v.height), encrustColours: ['#d0703c', '#8a4fb8', '#e0c050', '#3fa38c'],

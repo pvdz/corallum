@@ -166,7 +166,7 @@ export const UI = {
   bandAt: (m: string) => `Band at ${m}`,
   fewerShoals: (verb: string) => `Fewer shoals ${verb}`,
   moreShoals: (verb: string) => `More shoals ${verb}`,
-  journalHead: (seen: number, of: number, touched: number, bonus: number) => `Creatures seen · ${seen}\u00a0of\u00a0${of}${touched ? ` · ${touched} touched` : ''} · calcite +${bonus}%`,
+  journalHead: (seen: number, of: number, touched: number, bonus: number) => `Creatures seen\u00a0· ${seen}\u00a0of\u00a0${of}${touched ? `\u00a0· ${touched}\u00a0touched` : ''}\u00a0· calcite\u00a0+${bonus}%`,
   beginAgainSure: (n: number) => `Begin again on a new seamount, with +${n} lineage?`,
   lesserSure: (n: number) => `Release a lesser spawning now for +${n} lineage? This reef starts over.`,
   chronHead: (n: number) => `The chronicle · ${n} ending${n === 1 ? '' : 's'}`,

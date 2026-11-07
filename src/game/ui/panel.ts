@@ -230,6 +230,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (v > prev * 1.05) value.animate([{ transform: 'scale(1.12)', filter: 'brightness(1.7)' }, { transform: 'none', filter: 'none' }], { duration: 650, easing: 'ease-out' });
     else if (v < prev * 0.95) value.animate([{ opacity: 0.45 }, { opacity: 1 }], { duration: 400, easing: 'ease-out' });
   }
+  // Stocks whose act is two or more behind the reef step aside into one small line, name and number
+  // only (a tap still gives the whole note): by zone, not by rate, so a purchase never moves the grid.
+  const minorBox = el('div', 'stocks-minor');
+  const homeAct = new Map([[glow, 1], [plankton, 2], [murmurs, 2], [silt, 3], [sand, 3], [bloom, 4], [spawn, 5]]);
+  let minorKey = '';
+  stocks.append(minorBox);
   const heightRow = el('div', 'stock height');
   const heightLabel = el('span', 'stock-name', 'Reef');
   const heightValue = el('span', 'stock-value', '0 m');
@@ -1960,10 +1966,22 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       // Murmurs buy Readings (none on a silent seamount) and the truce's words.
       const murmursWanted = (!seamountDef(s.seamount).noReadings && s.readings.length < READINGS.length) || MEETINGS.some((m) => !s.truce[m.id]);
       murmurs.row.hidden = !(s.jobs.scout > 0 || (s.murmurs > 0.05 && murmursWanted));
+      const actNow = actAt(s.height);
+      const minor = [...homeAct].filter(([st, home]) => actNow >= home + 2 && !st.row.classList.contains('falling')).map(([st]) => st);
+      const key = minor.map((st) => st.row.className).join();
+      if (key !== minorKey) {
+        minorKey = key;
+        for (const st of [glow, plankton, murmurs, silt, sand, bloom, spawn]) {
+          if (minor.includes(st)) minorBox.append(st.row);
+          else stocks.insertBefore(st.row, minorBox);
+        }
+      }
       // Three or more stocks: a tighter grid (one-line rates, up to four to a row on a phone), so the cards keep their room.
-      const shown = [...stocks.children].filter((c) => !(c as HTMLElement).hidden && !c.classList.contains('height')).length;
+      const shown = [...stocks.children].filter((c) => !(c as HTMLElement).hidden && c.classList.contains('stock') && !c.classList.contains('height')).length;
       stocks.classList.toggle('many', shown >= 3);
       if (stocks.dataset.n !== String(shown)) stocks.dataset.n = String(shown);
+      // Two to a row with an odd count leaves a cell beside the last stock: the small line takes it.
+      minorBox.classList.toggle('fill', shown % 2 === 1);
       murmurs.value.textContent = num(s.murmurs);
       murmurs.setSub(`${flow(murmurNet(s, r), s.murmurs, s.jobs.scout > 0 ? murmurHold(s, r) : Infinity)} · ${s.jobs.scout > 0 ? `holds ~${num(murmurHold(s, r))}` : UI.murmursUnheard}`);
       silt.row.hidden = !(r.siltP > 0 || s.silt > 0.5);
