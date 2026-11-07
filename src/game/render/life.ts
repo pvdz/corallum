@@ -372,35 +372,84 @@ export function createLife(seed: number) {
     const beat = Math.sin(t * 2.2);
     ctx.save();
     ctx.translate(x, y);
-    // Body: a blunt head tapering to a long whip of a tail (it swims left).
-    const g = ctx.createLinearGradient(0, -6 * s, 0, 6 * s);
-    g.addColorStop(0, 'rgba(200,195,215,0.9)');
-    g.addColorStop(1, 'rgba(140,130,160,0.9)');
+    // It swims left: a big rounded head, the body tapering to a long whip of a tail.
+    const wag = Math.sin(t * 2) * 2 * s;
+    // Fins behind the body: the tall first dorsal with its spine, the long low second dorsal.
+    ctx.fillStyle = 'rgba(150,140,172,0.85)';
+    ctx.beginPath();
+    ctx.moveTo(-3 * s, -5 * s);
+    ctx.lineTo(0, -15 * s);
+    ctx.quadraticCurveTo(4 * s, -9 * s, 6 * s, -4.4 * s);
+    ctx.closePath();
+    ctx.moveTo(9 * s, -3.8 * s);
+    ctx.quadraticCurveTo(20 * s, -7 * s, 36 * s, wag - 1.4 * s);
+    ctx.lineTo(36 * s, wag);
+    ctx.quadraticCurveTo(20 * s, -3 * s, 9 * s, -2.6 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(235,230,245,0.8)';
+    ctx.lineWidth = 0.7 * s;
+    ctx.beginPath();
+    ctx.moveTo(-3 * s, -5 * s);
+    ctx.lineTo(0.3 * s, -16 * s);
+    ctx.stroke();
+    const g = ctx.createLinearGradient(0, -7 * s, 0, 6 * s);
+    g.addColorStop(0, 'rgba(214,208,228,0.95)');
+    g.addColorStop(1, 'rgba(120,112,142,0.95)');
     ctx.fillStyle = g;
     ctx.beginPath();
-    ctx.moveTo(-16 * s, 0);
-    ctx.quadraticCurveTo(-14 * s, -6 * s, -4 * s, -5 * s);
-    ctx.quadraticCurveTo(14 * s, -3 * s, 40 * s, Math.sin(t * 2) * 2 * s);
-    ctx.quadraticCurveTo(14 * s, 3 * s, -4 * s, 5 * s);
-    ctx.quadraticCurveTo(-14 * s, 5 * s, -16 * s, 0);
+    ctx.moveTo(-17 * s, 0.5 * s);
+    ctx.bezierCurveTo(-17 * s, -6 * s, -10 * s, -7.5 * s, -2 * s, -5.5 * s);
+    ctx.quadraticCurveTo(14 * s, -3 * s, 40 * s, wag);
+    ctx.quadraticCurveTo(14 * s, 3.4 * s, -2 * s, 5 * s);
+    ctx.bezierCurveTo(-10 * s, 6 * s, -16 * s, 5 * s, -17 * s, 0.5 * s);
     ctx.fill();
+    // Wavy lateral-line canals over the head and along the side.
+    ctx.strokeStyle = 'rgba(90,82,112,0.5)';
+    ctx.lineWidth = 0.5 * s;
+    ctx.beginPath();
+    ctx.moveTo(-15 * s, 2 * s);
+    ctx.quadraticCurveTo(-12 * s, 4 * s, -8 * s, 2 * s);
+    ctx.quadraticCurveTo(-5 * s, 0, -1 * s, 1 * s);
+    ctx.quadraticCurveTo(12 * s, 2 * s, 32 * s, wag * 0.8);
+    ctx.moveTo(-14 * s, -3.5 * s);
+    ctx.quadraticCurveTo(-11 * s, -5.5 * s, -7 * s, -4 * s);
+    ctx.stroke();
+    // The small mouth under the snout.
+    ctx.strokeStyle = 'rgba(80,70,100,0.7)';
+    ctx.beginPath();
+    ctx.moveTo(-16 * s, 2.6 * s);
+    ctx.quadraticCurveTo(-14 * s, 3.6 * s, -12.5 * s, 3 * s);
+    ctx.stroke();
     // The tail thread.
     ctx.strokeStyle = 'rgba(180,170,200,0.7)';
     ctx.lineWidth = 0.8 * s;
     ctx.beginPath();
-    ctx.moveTo(40 * s, Math.sin(t * 2) * 2 * s);
+    ctx.moveTo(40 * s, wag);
     ctx.quadraticCurveTo(52 * s, Math.sin(t * 2 + 1) * 4 * s, 64 * s, Math.sin(t * 2 + 2) * 3 * s);
     ctx.stroke();
-    // A wide pectoral fin, beating slowly.
-    ctx.fillStyle = 'rgba(170,160,190,0.75)';
+    // A broad wing of a pectoral fin, beating slowly, its edge darker.
+    ctx.fillStyle = 'rgba(160,150,184,0.85)';
+    ctx.strokeStyle = 'rgba(96,88,120,0.7)';
+    ctx.lineWidth = 0.6 * s;
     ctx.beginPath();
-    ctx.moveTo(-6 * s, 2 * s);
-    ctx.quadraticCurveTo(0, (14 + beat * 6) * s, 10 * s, (10 + beat * 5) * s);
-    ctx.quadraticCurveTo(4 * s, 4 * s, 2 * s, 2 * s);
+    ctx.moveTo(-7 * s, 2.5 * s);
+    ctx.quadraticCurveTo(-2 * s, (15 + beat * 6) * s, 11 * s, (11 + beat * 5) * s);
+    ctx.quadraticCurveTo(5 * s, 4 * s, 2 * s, 2.5 * s);
+    ctx.closePath();
     ctx.fill();
-    // Its big eye shines green.
+    ctx.stroke();
+    // Its big eye: a dark lens that shines green.
+    ctx.fillStyle = 'rgba(30,40,46,0.95)';
+    ctx.beginPath();
+    ctx.ellipse(-11 * s, -1.6 * s, 3 * s, 2.4 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
     ctx.globalCompositeOperation = 'lighter';
-    glow(ctx, -11 * s, -1.5 * s, (4 + 3 * hurry) * s, '120,255,170', 0.8);
+    glow(ctx, -11 * s, -1.6 * s, (4 + 3 * hurry) * s, '120,255,170', 0.8);
+    ctx.fillStyle = 'rgba(200,255,220,0.9)';
+    ctx.beginPath();
+    ctx.arc(-11.8 * s, -2.4 * s, 0.7 * s, 0, Math.PI * 2);
+    ctx.fill();
     ctx.restore();
   }
 
@@ -834,6 +883,39 @@ export function createLife(seed: number) {
       ctx.lineTo(6 * s - f * 70 * s, 7 * s * (1 - f) + Math.sin(t * 2 + f * 5) * 3 * s * f);
     }
     ctx.quadraticCurveTo(22 * s, 9 * s, 26 * s, 0);
+    ctx.fill();
+    // Fins: the tall first dorsal over the shoulders, and a long low fringe under the whole tail.
+    const wave = (f: number) => Math.sin(t * 2 + f * 5) * 3 * s * f;
+    ctx.fillStyle = 'rgba(70,64,96,0.85)';
+    ctx.beginPath();
+    ctx.moveTo(8 * s, -9.6 * s);
+    ctx.lineTo(4 * s, -19 * s);
+    ctx.quadraticCurveTo(1 * s, -13 * s, -2 * s, -8.6 * s);
+    ctx.closePath();
+    for (let i = 1; i <= 10; i++) {
+      const f = i / 10, f0 = (i - 1) / 10;
+      const ax = 6 * s - f0 * 70 * s, ay = 7 * s * (1 - f0) + wave(f0);
+      const bx = 6 * s - f * 70 * s, by = 7 * s * (1 - f) + wave(f);
+      const h = 2.6 * s * (1 - f * 0.6);
+      ctx.moveTo(ax, ay);
+      ctx.lineTo(bx, by);
+      ctx.lineTo(bx + 1.5 * s, by + h);
+      ctx.lineTo(ax + 1.5 * s, ay + h);
+      ctx.closePath();
+    }
+    ctx.fill();
+    // The gill cover's edge, a small pectoral fin, and the mouth tucked under the snout.
+    ctx.strokeStyle = 'rgba(110,100,140,0.6)';
+    ctx.lineWidth = 0.7 * s;
+    ctx.beginPath();
+    ctx.moveTo(10 * s, -7 * s);
+    ctx.quadraticCurveTo(7 * s, 0, 10 * s, 6 * s);
+    ctx.moveTo(22 * s, 4.4 * s);
+    ctx.quadraticCurveTo(19 * s, 6 * s, 16 * s, 4.6 * s);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(90,84,120,0.8)';
+    ctx.beginPath();
+    ctx.ellipse(5 * s, 2 * s, 5 * s, 1.6 * s, 0.5 + Math.sin(t * 1.5) * 0.2, 0, Math.PI * 2);
     ctx.fill();
     // A big eye that catches the reef's light.
     ctx.fillStyle = 'rgba(150,200,255,0.55)';
