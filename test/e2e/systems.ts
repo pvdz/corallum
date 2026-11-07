@@ -50,7 +50,8 @@ await withGame(async (open) => {
   const lin = (await st()).meta.lineage;
   const box = page.locator('section.riddle');
   check(await box.isVisible(), 'riddle card shows');
-  const openChoices = await page.locator('.page-grow > section.moment:not([hidden]):not(.later)').count();
+  // Timed ones (a wish, a signal, a spawning) open beside it and are not counted.
+  const openChoices = await page.locator('.page-grow > section.moment:not([hidden]):not(.later):not(.timed)').count();
   check(openChoices <= 1, `one waiting choice open at a time (${openChoices})`);
   await unfold(box);
   const asked = await box.locator('.truce-text').textContent();

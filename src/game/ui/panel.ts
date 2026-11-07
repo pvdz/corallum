@@ -1883,7 +1883,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       // A choice that runs out takes the slot even from one the player opened.
       if (shownKey.get(sec) !== choiceKey(sec)) {
         shownKey.set(sec, choiceKey(sec));
-        if (!sec.classList.contains('later')) { openChoice = sec; if (sec.classList.contains('timed')) picked = null; }
+        if (!sec.classList.contains('later') && !sec.classList.contains('timed')) openChoice = sec;
       }
     }
     renderChips();
@@ -1896,13 +1896,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const waiting = [...grow.querySelectorAll<HTMLElement>(':scope > section.moment:not([hidden])')]
       .filter((sec) => sec.querySelector(':scope > .later-btn') && sec.querySelector('.truce-kicker')?.textContent)
       .filter((sec) => !sec.classList.contains('later') || sec.dataset.auto === '1');
-    // One the player opened stays open; else a choice that runs out (a wish, a signal, a spawning) is
-    // the one shown; else the newest.
+    // One choice is open: the one the player opened, else the newest. A choice that runs out (a wish,
+    // a signal, a spawning) opens beside it while it lasts, so it never folds what is being read.
     if (picked && !waiting.includes(picked)) picked = null;
-    const keep = picked ?? waiting.find((sec) => sec.classList.contains('timed'))
-      ?? (openChoice && waiting.includes(openChoice) ? openChoice : waiting[0] ?? null);
+    const lasting = waiting.filter((sec) => !sec.classList.contains('timed'));
+    const keep = picked ?? (openChoice && lasting.includes(openChoice) ? openChoice : lasting[0] ?? null);
     for (const sec of waiting) {
-      const fold = sec !== keep;
+      const fold = sec !== keep && !sec.classList.contains('timed');
       if (sec.classList.contains('later') !== fold) sec.classList.toggle('later', fold);
       if (fold) { sec.dataset.auto = '1'; sec.dataset.laterFor = `${sec.querySelector('.truce-kicker')?.textContent ?? ''}|${sec.querySelector('h3')?.textContent ?? ''}`; }
       else delete sec.dataset.auto;

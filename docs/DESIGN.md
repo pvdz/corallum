@@ -31,7 +31,7 @@ Prestige: **Lesser Spawning** → new seamount, keep **Lineage** traits and deco
 - System font stacks only (no network). Display: Iowan/Palatino/Georgia/DejaVu Serif.
 - Reduced-motion and quality tiers.
 - A quiet panel (the user finds the HTML panel heavy beside the canvas): what is already known
-  steps aside (owned cards hide their flavour, choices that may wait fold with Later and only the newest waiting choice is open (the others are one-line rows), full
+  steps aside (owned cards hide their flavour, choices that may wait fold with Later and only one waiting choice is open (the one opened by hand, else the newest; a timed one opens beside it while it lasts), the others are one-line rows, full
   residents and the mid-run spawning fold to one line, finished upgrades fold away); feedback
   belongs in the world (flourishes that show by day and night, numbers over the water). With a mouse, the list recedes while the player only watches the sea. The weather card's strip folds away by the water's name, and folded choices keep one dim line of what they ask. New UI
   should earn its room on a phone sheet ~400 px tall.
