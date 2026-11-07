@@ -1441,7 +1441,8 @@ function takePortrait(): void {
     // Taken at the start of the next frame, before anything is drawn: the canvas then holds this
     // frame, finished, and the crop does not force its drawing through mid-frame.
     portraitAsk = () => portraits.capture(p.id, canvas, cx, cy, side, closeUp);
-    if (closeUp && !state.meta.seen.includes('did:closeup')) state.meta.seen.push('did:closeup');
+    // The feat is for zooming in by hand, not for the idle camera's visits.
+    if (closeUp && performance.now() - lastInput < 25_000 && !state.meta.seen.includes('did:closeup')) state.meta.seen.push('did:closeup');
     return;
   }
 }
@@ -1846,7 +1847,7 @@ function updateGauge(): void {
 // View mode: hide the panel and let the reef have the whole screen (button top-left, or H).
 let viewMode = false;
 /** The creature the idle camera is following in view mode (where it was last seen), and when to pick the next. */
-let driftFollow: { id: Spot['id']; x: number; y: number; until: number } | null = null;
+let driftFollow: { id: Spot['id']; x: number; y: number; until: number; named?: boolean } | null = null;
 let driftNext = 0;
 /** Spots the idle camera does not go to: stars, old stone, Ossel's wall and passing debris. */
 const NO_FOLLOW = new Set<Spot['id']>(['star', 'old', 'ossel', 'fragment', 'tangle', 'raft']);
@@ -2150,7 +2151,11 @@ function frameBody(now: number): void {
     if (!driftFollow && now > driftNext) {
       const pool = tappable().filter((p) => !NO_FOLLOW.has(p.id) && p.r < canvas.width * 0.12 &&
         p.x > canvas.width * 0.08 && p.x < canvas.width * 0.92 && p.y > canvas.height * 0.08 && p.y < canvas.height * 0.92);
-      const p = pool[Math.floor(Math.random() * pool.length)];
+      // One kind at random (a school's many spots do not make it likelier), then one of that kind.
+      const kinds = [...new Set(pool.map((q) => q.id))];
+      const kind = kinds[Math.floor(Math.random() * kinds.length)];
+      const ofKind = pool.filter((q) => q.id === kind);
+      const p = ofKind[Math.floor(Math.random() * ofKind.length)];
       if (p) driftFollow = { id: p.id, x: p.x, y: p.y, until: now + 18_000 };
       driftNext = now + 55_000;
     }
@@ -2166,7 +2171,15 @@ function frameBody(now: number): void {
       if (!follow || best > canvas.width * 0.2 || now > driftFollow.until) { driftFollow = null; follow = null; }
       else { driftFollow.x = follow.x; driftFollow.y = follow.y; }
     }
-    if (follow) zoomer.lookAt(2.1, follow.x, follow.y, Math.min(1, dt * 0.45));
+    if (follow && driftFollow) {
+      zoomer.lookAt(2.1, follow.x, follow.y, Math.min(1, dt * 0.45));
+      // Once the camera has closed in, the creature's name and note, as a tap would show them.
+      if (!driftFollow.named && now > driftFollow.until - 14_000) {
+        driftFollow.named = true;
+        const [sx, sy] = toScreen(follow.x, follow.y);
+        showCreatureLabel(follow.id, sx / dpr, sy / dpr, (follow.r * zoom.k) / dpr);
+      }
+    }
     else {
       const [crx, cry] = scene.crownAt;
       const tt = now / 1000;
