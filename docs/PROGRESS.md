@@ -1193,3 +1193,4 @@ date, what landed, what is half-done, what's next.
 - And a new lasting choice arriving no longer takes the slot from the open one either: it waits folded (its line says what it is) until the open one is answered, put off or tapped away from.
 - Frame cost at the end of the day (phone, 4× CPU; this morning in brackets): Silt 9.9 (10.2), Midnight 3000 m 12.3 (12.1), Twilight 14.4 (14.1), Sunlit 15.5 (15.3), Breach 10.4 (10.4) ms draw. The day's redraws cost ~0.3 ms in the busiest zones after the Rasp trims.
 - Purchase and story flourishes (the flare, a polyp budded, a shoal called, a wish, a truce word…: draw.ts ring, 13 uses) spread as soft bands of light instead of hairline circles: pulses in the water, not UI targets.
+- The touch hints on a fish tangled in jelly threads (or pinned on the Silt Floor), a broken fragment and a lost shoal are soft pulses too. No hairline circles are left in the scenes.
