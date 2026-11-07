@@ -1270,7 +1270,7 @@ section.shoals > header .level { white-space: normal; text-align: right; margin-
 
 /* Stocks of acts long passed: one small line under the others, name and number only. */
 .stocks-minor { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0 14px; margin-top: -2px; }
-.stocks-minor:empty { display: none; }
+.stocks-minor:empty, .stocks-minor[hidden] { display: none; }
 .stocks-minor.fill { grid-column: auto; align-self: end; align-content: flex-end; }
 .stocks-minor .stock:not([hidden]) { display: flex; align-items: baseline; gap: 5px; }
 .panel .stocks .stocks-minor .stock-sub { display: none; }

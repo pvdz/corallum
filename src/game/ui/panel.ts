@@ -1976,6 +1976,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           else stocks.insertBefore(st.row, minorBox);
         }
       }
+      minorBox.hidden = !minor.some((st) => !st.row.hidden);
       // Three or more stocks: a tighter grid (one-line rates, up to four to a row on a phone), so the cards keep their room.
       const shown = [...stocks.children].filter((c) => !(c as HTMLElement).hidden && c.classList.contains('stock') && !c.classList.contains('height')).length;
       stocks.classList.toggle('many', shown >= 3);
