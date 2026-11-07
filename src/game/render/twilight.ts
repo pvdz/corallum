@@ -777,10 +777,11 @@ export function createTwilightScene(seed: number): Scene {
       ctx.quadraticCurveTo(-14 * s * reach, (2 + i) * s, -(18 + (i % 3) * 3) * s * reach, (3 + i * 1.2) * s + Math.sin(t * 1.5 + i) * 1.5 * s);
       ctx.stroke();
     }
-    // The shell: a disc with the spiral's tiger stripes running out from the coil.
-    const g = ctx.createRadialGradient(2 * s, -2 * s, 1 * s, 0, 0, 11 * s);
-    g.addColorStop(0, '#f6efe0');
-    g.addColorStop(1, '#d9c7a8');
+    // The shell: a cream disc (kept below white: it sits in lit water under the bloom), with the
+    // tiger stripes as flames curling out from the coil over its older part, the front by the hood plain.
+    const g = ctx.createRadialGradient(2 * s, -3 * s, 1 * s, 0, 0, 11 * s);
+    g.addColorStop(0, '#e2d3b6');
+    g.addColorStop(1, '#b49c78');
     ctx.fillStyle = g;
     ctx.beginPath();
     ctx.arc(0, 0, 11 * s, 0, Math.PI * 2);
@@ -789,15 +790,30 @@ export function createTwilightScene(seed: number): Scene {
     ctx.beginPath();
     ctx.arc(0, 0, 11 * s, 0, Math.PI * 2);
     ctx.clip();
-    ctx.strokeStyle = 'rgba(150,80,40,0.75)';
-    ctx.lineWidth = 2.2 * s;
-    for (let k = 0; k < 6; k++) {
-      const a = -0.6 + k * 0.45;
-      ctx.beginPath();
-      ctx.moveTo(Math.cos(a) * 4 * s, Math.sin(a) * 4 * s - 3 * s);
-      ctx.quadraticCurveTo(Math.cos(a + 0.4) * 9 * s, Math.sin(a + 0.4) * 9 * s - 3 * s, Math.cos(a + 0.7) * 12 * s, Math.sin(a + 0.7) * 12 * s);
-      ctx.stroke();
+    ctx.fillStyle = 'rgba(140,72,36,0.8)';
+    ctx.beginPath();
+    for (let k = 0; k < 7; k++) {
+      // Each flame: narrow at the coil, widening and curling as it runs out past the rim.
+      const a = -1.5 + k * 0.42 + (k % 2) * 0.06;
+      const w = 0.07 + 0.02 * (k % 3);
+      const pt = (ang: number, r: number): [number, number] => [3 * s + Math.cos(ang) * r * s, 0.5 * s + Math.sin(ang) * r * s];
+      const [x0, y0] = pt(a, 2.2);
+      const [x1, y1] = pt(a + 0.35 - w, 8);
+      const [x2, y2] = pt(a + 0.6 - w, 15);
+      const [x3, y3] = pt(a + 0.6 + w, 15);
+      const [x4, y4] = pt(a + 0.35 + w, 8);
+      ctx.moveTo(x0, y0);
+      ctx.quadraticCurveTo(x1, y1, x2, y2);
+      ctx.lineTo(x3, y3);
+      ctx.quadraticCurveTo(x4, y4, x0, y0);
     }
+    ctx.fill();
+    // The rim catching the light along its top.
+    ctx.strokeStyle = 'rgba(250,238,215,0.45)';
+    ctx.lineWidth = 1 * s;
+    ctx.beginPath();
+    ctx.arc(0, 0, 10.4 * s, -2.6, -0.5);
+    ctx.stroke();
     ctx.restore();
     // The coil's navel, set toward the back, and the one suture curling out from it to the mouth.
     ctx.fillStyle = 'rgba(110,80,55,0.75)';
