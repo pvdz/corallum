@@ -216,35 +216,59 @@ export function createSunlitScene(seed: number): Scene {
     ctx.restore();
   }
 
-  function drawFloor(ctx: CanvasRenderingContext2D, t: number): void {
+  /** The sand and its ripples (still), painted once per layout into a band from the floor's highest point down. */
+  let floorCache: { canvas: HTMLCanvasElement | OffscreenCanvas; key: string; y: number } | null = null;
+  function floorPath(c: CanvasRenderingContext2D, dy: number): void {
     const x0 = focus.x - focus.w * 0.1, span = focus.w * 1.2;
-    ctx.beginPath();
-    ctx.moveTo(0, h);
-    for (let i = 0; i <= 40; i++) ctx.lineTo(x0 + (i / 40) * span, floorY(i / 40));
-    ctx.lineTo(w, h);
-    ctx.closePath();
-    const g = ctx.createLinearGradient(0, focus.y + focus.h * 0.88, 0, h);
+    c.beginPath();
+    c.moveTo(0, h - dy);
+    for (let i = 0; i <= 40; i++) c.lineTo(x0 + (i / 40) * span, floorY(i / 40) - dy);
+    c.lineTo(w, h - dy);
+    c.closePath();
+  }
+  function paintSand(c: CanvasRenderingContext2D, dy: number): void {
+    floorPath(c, dy);
+    const g = c.createLinearGradient(0, focus.y + focus.h * 0.88 - dy, 0, h - dy);
     g.addColorStop(0, '#e9d7a8');
     g.addColorStop(1, '#b49a6a');
-    ctx.fillStyle = g;
-    ctx.fill();
+    c.fillStyle = g;
+    c.fill();
     const top = focus.y + focus.h * 0.86;
-    ctx.save();
-    ctx.clip();
+    c.save();
+    c.clip();
     // Sand ripples: low crests laid by the swell, closer together far off, each with a shaded lee.
-    ctx.lineWidth = 1.2 * dpr;
+    c.lineWidth = 1.2 * dpr;
     for (let k = 0; k < 18; k++) {
       const v = (k + 0.5) / 18;
-      const y0 = top + (h - top) * v * v;
+      const y0 = top + (h - top) * v * v - dy;
       const amp = (1.5 + v * 4) * dpr, wl = (40 + v * 60) * dpr;
-      ctx.strokeStyle = `rgba(140,112,70,${(0.18 + v * 0.22).toFixed(3)})`;
-      ctx.beginPath();
+      c.strokeStyle = `rgba(140,112,70,${(0.18 + v * 0.22).toFixed(3)})`;
+      c.beginPath();
       for (let x = 0; x <= w; x += 8 * dpr) {
         const y = y0 + Math.sin(x / wl + k * 2.3) * amp + Math.sin(x / (wl * 0.37) + k) * amp * 0.3;
-        if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        if (x === 0) c.moveTo(x, y); else c.lineTo(x, y);
       }
-      ctx.stroke();
+      c.stroke();
     }
+    c.restore();
+  }
+
+  function drawFloor(ctx: CanvasRenderingContext2D, t: number): void {
+    let yTop = h;
+    for (let i = 0; i <= 40; i++) yTop = Math.min(yTop, floorY(i / 40));
+    yTop = Math.max(0, Math.floor(yTop) - 2);
+    const key = `${w}x${h} ${focus.x},${focus.y},${focus.w},${focus.h} ${dpr}`;
+    if (!floorCache || floorCache.key !== key) {
+      const bh = Math.max(1, Math.ceil(h - yTop));
+      const canvas = typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(Math.ceil(w), bh) : Object.assign(document.createElement('canvas'), { width: Math.ceil(w), height: bh });
+      paintSand(canvas.getContext('2d') as CanvasRenderingContext2D, yTop);
+      floorCache = { canvas, key, y: yTop };
+    }
+    ctx.drawImage(floorCache.canvas, 0, floorCache.y);
+    const top = focus.y + focus.h * 0.86;
+    ctx.save();
+    floorPath(ctx, 0);
+    ctx.clip();
     // Caustics: a shifting net of light on the sand, two crossing families of wavering lines laid
     // flat (squashed toward the far edge) so the cells read as lying on the floor.
     ctx.globalCompositeOperation = 'lighter';
