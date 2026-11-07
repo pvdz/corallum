@@ -68,6 +68,8 @@ export function createTwilightScene(seed: number): Scene {
   let motes: Mote[] = [];
   const moteSeed = Math.floor(rng() * 1e9);
   const slopeSeed = Math.floor(rng() * 1e9);
+  // The slope's two wave phases, from its own seed.
+  const [slopePhaseA, slopePhaseB] = ((r) => [r() * 6, r() * 6])(mulberry32(slopeSeed));
   const ground = createGround(slopeSeed ^ 0x51f7);
   const grazers: Grazer[] = Array.from({ length: MAX_RASP }, () => ({
     lane: rng(), speed: range(rng, 0.012, 0.03) * (rng() < 0.5 ? -1 : 1), phase: rng(),
@@ -188,8 +190,7 @@ export function createTwilightScene(seed: number): Scene {
   }
 
   function slopeY(u: number): number {
-    const r = mulberry32(slopeSeed);
-    const a = r() * 6, b = r() * 6;
+    const a = slopePhaseA, b = slopePhaseB;
     return focus.y + focus.h * (0.92 - 0.14 * u + 0.015 * Math.sin(u * 9 + a) + 0.008 * Math.sin(u * 23 + b));
   }
 
