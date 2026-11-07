@@ -1370,6 +1370,7 @@ export function createSunlitScene(seed: number): Scene {
     const s = scale();
     ctx.save();
     ctx.fillStyle = 'rgba(230,245,255,0.55)';
+    ctx.beginPath();
     for (let g = 0; g < 3; g++) {
       const cx = L.cx + (g - 1) * L.unit * 0.12 + Math.sin(t * 0.7 + g * 2) * 20 * s;
       const cy = L.baseY - L.unit * (0.3 + g * 0.15) + Math.cos(t * 0.5 + g) * 12 * s;
@@ -1377,11 +1378,12 @@ export function createSunlitScene(seed: number): Scene {
         const a = i * 2.39996 + t * (0.9 + g * 0.2);
         const r = Math.sqrt(i / 40) * 26 * s;
         const x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r * 0.5;
-        ctx.beginPath();
-        ctx.ellipse(x, y, 2.2 * s, 0.8 * s, a + Math.PI / 2, 0, Math.PI * 2);
-        ctx.fill();
+        const ang = a + Math.PI / 2;
+        ctx.moveTo(x + Math.cos(ang) * 2.2 * s, y + Math.sin(ang) * 2.2 * s);
+        ctx.ellipse(x, y, 2.2 * s, 0.8 * s, ang, 0, Math.PI * 2);
       }
     }
+    ctx.fill();
     ctx.restore();
   }
 
