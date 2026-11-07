@@ -496,6 +496,8 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 .boon-choices .choice[hidden] { display: none; }
 .sport .boon-choices { grid-template-columns: repeat(2, 1fr); }
 .boon-choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+/* Choices with a line of flavour are sentences: one to a row (three ~110 px columns wrapped them a word a line). */
+.boon-choices:has(> .choice > em) { grid-template-columns: 1fr; gap: 6px; }
 @media (max-width: 599px), (max-width: 799px) and (min-height: 501px) { .boon-choices { grid-template-columns: 1fr; } }
 /* The garden's children: one to a row, the name and what it gives side by side. */
 .boon-choices.garden-kinds { grid-template-columns: 1fr; gap: 6px; }
