@@ -1304,22 +1304,49 @@ export function createMidnightScene(seed: number): Scene {
     ctx.quadraticCurveTo(-2 * s, 6.5 * s, 8 * s, 4.5 * s);
     ctx.quadraticCurveTo(12 * s, 3.5 * s, 12 * s, 1 * s);
     ctx.fill();
-    ctx.strokeStyle = 'rgba(120,200,170,0.28)';
-    ctx.lineWidth = 0.8 * s;
-    ctx.stroke();
-    // Pectoral fin, broad and held out, and a dorsal fin far back.
-    ctx.fillStyle = 'rgba(90,96,130,0.55)';
+    // The eyes' green light along its back only.
+    ctx.strokeStyle = 'rgba(120,210,170,0.3)';
+    ctx.lineWidth = 0.7 * s;
     ctx.beginPath();
-    ctx.ellipse(-1 * s, 4.5 * s, 7 * s, 2.4 * s, 0.45 + Math.sin(t * 1.3) * 0.2, 0, Math.PI * 2);
+    ctx.moveTo(4 * s, -3.6 * s);
+    ctx.quadraticCurveTo(-4 * s, -4.1 * s, -11.5 * s, -1.3 * s);
+    ctx.stroke();
+    // The big pectoral fin held out like a wing, clear and rayed, sculling; a small dorsal far back.
+    const beat = Math.sin(t * 1.3) * 1.2 * s;
+    ctx.fillStyle = 'rgba(96,104,140,0.4)';
+    ctx.beginPath();
+    ctx.moveTo(3 * s, 2.5 * s);
+    ctx.quadraticCurveTo(-4 * s, 6 * s + beat, -12 * s, 8 * s + beat);
+    ctx.quadraticCurveTo(-9 * s, 10.5 * s + beat, -3 * s, 9.5 * s + beat * 0.6);
+    ctx.quadraticCurveTo(1 * s, 7 * s, 3 * s, 3.5 * s);
     ctx.fill();
+    ctx.strokeStyle = 'rgba(150,160,200,0.3)';
+    ctx.lineWidth = 0.5 * s;
+    ctx.beginPath();
+    for (let k = 0; k < 5; k++) {
+      const f = k / 4;
+      ctx.moveTo(2.5 * s, 3 * s);
+      ctx.lineTo((-11.5 + 8 * f) * s, (8.2 + 1.6 * f) * s + beat * (1 - 0.4 * f));
+    }
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(70,72,100,0.7)';
     ctx.beginPath();
     ctx.moveTo(-6 * s, -3.4 * s);
     ctx.quadraticCurveTo(-9 * s, -7.5 * s, -12 * s, -2 * s);
     ctx.fill();
+    // A small mouth at the snout, and the two dark nostril pits above it that look like eyes.
     ctx.fillStyle = '#0a0a10';
     ctx.beginPath();
-    ctx.arc(11.6 * s, 1.6 * s, 0.7 * s, 0, Math.PI * 2);
+    ctx.arc(9.6 * s, -1.4 * s, 0.75 * s, 0, Math.PI * 2);
+    ctx.moveTo(11.4 * s, -0.6 * s);
+    ctx.arc(10.9 * s, -0.6 * s, 0.55 * s, 0, Math.PI * 2);
     ctx.fill();
+    ctx.strokeStyle = 'rgba(8,8,14,0.9)';
+    ctx.lineWidth = 0.5 * s;
+    ctx.beginPath();
+    ctx.moveTo(12 * s, 1.6 * s);
+    ctx.lineTo(10 * s, 2.2 * s);
+    ctx.stroke();
     // The clear dome of the head.
     ctx.fillStyle = 'rgba(170,210,230,0.12)';
     ctx.strokeStyle = 'rgba(190,230,250,0.45)';
@@ -1327,6 +1354,11 @@ export function createMidnightScene(seed: number): Scene {
     ctx.beginPath();
     ctx.ellipse(5 * s, -4 * s, 7 * s, 6 * s, 0, Math.PI * 0.95, Math.PI * 2.05);
     ctx.fill();
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(230,245,255,0.35)';
+    ctx.lineWidth = 0.9 * s;
+    ctx.beginPath();
+    ctx.ellipse(5 * s, -4 * s, 5.6 * s, 4.6 * s, 0, Math.PI * 1.15, Math.PI * 1.45);
     ctx.stroke();
     // Two green tube eyes inside the dome: up, or forward when touched.
     const a = -Math.PI / 2 + look * (Math.PI / 2);
