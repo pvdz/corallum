@@ -727,18 +727,46 @@ export function createTwilightScene(seed: number): Scene {
     const x = focus.x + focus.w * (up.side < 0 ? 0.12 : 0.86);
     const a = up.strength * (up.caught ? 0.4 : 1);
     ctx.save();
-    const g = ctx.createLinearGradient(x - 60 * s, 0, x + 60 * s, 0);
+    // The column of cold, rich water welling up: paler than the water round it, its edges wavering,
+    // widest at the floor and fraying out toward the top.
+    const g = ctx.createLinearGradient(x - 80 * s, 0, x + 80 * s, 0);
     g.addColorStop(0, 'rgba(170,220,255,0)');
-    g.addColorStop(0.5, `rgba(185,230,255,${0.3 * a})`);
+    g.addColorStop(0.5, `rgba(190,235,255,${0.38 * a})`);
     g.addColorStop(1, 'rgba(170,220,255,0)');
     ctx.fillStyle = g;
-    ctx.fillRect(x - 60 * s, focus.y, 120 * s, focus.h);
-    ctx.fillStyle = `rgba(225,245,255,${0.7 * a})`;
-    for (let i = 0; i < 40; i++) {
-      const u = ((i * 0.37 + t * (0.08 + (i % 5) * 0.01)) % 1);
-      const px = x + Math.sin(t * 1.2 + i * 2.1) * (20 + (i % 7) * 5) * s;
+    ctx.beginPath();
+    const N = 24;
+    for (let i = 0; i <= N; i++) {
+      const f = i / N, y = focus.y + focus.h * (1 - f);
+      const half = (70 - 30 * f) * s + Math.sin(f * 9 - t * 1.4) * 10 * s;
+      const cx = x + Math.sin(f * 4 + t * 0.5) * 12 * s;
+      if (i === 0) ctx.moveTo(cx - half, y); else ctx.lineTo(cx - half, y);
+    }
+    for (let i = N; i >= 0; i--) {
+      const f = i / N, y = focus.y + focus.h * (1 - f);
+      const half = (70 - 30 * f) * s + Math.sin(f * 9 - t * 1.4 + 2) * 10 * s;
+      const cx = x + Math.sin(f * 4 + t * 0.5) * 12 * s;
+      ctx.lineTo(cx + half, y);
+    }
+    ctx.closePath();
+    ctx.fill();
+    // Motes carried up in it, round and of every size, swirling as they rise; the bigger ones glint.
+    ctx.fillStyle = `rgba(225,245,255,${0.75 * a})`;
+    ctx.beginPath();
+    for (let i = 0; i < 70; i++) {
+      const u = ((i * 0.37 + t * (0.07 + (i % 5) * 0.012)) % 1);
+      const px = x + Math.sin(t * 1.2 + i * 2.1 + u * 6) * (14 + (i % 7) * 7) * s * (1 - 0.4 * u);
       const py = focus.y + focus.h * (1 - u);
-      ctx.fillRect(px, py, 2.4 * s, 2.4 * s);
+      const r = (0.8 + (i % 4) * 0.55) * s;
+      ctx.moveTo(px + r, py);
+      ctx.arc(px, py, r, 0, Math.PI * 2);
+    }
+    ctx.fill();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < 70; i += 9) {
+      const u = ((i * 0.37 + t * (0.07 + (i % 5) * 0.012)) % 1);
+      const px = x + Math.sin(t * 1.2 + i * 2.1 + u * 6) * (14 + (i % 7) * 7) * s * (1 - 0.4 * u);
+      glow(ctx, px, focus.y + focus.h * (1 - u), 7 * s, '200,240,255', 0.35 * a * Math.sin(u * Math.PI));
     }
     ctx.restore();
   }
