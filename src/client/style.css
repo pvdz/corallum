@@ -58,9 +58,16 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 @media (min-width: 800px), (min-width: 600px) and (max-height: 500px) {
   .panel {
     left: auto; top: 0; height: auto; width: var(--panel-w);
-    border-radius: 0; border: 0; border-left: 1px solid var(--edge);
+    border-radius: 0; border: 0;
     /* A phone on its side with the notch at the right keeps the panel's text out from under it. */
-    padding: 20px max(18px, env(safe-area-inset-right)) 16px 18px; box-shadow: -10px 0 40px rgba(0, 0, 0, 0.45);
+    padding: 20px max(18px, env(safe-area-inset-right)) 16px 18px; box-shadow: none;
+  }
+  /* No wall between the sea and the panel: a strip of the panel's own water (tint and blur) fades in
+     beside it, so the sea darkens into the panel. */
+  .panel::before {
+    content: ''; position: absolute; top: 0; bottom: 0; right: 100%; width: 56px; pointer-events: none;
+    background: var(--panel-bg); backdrop-filter: blur(10px) saturate(1.2); -webkit-backdrop-filter: blur(10px) saturate(1.2);
+    -webkit-mask-image: linear-gradient(to right, transparent, #000); mask-image: linear-gradient(to right, transparent, #000);
   }
 }
 
