@@ -232,3 +232,27 @@ export function whaleSilhouette(ctx: CanvasRenderingContext2D, s: number, beat: 
   ctx.quadraticCurveTo(14 * s, 30 * s, 24 * s, 14 * s);
   ctx.fill();
 }
+
+/**
+ * A ring spreading through water, drawn soft: a band `band` wide inside the ellipse (rx, ry),
+ * brightest at its leading edge and fading inward (a crisp stroked ellipse reads as a UI target).
+ */
+export function softRing(ctx: CanvasRenderingContext2D, x: number, y: number, rx: number, ry: number, band: number, rgb: string, alpha: number): void {
+  if (rx < 1 || ry < 0.5 || alpha <= 0.002) return;
+  const b = Math.min(rx, band);
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(1, ry / rx);
+  const g = ctx.createRadialGradient(0, 0, rx - b, 0, 0, rx);
+  g.addColorStop(0, `rgba(${rgb},0)`);
+  g.addColorStop(0.8, `rgba(${rgb},${(alpha * 0.6).toFixed(3)})`);
+  g.addColorStop(0.97, `rgba(${rgb},${alpha.toFixed(3)})`);
+  g.addColorStop(1, `rgba(${rgb},0)`);
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(0, 0, rx, 0, Math.PI * 2);
+  ctx.arc(0, 0, rx - b, 0, Math.PI * 2, true);
+  ctx.fill();
+  ctx.restore();
+}
+

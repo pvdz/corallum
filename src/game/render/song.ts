@@ -1,7 +1,7 @@
 // The reef's Song (the fourth dialect) made visible around its crown: a lullaby's slow breathing
 // glow, a chorus of small lights answering each other, a call's clear ring pulsing outward.
 
-import { glow } from './draw.ts';
+import { glow, softRing } from './draw.ts';
 
 export function drawSong(ctx: CanvasRenderingContext2D, song: string, x: number, y: number, t: number, s: number): void {
   if (!song) return;
@@ -19,11 +19,7 @@ export function drawSong(ctx: CanvasRenderingContext2D, song: string, x: number,
     }
   } else if (song === 'call') {
     const u = (t % 4) / 4;
-    ctx.strokeStyle = `rgba(200,240,255,${0.35 * (1 - u)})`;
-    ctx.lineWidth = 2 * s;
-    ctx.beginPath();
-    ctx.ellipse(x, y, u * 160 * s, u * 90 * s, 0, 0, Math.PI * 2);
-    ctx.stroke();
+    softRing(ctx, x, y, u * 160 * s, u * 90 * s, (10 + 18 * u) * s, '200,240,255', 0.3 * (1 - u));
   }
   ctx.restore();
 }

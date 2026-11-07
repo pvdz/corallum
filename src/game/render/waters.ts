@@ -4,7 +4,7 @@
 // glints, warm water shimmers. Still and slack water show nothing.
 
 import type { WaterId } from '../content/waters.ts';
-import { glow } from './draw.ts';
+import { glow, softRing } from './draw.ts';
 import type { Focus } from './scene.ts';
 
 const FADE = 20;
@@ -39,24 +39,7 @@ export function drawWater(ctx: CanvasRenderingContext2D, id: WaterId, F: Focus, 
       const u = ((t * 0.07 + k / 3) % 1);
       const cx = F.x + F.w * (0.2 + 0.6 * ((k * 0.41 + Math.floor(t * 0.07 + k / 3) * 0.29) % 1));
       const cy = F.y + F.h * 0.45;
-      const R = u * F.w * 0.45;
-      if (R < 4 * s) continue;
-      const band = Math.min(R, (24 + 30 * u) * s);
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.scale(1, 0.4);
-      const g = ctx.createRadialGradient(0, 0, R - band, 0, 0, R);
-      const al = 0.16 * a * (1 - u);
-      g.addColorStop(0, 'rgba(200,180,255,0)');
-      g.addColorStop(0.8, `rgba(200,180,255,${(al * 0.6).toFixed(3)})`);
-      g.addColorStop(0.97, `rgba(215,200,255,${al.toFixed(3)})`);
-      g.addColorStop(1, 'rgba(200,180,255,0)');
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(0, 0, R, 0, Math.PI * 2);
-      ctx.arc(0, 0, R - band, 0, Math.PI * 2, true);
-      ctx.fill();
-      ctx.restore();
+      softRing(ctx, cx, cy, u * F.w * 0.45, u * F.w * 0.18, (24 + 30 * u) * s, '205,190,255', 0.16 * a * (1 - u));
     }
   } else if (id === 'gritty') {
     // Fine sand carried sideways in streaks: each a trail of grains, faint at its tail and

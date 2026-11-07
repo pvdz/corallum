@@ -2,7 +2,7 @@
 // spire beside the reef in the Midnight Water, the breakwater's arc of stacked stone upslope on the
 // Twilight Shelf, the sun terrace's steps at the reef's foot in the Sunlit Crown. Each grows by stage.
 
-import { glow } from './draw.ts';
+import { glow, softRing } from './draw.ts';
 import type { Focus } from './scene.ts';
 
 /** The vent garden: small chimneys either side of the vent, each smoking a little, one more ring a stage. */
@@ -133,11 +133,7 @@ export function drawDome(ctx: CanvasRenderingContext2D, F: Focus, stage: number,
   ctx.globalCompositeOperation = 'lighter';
   for (let k = 0; k < stage; k++) {
     const u = (t * 0.25 + k / stage) % 1;
-    ctx.strokeStyle = `rgba(190,170,255,${0.35 * (1 - u)})`;
-    ctx.lineWidth = 1.5 * s;
-    ctx.beginPath();
-    ctx.ellipse(x, floorY - r * 0.4 * arc, r * (0.6 + u * 1.4), r * (0.3 + u * 0.7), 0, 0, Math.PI * 2);
-    ctx.stroke();
+    softRing(ctx, x, floorY - r * 0.4 * arc, r * (0.6 + u * 1.4), r * (0.3 + u * 0.7), (8 + 12 * u) * s, '190,170,255', 0.32 * (1 - u));
   }
   ctx.restore();
 }

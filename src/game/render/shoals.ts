@@ -230,8 +230,23 @@ export function createShoals(seed: number) {
       ctx.rect(x - 28 * k, y - 22 * k, 56 * k, 4 * k);
       ctx.fill();
     } else if (site === 'wells') {
-      for (let i = 0; i < 3; i++) ctx.ellipse(x - 20 * k + i * 20 * k, y, 7 * k, 3 * k, 0, 0, Math.PI * 2);
-      ctx.stroke();
+      // Three well-heads of stacked stone at different heights, each a squat drum with a dark
+      // mouth (outlined rings in a row read as portholes).
+      for (let i = 0; i < 3; i++) {
+        const wx = x - 22 * k + i * 21 * k + (i === 1 ? 1 : 0) * k, hgt = (6 + (i % 2) * 4) * k, wy = y + (i === 1 ? -2 : 1) * k;
+        ctx.rect(wx - 7 * k, wy, 14 * k, hgt);
+        ctx.moveTo(wx + 7 * k, wy);
+        ctx.ellipse(wx, wy, 7 * k, 2.6 * k, 0, 0, Math.PI * 2);
+      }
+      ctx.fill();
+      ctx.fillStyle = '#1a2240';
+      ctx.beginPath();
+      for (let i = 0; i < 3; i++) {
+        const wx = x - 22 * k + i * 21 * k + (i === 1 ? 1 : 0) * k, wy = y + (i === 1 ? -2 : 1) * k;
+        ctx.moveTo(wx + 5 * k, wy);
+        ctx.ellipse(wx, wy, 5 * k, 1.6 * k, 0, 0, Math.PI * 2);
+      }
+      ctx.fill();
     } else if (site === 'midden') {
       ctx.moveTo(x - 34 * k, y + 14 * k);
       ctx.quadraticCurveTo(x, y - 20 * k, x + 34 * k, y + 14 * k);
