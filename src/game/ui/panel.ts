@@ -1746,7 +1746,15 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   function appendBand(b: Band): void {
     const li = storyItem(metres(b.metres), b.title, bandStory(b, lastState?.truce.wall === 'b'));
     li.dataset.band = b.id;
+    li.dataset.metres = String(b.metres);
     bandList.prepend(li);
+  }
+  /** A story met live goes on top; one from a loaded save sits by its height, above the last band laid below it. */
+  function addAt(li: HTMLLIElement, metres: number): void {
+    const anchor = primed ? null : [...bandList.querySelectorAll<HTMLLIElement>(':scope > li[data-metres]')].find((x) => Number(x.dataset.metres) <= metres);
+    if (anchor) anchor.before(li);
+    else if (primed || !bandList.querySelector(':scope > li[data-metres]')) bandList.prepend(li);
+    else bandList.append(li);
   }
   /** A choice made live goes on top; one from a loaded save sits just above the band that opened it. */
   function addChoice(li: HTMLLIElement, afterBand: string): void {
@@ -1758,7 +1766,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     return { kicker: `${EXPEDITION.kicker} · ${x.name}`, title: x.relic, text: x.text };
   }
   function appendRelic(x: Site): void {
-    bandList.prepend(storyItem('found', x.name, relicStory(x), 'is-relic'));
+    addAt(storyItem('found', x.name, relicStory(x), 'is-relic'), x.metres);
   }
   function appendReading(r: Reading): void {
     bandList.prepend(storyItem('read', r.title, readingStory(r), 'is-reading'));
@@ -2308,7 +2316,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         if (!c || momentSeen.has(m.id)) continue;
         momentSeen.add(m.id);
         const st = { kicker: `${MOMENT.kicker}: ${m.title}`, title: m[c].label, text: m[c].text };
-        bandList.prepend(storyItem('moment', m.title, st, 'is-moment'));
+        addAt(storyItem('moment', m.title, st, 'is-moment'), m.metres);
         listed(true);
         if (primed) showStory(st);
       }
