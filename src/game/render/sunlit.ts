@@ -1822,13 +1822,32 @@ export function createSunlitScene(seed: number): Scene {
         ctx.beginPath();
         ctx.ellipse(x, y, r * 0.8, r * 0.55, 0, Math.PI, 0);
         ctx.fill();
-        ctx.strokeStyle = `hsla(${c.hue},40%,30%,0.5)`;
-        ctx.lineWidth = 1.2 * s;
-        for (let k = 1; k < 4; k++) {
-          ctx.beginPath();
-          ctx.ellipse(x, y, r * 0.8 * (k / 4), r * 0.55 * (k / 4), 0, Math.PI, 0);
-          ctx.stroke();
+        // A brain coral: the dome lit from above, its surface wound with meandering grooves (concentric
+        // arcs read as a target).
+        const hi = ctx.createRadialGradient(x - r * 0.2, y - r * 0.45, 0, x, y - r * 0.2, r * 0.9);
+        hi.addColorStop(0, `hsla(${c.hue},60%,78%,0.5)`);
+        hi.addColorStop(1, `hsla(${c.hue},60%,78%,0)`);
+        ctx.fillStyle = hi;
+        ctx.beginPath();
+        ctx.ellipse(x, y, r * 0.8, r * 0.55, 0, Math.PI, 0);
+        ctx.fill();
+        ctx.save();
+        ctx.beginPath();
+        ctx.ellipse(x, y, r * 0.78, r * 0.53, 0, Math.PI, 0);
+        ctx.clip();
+        ctx.strokeStyle = `hsla(${c.hue},40%,30%,0.45)`;
+        ctx.lineWidth = 1 * s;
+        ctx.beginPath();
+        for (let k = 0; k < 6; k++) {
+          const yy = y - r * 0.08 - k * r * 0.09;
+          for (let q = 0; q <= 14; q++) {
+            const f = q / 14, xx = x - r * 0.8 + f * r * 1.6;
+            const wy = yy + Math.sin(f * 11 + k * 1.9 + c.u * 30) * r * 0.035;
+            if (q === 0) ctx.moveTo(xx, wy); else ctx.lineTo(xx, wy);
+          }
         }
+        ctx.stroke();
+        ctx.restore();
       } else {
         // Table coral: one wide flat top on a short thick stalk, seen nearly edge-on: its rim wavy,
         // its upper face lit, a band of shadow under the table, and the stalk in that shadow.
