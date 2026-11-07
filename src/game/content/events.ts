@@ -1,7 +1,6 @@
 // Falling feasts: now and then something dead sinks past the reef. Tap it while it is in reach
 // for a burst of calcite. Only while you watch: offline time has no feasts.
 
-/** Coming back after a long time away: Ossel kept watch, and offers one of two gifts. */
 /** Before you go: one tap to ready the reef for an absence. */
 export const AWAY_PREP = {
   label: 'Before you go',
