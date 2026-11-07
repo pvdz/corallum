@@ -519,17 +519,27 @@ export function createSunlitScene(seed: number): Scene {
       if (out <= 0.05) continue;
       // Two little spiral trees: tiers of fine plumes, widest at the foot, each tier an arc of
       // colour over a dark edge, swaying a little.
-      const path = new Path2D();
+      const path = new Path2D(), cones = new Path2D();
       for (const side of [-1, 1]) {
         const bx = x + side * 4 * s, sway = Math.sin(t * 0.8 + k + side) * 0.8 * s;
+        // The cone the plumes make, faint behind them.
+        cones.moveTo(bx - 4.8 * s * out, y - 0.5 * s * out);
+        cones.lineTo(bx + sway, y - 16 * s * out);
+        cones.lineTo(bx + 4.8 * s * out, y - 0.5 * s * out);
+        cones.closePath();
         for (let q = 0; q < 5; q++) {
           const u = q / 5;
-          const cy = y - (1.5 + u * 13) * s * out, rx = (4.6 - 3.4 * u) * s * out, ry = (1.5 - 0.6 * u) * s * out;
+          const cy = y - (2.5 + u * 13) * s * out, rx = (4.6 - 3.4 * u) * s * out, ry = (1.7 - 0.6 * u) * s * out;
           const cx = bx + sway * u;
-          path.moveTo(cx - rx, cy);
-          path.ellipse(cx, cy, rx, ry, 0, Math.PI, Math.PI * 2.0, true);
+          // Each tier droops at its edges, like the boughs of a little fir.
+          path.moveTo(cx - rx, cy + ry);
+          path.ellipse(cx, cy + ry, rx, ry, 0, Math.PI, Math.PI * 2);
         }
       }
+      ctx.globalAlpha = 0.3;
+      ctx.fillStyle = colours[k % colours.length]!;
+      ctx.fill(cones);
+      ctx.globalAlpha = 1;
       ctx.lineCap = 'round';
       ctx.strokeStyle = 'rgba(20,20,30,0.55)';
       ctx.lineWidth = 2.6 * s;
