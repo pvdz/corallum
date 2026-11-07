@@ -45,6 +45,8 @@ function mixHex(a: string, b: string, k: number): string {
   return `rgb(${[0, 1, 2].map((i) => Math.round(pa[i]! + (pb[i]! - pa[i]!) * k)).join(',')})`;
 }
 
+/** Pits in a crust's grain, as fractions of its length and width: scattered, never a row. */
+const CRUST_PITS = [[-0.6, 0.25], [-0.15, -0.4], [0.3, 0.35], [0.65, -0.15]] as const;
 /** Old-stone knobs: points round the lump's outline. */
 const KNOB_EDGE = 22;
 const DEFAULT_PALETTE: [string, string, string] = ['#1d1026', '#6a3a50', 'rgba(255,170,160,0.22)'];
@@ -251,50 +253,125 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     }
   }
 
+  /** Each encruster colour's lit and shadowed tones. */
+  const tones = new Map<string, [string, string]>();
+  /** The encrusters' paths for the last layout (they only move when the reef is reframed). */
+  let crustKey = '';
+  let crustPaths: (readonly [Path2D, Path2D, Path2D, Path2D])[] = [];
+  /** Tunicates drawn: node, colour index, siphon centre and tilt (their mouths breathe each frame). */
+  let siphons: number[] = [];
   /**
    * Encrusting life on the older stone (the lower part of the reef): little sponges, tunicate
-   * cups and lichen-like crusts, more of them as `encrust` rises. Fixed places per node.
+   * cups and crusts, more of them as `encrust` rises. Fixed places per node. Built into a few
+   * paths per colour (body, lit, shadow, pale rim), kept while the layout holds, filled once each.
    */
   function drawEncrusting(ctx: CanvasRenderingContext2D, L: ReefLayout, t: number): void {
     const colours = L.encrustColours ?? ['#c86a3c', '#7a4fb0', '#d9b44a'];
     const s = L.s * 2;
     const limit = L.top * 0.75;
     const want = Math.floor(coral.count * 0.35 * Math.min(1, L.encrust!));
-    let drawn = 0;
-    for (let k = 0; k < coral.count && drawn < want; k++) {
+    const nodes: number[] = [];
+    for (let k = 0; k < coral.count && nodes.length < want; k++) {
       // A fixed shuffle so the same nodes are always the encrusted ones.
       const i = (k * 7919) % coral.count;
-      const y = coral.y[i]!;
-      if (y > limit || coral.parent[i]! < 0 || radii[i]! <= 0) continue;
-      drawn++;
+      if (coral.y[i]! > limit || coral.parent[i]! < 0 || radii[i]! <= 0) continue;
+      nodes.push(i);
+    }
+    if (!nodes.length) return;
+    const key = `${L.cx},${L.baseY},${L.unit},${s},${colours.join()},${nodes.length},${nodes[nodes.length - 1]}`;
+    if (key !== crustKey) {
+      crustKey = key;
+      crustPaths = colours.map(() => [new Path2D(), new Path2D(), new Path2D(), new Path2D()] as const);
+      siphons = [];
+      buildEncrusting(L, s, nodes, colours.length);
+    }
+    ctx.lineWidth = 0.4 * s;
+    colours.forEach((col, c) => {
+      let tone = tones.get(col);
+      if (!tone) { tone = [mixHex(col, '#fff4e0', 0.35), mixHex(col, '#000000', 0.45)]; tones.set(col, tone); }
+      const [body, lit, deep, rim] = crustPaths[c]!;
+      ctx.fillStyle = col;
+      ctx.fill(body);
+      ctx.fillStyle = tone[0];
+      ctx.fill(lit);
+      ctx.globalAlpha = 0.6;
+      ctx.strokeStyle = tone[0];
+      ctx.stroke(rim);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = tone[1];
+      ctx.fill(deep);
+      // The tunicates' siphons, opening and closing as they breathe.
+      ctx.beginPath();
+      for (let k = 0; k < siphons.length; k += 5) {
+        if (siphons[k + 1] !== c) continue;
+        const i = siphons[k]!, open = 1 + 0.15 * Math.sin(t * 0.8 + i), rot = siphons[k + 4]!;
+        const rx = 0.9 * s, ry = 0.38 * s * open;
+        ctx.moveTo(siphons[k + 2]! + rx * Math.cos(rot), siphons[k + 3]! + rx * Math.sin(rot));
+        ctx.ellipse(siphons[k + 2]!, siphons[k + 3]!, rx, ry, rot, 0, Math.PI * 2);
+      }
+      ctx.fill();
+    });
+  }
+
+  function buildEncrusting(L: ReefLayout, s: number, nodes: number[], nColours: number): void {
+    const dot = (p: Path2D, x: number, y: number, r: number) => { p.moveTo(x + r, y); p.arc(x, y, r, 0, Math.PI * 2); };
+    const oval = (p: Path2D, x: number, y: number, rx: number, ry: number, rot: number) => { p.moveTo(x + rx * Math.cos(rot), y + rx * Math.sin(rot)); p.ellipse(x, y, rx, ry, rot, 0, Math.PI * 2); };
+    for (const i of nodes) {
       const [x, py] = nodePx(L, i);
       const side = (i * 0.618) % 1 < 0.5 ? -1 : 1;
       const off = radii[i]! * L.unit * 0.9 * side;
-      const col = colours[i % colours.length]!;
+      const c = i % nColours;
+      const [body, lit, deep, rim] = crustPaths[c]!;
       const kind = i % 3;
-      ctx.fillStyle = col;
+      const cx = x + off;
       if (kind === 0) {
-        // A sponge: a little lumpy cushion.
-        ctx.beginPath();
-        ctx.ellipse(x + off, py, 3.2 * s, 2.2 * s, 0, 0, Math.PI * 2);
-        ctx.fill();
+        // A sponge: a lumpy cushion of three lobes, lit on top, its vents dark pits along the crown.
+        dot(body, cx - 1.4 * s, py + 0.3 * s, 1.7 * s);
+        dot(body, cx + 0.3 * s, py - 0.5 * s, 2 * s);
+        dot(body, cx + 1.9 * s, py + 0.5 * s, 1.4 * s);
+        oval(lit, cx - 1.6 * s, py - 0.4 * s, 0.9 * s, 0.6 * s, -0.3);
+        oval(lit, cx + 0.1 * s, py - 1.5 * s, 1.1 * s, 0.6 * s, -0.2);
+        dot(deep, cx + 0.5 * s, py - 1.6 * s, 0.45 * s);
+        dot(deep, cx + 2.1 * s, py - 0.3 * s, 0.35 * s);
       } else if (kind === 1) {
-        // A tunicate: a small open cup that breathes.
-        const open = 1 + 0.15 * Math.sin(t * 0.8 + i);
-        ctx.beginPath();
-        ctx.ellipse(x + off, py - 1.5 * s, 1.8 * s, 3 * s * open, side * 0.4, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = 'rgba(0,0,0,0.35)';
-        ctx.beginPath();
-        ctx.arc(x + off + side * 0.8 * s, py - 3.6 * s * open, 0.9 * s, 0, Math.PI * 2);
-        ctx.fill();
+        // A tunicate: a small barrel narrow at its foot, its siphon open at the top, a paler lip.
+        const h = 3.4 * s;
+        const rot = side * 0.4, cr = Math.cos(rot), sr = Math.sin(rot);
+        const bx = cx, by = py + 0.6 * s;
+        const X = (u: number, v: number) => bx + u * cr - v * sr, Y = (u: number, v: number) => by + u * sr + v * cr;
+        body.moveTo(X(-0.7 * s, 0), Y(-0.7 * s, 0));
+        body.bezierCurveTo(X(-2.1 * s, -0.4 * h), Y(-2.1 * s, -0.4 * h), X(-1.7 * s, -0.85 * h), Y(-1.7 * s, -0.85 * h), X(-s, -h), Y(-s, -h));
+        body.lineTo(X(s, -h), Y(s, -h));
+        body.bezierCurveTo(X(1.7 * s, -0.85 * h), Y(1.7 * s, -0.85 * h), X(2.1 * s, -0.4 * h), Y(2.1 * s, -0.4 * h), X(0.7 * s, 0), Y(0.7 * s, 0));
+        body.closePath();
+        // Light through its tunic down one side.
+        oval(lit, X(-0.75 * s, -0.5 * h), Y(-0.75 * s, -0.5 * h), 0.4 * s, 0.32 * h, rot + 0.1);
+        const mx = X(0, -h), my = Y(0, -h);
+        rim.moveTo(mx + s * Math.cos(rot + 0.16), my + s * Math.sin(rot + 0.16));
+        rim.ellipse(mx, my, s, 0.5 * s, rot, 0.16, Math.PI - 0.16);
+        siphons.push(i, c, mx, my, rot);
       } else {
-        // A crust: a flat smear of colour hugging the stone.
-        ctx.globalAlpha = 0.75;
-        ctx.beginPath();
-        ctx.ellipse(x + off * 0.6, py, 4.5 * s, 1.4 * s, side * 0.6, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 1;
+        // A crust: a thin sheet of colour spread along the branch, hugging the stone, its edge
+        // uneven and paler where it grows, a few fine pits in its grain.
+        const [qx, qy] = nodePx(L, coral.parent[i]!);
+        const rot = Math.atan2(qy - py, qx - x), cr = Math.cos(rot), sr = Math.sin(rot);
+        const ox = x + off * 0.25 + (qx - x) * 0.3, oy = py + (qy - py) * 0.3;
+        const along = 3.2 * s, across = Math.max(1.1 * s, radii[i]! * L.unit * 0.85);
+        const N = 12, pts: number[] = [];
+        for (let e = 0; e < N; e++) {
+          const a = (e / N) * Math.PI * 2;
+          const w = 1 + 0.18 * Math.sin(3 * a + i) + 0.1 * Math.sin(5 * a + i * 1.7);
+          const ex = Math.cos(a) * along * w, ey = Math.sin(a) * across * w;
+          pts.push(ox + ex * cr - ey * sr, oy + ex * sr + ey * cr);
+        }
+        for (const p of [body, rim]) {
+          p.moveTo((pts[0]! + pts[2 * N - 2]!) / 2, (pts[1]! + pts[2 * N - 1]!) / 2);
+          for (let e = 0; e < N; e++) {
+            const n = (e + 1) % N;
+            p.quadraticCurveTo(pts[2 * e]!, pts[2 * e + 1]!, (pts[2 * e]! + pts[2 * n]!) / 2, (pts[2 * e + 1]! + pts[2 * n + 1]!) / 2);
+          }
+        }
+        for (const [u, v] of CRUST_PITS) dot(deep, ox + u * along * cr - v * across * sr, oy + u * along * sr + v * across * cr, 0.2 * s);
       }
     }
   }

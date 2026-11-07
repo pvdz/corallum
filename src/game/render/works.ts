@@ -5,6 +5,44 @@
 import { glow, softRing } from './draw.ts';
 import type { Focus } from './scene.ts';
 
+/** One stone in a laid course: where it sits (its base centre), its half-width and height, a seed for its shape. */
+type Stone = { x: number; y: number; rx: number; ry: number; seed: number };
+
+/**
+ * Laid stones, all in one batch: each a rounded lump with a flatter base, dark round the batch's
+ * outer edge, a paler cap where the light falls on top. A later batch sits in front of an earlier one.
+ */
+function drawStones(ctx: CanvasRenderingContext2D, list: readonly Stone[], body: string, cap: string, joint: string, s: number): void {
+  if (!list.length) return;
+  const outline = new Path2D(), caps = new Path2D();
+  for (const st of list) {
+    const N = 9, pts: number[] = [];
+    for (let j = 0; j < N; j++) {
+      const a = (j / N) * Math.PI * 2 + st.seed;
+      const rr = 1 + 0.12 * Math.sin(2 * a + st.seed * 3.1) + 0.08 * Math.sin(3 * a + st.seed * 1.7);
+      const sy = Math.sin(a);
+      pts.push(st.x + Math.cos(a) * st.rx * rr, st.y - st.ry + sy * st.ry * rr * (sy > 0 ? 0.8 : 1));
+    }
+    outline.moveTo((pts[0]! + pts[2 * N - 2]!) / 2, (pts[1]! + pts[2 * N - 1]!) / 2);
+    for (let j = 0; j < N; j++) {
+      const n = (j + 1) % N;
+      outline.quadraticCurveTo(pts[2 * j]!, pts[2 * j + 1]!, (pts[2 * j]! + pts[2 * n]!) / 2, (pts[2 * j + 1]! + pts[2 * n + 1]!) / 2);
+    }
+    const cx = st.x - st.rx * 0.18, cy = st.y - st.ry * 1.45;
+    caps.moveTo(cx + st.rx * 0.55, cy);
+    caps.ellipse(cx, cy, st.rx * 0.55, st.ry * 0.32, -0.12, 0, Math.PI * 2);
+  }
+  // The joint is stroked first and twice as wide, so the fill covers its inner half and no
+  // outline shows through a stone in front.
+  ctx.strokeStyle = joint;
+  ctx.lineWidth = Math.max(2, 2.4 * s);
+  ctx.stroke(outline);
+  ctx.fillStyle = body;
+  ctx.fill(outline);
+  ctx.fillStyle = cap;
+  ctx.fill(caps);
+}
+
 /** The vent garden: small chimneys either side of the vent, each smoking a little, one more ring a stage. */
 export function drawGarden(ctx: CanvasRenderingContext2D, cx: number, stage: number, s: number, t: number, floor: (x: number) => number): void {
   if (stage <= 0) return;
@@ -222,24 +260,19 @@ export function drawSpire(ctx: CanvasRenderingContext2D, F: Focus, stage: number
 /** The breakwater: courses of rounded stones in an arc along the slope, one more course per stage. */
 export function drawBreakwater(ctx: CanvasRenderingContext2D, F: Focus, stage: number, s: number, slope: (u: number) => number): void {
   if (stage <= 0) return;
-  ctx.save();
   for (let row = 0; row < stage; row++) {
+    const course: Stone[] = [];
     for (let i = 0; i < 16; i++) {
       const u = 0.62 + i * 0.022 + (row % 2) * 0.011;
       const x = F.x - F.w * 0.1 + u * F.w * 1.2;
       const y = slope(u) - row * 11 * s - Math.sin((i / 15) * Math.PI) * 6 * s;
       const r = (8 + ((i * 7 + row * 3) % 4)) * s;
-      ctx.fillStyle = row === stage - 1 ? '#7d7466' : '#5f584e';
-      ctx.beginPath();
-      ctx.ellipse(x, y - r * 0.5, r, r * 0.62, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = 'rgba(255,240,220,0.12)';
-      ctx.beginPath();
-      ctx.ellipse(x - r * 0.3, y - r * 0.8, r * 0.45, r * 0.22, 0, 0, Math.PI * 2);
-      ctx.fill();
+      course.push({ x, y, rx: r, ry: r * 0.62, seed: i * 1.37 + row * 2.9 });
     }
+    // The newest course on top is the palest, its stones not yet silted.
+    const top = row === stage - 1;
+    drawStones(ctx, course, top ? '#7d7466' : '#5f584e', top ? 'rgba(255,240,220,0.2)' : 'rgba(255,240,220,0.12)', 'rgba(20,18,24,0.55)', s);
   }
-  ctx.restore();
 }
 
 /** The sun terrace: flat stepped slabs either side of the reef's foot, green with algae on top. */
@@ -349,17 +382,16 @@ export function drawRim(ctx: CanvasRenderingContext2D, F: Focus, stage: number, 
   const cu = 0.76, R = 0.08;
   const x = (u: number) => F.x - F.w * 0.1 + u * F.w * 1.2;
   const span = [0, 0.4, 0.7, 1][stage]!;
-  ctx.save();
+  // The far side of the ring first, so the near stones sit in front.
+  const far: Stone[] = [], near: Stone[] = [];
   for (let i = 0; i <= 24 * span; i++) {
     const a = Math.PI + (i / 24) * Math.PI;
     const u = cu + Math.cos(a) * R;
     const y = floor(u) + 3 * s + Math.sin(a) * 6 * s;
-    ctx.fillStyle = i % 2 ? '#bfb29a' : '#a89a80';
-    ctx.beginPath();
-    ctx.ellipse(x(u), y, (5 + (i % 3)) * s, (3.5 + (i % 2)) * s, 0, 0, Math.PI * 2);
-    ctx.fill();
+    (i % 2 ? far : near).push({ x: x(u), y: y + 3.5 * s, rx: (5 + (i % 3)) * s, ry: (3.5 + (i % 2)) * s, seed: i * 2.3 });
   }
-  ctx.restore();
+  drawStones(ctx, far, '#a89a80', 'rgba(255,248,230,0.35)', 'rgba(70,58,40,0.45)', s);
+  drawStones(ctx, near, '#bfb29a', 'rgba(255,248,230,0.35)', 'rgba(70,58,40,0.45)', s);
 }
 
 /** The beacon: a slim stone spire above the water beside the crown, its tip lit at the last stage. */
@@ -389,14 +421,14 @@ export function drawFence(ctx: CanvasRenderingContext2D, cx: number, baseY: numb
   if (stage <= 0) return;
   ctx.save();
   const n = [0, 4, 8, 12][stage]!;
-  for (let i = 0; i < n; i++) {
-    const x = cx - 60 * s - i * 13 * s, layer = i % 2;
-    for (let k = 0; k <= layer + (i % 3 === 0 ? 1 : 0); k++) {
-      ctx.fillStyle = (i + k) % 2 ? '#4a4f6e' : '#3c4060';
-      ctx.beginPath();
-      ctx.ellipse(x, baseY - 3 * s - k * 7 * s, 7.5 * s, 4.5 * s, 0, 0, Math.PI * 2);
-      ctx.fill();
+  // Stacked by layers, the bottom one first, so each stone sits on those under it.
+  for (let k = 0; k < 3; k++) {
+    const layer: Stone[] = [];
+    for (let i = 0; i < n; i++) {
+      if (k > (i % 2) + (i % 3 === 0 ? 1 : 0)) continue;
+      layer.push({ x: cx - 60 * s - i * 13 * s, y: baseY + 1.5 * s - k * 7 * s, rx: 7.5 * s, ry: 4.5 * s, seed: i * 1.9 + k * 4.1 });
     }
+    drawStones(ctx, layer, k % 2 ? '#4a4f6e' : '#3c4060', 'rgba(200,210,240,0.16)', 'rgba(8,10,24,0.6)', s);
   }
   // Pale snow banked against its far side.
   ctx.fillStyle = 'rgba(190,200,230,0.25)';
