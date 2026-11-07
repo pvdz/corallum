@@ -706,36 +706,57 @@ export function createMidnightScene(seed: number): Scene {
     const gone = touch && touch.age <= (t + 600) % period ? Math.min(1, touch.age / 1.5) : 0;
     ctx.globalAlpha = 0.55 * Math.min(1, u * 6, (1 - u) * 6) * (1 - gone);
     ctx.fillStyle = '#3a1820';
-    // Mantle with its fins, pointing forward (left).
+    // The mantle, a long torpedo pointing forward (left), its fins a rounded diamond at the tip.
     ctx.beginPath();
-    ctx.moveTo(-40 * s, 0);
-    ctx.quadraticCurveTo(-20 * s, -9 * s, 8 * s, -6 * s);
-    ctx.lineTo(8 * s, 6 * s);
-    ctx.quadraticCurveTo(-20 * s, 9 * s, -40 * s, 0);
+    ctx.moveTo(-44 * s, 0);
+    ctx.bezierCurveTo(-38 * s, -1.5 * s, -16 * s, -7.5 * s, 7 * s, -6.5 * s);
+    ctx.quadraticCurveTo(9 * s, 0, 7 * s, 6.5 * s);
+    ctx.bezierCurveTo(-16 * s, 7.5 * s, -38 * s, 1.5 * s, -44 * s, 0);
+    ctx.moveTo(-48 * s, 0);
+    ctx.lineTo(-39 * s, -11 * s + pulse * 2 * s);
+    ctx.quadraticCurveTo(-32 * s, -5 * s, -26 * s, -2.5 * s);
+    ctx.lineTo(-26 * s, 2.5 * s);
+    ctx.quadraticCurveTo(-32 * s, 5 * s, -39 * s, 11 * s - pulse * 2 * s);
+    ctx.closePath();
+    // The head, a little narrower than the collar.
+    ctx.moveTo(15 * s, 0);
+    ctx.ellipse(11 * s, 0, 5 * s, 4.8 * s, 0, 0, Math.PI * 2);
     ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(-40 * s, 0);
-    ctx.lineTo(-30 * s, -9 * s + pulse * 2 * s);
-    ctx.lineTo(-28 * s, 9 * s - pulse * 2 * s);
-    ctx.fill();
-    // Arms: long, slowly undulating, two much longer than the rest.
+    // Eight thick arms, tapering, and two long tentacles ending in clubs.
     ctx.strokeStyle = '#3a1820';
     ctx.lineCap = 'round';
-    for (let k = 0; k < 8; k++) {
+    const clubs: [number, number][] = [];
+    for (let k = 0; k < 10; k++) {
       const long = k < 2;
-      const len = (long ? 60 : 26) * s;
-      const off = (k - 3.5) * 1.3 * s;
-      ctx.lineWidth = (long ? 1.2 : 2) * s;
-      ctx.beginPath();
-      ctx.moveTo(8 * s, off);
-      ctx.bezierCurveTo(8 * s + len * 0.3, off + Math.sin(t + k) * 4 * s,
-        8 * s + len * 0.7, off * 2 + Math.sin(t * 0.8 + k) * 6 * s, 8 * s + len, off * 3 + Math.sin(t * 0.6 + k) * 8 * s);
-      ctx.stroke();
+      const len = (long ? 62 : 24) * s;
+      const off = long ? (k - 0.5) * 2 * s : (k - 5.5) * 1.1 * s;
+      const ex = 15 * s + len, ey = off * 3 + Math.sin(t * 0.6 + k) * (long ? 10 : 6) * s;
+      for (const [w0, f0, f1] of long ? [[1.1, 0, 1]] as const : [[2.6, 0, 0.5], [1.4, 0.5, 1]] as const) {
+        ctx.lineWidth = w0 * s;
+        ctx.beginPath();
+        const pt = (f: number): [number, number] => {
+          const q = 1 - f;
+          const c1x = 15 * s + len * 0.3, c1y = off + Math.sin(t + k) * 4 * s;
+          const c2x = 15 * s + len * 0.7, c2y = off * 2 + Math.sin(t * 0.8 + k) * 6 * s;
+          return [q * q * q * 15 * s + 3 * q * q * f * c1x + 3 * q * f * f * c2x + f * f * f * ex,
+            q * q * q * off + 3 * q * q * f * c1y + 3 * q * f * f * c2y + f * f * f * ey];
+        };
+        for (let i = 0; i <= 8; i++) {
+          const [px, py] = pt(f0 + (f1 - f0) * (i / 8));
+          if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+      }
+      if (long) clubs.push([ex, ey]);
     }
+    ctx.fillStyle = '#3a1820';
+    ctx.beginPath();
+    for (const [cx, cy] of clubs) { ctx.moveTo(cx + 4 * s, cy); ctx.ellipse(cx, cy, 4 * s, 1.6 * s, 0, 0, Math.PI * 2); }
+    ctx.fill();
     ctx.restore();
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    glow(ctx, x + 4 * s, y - 2 * s, 3 * s, '180,200,255', 0.5 * Math.min(1, u * 6, (1 - u) * 6) * (1 - gone));
+    glow(ctx, x + 11 * s, y - 1.5 * s, 3 * s, '180,200,255', 0.5 * Math.min(1, u * 6, (1 - u) * 6) * (1 - gone));
     ctx.restore();
   }
 
