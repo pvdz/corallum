@@ -445,16 +445,74 @@ export function createTwilightScene(seed: number): Scene {
     // Ossel (or the sand it became) answers a tap here too.
     spot('ossel', bx, by - 40 * s, 70 * s);
     if (wall === 'a') {
-      const g = ctx.createRadialGradient(bx, by, 0, bx, by, 120 * s);
-      g.addColorStop(0, 'rgba(255,225,170,0.85)');
-      g.addColorStop(1, 'rgba(255,225,170,0)');
+      // A low dune of warm sand where the wall stood, lying on the slope: its crest lit, rippled by
+      // the current, a few grey chips of the old wall half buried in it, and a faint warmth over it
+      // that brightens when it speaks.
+      const hw = 84 * s, hh = 24 * s;
+      const span = focus.w * 1.2;
+      const baseAt = (x: number) => slopeY(u + (x - bx) / span) + 2 * s;
+      const heightAt = (x: number) => {
+        const f = (x - bx) / hw;
+        // Steeper on the down-current (left) side, a long tail to the right.
+        return hh * Math.max(0, 1 - f * f) * (f < 0 ? 1 + 0.25 * f : 1 - 0.15 * f);
+      };
+      const N = 24;
+      const dune = new Path2D();
+      const crest: [number, number][] = [];
+      for (let i = 0; i <= N; i++) {
+        const x = bx - hw + (2 * hw * i) / N;
+        crest.push([x, baseAt(x) - heightAt(x)]);
+      }
+      dune.moveTo(crest[0]![0], crest[0]![1]);
+      for (const [x, y] of crest) dune.lineTo(x, y);
+      dune.closePath();
+      const g = ctx.createLinearGradient(0, by - hh, 0, by + 2 * s);
+      g.addColorStop(0, '#a89070');
+      g.addColorStop(1, '#4e4036');
       ctx.fillStyle = g;
+      ctx.fill(dune);
+      ctx.save();
+      ctx.clip(dune);
+      // Ripples following the mound, each a little lower.
+      ctx.strokeStyle = 'rgba(60,46,36,0.32)';
+      ctx.lineWidth = Math.max(1, 0.9 * s);
       ctx.beginPath();
-      ctx.ellipse(bx, by, 120 * s, 34 * s, 0, Math.PI, 0);
+      for (let k = 1; k <= 5; k++) {
+        const f = 1 - k / 6;
+        for (let i = 0; i <= N; i++) {
+          const x = bx - hw + (2 * hw * i) / N;
+          const y = baseAt(x) - heightAt(x) * f + Math.sin(x / (7 * s) + k) * 0.8 * s;
+          if (i) ctx.lineTo(x, y);
+          else ctx.moveTo(x, y);
+        }
+      }
+      ctx.stroke();
+      // Chips of the old grey stone.
+      const r = mulberry32(seed ^ 0xd17e);
+      ctx.fillStyle = '#5c5866';
+      ctx.beginPath();
+      for (let k = 0; k < 6; k++) {
+        const x = bx + range(r, -0.7, 0.7) * hw;
+        const y = baseAt(x) - heightAt(x) * range(r, 0.15, 0.7);
+        const rx = range(r, 2, 4.5) * s;
+        ctx.moveTo(x + rx, y);
+        ctx.ellipse(x, y, rx, rx * 0.55, range(r, -0.4, 0.4), 0, Math.PI * 2);
+      }
       ctx.fill();
+      ctx.restore();
+      // The crest catching the light from above.
+      ctx.strokeStyle = 'rgba(220,196,150,0.55)';
+      ctx.lineWidth = Math.max(1, 1.2 * s);
+      ctx.beginPath();
+      for (let i = 3; i <= N - 3; i++) {
+        const [x, y] = crest[i]!;
+        if (i > 3) ctx.lineTo(x, y + 0.5 * s);
+        else ctx.moveTo(x, y + 0.5 * s);
+      }
+      ctx.stroke();
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
-      glow(ctx, bx, by - 20 * s, 90 * s, '255,210,150', 0.12 + 0.04 * Math.sin(t * 0.8) + 0.25 * speaking(t));
+      glow(ctx, bx, by - hh * 0.6, 70 * s, '255,210,150', 0.05 + 0.03 * Math.sin(t * 0.8) + 0.25 * speaking(t));
       ctx.restore();
       return;
     }
@@ -582,7 +640,7 @@ export function createTwilightScene(seed: number): Scene {
   function drawMoray(ctx: CanvasRenderingContext2D, t: number): void {
     sight('moray');
     const s = scale() * 1.4;
-    const u = 0.24;
+    const u = 0.21;
     const hx = focus.x - focus.w * 0.1 + u * focus.w * 1.2, hy = slopeY(u) - 10 * s;
     const touch = startled('moray', t);
     const back = touch && touch.age < 7 ? Math.max(0, 1 - Math.max(0, touch.age - 0.3) / 6.7) : 0;
@@ -1187,7 +1245,8 @@ export function createTwilightScene(seed: number): Scene {
   function drawMantis(ctx: CanvasRenderingContext2D, t: number): void {
     sight('mantis-shrimp');
     const s = scale() * 2.2;
-    const u = 0.2;
+    // On open sand between the left eel bed and the frogfish, clear of the moray and the octopus.
+    const u = 0.34;
     const x = focus.x - focus.w * 0.1 + u * focus.w * 1.2, base = slopeY(u) + 2 * s;
     spot('mantis-shrimp', x, base - 6 * s, Math.max(20 * s, 22 * dpr));
     const touch = startled('mantis-shrimp', t);
@@ -1392,7 +1451,7 @@ export function createTwilightScene(seed: number): Scene {
     ctx.lineWidth = 3.8 * s;
     ctx.stroke(edge);
     ctx.lineWidth = 2.6 * s;
-    ctx.strokeStyle = 'rgba(232,224,200,0.95)';
+    ctx.strokeStyle = 'rgba(200,190,164,0.95)';
     ctx.stroke(light);
     ctx.strokeStyle = 'rgba(160,150,128,0.95)';
     ctx.stroke(dark);
@@ -1400,7 +1459,7 @@ export function createTwilightScene(seed: number): Scene {
     ctx.strokeStyle = 'rgba(40,36,30,0.55)';
     ctx.lineWidth = 4.6 * s;
     ctx.stroke(heads);
-    ctx.strokeStyle = 'rgba(214,206,182,1)';
+    ctx.strokeStyle = 'rgba(196,186,162,1)';
     ctx.lineWidth = 3.4 * s;
     ctx.stroke(heads);
     ctx.fillStyle = 'rgba(60,52,40,0.6)';
@@ -1437,7 +1496,8 @@ export function createTwilightScene(seed: number): Scene {
     // Crawls during the first fifth of each period, from one resting place to the next.
     const crawl = Math.min(1, u / 0.2);
     const ease = crawl * crawl * (3 - 2 * crawl);
-    const restAt = (k: number) => 0.2 + ((k * 0.37) % 1) * 0.16;
+    // Its resting places lie between the moray's hole and the mantis shrimp's burrow.
+    const restAt = (k: number) => 0.26 + ((k * 0.37) % 1) * 0.04;
     const pu = restAt(leg) + (restAt(leg + 1) - restAt(leg)) * ease;
     const moving = crawl < 1 ? Math.sin(Math.PI * crawl) : 0;
     const x = focus.x - focus.w * 0.1 + pu * focus.w * 1.2;
