@@ -1924,7 +1924,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const open = [...grow.querySelectorAll<HTMLElement>(':scope > section:not([hidden]):not(.later)')]
       .map((sec) => ({ sec, label: sec.querySelector('.truce-kicker')?.textContent ?? '' }))
       .filter((x) => x.label);
-    waitBar.hidden = open.length < 2;
+    // Only worth a strip when choices the player opened by hand stack up (a timed one beside the open
+    // one is right there).
+    waitBar.hidden = open.filter((x) => !x.sec.classList.contains('timed')).length < 2;
     waitBar.innerHTML = '';
     for (const x of open) waitBar.append(button('wait-chip', x.label, () => x.sec.scrollIntoView({ behavior: smoothScroll(), block: 'start' })));
   }
