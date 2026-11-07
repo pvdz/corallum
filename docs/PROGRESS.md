@@ -1131,3 +1131,4 @@ date, what landed, what is half-done, what's next.
 - The waiting fish under the crown at the Breach (the reef fish there) use the shared shaded small fish in their colours instead of ovals with a triangle.
 - Coral gobies (a resident) were a pale oval with a triangle: a slim see-through body with a blunt head, a rounded tail, a little sail of a dorsal fin, a line along the side and a big eye set high.
 - Clownfish were an orange oval with two white bars: three white bands edged in black, curved to the body, black-edged rounded fins and tail, and an eye with a pale rim.
+- Session 2026-11-07 (six hours, from 11:55). Real-time play from a fresh reef (desktop + phone, 8 min) and from the Midnight Water and Twilight: a finished card (Lure patterns 6/6, a built work, a maxed trait) kept the `ready` class it had when last affordable, so it stayed boxed as buyable in the Finished list. Finished cards drop it.
