@@ -970,16 +970,27 @@ export function createBreachScene(seed: number): Scene {
     const s = scale();
     const wy = waterY();
     ctx.save();
-    ctx.strokeStyle = `rgba(210,225,255,${0.35 * k})`;
-    ctx.lineWidth = 1 * s;
-    ctx.beginPath();
-    for (let i = 0; i < 160; i++) {
-      const x = focus.x + ((i * 0.618034 + t * 0.03) % 1) * focus.w;
-      const y = focus.y + ((t * 1.8 + i * 0.37) % 1) * (wy - focus.y);
-      ctx.moveTo(x, y);
-      ctx.lineTo(x - 2 * s, y + 12 * s);
+    // Three depths of drops, each falling at its own speed along the wind's slant and landing at a
+    // new place each time: far drops short and faint, near ones longer and brighter.
+    const fall = wy - focus.y, slant = 0.17;
+    for (let z = 0; z < 3; z++) {
+      const len = (6 + 6 * z) * s;
+      ctx.strokeStyle = `rgba(210,225,255,${(0.17 + 0.13 * z) * k})`;
+      ctx.lineWidth = (0.6 + 0.4 * z) * s;
+      ctx.beginPath();
+      for (let i = z; i < 180; i += 3) {
+        const speed = 1.1 + 0.4 * z + ((i * 0.7548776) % 1) * 0.4;
+        const f = t * speed + ((i * 0.5698403) % 1);
+        const lap = Math.floor(f), ph = f - lap;
+        const u0 = (i * 0.618034 + lap * 0.2549) % 1;
+        // The tail reaches the surface as the drop lands.
+        const y = focus.y - len + ph * fall;
+        const x = focus.x - 0.05 * focus.w + u0 * (focus.w * 1.1 + fall * slant) - ph * fall * slant;
+        ctx.moveTo(x, y);
+        ctx.lineTo(x - len * slant, y + len);
+      }
+      ctx.stroke();
     }
-    ctx.stroke();
     // Rings on the surface.
     ctx.strokeStyle = `rgba(220,235,255,${0.3 * k})`;
     for (let i = 0; i < 26; i++) {

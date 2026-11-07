@@ -361,7 +361,8 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .charted .soon-rest { display: none; }
 @media (max-width: 599px), (max-width: 799px) and (min-height: 501px) {
   .water-soon { min-height: 2.8em; }
-  .charted .water-soon { min-height: 1.4em; }
+  /* Room for a second line only when there is more than one thing coming. */
+  .charted .water-soon, .water-soon:has(.soon-rest:empty) { min-height: 1.4em; }
 }
 .water-soon:empty { display: none; }
 .water-next { margin-left: auto; color: var(--ink-dim); font-variant-numeric: tabular-nums; }
