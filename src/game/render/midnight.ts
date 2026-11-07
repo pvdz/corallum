@@ -86,25 +86,8 @@ export function createMidnightScene(seed: number): Scene {
    * An anglerfish drifting through the dark every few minutes: a black body you can barely see,
    * a mouth of needle teeth, and the lure on its head pulsing like the reef's own light.
    */
-  function drawAngler(ctx: CanvasRenderingContext2D, t: number): void {
-    const period = 170, crossing = 70;
-    const u = (t % period) / crossing;
-    if (u >= 1) return;
-    sight('anglerfish');
-    const lap = Math.floor(t / period);
-    const dir = lap % 2 ? 1 : -1;
-    const s = scale() * 1.5;
-    const x = focus.x + focus.w * (dir > 0 ? -0.1 + u * 1.2 : 1.1 - u * 1.2);
-    const y = focus.y + focus.h * (0.2 + 0.06 * Math.sin(lap * 1.7)) + Math.sin(t * 0.4) * 8 * s;
-    // Touched, the lure flares once and goes out; it comes back slowly, a little wary.
-    const touch = startled('anglerfish', t);
-    const age = touch ? touch.age : Infinity;
-    const lit = age < 0.3 ? 1.8 : age < 4 ? 0 : Math.min(1, (age - 4) / 3);
-    const pulse = (0.6 + 0.4 * Math.sin(t * 2.4)) * lit;
-    spot('anglerfish', x, y, 45 * s);
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(dir, 1);
+  /** An anglerfish at the origin, facing +x: lumpy body, gaping toothed mouth, small eye, the rod (the lure is the caller's). */
+  function anglerBody(ctx: CanvasRenderingContext2D, s: number, t: number): void {
     // Body: a dark lumpy oval, lit faintly from its own lure.
     const body = ctx.createRadialGradient(18 * s, -10 * s, 0, 0, 0, 34 * s);
     body.addColorStop(0, 'rgba(85,95,140,0.7)');
@@ -157,6 +140,27 @@ export function createMidnightScene(seed: number): Scene {
     ctx.moveTo(10 * s, -19 * s);
     ctx.quadraticCurveTo(26 * s, -42 * s, 40 * s, -30 * s);
     ctx.stroke();
+  }
+  function drawAngler(ctx: CanvasRenderingContext2D, t: number): void {
+    const period = 170, crossing = 70;
+    const u = (t % period) / crossing;
+    if (u >= 1) return;
+    sight('anglerfish');
+    const lap = Math.floor(t / period);
+    const dir = lap % 2 ? 1 : -1;
+    const s = scale() * 1.5;
+    const x = focus.x + focus.w * (dir > 0 ? -0.1 + u * 1.2 : 1.1 - u * 1.2);
+    const y = focus.y + focus.h * (0.2 + 0.06 * Math.sin(lap * 1.7)) + Math.sin(t * 0.4) * 8 * s;
+    // Touched, the lure flares once and goes out; it comes back slowly, a little wary.
+    const touch = startled('anglerfish', t);
+    const age = touch ? touch.age : Infinity;
+    const lit = age < 0.3 ? 1.8 : age < 4 ? 0 : Math.min(1, (age - 4) / 3);
+    const pulse = (0.6 + 0.4 * Math.sin(t * 2.4)) * lit;
+    spot('anglerfish', x, y, 45 * s);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(dir, 1);
+    anglerBody(ctx, s, t);
     ctx.globalCompositeOperation = 'lighter';
     glow(ctx, 40 * s, -30 * s, 18 * s, '150,240,255', Math.min(1, 0.55 * pulse));
     if (lit > 0) glow(ctx, 40 * s, -30 * s, 4 * s, '230,255,255', 0.9 * Math.min(1, lit));
@@ -482,30 +486,9 @@ export function createMidnightScene(seed: number): Scene {
     const bob = Math.sin(t * 0.7) * 3 * s;
     ctx.save();
     ctx.translate(x, y + bob);
-    ctx.fillStyle = 'rgba(20,22,34,0.92)';
-    ctx.beginPath();
-    ctx.ellipse(0, 0, 14 * s, 10 * s, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(-12 * s, 0); ctx.lineTo(-22 * s, -6 * s); ctx.lineTo(-22 * s, 6 * s); ctx.closePath();
-    ctx.fill();
-    // Teeth, faintly.
-    ctx.strokeStyle = 'rgba(220,225,235,0.5)';
-    ctx.lineWidth = 0.6 * s;
-    for (let k = 0; k < 5; k++) {
-      ctx.beginPath();
-      ctx.moveTo(8 * s + k * 1.4 * s, 3 * s);
-      ctx.lineTo(8.5 * s + k * 1.4 * s, 5.5 * s);
-      ctx.stroke();
-    }
-    // The stalk and its lure.
-    const lx = 22 * s + Math.sin(t * 1.3) * 2 * s, ly = -16 * s + Math.cos(t * 1.1) * 2 * s;
-    ctx.strokeStyle = 'rgba(60,64,80,0.9)';
-    ctx.lineWidth = 1 * s;
-    ctx.beginPath();
-    ctx.moveTo(6 * s, -8 * s);
-    ctx.quadraticCurveTo(16 * s, -22 * s, lx, ly);
-    ctx.stroke();
+    // The same fish as the wild ones, smaller, resting by the reef it was let stay at.
+    anglerBody(ctx, s * 0.55, t);
+    const lx = 40 * s * 0.55, ly = -30 * s * 0.55;
     ctx.globalCompositeOperation = 'lighter';
     glow(ctx, lx, ly, 9 * s, '160,240,255', 0.55 + 0.25 * Math.sin(t * 2));
     ctx.restore();
