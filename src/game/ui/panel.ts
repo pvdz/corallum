@@ -1866,7 +1866,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       }
       if (sec.classList.contains('later') && sec.dataset.laterFor !== choiceKey(sec)) { sec.classList.remove('later'); delete sec.dataset.auto; }
       // The newest choice is the one shown open (a wish on falling stars does not wait).
-      if (shownKey.get(sec) !== choiceKey(sec)) { shownKey.set(sec, choiceKey(sec)); if (!sec.classList.contains('later')) openChoice = sec; }
+      // A choice that runs out takes the slot even from one the player opened.
+      if (shownKey.get(sec) !== choiceKey(sec)) {
+        shownKey.set(sec, choiceKey(sec));
+        if (!sec.classList.contains('later')) { openChoice = sec; if (sec.classList.contains('timed')) picked = null; }
+      }
     }
     renderChips();
   }
