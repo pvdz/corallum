@@ -519,25 +519,28 @@ export function createSunlitScene(seed: number): Scene {
       if (out <= 0.05) continue;
       // Two little spiral trees: tiers of fine plumes, widest at the foot, each tier an arc of
       // colour over a dark edge, swaying a little.
-      const path = new Path2D();
+      // Two little spiral crowns, each a cone of plumes in the worm's colour with fine tiers drooping
+      // across it (a solid cone reads as a tiny fir; bare tier lines read as letters).
+      const cones = new Path2D(), tiers = new Path2D();
       for (const side of [-1, 1]) {
         const bx = x + side * 4 * s, sway = Math.sin(t * 0.8 + k + side) * 0.8 * s;
-        for (let q = 0; q < 5; q++) {
-          const u = q / 5;
-          const cy = y - (2.5 + u * 13) * s * out, rx = (4.6 - 3.4 * u) * s * out, ry = (1.7 - 0.6 * u) * s * out;
-          const cx = bx + sway * u;
-          // Each tier droops at its edges, like the boughs of a little fir.
-          path.moveTo(cx - rx, cy + ry);
-          path.ellipse(cx, cy + ry, rx, ry, 0, Math.PI, Math.PI * 2);
+        const hgt = 15 * s * out, half = 4.4 * s * out;
+        cones.moveTo(bx - half, y - 1 * s * out);
+        cones.quadraticCurveTo(bx - half * 0.4, y - hgt * 0.55, bx + sway, y - hgt);
+        cones.quadraticCurveTo(bx + half * 0.4, y - hgt * 0.55, bx + half, y - 1 * s * out);
+        cones.quadraticCurveTo(bx, y + 0.6 * s * out, bx - half, y - 1 * s * out);
+        for (let q = 1; q < 5; q++) {
+          const u = q / 5, cy = y - 1 * s * out - u * (hgt - 1 * s * out), rx = half * (1 - u) * 0.95, cx = bx + sway * u;
+          tiers.moveTo(cx - rx, cy + 1.2 * s * out);
+          tiers.quadraticCurveTo(cx, cy - 0.6 * s * out, cx + rx, cy + 1.2 * s * out);
         }
       }
+      ctx.fillStyle = colours[k % colours.length]!;
+      ctx.fill(cones);
       ctx.lineCap = 'round';
-      ctx.strokeStyle = 'rgba(20,20,30,0.55)';
-      ctx.lineWidth = 2.6 * s;
-      ctx.stroke(path);
-      ctx.strokeStyle = colours[k % colours.length]!;
-      ctx.lineWidth = 1.5 * s;
-      ctx.stroke(path);
+      ctx.strokeStyle = 'rgba(20,20,30,0.35)';
+      ctx.lineWidth = 0.8 * s;
+      ctx.stroke(tiers);
     }
     ctx.restore();
   }
