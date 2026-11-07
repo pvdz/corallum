@@ -931,31 +931,59 @@ export function createSunlitScene(seed: number): Scene {
     spot('bait-ball', cx, cy, R * 1.3);
     // The ball: fish on rings, swimming round it, the whole thing breathing as the hunters pass.
     const squeeze = 1 - 0.18 * Math.max(0, Math.sin(t * 2.2));
+    // Each a small silver fish pointed along its circle, the whole ball in one fill.
+    const ball = new Path2D();
     for (let i = 0; i < 160; i++) {
       const ring = Math.sqrt(((i * 0.618) % 1)) * R * squeeze;
-      const a = i * 2.4 + t * (1.2 + (i % 3) * 0.3) * (i % 2 ? 1 : -1);
+      const spin = (i % 2 ? 1 : -1);
+      const a = i * 2.4 + t * (1.2 + (i % 3) * 0.3) * spin;
       const x = cx + Math.cos(a) * ring * (form + (1 - form) * 3);
       const y = cy + Math.sin(a) * ring * 0.75 * (form + (1 - form) * 3);
-      const dir = Math.cos(a + Math.PI / 2) * (i % 2 ? 1 : -1);
-      ctx.fillStyle = `rgba(215,230,240,${0.85 * form})`;
-      ctx.beginPath();
-      ctx.ellipse(x, y, 4 * s, 1.4 * s, dir > 0 ? 0.3 : -0.3, 0, Math.PI * 2);
-      ctx.fill();
+      const h = Math.atan2(Math.cos(a) * 0.75 * spin, -Math.sin(a) * spin);
+      const ca = Math.cos(h), sa = Math.sin(h);
+      const P = (u: number, v: number): [number, number] => [x + (u * ca - v * sa) * s, y + (u * sa + v * ca) * s];
+      const pts = [P(4, 0), P(0.6, -1.2), P(-2.8, -0.4), P(-5, -1.5), P(-4.2, 0), P(-5, 1.5), P(-2.8, 0.4), P(0.6, 1.1)];
+      ball.moveTo(pts[0]![0], pts[0]![1]);
+      for (let q = 1; q < pts.length; q++) ball.lineTo(pts[q]![0], pts[q]![1]);
+      ball.closePath();
     }
-    // Hunters: dark streaks cutting through.
+    ctx.fillStyle = `rgba(215,230,240,${0.85 * form})`;
+    ctx.fill(ball);
+    // Hunters, jacks cutting through: a dark back over a silver belly, a sickle of a tail.
     for (let k = 0; k < 3; k++) {
       const p = ((t * 0.35 + k * 0.33) % 1);
       const hx = cx - R * 2.2 + p * R * 4.4;
       const hy = cy + Math.sin(p * Math.PI * 2 + k * 2) * R * 0.5;
-      ctx.fillStyle = `rgba(30,60,90,${0.85 * form})`;
+      const tail = Math.sin(t * 8 + k) * 1.4 * s;
+      ctx.save();
+      ctx.globalAlpha = form;
+      ctx.translate(hx, hy);
+      const g = ctx.createLinearGradient(0, -4 * s, 0, 4 * s);
+      g.addColorStop(0, '#1e3c5c');
+      g.addColorStop(0.55, '#5a7c98');
+      g.addColorStop(1, '#c8d6e0');
+      ctx.fillStyle = g;
       ctx.beginPath();
-      ctx.ellipse(hx, hy, 12 * s, 3.5 * s, 0, 0, Math.PI * 2);
+      ctx.moveTo(13 * s, 0.4 * s);
+      ctx.bezierCurveTo(10 * s, -4 * s, -4 * s, -4.4 * s, -10 * s, -1 * s);
+      ctx.lineTo(-17 * s, -6 * s + tail);
+      ctx.quadraticCurveTo(-14 * s, tail * 0.5, -17 * s, 6 * s + tail);
+      ctx.lineTo(-10 * s, 1 * s);
+      ctx.bezierCurveTo(-4 * s, 4.2 * s, 10 * s, 3.8 * s, 13 * s, 0.4 * s);
+      // The dorsal fin.
+      ctx.moveTo(2 * s, -3.6 * s);
+      ctx.lineTo(-2 * s, -7 * s);
+      ctx.lineTo(-4 * s, -3.2 * s);
       ctx.fill();
+      ctx.fillStyle = '#e8eef2';
       ctx.beginPath();
-      ctx.moveTo(hx - 11 * s, hy);
-      ctx.lineTo(hx - 17 * s, hy - 5 * s);
-      ctx.lineTo(hx - 17 * s, hy + 5 * s);
+      ctx.arc(9 * s, -0.6 * s, 1.1 * s, 0, Math.PI * 2);
       ctx.fill();
+      ctx.fillStyle = '#0c141c';
+      ctx.beginPath();
+      ctx.arc(9.2 * s, -0.6 * s, 0.6 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
     }
   }
 
