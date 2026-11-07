@@ -1173,3 +1173,4 @@ date, what landed, what is half-done, what's next.
 - The octopus's eye was a white disc with a black bar (a no-entry sign): a golden iris under a raised lid of skin, its pupil a dark bar with rounded ends.
 - Whole audit sweep after the choice folding and the panel changes (9 viewports × plain/Larger text/scientific × 8 points): only the 2 known dim findings. Console-error sweeps desktop and mobile clean; fuzz at the Twilight (phone, 797 actions) and Sunlit (desktop, 367) clean after the redraws.
 - A folded choice showed only its kicker ("Ossel asks you something ▸"); it keeps the first line of what it asks, dim and cut to one line, so a player can tell what waits without opening it.
+- The time-lapse (T, the reef regrowing from the zone's start) left nudibranchs creeping in open water where branches had not grown back yet: a slug is drawn only on branch that is there.

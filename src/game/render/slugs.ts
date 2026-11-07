@@ -50,6 +50,8 @@ export function createSlugs(count: number) {
         const pos = (u < 1 ? u : 2 - u) * span;
         const i0 = Math.floor(pos), f = pos - i0;
         const a = path[Math.min(span, i0)]!, b = path[Math.min(span, i0 + 1)]!;
+        // Not on a branch that is not there (the time-lapse regrows the reef from below).
+        if (reef.coral.y[a]! > L.top || reef.coral.y[b]! > L.top) continue;
         const [ax, ay] = reef.nodePx(L, a);
         const [bx, by] = reef.nodePx(L, b);
         if (ay < 0) continue;
