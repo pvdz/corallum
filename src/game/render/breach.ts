@@ -97,6 +97,12 @@ export function createBreachScene(seed: number): Scene {
   const far: Bundle[] = Array.from({ length: 120 }, () => ({
     x: rng(), delay: rng() * 20, speed: range(rng, 0.02, 0.05), drift: range(rng, -1, 1), size: range(rng, 0.3, 0.7),
   }));
+  // The fine haze of the release: many small eggs rising fast from every mouth (their own seed, so
+  // the rest of the scene keeps its draw).
+  const hazeRng = mulberry32(seed ^ 0x5fec);
+  const haze: Bundle[] = Array.from({ length: 2400 }, () => ({
+    x: hazeRng(), delay: hazeRng() * 10, speed: range(hazeRng, 0.07, 0.16), drift: range(hazeRng, -1, 1) * range(hazeRng, 0.2, 1), size: range(hazeRng, 0.5, 1),
+  }));
 
   const scale = () => Math.min(focus.w, focus.h) / 700;
   const cx = () => focus.x + focus.w * 0.5;
@@ -864,6 +870,41 @@ export function createBreachScene(seed: number): Scene {
       const n = Math.round(bundles.length * (0.12 + 0.88 * burst) * (brooding ? 0.35 : 1));
       const coral = reef.coral;
       if (v.spawnMode === 'fragmenting') drawFragments(ctx, v, L, reef, wy);
+      // The haze: small eggs pouring up off every part of the reef, thick beside it and spreading as
+      // they rise, at the height of the release in their thousands, then a thin trickle. Small
+      // round specks in a few batched paths (one per shade and opacity step), no halos: the beads' halos
+      // and the veil already light the water.
+      if (!brooding) {
+        const hn = Math.round(haze.length * (0.08 + 0.92 * burst));
+        const specks: Path2D[] = Array.from({ length: BEAD_SHADES * BEAD_STEPS }, () => new Path2D());
+        for (let i = 0; i < hn; i++) {
+          const b = haze[i]!;
+          const node = Math.floor(b.x * coral.count);
+          const [x0, y0] = reef.nodePx(L, node);
+          if (y0 < wy) continue;
+          const age = v.sinceBreach - b.delay * 0.3;
+          if (age < 0) continue;
+          const u = (age * b.speed) % 1;
+          const x = x0 + b.drift * u * (0.5 + 0.5 * u) * focus.w * 0.4 + Math.sin(t * 2 + i) * 3 * s * u;
+          const y = y0 - u * (y0 - wy);
+          const a = Math.min(1, u * 10) * (1 - u * 0.7);
+          const step = Math.min(BEAD_STEPS - 1, Math.floor(a * BEAD_STEPS));
+          if (step <= 0) continue;
+          const r = Math.max(1.8 * s * b.size, 0.9 * dpr);
+          const p = specks[(i % BEAD_SHADES) * BEAD_STEPS + step]!;
+          p.moveTo(x + r, y);
+          p.arc(x, y, r, 0, Math.PI * 2);
+        }
+        ctx.globalCompositeOperation = 'source-over';
+        for (let k = 0; k < BEAD_SHADES; k++) {
+          const rgb = beadShade(k, g);
+          for (let st = 1; st < BEAD_STEPS; st++) {
+            ctx.fillStyle = `rgba(${rgb},${(0.95 * (st + 0.5) / BEAD_STEPS).toFixed(3)})`;
+            ctx.fill(specks[k * BEAD_STEPS + st]!);
+          }
+        }
+        ctx.globalCompositeOperation = 'lighter';
+      }
       // Each bundle is a bead of colour with a soft halo: the halos add up in the water (lighter),
       // the beads are painted over (source-over), so a cloud of them stays pink, not white.
       // Beads are batched into one path per shade and opacity step.

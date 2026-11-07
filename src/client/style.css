@@ -1207,7 +1207,7 @@ html.view-mode #photo { display: grid; }
 @media (max-width: 599px), (max-width: 799px) and (min-height: 501px) { .touch-hint.side-only { display: none !important; } }
 /* The memory choice: the count and the release stay in reach at the bottom while the list scrolls. */
 .finale.choice-screen .finale-foot { position: sticky; bottom: 0; z-index: 1; padding: 12px 0 max(12px, env(safe-area-inset-bottom));
-  background: linear-gradient(180deg, rgba(4, 4, 14, 0), rgba(4, 4, 14, 0.97) 22%); }
+  background: linear-gradient(180deg, rgba(4, 4, 14, 0), rgb(4, 4, 14) 24%); }
 /* A phone on its side has little height: the quick buys scroll away with the list, one line each. */
 @media (max-height: 500px) {
   .quick-buy:not([hidden]) { position: static; }
