@@ -1210,12 +1210,23 @@ export function createTwilightScene(seed: number): Scene {
     ctx.moveTo(5 * s, 1.5 * s);
     ctx.quadraticCurveTo(7 * s, 2.2 * s, 7.6 * s, 0.8 * s + Math.sin(t * 1.1) * 0.5 * s);
     ctx.stroke();
-    ctx.fillStyle = 'rgba(250,240,200,0.9)';
+    // The eye: a golden iris on a raised lid of skin, its pupil a dark bar with rounded ends.
+    ctx.fillStyle = 'rgba(210,170,96,0.95)';
     ctx.beginPath();
-    ctx.arc(4 * s, -1 * s, 1.6 * s, 0, Math.PI * 2);
+    ctx.ellipse(4 * s, -1 * s, 1.7 * s, 1.4 * s, 0, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#111';
-    ctx.fillRect(3 * s, -1.4 * s, 2 * s, 0.8 * s);
+    ctx.strokeStyle = '#111';
+    ctx.lineCap = 'round';
+    ctx.lineWidth = 0.7 * s;
+    ctx.beginPath();
+    ctx.moveTo(3.2 * s, -1 * s);
+    ctx.lineTo(4.8 * s, -1 * s);
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(90,60,40,0.6)';
+    ctx.lineWidth = 0.6 * s;
+    ctx.beginPath();
+    ctx.arc(4 * s, -1 * s, 1.9 * s, Math.PI * 1.1, Math.PI * 1.9);
+    ctx.stroke();
     ctx.restore();
   }
 

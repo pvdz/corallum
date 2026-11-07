@@ -1170,3 +1170,4 @@ date, what landed, what is half-done, what's next.
 - Moon jellies under the Breach stood on nine long straight lines (legs): a fine fringe of many short tentacles round the rim, and the four short frilly oral arms hanging from the middle, swaying.
 - The sea snake's tail paddle was a pale oval with a black cap (an eyeball): a flat leaf of a paddle, wider than the body, ringed in the same bands.
 - The young Rasp asleep at the reef's foot (after "A young Rasp, alone") is a small parrotfish like the rest, its eye closed under a lid, its sleeping bubbles kept.
+- The octopus's eye was a white disc with a black bar (a no-entry sign): a golden iris under a raised lid of skin, its pupil a dark bar with rounded ends.
