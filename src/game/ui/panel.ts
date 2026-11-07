@@ -1883,7 +1883,9 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       // A choice that runs out takes the slot even from one the player opened.
       if (shownKey.get(sec) !== choiceKey(sec)) {
         shownKey.set(sec, choiceKey(sec));
-        if (!sec.classList.contains('later') && !sec.classList.contains('timed')) openChoice = sec;
+        // A new choice opens only when none is open; else it waits folded, its line telling what it is.
+        const openNow = !!openChoice && openChoice !== sec && !openChoice.hidden && !openChoice.classList.contains('later');
+        if (!sec.classList.contains('later') && !sec.classList.contains('timed') && !openNow) openChoice = sec;
       }
     }
     renderChips();
@@ -1896,7 +1898,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const waiting = [...grow.querySelectorAll<HTMLElement>(':scope > section.moment:not([hidden])')]
       .filter((sec) => sec.querySelector(':scope > .later-btn') && sec.querySelector('.truce-kicker')?.textContent)
       .filter((sec) => !sec.classList.contains('later') || sec.dataset.auto === '1');
-    // One choice is open: the one the player opened, else the newest. A choice that runs out (a wish,
+    // One choice is open: the one the player opened, else the one open first. A choice that runs out (a wish,
     // a signal, a spawning) opens beside it while it lasts, so it never folds what is being read.
     if (picked && !waiting.includes(picked)) picked = null;
     const lasting = waiting.filter((sec) => !sec.classList.contains('timed'));
