@@ -83,27 +83,40 @@ function drawSweepers(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, 
     }
     for (let q = 1; q <= n; q++) {
       const u = q / n;
-      ctx.strokeStyle = `rgba(255,${150 + 40 * u},${125 + 40 * u},${0.8 - 0.4 * u})`;
-      ctx.lineWidth = (2.8 - 2.1 * u) * s;
+      ctx.strokeStyle = `rgba(255,${150 + 40 * u},${125 + 40 * u},${0.85 - 0.3 * u})`;
+      ctx.lineWidth = (3 - 1.5 * u) * s;
       ctx.beginPath();
       ctx.moveTo(px[q - 1]!, py[q - 1]!);
       ctx.lineTo(px[q]!, py[q]!);
       ctx.stroke();
     }
-    // Batteries of stinging cells: pale beads along the outer half.
-    ctx.fillStyle = 'rgba(255,235,215,0.75)';
-    for (let q = Math.ceil(n / 2); q < n; q += 2) {
-      ctx.beginPath();
-      ctx.arc(px[q]!, py[q]!, (1.6 - 0.6 * (q / n)) * s, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    // The knobbed tip, faintly alight.
-    ctx.globalCompositeOperation = 'lighter';
-    glow(ctx, px[n]!, py[n]!, 6 * s, '255,180,160', 0.35 + 0.15 * Math.sin(t * 2 + ph));
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = 'rgba(255,240,225,0.9)';
+    // Batteries of stinging cells: knobbly swellings along the outer half, a little paler than
+    // the arm, each lying along it.
+    ctx.fillStyle = 'rgba(255,214,196,0.8)';
     ctx.beginPath();
-    ctx.arc(px[n]!, py[n]!, 2 * s, 0, Math.PI * 2);
+    for (let q = Math.ceil(n / 2); q < n; q += 2) {
+      const a = Math.atan2(py[q + 1]! - py[q - 1]!, px[q + 1]! - px[q - 1]!), r = (1.9 - 0.5 * (q / n)) * s;
+      ctx.moveTo(px[q]! + Math.cos(a) * r * 1.5, py[q]! + Math.sin(a) * r * 1.5);
+      ctx.ellipse(px[q]!, py[q]!, r * 1.5, r, a, 0, Math.PI * 2);
+    }
+    ctx.fill();
+    // The swollen club of a tip, packed with stinging cells, faintly alight.
+    const ta = Math.atan2(py[n]! - py[n - 1]!, px[n]! - px[n - 1]!);
+    const cx = px[n]! + Math.cos(ta) * 1.5 * s, cy = py[n]! + Math.sin(ta) * 1.5 * s;
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, cx, cy, 7 * s, '255,180,160', 0.3 + 0.12 * Math.sin(t * 2 + ph));
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = 'rgba(255,226,210,0.9)';
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, 3.4 * s, 2.1 * s, ta, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(235,150,140,0.45)';
+    ctx.beginPath();
+    for (const [u, v] of [[-1.2, 0.6], [0.4, -0.8], [1.4, 0.5], [-0.2, 0.9]] as const) {
+      const bx = cx + Math.cos(ta) * u * s - Math.sin(ta) * v * s, by = cy + Math.sin(ta) * u * s + Math.cos(ta) * v * s;
+      ctx.moveTo(bx + 0.5 * s, by);
+      ctx.arc(bx, by, 0.5 * s, 0, Math.PI * 2);
+    }
     ctx.fill();
   }
   ctx.restore();

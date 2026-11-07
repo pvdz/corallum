@@ -1,6 +1,6 @@
 // Relics the shoals brought home from Thousandfold's ruins (content/expeditions.ts), set into
 // the lower branches of the reef: the gate's white hinge stone, a sealed larva cup, the lamp of
-// the hall (still lit), a grooved well-stone and one Rasp beak.
+// the hall (still lit), a grooved well-stone, a mooring ring, a carved lintel and one Rasp beak.
 
 import type { SiteId } from '../content/expeditions.ts';
 import { glow } from './draw.ts';
@@ -60,73 +60,152 @@ export function drawRelics(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLay
     if (i < 0) continue;
     const [x, y] = reef.nodePx(L, i);
     if (id === 'gate') {
-      // A knuckle of white stone, worn smooth.
+      // The gate's hinge stone: a worn white knuckle of a block, its pin hole dark, lit on top.
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(0.4);
+      ctx.fillStyle = '#b8b0a0';
+      ctx.beginPath();
+      ctx.roundRect(-5 * s, -3.4 * s, 10 * s, 7 * s, 2.6 * s);
+      ctx.fill();
       ctx.fillStyle = '#ece6d8';
       ctx.beginPath();
-      ctx.ellipse(x, y, 5 * s, 3.6 * s, 0.4, 0, Math.PI * 2);
+      ctx.roundRect(-5 * s, -3.6 * s, 10 * s, 5.4 * s, 2.6 * s);
       ctx.fill();
-      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
       ctx.beginPath();
-      ctx.ellipse(x - 1.5 * s, y - 1.2 * s, 1.8 * s, 1 * s, 0.4, 0, Math.PI * 2);
+      ctx.ellipse(-1.8 * s, -2.2 * s, 2 * s, 0.8 * s, 0, 0, Math.PI * 2);
       ctx.fill();
+      ctx.fillStyle = 'rgba(60,54,46,0.8)';
+      ctx.beginPath();
+      ctx.arc(2.2 * s, -0.6 * s, 1.1 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
     } else if (id === 'terraces') {
-      // A little stone cup, its lid still on.
-      ctx.fillStyle = '#b9a58c';
+      // A little stone cup, its lid still on: a tapering body with a groove round it, the lid's
+      // rim and knob, lit from the left.
+      const g = ctx.createLinearGradient(x - 4 * s, 0, x + 4 * s, 0);
+      g.addColorStop(0, '#d8c8ae');
+      g.addColorStop(1, '#8e7c64');
+      ctx.fillStyle = g;
       ctx.beginPath();
       ctx.moveTo(x - 4 * s, y - 3 * s);
-      ctx.lineTo(x + 4 * s, y - 3 * s);
-      ctx.lineTo(x + 2.6 * s, y + 3.5 * s);
-      ctx.lineTo(x - 2.6 * s, y + 3.5 * s);
+      ctx.quadraticCurveTo(x - 4.2 * s, y + 1 * s, x - 2.4 * s, y + 3.5 * s);
+      ctx.lineTo(x + 2.4 * s, y + 3.5 * s);
+      ctx.quadraticCurveTo(x + 4.2 * s, y + 1 * s, x + 4 * s, y - 3 * s);
+      ctx.closePath();
       ctx.fill();
-      ctx.fillStyle = '#d8c8ae';
+      ctx.strokeStyle = 'rgba(70,58,44,0.6)';
+      ctx.lineWidth = 0.6 * s;
+      ctx.beginPath();
+      ctx.ellipse(x, y + 0.2 * s, 3.9 * s, 0.9 * s, 0, 0.1, Math.PI - 0.1);
+      ctx.stroke();
+      ctx.fillStyle = '#e2d4bc';
       ctx.beginPath();
       ctx.ellipse(x, y - 3 * s, 4.6 * s, 1.4 * s, 0, 0, Math.PI * 2);
       ctx.fill();
+      ctx.fillStyle = '#c8b698';
+      ctx.beginPath();
+      ctx.ellipse(x, y - 3.9 * s, 1.3 * s, 0.9 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
     } else if (id === 'lamp-hall') {
-      // The hall's lamp: a shell hung from the branch, still breathing light.
-      const hy = y + 9 * s;
+      // The hall's lamp: a ribbed bell of a shell hung from the branch, still breathing light.
+      const hy = y + 9 * s, sw = Math.sin(t * 0.8) * 1.5 * s;
       ctx.strokeStyle = 'rgba(200,220,255,0.35)';
       ctx.lineWidth = 0.7 * s;
       ctx.beginPath();
       ctx.moveTo(x, y);
-      ctx.lineTo(x + Math.sin(t * 0.8) * 1.5 * s, hy);
+      ctx.lineTo(x + sw, hy);
       ctx.stroke();
       const pulse = 0.65 + 0.35 * Math.sin(t * 1.1);
+      const lx = x + sw, ly = hy;
       ctx.fillStyle = '#e8eef8';
       ctx.beginPath();
-      ctx.ellipse(x + Math.sin(t * 0.8) * 1.5 * s, hy + 3 * s, 3.2 * s, 4 * s, 0, 0, Math.PI * 2);
+      ctx.moveTo(lx, ly);
+      ctx.bezierCurveTo(lx - 2 * s, ly + 0.5 * s, lx - 3.6 * s, ly + 4 * s, lx - 3.4 * s, ly + 7 * s);
+      ctx.quadraticCurveTo(lx, ly + 8 * s, lx + 3.4 * s, ly + 7 * s);
+      ctx.bezierCurveTo(lx + 3.6 * s, ly + 4 * s, lx + 2 * s, ly + 0.5 * s, lx, ly);
       ctx.fill();
+      ctx.strokeStyle = 'rgba(150,170,200,0.55)';
+      ctx.lineWidth = 0.5 * s;
+      ctx.beginPath();
+      for (const k of [-2, -1, 0, 1, 2]) {
+        ctx.moveTo(lx, ly + 0.6 * s);
+        ctx.quadraticCurveTo(lx + k * 1.1 * s, ly + 4 * s, lx + k * 1.5 * s, ly + 7.3 * s);
+      }
+      ctx.stroke();
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
-      glow(ctx, x + Math.sin(t * 0.8) * 1.5 * s, hy + 3 * s, 26 * s, '170,215,255', 0.55 * pulse * Math.max(0.35, gs));
+      glow(ctx, lx, ly + 6 * s, 26 * s, '170,215,255', 0.55 * pulse * Math.max(0.35, gs));
       ctx.restore();
     } else if (id === 'wells') {
-      // A grey disc ringed with listening grooves.
-      ctx.fillStyle = '#8f949c';
+      // A well-stone: a squat grey drum seen from the side, grooves worn round it where ropes ran.
+      const g = ctx.createLinearGradient(x - 5 * s, 0, x + 5 * s, 0);
+      g.addColorStop(0, '#a8adb6');
+      g.addColorStop(1, '#5e636c');
+      ctx.fillStyle = g;
       ctx.beginPath();
-      ctx.arc(x, y, 4.5 * s, 0, Math.PI * 2);
+      ctx.ellipse(x, y + 2.5 * s, 4.8 * s, 1.5 * s, 0, 0, Math.PI);
+      ctx.lineTo(x - 4.8 * s, y - 2.5 * s);
+      ctx.lineTo(x + 4.8 * s, y - 2.5 * s);
+      ctx.closePath();
       ctx.fill();
-      ctx.strokeStyle = 'rgba(40,44,52,0.7)';
+      ctx.strokeStyle = 'rgba(36,40,48,0.65)';
       ctx.lineWidth = 0.6 * s;
-      for (const r of [1.4, 2.6, 3.7]) {
-        ctx.beginPath();
-        ctx.arc(x, y, r * s, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-    } else if (id === 'harbour') {
-      // A mooring ring: a worn ring of stone.
-      ctx.strokeStyle = '#d6cfc0';
-      ctx.lineWidth = 2 * s;
       ctx.beginPath();
-      ctx.arc(x, y, 4 * s, 0, Math.PI * 2);
+      for (const gy of [-0.6, 1.1]) {
+        ctx.moveTo(x - 4.8 * s, y + gy * s);
+        ctx.ellipse(x, y + gy * s, 4.8 * s, 1.5 * s, 0, Math.PI, 0, true);
+      }
       ctx.stroke();
+      ctx.fillStyle = '#b4b9c2';
+      ctx.beginPath();
+      ctx.ellipse(x, y - 2.5 * s, 4.8 * s, 1.5 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(30,34,42,0.7)';
+      ctx.beginPath();
+      ctx.ellipse(x, y - 2.5 * s, 1.6 * s, 0.5 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (id === 'harbour') {
+      // A mooring ring: a worn ring of stone hanging from its eye, lit along its top, shadowed below.
+      ctx.lineWidth = 2 * s;
+      ctx.strokeStyle = '#a49c8e';
+      ctx.beginPath();
+      ctx.arc(x, y + 3 * s, 4 * s, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.strokeStyle = '#e4ddce';
+      ctx.lineWidth = 1 * s;
+      ctx.beginPath();
+      ctx.arc(x, y + 3 * s, 4.3 * s, Math.PI * 1.1, Math.PI * 1.9);
+      ctx.stroke();
+      ctx.fillStyle = '#8a8274';
+      ctx.beginPath();
+      ctx.ellipse(x, y - 1 * s, 1.6 * s, 1.2 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
     } else if (id === 'sun-gate') {
-      // A bleached lintel: a pale bar of carved stone.
+      // A bleached lintel: a pale bar of carved stone, one end broken off, a sun cut in its face.
+      ctx.fillStyle = '#c8bea8';
+      ctx.beginPath();
+      ctx.moveTo(x - 7 * s, y - 1.6 * s);
+      ctx.lineTo(x + 5.5 * s, y - 2 * s);
+      ctx.lineTo(x + 7 * s, y - 0.4 * s);
+      ctx.lineTo(x + 6 * s, y + 0.6 * s);
+      ctx.lineTo(x + 6.6 * s, y + 2 * s);
+      ctx.lineTo(x - 7 * s, y + 2 * s);
+      ctx.closePath();
+      ctx.fill();
       ctx.fillStyle = '#f2ece0';
-      ctx.fillRect(x - 7 * s, y - 2 * s, 14 * s, 4 * s);
-      ctx.strokeStyle = 'rgba(180,160,120,0.6)';
-      ctx.lineWidth = 0.6 * s;
-      ctx.strokeRect(x - 7 * s, y - 2 * s, 14 * s, 4 * s);
+      ctx.fillRect(x - 7 * s, y - 2 * s, 12.5 * s, 1.4 * s);
+      ctx.strokeStyle = 'rgba(150,128,90,0.75)';
+      ctx.lineWidth = 0.5 * s;
+      ctx.beginPath();
+      ctx.arc(x - 1 * s, y + 0.4 * s, 1 * s, 0, Math.PI * 2);
+      for (let k = 0; k < 8; k++) {
+        const a = (k / 8) * Math.PI * 2;
+        ctx.moveTo(x - 1 * s + Math.cos(a) * 1.4 * s, y + 0.4 * s + Math.sin(a) * 1.4 * s);
+        ctx.lineTo(x - 1 * s + Math.cos(a) * 2 * s, y + 0.4 * s + Math.sin(a) * 2 * s);
+      }
+      ctx.stroke();
     } else {
       // One Rasp beak: two fused plates of teeth, pale as bone.
       ctx.fillStyle = '#e4dcc4';

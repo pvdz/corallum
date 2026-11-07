@@ -12,7 +12,7 @@ import { drawDome, drawSpire } from './works.ts';
 import { drawRelics } from './relics.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
-import { drawDarkness, glow, speck, whaleSilhouette } from './draw.ts';
+import { drawDarkness, facing, glow, speck, whaleSilhouette } from './draw.ts';
 import { createLayerCache } from './layer.ts';
 import { createForeground } from './foreground.ts';
 import { createReef, type Reef, type ReefLayout } from './reef.ts';
@@ -212,16 +212,26 @@ export function createMidnightScene(seed: number): Scene {
       ctx.stroke();
       // Vertebrae along it: small blocks, larger toward the chest, smaller down the tail.
       ctx.fillStyle = 'rgba(205,210,228,0.5)';
+      const spines: number[] = [];
       ctx.beginPath();
       for (let k = 0; k < 19; k++) {
         const u = k / 18;
         const vx = wx - 60 * s + u * 124 * s;
         const vy = (1 - u) * (1 - u) * (wy + 2 * s) + 2 * (1 - u) * u * (wy - 4 * s) + u * u * (wy + 3 * s);
         const vr = (0.9 + 1.4 * Math.sin(Math.min(1, u * 1.4) * Math.PI * 0.5)) * s;
-        ctx.moveTo(vx + vr * 1.3, vy - 1 * s);
-        ctx.ellipse(vx, vy - 1 * s, vr * 1.3, vr, 0, 0, Math.PI * 2);
+        ctx.moveTo(vx + vr * 1.1, vy - 1 * s);
+        ctx.ellipse(vx, vy - 1 * s, vr * 1.1, vr * 0.85, 0, 0, Math.PI * 2);
+        spines.push(vx, vy - 1 * s - vr * 0.7, vr);
       }
       ctx.fill();
+      // Each vertebra's spine, a short blade raised and swept back toward the tail.
+      ctx.lineWidth = 1.1 * s;
+      ctx.beginPath();
+      for (let k = 0; k < spines.length; k += 3) {
+        ctx.moveTo(spines[k]!, spines[k + 1]!);
+        ctx.lineTo(spines[k]! - spines[k + 2]! * 0.9, spines[k + 1]! - spines[k + 2]! * 1.6);
+      }
+      ctx.stroke();
       // The ribs: longest at the chest (toward the skull), rising and leaning back a little; the
       // first two (by the tail end) fallen half flat.
       ctx.lineWidth = 1.5 * s;
@@ -234,17 +244,30 @@ export function createMidnightScene(seed: number): Scene {
         ctx.quadraticCurveTo(rx + 1.5 * s, wy - rh * lean, rx - 3.5 * s, wy - rh * 1.1 * lean);
       }
       ctx.stroke();
-      // The skull: a long jaw and the broad cranium behind it.
-      ctx.fillStyle = 'rgba(200,205,225,0.45)';
+      // The skull: a broad cranium behind, the long flat beak of the upper jaw tapering forward,
+      // a dark eye socket and the nostrils on top; one lower jaw, a long bowed bone, fallen beside it.
+      const X = (u: number) => wx + u * s, Y = (v: number) => wy + v * s;
+      ctx.fillStyle = 'rgba(200,205,225,0.5)';
       ctx.beginPath();
-      ctx.ellipse(wx + 70 * s, wy - 1 * s, 9 * s, 6.5 * s, 0.1, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.moveTo(wx + 74 * s, wy - 3 * s);
-      ctx.quadraticCurveTo(wx + 92 * s, wy - 2 * s, wx + 100 * s, wy + 2 * s);
-      ctx.quadraticCurveTo(wx + 88 * s, wy + 3.5 * s, wx + 74 * s, wy + 3 * s);
+      ctx.moveTo(X(63), Y(3));
+      ctx.bezierCurveTo(X(62), Y(-5), X(66), Y(-9.5), X(73), Y(-9));
+      ctx.quadraticCurveTo(X(80), Y(-8.5), X(84), Y(-5));
+      ctx.quadraticCurveTo(X(94), Y(-2.5), X(102), Y(0.5));
+      ctx.quadraticCurveTo(X(90), Y(3), X(74), Y(3.5));
       ctx.closePath();
       ctx.fill();
+      ctx.fillStyle = 'rgba(8,10,28,0.65)';
+      ctx.beginPath();
+      ctx.ellipse(X(71), Y(-2.5), 2.6 * s, 1.9 * s, -0.2, 0, Math.PI * 2);
+      ctx.moveTo(X(79), Y(-7.2));
+      ctx.ellipse(X(78), Y(-7.2), 1.6 * s, 0.6 * s, 0.25, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(200,205,225,0.5)';
+      ctx.lineWidth = 1.8 * s;
+      ctx.beginPath();
+      ctx.moveTo(X(66), Y(5));
+      ctx.quadraticCurveTo(X(86), Y(9), X(103), Y(4.5));
+      ctx.stroke();
       // White mats of bacteria spreading over the bones and the silt beside them.
       ctx.fillStyle = 'rgba(235,240,245,0.16)';
       for (let k = 0; k < 7; k++) {
@@ -294,6 +317,24 @@ export function createMidnightScene(seed: number): Scene {
           ctx.stroke();
         }
       }
+      // Its two claws held up in front, picking, and its eyes on short stalks.
+      ctx.lineWidth = 0.9 * s;
+      ctx.fillStyle = 'rgba(225,145,120,0.9)';
+      for (const side of [-1, 1]) {
+        const pick = Math.max(0, Math.sin(t * 2.2 + side * 1.4)) * 1.2 * s;
+        const px = cx2 + side * 3.6 * s, py = cy2 - 2.2 * s + pick;
+        ctx.beginPath();
+        ctx.moveTo(cx2 + side * 1.8 * s, cy2 - 0.6 * s);
+        ctx.lineTo(px, py);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(px + side * 0.5 * s, py - 0.5 * s, 1.3 * s, 0.8 * s, side * 0.6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.fillStyle = 'rgba(20,10,10,0.9)';
+      ctx.beginPath();
+      for (const side of [-1, 1]) { ctx.moveTo(cx2 + side * 0.9 * s + 0.45 * s, cy2 - 2.2 * s); ctx.arc(cx2 + side * 0.9 * s, cy2 - 2.2 * s, 0.45 * s, 0, Math.PI * 2); }
+      ctx.fill();
       ctx.globalCompositeOperation = 'lighter';
       for (let k = 0; k < 6; k++) glow(ctx, wx - 40 * s + k * 20 * s, wy - 4 * s, 4 * s, '255,140,180', 0.4);
       ctx.restore();
@@ -396,31 +437,51 @@ export function createMidnightScene(seed: number): Scene {
     ctx.translate(x, y);
     ctx.rotate(-0.25 + Math.sin(t * 0.2) * 0.08);
     const len = 70 * s, rad = 9 * s;
-    // A hollow tube, closed and rounded at one end, open at the other (its mouth seen a little end-on).
-    ctx.fillStyle = 'rgba(160,180,255,0.09)';
-    ctx.strokeStyle = 'rgba(180,200,255,0.26)';
-    ctx.lineWidth = 0.8 * s;
-    ctx.beginPath();
-    ctx.moveTo(len / 2, -rad * 1.05);
-    ctx.lineTo(-len / 2 + rad, -rad * 0.9);
-    ctx.arc(-len / 2 + rad, 0, rad * 0.9, -Math.PI / 2, Math.PI / 2, true);
-    ctx.lineTo(len / 2, rad * 1.05);
-    ctx.fill();
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.ellipse(len / 2, 0, rad * 0.4, rad * 1.05, 0, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(10,14,40,0.35)';
-    ctx.fill();
-    ctx.stroke();
-    // Faint rings round it where the little animals sit in rows.
-    ctx.strokeStyle = 'rgba(180,200,255,0.1)';
-    ctx.beginPath();
-    for (let k = 1; k < 7; k++) {
-      const rx = -len / 2 + rad + k * (len - rad) / 7;
-      ctx.moveTo(rx, -rad);
-      ctx.quadraticCurveTo(rx + rad * 0.35, 0, rx, rad);
+    // A hollow tube tapering to a closed rounded tip, wide and open at the mouth (seen a little
+    // end-on), its skin knobbled all over with the little animals of the colony.
+    const half = (f: number) => rad * (0.45 + 0.6 * f);
+    const tube = new Path2D();
+    const N = 14;
+    for (let k = 0; k <= N; k++) {
+      const f = k / N, px = -len / 2 + rad * 0.45 + f * (len - rad * 0.45);
+      const r = half(f) * (1 + 0.06 * Math.sin(k * 2.7));
+      if (k === 0) tube.moveTo(px, -r); else tube.lineTo(px, -r);
     }
+    for (let k = N; k >= 0; k--) {
+      const f = k / N, px = -len / 2 + rad * 0.45 + f * (len - rad * 0.45);
+      tube.lineTo(px, half(f) * (1 + 0.06 * Math.sin(k * 1.9 + 1)));
+    }
+    tube.arc(-len / 2 + rad * 0.45, 0, rad * 0.45, Math.PI / 2, -Math.PI / 2);
+    tube.closePath();
+    // Brighter toward its edges, where the light passes through more of its wall.
+    const g = ctx.createLinearGradient(0, -rad * 1.05, 0, rad * 1.05);
+    g.addColorStop(0, 'rgba(170,190,255,0.24)');
+    g.addColorStop(0.5, 'rgba(120,150,240,0.07)');
+    g.addColorStop(1, 'rgba(170,190,255,0.2)');
+    ctx.fillStyle = g;
+    ctx.fill(tube);
+    // The open mouth: the dark inside, ringed by a paler lip.
+    ctx.beginPath();
+    ctx.ellipse(len / 2, 0, rad * 0.38, rad * 1.02, 0, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(8,12,36,0.45)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(190,210,255,0.22)';
+    ctx.lineWidth = 1.2 * s;
     ctx.stroke();
+    // The animals: small knobs in staggered rows round the tube, fainter toward its far side.
+    ctx.fillStyle = 'rgba(190,210,255,0.22)';
+    ctx.beginPath();
+    for (let row = 0; row < 11; row++) {
+      const f = (row + 0.5) / 11, px = -len / 2 + rad * 0.6 + f * (len - rad * 0.9), hr = half(f);
+      for (let q = 0; q < 5; q++) {
+        const v = ((q + (row % 2) * 0.5) / 4.5) * 2 - 1;
+        if (Math.abs(v) > 0.92) continue;
+        const kr = (0.7 + 0.5 * f) * s;
+        ctx.moveTo(px + kr, v * hr * 0.9);
+        ctx.arc(px, v * hr * 0.9, kr, 0, Math.PI * 2);
+      }
+    }
+    ctx.fill();
     ctx.globalCompositeOperation = 'lighter';
     // Touched, a bright wave runs the length of the colony and on into the water: each animal
     // flashes when its neighbour does.
@@ -977,35 +1038,54 @@ export function createMidnightScene(seed: number): Scene {
       ctx.translate(x, y);
       if (i % 2) ctx.scale(-1, 1);
       // The blade: deep at the front, a thin tail.
-      const g = ctx.createLinearGradient(0, -5 * s, 0, 5 * s);
-      g.addColorStop(0, '#9fb0c8');
-      g.addColorStop(1, '#4a5872');
+      const g = ctx.createLinearGradient(0, -4.5 * s, 0, 6 * s);
+      g.addColorStop(0, '#141a2a');
+      g.addColorStop(0.35, '#38455e');
+      g.addColorStop(1, '#4e5e7c');
       ctx.fillStyle = g;
-      // Arched back, a deep keel of a belly, a small forked tail.
+      // A hatchet: a short arched back, a deep keel of a belly, then a sudden thin tail stalk
+      // and a small forked tail.
       ctx.beginPath();
-      ctx.moveTo(5 * s, -1 * s);
-      ctx.quadraticCurveTo(2 * s, -4 * s, -2 * s, -3 * s);
-      ctx.lineTo(-5 * s, -1 * s);
-      ctx.lineTo(-8 * s, -2.6 * s);
-      ctx.lineTo(-7 * s, 0 * s);
-      ctx.lineTo(-8 * s, 1.8 * s);
-      ctx.lineTo(-5 * s, 0.6 * s);
-      ctx.quadraticCurveTo(-1 * s, 7 * s, 4 * s, 3 * s);
+      ctx.moveTo(5 * s, -2 * s);
+      ctx.quadraticCurveTo(3 * s, -4.6 * s, -1 * s, -3.6 * s);
+      ctx.lineTo(-4 * s, -1.2 * s);
+      ctx.lineTo(-6 * s, -0.7 * s);
+      ctx.lineTo(-8.5 * s, -2.8 * s);
+      ctx.lineTo(-7.6 * s, 0);
+      ctx.lineTo(-8.5 * s, 2.4 * s);
+      ctx.lineTo(-6 * s, 0.6 * s);
+      ctx.lineTo(-4 * s, 1 * s);
+      ctx.lineTo(-1.2 * s, 6.4 * s);
+      ctx.lineTo(1.8 * s, 5.6 * s);
+      ctx.lineTo(5.2 * s, 2.2 * s);
+      ctx.lineTo(5.6 * s, 0);
       ctx.closePath();
       ctx.fill();
-      ctx.strokeStyle = 'rgba(220,235,255,0.5)';
-      ctx.lineWidth = 0.5 * s;
+      // The mirror of its flank, catching what light there is.
+      ctx.fillStyle = 'rgba(200,215,245,0.16)';
       ctx.beginPath();
-      ctx.moveTo(3.5 * s, -0.5 * s);
-      ctx.quadraticCurveTo(0, 2 * s, -4 * s, 0);
-      ctx.stroke();
-      ctx.fillStyle = '#1a1e2a';
-      ctx.beginPath();
-      ctx.arc(3.2 * s, -1.4 * s, 1.1 * s, 0, Math.PI * 2);
+      ctx.moveTo(-2.5 * s, 0.5 * s);
+      ctx.lineTo(3.5 * s, -0.5 * s);
+      ctx.lineTo(3 * s, 3 * s);
+      ctx.lineTo(-0.6 * s, 4.6 * s);
+      ctx.closePath();
       ctx.fill();
-      // Belly lights pointing down.
+      // A big eye turned upward, ringed silver.
+      ctx.fillStyle = '#6a7890';
+      ctx.beginPath();
+      ctx.arc(3.3 * s, -1.8 * s, 1.35 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#10131c';
+      ctx.beginPath();
+      ctx.arc(3.4 * s, -2.1 * s, 1 * s, 0, Math.PI * 2);
+      ctx.fill();
+      // Belly lights in a row along the keel, pointing down.
       ctx.globalCompositeOperation = 'lighter';
-      for (let q = 0; q < 4; q++) glow(ctx, (2.5 - q * 1.6) * s, (3.2 - q * 0.4) * s, (2 + flare * 4) * s, '120,170,255', 0.45 + flare * 0.5);
+      for (let q = 0; q < 5; q++) {
+        const u = 0.3 + q * 0.17, v = 1 - u;
+        const bx = -1.2 + (u - 0.3) * 8.5, by = 6.4 - (u - 0.3) * 4;
+        glow(ctx, bx * s, (by - 0.5) * s, (1.6 + flare * 4) * s, '120,170,255', 0.5 + flare * 0.5);
+      }
       ctx.restore();
     }
   }
@@ -1324,7 +1404,7 @@ export function createMidnightScene(seed: number): Scene {
   function drawBigeye(ctx: CanvasRenderingContext2D, t: number, x0: number, y0: number): void {
     const s = scale() * 1.4;
     const x = x0 + Math.sin(t * 0.3) * 14 * s, y = y0 + Math.sin(t * 0.5) * 6 * s;
-    const dir = Math.cos(t * 0.3) >= 0 ? 1 : -1;
+    const dir = facing(Math.cos(t * 0.3));
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(dir, 1);

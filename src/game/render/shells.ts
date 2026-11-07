@@ -110,17 +110,60 @@ export function drawShellShape(ctx: CanvasRenderingContext2D, id: string, colour
         for (let k = 1; k < 4; k++) { ctx.beginPath(); ctx.moveTo(-5 * s + k * 1.3 * s, -k * 1.75 * s); ctx.lineTo(5 * s - k * 1.3 * s, -k * 1.75 * s + 0.6 * s); ctx.stroke(); }
       } else {
         const R = id === 'nautilus' ? 5 : 4;
-        ctx.arc(0, -R * s, R * s, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.strokeStyle = dark;
-        ctx.beginPath();
-        for (let a = 0; a < Math.PI * 5; a += 0.2) { const rr = R * s * (1 - a / (Math.PI * 5.5)); const px = Math.cos(a) * rr * 0.9, py = -R * s + Math.sin(a) * rr * 0.9; if (a === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); }
-        ctx.stroke();
-        if (id === 'nautilus') {
+        const cy = -R * s;
+        if (id === 'moon-snail') {
+          // A glossy globe of a body whorl, a small low spire at the top left, the suture winding
+          // from it once round, and the wide mouth at the lower right with its pale lip.
+          ctx.arc(-0.45 * R * s, cy - 0.72 * R * s, 0.42 * R * s, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(0, cy, R * s, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.strokeStyle = dark;
+          ctx.beginPath();
+          const ox = -0.45 * R * s, oy = cy - 0.72 * R * s;
+          for (let a = 0; a <= Math.PI * 2.2; a += 0.15) {
+            const rr = R * s * (0.15 + 0.3 * (a / (Math.PI * 2.2)));
+            const px = ox + Math.cos(a + 2.2) * rr, py = oy + Math.sin(a + 2.2) * rr * 0.8;
+            if (a === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+          }
+          ctx.stroke();
+          ctx.fillStyle = 'rgba(70,45,30,0.75)';
+          ctx.beginPath();
+          ctx.ellipse(0.42 * R * s, cy + 0.38 * R * s, 0.42 * R * s, 0.5 * R * s, -0.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(255,245,230,0.7)';
+          ctx.beginPath();
+          ctx.ellipse(0.42 * R * s, cy + 0.38 * R * s, 0.45 * R * s, 0.53 * R * s, -0.5, -1.2, 1.9);
+          ctx.stroke();
+        } else {
+          // The nautilus: a coil whose middle sits toward the back, flame stripes running out
+          // from it, and the dark mouth at the front.
+          ctx.arc(0, cy, R * s, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
           ctx.strokeStyle = 'rgba(170,90,60,0.6)';
           ctx.lineWidth = 1.1 * s;
-          for (let k = 0; k < 5; k++) { const a = Math.PI * (0.6 + k * 0.22); ctx.beginPath(); ctx.moveTo(Math.cos(a) * R * 0.5 * s, -R * s + Math.sin(a) * R * 0.5 * s); ctx.lineTo(Math.cos(a) * R * s, -R * s + Math.sin(a) * R * s); ctx.stroke(); }
+          const ux = -0.35 * R * s, uy = cy - 0.05 * R * s;
+          for (let k = 0; k < 6; k++) {
+            const a = Math.PI * (0.55 + k * 0.24);
+            ctx.beginPath();
+            ctx.moveTo(ux + Math.cos(a) * R * 0.35 * s, uy + Math.sin(a) * R * 0.35 * s);
+            ctx.quadraticCurveTo(ux + Math.cos(a + 0.2) * R * 0.8 * s, uy + Math.sin(a + 0.2) * R * 0.8 * s, Math.cos(a + 0.15) * R * 0.98 * s, cy + Math.sin(a + 0.15) * R * 0.98 * s);
+            ctx.stroke();
+          }
+          ctx.fillStyle = dark;
+          ctx.beginPath();
+          ctx.arc(ux, uy, 0.22 * R * s, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = 'rgba(40,25,20,0.7)';
+          ctx.beginPath();
+          ctx.moveTo(0.55 * R * s, cy - 0.82 * R * s);
+          ctx.quadraticCurveTo(1.2 * R * s, cy, 0.55 * R * s, cy + 0.82 * R * s);
+          ctx.quadraticCurveTo(0.85 * R * s, cy, 0.55 * R * s, cy - 0.82 * R * s);
+          ctx.fill();
         }
       }
     } else {

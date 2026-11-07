@@ -16,7 +16,7 @@ import type { DialectId } from '../content/act4.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import type { CoralForm } from './coral.ts';
-import { glow, drawOsselSand, speck, whaleSilhouette } from './draw.ts';
+import { facing, glow, drawOsselSand, speck, whaleSilhouette } from './draw.ts';
 import { drawCraft, FLUORESCENT_POLYP } from './craft.ts';
 import { drawColony, drawDaughters } from './daughters.ts';
 import { createLayerCache } from './layer.ts';
@@ -551,7 +551,7 @@ export function createSunlitScene(seed: number): Scene {
     for (let k = 0; k < 2; k++) {
       const a = t * (0.35 + k * 0.08) + k * Math.PI;
       const x = L.cx + Math.cos(a) * L.unit * 0.3, y = L.baseY - L.unit * (0.36 + 0.07 * k) + Math.sin(a) * L.unit * 0.04;
-      const dir = -Math.sin(a) > 0 ? 1 : -1;
+      const dir = facing(-Math.sin(a));
       // Behind the reef on the far side of the circle: drawn fainter.
       ctx.save();
       ctx.globalAlpha = Math.sin(a) > 0 ? 0.9 : 0.45;
@@ -1569,7 +1569,7 @@ export function createSunlitScene(seed: number): Scene {
     const rise = touch && touch.age < 10 ? Math.sin(Math.min(1, touch.age / 10) * Math.PI) : 0;
     const u = (t * 0.004) % 1;
     const x = focus.x + focus.w * (0.12 + 0.76 * (0.5 - 0.5 * Math.cos(u * Math.PI * 2)));
-    const dir = Math.sin(u * Math.PI * 2) > 0 ? 1 : -1;
+    const dir = facing(Math.sin(u * Math.PI * 2));
     const y = floorY(Math.min(1, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2))) - 14 * s - rise * focus.h * 0.45;
     spot('dugong', x, y, 30 * s);
     ctx.save();
@@ -1599,17 +1599,55 @@ export function createSunlitScene(seed: number): Scene {
     ctx.quadraticCurveTo(-6 * s, 7 * s, 0, 0);
     ctx.fill();
     ctx.restore();
-    // A flipper, the drooping snout and an eye.
+    // The muzzle: the head bending down into a broad flat pad of a lip, bristled, for grazing.
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(15 * s, -6 * s);
+    ctx.quadraticCurveTo(23 * s, -5 * s, 25 * s, 2 * s);
+    ctx.quadraticCurveTo(26 * s, 7 * s, 23 * s, 8 * s);
+    ctx.lineTo(17 * s, 7.5 * s);
+    ctx.quadraticCurveTo(15 * s, 4 * s, 12 * s, 5 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#6e685c';
+    ctx.beginPath();
+    ctx.ellipse(20.5 * s, 7.6 * s, 3.6 * s, 1.1 * s, 0.05, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(60,54,46,0.7)';
+    ctx.beginPath();
+    for (let k = 0; k < 6; k++) {
+      const bx = 18.4 * s + k * 0.9 * s, by = 6.2 * s - Math.abs(k - 2.5) * 0.25 * s;
+      ctx.moveTo(bx + 0.3 * s, by);
+      ctx.arc(bx, by, 0.3 * s, 0, Math.PI * 2);
+    }
+    // Nostrils on top of the snout.
+    ctx.moveTo(23.2 * s, -1.6 * s);
+    ctx.ellipse(22.6 * s, -1.6 * s, 0.7 * s, 0.35 * s, 0.5, 0, Math.PI * 2);
+    ctx.fill();
+    // A paddle of a flipper, sculling.
+    ctx.save();
+    ctx.translate(9 * s, 4.5 * s);
+    ctx.rotate(0.7 + Math.sin(t * 1.2) * 0.2);
     ctx.fillStyle = '#7a7468';
     ctx.beginPath();
-    ctx.ellipse(8 * s, 6 * s, 5 * s, 2 * s, 0.6, 0, Math.PI * 2);
+    ctx.moveTo(0, -2 * s);
+    ctx.quadraticCurveTo(8 * s, -3.4 * s, 9 * s, 0);
+    ctx.quadraticCurveTo(8 * s, 3.2 * s, 0, 2 * s);
+    ctx.closePath();
     ctx.fill();
+    ctx.restore();
+    // Pale scars along its back, and the small eye.
+    ctx.strokeStyle = 'rgba(225,220,205,0.4)';
+    ctx.lineWidth = Math.max(1, 0.5 * s);
     ctx.beginPath();
-    ctx.ellipse(21 * s, 4 * s, 3 * s, 3.5 * s, 0, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.moveTo(-6 * s, -6.5 * s);
+    ctx.lineTo(-2 * s, -6 * s);
+    ctx.moveTo(2 * s, -7.2 * s);
+    ctx.lineTo(4.5 * s, -6 * s);
+    ctx.stroke();
     ctx.fillStyle = '#2a2622';
     ctx.beginPath();
-    ctx.arc(16 * s, -2 * s, 0.9 * s, 0, Math.PI * 2);
+    ctx.arc(16 * s, -2.2 * s, 0.9 * s, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }

@@ -14,7 +14,7 @@ import { drawResidents } from './residents.ts';
 import { sight, speaking, spot, startled } from './sightings.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
-import { glow, speck } from './draw.ts';
+import { facing, glow, speck } from './draw.ts';
 import { drawColony, drawDaughters } from './daughters.ts';
 import { createGround } from './ground.ts';
 import { createLayerCache } from './layer.ts';
@@ -215,24 +215,40 @@ export function createTwilightScene(seed: number): Scene {
     const cx0 = focus.x + focus.w * (0.18 + 0.08 * Math.sin(t * 0.05)), cy0 = focus.y + focus.h * (0.4 + 0.1 * Math.sin(t * 0.07));
     spot('flashlight-fish', cx0, cy0, Math.max(40 * s, focus.w * 0.08));
     ctx.save();
+    // The school's bodies in one path: small dark fish, blunt-headed, a forked tail, each turning
+    // through a sliver (draw.ts facing) as it wheels round.
+    const bodies = new Path2D(), lamps: number[] = [];
     for (let k = 0; k < 14; k++) {
       const a = t * (0.3 + (k % 5) * 0.04) + k * 2.4;
       const x = cx0 + Math.cos(a) * (30 + (k * 13) % 50) * s, y = cy0 + Math.sin(a * 1.3) * (18 + (k * 7) % 30) * s;
-      const dir = Math.cos(a + Math.PI / 2) > 0 ? -1 : 1;
-      // Shuttered now and then; all dark for a moment when touched, then back one by one.
-      const blink = Math.sin(t * 1.7 + k * 1.9) > 0.85;
+      const dir = -facing(Math.cos(a + Math.PI / 2));
+      const wag = Math.sin(t * 8 + k) * 0.4 * s;
+      const X = (u: number) => x + u * dir * s, Y = (v: number) => y + v * s;
+      bodies.moveTo(X(4.6), Y(0.2));
+      bodies.quadraticCurveTo(X(4.2), Y(-2.2), X(1), Y(-2.2));
+      bodies.quadraticCurveTo(X(-2), Y(-1.8), X(-3.2), Y(-0.5));
+      bodies.lineTo(X(-5.4), Y(-2.1) + wag);
+      bodies.lineTo(X(-4.5), Y(0) + wag);
+      bodies.lineTo(X(-5.4), Y(2.1) + wag);
+      bodies.lineTo(X(-3.2), Y(0.6));
+      bodies.quadraticCurveTo(X(-1), Y(2.2), X(1.5), Y(2));
+      bodies.quadraticCurveTo(X(4.4), Y(1.8), X(4.6), Y(0.2));
+      bodies.closePath();
+      // Shuttered now and then and while it turns end-on; all dark for a moment when touched,
+      // then back one by one.
+      const blink = Math.sin(t * 1.7 + k * 1.9) > 0.85 || Math.abs(dir) < 0.45;
       const dark = touch && touch.age < 2 + k * 0.15;
-      ctx.fillStyle = `rgba(14,16,26,${0.9 * night})`;
-      ctx.beginPath();
-      ctx.ellipse(x, y, 4.5 * s, 2 * s, 0, 0, Math.PI * 2);
-      ctx.fill();
-      if (blink || dark) continue;
-      ctx.save();
+      if (!blink && !dark) lamps.push(X(2.6), y + 0.6 * s, Math.abs(dir));
+    }
+    ctx.fillStyle = `rgba(14,16,26,${0.9 * night})`;
+    ctx.fill(bodies);
+    for (let k = 0; k < lamps.length; k += 3) {
+      const lx = lamps[k]!, ly = lamps[k + 1]!, wide = lamps[k + 2]!;
       ctx.globalCompositeOperation = 'lighter';
-      glow(ctx, x + dir * 2.6 * s, y + 0.6 * s, 8 * s, '170,255,210', night);
-      ctx.restore();
+      glow(ctx, lx, ly, 8 * s, '170,255,210', night);
+      ctx.globalCompositeOperation = 'source-over';
       ctx.fillStyle = `rgba(235,255,240,${night})`;
-      ctx.fillRect(x + dir * 2.6 * s - 1.1 * s, y - 0.5 * s, 2.2 * s, 1.6 * s);
+      ctx.fillRect(lx - 1.1 * s * wide, ly - 0.5 * s, 2.2 * s * wide, 1.6 * s);
     }
     ctx.restore();
   }
@@ -570,6 +586,27 @@ export function createTwilightScene(seed: number): Scene {
     const out = (0.85 + 0.15 * Math.sin(t * 0.3)) * (1 - back);
     spot('moray', hx - 10 * s, hy, 22 * s);
     ctx.save();
+    // Its rock: a lumpy outcrop of old stone on the slope, lit along the top, the hole in its face.
+    const rock = new Path2D();
+    const foot = slopeY(u) + 4 * s;
+    rock.moveTo(hx - 20 * s, foot);
+    rock.bezierCurveTo(hx - 21 * s, hy - 6 * s, hx - 14 * s, hy - 15 * s, hx - 4 * s, hy - 14 * s);
+    rock.bezierCurveTo(hx + 4 * s, hy - 17 * s, hx + 16 * s, hy - 12 * s, hx + 17 * s, hy - 3 * s);
+    rock.bezierCurveTo(hx + 19 * s, hy + 3 * s, hx + 18 * s, foot - 2 * s, hx + 20 * s, foot);
+    rock.closePath();
+    const rg = ctx.createLinearGradient(0, hy - 16 * s, 0, foot);
+    rg.addColorStop(0, '#3a4560');
+    rg.addColorStop(0.5, '#263046');
+    rg.addColorStop(1, '#161c2c');
+    ctx.fillStyle = rg;
+    ctx.fill(rock);
+    ctx.strokeStyle = 'rgba(150,165,195,0.25)';
+    ctx.lineWidth = 1.5 * s;
+    ctx.beginPath();
+    ctx.moveTo(hx - 18 * s, hy - 7 * s);
+    ctx.bezierCurveTo(hx - 14 * s, hy - 15 * s, hx - 4 * s, hy - 14 * s, hx - 4 * s, hy - 14 * s);
+    ctx.bezierCurveTo(hx + 4 * s, hy - 17 * s, hx + 14 * s, hy - 12 * s, hx + 16 * s, hy - 5 * s);
+    ctx.stroke();
     // The hole: a dark mouth in the rock.
     ctx.fillStyle = '#0a0f1a';
     ctx.beginPath();
@@ -614,6 +651,12 @@ export function createTwilightScene(seed: number): Scene {
       ctx.bezierCurveTo(tip + 2 * s, 4.5 * s, neck - 4 * s, 5.8 * s, neck, 5.5 * s);
       ctx.lineTo(4 * s, 5.5 * s);
       ctx.closePath();
+      ctx.fill();
+      // The neck goes back into the dark of the hole.
+      const dark = ctx.createLinearGradient(Math.min(-2 * s, neck + 6 * s), 0, 4 * s, 0);
+      dark.addColorStop(0, 'rgba(10,15,26,0)');
+      dark.addColorStop(1, 'rgba(10,15,26,1)');
+      ctx.fillStyle = dark;
       ctx.fill();
       // The mouth's pale lining in the gape, and the jaw line running back.
       ctx.fillStyle = '#d8a0a0';
@@ -673,7 +716,7 @@ export function createTwilightScene(seed: number): Scene {
       ctx.quadraticCurveTo(-14 * s * reach, (2 + i) * s, -(18 + (i % 3) * 3) * s * reach, (3 + i * 1.2) * s + Math.sin(t * 1.5 + i) * 1.5 * s);
       ctx.stroke();
     }
-    // The shell: a disc with the spiral's tiger stripes, and the coiled centre.
+    // The shell: a disc with the spiral's tiger stripes running out from the coil.
     const g = ctx.createRadialGradient(2 * s, -2 * s, 1 * s, 0, 0, 11 * s);
     g.addColorStop(0, '#f6efe0');
     g.addColorStop(1, '#d9c7a8');
@@ -695,24 +738,35 @@ export function createTwilightScene(seed: number): Scene {
       ctx.stroke();
     }
     ctx.restore();
-    ctx.strokeStyle = 'rgba(120,90,60,0.6)';
+    // The coil's navel, set toward the back, and the one suture curling out from it to the mouth.
+    ctx.fillStyle = 'rgba(110,80,55,0.75)';
+    ctx.beginPath();
+    ctx.arc(3 * s, 0.5 * s, 1.7 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(120,90,60,0.55)';
     ctx.lineWidth = 0.8 * s;
     ctx.beginPath();
-    for (let a = 0; a < Math.PI * 3; a += 0.2) {
-      const r = 1 + a * 0.9;
-      const px = Math.cos(a) * r * s * 0.6, py = Math.sin(a) * r * s * 0.6;
-      if (a === 0) ctx.moveTo(px, py);
-      else ctx.lineTo(px, py);
-    }
+    ctx.moveTo(3 * s, -1.2 * s);
+    ctx.bezierCurveTo(-1 * s, -2.5 * s, -4 * s, -6 * s, -6.5 * s, -8.4 * s);
     ctx.stroke();
-    // The hood over the mouth, and an eye.
+    // The leathery hood capping the shell's mouth, mottled, and an eye under its edge.
     ctx.fillStyle = '#8a5a3a';
     ctx.beginPath();
-    ctx.ellipse(-8 * s, 1 * s, 3.5 * s, 4 * s, 0, 0, Math.PI * 2);
+    ctx.moveTo(-6 * s, -8.6 * s);
+    ctx.quadraticCurveTo(-12.5 * s, -6 * s, -12 * s, 0);
+    ctx.quadraticCurveTo(-11.5 * s, 4 * s, -8.5 * s, 5.5 * s);
+    ctx.quadraticCurveTo(-6.5 * s, 0, -6 * s, -8.6 * s);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(240,220,190,0.35)';
+    ctx.beginPath();
+    for (const [mx, my] of [[-10, -4], [-9, -0.5], [-10.6, 1.5], [-8.2, -6]] as const) {
+      ctx.moveTo(mx * s + 0.7 * s, my * s);
+      ctx.arc(mx * s, my * s, 0.7 * s, 0, Math.PI * 2);
+    }
     ctx.fill();
     ctx.fillStyle = '#1a1210';
     ctx.beginPath();
-    ctx.arc(-7.5 * s, 3 * s, 1 * s, 0, Math.PI * 2);
+    ctx.arc(-9.4 * s, 4.4 * s, 1 * s, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }
@@ -840,39 +894,104 @@ export function createTwilightScene(seed: number): Scene {
     spot('frogfish', x, y, 16 * s);
     ctx.save();
     ctx.translate(x, y);
-    // The lumpy body: overlapping blobs in sponge orange, with pale warts.
-    ctx.fillStyle = '#a8602a';
-    for (const [bx, by, br] of [[0, 0, 9], [-6, 2, 6], [6, 3, 6], [-3, -5, 5], [4, -5, 5]] as const) {
-      ctx.beginPath();
-      ctx.arc(bx * s, by * s, br * s, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.fillStyle = 'rgba(230,190,140,0.45)';
-    for (let k = 0; k < 9; k++) {
-      ctx.beginPath();
-      ctx.arc(Math.cos(k * 2.1) * 7 * s, Math.sin(k * 1.7) * 6 * s, 0.9 * s, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    // The upturned mouth, gaping on a gulp; one eye.
-    ctx.fillStyle = '#3a1a10';
+    // Its arm-like fins, propping it on the slope like elbows, a flat hand on the stone each.
+    ctx.strokeStyle = '#8a4a20';
+    ctx.lineCap = 'round';
+    ctx.lineWidth = 2.6 * s;
     ctx.beginPath();
-    ctx.ellipse(-8 * s, -1 * s, (2 + 4 * gulp) * s, (1 + 4 * gulp) * s, 0.3, 0, Math.PI * 2);
+    ctx.moveTo(-3 * s, 4 * s);
+    ctx.lineTo(-6.5 * s, 8 * s);
+    ctx.moveTo(3 * s, 5 * s);
+    ctx.lineTo(2 * s, 8.5 * s);
+    ctx.stroke();
+    ctx.fillStyle = '#8a4a20';
+    ctx.beginPath();
+    ctx.ellipse(-7.5 * s, 8.4 * s, 2.4 * s, 1 * s, 0, 0, Math.PI * 2);
+    ctx.moveTo(4.2 * s, 8.8 * s);
+    ctx.ellipse(2 * s, 8.8 * s, 2.2 * s, 0.9 * s, 0, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#20140c';
+    // The rounded tail fan, curled forward a little.
+    ctx.fillStyle = '#9a5424';
     ctx.beginPath();
-    ctx.arc(-4 * s, -6 * s, 1.2 * s, 0, Math.PI * 2);
+    ctx.moveTo(8 * s, -1 * s);
+    ctx.quadraticCurveTo(15 * s, -7 * s, 16 * s, 0);
+    ctx.quadraticCurveTo(15 * s, 5 * s, 8 * s, 2.5 * s);
+    ctx.closePath();
     ctx.fill();
-    // The lure on its rod, flicking.
-    const lx = -10 * s + Math.sin(t * 3) * 2 * s, ly = -14 * s + Math.cos(t * 3) * 1.5 * s;
-    ctx.strokeStyle = 'rgba(220,170,120,0.8)';
-    ctx.lineWidth = 0.7 * s;
+    // The squat lumpy body, round as a sponge, with fleshy tags along its edge.
+    const body = new Path2D();
+    const N = 18;
+    const pts: number[] = [];
+    for (let k = 0; k < N; k++) {
+      const a = (k / N) * Math.PI * 2;
+      const lump = 1 + 0.07 * Math.sin(5 * a + 1) + 0.05 * Math.sin(9 * a + 2) + (k % 3 === 0 ? 0.08 : 0);
+      pts.push(Math.cos(a) * 10 * s * lump, Math.sin(a) * 7.5 * s * lump - (Math.sin(a) < 0 ? 0.8 * s : 0));
+    }
+    body.moveTo((pts[0]! + pts[2 * N - 2]!) / 2, (pts[1]! + pts[2 * N - 1]!) / 2);
+    for (let k = 0; k < N; k++) {
+      const n = (k + 1) % N;
+      body.quadraticCurveTo(pts[2 * k]!, pts[2 * k + 1]!, (pts[2 * k]! + pts[2 * n]!) / 2, (pts[2 * k + 1]! + pts[2 * n + 1]!) / 2);
+    }
+    const g = ctx.createRadialGradient(-2 * s, -4 * s, 0, 0, 0, 11 * s);
+    g.addColorStop(0, '#d08040');
+    g.addColorStop(0.7, '#a8602a');
+    g.addColorStop(1, '#7a3e18');
+    ctx.fillStyle = g;
+    ctx.fill(body);
+    // Darker mottling and pale warts, so it passes for a sponge.
+    ctx.fillStyle = 'rgba(90,40,16,0.45)';
     ctx.beginPath();
-    ctx.moveTo(-5 * s, -9 * s);
-    ctx.lineTo(lx, ly);
+    for (const [mx, my, mr] of [[2, -3, 2.2], [5, 2, 1.8], [-1, 3, 1.6], [6.5, -4, 1.3], [-5, 1.5, 1.2]] as const) {
+      ctx.moveTo(mx * s + mr * s, my * s);
+      ctx.arc(mx * s, my * s, mr * s, 0, Math.PI * 2);
+    }
+    ctx.fill();
+    ctx.fillStyle = 'rgba(240,205,150,0.55)';
+    ctx.beginPath();
+    for (let k = 0; k < 11; k++) {
+      const wx = Math.cos(k * 2.1 + 0.4) * 7.5 * s * ((k % 3) / 3 + 0.4), wy = Math.sin(k * 1.7) * 5.5 * s * ((k % 2) * 0.4 + 0.6);
+      ctx.moveTo(wx + 0.6 * s, wy);
+      ctx.arc(wx, wy, 0.6 * s, 0, Math.PI * 2);
+    }
+    ctx.fill();
+    // The huge upturned mouth across the front, gaping wide on a gulp.
+    ctx.fillStyle = '#2a120a';
+    ctx.beginPath();
+    ctx.moveTo(-10 * s, -2.5 * s);
+    ctx.quadraticCurveTo(-7 * s, (1.5 + 3 * gulp) * s, -2.5 * s, -2.8 * s - gulp * s);
+    ctx.quadraticCurveTo(-6.5 * s, (-3.5 - 4 * gulp) * s, -10 * s, -2.5 * s);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(240,190,140,0.7)';
+    ctx.lineWidth = Math.max(1, 0.6 * s);
+    ctx.beginPath();
+    ctx.moveTo(-10 * s, -2.5 * s);
+    ctx.quadraticCurveTo(-7 * s, (1.5 + 3 * gulp) * s, -2.5 * s, -2.8 * s - gulp * s);
+    ctx.stroke();
+    // A small eye high on the head, ringed gold.
+    ctx.fillStyle = '#e0b040';
+    ctx.beginPath();
+    ctx.arc(-4.5 * s, -6 * s, 1.5 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#140a06';
+    ctx.beginPath();
+    ctx.arc(-4.7 * s, -6 * s, 0.8 * s, 0, Math.PI * 2);
+    ctx.fill();
+    // The lure on its rod, flicking: a fleshy tassel at the tip.
+    const lx = -11 * s + Math.sin(t * 3) * 2 * s, ly = -15 * s + Math.cos(t * 3) * 1.5 * s;
+    ctx.strokeStyle = 'rgba(220,170,120,0.85)';
+    ctx.lineWidth = Math.max(1, 0.6 * s);
+    ctx.beginPath();
+    ctx.moveTo(-6.5 * s, -8.5 * s);
+    ctx.quadraticCurveTo(-9 * s, -13 * s, lx, ly);
+    for (let k = -1; k <= 1; k++) {
+      const a = Math.PI * 0.5 + k * 0.6 + Math.sin(t * 6 + k) * 0.3;
+      ctx.moveTo(lx, ly);
+      ctx.lineTo(lx + Math.cos(a) * 2.2 * s, ly + Math.sin(a) * 2.2 * s);
+    }
     ctx.stroke();
     ctx.fillStyle = '#f2e0b0';
     ctx.beginPath();
-    ctx.arc(lx, ly, 1.3 * s, 0, Math.PI * 2);
+    ctx.arc(lx, ly, 1.1 * s, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }
@@ -924,24 +1043,33 @@ export function createTwilightScene(seed: number): Scene {
     const s = scale() * 1.9;
     const u = 0.38, x = focus.x - focus.w * 0.1 + u * focus.w * 1.2, y = slopeY(u) + 2 * s;
     ctx.save();
-    ctx.fillStyle = '#7a6a68';
+    // The lip: a low overhang of old stone, lit along its top, the dark of the crevice under it.
+    const lip = new Path2D();
+    lip.moveTo(x - 21 * s, y);
+    lip.bezierCurveTo(x - 20 * s, y - 6 * s, x - 10 * s, y - 9.5 * s, x + 2 * s, y - 9 * s);
+    lip.bezierCurveTo(x + 12 * s, y - 8.6 * s, x + 20 * s, y - 6 * s, x + 21 * s, y);
+    lip.closePath();
+    const lg = ctx.createLinearGradient(0, y - 9.5 * s, 0, y);
+    lg.addColorStop(0, '#8e7e7a');
+    lg.addColorStop(1, '#4e4448');
+    ctx.fillStyle = lg;
+    ctx.fill(lip);
+    ctx.fillStyle = 'rgba(10,12,20,0.85)';
     ctx.beginPath();
-    ctx.ellipse(x, y - 3 * s, 20 * s, 6 * s, 0, Math.PI, 0);
+    ctx.moveTo(x - 13 * s, y);
+    ctx.quadraticCurveTo(x - 6 * s, y - 4.2 * s, x + 3 * s, y - 3.8 * s);
+    ctx.quadraticCurveTo(x + 11 * s, y - 3.4 * s, x + 13 * s, y);
+    ctx.closePath();
     ctx.fill();
-    ctx.fillStyle = 'rgba(10,12,20,0.8)';
-    ctx.beginPath();
-    ctx.ellipse(x, y - 1 * s, 12 * s, 3 * s, 0, 0, Math.PI * 2);
-    ctx.fill();
+    // The young Rasp darting in and out of it: little pale parrotfish, turning as they circle.
     for (let k = 0; k < 5; k++) {
       const a = t * (0.8 + k * 0.13) + k * 1.9;
       const fx = x + Math.cos(a) * (14 + k * 4) * s, fy = y - 10 * s + Math.sin(a * 1.4) * 6 * s;
-      const dir = -Math.sin(a) > 0 ? 1 : -1;
-      ctx.fillStyle = `hsl(${180 + k * 12},35%,55%)`;
-      ctx.beginPath();
-      ctx.ellipse(fx, fy, 4 * s, 1.8 * s, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = 'rgba(240,240,230,0.8)';
-      ctx.fillRect(fx + dir * 2.5 * s, fy - 0.6 * s, 1.2 * s, 1.2 * s);
+      ctx.save();
+      ctx.translate(fx, fy);
+      ctx.scale(facing(-Math.sin(a)), 1);
+      drawParrotfish(ctx, 4.2 * s, 180 + k * 12, t * 6 + k, s * 0.35);
+      ctx.restore();
     }
     ctx.restore();
   }
@@ -958,23 +1086,67 @@ export function createTwilightScene(seed: number): Scene {
     const [x, y] = reef.nodePx(L, node);
     const s = scale() * 1.3;
     ctx.save();
-    ctx.fillStyle = '#b89a8a';
+    // The shelf: a thin lip of stone grown out from the branch, lit along its top.
+    ctx.fillStyle = '#8a6e66';
     ctx.beginPath();
-    ctx.ellipse(x + 10 * s, y + 2 * s, 14 * s, 3 * s, 0, 0, Math.PI * 2);
+    ctx.moveTo(x - 2 * s, y + 0.5 * s);
+    ctx.quadraticCurveTo(x + 12 * s, y - 0.5 * s, x + 25 * s, y + 1.5 * s);
+    ctx.quadraticCurveTo(x + 22 * s, y + 4.5 * s, x + 12 * s, y + 4.6 * s);
+    ctx.quadraticCurveTo(x + 3 * s, y + 4.4 * s, x - 2 * s, y + 0.5 * s);
     ctx.fill();
+    ctx.strokeStyle = 'rgba(230,205,190,0.6)';
+    ctx.lineWidth = 0.8 * s;
+    ctx.beginPath();
+    ctx.moveTo(x - 1 * s, y + 0.6 * s);
+    ctx.quadraticCurveTo(x + 12 * s, y - 0.3 * s, x + 24 * s, y + 1.6 * s);
+    ctx.stroke();
+    // Three cleaner shrimp standing on it: red, a white stripe down the back, tail fan spread,
+    // long white antennae waving for customers.
+    ctx.lineCap = 'round';
     for (let k = 0; k < 3; k++) {
-      const sx = x + (2 + k * 8) * s, sy = y - 1 * s;
-      ctx.fillStyle = k % 2 ? '#f2f2f2' : '#d8323a';
+      const sx = x + (3 + k * 8) * s, sy = y - 1.2 * s;
+      const bob = Math.sin(t * 2 + k * 1.7) * 0.3 * s;
+      ctx.save();
+      ctx.translate(sx, sy + bob);
+      // Legs down to the shelf.
+      ctx.strokeStyle = 'rgba(220,70,70,0.85)';
+      ctx.lineWidth = 0.4 * s;
       ctx.beginPath();
-      ctx.ellipse(sx, sy, 3 * s, 1.4 * s, -0.3, 0, Math.PI * 2);
+      for (let l = 0; l < 4; l++) {
+        ctx.moveTo((1.6 - l * 0.9) * s, 0.6 * s);
+        ctx.lineTo((1.2 - l * 1) * s, 1.9 * s);
+      }
+      ctx.stroke();
+      // The body arching from the head (right) back and down to the tail fan.
+      ctx.fillStyle = '#d8323a';
+      ctx.beginPath();
+      ctx.moveTo(3.4 * s, -0.2 * s);
+      ctx.quadraticCurveTo(2.6 * s, -1.7 * s, 0, -1.6 * s);
+      ctx.quadraticCurveTo(-2.6 * s, -1.4 * s, -3.4 * s, 0.4 * s);
+      ctx.lineTo(-4.8 * s, 0);
+      ctx.lineTo(-4.4 * s, 1.4 * s);
+      ctx.lineTo(-3 * s, 1.1 * s);
+      ctx.quadraticCurveTo(-1 * s, 0.9 * s, 0.5 * s, 0.9 * s);
+      ctx.quadraticCurveTo(2.8 * s, 0.9 * s, 3.4 * s, -0.2 * s);
       ctx.fill();
+      ctx.strokeStyle = 'rgba(250,250,250,0.95)';
+      ctx.lineWidth = 0.55 * s;
+      ctx.beginPath();
+      ctx.moveTo(3 * s, -0.9 * s);
+      ctx.quadraticCurveTo(0, -1.9 * s, -3.3 * s, 0);
+      ctx.stroke();
+      ctx.fillStyle = '#140808';
+      ctx.beginPath();
+      ctx.arc(2.6 * s, -0.5 * s, 0.4 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
       ctx.strokeStyle = 'rgba(250,250,250,0.8)';
       ctx.lineWidth = 0.5 * s;
       for (const side of [-1, 1]) {
         const a = -Math.PI / 2 + side * 0.4 + Math.sin(t * 3 + k * 2 + side) * 0.35;
         ctx.beginPath();
-        ctx.moveTo(sx + 2 * s, sy - 0.5 * s);
-        ctx.quadraticCurveTo(sx + 2 * s + Math.cos(a) * 5 * s, sy + Math.sin(a) * 5 * s, sx + 2 * s + Math.cos(a) * 11 * s, sy + Math.sin(a) * 11 * s);
+        ctx.moveTo(sx + 3.2 * s, sy - 0.6 * s + bob);
+        ctx.quadraticCurveTo(sx + 3.2 * s + Math.cos(a) * 5 * s, sy + Math.sin(a) * 5 * s, sx + 3.2 * s + Math.cos(a) * 11 * s, sy + Math.sin(a) * 11 * s);
         ctx.stroke();
       }
     }
@@ -1018,45 +1190,137 @@ export function createTwilightScene(seed: number): Scene {
     const touch = startled('mantis-shrimp', t);
     const strike = touch && touch.age < 0.6 ? touch.age / 0.6 : -1;
     ctx.save();
-    // The burrow: a dark mouth in the sand.
-    ctx.fillStyle = 'rgba(10,14,20,0.8)';
+    // The burrow: a dark mouth in the sand, its back lip in shadow, a pale rim of sand in front.
+    ctx.fillStyle = 'rgba(8,12,18,0.85)';
     ctx.beginPath();
-    ctx.ellipse(x, base, 10 * s, 3 * s, 0, 0, Math.PI * 2);
+    ctx.ellipse(x, base, 8 * s, 2.6 * s, 0, 0, Math.PI * 2);
     ctx.fill();
-    // Body out of the hole: green and orange bands.
-    const bands = ['#2fae6a', '#e0702a', '#2fae6a', '#e3c33a'];
-    bands.forEach((c, i) => {
-      ctx.fillStyle = c;
-      ctx.beginPath();
-      ctx.ellipse(x, base - (2 + i * 2.6) * s, (4.5 - i * 0.4) * s, 1.6 * s, 0, 0, Math.PI * 2);
-      ctx.fill();
-    });
-    // Forelimbs folded like a mantis, flicked out in a strike.
     const reach = strike >= 0 ? Math.sin(strike * Math.PI) * 10 * s : 0;
-    ctx.strokeStyle = '#ff5a8a';
-    ctx.lineWidth = 1.6 * s;
-    for (const side of [-1, 1]) {
-      ctx.beginPath();
-      ctx.moveTo(x + side * 2 * s, base - 9 * s);
-      ctx.lineTo(x + side * (4 * s + reach), base - 7 * s);
-      ctx.lineTo(x + side * (3 * s + reach * 0.6), base - 4 * s);
-      ctx.stroke();
+    // It leans out to the left, bobbing a little as it watches.
+    const bob = Math.sin(t * 0.8) * 0.4 * s;
+    ctx.save();
+    ctx.translate(x, base + bob);
+    ctx.rotate(-0.12);
+    // The body rising out of the hole: green, segmented, a little curved, spotted like a leopard.
+    const body = new Path2D();
+    body.moveTo(3.6 * s, 0);
+    body.bezierCurveTo(3.8 * s, -4 * s, 2.6 * s, -8 * s, 1.2 * s, -10.5 * s);
+    body.lineTo(-3.2 * s, -10.2 * s);
+    body.bezierCurveTo(-3.6 * s, -7 * s, -3.8 * s, -3.5 * s, -3.6 * s, 0);
+    body.closePath();
+    const g = ctx.createLinearGradient(-4 * s, 0, 4 * s, 0);
+    g.addColorStop(0, '#5fd08a');
+    g.addColorStop(0.6, '#2c9a5c');
+    g.addColorStop(1, '#1d6a40');
+    ctx.fillStyle = g;
+    ctx.fill(body);
+    ctx.strokeStyle = 'rgba(10,40,24,0.6)';
+    ctx.lineWidth = Math.max(1, 0.5 * s);
+    ctx.beginPath();
+    for (let k = 1; k <= 3; k++) {
+      const yy = -k * 2.4 * s, hw = 3.6 * s - k * 0.4 * s;
+      ctx.moveTo(-hw, yy + 0.4 * s);
+      ctx.quadraticCurveTo(0, yy - 0.8 * s, hw, yy + 0.4 * s);
     }
-    // Eyes on stalks, each looking its own way.
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(16,50,30,0.55)';
+    ctx.beginPath();
+    for (const [sx, sy] of [[-1.8, -1.4], [1.4, -3.4], [-0.6, -5.6], [2, -7], [-2.2, -8]] as const) {
+      ctx.moveTo(sx * s + 0.45 * s, sy * s);
+      ctx.arc(sx * s, sy * s, 0.45 * s, 0, Math.PI * 2);
+    }
+    ctx.fill();
+    // The paddles beside its head (antennal scales), fanning slowly, orange edged with pink.
+    for (const side of [-1, 1]) {
+      const fan = 0.3 * Math.sin(t * 1.6 + side);
+      ctx.save();
+      ctx.translate(side * 2.6 * s, -11 * s);
+      ctx.rotate(side * (0.9 + fan));
+      ctx.fillStyle = '#f08a3a';
+      ctx.beginPath();
+      ctx.ellipse(0, -2 * s, 1.1 * s, 2.4 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#ff7aa8';
+      ctx.lineWidth = Math.max(1, 0.4 * s);
+      ctx.stroke();
+      ctx.restore();
+    }
+    // The head shield, darker green, its front edge lit.
+    ctx.fillStyle = '#237a4a';
+    ctx.beginPath();
+    ctx.ellipse(-0.9 * s, -11 * s, 3.6 * s, 1.9 * s, -0.08, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(170,240,190,0.35)';
+    ctx.beginPath();
+    ctx.ellipse(-1.6 * s, -11.9 * s, 2 * s, 0.6 * s, -0.08, 0, Math.PI * 2);
+    ctx.fill();
+    // The striking limbs, folded under the head like a praying mantis: a thick red upper arm, the
+    // club folded back up against it; on a strike the club unfolds and flicks out.
+    ctx.lineCap = 'round';
+    for (const side of [-1, 1]) {
+      const sx = side * 1.6 * s - 0.6 * s, sy = -9.6 * s;
+      const ex = sx - 3.2 * s - reach * (side < 0 ? 1 : 0.7), ey = sy + 2.6 * s;
+      const fold = strike >= 0 ? Math.sin(strike * Math.PI) : 0;
+      const cx2 = ex + (1 - fold) * 2.4 * s - fold * 3 * s, cy2 = ey - (1 - fold) * 3.2 * s + fold * 0.6 * s;
+      ctx.strokeStyle = side < 0 ? '#e0443a' : '#b8302c';
+      ctx.lineWidth = 1.4 * s;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy);
+      ctx.lineTo(ex, ey);
+      ctx.stroke();
+      ctx.lineWidth = 1.05 * s;
+      ctx.strokeStyle = side < 0 ? '#ff6a4a' : '#d84a3a';
+      ctx.beginPath();
+      ctx.moveTo(ex, ey);
+      ctx.lineTo(cx2, cy2);
+      ctx.stroke();
+      // The club at the elbow: a hard pale knob.
+      ctx.fillStyle = side < 0 ? '#ffd0a0' : '#e0a878';
+      ctx.beginPath();
+      ctx.arc(ex, ey, 0.8 * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // Antennae, long and fine, swept back.
+    ctx.strokeStyle = 'rgba(255,180,120,0.75)';
+    ctx.lineWidth = Math.max(1, 0.35 * s);
+    ctx.beginPath();
+    for (const k of [0, 1]) {
+      ctx.moveTo(-3 * s, -11.6 * s);
+      ctx.quadraticCurveTo(-6 * s, -17 * s - k * 2 * s, -2 * s + k * 3 * s + Math.sin(t * 1.1 + k) * s, -21 * s);
+    }
+    ctx.stroke();
+    // Eyes on stalks, each looking its own way: an oval cut across by a dark band.
     for (const [k, side] of [[0, -1], [1, 1]] as const) {
       const a = -Math.PI / 2 + side * 0.4 + Math.sin(t * (0.9 + k * 0.6) + k * 2) * 0.5;
-      const ex = x + side * 1.5 * s + Math.cos(a) * 6 * s, ey = base - 12 * s + Math.sin(a) * 6 * s;
+      const bx = -1 * s + side * 1.2 * s, by = -12.4 * s;
+      const ex = bx + Math.cos(a) * 4.5 * s, ey = by + Math.sin(a) * 4.5 * s;
       ctx.strokeStyle = '#d8b34a';
       ctx.lineWidth = 0.9 * s;
       ctx.beginPath();
-      ctx.moveTo(x + side * 1.5 * s, base - 12 * s);
+      ctx.moveTo(bx, by);
       ctx.lineTo(ex, ey);
       ctx.stroke();
-      ctx.fillStyle = '#7ad0ff';
+      ctx.save();
+      ctx.translate(ex, ey);
+      ctx.rotate(a + Math.PI / 2);
+      ctx.fillStyle = '#6ac8f0';
       ctx.beginPath();
-      ctx.ellipse(ex, ey, 1.8 * s, 1.2 * s, a, 0, Math.PI * 2);
+      ctx.ellipse(0, 0, 1.9 * s, 1.3 * s, 0, 0, Math.PI * 2);
       ctx.fill();
+      ctx.fillStyle = '#123040';
+      ctx.fillRect(-1.9 * s, -0.25 * s, 3.8 * s, 0.5 * s);
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.beginPath();
+      ctx.arc(-0.6 * s, -0.7 * s, 0.35 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
     }
+    ctx.restore();
+    // The rim of sand in front of the hole, over the body's foot.
+    ctx.fillStyle = 'rgba(120,130,150,0.55)';
+    ctx.beginPath();
+    ctx.ellipse(x, base + 0.6 * s, 8.6 * s, 2 * s, 0, 0, Math.PI);
+    ctx.fill();
     if (strike >= 0) {
       ctx.globalCompositeOperation = 'lighter';
       glow(ctx, x + reach, base - 7 * s, (6 + 20 * strike) * s, '255,250,230', 0.8 * (1 - strike));
@@ -1662,9 +1926,10 @@ export function createTwilightScene(seed: number): Scene {
     ctx.fill();
     // The body itself, silver, lit across.
     const body = ctx.createLinearGradient(x0 - 6 * s, 0, x0 + 6 * s, 0);
-    body.addColorStop(0, '#8fa1b8');
-    body.addColorStop(0.45, '#eef3f9');
-    body.addColorStop(1, '#7f92aa');
+    // Kept below white: the bloom would wash a white ribbon out to a featureless glare.
+    body.addColorStop(0, '#6f8098');
+    body.addColorStop(0.45, '#c4cfdc');
+    body.addColorStop(1, '#62748c');
     ctx.fillStyle = body;
     ctx.beginPath();
     ctx.moveTo(back[0]![0], back[0]![1]);
@@ -1675,7 +1940,7 @@ export function createTwilightScene(seed: number): Scene {
     ctx.quadraticCurveTo(h0x, h0y - 3.5 * s, back[0]![0], back[0]![1]);
     ctx.fill();
     // Dark wavy streaks slanting across the flank, uneven in length, and a pale lateral line.
-    ctx.strokeStyle = 'rgba(52,64,86,0.3)';
+    ctx.strokeStyle = 'rgba(40,50,70,0.5)';
     ctx.lineWidth = 0.7 * s;
     ctx.beginPath();
     for (let i = 4; i <= N - 3; i += 2) {
@@ -1860,7 +2125,7 @@ export function createTwilightScene(seed: number): Scene {
       const a = t * (0.05 + (i % 3) * 0.015) + i * 2.1;
       // Spread along the slope either side of the trunk.
       const u = 0.5 + (i < 4 ? -1 : 1) * (0.1 + (i % 4) * 0.07) + Math.sin(a) * 0.03;
-      const dir = Math.cos(a) >= 0 ? 1 : -1;
+      const dir = facing(Math.cos(a));
       const pick = Math.max(0, Math.sin(t * 3 + i * 1.3)) ** 6;
       const x = focus.x - focus.w * 0.1 + u * focus.w * 1.2;
       const y = slopeY(u) - 6 * s + pick * 3 * s;

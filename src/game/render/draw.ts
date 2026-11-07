@@ -253,3 +253,13 @@ export function softRing(ctx: CanvasRenderingContext2D, x: number, y: number, rx
   ctx.restore();
 }
 
+
+/**
+ * A facing (±1 for right/left) that turns smoothly instead of flipping in one frame: from v, the
+ * signed sideways part of a creature's motion, it narrows through the turn (to a sliver, never
+ * zero) and widens again facing the other way. Use it as the x scale of the creature's drawing.
+ */
+export function facing(v: number, sharp = 5): number {
+  const f = Math.max(-1, Math.min(1, v * sharp));
+  return f >= 0 ? Math.max(0.18, f) : Math.min(-0.18, f);
+}

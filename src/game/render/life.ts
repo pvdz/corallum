@@ -1045,7 +1045,7 @@ export function createLife(seed: number) {
       }
       ctx.stroke();
       // Long claws held out in front, each arm a slim segment and a pincer, opening and closing.
-      ctx.strokeStyle = 'rgba(240,228,210,0.95)';
+      ctx.strokeStyle = 'rgba(212,200,182,0.95)';
       for (const dy of [-1, 1]) {
         const ex = -11 * s, ey = (-5 + dy * 1.5 + wave) * s;
         ctx.lineWidth = 1.1 * s;
@@ -1065,8 +1065,8 @@ export function createLife(seed: number) {
       // The body: a carapace in front, the abdomen's segments behind it, tucked down under, lit
       // from above.
       const g = ctx.createLinearGradient(0, -5 * s, 0, 1 * s);
-      g.addColorStop(0, 'rgba(250,242,228,0.97)');
-      g.addColorStop(1, 'rgba(200,180,160,0.97)');
+      g.addColorStop(0, 'rgba(218,208,192,0.97)');
+      g.addColorStop(1, 'rgba(170,152,134,0.97)');
       ctx.fillStyle = g;
       ctx.beginPath();
       ctx.ellipse(-0.5 * s, -2.5 * s, 3.2 * s, 2.3 * s, -0.1, 0, Math.PI * 2);
@@ -1125,7 +1125,7 @@ export function createLife(seed: number) {
       feelers.moveTo(X(2.6, 0.2), Y(2.6, 0.2));
       feelers.quadraticCurveTo(X(4.4, 1.4), Y(4.4, 1.4), X(5.6, 2), Y(5.6, 2));
     }
-    ctx.fillStyle = 'rgba(235,225,215,0.85)';
+    ctx.fillStyle = 'rgba(208,198,188,0.85)';
     ctx.fill(bodies);
     ctx.strokeStyle = 'rgba(235,225,215,0.45)';
     ctx.lineWidth = 0.4 * s;
@@ -1145,8 +1145,8 @@ export function createLife(seed: number) {
     const fold = touch && touch.age < 4 ? Math.sin(Math.min(1, touch.age / 4) * Math.PI) : 0;
     ctx.save();
     for (let i = 0; i < 1 + tier; i++) {
-      // Spread up the chimney's flank, one above another, so their hairy arms do not knot together.
-      const cx = x - (17 + i * 7) * s0, cy = base - (20 + i * 13 + (i % 2) * 3) * s0;
+      // Spread up both flanks of the chimney, one above another, so their hairy arms do not knot together.
+      const cx = x + (i % 2 ? 1 : -1) * (19 + (i >> 1) * 5) * s0, cy = base - (20 + (i >> 1) * 17 + (i % 2) * 6) * s0;
       const side = i % 2 ? -1 : 1;
       // The wave: slow, shared, a little offset crab to crab.
       const wave = Math.sin(t * 1.1 + i * 0.5) * 0.5 * (1 - fold);
@@ -1161,37 +1161,62 @@ export function createLife(seed: number) {
       ctx.stroke();
       // The carapace: pale, shaded underneath.
       const g = ctx.createLinearGradient(0, cy - 3 * s, 0, cy + 3 * s);
-      g.addColorStop(0, 'rgba(240,236,224,0.97)');
-      g.addColorStop(1, 'rgba(176,168,150,0.97)');
+      g.addColorStop(0, 'rgba(212,206,192,0.97)');
+      g.addColorStop(1, 'rgba(150,142,126,0.97)');
       ctx.fillStyle = g;
       ctx.beginPath();
       ctx.ellipse(cx, cy, 4.5 * s, 3 * s, 0, 0, Math.PI * 2);
       ctx.fill();
+      // Segment lines across the carapace, and short feelers (it has no eyes).
+      ctx.strokeStyle = 'rgba(140,130,112,0.5)';
+      ctx.lineWidth = 0.4 * s;
+      ctx.beginPath();
+      for (const k of [-1.5, 1.5]) {
+        ctx.moveTo(cx + k * s, cy - 2.6 * s);
+        ctx.quadraticCurveTo(cx + k * 1.2 * s, cy, cx + k * s, cy + 2.6 * s);
+      }
+      ctx.moveTo(cx - 1 * s, cy - 2.6 * s);
+      ctx.quadraticCurveTo(cx - 2 * s, cy - 6 * s, cx - 3.5 * s, cy - 7 * s);
+      ctx.moveTo(cx + 1 * s, cy - 2.6 * s);
+      ctx.quadraticCurveTo(cx + 2 * s, cy - 6 * s, cx + 3.5 * s, cy - 7 * s);
+      ctx.stroke();
       for (const arm of [-1, 1]) {
-        const a = -Math.PI / 2 + arm * (0.7 + wave * arm * side) - fold * arm * 0.6;
+        // Each arm bent at the elbow and held up and out, the forearm wrapped in a mitten of
+        // silky hair, yellowed with the bacteria it farms, its strands hanging and swaying.
+        const a = -Math.PI / 2 + arm * (0.9 + wave * arm * side) - fold * arm * 0.7;
         const sx = cx + arm * 3 * s, sy = cy - 1 * s;
-        const ex = sx + Math.cos(a) * 9 * s, ey = sy + Math.sin(a) * 9 * s;
-        // The hair: a few soft strands hanging off the arm, yellowed with what grows in it.
-        ctx.strokeStyle = 'rgba(244,224,150,0.5)';
-        ctx.lineWidth = 0.7 * s;
-        ctx.beginPath();
-        for (let h = 2; h <= 8; h++) {
-          const u = h / 9, hx = sx + (ex - sx) * u, hy = sy + (ey - sy) * u;
-          ctx.moveTo(hx, hy);
-          ctx.lineTo(hx + arm * 2.4 * s + Math.sin(t * 2 + h + i) * 0.8 * s, hy + 3 * s);
-        }
-        ctx.stroke();
-        // The arm, and a small claw at its end.
-        ctx.strokeStyle = 'rgba(232,226,212,0.95)';
-        ctx.lineWidth = 1.6 * s;
+        const kx = sx + arm * (3.5 - fold * 2) * s, ky = sy - 2.5 * s;
+        const ex = kx + Math.cos(a) * 6 * s, ey = ky + Math.sin(a) * 6 * s;
+        ctx.strokeStyle = 'rgba(206,198,184,0.95)';
+        ctx.lineWidth = 1.4 * s;
         ctx.lineCap = 'round';
         ctx.beginPath();
         ctx.moveTo(sx, sy);
+        ctx.lineTo(kx, ky);
         ctx.lineTo(ex, ey);
         ctx.stroke();
+        const nx = -Math.sin(a), ny = Math.cos(a);
+        ctx.fillStyle = 'rgba(226,206,140,0.7)';
+        ctx.beginPath();
+        ctx.moveTo(kx + nx * 1 * s, ky + ny * 1 * s);
+        ctx.quadraticCurveTo(kx + (ex - kx) * 0.5 + nx * 3.2 * s, ky + (ey - ky) * 0.5 + ny * 3.2 * s, ex + nx * 1.6 * s, ey + ny * 1.6 * s);
+        ctx.quadraticCurveTo(ex + Math.cos(a) * 1.8 * s, ey + Math.sin(a) * 1.8 * s, ex - nx * 1.4 * s, ey - ny * 1.4 * s);
+        ctx.quadraticCurveTo(kx + (ex - kx) * 0.5 - nx * 2.4 * s, ky + (ey - ky) * 0.5 - ny * 2.4 * s, kx - nx * 1 * s, ky - ny * 1 * s);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(240,222,160,0.55)';
+        ctx.lineWidth = 0.5 * s;
+        ctx.beginPath();
+        for (let h = 1; h <= 6; h++) {
+          const u = h / 6.5, hx = kx + (ex - kx) * u, hy = ky + (ey - ky) * u;
+          ctx.moveTo(hx, hy);
+          ctx.lineTo(hx + arm * 1.4 * s + Math.sin(t * 2 + h + i) * 0.7 * s, hy + (3 + (h % 2)) * s);
+        }
+        ctx.stroke();
+        // The small claw just showing at the mitten's end.
         ctx.fillStyle = 'rgba(236,230,214,0.95)';
         ctx.beginPath();
-        ctx.ellipse(ex, ey, 2 * s, 1.1 * s, a, 0, Math.PI * 2);
+        ctx.ellipse(ex + Math.cos(a) * 1.2 * s, ey + Math.sin(a) * 1.2 * s, 1.4 * s, 0.7 * s, a, 0, Math.PI * 2);
         ctx.fill();
       }
     }

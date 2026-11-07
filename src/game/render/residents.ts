@@ -5,7 +5,7 @@
 
 import type { ResidentId } from '../content/residents.ts';
 import { mulberry32 } from '../sim/rng.ts';
-import { glow } from './draw.ts';
+import { facing, glow } from './draw.ts';
 import type { Reef, ReefLayout } from './reef.ts';
 import { sight, spot, startled } from './sightings.ts';
 
@@ -580,7 +580,7 @@ function damsels(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s: nu
       x += (touch.x - x) * c;
       y += (touch.y - y) * c;
     }
-    const dir = Math.cos(a + Math.PI / 2) > 0 ? 1 : -1;
+    const dir = facing(Math.cos(a + Math.PI / 2));
     spot('damselfish', x, y, 9 * s);
     ctx.save();
     ctx.translate(x, y);
@@ -658,7 +658,7 @@ function anemone(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s: nu
   for (let k = 0; k < 2; k++) {
     const a = t * (0.9 + k * 0.3) + k * 3;
     const fx = x + Math.cos(a) * 8 * s, fy = y - 8 * s + Math.sin(a * 1.4) * 3 * s;
-    const dir = -Math.sin(a) > 0 ? 1 : -1;
+    const dir = facing(-Math.sin(a));
     ctx.save();
     ctx.translate(fx, fy);
     ctx.scale(dir, 1);

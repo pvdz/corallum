@@ -35,20 +35,34 @@ export function drawSailors(ctx: CanvasRenderingContext2D, t: number, sf: Surfac
     const z = s * 2.8 * size;
     ctx.save();
     ctx.translate(x, y);
-    // The float: a deep-blue oval with concentric rings, riding the water.
-    ctx.fillStyle = '#1f4fa8';
+    // The fringe of short blue tentacles under the float's rim, hanging in the water.
+    ctx.strokeStyle = 'rgba(60,110,220,0.7)';
+    ctx.lineWidth = 0.35 * z;
+    ctx.beginPath();
+    for (let q = -4; q <= 4; q++) {
+      const fx = q * 1.05 * z, sway = Math.sin(t * 2 + q + i) * 0.4 * z;
+      ctx.moveTo(fx, 0.8 * z);
+      ctx.lineTo(fx + sway, (1.9 + 0.3 * (q & 1)) * z);
+    }
+    ctx.stroke();
+    // The float: a flat oval of deep blue, paler toward its middle where its growth rings lie.
+    const fg = ctx.createRadialGradient(0, -0.3 * z, 0, 0, 0, 5 * z);
+    fg.addColorStop(0, '#5a8fe8');
+    fg.addColorStop(0.6, '#2858b8');
+    fg.addColorStop(1, '#173c8a');
+    ctx.fillStyle = fg;
     ctx.beginPath();
     ctx.ellipse(0, 0, 5 * z, 1.8 * z, 0, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = 'rgba(120,170,255,0.6)';
-    ctx.lineWidth = 0.5 * z;
+    ctx.fillStyle = 'rgba(150,195,255,0.28)';
     ctx.beginPath();
-    ctx.ellipse(0, -0.2 * z, 3.2 * z, 1 * z, 0, 0, Math.PI * 2);
-    ctx.stroke();
+    ctx.ellipse(0, -0.25 * z, 3.4 * z, 1.05 * z, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, -0.35 * z, 1.9 * z, 0.55 * z, 0, 0, Math.PI * 2);
+    ctx.fill('evenodd');
     // The sail: a stiff clear triangle set across the float at a slant (all of a fleet lean one way).
     // A thin clear membrane, its leading edge curved, catching the light only along its rim.
-    ctx.fillStyle = `rgba(200,220,250,${0.16 + 0.3 * Math.max(0, bob)})`;
-    ctx.strokeStyle = 'rgba(225,238,255,0.55)';
+    ctx.fillStyle = `rgba(200,220,250,${0.22 + 0.3 * Math.max(0, bob)})`;
+    ctx.strokeStyle = 'rgba(225,238,255,0.45)';
     ctx.lineWidth = 0.35 * z;
     ctx.beginPath();
     ctx.moveTo(-3.2 * z * dir, -0.6 * z);
@@ -56,6 +70,12 @@ export function drawSailors(ctx: CanvasRenderingContext2D, t: number, sf: Surfac
     ctx.quadraticCurveTo(1.6 * z * dir, -2.6 * z, 3.2 * z * dir, -0.6 * z);
     ctx.closePath();
     ctx.fill();
+    ctx.stroke();
+    // The stiff ridge across the sail that holds it up.
+    ctx.strokeStyle = 'rgba(225,238,255,0.35)';
+    ctx.beginPath();
+    ctx.moveTo(0, -0.8 * z);
+    ctx.quadraticCurveTo(0.2 * z * dir, -3 * z, 0.6 * z * dir, -5 * z);
     ctx.stroke();
     ctx.restore();
   }

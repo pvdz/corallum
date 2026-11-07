@@ -114,19 +114,20 @@ export function drawPool(ctx: CanvasRenderingContext2D, cx: number, waterY: numb
     ctx.beginPath();
     ctx.ellipse(cx, cy, rw, rh, 0, near ? 0 : Math.PI, near ? Math.PI : Math.PI * 2);
     ctx.stroke();
-    ctx.fillStyle = near ? 'rgba(104,92,80,0.75)' : 'rgba(136,126,116,0.3)';
-    ctx.beginPath();
+    const heap: Stone[] = [];
     for (let i = 0; i < n; i++) {
       const k = Math.sin(i * 12.9898 + stage) * 43758.5453;
       const f = k - Math.floor(k);
       const a = ((i + f * 0.6) / n) * Math.PI * 2;
       if ((Math.sin(a) > 0) !== near) continue;
       const x = cx + Math.cos(a) * rw, y = cy + Math.sin(a) * rh - (1 + stage * 0.5) * s;
-      const sz = (2.5 + stage * 0.8 + f * 3.5) * s * (near ? 1 : 0.75);
-      ctx.moveTo(x + sz, y);
-      ctx.ellipse(x, y, sz, sz * (0.45 + f * 0.25), (f - 0.5) * 0.5, 0, Math.PI * 2);
+      const sz = (2.5 + stage * 0.8 + f * 3.5) * s * (near ? 1 : 0.75), ry = sz * (0.45 + f * 0.25);
+      heap.push({ x, y: y + ry, rx: sz, ry, seed: i * 1.7 + stage });
     }
-    ctx.fill();
+    // Nearer stones in front: those lower on the screen last.
+    heap.sort((p, q) => p.y - q.y);
+    if (near) drawStones(ctx, heap, 'rgba(104,92,80,0.8)', 'rgba(255,240,220,0.18)', 'rgba(50,44,38,0.45)', s);
+    else drawStones(ctx, heap, 'rgba(136,126,116,0.3)', 'rgba(255,255,255,0.07)', 'rgba(60,56,52,0.14)', s);
   }
   ctx.restore();
 }
@@ -139,13 +140,12 @@ export function drawDome(ctx: CanvasRenderingContext2D, F: Focus, stage: number,
   const arc = [0, 0.35, 0.7, 1][stage]!;
   ctx.save();
   // Stones of the ring, then as much of the shell as is built (from both sides up toward the top).
-  ctx.fillStyle = '#1c2440';
+  const ring: Stone[] = [];
   for (let i = 0; i < 9; i++) {
     const a = Math.PI + (i / 8) * Math.PI;
-    ctx.beginPath();
-    ctx.ellipse(x + Math.cos(a) * r, floorY - 2 * s, 7 * s, 4 * s, 0, 0, Math.PI * 2);
-    ctx.fill();
+    ring.push({ x: x + Math.cos(a) * r, y: floorY + 2 * s, rx: 7 * s, ry: 4 * s, seed: i * 2.1 });
   }
+  drawStones(ctx, ring, '#1c2440', 'rgba(150,170,230,0.14)', 'rgba(4,6,16,0.6)', s);
   if (stage >= 2) {
     const g = ctx.createRadialGradient(x - r * 0.3, floorY - r * 0.7, 0, x, floorY, r * 1.1);
     g.addColorStop(0, 'rgba(120,140,200,0.95)');

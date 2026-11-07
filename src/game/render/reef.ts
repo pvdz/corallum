@@ -620,34 +620,73 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     return nodePx(L, i);
   }
 
-  /** Grottoes: arched dark hollows in a mound of stone at the reef's foot; a resident's eyes glint inside. */
+  /**
+   * Grottoes: arched dark hollows in lumpy mounds of reef stone at its foot, a low skirt of the same
+   * stone burying the trunk's foot between them; a resident's eyes glint inside.
+   */
   function drawGrottoes(ctx: CanvasRenderingContext2D, L: ReefLayout, n: number, t: number): void {
     const s = L.s;
     const [shadow, flesh] = L.palette ?? DEFAULT_PALETTE;
+    const lit = mixHex(flesh, '#fff2dc', 0.3), deep = mixHex(flesh, /^#[0-9a-f]{6}$/i.test(shadow) ? shadow : '#1d1026', 0.55);
+    /** A lumpy dome of stone on the floor at y: its outline (a path), bumped by seed k. */
+    const dome = (x: number, y: number, rw: number, rh: number, k: number): Path2D => {
+      const p = new Path2D();
+      const N = 12, px: number[] = [], py: number[] = [];
+      for (let j = 0; j <= N; j++) {
+        const a = Math.PI + (j / N) * Math.PI;
+        const bump = j === 0 || j === N ? 1 : 1 + 0.08 * Math.sin(4 * a + k * 1.7) + 0.05 * Math.sin(7 * a + k);
+        px.push(x + Math.cos(a) * rw * bump);
+        py.push(y + Math.sin(a) * rh * bump);
+      }
+      p.moveTo(px[0]!, py[0]!);
+      for (let j = 1; j < N; j++) p.quadraticCurveTo(px[j]!, py[j]!, (px[j]! + px[j + 1]!) / 2, (py[j]! + py[j + 1]!) / 2);
+      p.lineTo(px[N]!, py[N]!);
+      p.closePath();
+      return p;
+    };
+    const stone = (p: Path2D, x: number, y: number, rw: number, rh: number) => {
+      const g = ctx.createLinearGradient(x - rw * 0.4, y - rh, x + rw * 0.5, y);
+      g.addColorStop(0, lit);
+      g.addColorStop(0.45, flesh);
+      g.addColorStop(1, deep);
+      ctx.fillStyle = g;
+      ctx.fill(p);
+    };
+    // The skirt of rubble round the trunk's foot.
+    const sy = L.baseY + 12 * s;
+    const skirt = dome(L.cx, sy, 24 * s, 15 * s, 7);
+    stone(skirt, L.cx, sy, 24 * s, 15 * s);
     for (let k = 0; k < n; k++) {
       const side = k === 0 ? -1 : 1;
-      const x = L.cx + side * (34 + 10 * k) * s, y = L.baseY + 2 * s;
+      const x = L.cx + side * (34 + 10 * k) * s, y = L.baseY + 3 * s;
       const rw = 22 * s, rh = 20 * s;
       ctx.save();
-      // The mound.
-      ctx.fillStyle = flesh;
+      // The mound, lit from above and the left.
+      const mound = dome(x, y, rw * 1.25, rh * 1.15, k * 3 + 1);
+      stone(mound, x, y, rw * 1.25, rh * 1.15);
+      // Pits in its face.
+      ctx.fillStyle = 'rgba(0,0,0,0.22)';
       ctx.beginPath();
-      ctx.ellipse(x, y, rw * 1.25, rh * 1.15, 0, Math.PI, 0);
+      for (const [px, py, pr] of [[-0.85, -0.5, 1.4], [0.75, -0.65, 1.2], [-0.3, -1, 1], [0.9, -0.25, 1.1], [-0.95, -0.15, 0.9]] as const) {
+        ctx.moveTo(x + px * rw + pr * s, y + py * rh);
+        ctx.arc(x + px * rw, y + py * rh, pr * s, 0, Math.PI * 2);
+      }
       ctx.fill();
-      ctx.fillStyle = shadow;
-      ctx.globalAlpha = 0.5;
-      ctx.beginPath();
-      ctx.ellipse(x + rw * 0.3, y, rw * 0.9, rh * 0.95, 0, Math.PI, 0);
-      ctx.fill();
-      ctx.globalAlpha = 1;
-      // The hollow, deep dark.
+      // The hollow, deep dark, its arch uneven and leaning a little, a shadowed rim inside.
+      const lean = side * 0.08 * rw;
+      const arch = new Path2D();
+      arch.moveTo(x - rw * 0.58, y);
+      arch.bezierCurveTo(x - rw * 0.62, y - rh * 0.55, x - rw * 0.3 + lean, y - rh * 0.82, x + lean, y - rh * 0.8);
+      arch.bezierCurveTo(x + rw * 0.35 + lean, y - rh * 0.78, x + rw * 0.58, y - rh * 0.5, x + rw * 0.52, y);
+      arch.closePath();
+      ctx.strokeStyle = deep;
+      ctx.lineWidth = 3 * s;
+      ctx.stroke(arch);
       const g = ctx.createRadialGradient(x, y - rh * 0.2, 0, x, y - rh * 0.2, rw * 0.7);
       g.addColorStop(0, '#020308');
       g.addColorStop(1, '#0c0f1a');
       ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.ellipse(x, y, rw * 0.55, rh * 0.75, 0, Math.PI, 0);
-      ctx.fill();
+      ctx.fill(arch);
       // Two small eyes, now and then.
       const blink = Math.sin(t * 0.7 + k * 2.4);
       if (blink > -0.2) {

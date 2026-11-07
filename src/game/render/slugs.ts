@@ -4,9 +4,18 @@
 import type { Reef, ReefLayout } from './reef.ts';
 import { sight, spot } from './sightings.ts';
 
+/** Halfway between two #rrggbb colours. */
+function mid(a: string, b: string): string {
+  const c = (h: string, i: number) => parseInt(h.slice(1 + 2 * i, 3 + 2 * i), 16);
+  return `rgb(${[0, 1, 2].map((i) => Math.round((c(a, i) + c(b, i)) / 2)).join(',')})`;
+}
+
 const COLOURS: readonly [string, string][] = [
   ['#7a3cff', '#ffb02e'], ['#ff5ab4', '#fff2a8'], ['#2ec4ff', '#ff7a2e'], ['#f2f2f2', '#ff4d6d'],
 ];
+
+/** The cerata's shafts: each slug's body colour shading toward its tips. */
+const MIDS = COLOURS.map(([a, b]) => mid(a, b));
 
 export function createSlugs(count: number) {
   let paths: number[][] = [];
@@ -56,32 +65,68 @@ export function createSlugs(count: number) {
         const [bx, by] = reef.nodePx(L, b);
         if (ay < 0) continue;
         const x = ax + (bx - ax) * f, y = ay + (by - ay) * f;
-        const ang = Math.atan2(by - ay, bx - ax) + (u < 1 ? 0 : Math.PI);
+        // At the tip it turns round in its own length, over a moment, instead of flipping.
+        const turn = Math.min(1, Math.max(0, (u - 0.96) / 0.08));
+        const ang = Math.atan2(by - ay, bx - ax) + Math.PI * turn * turn * (3 - 2 * turn);
         const [body, tips] = COLOURS[k % COLOURS.length]!;
         sight('nudibranch');
         spot('nudibranch', x, y, Math.max(10 * s, 22 * L.dpr));
         ctx.save();
         ctx.translate(x, y);
         ctx.rotate(ang);
+        // Cerata: finger-like plumes in a double row along its back, swaying in a wave, the
+        // body's colour shading to bright tips.
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = MIDS[k % COLOURS.length]!;
+        ctx.lineWidth = 1.2 * s;
+        const ends: number[] = [];
+        ctx.beginPath();
+        for (let q = 0; q < 7; q++) {
+          const bx0 = (3.2 - q * 1.25) * s, sway = Math.sin(t * 2.4 - q * 0.8) * 0.7 * s;
+          const len = (3.4 - Math.abs(q - 3) * 0.35) * s;
+          const ex = bx0 - 0.8 * s + sway, ey = -1 * s - len;
+          ctx.moveTo(bx0, -0.8 * s);
+          ctx.quadraticCurveTo(bx0 - 0.2 * s, -1.4 * s - len * 0.5, ex, ey);
+          ends.push(ex, ey);
+        }
+        ctx.stroke();
+        // The body: a slug's foot, a rounded head tapering to a pointed tail, its edge pale.
         ctx.fillStyle = body;
         ctx.beginPath();
-        ctx.ellipse(0, 0, 6 * s, 2.4 * s, 0, 0, Math.PI * 2);
+        ctx.moveTo(6.2 * s, 0);
+        ctx.quadraticCurveTo(6 * s, -1.9 * s, 3.5 * s, -1.9 * s);
+        ctx.quadraticCurveTo(-2 * s, -1.8 * s, -6.5 * s, 0.2 * s);
+        ctx.quadraticCurveTo(-2 * s, 1.6 * s, 3.5 * s, 1.7 * s);
+        ctx.quadraticCurveTo(6 * s, 1.6 * s, 6.2 * s, 0);
         ctx.fill();
-        // Cerata: a fringe of little tipped plumes along its back, and two horns at the front.
-        ctx.fillStyle = tips;
-        for (let q = -2; q <= 2; q++) {
-          ctx.beginPath();
-          ctx.arc(q * 2.2 * s, -2.4 * s + Math.sin(t * 3 + q) * 0.3 * s, 1.1 * s, 0, Math.PI * 2);
-          ctx.fill();
-        }
-        ctx.strokeStyle = tips;
-        ctx.lineWidth = 0.8 * s;
+        ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+        ctx.lineWidth = 0.45 * s;
         ctx.beginPath();
-        ctx.moveTo(5 * s, -1 * s);
-        ctx.lineTo(7.5 * s, -3.5 * s);
-        ctx.moveTo(5 * s, 0.5 * s);
-        ctx.lineTo(8 * s, -1.5 * s);
+        ctx.moveTo(5.6 * s, 1.1 * s);
+        ctx.quadraticCurveTo(0, 1.6 * s, -5.6 * s, 0.4 * s);
         ctx.stroke();
+        ctx.fillStyle = tips;
+        ctx.beginPath();
+        for (let q = 0; q < ends.length; q += 2) {
+          ctx.moveTo(ends[q]! + 0.75 * s, ends[q + 1]!);
+          ctx.arc(ends[q]!, ends[q + 1]!, 0.75 * s, 0, Math.PI * 2);
+        }
+        ctx.fill();
+        // Two horns (rhinophores) at the head, each ending in a small club.
+        ctx.strokeStyle = body;
+        ctx.lineWidth = 0.7 * s;
+        ctx.beginPath();
+        ctx.moveTo(4.6 * s, -1.4 * s);
+        ctx.lineTo(5.8 * s, -4 * s);
+        ctx.moveTo(5.4 * s, -1.2 * s);
+        ctx.lineTo(7.2 * s, -3.4 * s);
+        ctx.stroke();
+        ctx.fillStyle = tips;
+        ctx.beginPath();
+        ctx.ellipse(5.9 * s, -4.3 * s, 0.5 * s, 0.75 * s, 0.4, 0, Math.PI * 2);
+        ctx.moveTo(7.8 * s, -3.6 * s);
+        ctx.ellipse(7.4 * s, -3.7 * s, 0.5 * s, 0.75 * s, 0.7, 0, Math.PI * 2);
+        ctx.fill();
         ctx.restore();
       }
     },
