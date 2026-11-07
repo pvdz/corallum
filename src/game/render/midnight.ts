@@ -1425,51 +1425,87 @@ export function createMidnightScene(seed: number): Scene {
     const x = focus.x + focus.w * (1.1 - 1.2 * u), y = focus.y + focus.h * (0.3 + 0.05 * Math.sin(t * 0.4));
     spot('gulper', x, y, 30 * s);
     ctx.save();
-    // The whip of a body trailing behind (to the right, it swims left).
-    ctx.strokeStyle = '#120c14';
-    ctx.lineCap = 'round';
-    let px = x + 10 * s, py = y;
-    for (let i = 1; i <= 30; i++) {
-      const nx = x + 10 * s + i * 5 * s, ny = y + Math.sin(t * 2 - i * 0.35) * (2 + i * 0.25) * s;
-      ctx.lineWidth = Math.max(0.8, (5 - i * 0.15) * s);
-      ctx.beginPath();
-      ctx.moveTo(px, py);
-      ctx.lineTo(nx, ny);
-      ctx.stroke();
-      px = nx;
-      py = ny;
+    // The whip of a body trailing behind (to the right, it swims left): one tapering shape along a
+    // waving spine, a faint rim of light along its back and the low dorsal fin running down it.
+    const N = 30;
+    const top: [number, number][] = [], bot: [number, number][] = [];
+    let px = 0, py = 0;
+    for (let i = 0; i <= N; i++) {
+      const sx0 = x + 8 * s + i * 5 * s, sy0 = y + Math.sin(t * 2 - i * 0.35) * (2 + i * 0.25) * s;
+      const half = Math.max(0.35, (3.2 - i * 0.1)) * s;
+      top.push([sx0, sy0 - half]);
+      bot.push([sx0, sy0 + half]);
+      px = sx0; py = sy0;
     }
-    // The tail light.
-    ctx.globalCompositeOperation = 'lighter';
-    glow(ctx, px, py, 10 * s, '255,110,170', 0.5 + 0.4 * Math.sin(t * 3));
-    ctx.globalCompositeOperation = 'source-over';
-    // The head: a small snout over enormous jaws hinged far back. The upper jaw a thin bony line,
-    // the lower a deep loose pouch hanging open below it (touched, it balloons), its rim pale.
-    const open = 0.35 + gape * 0.8;
-    const sx = x - 18 * s;
-    ctx.fillStyle = '#1a121c';
+    ctx.fillStyle = '#150e18';
     ctx.beginPath();
-    ctx.moveTo(x + 12 * s, y - 1 * s);
-    ctx.quadraticCurveTo(x - 2 * s, y - 5 * s, sx, y - 3 * s);
-    ctx.lineTo(sx, y - 1 * s);
-    ctx.quadraticCurveTo(sx + 2 * s, y + (8 + 14 * open) * s, x + 2 * s, y + (6 + 12 * open) * s);
-    ctx.quadraticCurveTo(x + 10 * s, y + 4 * s, x + 12 * s, y + 1 * s);
+    ctx.moveTo(top[0]![0], top[0]![1]);
+    for (const [qx, qy] of top) ctx.lineTo(qx, qy);
+    for (let i = bot.length - 1; i >= 0; i--) ctx.lineTo(bot[i]![0], bot[i]![1]);
     ctx.closePath();
     ctx.fill();
-    // The pouch's inside showing dark between the jaws, and the jaws' pale edges.
-    ctx.fillStyle = '#05030a';
+    ctx.strokeStyle = 'rgba(130,105,155,0.28)';
+    ctx.lineWidth = 0.7 * s;
+    ctx.lineJoin = 'round';
     ctx.beginPath();
-    ctx.moveTo(sx + 1 * s, y - 1.2 * s);
-    ctx.quadraticCurveTo(sx + 4 * s, y + (5 + 10 * open) * s, x + 4 * s, y + (3 + 8 * open) * s);
-    ctx.quadraticCurveTo(x + 2 * s, y + 0.5 * s, sx + 1 * s, y - 1.2 * s);
+    for (let i = 0; i <= 22; i++) i ? ctx.lineTo(top[i]![0], top[i]![1] - 0.6 * s) : ctx.moveTo(top[i]![0], top[i]![1] - 0.6 * s);
+    ctx.stroke();
+    // The tail's fleshy tip and its light.
+    ctx.fillStyle = 'rgba(150,60,100,0.8)';
+    ctx.beginPath();
+    ctx.ellipse(px + 1.5 * s, py, 2.2 * s, 1.1 * s, 0, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = 'rgba(150,120,160,0.7)';
-    ctx.lineWidth = 0.9 * s;
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, px + 1.5 * s, py, 10 * s, '255,110,170', 0.5 + 0.4 * Math.sin(t * 3));
+    ctx.globalCompositeOperation = 'source-over';
+    // The head: a small skull over enormous jaws hinged far back. The upper jaw a thin bony rod to
+    // the snout; below it the lower jaw's loose pouch of skin hangs open (touched, it balloons),
+    // dark and a little translucent, its folds running from the hinge to the rim.
+    const open = 0.35 + gape * 0.8;
+    const sx = x - 18 * s;
+    const sag = (8 + 14 * open) * s;
+    // The lower jaw's tip, below and a little behind the snout; the gape opens forward between them.
+    const lx = sx + 3 * s, ly = y + sag * 0.8;
+    ctx.fillStyle = '#170f1a';
     ctx.beginPath();
-    ctx.moveTo(x + 8 * s, y - 2 * s);
-    ctx.quadraticCurveTo(x - 4 * s, y - 4 * s, sx, y - 3 * s);
-    ctx.moveTo(sx, y - 1 * s);
-    ctx.quadraticCurveTo(sx + 2 * s, y + (8 + 14 * open) * s, x + 2 * s, y + (6 + 12 * open) * s);
+    ctx.moveTo(x + 13 * s, y - 3.2 * s);
+    ctx.quadraticCurveTo(x + 6 * s, y - 5.5 * s, x, y - 4.2 * s);
+    ctx.quadraticCurveTo(x - 8 * s, y - 4.6 * s, sx, y - 3 * s);
+    ctx.quadraticCurveTo(sx + 4 * s, y + sag * 0.35, lx, ly);
+    ctx.quadraticCurveTo(x - 4 * s, y + sag * 1.08, x + 6 * s, y + 3.6 * s);
+    ctx.quadraticCurveTo(x + 10 * s, y + 3.4 * s, x + 13 * s, y + 3.2 * s);
+    ctx.closePath();
+    ctx.fill();
+    // The inside of the gape, darkest at its open edge.
+    const inside = ctx.createLinearGradient(sx, 0, x + 6 * s, 0);
+    inside.addColorStop(0, 'rgba(4,2,8,0.95)');
+    inside.addColorStop(1, 'rgba(4,2,8,0)');
+    ctx.fillStyle = inside;
+    ctx.beginPath();
+    ctx.moveTo(sx + 0.6 * s, y - 2.4 * s);
+    ctx.quadraticCurveTo(sx + 4.4 * s, y + sag * 0.35, lx + 0.6 * s, ly - 0.8 * s);
+    ctx.quadraticCurveTo(sx + 12 * s, y + sag * 0.45, x + 4 * s, y + 1 * s);
+    ctx.closePath();
+    ctx.fill();
+    // The skin's folds fanning from the hinge to the open edge.
+    ctx.strokeStyle = 'rgba(140,110,165,0.15)';
+    ctx.lineWidth = 0.6 * s;
+    ctx.beginPath();
+    for (let k = 1; k <= 4; k++) {
+      const f = k / 5;
+      const ex = sx + (1 - f) * 0.6 * s + f * (lx - sx) + Math.sin(f * Math.PI) * 2.5 * s, ey = y - 3 * s + f * (ly - y + 3 * s);
+      ctx.moveTo(x + 7 * s, y + 0.5 * s);
+      ctx.quadraticCurveTo((x + ex) / 2, (y + ey) / 2 + sag * 0.12, ex + 1.5 * s, ey);
+    }
+    ctx.stroke();
+    // The two jaws' thin bones, faintly paler.
+    ctx.strokeStyle = 'rgba(120,100,140,0.45)';
+    ctx.lineWidth = 0.8 * s;
+    ctx.beginPath();
+    ctx.moveTo(x + 6 * s, y - 2.6 * s);
+    ctx.quadraticCurveTo(x - 6 * s, y - 3.6 * s, sx + 0.5 * s, y - 2.6 * s);
+    ctx.moveTo(x + 6 * s, y + 3 * s);
+    ctx.quadraticCurveTo(x - 4 * s, y + sag * 0.75, lx + 0.4 * s, ly - 0.4 * s);
     ctx.stroke();
     // A tiny eye at the very tip of the snout.
     ctx.fillStyle = 'rgba(200,220,255,0.85)';
