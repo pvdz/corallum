@@ -557,22 +557,38 @@ export function createSunlitScene(seed: number): Scene {
       ctx.globalAlpha = Math.sin(a) > 0 ? 0.9 : 0.45;
       ctx.translate(x, y);
       ctx.scale(dir, 1);
-      ctx.fillStyle = '#8a97a6';
+      // A small blacktip: dark above, pale below, its fins tipped black.
+      const g = ctx.createLinearGradient(0, -4 * s, 0, 4 * s);
+      g.addColorStop(0, '#76889a');
+      g.addColorStop(0.55, '#a6b5c0');
+      g.addColorStop(1, '#e4ecef');
+      ctx.fillStyle = '#7f8f9e';
       ctx.beginPath();
-      ctx.moveTo(14 * s, 0);
-      ctx.quadraticCurveTo(4 * s, -4 * s, -10 * s, -1 * s);
-      ctx.lineTo(-16 * s, -5 * s);
-      ctx.lineTo(-14 * s, 0);
-      ctx.lineTo(-16 * s, 4 * s);
-      ctx.lineTo(-10 * s, 1 * s);
-      ctx.quadraticCurveTo(4 * s, 4 * s, 14 * s, 0);
+      // Tail, swinging, and the fins behind the body.
+      const sw = Math.sin(t * 3 + k) * 1.2 * s;
+      ctx.moveTo(-10 * s, -0.8 * s);
+      ctx.quadraticCurveTo(-13 * s, -3 * s + sw, -16.5 * s, -6 * s + sw);
+      ctx.quadraticCurveTo(-14 * s, sw * 0.5, -15.5 * s, 3.6 * s + sw);
+      ctx.lineTo(-10 * s, 0.8 * s);
+      ctx.moveTo(2 * s, -3 * s); ctx.quadraticCurveTo(-0.6 * s, -5.6 * s, -2.6 * s, -8 * s); ctx.quadraticCurveTo(-2.6 * s, -4.6 * s, -4.5 * s, -2.6 * s);
+      ctx.moveTo(5 * s, 2.2 * s); ctx.quadraticCurveTo(2 * s, 5 * s, -1 * s, 7 * s); ctx.quadraticCurveTo(-0.6 * s, 4 * s, -2 * s, 2.4 * s);
       ctx.fill();
-      // Dorsal fin with its black tip.
+      ctx.fillStyle = g;
       ctx.beginPath();
-      ctx.moveTo(2 * s, -3 * s); ctx.lineTo(-2 * s, -8 * s); ctx.lineTo(-4 * s, -2.5 * s); ctx.fill();
+      ctx.moveTo(14.5 * s, 0.6 * s);
+      ctx.bezierCurveTo(12 * s, -3.4 * s, 4 * s, -4.2 * s, -10 * s, -1 * s);
+      ctx.lineTo(-10 * s, 1 * s);
+      ctx.bezierCurveTo(4 * s, 3.8 * s, 12 * s, 3 * s, 14.5 * s, 0.6 * s);
+      ctx.fill();
       ctx.fillStyle = '#1b1f26';
       ctx.beginPath();
-      ctx.moveTo(-1 * s, -6.5 * s); ctx.lineTo(-2 * s, -8 * s); ctx.lineTo(-2.6 * s, -6.2 * s); ctx.fill();
+      ctx.moveTo(-1.4 * s, -6.4 * s); ctx.lineTo(-2.6 * s, -8 * s); ctx.lineTo(-3 * s, -6 * s);
+      ctx.moveTo(0.2 * s, 5.8 * s); ctx.lineTo(-1 * s, 7 * s); ctx.lineTo(-0.9 * s, 5.4 * s);
+      ctx.moveTo(-15.6 * s, -4.4 * s + sw); ctx.lineTo(-16.5 * s, -6 * s + sw); ctx.lineTo(-14.8 * s, -4.6 * s + sw);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(10.5 * s, -0.6 * s, 0.7 * s, 0, Math.PI * 2);
+      ctx.fill();
       ctx.restore();
     }
   }
