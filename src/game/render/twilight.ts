@@ -1537,39 +1537,132 @@ export function createTwilightScene(seed: number): Scene {
     spot('oarfish', x0, y0 + len * 0.3, 40 * s);
     // The body: a ribbon from the head (top) down, swaying in a slow standing wave.
     const pt = (f: number): [number, number] => [x0 + Math.sin(f * 5 - t * 0.9) * 6 * s * f, y0 + f * len];
+    // Edges of the ribbon: the back (where the fin runs) and the belly, from the sway's own tangent.
+    const N = 40;
+    const back: [number, number][] = [], belly: [number, number][] = [], nrm: [number, number][] = [];
+    for (let i = 0; i <= N; i++) {
+      const f = i / N;
+      const [x, y] = pt(f), [x2, y2] = pt(Math.min(1, f + 0.01) + (f >= 1 ? 0 : 0));
+      let tx = x2 - x, ty = y2 - y;
+      const tl = Math.hypot(tx, ty) || 1;
+      tx /= tl; ty /= tl;
+      const nx = ty === 0 && tx === 0 ? -1 : -ty, ny = tx;
+      // Blunt at the head, tapering to a thread at the tail.
+      const hw = (3.8 - 3.2 * f) * s * (0.55 + 0.45 * Math.min(1, f / 0.05));
+      nrm.push([nx, ny]);
+      back.push([x + nx * hw, y + ny * hw]);
+      belly.push([x - nx * hw, y - ny * hw]);
+    }
     ctx.save();
     ctx.lineCap = 'round';
-    const body = ctx.createLinearGradient(x0 - 6 * s, 0, x0 + 6 * s, 0);
-    body.addColorStop(0, '#9fb0c4');
-    body.addColorStop(0.5, '#e8eef6');
-    body.addColorStop(1, '#8a9cb2');
-    ctx.strokeStyle = body;
-    for (let i = 0; i < 24; i++) {
-      const f0 = i / 24, f1 = (i + 1) / 24;
-      const [ax, ay] = pt(f0), [bx, by] = pt(f1);
-      ctx.lineWidth = (7 - 5 * f0) * s;
-      ctx.beginPath();
-      ctx.moveTo(ax, ay);
-      ctx.lineTo(bx, by);
-      ctx.stroke();
+    ctx.lineJoin = 'round';
+    // The dorsal fin, one red membrane along the whole back with a wave running down it, and its rays.
+    const outer: [number, number][] = [];
+    for (let i = 2; i <= N - 1; i++) {
+      const f = i / N;
+      const hgt = (4.2 + 1.6 * Math.sin(f * 24 - t * 4)) * s * (1 - f * 0.45);
+      outer.push([back[i]![0] + nrm[i]![0] * hgt, back[i]![1] + nrm[i]![1] * hgt]);
     }
-    // The crest: red rays along the back, a wave running down them.
-    ctx.strokeStyle = 'rgba(230,70,70,0.85)';
-    ctx.lineWidth = 1.2 * s;
-    for (let i = 0; i < 40; i++) {
-      const f = i / 40;
-      const [x, y] = pt(f);
-      const ray = (i < 4 ? 14 - i * 2 : 5) * s * (0.6 + 0.4 * Math.sin(f * 20 - t * 4));
-      ctx.beginPath();
-      ctx.moveTo(x - 3 * s, y);
-      ctx.lineTo(x - 3 * s - ray, y - ray * 0.4);
-      ctx.stroke();
-    }
-    // Head: a small dark eye.
-    ctx.fillStyle = '#1b2230';
+    ctx.fillStyle = 'rgba(226,72,74,0.55)';
     ctx.beginPath();
-    ctx.arc(x0 + 1.5 * s, y0 + 4 * s, 1.6 * s, 0, Math.PI * 2);
+    ctx.moveTo(back[2]![0], back[2]![1]);
+    for (const [x, y] of outer) ctx.lineTo(x, y);
+    for (let i = N - 1; i >= 2; i--) ctx.lineTo(back[i]![0], back[i]![1]);
+    ctx.closePath();
     ctx.fill();
+    ctx.strokeStyle = 'rgba(170,40,50,0.55)';
+    ctx.lineWidth = 0.6 * s;
+    ctx.beginPath();
+    for (let i = 2; i <= N - 1; i++) { ctx.moveTo(back[i]![0], back[i]![1]); ctx.lineTo(outer[i - 2]![0], outer[i - 2]![1]); }
+    ctx.stroke();
+    // The crest: long red rays streaming up and back from the top of the head, each with a small pennant.
+    const [hx, hy] = pt(0.03), [hnx, hny] = nrm[1]!;
+    ctx.strokeStyle = 'rgba(232,74,72,0.9)';
+    ctx.lineWidth = 1.1 * s;
+    ctx.beginPath();
+    const tips: [number, number][] = [];
+    for (let k = 0; k < 6; k++) {
+      const sx0 = hx + hnx * 3 * s, sy0 = hy + hny * 3 * s + k * 2.6 * s;
+      const reach = (18 - k * 2) * s, sway = Math.sin(t * 1.7 + k * 0.9) * 3 * s;
+      const ex = sx0 + hnx * (8 + k * 2.5) * s + sway, ey = sy0 - reach + hny * 4 * s;
+      ctx.moveTo(sx0, sy0);
+      ctx.quadraticCurveTo(sx0 + hnx * 2 * s, sy0 - reach * 0.6, ex, ey);
+      tips.push([ex, ey]);
+    }
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(240,96,92,0.95)';
+    ctx.beginPath();
+    for (const [x, y] of tips) { ctx.moveTo(x + 0.8 * s, y); ctx.ellipse(x, y, 0.8 * s, 2.4 * s, 0.5, 0, Math.PI * 2); }
+    ctx.fill();
+    // The two "oars": long pelvic rays from under the head, trailing down the belly side to a paddle.
+    const [px, py] = belly[3]!, [pnx, pny] = nrm[3]!;
+    ctx.strokeStyle = 'rgba(226,90,88,0.8)';
+    ctx.lineWidth = 0.9 * s;
+    ctx.beginPath();
+    const paddles: [number, number][] = [];
+    for (let k = 0; k < 2; k++) {
+      const sway = Math.sin(t * 1.2 + k * 1.4) * 4 * s;
+      const ex = px - pnx * (9 + k * 5) * s + sway, ey = py + (34 + k * 9) * s;
+      ctx.moveTo(px, py);
+      ctx.quadraticCurveTo(px - pnx * (4 + k * 3) * s, py + 16 * s, ex, ey);
+      paddles.push([ex, ey]);
+    }
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(236,104,98,0.9)';
+    ctx.beginPath();
+    for (const [x, y] of paddles) { ctx.moveTo(x + 1.6 * s, y); ctx.ellipse(x, y, 1.6 * s, 3 * s, 0, 0, Math.PI * 2); }
+    ctx.fill();
+    // The body itself, silver, lit across.
+    const body = ctx.createLinearGradient(x0 - 6 * s, 0, x0 + 6 * s, 0);
+    body.addColorStop(0, '#8fa1b8');
+    body.addColorStop(0.45, '#eef3f9');
+    body.addColorStop(1, '#7f92aa');
+    ctx.fillStyle = body;
+    ctx.beginPath();
+    ctx.moveTo(back[0]![0], back[0]![1]);
+    for (let i = 1; i <= N; i++) ctx.lineTo(back[i]![0], back[i]![1]);
+    for (let i = N; i >= 0; i--) ctx.lineTo(belly[i]![0], belly[i]![1]);
+    // The rounded brow.
+    const [h0x, h0y] = pt(0);
+    ctx.quadraticCurveTo(h0x, h0y - 3.5 * s, back[0]![0], back[0]![1]);
+    ctx.fill();
+    // Dark wavy streaks slanting across the flank, uneven in length, and a pale lateral line.
+    ctx.strokeStyle = 'rgba(52,64,86,0.3)';
+    ctx.lineWidth = 0.7 * s;
+    ctx.beginPath();
+    for (let i = 4; i <= N - 3; i += 2) {
+      const f = i / N, [x, y] = pt(f), [nx, ny] = nrm[i]!;
+      const hw = (3.8 - 3.2 * f) * s;
+      const a0 = 0.15 + ((i * 0.618) % 1) * 0.5, a1 = a0 + 0.35 + ((i * 0.38) % 1) * 0.35;
+      ctx.moveTo(x + nx * hw * (1 - 2 * a0), y + ny * hw * (1 - 2 * a0) - 1.2 * s);
+      ctx.lineTo(x + nx * hw * (1 - 2 * Math.min(0.95, a1)), y + ny * hw * (1 - 2 * Math.min(0.95, a1)) + 1.6 * s);
+    }
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+    ctx.lineWidth = 0.5 * s;
+    ctx.beginPath();
+    for (let i = 3; i <= N - 4; i++) {
+      const [x, y] = pt(i / N), [nx, ny] = nrm[i]!;
+      const hw = (3.8 - 3.2 * (i / N)) * s;
+      if (i === 3) ctx.moveTo(x + nx * hw * 0.2, y + ny * hw * 0.2); else ctx.lineTo(x + nx * hw * 0.2, y + ny * hw * 0.2);
+    }
+    ctx.stroke();
+    // Head: an eye with a pale rim, and the small mouth at the tip.
+    const [ex0, ey0] = pt(0.025);
+    ctx.fillStyle = 'rgba(225,232,242,0.9)';
+    ctx.beginPath();
+    ctx.arc(ex0 - hnx * 1.2 * s, ey0, 1.9 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#141b28';
+    ctx.beginPath();
+    ctx.arc(ex0 - hnx * 1.2 * s, ey0, 1.2 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(40,46,60,0.7)';
+    ctx.lineWidth = 0.6 * s;
+    ctx.beginPath();
+    ctx.moveTo(h0x - hnx * 2.6 * s, h0y + 0.5 * s);
+    ctx.quadraticCurveTo(h0x - hnx * 1.6 * s, h0y + 2.2 * s, h0x - hnx * 0.2 * s, h0y + 1.6 * s);
+    ctx.stroke();
     ctx.restore();
   }
 
@@ -1663,19 +1756,45 @@ export function createTwilightScene(seed: number): Scene {
     // Seen at a low angle: the wing span flattened, so it reads as a wide ray gliding past.
     ctx.scale(dir, 0.38 * (Math.abs(tilt) < 0.08 ? 0.08 * Math.sign(tilt || 1) : tilt));
     ctx.fillStyle = tilt < 0 ? 'rgba(200,210,225,0.8)' : 'rgba(12,30,62,0.75)';
-    // From a little below: a diamond of wings that bend at the tips, a whip of a tail.
+    // From a little above: a broad flat head, wings with a full leading edge sweeping back to
+    // pointed tips, a hollowed trailing edge, and the body raised down the middle.
+    const tipY = 50 * s + flap * 14 * s, tipX = -14 * s - Math.abs(flap) * 3 * s;
     ctx.beginPath();
-    ctx.moveTo(30 * s, 0);
-    ctx.quadraticCurveTo(10 * s, -8 * s - flap * 6 * s, -6 * s, -46 * s - flap * 14 * s);
-    ctx.quadraticCurveTo(-12 * s, -14 * s, -26 * s, 0);
-    ctx.quadraticCurveTo(-12 * s, 14 * s, -6 * s, 46 * s + flap * 14 * s);
-    ctx.quadraticCurveTo(10 * s, 8 * s + flap * 6 * s, 30 * s, 0);
+    ctx.moveTo(25 * s, -9 * s);
+    ctx.quadraticCurveTo(20 * s, -36 * s - flap * 8 * s, tipX, -tipY);
+    ctx.quadraticCurveTo(-8 * s, -20 * s, -24 * s, -7 * s);
+    ctx.quadraticCurveTo(-28 * s, 0, -24 * s, 7 * s);
+    ctx.quadraticCurveTo(-8 * s, 20 * s, tipX, tipY);
+    ctx.quadraticCurveTo(20 * s, 36 * s + flap * 8 * s, 25 * s, 9 * s);
+    ctx.quadraticCurveTo(27 * s, 0, 25 * s, -9 * s);
     ctx.fill();
-    // Cephalic fins at the front.
+    // The cephalic fins: two lobes at the corners of the head, rolled forward.
     ctx.beginPath();
-    ctx.ellipse(31 * s, -5 * s, 6 * s, 2 * s, 0.3, 0, Math.PI * 2);
-    ctx.ellipse(31 * s, 5 * s, 6 * s, 2 * s, -0.3, 0, Math.PI * 2);
+    ctx.ellipse(30 * s, -8 * s, 6 * s, 2.2 * s, 0.35, 0, Math.PI * 2);
+    ctx.ellipse(30 * s, 8 * s, 6 * s, 2.2 * s, -0.35, 0, Math.PI * 2);
     ctx.fill();
+    if (tilt > 0) {
+      // The raised body, and the pale chevrons on the shoulders.
+      ctx.fillStyle = 'rgba(40,64,104,0.35)';
+      ctx.beginPath();
+      ctx.ellipse(2 * s, 0, 24 * s, 8 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(205,218,235,0.2)';
+      ctx.beginPath();
+      ctx.ellipse(10 * s, -14 * s, 10 * s, 3.6 * s, -0.7, 0, Math.PI * 2);
+      ctx.ellipse(10 * s, 14 * s, 10 * s, 3.6 * s, 0.7, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      // Rolled over: the gill slits in two rows on the pale belly.
+      ctx.strokeStyle = 'rgba(60,72,96,0.45)';
+      ctx.lineWidth = 0.8 * s;
+      ctx.beginPath();
+      for (let k = 0; k < 5; k++) for (const side of [-1, 1]) {
+        ctx.moveTo((14 - k * 3.5) * s, side * 5 * s);
+        ctx.lineTo((13 - k * 3.5) * s, side * 9 * s);
+      }
+      ctx.stroke();
+    }
     ctx.strokeStyle = 'rgba(12,30,62,0.6)';
     ctx.lineWidth = 1.2 * s;
     ctx.beginPath();
