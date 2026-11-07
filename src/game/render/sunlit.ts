@@ -1075,26 +1075,42 @@ export function createSunlitScene(seed: number): Scene {
       const flap = Math.sin(t * 2.2 + k * 0.6) * 0.3;
       ctx.save();
       ctx.translate(x, y);
+      // Seen from above, swimming toward -x: wings with a full leading edge out to pointed tips
+      // (lifting and falling as they flap), a hollow trailing edge, the head jutting out in front.
+      const tipX = (5 - Math.abs(flap) * 4) * s, tipY = (16 + flap * 10) * s;
       ctx.fillStyle = '#2c3a4a';
       ctx.beginPath();
-      ctx.moveTo(-8 * s, 0);
-      ctx.quadraticCurveTo(0, (-12 - flap * 10) * s, 10 * s, (-14 - flap * 12) * s);
-      ctx.quadraticCurveTo(4 * s, -2 * s, 8 * s, 2 * s);
-      ctx.quadraticCurveTo(4 * s, 2 * s, 10 * s, (14 + flap * 12) * s);
-      ctx.quadraticCurveTo(0, (12 + flap * 10) * s, -8 * s, 0);
+      ctx.moveTo(-6 * s, -2 * s);
+      ctx.quadraticCurveTo(-6 * s, -13 * s - flap * 6 * s, tipX, -tipY);
+      ctx.quadraticCurveTo(2 * s, -6 * s, 9 * s, -1.6 * s);
+      ctx.lineTo(9 * s, 1.6 * s);
+      ctx.quadraticCurveTo(2 * s, 6 * s, tipX, tipY);
+      ctx.quadraticCurveTo(-6 * s, 13 * s + flap * 6 * s, -6 * s, 2 * s);
+      ctx.closePath();
+      // The head: a rounded snout like a duck's bill.
+      ctx.moveTo(-6 * s, 0);
+      ctx.ellipse(-8.5 * s, 0, 3.6 * s, 2.3 * s, 0, 0, Math.PI * 2);
       ctx.fill();
-      // White spots, and the long whip of a tail.
-      ctx.fillStyle = 'rgba(230,240,250,0.8)';
-      for (const [px, py] of [[2, -6], [4, 6], [0, -2], [3, 2]] as const) {
-        ctx.beginPath();
-        ctx.arc(px * s, py * s, 0.8 * s, 0, Math.PI * 2);
-        ctx.fill();
+      // A ridge down the back, a little lighter.
+      ctx.fillStyle = 'rgba(80,100,124,0.5)';
+      ctx.beginPath();
+      ctx.ellipse(1 * s, 0, 7 * s, 2 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // White spots scattered over the wings.
+      ctx.fillStyle = 'rgba(230,240,250,0.85)';
+      ctx.beginPath();
+      for (const [px, py] of [[-2, -5], [1, -9], [3, -4], [-3, -10], [5, -12], [-2, 5], [1, 9], [3, 4], [-3, 10], [5, 12], [4, 0], [-3, 0]] as const) {
+        const yy = py * (tipY / (16 * s));
+        ctx.moveTo((px + 0.7) * s, yy * s);
+        ctx.arc(px * s, yy * s, 0.7 * s, 0, Math.PI * 2);
       }
+      ctx.fill();
+      // The long whip of a tail.
       ctx.strokeStyle = '#2c3a4a';
       ctx.lineWidth = 0.8 * s;
       ctx.beginPath();
-      ctx.moveTo(8 * s, 0);
-      ctx.quadraticCurveTo(20 * s, Math.sin(t * 3 + k) * 3 * s, 32 * s, 0);
+      ctx.moveTo(9 * s, 0);
+      ctx.quadraticCurveTo(24 * s, Math.sin(t * 3 + k) * 3 * s, 42 * s, Math.sin(t * 3 + k + 1) * 2 * s);
       ctx.stroke();
       ctx.restore();
     }
@@ -1292,39 +1308,74 @@ export function createSunlitScene(seed: number): Scene {
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(ang);
-    // A long thin body, snout first (along +x), tail fin at the back.
+    // A long tube of a body, then a longer, thinner snout (along +x) with a small mouth at the tip;
+    // the dorsal and anal fins sit far back by the tail, which is a small rounded fan.
     const len = 46 * s;
-    const g = ctx.createLinearGradient(0, -3 * s, 0, 3 * s);
-    g.addColorStop(0, '#c99a3a');
-    g.addColorStop(1, '#f0d070');
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.moveTo(len * 0.55, 0);
-    ctx.quadraticCurveTo(len * 0.1, -3.4 * s, -len * 0.45, -2 * s);
-    ctx.lineTo(-len * 0.45, 2 * s);
-    ctx.quadraticCurveTo(len * 0.1, 3.4 * s, len * 0.55, 0);
-    ctx.fill();
-    // Thin dark stripes and a pale eye.
-    ctx.strokeStyle = 'rgba(90,60,20,0.5)';
-    ctx.lineWidth = 0.8 * s;
-    for (let i = 0; i < 5; i++) {
-      const xx = -len * 0.35 + i * len * 0.13;
-      ctx.beginPath();
-      ctx.moveTo(xx, -2.6 * s);
-      ctx.lineTo(xx, 2.6 * s);
-      ctx.stroke();
-    }
-    ctx.fillStyle = '#fff6dc';
-    ctx.beginPath();
-    ctx.arc(len * 0.3, -0.6 * s, 1.3 * s, 0, Math.PI * 2);
-    ctx.fill();
-    // Tail fin, fluttering.
+    const wag = Math.sin(t * 4) * s;
     ctx.fillStyle = '#c99a3a';
     ctx.beginPath();
-    ctx.moveTo(-len * 0.45, 0);
-    ctx.lineTo(-len * 0.58, -4 * s + Math.sin(t * 4) * s);
-    ctx.lineTo(-len * 0.58, 4 * s + Math.sin(t * 4) * s);
+    // Fins by the tail, and the tail itself.
+    ctx.moveTo(-len * 0.3, -2.6 * s);
+    ctx.lineTo(-len * 0.4, -5.2 * s + wag * 0.4);
+    ctx.lineTo(-len * 0.42, -2.2 * s);
     ctx.closePath();
+    ctx.moveTo(-len * 0.3, 2.6 * s);
+    ctx.lineTo(-len * 0.4, 5.2 * s + wag * 0.4);
+    ctx.lineTo(-len * 0.42, 2.2 * s);
+    ctx.closePath();
+    // The tail: a small fan, narrow where it joins and rounded at its edge.
+    ctx.moveTo(-len * 0.46, -1.1 * s);
+    ctx.lineTo(-len * 0.58, -3.2 * s + wag);
+    ctx.quadraticCurveTo(-len * 0.63, wag, -len * 0.58, 3.2 * s + wag);
+    ctx.lineTo(-len * 0.46, 1.1 * s);
+    ctx.closePath();
+    ctx.fill();
+    const g = ctx.createLinearGradient(0, -3 * s, 0, 3 * s);
+    g.addColorStop(0, '#b8862e');
+    g.addColorStop(0.5, '#e2b955');
+    g.addColorStop(1, '#f2d888');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(-len * 0.47, -1.6 * s);
+    ctx.quadraticCurveTo(-len * 0.1, -3.6 * s, len * 0.22, -2.4 * s);
+    // The snout: a thin tube, flaring a little at the mouth.
+    ctx.lineTo(len * 0.56, -1.1 * s);
+    ctx.quadraticCurveTo(len * 0.6, 0, len * 0.56, 1.1 * s);
+    ctx.lineTo(len * 0.22, 2.2 * s);
+    ctx.quadraticCurveTo(-len * 0.1, 3.6 * s, -len * 0.47, 1.6 * s);
+    ctx.closePath();
+    ctx.fill();
+    // Pale lines along the body, and a few dark spots toward the tail.
+    ctx.strokeStyle = 'rgba(255,244,210,0.45)';
+    ctx.lineWidth = 0.5 * s;
+    ctx.beginPath();
+    ctx.moveTo(-len * 0.42, -0.9 * s);
+    ctx.quadraticCurveTo(-len * 0.1, -2 * s, len * 0.2, -1.3 * s);
+    ctx.moveTo(-len * 0.42, 0.8 * s);
+    ctx.quadraticCurveTo(-len * 0.1, 1.6 * s, len * 0.2, 1 * s);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(40,26,10,0.55)';
+    ctx.beginPath();
+    for (const fx of [-0.44, -0.38]) { ctx.moveTo(len * fx + 0.9 * s, 0); ctx.arc(len * fx, 0, 0.9 * s, 0, Math.PI * 2); }
+    ctx.fill();
+    // The mouth at the snout's tip, a chin barbel, and a ringed eye where the snout begins.
+    ctx.fillStyle = 'rgba(60,36,12,0.8)';
+    ctx.beginPath();
+    ctx.ellipse(len * 0.585, 0, 0.5 * s, 0.9 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(150,110,40,0.9)';
+    ctx.lineWidth = 0.5 * s;
+    ctx.beginPath();
+    ctx.moveTo(len * 0.5, 1.1 * s);
+    ctx.lineTo(len * 0.47, 2.6 * s);
+    ctx.stroke();
+    ctx.fillStyle = '#fff6dc';
+    ctx.beginPath();
+    ctx.arc(len * 0.2, -0.7 * s, 1.4 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#2a1a08';
+    ctx.beginPath();
+    ctx.arc(len * 0.205, -0.7 * s, 0.8 * s, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }
