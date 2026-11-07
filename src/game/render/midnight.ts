@@ -1345,27 +1345,65 @@ export function createMidnightScene(seed: number): Scene {
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(dir, 1);
-    ctx.fillStyle = '#5a1e2a';
+    // A deep red body under a big head, the spiny dorsal and the anal fin long and low, a forked
+    // tail; the eye takes up half the head, a dark lens ringed in silver-red, catching the light.
+    const wag = Math.sin(t * 4) * 1.2 * s;
+    ctx.fillStyle = '#4a1822';
     ctx.beginPath();
-    ctx.ellipse(0, 0, 18 * s, 9 * s, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(-16 * s, 0);
-    ctx.lineTo(-26 * s, -7 * s);
-    ctx.lineTo(-26 * s, 7 * s);
+    ctx.moveTo(8 * s, -8 * s);
+    for (let q = 0; q <= 8; q++) {
+      const f = q / 8, px = 8 * s - f * 22 * s, base = -8.6 * s + f * 3 * s;
+      ctx.lineTo(px, base - (q % 2 ? 3.4 : 1.2) * s * (1 - f * 0.4));
+    }
+    ctx.lineTo(-14 * s, -4 * s);
+    ctx.closePath();
+    ctx.moveTo(-2 * s, 7.6 * s);
+    ctx.quadraticCurveTo(-9 * s, 11 * s, -15 * s, 4 * s);
+    ctx.lineTo(-12 * s, 3 * s);
+    ctx.closePath();
+    ctx.moveTo(-16 * s, -1.6 * s);
+    ctx.lineTo(-26 * s, -8 * s + wag);
+    ctx.quadraticCurveTo(-22 * s, wag, -26 * s, 8 * s + wag);
+    ctx.lineTo(-16 * s, 1.6 * s);
     ctx.closePath();
     ctx.fill();
-    // The eye: huge, catching the reef's light.
-    ctx.fillStyle = '#d8e8ff';
+    const g = ctx.createLinearGradient(0, -9 * s, 0, 9 * s);
+    g.addColorStop(0, '#6a2232');
+    g.addColorStop(0.6, '#8a2c3a');
+    g.addColorStop(1, '#a8505a');
+    ctx.fillStyle = g;
     ctx.beginPath();
-    ctx.arc(9 * s, -1 * s, 6 * s, 0, Math.PI * 2);
+    ctx.moveTo(17 * s, 1 * s);
+    ctx.bezierCurveTo(16 * s, -8 * s, 4 * s, -9.6 * s, -6 * s, -7 * s);
+    ctx.quadraticCurveTo(-13 * s, -4 * s, -16.5 * s, -1.4 * s);
+    ctx.lineTo(-16.5 * s, 1.4 * s);
+    ctx.quadraticCurveTo(-13 * s, 4.4 * s, -6 * s, 7.4 * s);
+    ctx.bezierCurveTo(4 * s, 9.6 * s, 15 * s, 8 * s, 17 * s, 1 * s);
     ctx.fill();
-    ctx.fillStyle = '#081018';
+    // Gill cover, and the upturned mouth.
+    ctx.strokeStyle = 'rgba(30,8,12,0.55)';
+    ctx.lineWidth = 0.7 * s;
     ctx.beginPath();
-    ctx.arc(10 * s, -1 * s, 4 * s, 0, Math.PI * 2);
+    ctx.moveTo(3 * s, -6.6 * s);
+    ctx.quadraticCurveTo(0.6 * s, 0, 3 * s, 6.8 * s);
+    ctx.moveTo(17 * s, 1 * s);
+    ctx.lineTo(13.5 * s, 3.4 * s);
+    ctx.stroke();
+    // The eye: huge, a dark lens ringed in silver-red, catching the reef's light.
+    ctx.fillStyle = '#c8a0a4';
+    ctx.beginPath();
+    ctx.arc(9.5 * s, -1 * s, 6 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#0a0a12';
+    ctx.beginPath();
+    ctx.arc(10 * s, -1 * s, 4.6 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(200,230,255,0.85)';
+    ctx.beginPath();
+    ctx.arc(8.6 * s, -2.6 * s, 1.1 * s, 0, Math.PI * 2);
     ctx.fill();
     ctx.globalCompositeOperation = 'lighter';
-    glow(ctx, 10 * s, -1 * s, 12 * s, '140,220,255', 0.35);
+    glow(ctx, 10 * s, -1 * s, 12 * s, '140,220,255', 0.3);
     ctx.restore();
   }
 
