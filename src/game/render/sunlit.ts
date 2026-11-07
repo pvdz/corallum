@@ -1830,11 +1830,44 @@ export function createSunlitScene(seed: number): Scene {
           ctx.stroke();
         }
       } else {
-        for (let k = 0; k < 3; k++) {
+        // Table coral: one wide flat top on a short thick stalk, seen nearly edge-on: its rim wavy,
+        // its upper face lit, a band of shadow under the table, and the stalk in that shadow.
+        const top = y - r * 0.6, rw = r * 1.05, th = r * 0.1;
+        ctx.fillStyle = `hsl(${c.hue},30%,28%)`;
+        ctx.beginPath();
+        ctx.moveTo(x - 5 * s * c.size, y);
+        ctx.quadraticCurveTo(x - 3 * s, top + th, x - 7 * s * c.size, top + th);
+        ctx.lineTo(x + 7 * s * c.size, top + th);
+        ctx.quadraticCurveTo(x + 3 * s, top + th, x + 5 * s * c.size, y);
+        ctx.closePath();
+        ctx.fill();
+        const rim = (dy: number) => {
           ctx.beginPath();
-          ctx.ellipse(x + (k - 1) * 4 * s, y - k * r * 0.35, r * (1 - k * 0.2), r * 0.12, 0, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.moveTo(x - rw, top + dy);
+          for (let q = 1; q <= 12; q++) {
+            const f = q / 12, ex = x - rw + f * rw * 2;
+            ctx.lineTo(ex, top + dy + Math.sin(f * 9 + c.u * 20) * th * 0.5 - Math.sin(f * Math.PI) * th * 0.8);
+          }
+        };
+        // Underside: a dark band.
+        rim(th * 0.6);
+        ctx.lineTo(x + rw * 0.8, top + th * 2.2);
+        ctx.lineTo(x - rw * 0.8, top + th * 2.2);
+        ctx.closePath();
+        ctx.fillStyle = `hsl(${c.hue},35%,30%)`;
+        ctx.fill();
+        // The lit upper face, a thin lens.
+        const g = ctx.createLinearGradient(0, top - th * 2, 0, top + th);
+        g.addColorStop(0, `hsl(${c.hue},60%,74%)`);
+        g.addColorStop(1, `hsl(${c.hue},45%,50%)`);
+        ctx.fillStyle = g;
+        rim(0);
+        for (let q = 12; q >= 0; q--) {
+          const f = q / 12, ex = x - rw + f * rw * 2;
+          ctx.lineTo(ex, top + th * 0.6 + Math.sin(f * 9 + c.u * 20) * th * 0.5);
         }
+        ctx.closePath();
+        ctx.fill();
       }
     }
   }
