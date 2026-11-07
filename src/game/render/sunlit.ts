@@ -1581,40 +1581,96 @@ export function createSunlitScene(seed: number): Scene {
     ctx.translate(x, y);
     ctx.scale(dir, 1);
     ctx.rotate(dip * 0.25);
-    // Flippers behind the shell, then the shell, then the head.
+    // Flippers behind the shell: the long front one curved like a wing, a small paddle behind.
     ctx.fillStyle = '#5c7a4a';
-    for (const [fx, fy, a] of [[8, 6, 0.6 + stroke * 0.5], [-10, 6, -0.4 - stroke * 0.3]] as const) {
-      ctx.save();
-      ctx.translate(fx * s, fy * s);
-      ctx.rotate(a);
-      ctx.beginPath();
-      ctx.ellipse(0, 6 * s, 3 * s, 9 * s, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
-    const shell = ctx.createLinearGradient(0, -12 * s, 0, 8 * s);
-    shell.addColorStop(0, '#8a6a3c');
+    ctx.save();
+    ctx.translate(9 * s, 3 * s);
+    ctx.rotate(0.5 + stroke * 0.5);
+    ctx.beginPath();
+    ctx.moveTo(0, -2 * s);
+    ctx.quadraticCurveTo(6 * s, 6 * s, 2 * s, 18 * s);
+    ctx.quadraticCurveTo(-1 * s, 10 * s, -3 * s, 1 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(40,58,32,0.6)';
+    ctx.lineWidth = 0.6 * s;
+    ctx.beginPath();
+    ctx.moveTo(1 * s, 2 * s);
+    ctx.quadraticCurveTo(3.5 * s, 8 * s, 2 * s, 15 * s);
+    ctx.stroke();
+    ctx.restore();
+    ctx.save();
+    ctx.translate(-12 * s, 4 * s);
+    ctx.rotate(-0.5 - stroke * 0.3);
+    ctx.beginPath();
+    ctx.ellipse(0, 4 * s, 2.6 * s, 6 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    // The head on its neck: a rounded skull, a hooked beak, a pale throat and a ringed eye.
+    ctx.fillStyle = '#6b8a55';
+    ctx.beginPath();
+    ctx.moveTo(14 * s, -3 * s);
+    ctx.quadraticCurveTo(19 * s, -6 * s, 23.5 * s, -3.6 * s);
+    ctx.quadraticCurveTo(26.5 * s, -2 * s, 26 * s, 0.4 * s);
+    ctx.quadraticCurveTo(24 * s, 2.6 * s, 20 * s, 2 * s);
+    ctx.quadraticCurveTo(17 * s, 3 * s, 14 * s, 2.4 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = 'rgba(214,206,160,0.55)';
+    ctx.beginPath();
+    ctx.ellipse(20.5 * s, 1.2 * s, 4 * s, 1 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(36,50,28,0.7)';
+    ctx.lineWidth = 0.55 * s;
+    ctx.beginPath();
+    ctx.moveTo(26 * s, 0.4 * s);
+    ctx.quadraticCurveTo(24.5 * s, 0.2 * s, 23.2 * s, 0.8 * s);
+    ctx.moveTo(19.5 * s, -4.6 * s);
+    ctx.quadraticCurveTo(20.5 * s, -2.4 * s, 22.5 * s, -3.4 * s);
+    ctx.stroke();
+    ctx.fillStyle = '#e8e2c0';
+    ctx.beginPath();
+    ctx.arc(22.6 * s, -1.9 * s, 1.1 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#141414';
+    ctx.beginPath();
+    ctx.arc(22.8 * s, -1.9 * s, 0.65 * s, 0, Math.PI * 2);
+    ctx.fill();
+    // The shell, domed, its lower edge a pale rim of small marginal plates.
+    const shell = ctx.createLinearGradient(0, -12 * s, 0, 6 * s);
+    shell.addColorStop(0, '#9a7844');
     shell.addColorStop(1, '#4f3c22');
     ctx.fillStyle = shell;
     ctx.beginPath();
-    ctx.ellipse(0, 0, 18 * s, 9 * s, 0, Math.PI, 0);
-    ctx.quadraticCurveTo(0, 6 * s, -18 * s, 0);
+    ctx.moveTo(-19 * s, 1.5 * s);
+    ctx.bezierCurveTo(-17 * s, -9 * s, 6 * s, -13 * s, 17 * s, -1.5 * s);
+    ctx.quadraticCurveTo(0, 4.5 * s, -19 * s, 1.5 * s);
     ctx.fill();
-    // Scutes.
-    ctx.strokeStyle = 'rgba(40,28,14,0.6)';
-    ctx.lineWidth = 0.8 * s;
-    for (const sx of [-8, 0, 8]) {
-      ctx.beginPath();
-      ctx.ellipse(sx * s, -4 * s, 4 * s, 3 * s, 0, 0, Math.PI * 2);
-      ctx.stroke();
+    ctx.strokeStyle = 'rgba(206,176,120,0.55)';
+    ctx.lineWidth = 1.6 * s;
+    ctx.beginPath();
+    ctx.moveTo(-18 * s, 1.2 * s);
+    ctx.quadraticCurveTo(0, 4 * s, 16.5 * s, -1.2 * s);
+    ctx.stroke();
+    // Plates: a row along the top and a row of side plates under it, their seams dark.
+    ctx.strokeStyle = 'rgba(40,28,14,0.55)';
+    ctx.lineWidth = 0.7 * s;
+    ctx.beginPath();
+    ctx.moveTo(-16 * s, -2 * s);
+    ctx.bezierCurveTo(-12 * s, -7 * s, 6 * s, -9 * s, 14 * s, -2.5 * s);
+    for (const [xb, xt] of [[-10, -8.5], [-2, -1.5], [6, 5.5]] as const) {
+      ctx.moveTo(xb * s, 2.4 * s);
+      ctx.quadraticCurveTo((xb + xt) * 0.5 * s - 0.6 * s, -2 * s, xt * s, -6.6 * s);
     }
-    ctx.fillStyle = '#6b8a55';
+    for (const [xb, xt] of [[-13, -12], [-5.5, -5], [2, 2], [10, 9]] as const) {
+      ctx.moveTo(xb * s, -4.6 * s + Math.abs(xb) * 0.12 * s);
+      ctx.lineTo(xt * s, -8.6 * s + Math.abs(xt) * 0.16 * s);
+    }
+    ctx.stroke();
+    // A little light on the crown of the shell.
+    ctx.fillStyle = 'rgba(255,230,180,0.12)';
     ctx.beginPath();
-    ctx.ellipse(21 * s, -1 * s, 5 * s, 3.5 * s, 0.2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#1a1a1a';
-    ctx.beginPath();
-    ctx.arc(23 * s, -2 * s, 0.9 * s, 0, Math.PI * 2);
+    ctx.ellipse(-1 * s, -7 * s, 9 * s, 2 * s, -0.05, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }
