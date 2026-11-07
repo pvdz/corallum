@@ -1171,3 +1171,4 @@ date, what landed, what is half-done, what's next.
 - The sea snake's tail paddle was a pale oval with a black cap (an eyeball): a flat leaf of a paddle, wider than the body, ringed in the same bands.
 - The young Rasp asleep at the reef's foot (after "A young Rasp, alone") is a small parrotfish like the rest, its eye closed under a lid, its sleeping bubbles kept.
 - The octopus's eye was a white disc with a black bar (a no-entry sign): a golden iris under a raised lid of skin, its pupil a dark bar with rounded ends.
+- Whole audit sweep after the choice folding and the panel changes (9 viewports × plain/Larger text/scientific × 8 points): only the 2 known dim findings. Console-error sweeps desktop and mobile clean; fuzz at the Twilight (phone, 797 actions) and Sunlit (desktop, 367) clean after the redraws.
