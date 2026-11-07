@@ -2374,6 +2374,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           x.btn.disabled = true;
           x.eta.textContent = '';
           x.root.classList.add('maxed');
+          x.root.classList.remove('ready');
           // Built in full: to the end of the list, one line, like a finished upgrade.
           if (!x.root.classList.contains('done')) {
             x.root.classList.add('done');
@@ -2451,6 +2452,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           c.btn.disabled = true;
           c.eta.textContent = waiting ? (u.id === 'daughter' ? GATE_TEXT.daughter : GATE_TEXT.lonely) : gate && gate !== 'surface' ? GATE_TEXT[gate] : '';
           c.root.classList.add('maxed');
+          c.root.classList.remove('ready');
           // Finished for good (not just held back by a story gate): to the end of the list, one line.
           if (u.id !== 'skeleton' && !waiting && !c.root.classList.contains('done')) {
             c.root.classList.add('done');
@@ -2609,6 +2611,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
             c.cost.textContent = 'Complete';
             c.btn.disabled = true;
             c.root.classList.add('maxed');
+            c.root.classList.remove('ready');
             continue;
           }
           const price = traitCost(s, tr.id);
