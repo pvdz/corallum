@@ -1284,8 +1284,12 @@ section.shoals > header .level { white-space: normal; text-align: right; margin-
   html.big .stocks.many[data-n='4'] .stocks-minor, html.big .stocks.many[data-n='7'] .stocks-minor { grid-column: span 2; }
 }
 @media (min-width: 800px) and (max-height: 520px), (min-width: 600px) and (max-height: 500px) {
+  /* Three to a row: the small line takes what the last row leaves. */
   .stocks-minor.fill { grid-column: 1 / -1; }
+  .stocks[data-n='1'] .stocks-minor, .stocks[data-n='4'] .stocks-minor, .stocks[data-n='7'] .stocks-minor { grid-column: span 2; }
+  .stocks[data-n='2'] .stocks-minor, .stocks[data-n='5'] .stocks-minor { grid-column: span 1; }
 }
 @media (min-width: 600px) and (max-width: 799px) and (max-height: 500px) {
-  .stocks-minor.fill { grid-column: auto; }
+  .stocks .stocks-minor { grid-column: 1 / -1; }
+  .stocks .stocks-minor.fill { grid-column: auto; }
 }
