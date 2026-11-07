@@ -44,13 +44,10 @@ export function speck(ctx: CanvasRenderingContext2D, x: number, y: number, d: nu
   ctx.fill();
 }
 
+/** A flourish's spreading ring: a soft band about five line widths deep, brightest at its edge. */
 export function ring(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, rgb: string, a: number, lw: number): void {
   if (!(r > 0) || a <= 0.002) return;
-  ctx.strokeStyle = `rgba(${rgb},${a})`;
-  ctx.lineWidth = lw;
-  ctx.beginPath();
-  ctx.arc(x, y, r, 0, Math.PI * 2);
-  ctx.stroke();
+  softRing(ctx, x, y, r + lw, r + lw, lw * 5, rgb, Math.min(1, a * 1.1));
 }
 
 /** The moon at a phase (0 new, 0.5 full): a dark disc with the lit part and its terminator. */
