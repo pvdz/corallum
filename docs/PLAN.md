@@ -191,6 +191,8 @@ Tick items as they land; keep this list honest. Add items freely.
 
 - [x] art and platform pass (2026-11-03 night): every creature, feast, event and floor piece looked at 3–4× zoom; crude shapes redrawn (the release's spawn as pink beads, not white glows; old stone, moray, garden eels, clam, seahorse, cuttlefish fin, yeti crabs, petrels, sea spider, isopod, comb jellies, glass shrimp, bristlemouths, barreleye, dolphins, stranded/tangled fish, sargassum, krill, whale fall, moon jellies, sun terrace, gritty tide, the Breach's glitter, dawn white-out); first flurry after the opening card; Back closes a card; photo flash + share sheet; release button in view at the Spawning Moon; 320 px phones and 1366×768 laptops audited; journal portraits for low creatures; creature labels not re-opened by sweeping; haul lines stack; loading motes. Perf: ~1–2 ms less per frame (polyp halos, tentacle batching)
 
+- [x] panel and art pass (2026-11-07): one waiting choice open at a time (the newest, or one that runs out: a wish, a signal, a spawning); the side panel fades into the sea instead of a wall; with a mouse, the list recedes while the player watches; the weather card and Ossel's ask lose their outlines; lineage gifts stay rows; the Bands list keeps its order after a reload; finished cards not boxed as buyable. Art at 3× close-ups: the Rasp as parrotfish (and their elder, sleepers and far herd), oarfish, manta, eagle rays, trumpetfish, cuttlefish, turtle, damselfish, chimaera, rattail, larvacean, giant squid, tree worms, the spawning pool, layered rain, light shoals as a loose column
+
 ### M0 Scaffold
 - [x] docs, CLAUDE.md, folders, package.json, tsconfig, .gitignore
 - [x] server.ts with on-the-fly type stripping
