@@ -56,19 +56,40 @@ export function drawGarden(ctx: CanvasRenderingContext2D, cx: number, stage: num
 /** The spawning pool: a pale rim of stone just under the surface around the crown. */
 export function drawPool(ctx: CanvasRenderingContext2D, cx: number, waterY: number, stage: number, s: number, t: number): void {
   if (stage <= 0) return;
-  const rw = [0, 60, 110, 160][stage]! * s;
+  const rw = [0, 60, 110, 160][stage]! * s, rh = rw * 0.12;
+  // Wholly under the surface: the far side of the ring a little below the waterline.
+  const cy = waterY + rh + 6 * s;
   ctx.save();
-  ctx.strokeStyle = 'rgba(120,105,90,0.55)';
-  ctx.lineWidth = (2 + stage) * s;
-  ctx.beginPath();
-  ctx.ellipse(cx, waterY + 14 * s, rw, rw * 0.12, 0, 0, Math.PI * 2);
-  ctx.stroke();
   // Still water inside: a soft warm sheen.
   ctx.globalCompositeOperation = 'lighter';
   ctx.fillStyle = `rgba(255,190,200,${0.025 + 0.01 * Math.sin(t * 0.6)})`;
   ctx.beginPath();
-  ctx.ellipse(cx, waterY + 14 * s, rw * 0.95, rw * 0.1, 0, 0, Math.PI * 2);
+  ctx.ellipse(cx, cy, rw * 0.95, rh * 0.85, 0, 0, Math.PI * 2);
   ctx.fill();
+  ctx.globalCompositeOperation = 'source-over';
+  // The rim: a low band of stone with uneven stones heaped along it; the far side seen faintly
+  // through the water, the near side darker and nearer.
+  const n = 9 + stage * 6;
+  for (const near of [false, true]) {
+    ctx.strokeStyle = near ? 'rgba(96,84,74,0.6)' : 'rgba(130,120,112,0.28)';
+    ctx.lineWidth = (2 + stage) * s * (near ? 1 : 0.7);
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, rw, rh, 0, near ? 0 : Math.PI, near ? Math.PI : Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = near ? 'rgba(104,92,80,0.75)' : 'rgba(136,126,116,0.3)';
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const k = Math.sin(i * 12.9898 + stage) * 43758.5453;
+      const f = k - Math.floor(k);
+      const a = ((i + f * 0.6) / n) * Math.PI * 2;
+      if ((Math.sin(a) > 0) !== near) continue;
+      const x = cx + Math.cos(a) * rw, y = cy + Math.sin(a) * rh - (1 + stage * 0.5) * s;
+      const sz = (2.5 + stage * 0.8 + f * 3.5) * s * (near ? 1 : 0.75);
+      ctx.moveTo(x + sz, y);
+      ctx.ellipse(x, y, sz, sz * (0.45 + f * 0.25), (f - 0.5) * 0.5, 0, Math.PI * 2);
+    }
+    ctx.fill();
+  }
   ctx.restore();
 }
 
