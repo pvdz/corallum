@@ -370,40 +370,104 @@ export function createBreachScene(seed: number): Scene {
       ctx.clip();
       ctx.translate(x0 + k * 30 * s, wy + 20 * s - rise);
       ctx.rotate(ang);
+      // A humpback, head first (+x): a flat rostrum studded with knobs, a small hump of a dorsal
+      // fin, the flukes; a pale grooved throat; the long white flipper out like a wing.
       ctx.fillStyle = '#1c2230';
       ctx.beginPath();
-      ctx.ellipse(0, 0, 40 * s, 11 * s, 0, 0, Math.PI * 2);
+      ctx.moveTo(44 * s, 1 * s);
+      ctx.quadraticCurveTo(36 * s, -6 * s, 26 * s, -9 * s);
+      ctx.bezierCurveTo(10 * s, -13 * s, -16 * s, -10 * s, -40 * s, -2.6 * s);
+      ctx.lineTo(-47 * s, -13 * s);
+      ctx.quadraticCurveTo(-49 * s, -5 * s, -51 * s, 0);
+      ctx.quadraticCurveTo(-49 * s, 5 * s, -47 * s, 13 * s);
+      ctx.lineTo(-40 * s, 2.6 * s);
+      ctx.bezierCurveTo(-18 * s, 10 * s, 6 * s, 13.5 * s, 26 * s, 10 * s);
+      ctx.quadraticCurveTo(38 * s, 7 * s, 44 * s, 1 * s);
+      // The dorsal hump.
+      ctx.moveTo(-14 * s, -9.6 * s);
+      ctx.quadraticCurveTo(-19 * s, -14 * s, -24 * s, -8.4 * s);
       ctx.fill();
-      // Its long pale flipper, out like a wing.
-      ctx.fillStyle = '#c8ccd6';
+      ctx.fillStyle = 'rgba(196,202,214,0.9)';
       ctx.beginPath();
-      ctx.moveTo(8 * s, 4 * s);
-      ctx.quadraticCurveTo(0, 30 * s, -10 * s, 28 * s);
-      ctx.quadraticCurveTo(-2 * s, 14 * s, 0, 4 * s);
+      ctx.moveTo(42 * s, 2.6 * s);
+      ctx.quadraticCurveTo(36 * s, 7 * s, 24 * s, 9.6 * s);
+      ctx.quadraticCurveTo(8 * s, 12 * s, -6 * s, 9 * s);
+      ctx.quadraticCurveTo(14 * s, 5.4 * s, 42 * s, 2.6 * s);
       ctx.fill();
-      // Pale throat grooves.
-      ctx.strokeStyle = 'rgba(200,205,215,0.6)';
-      ctx.lineWidth = 1 * s;
-      for (let q = 0; q < 4; q++) {
-        ctx.beginPath();
-        ctx.moveTo(30 * s, (2 + q * 1.6) * s);
-        ctx.lineTo(8 * s, (4 + q * 1.8) * s);
-        ctx.stroke();
+      ctx.strokeStyle = 'rgba(70,80,100,0.55)';
+      ctx.lineWidth = 0.7 * s;
+      ctx.beginPath();
+      for (let q = 0; q < 6; q++) {
+        const f = q / 5;
+        ctx.moveTo(40 * s, (3 + f * 0.8) * s);
+        ctx.quadraticCurveTo(18 * s, (6 + f * 3) * s, -4 * s, (8.6 + f * 0.2) * s);
       }
+      ctx.stroke();
+      // Knobs along the rostrum, and the eye.
+      ctx.fillStyle = 'rgba(120,130,150,0.8)';
+      ctx.beginPath();
+      for (const [kx, ky] of [[40, -1.6], [36, -3.6], [32, -5.6], [37.5, 0.6], [33, -1.8]] as const) {
+        ctx.moveTo((kx + 0.9) * s, ky * s);
+        ctx.arc(kx * s, ky * s, 0.9 * s, 0, Math.PI * 2);
+      }
+      ctx.fill();
+      ctx.fillStyle = '#05070c';
+      ctx.beginPath();
+      ctx.arc(24 * s, 1.6 * s, 1.1 * s, 0, Math.PI * 2);
+      ctx.fill();
+      // The flipper, a third of the body long, its leading edge knobbled.
+      ctx.fillStyle = '#d4d8e0';
+      ctx.beginPath();
+      ctx.moveTo(14 * s, 8 * s);
+      for (let q = 0; q <= 5; q++) {
+        const f = q / 5;
+        const lx = 14 * s - f * 30 * s, ly = 8 * s + f * 28 * s;
+        ctx.quadraticCurveTo(lx + 2.4 * s, ly - 0.6 * s, lx - 0.4 * s, ly + 1.2 * s);
+      }
+      ctx.quadraticCurveTo(-12 * s, 30 * s, 4 * s, 9.6 * s);
+      ctx.closePath();
+      ctx.fill();
       ctx.restore();
     }
-    // The splash: a white hill of water rising and falling, and rings spreading.
+    // The splash: a mound of foam rising and falling where it went in, spray flung out of it and
+    // falling back, and rings spreading.
     const sp = (p - 2.6) / 6;
     if (sp > 0 && sp < 1) {
       ctx.save();
-      ctx.fillStyle = `rgba(235,240,250,${0.8 * (1 - sp)})`;
-      for (let q = 0; q < 14; q++) {
-        const a = Math.PI * (0.1 + 0.8 * (q / 13));
-        const hgt = Math.sin(sp * Math.PI) * (40 + (q % 3) * 14) * s;
-        ctx.beginPath();
-        ctx.arc(x0 + 40 * s + Math.cos(a) * 34 * s * sp, wy - Math.sin(a) * hgt, (3 + (q % 4)) * s, 0, Math.PI * 2);
-        ctx.fill();
+      const cx2 = x0 + 40 * s, lift = Math.sin(sp * Math.PI);
+      // The mound: a ragged crest of white water, jets standing out of it as it rises.
+      const mw = (14 + sp * 26) * s, mh = (4 + lift * 22) * s;
+      ctx.fillStyle = `rgba(235,240,250,${0.7 * (1 - sp)})`;
+      ctx.beginPath();
+      const crest: [number, number][] = [];
+      for (let q = 0; q <= 12; q++) {
+        const a = Math.PI * (1 - q / 12);
+        const rag = 1 + 0.12 * Math.sin(q * 2.7 + sp * 9) + (q % 3 === 1 ? 0.18 * lift : 0);
+        crest.push([cx2 + Math.cos(a) * mw, wy + 1 * s - Math.sin(a) * mh * rag]);
       }
+      // Smooth through the crest's points (each curve ends half way to the next point).
+      ctx.moveTo(crest[0]![0], crest[0]![1]);
+      for (let q = 1; q < crest.length - 1; q++) {
+        const [ax, ay] = crest[q]!, [bx, by] = crest[q + 1]!;
+        ctx.quadraticCurveTo(ax, ay, (ax + bx) / 2, (ay + by) / 2);
+      }
+      ctx.lineTo(crest[crest.length - 1]![0], crest[crest.length - 1]![1]);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = `rgba(240,244,252,${0.85 * (1 - sp)})`;
+      ctx.beginPath();
+      for (let q = 0; q < 34; q++) {
+        const f = Math.sin(q * 12.9898) * 43758.5453, r1 = f - Math.floor(f);
+        const g = Math.sin(q * 78.233) * 12543.21, r2 = g - Math.floor(g);
+        const vx = (r1 - 0.5) * 90 * s, vy = (60 + r2 * 70) * s;
+        const tt = sp * 1.4;
+        const dx = cx2 + vx * tt, dy = wy - vy * tt + 120 * s * tt * tt;
+        if (dy > wy) continue;
+        const r = (0.8 + r2 * 1.8) * s;
+        ctx.moveTo(dx + r, dy);
+        ctx.arc(dx, dy, r, 0, Math.PI * 2);
+      }
+      ctx.fill();
       ctx.strokeStyle = `rgba(220,230,250,${0.5 * (1 - sp)})`;
       ctx.lineWidth = 1.5 * s;
       ctx.beginPath();
