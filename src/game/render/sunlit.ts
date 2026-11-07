@@ -699,23 +699,56 @@ export function createSunlitScene(seed: number): Scene {
     const x = focus.x - focus.w * 0.1 + u * focus.w * 1.2, y = floorY(u) + 2 * s;
     sight('clownfish');
     spot('clownfish', x, y - 20 * s, 34 * s);
-    // Tentacles: a fat swaying fountain.
+    // A bubble-tip anemone: a short red column, then a fountain of tentacles, a
+    // darker back row and a lighter front one, each swelling to a bulb near its end with a small
+    // magenta tip. One path per layer and part.
+    ctx.fillStyle = '#a54a58';
+    ctx.beginPath();
+    ctx.moveTo(x - 8 * s, y - 3 * s);
+    ctx.quadraticCurveTo(x - 9 * s, y - 5 * s, x - 6 * s, y - 6 * s);
+    ctx.lineTo(x + 6 * s, y - 6 * s);
+    ctx.quadraticCurveTo(x + 9 * s, y - 5 * s, x + 8 * s, y - 3 * s);
+    ctx.closePath();
+    ctx.fill();
     ctx.lineCap = 'round';
-    for (let k = 0; k < 26; k++) {
-      const a = -Math.PI / 2 + (k / 25 - 0.5) * 2.4;
-      const len = (18 + (k % 4) * 3) * s;
-      const sway = Math.sin(t * 1.2 + k * 0.4) * 0.12;
-      ctx.strokeStyle = k % 2 ? 'rgba(170,220,120,0.9)' : 'rgba(200,235,150,0.9)';
-      ctx.lineWidth = 3 * s;
-      ctx.beginPath();
-      ctx.moveTo(x, y - 4 * s);
-      ctx.quadraticCurveTo(x + Math.cos(a) * len * 0.5, y - 4 * s + Math.sin(a) * len * 0.6,
-        x + Math.cos(a + sway) * len, y - 4 * s + Math.sin(a + sway) * len);
-      ctx.stroke();
-      ctx.fillStyle = 'rgba(240,120,200,0.9)';
-      ctx.beginPath();
-      ctx.arc(x + Math.cos(a + sway) * len, y - 4 * s + Math.sin(a + sway) * len, 1.6 * s, 0, Math.PI * 2);
-      ctx.fill();
+    for (const back of [true, false]) {
+      const stems = new Path2D(), bulbs = new Path2D(), tips = new Path2D(), shine = new Path2D();
+      const n = back ? 16 : 14;
+      for (let j = 0; j < n; j++) {
+        const k = j * 2 + (back ? 0 : 1);
+        const a = -Math.PI / 2 + (j / (n - 1) - 0.5) * (back ? 2.3 : 2.0);
+        const len = (back ? 21 : 17) * s + (k % 4) * 2.5 * s;
+        const sway = Math.sin(t * 1.2 + k * 0.4) * 0.12;
+        const ox = x + Math.cos(a) * 3 * s, oy = y - 5 * s;
+        const cx2 = ox + Math.cos(a) * len * 0.5, cy2 = oy + Math.sin(a) * len * 0.6;
+        const ex = ox + Math.cos(a + sway) * len, ey = oy + Math.sin(a + sway) * len;
+        stems.moveTo(ox, oy);
+        stems.quadraticCurveTo(cx2, cy2, ex, ey);
+        // The bulb, three quarters along, lying along the tentacle.
+        const q = 0.78, iq = 1 - q;
+        const bx = iq * iq * ox + 2 * iq * q * cx2 + q * q * ex, by = iq * iq * oy + 2 * iq * q * cy2 + q * q * ey;
+        const dir = Math.atan2(ey - by, ex - bx);
+        bulbs.moveTo(bx + Math.cos(dir) * 3 * s, by + Math.sin(dir) * 3 * s);
+        bulbs.ellipse(bx, by, 3 * s, 2.1 * s, dir, 0, Math.PI * 2);
+        tips.moveTo(ex + 1.1 * s, ey);
+        tips.arc(ex, ey, 1.1 * s, 0, Math.PI * 2);
+        if (!back) {
+          shine.moveTo(bx - 0.8 * s, by - 1 * s);
+          shine.lineTo(bx + Math.cos(dir) * 1.6 * s - 0.8 * s, by + Math.sin(dir) * 1.6 * s - 1 * s);
+        }
+      }
+      ctx.strokeStyle = back ? 'rgba(122,170,96,0.95)' : 'rgba(168,214,124,0.95)';
+      ctx.lineWidth = 2.8 * s;
+      ctx.stroke(stems);
+      ctx.fillStyle = back ? 'rgba(140,186,110,0.97)' : 'rgba(194,230,150,0.97)';
+      ctx.fill(bulbs);
+      ctx.fillStyle = back ? 'rgba(196,96,160,0.9)' : 'rgba(236,120,190,0.95)';
+      ctx.fill(tips);
+      if (!back) {
+        ctx.strokeStyle = 'rgba(245,255,225,0.45)';
+        ctx.lineWidth = 0.8 * s;
+        ctx.stroke(shine);
+      }
     }
     // Touched, they dive deep into the tentacles and come out again a little later.
     const touch = startled('clownfish', t);
