@@ -1301,16 +1301,51 @@ export function createSunlitScene(seed: number): Scene {
       g.addColorStop(0.5, `hsl(${(205 + hue * 0.1) % 360},85%,55%)`);
       g.addColorStop(1, `hsl(${(150 + hue * 0.1) % 360},70%,42%)`);
       ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.ellipse(x, y - 12 * s, wdt * 0.9, Math.max(0.5, gap * 0.75 + 1 * s), 0, 0, Math.PI * 2);
-      ctx.fill();
-      // Glittering spots: the gardens of light in its skin.
-      for (let i = 0; i < 12; i++) {
-        const a = 0.5 + 0.5 * Math.sin(t * 2.3 + i * 1.9);
-        ctx.fillStyle = `rgba(200,255,250,${0.7 * a * open})`;
+      // The mantle swells out over the lips, its edge ruffled.
+      const mh = Math.max(0.5, gap * 0.75 + 1 * s), my = y - 12 * s;
+      const mantle = () => {
         ctx.beginPath();
-        ctx.arc(x - wdt * 0.75 + (i / 11) * wdt * 1.5, y - 12 * s + Math.sin(i * 2.7) * gap * 0.35, 1.2 * s, 0, Math.PI * 2);
+        for (let i = 0; i <= 40; i++) {
+          const a = (i / 40) * Math.PI * 2;
+          const ruff = 1 + 0.05 * Math.sin(a * 14 + t * 0.6) * open * Math.abs(Math.sin(a));
+          const px = x + Math.cos(a) * wdt * 0.92 * ruff, py = my + Math.sin(a) * mh * ruff;
+          if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+      };
+      mantle();
+      ctx.fill();
+      ctx.save();
+      mantle();
+      ctx.clip();
+      // Wavy darker bands across it, and pale gardens of light glittering in its skin.
+      ctx.strokeStyle = `rgba(10,40,90,${0.35 * open})`;
+      ctx.lineWidth = 1.3 * s;
+      ctx.beginPath();
+      for (let k = -1; k <= 1; k++) {
+        for (let q = 0; q <= 16; q++) {
+          const f = q / 16, px = x - wdt + f * wdt * 2, py = my + k * mh * 0.5 + Math.sin(f * 13 + k * 2) * mh * 0.18;
+          if (q === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+      }
+      ctx.stroke();
+      for (let i = 0; i < 18; i++) {
+        const a = 0.5 + 0.5 * Math.sin(t * 2.3 + i * 1.9);
+        ctx.fillStyle = `rgba(200,255,250,${0.55 * a * open})`;
+        ctx.beginPath();
+        ctx.arc(x - wdt * 0.8 + ((i * 0.618) % 1) * wdt * 1.6, my + Math.sin(i * 2.7) * mh * 0.6, (0.6 + (i % 3) * 0.3) * s, 0, Math.PI * 2);
         ctx.fill();
+      }
+      ctx.restore();
+      // The inhalant siphon: a dark slit with a pale rim near the middle.
+      if (open > 0.4) {
+        ctx.fillStyle = 'rgba(8,24,40,0.8)';
+        ctx.beginPath();
+        ctx.ellipse(x + wdt * 0.12, my, 3.2 * s, Math.min(mh * 0.45, 1.6 * s), 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(200,240,240,0.6)';
+        ctx.lineWidth = 0.6 * s;
+        ctx.stroke();
       }
     }
     // The shell, front valve: a fan of deep folds running down to the hinge, light and shaded in
