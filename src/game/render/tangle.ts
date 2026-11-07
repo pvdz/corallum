@@ -112,19 +112,51 @@ export function drawFragment(ctx: CanvasRenderingContext2D, f: { k: number; x: n
   ctx.globalAlpha = a;
   ctx.translate(x, y);
   ctx.rotate(t * 0.6 + f.k);
-  ctx.strokeStyle = `hsl(${hue},55%,62%)`;
-  ctx.lineCap = 'round';
-  const branch = (bx: number, by: number, ang: number, len: number, depth: number) => {
-    const ex = bx + Math.cos(ang) * len, ey = by + Math.sin(ang) * len;
-    ctx.lineWidth = (4 - depth) * s;
-    ctx.beginPath();
-    ctx.moveTo(bx, by);
-    ctx.lineTo(ex, ey);
-    ctx.stroke();
-    if (depth < 3) { branch(ex, ey, ang - 0.5, len * 0.7, depth + 1); branch(ex, ey, ang + 0.45, len * 0.7, depth + 1); }
-    else { ctx.fillStyle = `hsl(${hue},70%,82%)`; ctx.beginPath(); ctx.arc(ex, ey, 1.6 * s, 0, Math.PI * 2); ctx.fill(); }
+  // Limbs taper from the break to the tips, each a little bent, and every tip holds a polyp's crown.
+  const limbs = new Path2D(), crowns = new Path2D();
+  const branch = (bx: number, by: number, ang: number, len: number, w0: number, depth: number) => {
+    const bend = (depth % 2 ? 0.18 : -0.14);
+    const ex = bx + Math.cos(ang + bend) * len, ey = by + Math.sin(ang + bend) * len;
+    const mx = bx + Math.cos(ang) * len * 0.55, my = by + Math.sin(ang) * len * 0.55;
+    const w1 = w0 * 0.62;
+    const nx = -Math.sin(ang), ny = Math.cos(ang);
+    limbs.moveTo(bx + nx * w0 / 2, by + ny * w0 / 2);
+    limbs.quadraticCurveTo(mx + nx * (w0 + w1) / 4, my + ny * (w0 + w1) / 4, ex + nx * w1 / 2, ey + ny * w1 / 2);
+    limbs.lineTo(ex - nx * w1 / 2, ey - ny * w1 / 2);
+    limbs.quadraticCurveTo(mx - nx * (w0 + w1) / 4, my - ny * (w0 + w1) / 4, bx - nx * w0 / 2, by - ny * w0 / 2);
+    limbs.closePath();
+    // A round joint, so the forks do not show seams.
+    limbs.moveTo(ex + w1 / 2, ey);
+    limbs.arc(ex, ey, w1 / 2, 0, Math.PI * 2);
+    if (depth < 3) {
+      branch(ex, ey, ang - 0.5, len * 0.72, w1, depth + 1);
+      branch(ex, ey, ang + 0.45, len * 0.72, w1, depth + 1);
+    } else {
+      const ta = ang + bend;
+      for (let q = 0; q < 5; q++) {
+        const fa = ta + (q - 2) * 0.42 + Math.sin(t * 2 + q + depth) * 0.08;
+        crowns.moveTo(ex, ey);
+        crowns.lineTo(ex + Math.cos(fa) * 2.8 * s, ey + Math.sin(fa) * 2.8 * s);
+      }
+    }
   };
-  branch(0, 8 * s, -Math.PI / 2, 9 * s, 0);
+  branch(0, 8 * s, -Math.PI / 2, 9 * s, 3.6 * s, 0);
+  ctx.fillStyle = `hsl(${hue},48%,52%)`;
+  ctx.fill(limbs);
+  ctx.strokeStyle = `hsl(${hue},70%,80%)`;
+  ctx.lineWidth = 0.8 * s;
+  ctx.lineCap = 'round';
+  ctx.stroke(crowns);
+  // Where it snapped off: a jagged pale break of bare skeleton.
+  ctx.fillStyle = `hsl(${hue},25%,82%)`;
+  ctx.beginPath();
+  ctx.moveTo(-1.9 * s, 8 * s);
+  ctx.lineTo(-1 * s, 9.6 * s);
+  ctx.lineTo(-0.2 * s, 8.7 * s);
+  ctx.lineTo(0.7 * s, 10 * s);
+  ctx.lineTo(1.9 * s, 8 * s);
+  ctx.closePath();
+  ctx.fill();
   ctx.restore();
   const p = (t * 0.6) % 1;
   ctx.save();
