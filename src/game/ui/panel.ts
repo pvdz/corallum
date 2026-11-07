@@ -439,6 +439,20 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const todayLine = el('span', 'water-today');
   waterBox.append(waterName, waterLine, waterNext, waterSoon, almanac, almanacNote, todayLine, heatRow, riseRow);
   grow.prepend(waterBox);
+  // The strip can be folded away by its card's name (remembered); the "Soon" line then lists it all.
+  {
+    const key = 'corallum.fold.almanac';
+    const set = (folded: boolean) => { waterBox.classList.toggle('strip-folded', folded); waterName.setAttribute('aria-expanded', String(!folded)); };
+    try { set(localStorage.getItem(key) === '1'); } catch { set(false); }
+    const toggle = () => {
+      if (!waterBox.classList.contains('charted')) return;
+      const folded = !waterBox.classList.contains('strip-folded');
+      set(folded);
+      try { localStorage.setItem(key, folded ? '1' : '0'); } catch { /* no storage */ }
+    };
+    waterName.addEventListener('click', toggle);
+    waterName.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && keyed(waterName)) { e.preventDefault(); toggle(); } });
+  }
   let waterShown = '';
   // Ossel's request: one small thing to do, with its progress.
   const askBox = el('div', 'ask');
@@ -2265,7 +2279,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         if (soonHead.textContent !== head) soonHead.textContent = head;
         if (soonRest.textContent !== rest) soonRest.textContent = rest;
         waterSoon.hidden = !head;
-        waterBox.classList.toggle('charted', !almanac.hidden);
+        if (waterBox.classList.contains('charted') !== !almanac.hidden) {
+          waterBox.classList.toggle('charted', !almanac.hidden);
+          if (almanac.hidden) { waterName.removeAttribute('role'); waterName.removeAttribute('tabindex'); }
+          else { waterName.setAttribute('role', 'button'); waterName.tabIndex = 0; }
+        }
         if (waterShown && waterShown !== water.id) { waterBox.classList.remove('turned'); void waterBox.offsetWidth; waterBox.classList.add('turned'); }
         waterShown = water.id;
       }

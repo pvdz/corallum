@@ -376,6 +376,12 @@ html.panel-rest .panel .pages { opacity: 0.45; transition: opacity 4s ease; }
   .charted .water-soon, .water-soon:has(.soon-rest:empty) { min-height: 1.4em; }
 }
 .water-soon:empty { display: none; }
+/* The strip folds away by the card's name; folded, the Soon line lists everything again. */
+.water.charted > strong { cursor: pointer; }
+.water.charted > strong::after { content: '\00a0▾'; color: var(--ink-dim); font-size: 0.7em; }
+.water.charted.strip-folded > strong::after { content: '\00a0▸'; }
+.water.strip-folded .almanac, .water.strip-folded .almanac-note { display: none !important; }
+.water.charted.strip-folded .soon-rest { display: inline; }
 .water-next { margin-left: auto; color: var(--ink-dim); font-variant-numeric: tabular-nums; }
 .water[data-water='still'] strong, .water[data-water='still'] .water-line { color: var(--ink-dim); }
 .sky-list { display: grid; gap: 4px; margin-top: 6px; }
