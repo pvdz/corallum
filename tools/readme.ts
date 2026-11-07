@@ -18,6 +18,8 @@ const SHOTS: Shot[] = [
   { name: 'sunlit-crown', query: '?bot=17000&t=17113', vp: DESKTOP, view: true },
   // A humpback breaching beside the crown, under the moon.
   { name: 'breach', query: '?bot=22000&t=22291', vp: DESKTOP, view: true },
+  // The other reefs spawning under the full moon, in the Sunlit Crown.
+  { name: 'full-moon', query: '?bot=17340&t=17340', vp: DESKTOP, view: true },
   { name: 'panel', query: '?bot=11000&t=11000', vp: DESKTOP, view: false },
   { name: 'phone', query: '?bot=17000&t=17000', vp: PHONE, view: false },
 ];
