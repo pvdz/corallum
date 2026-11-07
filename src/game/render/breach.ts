@@ -281,32 +281,62 @@ export function createBreachScene(seed: number): Scene {
       ctx.arc(px, py, (i % 3 ? 1.1 : 1.8) * s, 0, Math.PI * 2);
       ctx.fill();
     }
-    // Trailing fronds below the surface.
-    ctx.strokeStyle = 'rgba(150,120,50,0.6)';
-    ctx.lineWidth = 1.2 * s;
-    for (let i = 0; i < 9; i++) {
-      const fx = x - len * 0.8 + (i / 8) * len * 1.6;
-      ctx.beginPath();
-      ctx.moveTo(fx, wy + 1 * s);
-      ctx.quadraticCurveTo(fx - dir * 6 * s + Math.sin(t * 0.9 + i) * 4 * s, wy + 10 * s, fx - dir * 10 * s + Math.sin(t * 0.7 + i * 2) * 5 * s, wy + (14 + (i % 3) * 6) * s);
-      ctx.stroke();
-    }
-    // The mat at the surface: tangled golden weed with round float bladders.
-    for (let i = 0; i < 22; i++) {
-      const fx = x - len + (i / 21) * len * 2;
-      const lift = Math.sin((i / 21) * Math.PI);
-      const fy = wy - lift * 3 * s + Math.sin(t * 1.4 + i * 0.6) * 1.2 * s;
-      ctx.fillStyle = i % 2 ? 'rgba(222,176,72,1)' : 'rgba(184,138,50,1)';
-      ctx.beginPath();
-      ctx.ellipse(fx, fy, 5 * s, (1.6 + lift * 1.6) * s, Math.sin(i * 1.7) * 0.6, 0, Math.PI * 2);
-      ctx.fill();
-      if (i % 3 === 1) {
-        ctx.fillStyle = 'rgba(245,215,120,1)';
-        ctx.beginPath();
-        ctx.arc(fx + 2 * s, fy - 2 * s, 1.5 * s, 0, Math.PI * 2);
-        ctx.fill();
+    // Trailing fronds below the surface: limp stems, each with a few narrow blades along it.
+    const fronds = new Path2D(), blades = new Path2D();
+    for (let i = 0; i < 11; i++) {
+      const fx = x - len * 0.85 + ((i * 0.618 + 0.1) % 1) * len * 1.7;
+      const deep = (10 + (i % 4) * 7) * s;
+      const sw = Math.sin(t * 0.8 + i * 1.3) * 5 * s;
+      const ex = fx - dir * 12 * s + sw, ey = wy + deep;
+      fronds.moveTo(fx, wy + 1 * s);
+      fronds.quadraticCurveTo(fx - dir * 6 * s + sw * 0.5, wy + deep * 0.5, ex, ey);
+      for (let b = 1; b <= 3; b++) {
+        const f = b / 4, bx = fx + (ex - fx) * f, by = wy + 1 * s + (ey - wy) * f;
+        const side = b % 2 ? 1 : -1;
+        blades.moveTo(bx, by);
+        blades.quadraticCurveTo(bx + side * 3 * s, by + 1.5 * s, bx + side * 5 * s - dir * 2 * s, by + 4 * s);
       }
     }
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = 'rgba(150,118,48,0.65)';
+    ctx.lineWidth = 1 * s;
+    ctx.stroke(fronds);
+    ctx.strokeStyle = 'rgba(176,140,58,0.55)';
+    ctx.lineWidth = 1.6 * s;
+    ctx.stroke(blades);
+    // The mat at the surface: clumps of branching weed, uneven along its length, with clustered
+    // round air bladders that keep it afloat, lit from the sky on top.
+    const mat = new Path2D(), lit = new Path2D(), bladders = new Path2D();
+    for (let c = 0; c < 9; c++) {
+      const f = (c + 0.5) / 9;
+      const cx = x - len + f * len * 2 + Math.sin(c * 2.7) * 6 * s;
+      const hump = Math.sin(f * Math.PI) * (0.7 + 0.5 * ((c * 0.618) % 1));
+      const cy = wy - hump * 3 * s + Math.sin(t * 1.4 + c * 0.9) * 1.2 * s;
+      const rw = (9 + ((c * 0.38) % 1) * 7) * s, rh = (2 + hump * 2.2) * s;
+      // A clump: a lumpy mound of blades.
+      mat.moveTo(cx - rw, cy + 1 * s);
+      for (let q = 0; q <= 6; q++) {
+        const qa = Math.PI * (1 - q / 6);
+        const bump = 1 + 0.25 * Math.sin(q * 2.3 + c);
+        mat.lineTo(cx + Math.cos(qa) * rw, cy + 1 * s - Math.sin(qa) * rh * bump);
+      }
+      mat.closePath();
+      lit.moveTo(cx - rw * 0.6, cy - rh * 0.55);
+      lit.quadraticCurveTo(cx, cy - rh * 1.1, cx + rw * 0.55, cy - rh * 0.6);
+      for (let b = 0; b < 3; b++) {
+        const bx = cx + (b - 1) * rw * 0.45 + Math.sin(c + b) * 2 * s, by = cy - rh * (0.5 + 0.3 * ((b + c) % 2));
+        const br = (1.1 + ((b * 0.7 + c * 0.3) % 1) * 0.8) * s;
+        bladders.moveTo(bx + br, by);
+        bladders.arc(bx, by, br, 0, Math.PI * 2);
+      }
+    }
+    ctx.fillStyle = 'rgba(184,138,50,1)';
+    ctx.fill(mat);
+    ctx.strokeStyle = 'rgba(232,192,96,0.9)';
+    ctx.lineWidth = 1.1 * s;
+    ctx.stroke(lit);
+    ctx.fillStyle = 'rgba(240,206,112,1)';
+    ctx.fill(bladders);
     ctx.restore();
   }
 
