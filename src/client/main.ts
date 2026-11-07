@@ -1213,7 +1213,12 @@ function drawLucky(t: number): void {
     if (p) {
       const r = Math.min(Math.max(p.r, 22 * dpr), 70 * dpr) * (1.1 + 0.08 * Math.sin(t * 1.5));
       glowAt(ctx, p.x, p.y, r * 1.3, '220,230,255', 0.12);
-      // A few silver motes drifting round it, slow (a lucky one's sparks are gold and quick).
+      // A soft ring breathing round it, drawn over (not added to) the water so it shows on bright
+      // sand by day too, and a few silver motes drifting round it, slow (a lucky one's are gold).
+      ctx.globalCompositeOperation = 'source-over';
+      const darkHere = actAt(state.height) <= 2 || !!scene.darkAt?.(p.x, p.y);
+      softRing(ctx, p.x, p.y, r, r, 10 * dpr, darkHere ? '235,242,255' : '20,40,70', (darkHere ? 0.45 : 0.55) + 0.12 * Math.sin(t * 1.5));
+      ctx.globalCompositeOperation = 'lighter';
       for (let k = 0; k < 5; k++) {
         const a = t * 0.6 + k * (Math.PI * 2 / 5);
         const tw = 0.55 + 0.45 * Math.sin(t * 2.2 + k * 2.3);
