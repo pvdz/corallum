@@ -846,12 +846,13 @@ export function createBreachScene(seed: number): Scene {
   }
 
   /** Spawn: ripening dots on the reef before; a rising, spreading column after the release. */
+  let dbgN: number | undefined;
   function drawSpawn(ctx: CanvasRenderingContext2D, t: number, v: ReefView, L: ReefLayout, reef: Reef): void {
     const s = scale();
     // Sweetened spawn goes golden: pink toward amber with each level.
     const g = Math.min(1, v.sweeten / 6);
     const bundle = `255,${Math.round(150 + 60 * g)},${Math.round(200 - 90 * g)}`;
-    const wy = waterY();
+    const wy = waterY(); if ((dbgN = (dbgN ?? 0) + 1) < 4) console.error("SPAWN", v.spawnLevel, v.sinceBreach);
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     // Other reefs, far off, spawning on full-moon nights.
@@ -967,15 +968,35 @@ export function createBreachScene(seed: number): Scene {
       glow(ctx, 0, 0, focus.w * (0.15 + 0.5 * spread), '255,160,205', 0.55 * (0.4 + 0.6 * burst));
       ctx.restore();
     } else if (v.spawnLevel > 0) {
-      // Pink bundles swelling under the mouths.
-      const n = Math.round(80 * Math.min(1, v.spawnLevel));
-      const pr = mulberry32(seed ^ 0x5a);
+      // The reef sets: pink bundles swelling in the mouths along the branches, more and fuller as
+      // the spawn ripens, each breathing slowly; beads like the released ones, a soft light under each.
+      const ripe = Math.min(1, v.spawnLevel); if (dbgN! < 4) console.error("RIPE", v.spawnLevel, wy, reef.coral.count);
+      const coral = reef.coral;
+      const n = Math.round(30 + 150 * ripe);
+      const beads: Path2D[] = Array.from({ length: BEAD_SHADES }, () => new Path2D());
+      const shine = new Path2D();
       for (let i = 0; i < n; i++) {
-        const x = L.cx + range(pr, -0.3, 0.3) * L.unit;
-        const y = L.baseY - range(pr, 0.25, 0.95) * L.unit;
-        if (y < wy) continue;
-        glow(ctx, x, y, 4 * s, '255,160,205', 0.5 + 0.3 * Math.sin(t * 2 + i));
+        const node = (i * 7919 + 13) % coral.count;
+        const [x0, y0] = reef.nodePx(L, node);
+        if (y0 < wy) continue;
+        const b = bundles[i % bundles.length]!;
+        const x = x0 + b.drift * 3 * s, y = y0 - 1.5 * s;
+        const breathe = 0.85 + 0.15 * Math.sin(t * 1.3 + i * 1.7);
+        const r = Math.max((1.1 + 1.4 * ripe) * s * b.size * breathe, 0.9 * dpr);
+        glow(ctx, x, y, r * 4, bundle, 0.22 * (0.4 + 0.6 * ripe) * breathe);
+        const p = beads[i % BEAD_SHADES]!;
+        p.moveTo(x + r, y);
+        p.arc(x, y, r, 0, Math.PI * 2);
+        shine.moveTo(x - r * 0.3 + r * 0.35, y - r * 0.3);
+        shine.arc(x - r * 0.3, y - r * 0.3, r * 0.35, 0, Math.PI * 2);
       }
+      ctx.globalCompositeOperation = 'source-over';
+      for (let k = 0; k < BEAD_SHADES; k++) {
+        ctx.fillStyle = `rgba(${beadShade(k, g)},${(0.55 + 0.35 * ripe).toFixed(3)})`;
+        ctx.fill(beads[k]!);
+      }
+      ctx.fillStyle = `rgba(255,236,240,${(0.5 * ripe).toFixed(3)})`;
+      ctx.fill(shine);
     }
     ctx.restore();
   }
