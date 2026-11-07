@@ -163,25 +163,17 @@ export function createTwilightScene(seed: number): Scene {
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(-0.15);
-    ctx.fillStyle = 'hsl(165,30%,62%)';
+    // A small parrotfish, asleep: its eye closed under a lid.
+    const fl = len * breath;
+    drawParrotfish(ctx, fl, 165, t * 0.6, s * 0.6);
+    ctx.fillStyle = 'hsl(165,36%,42%)';
     ctx.beginPath();
-    ctx.ellipse(0, 0, len * breath, len * 0.45 * breath, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(-len * 0.9, 0);
-    ctx.lineTo(-len * 1.4, -len * 0.4);
-    ctx.lineTo(-len * 1.4, len * 0.4);
-    ctx.closePath();
-    ctx.fill();
-    // A soft pale beak, and a closed eye.
-    ctx.fillStyle = 'hsl(50,40%,85%)';
-    ctx.beginPath();
-    ctx.ellipse(len * 0.95, len * 0.05, len * 0.22, len * 0.16, 0, 0, Math.PI * 2);
+    ctx.arc(fl * 0.6, -fl * 0.17, fl * 0.11, 0, Math.PI * 2);
     ctx.fill();
     ctx.strokeStyle = 'rgba(30,40,40,0.8)';
     ctx.lineWidth = 0.8 * s;
     ctx.beginPath();
-    ctx.arc(len * 0.55, -len * 0.08, len * 0.1, 0.2, Math.PI - 0.2);
+    ctx.arc(fl * 0.6, -fl * 0.2, fl * 0.09, 0.3, Math.PI - 0.3);
     ctx.stroke();
     ctx.restore();
     // A small stream of sleeping bubbles.
