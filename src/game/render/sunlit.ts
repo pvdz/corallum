@@ -1798,14 +1798,26 @@ export function createSunlitScene(seed: number): Scene {
       ctx.strokeStyle = `hsl(${c.hue},45%,52%)`;
       ctx.lineCap = 'round';
       if (c.kind === 0) {
-        ctx.lineWidth = 4 * s * c.size;
-        for (let k = 0; k < 5; k++) {
-          const a = -Math.PI / 2 + (k - 2) * 0.35 + Math.sin(t * 0.4 + k) * 0.03;
+        // Branching coral: a short trunk forking twice, the branches tapering to pale knobbed tips.
+        const tips: [number, number][] = [];
+        const grow = (x0: number, y0: number, a: number, len: number, w: number, depth: number) => {
+          const x1 = x0 + Math.cos(a) * len, y1 = y0 + Math.sin(a) * len;
+          ctx.lineWidth = w;
           ctx.beginPath();
-          ctx.moveTo(x, y);
-          ctx.lineTo(x + Math.cos(a) * r, y + Math.sin(a) * r);
+          ctx.moveTo(x0, y0);
+          ctx.quadraticCurveTo(x0 + Math.cos(a + 0.15) * len * 0.5, y0 + Math.sin(a + 0.15) * len * 0.5, x1, y1);
           ctx.stroke();
-        }
+          if (depth === 0) { tips.push([x1, y1]); return; }
+          const spread = 0.42 + 0.1 * Math.sin(c.u * 40 + depth);
+          grow(x1, y1, a - spread, len * 0.72, w * 0.72, depth - 1);
+          grow(x1, y1, a + spread, len * 0.72, w * 0.72, depth - 1);
+        };
+        const sway = Math.sin(t * 0.4 + c.u * 9) * 0.03;
+        grow(x, y, -Math.PI / 2 + sway, r * 0.42, 4.5 * s * c.size, 2);
+        ctx.fillStyle = `hsl(${c.hue},55%,78%)`;
+        ctx.beginPath();
+        for (const [tx, ty] of tips) { const tr = 2.2 * s * c.size; ctx.moveTo(tx + tr, ty); ctx.arc(tx, ty, tr, 0, Math.PI * 2); }
+        ctx.fill();
       } else if (c.kind === 1) {
         ctx.beginPath();
         ctx.ellipse(x, y, r * 0.8, r * 0.55, 0, Math.PI, 0);
