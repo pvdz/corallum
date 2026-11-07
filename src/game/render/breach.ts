@@ -1652,17 +1652,36 @@ export function createBreachScene(seed: number): Scene {
       if (born <= 0) continue;
       ctx.save();
       ctx.globalAlpha = 0.35 + 0.4 * depth * born;
+      // A lump of old rubble to cling to, and on it a tiny colony: three curved branches, each
+      // forking once, a polyp's pink point at every tip.
+      ctx.fillStyle = 'rgba(70,64,80,0.7)';
+      ctx.beginPath();
+      ctx.ellipse(x, y + 1.2 * size, 5 * size, 2 * size, 0, Math.PI, 0);
+      ctx.fill();
       ctx.strokeStyle = 'rgba(255,190,215,0.8)';
       ctx.lineCap = 'round';
-      ctx.lineWidth = 1.4 * size;
-      for (let b = 0; b < 4; b++) {
-        const a = -Math.PI / 2 + (b - 1.5) * 0.45;
-        const len = (6 + (b % 2) * 3) * size * born;
-        ctx.beginPath();
+      ctx.lineWidth = 1.2 * size;
+      ctx.beginPath();
+      const tips: [number, number][] = [];
+      for (let b = 0; b < 3; b++) {
+        const a = -Math.PI / 2 + (b - 1) * 0.55 + Math.sin(i * 2.3 + b) * 0.12;
+        const len = (5 + (b % 2) * 2.5) * size * born;
+        const ex = x + Math.cos(a) * len, ey = y + Math.sin(a) * len;
         ctx.moveTo(x, y);
-        ctx.lineTo(x + Math.cos(a) * len, y + Math.sin(a) * len);
-        ctx.stroke();
+        ctx.quadraticCurveTo(x + Math.cos(a) * len * 0.5 - Math.sin(a) * 1.2 * size, y + Math.sin(a) * len * 0.5, ex, ey);
+        for (const side of [-1, 1]) {
+          const fa = a + side * 0.5, fl = len * 0.45;
+          const fx = ex + Math.cos(fa) * fl, fy = ey + Math.sin(fa) * fl;
+          ctx.moveTo(ex, ey);
+          ctx.lineTo(fx, fy);
+          tips.push([fx, fy]);
+        }
       }
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(255,214,230,0.95)';
+      ctx.beginPath();
+      for (const [tx, ty] of tips) { ctx.moveTo(tx + 0.9 * size, ty); ctx.arc(tx, ty, 0.9 * size, 0, Math.PI * 2); }
+      ctx.fill();
       ctx.globalCompositeOperation = 'lighter';
       glow(ctx, x, y - 5 * size, 10 * size, '255,150,200', 0.25 * born * (0.7 + 0.3 * Math.sin(t + i)));
       ctx.restore();
