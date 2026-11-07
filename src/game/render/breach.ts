@@ -47,12 +47,13 @@ export function lightningAt(t: number): { since: number; k: number; lap: number 
 const FROM = 3980;
 const TO = 4000;
 
+// Polyps by night: saturated mid tones (pale ones burn white under the bloom over dark water).
 const NIGHT_LOOK: Record<CoralForm, { girth: number; palette: [string, string, string]; polyp: [string, string] }> = {
-  fan: { girth: 1, palette: ['#1a0f22', '#7a3c58', 'rgba(255,210,230,0.25)'], polyp: ['#ffb3c9', 'rgba(255,220,235,0.9)'] },
-  branching: { girth: 0.9, palette: ['#21180f', '#8a6238', 'rgba(255,230,200,0.25)'], polyp: ['#ffb3c9', 'rgba(255,230,200,0.9)'] },
-  massive: { girth: 3.2, palette: ['#0f140c', '#3a4a2a', 'rgba(230,255,200,0.1)'], polyp: ['#ffb3c9', 'rgba(255,230,160,0.9)'] },
-  plating: { girth: 1.6, palette: ['#1d1430', '#634890', 'rgba(230,215,255,0.25)'], polyp: ['#ffb3c9', 'rgba(200,255,240,0.9)'] },
-  pillar: { girth: 2.4, palette: ['#1c160e', '#6a5a40', 'rgba(255,240,215,0.25)'], polyp: ['#ffb3c9', 'rgba(255,245,220,0.9)'] },
+  fan: { girth: 1, palette: ['#1a0f22', '#7a3c58', 'rgba(255,210,230,0.25)'], polyp: ['#c46886', 'rgba(236,150,186,0.9)'] },
+  branching: { girth: 0.9, palette: ['#21180f', '#8a6238', 'rgba(255,230,200,0.25)'], polyp: ['#c46886', 'rgba(236,170,132,0.9)'] },
+  massive: { girth: 3.2, palette: ['#0f140c', '#3a4a2a', 'rgba(230,255,200,0.1)'], polyp: ['#c46886', 'rgba(226,190,110,0.9)'] },
+  plating: { girth: 1.6, palette: ['#1d1430', '#634890', 'rgba(230,215,255,0.25)'], polyp: ['#c46886', 'rgba(130,210,190,0.9)'] },
+  pillar: { girth: 2.4, palette: ['#1c160e', '#6a5a40', 'rgba(255,240,215,0.25)'], polyp: ['#c46886', 'rgba(230,196,150,0.9)'] },
 };
 
 function formOf(id: DialectId | ''): CoralForm {
