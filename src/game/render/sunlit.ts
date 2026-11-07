@@ -16,7 +16,7 @@ import type { DialectId } from '../content/act4.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import type { CoralForm } from './coral.ts';
-import { glow, drawOsselSand, speck } from './draw.ts';
+import { glow, drawOsselSand, speck, whaleSilhouette } from './draw.ts';
 import { drawCraft, FLUORESCENT_POLYP } from './craft.ts';
 import { drawColony, drawDaughters } from './daughters.ts';
 import { createLayerCache } from './layer.ts';
@@ -1868,27 +1868,7 @@ export function createSunlitScene(seed: number): Scene {
     ctx.scale(dir, 1);
     ctx.globalAlpha = 0.28 * fade;
     ctx.fillStyle = '#1f5b7e';
-    // Body: blunt head, long taper to the tail stock.
-    ctx.beginPath();
-    ctx.moveTo(90 * s, 0);
-    ctx.bezierCurveTo(90 * s, -18 * s, 40 * s, -24 * s, -10 * s, -18 * s);
-    ctx.bezierCurveTo(-50 * s, -12 * s, -80 * s, -4 * s, -100 * s, beat * 3 * s);
-    ctx.bezierCurveTo(-80 * s, 8 * s, -40 * s, 18 * s, 0, 20 * s);
-    ctx.bezierCurveTo(50 * s, 22 * s, 90 * s, 14 * s, 90 * s, 0);
-    ctx.fill();
-    // Flukes.
-    ctx.beginPath();
-    ctx.moveTo(-98 * s, beat * 3 * s);
-    ctx.quadraticCurveTo(-112 * s, (-14 + beat * 6) * s, -128 * s, (-16 + beat * 10) * s);
-    ctx.quadraticCurveTo(-116 * s, (beat * 6) * s, -128 * s, (16 + beat * 10) * s);
-    ctx.quadraticCurveTo(-112 * s, (14 + beat * 6) * s, -98 * s, beat * 3 * s);
-    ctx.fill();
-    // Long pectoral fin.
-    ctx.beginPath();
-    ctx.moveTo(40 * s, 12 * s);
-    ctx.quadraticCurveTo(20 * s, 40 * s, -6 * s, (46 + beat * 4) * s);
-    ctx.quadraticCurveTo(14 * s, 30 * s, 24 * s, 14 * s);
-    ctx.fill();
+    whaleSilhouette(ctx, s, beat);
     ctx.restore();
   }
 

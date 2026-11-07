@@ -12,7 +12,7 @@ import { drawDome, drawSpire } from './works.ts';
 import { drawRelics } from './relics.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
-import { drawDarkness, glow, speck } from './draw.ts';
+import { drawDarkness, glow, speck, whaleSilhouette } from './draw.ts';
 import { createLayerCache } from './layer.ts';
 import { createForeground } from './foreground.ts';
 import { createReef, type Reef, type ReefLayout } from './reef.ts';
@@ -1283,22 +1283,10 @@ export function createMidnightScene(seed: number): Scene {
     ctx.globalAlpha = a;
     ctx.fillStyle = '#2a3a66';
     ctx.translate(x, y);
-    ctx.beginPath();
-    ctx.ellipse(0, 0, 70 * s, 14 * s, -0.04, 0, Math.PI * 2);
-    ctx.fill();
-    // Tail flukes and a long pectoral fin.
-    ctx.beginPath();
-    ctx.moveTo(66 * s, -2 * s);
-    ctx.lineTo(92 * s, -14 * s + Math.sin(t * 0.6) * 4 * s);
-    ctx.lineTo(86 * s, 0);
-    ctx.lineTo(92 * s, 12 * s + Math.sin(t * 0.6) * 4 * s);
-    ctx.closePath();
-    ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(-20 * s, 8 * s);
-    ctx.quadraticCurveTo(-5 * s, 30 * s, 12 * s, 34 * s);
-    ctx.quadraticCurveTo(0, 18 * s, -6 * s, 9 * s);
-    ctx.fill();
+    // Swimming left, far above: the same whale as by day in the shallows, dim against the dark.
+    ctx.scale(-1, 1);
+    ctx.rotate(0.04);
+    whaleSilhouette(ctx, s * 0.72, Math.sin(t * 0.6));
     ctx.restore();
   }
 

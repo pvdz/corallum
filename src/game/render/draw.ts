@@ -208,3 +208,27 @@ export function drawSmallFish(ctx: CanvasRenderingContext2D, s: number, back: st
   ctx.arc(6 * s, -0.8 * s, 0.6 * s, 0, Math.PI * 2);
   ctx.fill();
 }
+
+/**
+ * A great whale's silhouette at the origin, head toward +x, about 218·s long: a blunt head, the long
+ * taper to the tail stock, curved flukes and a long pectoral fin. Filled in the current style;
+ * `beat` (−1…1) sweeps the flukes.
+ */
+export function whaleSilhouette(ctx: CanvasRenderingContext2D, s: number, beat: number): void {
+  ctx.beginPath();
+  ctx.moveTo(90 * s, 0);
+  ctx.bezierCurveTo(90 * s, -18 * s, 40 * s, -24 * s, -10 * s, -18 * s);
+  ctx.bezierCurveTo(-50 * s, -12 * s, -80 * s, -4 * s, -100 * s, beat * 3 * s);
+  ctx.bezierCurveTo(-80 * s, 8 * s, -40 * s, 18 * s, 0, 20 * s);
+  ctx.bezierCurveTo(50 * s, 22 * s, 90 * s, 14 * s, 90 * s, 0);
+  // Flukes.
+  ctx.moveTo(-98 * s, beat * 3 * s);
+  ctx.quadraticCurveTo(-112 * s, (-14 + beat * 6) * s, -128 * s, (-16 + beat * 10) * s);
+  ctx.quadraticCurveTo(-116 * s, (beat * 6) * s, -128 * s, (16 + beat * 10) * s);
+  ctx.quadraticCurveTo(-112 * s, (14 + beat * 6) * s, -98 * s, beat * 3 * s);
+  // Long pectoral fin.
+  ctx.moveTo(40 * s, 12 * s);
+  ctx.quadraticCurveTo(20 * s, 40 * s, -6 * s, (46 + beat * 4) * s);
+  ctx.quadraticCurveTo(14 * s, 30 * s, 24 * s, 14 * s);
+  ctx.fill();
+}
