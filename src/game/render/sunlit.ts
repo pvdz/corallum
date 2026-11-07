@@ -1213,14 +1213,25 @@ export function createSunlitScene(seed: number): Scene {
     ctx.save();
     ctx.translate(tx, ty);
     ctx.rotate(sweep);
+    // A flat leaf of a paddle, wider than the body, ringed in the same bands.
+    const leaf = (c: CanvasRenderingContext2D) => {
+      c.beginPath();
+      c.moveTo(-1.2 * s, 0);
+      c.quadraticCurveTo(-3.4 * s, sign * 3 * s, -2.2 * s, sign * 6.4 * s);
+      c.quadraticCurveTo(0, sign * 8.6 * s, 2.2 * s, sign * 6.4 * s);
+      c.quadraticCurveTo(3.4 * s, sign * 3 * s, 1.2 * s, 0);
+      c.closePath();
+    };
     ctx.fillStyle = '#c8d0dc';
-    ctx.beginPath();
-    ctx.ellipse(0, sign * 3 * s, 3.2 * s, 4 * s, 0, 0, Math.PI * 2);
+    leaf(ctx);
     ctx.fill();
+    ctx.save();
+    leaf(ctx);
+    ctx.clip();
     ctx.fillStyle = '#1c2230';
-    ctx.beginPath();
-    ctx.ellipse(0, sign * 4.5 * s, 3 * s, 1.6 * s, 0, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.fillRect(-4 * s, sign > 0 ? 2 * s : -4.2 * s, 8 * s, 2.2 * s);
+    ctx.fillRect(-4 * s, sign > 0 ? 6.2 * s : -9 * s, 8 * s, 2.8 * s);
+    ctx.restore();
     ctx.restore();
     // The head, a little wider, leading, with its eye and nostril on top.
     const hx = x0 + Math.sin(t * 3) * 6 * s, hy = y0 - 2 * s * sign;

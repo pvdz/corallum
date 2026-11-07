@@ -1168,3 +1168,4 @@ date, what landed, what is half-done, what's next.
 - The sardine run across the Twilight (420 white pills): slim silver fish with forked tails, their dark blue backs, all in one fill and one stroke.
 - The bait ball in the Sunlit: its 160 fish were pairs of ovals that read as little hearts; now each a small silver fish pointed along its circle (one fill for the ball). The hunters cutting through were dark pills: jacks with a dark back over a silver belly, a sickle of a forked tail, a dorsal fin and an eye.
 - Moon jellies under the Breach stood on nine long straight lines (legs): a fine fringe of many short tentacles round the rim, and the four short frilly oral arms hanging from the middle, swaying.
+- The sea snake's tail paddle was a pale oval with a black cap (an eyeball): a flat leaf of a paddle, wider than the body, ringed in the same bands.
