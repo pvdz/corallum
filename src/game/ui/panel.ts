@@ -2747,14 +2747,17 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     },
     /** List the bands and readings of a loaded save without opening the reader for each. */
     primeStories(s: GameState): void {
-      // Newest first: readings (mostly older) go in before the bands so the bands land on top.
-      for (const id of s.readings) {
-        const rd = READINGS.find((x) => x.id === id);
-        if (rd) appendReading(rd);
-      }
       for (const id of s.bands) {
         const b = BANDS.find((x) => x.id === id);
         if (b) appendBand(b);
+      }
+      // Readings sit above the band that opened them (the Murmurs, or a late one's own), newest first.
+      for (const id of [...s.readings].reverse()) {
+        const rd = READINGS.find((x) => x.id === id);
+        if (!rd) continue;
+        const li = storyItem('read', rd.title, readingStory(rd), 'is-reading');
+        const anchor = bandList.querySelector(`:scope > li[data-band="${rd.after ?? 'murmur'}"]`);
+        if (anchor) anchor.before(li); else bandList.prepend(li);
       }
       lastBandCount = s.bands.length;
       lastReadingCount = s.readings.length;
