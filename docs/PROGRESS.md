@@ -1197,3 +1197,4 @@ date, what landed, what is half-done, what's next.
 - The weed raft drifting over the Breach was a row of golden beads on straight strings (a necklace): clumps of branching gulfweed of uneven size along it, lit on top, with clustered round air bladders, and limp fronds trailing below with narrow blades along them; all in a few batched fills.
 - A lost shoal (tap to take it in) was seven sparks in a bubble: seven small lanternfish milling in a loose knot, dark bodies with the rows of lights along their bellies flickering.
 - The epilogue garden's planted children floated in open water: each takes hold on a lump of old rubble from the reef's flank, lit faintly on top.
+- A lucky one's gold sparks (added light) faded out on the Sunlit sand by day as the visitor's mark did: over bright ground they get solid gold cores.

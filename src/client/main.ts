@@ -1255,6 +1255,21 @@ function drawLucky(t: number): void {
     }
     const r = Math.min(Math.max(p.r, 22 * dpr), 70 * dpr);
     glowAt(ctx, p.x, p.y, r * 1.4, '255,200,90', 0.18);
+    // Over bright ground added light vanishes: there the sparks get solid gold cores.
+    const bright = !(actAt(state.height) <= 2 || !!scene.darkAt?.(p.x, p.y));
+    if (bright) {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = 'rgba(176,112,24,0.85)';
+      ctx.beginPath();
+      for (let k = 0; k < 8; k++) {
+        const a = t * 1.6 + k * (Math.PI * 2 / 8);
+        const cx = p.x + Math.cos(a) * r, cy = p.y + Math.sin(a) * r * 0.7, cr = (1.6 + 0.8 * Math.sin(t * 5 + k * 1.9)) * dpr;
+        ctx.moveTo(cx + cr, cy);
+        ctx.arc(cx, cy, cr, 0, Math.PI * 2);
+      }
+      ctx.fill();
+      ctx.globalCompositeOperation = 'lighter';
+    }
     for (let k = 0; k < 8; k++) {
       const a = t * 1.6 + k * (Math.PI * 2 / 8);
       const tw = 0.5 + 0.5 * Math.sin(t * 5 + k * 1.9);
