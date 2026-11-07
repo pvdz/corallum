@@ -66,6 +66,8 @@ Under every full moon the other reefs spawn too, and the water fills with slow p
   to the second, and a week away is worth the same as a month.
 - **For those who watch.** Falling feasts, the shoals' light signal, intruders in every zone,
   riddles, lost shoals, drifting weed rafts, shooting stars to wish on, swells to ride.
+  In view mode (the eye) the panel steps away; left alone, the camera drifts round the reef and
+  now and then goes to one of its creatures, follows it a while and names it.
 - **Every creature can be touched**, and most answer in their own way. A journal keeps a portrait
   of each one you have seen.
 - **Moments ask how you meet things**: a dying brittle star, a cracked vent, weed on the crown.
