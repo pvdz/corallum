@@ -227,6 +227,26 @@ export function createAudio() {
     }
   }
 
+  /** A chord that swells in over `attack` seconds, holds, and fades over `release`: sines and triangles. */
+  function swell(freqs: readonly number[], gain: number, attack: number, hold: number, release: number): void {
+    if (!ctx || !master || !enabled) return;
+    const t = ctx.currentTime;
+    freqs.forEach((f, i) => {
+      const o = ctx!.createOscillator();
+      o.type = i % 2 ? 'triangle' : 'sine';
+      o.frequency.value = f;
+      o.detune.value = (i - freqs.length / 2) * 3;
+      const e = ctx!.createGain();
+      e.gain.setValueAtTime(0.0001, t);
+      e.gain.exponentialRampToValueAtTime(gain, t + attack);
+      e.gain.setValueAtTime(gain, t + attack + hold);
+      e.gain.exponentialRampToValueAtTime(0.0001, t + attack + hold + release);
+      o.connect(e).connect(master!);
+      o.start(t);
+      o.stop(t + attack + hold + release + 0.1);
+    });
+  }
+
   /** A long sliding sine with vibrato: whale song, far off. */
   function glide(from: number, to: number, length: number, delay: number): void {
     if (!ctx || !master || !enabled) return;
@@ -469,7 +489,20 @@ export function createAudio() {
         case 'choice':
           for (const [i, n] of [0, 7, 12].entries()) setTimeout(() => bell(root * 2 ** (n / 12), 0.06, 2.5), i * 160);
           break;
-        case 'release':
+        case 'release': {
+          // The release: a chord swells under everything and slowly fades; over it a long cascade of
+          // bells climbs two octaves, softer as it rises, and small bubbles scatter like eggs going up.
+          swell([root / 2, (root / 2) * 1.5, root, root * 1.25], 0.03, 3, 2, 8);
+          const t0 = ctx.currentTime;
+          for (let i = 0; i < 36; i++) {
+            // Up the two-octave scale over the run, each step turning a note up or down around it.
+            const idx = Math.max(0, Math.min(PENTATONIC.length - 1, Math.floor((i * PENTATONIC.length) / 36) + [0, 1, -1][i % 3]!));
+            const when = t0 + 0.2 + i * 0.25 + Math.sin(i * 2.3) * 0.06;
+            bell(root * 2 ** (PENTATONIC[idx]! / 12), 0.05 * (1 - i / 60), 3.2, when);
+          }
+          for (let i = 0; i < 24; i++) setTimeout(() => bubble(), 1500 + i * 280 + (i % 3) * 90);
+          break;
+        }
         case 'spawning':
           for (let i = 0; i < 10; i++)
             setTimeout(() => bell(root * 2 ** (PENTATONIC[i % PENTATONIC.length]! / 12), 0.05, 3), i * 220);

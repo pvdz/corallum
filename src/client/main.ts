@@ -482,7 +482,7 @@ const panel = createPanel(ui, {
     line.textContent = UI.driftsAway;
     send.append(line);
     ui.append(send);
-    audio.cue('release');
+    audio.cue('spawning');
     setTimeout(() => location.reload(), reducedMotion.matches ? 600 : 3400);
   },
   forgetTrait(id) {
