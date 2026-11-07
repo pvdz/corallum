@@ -61,7 +61,7 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
   grow.prepend(askBoxQ);
 
   // ---------- A wish on shooting stars (at the Breach) ----------
-  const wishBox = el('section', 'truce moment wish');
+  const wishBox = el('section', 'truce moment wish timed');
   wishBox.hidden = true;
   const wishChoices = el('div', 'boon-choices');
   const wishButtons = WISH.wishes.map((w) => {
@@ -142,7 +142,7 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
   grow.prepend(forkBox);
 
   // ---------- The shoals' signal (a little memory game) ----------
-  const signalBox = el('section', 'truce moment signal');
+  const signalBox = el('section', 'truce moment signal timed');
   signalBox.hidden = true;
   const signalState = el('p', 'truce-words');
   const signalLamps = el('div', 'signal-lamps');
@@ -194,7 +194,7 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
   grow.prepend(signalBox);
 
   // ---------- Other reefs spawning (Sunlit full moon) ----------
-  const othersBox = el('section', 'truce moment others');
+  const othersBox = el('section', 'truce moment others timed');
   othersBox.hidden = true;
   const othersKicker = el('p', 'truce-kicker');
   const othersText = el('p', 'truce-text');

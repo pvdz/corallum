@@ -1840,6 +1840,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const later = button('later-btn', UI.later, () => {
           sec.classList.add('later'); delete sec.dataset.auto; sec.dataset.laterFor = choiceKey(sec);
           if (openChoice === sec) openChoice = null;
+          if (picked === sec) picked = null;
           renderChips();
         });
         sec.append(later);
@@ -1847,7 +1848,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         sec.addEventListener('click', (e) => {
           if (!sec.classList.contains('later') || e.target === later) return;
           if (e.isTrusted) e.stopPropagation();
-          sec.classList.remove('later'); delete sec.dataset.auto; openChoice = sec;
+          sec.classList.remove('later'); delete sec.dataset.auto; openChoice = picked = sec;
           renderChips();
         }, true);
         sec.title = '';
@@ -1860,13 +1861,17 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   }
   // The waiting choice shown open; the others wait folded to their one line until it is answered
   // (a choice the player put off with Later stays folded).
-  let openChoice: HTMLElement | null = null;
+  let openChoice: HTMLElement | null = null, picked: HTMLElement | null = null;
   const shownKey = new WeakMap<HTMLElement, string>();
   function settleChoices(): void {
     const waiting = [...grow.querySelectorAll<HTMLElement>(':scope > section.moment:not([hidden])')]
       .filter((sec) => sec.querySelector(':scope > .later-btn') && sec.querySelector('.truce-kicker')?.textContent)
       .filter((sec) => !sec.classList.contains('later') || sec.dataset.auto === '1');
-    const keep = openChoice && waiting.includes(openChoice) ? openChoice : waiting[0] ?? null;
+    // One the player opened stays open; else a choice that runs out (a wish, a signal, a spawning) is
+    // the one shown; else the newest.
+    if (picked && !waiting.includes(picked)) picked = null;
+    const keep = picked ?? waiting.find((sec) => sec.classList.contains('timed'))
+      ?? (openChoice && waiting.includes(openChoice) ? openChoice : waiting[0] ?? null);
     for (const sec of waiting) {
       const fold = sec !== keep;
       if (sec.classList.contains('later') !== fold) sec.classList.toggle('later', fold);
