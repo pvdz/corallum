@@ -96,6 +96,9 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 .dot { display: inline-block; width: 6px; height: 6px; margin-left: 6px; vertical-align: middle; border-radius: 50%; background: var(--glow); box-shadow: 0 0 8px var(--glow); }
 .dot[hidden] { display: none; }
 
+/* The list recedes while the player only watches the sea (main.ts sets panel-rest), and is back at once. */
+.panel .pages { transition: opacity 0.3s ease; }
+html.panel-rest .panel .pages { opacity: 0.45; transition: opacity 4s ease; }
 .pages { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding-right: 2px; scrollbar-width: thin; scrollbar-color: rgba(160, 200, 255, 0.25) transparent; }
 .page { display: flex; flex-direction: column; gap: 8px; padding: 4px 0 12px; }
 .page[hidden] { display: none; }

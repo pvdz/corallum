@@ -38,8 +38,8 @@ export function createShoals(seed: number) {
       const [crx, cry] = reef.crown(L);
       const q = (i * 0.618034) % 1, hi = (i * 0.381966 + 0.5) % 1;
       const a = t * (0.3 + 0.1 * q) + (i / Math.max(1, n)) * Math.PI * 2;
-      const r = (50 + 60 * q + 25 * Math.sin(t * 0.21 + i)) * s;
-      return [crx + Math.cos(a) * r * 1.5, cry - (25 + 80 * hi) * s + Math.sin(a) * r * 0.5];
+      const r = (45 + 95 * q + 25 * Math.sin(t * 0.21 + i)) * s;
+      return [crx + Math.cos(a) * r * 1.5, cry - (10 + 170 * hi) * s + Math.sin(a) * r * 0.5];
     }
     if (job === 'guard') {
       // On guard: a tight, quick ring round the crown, some going each way.

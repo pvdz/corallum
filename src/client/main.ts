@@ -1820,6 +1820,24 @@ let lastInput = 0;
 let lastPress = 0, panelFrame = 0;
 for (const type of ['pointerdown', 'pointerup', 'keydown'] as const) window.addEventListener(type, () => { lastPress = performance.now(); }, { passive: true });
 for (const type of ['pointerdown', 'pointermove', 'wheel', 'keydown'] as const) window.addEventListener(type, () => { lastInput = performance.now(); }, { passive: true });
+// Watching, not buying: with a mouse and the side panel, the panel's list recedes once the pointer
+// has stayed off it a while (the stocks and depth stay bright), and comes back as the pointer returns.
+const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
+const sideLayout = matchMedia('(min-width: 800px), (min-width: 600px) and (max-height: 500px)');
+let lastPanelUse = performance.now();
+const touchPanel = () => {
+  lastPanelUse = performance.now();
+  if (document.documentElement.classList.contains('panel-rest')) document.documentElement.classList.remove('panel-rest');
+};
+window.addEventListener('keydown', touchPanel, { passive: true });
+const restAside = document.querySelector('aside.panel');
+restAside?.addEventListener('pointerover', touchPanel, { passive: true });
+setInterval(() => {
+  if (restAside?.matches(':hover')) { touchPanel(); return; }
+  const rest = finePointer.matches && sideLayout.matches && !viewMode && performance.now() - lastPanelUse > 40_000
+    && !document.querySelector('.reader:not([hidden]), .away:not([hidden])');
+  if (document.documentElement.classList.contains('panel-rest') !== rest) document.documentElement.classList.toggle('panel-rest', rest);
+}, 1000);
 const viewBtn = document.createElement('button');
 viewBtn.id = 'view-mode';
 viewBtn.type = 'button';

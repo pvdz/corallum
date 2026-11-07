@@ -33,7 +33,7 @@ Prestige: **Lesser Spawning** → new seamount, keep **Lineage** traits and deco
 - A quiet panel (the user finds the HTML panel heavy beside the canvas): what is already known
   steps aside (owned cards hide their flavour, choices that may wait fold with Later and only the newest waiting choice is open (the others are one-line rows), full
   residents and the mid-run spawning fold to one line, finished upgrades fold away); feedback
-  belongs in the world (flourishes that show by day and night, numbers over the water). New UI
+  belongs in the world (flourishes that show by day and night, numbers over the water). With a mouse, the list recedes while the player only watches the sea. New UI
   should earn its room on a phone sheet ~400 px tall.
 
 ## Depth and acts
