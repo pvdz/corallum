@@ -1,5 +1,6 @@
 // A small fish tangled in a jelly's trailing threads, drifting near the reef: tap to free it.
 
+import { drawStones } from './works.ts';
 import { drawSmallFish, glow, softRing } from './draw.ts';
 import type { Focus } from './scene.ts';
 import { spot } from './sightings.ts';
@@ -84,15 +85,9 @@ export function drawPinned(ctx: CanvasRenderingContext2D, tg: { k: number; x: nu
     }
     ctx.stroke();
   }
-  // The stone across it.
-  ctx.fillStyle = '#3a3d52';
-  ctx.beginPath();
-  ctx.ellipse(x + 4 * s, y - 3 * s, 11 * s, 7 * s, 0.2, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = 'rgba(160,170,210,0.25)';
-  ctx.beginPath();
-  ctx.ellipse(x + 2 * s, y - 6 * s, 6 * s, 2.5 * s, 0.2, 0, Math.PI * 2);
-  ctx.fill();
+  // The stone across it: a lumpy fallen block, lit faintly on top, a smaller chip beside it.
+  drawStones(ctx, [{ x: x + 4 * s, y: y + 4 * s, rx: 11 * s, ry: 7 * s, seed: tg.k * 1.7 + 0.4 }, { x: x - 7 * s, y: y + 2 * s, rx: 3.5 * s, ry: 2.4 * s, seed: tg.k + 2.1 }],
+    '#3a3d52', 'rgba(160,170,210,0.22)', 'rgba(10,12,22,0.55)', s * 0.6);
   const p = (t * 0.6) % 1;
   softRing(ctx, x, y - 4 * s, (18 + 14 * p) * s, (18 + 14 * p) * s, 6 * s, '255,235,200', (0.35 * (1 - p)) * 1.15);
   ctx.restore();

@@ -1286,3 +1286,4 @@ date, what landed, what is half-done, what's next.
 - Checks after the evening's panel and overlay changes: the whole audit sweep (9 viewports × plain/Larger/scientific × 8 stages) has only the 2 known dim findings each; tools/overlaps.ts on every viewport: no collisions; finale e2e green after the spawn changes.
 - The small line of passed stocks hides itself when all its stocks are hidden (an empty box still took a grid row and its gap).
 - Fragments of other reefs tumbling past (Twilight, Sunlit) were even-width sticks with balls on the ends (tuning forks): limbs taper from the break to the tips with a slight bend and round joints, each tip holds a polyp's crown of five tentacles, and the base shows a jagged pale break of bare skeleton where it snapped off; one fill and one stroke.
+- The stone pinning a brittle star on the Silt Floor was two plain ellipses (an egg): a lumpy fallen block (works.ts drawStones) lit faintly on top, a small chip beside it.
