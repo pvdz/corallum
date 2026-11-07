@@ -626,24 +626,51 @@ export function createMidnightScene(seed: number): Scene {
     const left = touch ? Math.min(1, touch.age / 8) : 0;
     ctx.save();
     ctx.translate(x, y);
-    // The outer house: a clear, faintly lit bubble, sagging once abandoned.
-    ctx.strokeStyle = `rgba(170,200,255,${0.22 * (1 - 0.5 * left)})`;
-    ctx.fillStyle = `rgba(120,160,230,${0.06 * (1 - 0.5 * left)})`;
-    ctx.lineWidth = 1 * s;
-    ctx.beginPath();
-    ctx.ellipse(0, 4 * s * left, 46 * s, (34 - 12 * left) * s, 0, 0, Math.PI * 2);
+    // The outer house: a clear bubble of mucus, uneven, brighter toward its skin than inside,
+    // sagging once abandoned.
+    const fade = 1 - 0.5 * left;
+    const RX = 46 * s, RY = (34 - 12 * left) * s, oy = 4 * s * left;
+    const house = (c: CanvasRenderingContext2D) => {
+      c.beginPath();
+      for (let i = 0; i <= 64; i++) {
+        const a = (i / 64) * Math.PI * 2;
+        const k = 1 + 0.03 * Math.sin(a * 3 + t * 0.3) + 0.015 * Math.sin(a * 5 - t * 0.2);
+        const px = Math.cos(a) * RX * k, py = oy + Math.sin(a) * RY * k;
+        if (i === 0) c.moveTo(px, py); else c.lineTo(px, py);
+      }
+      c.closePath();
+    };
+    const skin = ctx.createRadialGradient(0, oy, Math.min(RX, RY) * 0.2, 0, oy, RX);
+    skin.addColorStop(0, `rgba(120,160,230,${0.02 * fade})`);
+    skin.addColorStop(0.75, `rgba(130,170,235,${0.07 * fade})`);
+    skin.addColorStop(1, `rgba(170,200,255,${0.16 * fade})`);
+    ctx.fillStyle = skin;
+    house(ctx);
     ctx.fill();
+    ctx.strokeStyle = `rgba(170,200,255,${0.1 * fade})`;
+    ctx.lineWidth = 0.8 * s;
     ctx.stroke();
-    // The inner filter: two folded wings of fine mesh.
-    ctx.strokeStyle = `rgba(190,215,255,${0.18 * (1 - left)})`;
+    ctx.strokeStyle = `rgba(220,235,255,${0.22 * fade})`;
+    ctx.lineWidth = 1.2 * s;
+    ctx.beginPath();
+    ctx.ellipse(-RX * 0.35, oy - RY * 0.55, RX * 0.25, RY * 0.12, -0.3, Math.PI * 1.05, Math.PI * 1.7);
+    ctx.stroke();
+    // The inner filter: two folded wings of fine mesh, ribs fanning out and threads across them.
+    ctx.strokeStyle = `rgba(190,215,255,${0.12 * (1 - left)})`;
+    ctx.lineWidth = 0.6 * s;
+    ctx.beginPath();
     for (const side of [-1, 1]) {
-      for (let k = 0; k < 7; k++) {
-        ctx.beginPath();
+      for (let k = 0; k < 9; k++) {
         ctx.moveTo(0, 0);
-        ctx.quadraticCurveTo(side * 16 * s, (-12 + k * 4) * s, side * 26 * s, (-14 + k * 5) * s);
-        ctx.stroke();
+        ctx.quadraticCurveTo(side * 15 * s, (-13 + k * 3.2) * s, side * 26 * s, (-15 + k * 3.8) * s);
+      }
+      for (let r = 1; r <= 4; r++) {
+        const d = r * 6 * s;
+        ctx.moveTo(side * d, -d * 0.55);
+        ctx.quadraticCurveTo(side * (d + 2 * s), 0, side * d, d * 0.6);
       }
     }
+    ctx.stroke();
     // The tadpole: a small bright trunk and a beating tail; gone once touched.
     const tx = left > 0 ? -left * 140 * s : 0;
     ctx.globalCompositeOperation = 'lighter';
