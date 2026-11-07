@@ -1,6 +1,6 @@
 // A small fish tangled in a jelly's trailing threads, drifting near the reef: tap to free it.
 
-import { drawSmallFish, glow } from './draw.ts';
+import { drawSmallFish, glow, softRing } from './draw.ts';
 import type { Focus } from './scene.ts';
 import { spot } from './sightings.ts';
 
@@ -52,11 +52,7 @@ export function drawTangle(ctx: CanvasRenderingContext2D, tg: { k: number; x: nu
   ctx.restore();
   // A breathing ring, as with feasts: it can be touched.
   const p = (t * 0.6) % 1;
-  ctx.strokeStyle = `rgba(255,235,200,${0.35 * (1 - p)})`;
-  ctx.lineWidth = 1.2 * dpr;
-  ctx.beginPath();
-  ctx.arc(fx, fy, (18 + 14 * p) * s, 0, Math.PI * 2);
-  ctx.stroke();
+  softRing(ctx, fx, fy, (18 + 14 * p) * s, (18 + 14 * p) * s, 6 * s, '255,235,200', (0.35 * (1 - p)) * 1.15);
   ctx.globalCompositeOperation = 'lighter';
   glow(ctx, fx, fy, 20 * s, '255,220,160', 0.15);
   ctx.restore();
@@ -98,11 +94,7 @@ export function drawPinned(ctx: CanvasRenderingContext2D, tg: { k: number; x: nu
   ctx.ellipse(x + 2 * s, y - 6 * s, 6 * s, 2.5 * s, 0.2, 0, Math.PI * 2);
   ctx.fill();
   const p = (t * 0.6) % 1;
-  ctx.strokeStyle = `rgba(255,235,200,${0.35 * (1 - p)})`;
-  ctx.lineWidth = 1.2 * dpr;
-  ctx.beginPath();
-  ctx.arc(x, y - 4 * s, (18 + 14 * p) * s, 0, Math.PI * 2);
-  ctx.stroke();
+  softRing(ctx, x, y - 4 * s, (18 + 14 * p) * s, (18 + 14 * p) * s, 6 * s, '255,235,200', (0.35 * (1 - p)) * 1.15);
   ctx.restore();
 }
 
@@ -136,11 +128,7 @@ export function drawFragment(ctx: CanvasRenderingContext2D, f: { k: number; x: n
   ctx.restore();
   const p = (t * 0.6) % 1;
   ctx.save();
-  ctx.strokeStyle = `rgba(255,235,200,${0.35 * (1 - p) * a})`;
-  ctx.lineWidth = 1.2 * dpr;
-  ctx.beginPath();
-  ctx.arc(x, y, (22 + 14 * p) * s, 0, Math.PI * 2);
-  ctx.stroke();
+  softRing(ctx, x, y, (22 + 14 * p) * s, (22 + 14 * p) * s, 6 * s, '255,235,200', (0.35 * (1 - p) * a) * 1.15);
   ctx.restore();
 }
 
@@ -162,10 +150,6 @@ export function drawStray(ctx: CanvasRenderingContext2D, st: { k: number; x: num
   }
   const p = (t * 0.5) % 1;
   ctx.globalCompositeOperation = 'source-over';
-  ctx.strokeStyle = `rgba(160,220,255,${0.35 * (1 - p) * a})`;
-  ctx.lineWidth = 1.2 * dpr;
-  ctx.beginPath();
-  ctx.arc(x, y, (20 + 18 * p) * s, 0, Math.PI * 2);
-  ctx.stroke();
+  softRing(ctx, x, y, (20 + 18 * p) * s, (20 + 18 * p) * s, 6 * s, '160,220,255', (0.35 * (1 - p) * a) * 1.15);
   ctx.restore();
 }
