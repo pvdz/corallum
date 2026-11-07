@@ -1713,44 +1713,54 @@ export function createBreachScene(seed: number): Scene {
     ctx.lineCap = 'round';
     if (!flying) {
       const peck = Math.max(0, Math.sin(t * 0.7)) ** 12;
-      // Legs.
-      ctx.lineWidth = 0.9 * s;
+      // Legs: each bends backward at the ankle, with toes along the stone.
+      ctx.lineWidth = 0.8 * s;
       ctx.beginPath();
-      ctx.moveTo(-1 * s, 3 * s);
-      ctx.lineTo(-2 * s, 13 * s);
-      ctx.moveTo(1.5 * s, 3 * s);
-      ctx.lineTo(2 * s, 13 * s);
+      for (const [dx, dk] of [[-0.5, 0], [1.6, 0.6]] as const) {
+        ctx.moveTo(dx * s, 3 * s);
+        ctx.lineTo((dx - 1.4 + dk) * s, 8 * s);
+        ctx.lineTo((dx + 0.2 + dk) * s, 13 * s);
+        ctx.lineTo((dx + 2.6 + dk) * s, 13.2 * s);
+      }
       ctx.stroke();
-      // Body and tail.
+      // Body: a smooth teardrop from the breast to the tail, the folded wing tips crossing past it.
       ctx.beginPath();
-      ctx.ellipse(0, 0, 7 * s, 4 * s, -0.15, 0, Math.PI * 2);
-      ctx.moveTo(-6 * s, -1 * s);
-      ctx.lineTo(-11 * s, 1 * s);
-      ctx.lineTo(-6 * s, 2 * s);
+      ctx.moveTo(6 * s, -3.5 * s);
+      ctx.bezierCurveTo(8.5 * s, -1 * s, 6 * s, 3.5 * s, 1 * s, 3.8 * s);
+      ctx.bezierCurveTo(-3 * s, 4 * s, -7 * s, 2.5 * s, -10 * s, 1 * s);
+      ctx.lineTo(-12.5 * s, -0.6 * s);
+      ctx.lineTo(-9 * s, -1.4 * s);
+      ctx.bezierCurveTo(-6 * s, -4.6 * s, 0, -5.2 * s, 6 * s, -3.5 * s);
       ctx.fill();
-      // Neck, head and a long bill dipping when it pecks.
+      // Neck, head and a long bill curving a little down, dipping when it pecks.
       ctx.save();
-      ctx.translate(5 * s, -2 * s);
+      ctx.translate(5 * s, -3 * s);
       ctx.rotate(0.9 * peck);
-      ctx.lineWidth = 2 * s;
       ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(2 * s, -5 * s);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(2.5 * s, -6 * s, 2.2 * s, 0, Math.PI * 2);
+      ctx.moveTo(-2 * s, 0);
+      ctx.quadraticCurveTo(-1 * s, -4 * s, 1 * s, -6.5 * s);
+      ctx.arc(2.6 * s, -7 * s, 2 * s, Math.PI * 0.95, Math.PI * 2.3);
+      ctx.quadraticCurveTo(3 * s, -3 * s, 2.5 * s, 0.5 * s);
+      ctx.closePath();
       ctx.fill();
-      ctx.lineWidth = 0.9 * s;
+      ctx.lineWidth = 0.8 * s;
       ctx.beginPath();
-      ctx.moveTo(4 * s, -6 * s);
-      ctx.lineTo(10 * s, -4.5 * s);
+      ctx.moveTo(4.2 * s, -7.3 * s);
+      ctx.quadraticCurveTo(8 * s, -7 * s, 10.5 * s, -5 * s);
+      ctx.stroke();
+      // Moonlight on the crown of its head.
+      ctx.strokeStyle = 'rgba(220,225,255,0.35)';
+      ctx.lineWidth = 0.7 * s;
+      ctx.beginPath();
+      ctx.arc(2.6 * s, -7 * s, 2 * s, Math.PI * 1.15, Math.PI * 1.7);
       ctx.stroke();
       ctx.restore();
-      // Moonlight on its back.
+      // Moonlight along its back.
       ctx.strokeStyle = 'rgba(220,225,255,0.35)';
       ctx.lineWidth = 0.8 * s;
       ctx.beginPath();
-      ctx.ellipse(0, 0, 7 * s, 4 * s, -0.15, Math.PI * 1.1, Math.PI * 1.75);
+      ctx.moveTo(-8.5 * s, -1.6 * s);
+      ctx.bezierCurveTo(-5.5 * s, -4.4 * s, 0, -5 * s, 4.5 * s, -3.9 * s);
       ctx.stroke();
     } else {
       // Wings beating as it climbs away: filled, pointed, bent at the wrist.
