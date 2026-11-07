@@ -1635,23 +1635,29 @@ export function createTwilightScene(seed: number): Scene {
     body.addColorStop(1, '#a08a6c');
     ctx.fillStyle = body;
     ctx.beginPath();
-    ctx.moveTo(32 * s, -1 * s);
+    ctx.moveTo(33 * s, -0.5 * s);
     ctx.bezierCurveTo(28 * s, -15 * s, -8 * s, -17 * s, -25 * s, -5 * s);
     ctx.lineTo(-25 * s, 5 * s);
-    ctx.bezierCurveTo(-8 * s, 15 * s, 22 * s, 14 * s, 30 * s, (4 + 3 * gape) * s);
-    ctx.lineTo(25 * s, (1 + gape) * s);
+    ctx.bezierCurveTo(-8 * s, 15 * s, 24 * s, 14 * s, 34.5 * s, (4 + 3 * gape) * s);
+    ctx.lineTo(22 * s, (1.5 + 0.5 * gape) * s);
     ctx.closePath();
     ctx.save();
     ctx.fill();
     ctx.clip();
     // Mottling: pale and dark blotches, inside the body only.
-    for (let k = 0; k < 22; k++) {
-      const mx = ((k * 0.618) % 1) * 54 - 26, my = ((k * 0.382) % 1) * 24 - 12;
-      ctx.fillStyle = k % 3 ? 'rgba(35,26,20,0.45)' : 'rgba(210,190,150,0.25)';
-      ctx.beginPath();
-      ctx.ellipse(mx * s, my * s, (1.8 + (k % 3) * 0.8) * s, (1.3 + (k % 2) * 0.7) * s, k, 0, Math.PI * 2);
-      ctx.fill();
+    const mr = mulberry32(0x6a0b);
+    const dark = new Path2D(), pale = new Path2D();
+    for (let k = 0; k < 30; k++) {
+      const mx = range(mr, -24, 28), my = range(mr, -13, 12);
+      const rx = range(mr, 1.4, 3.2) * s, ry = rx * range(mr, 0.55, 0.9);
+      const p = k % 3 ? dark : pale;
+      p.moveTo(mx * s + rx, my * s);
+      p.ellipse(mx * s, my * s, rx, ry, range(mr, 0, Math.PI), 0, Math.PI * 2);
     }
+    ctx.fillStyle = 'rgba(35,26,20,0.4)';
+    ctx.fill(dark);
+    ctx.fillStyle = 'rgba(210,190,150,0.22)';
+    ctx.fill(pale);
     // Gill cover: an arc that lifts as it breathes.
     ctx.strokeStyle = 'rgba(30,22,16,0.6)';
     ctx.lineWidth = 1.2 * s;
@@ -1659,14 +1665,27 @@ export function createTwilightScene(seed: number): Scene {
     ctx.arc((12 - gape) * s, 0, 11 * s, -1.1, 1.1);
     ctx.stroke();
     ctx.restore();
-    // The open mouth: a dark gape under the big upper jaw.
-    ctx.fillStyle = '#1c120e';
+    // The open mouth: a wide gape, the lower jaw jutting past the upper, a reddish throat going dark
+    // inside, and thick pale lips.
+    const throat = ctx.createLinearGradient(34 * s, 0, 22 * s, 0);
+    throat.addColorStop(0, '#5a2a24');
+    throat.addColorStop(1, '#140a08');
+    ctx.fillStyle = throat;
     ctx.beginPath();
-    ctx.moveTo(32 * s, -1 * s);
-    ctx.quadraticCurveTo(27 * s, (1 + gape) * s, 30 * s, (4 + 3 * gape) * s);
-    ctx.lineTo(25 * s, (1 + gape) * s);
+    ctx.moveTo(33 * s, -0.5 * s);
+    ctx.quadraticCurveTo(27 * s, (0.4 + 0.6 * gape) * s, 22 * s, (1.5 + 0.5 * gape) * s);
+    ctx.quadraticCurveTo(28 * s, (3 + 2 * gape) * s, 34.5 * s, (4 + 3 * gape) * s);
     ctx.closePath();
     ctx.fill();
+    ctx.strokeStyle = 'rgba(176,146,112,0.9)';
+    ctx.lineCap = 'round';
+    ctx.lineWidth = 1.4 * s;
+    ctx.beginPath();
+    ctx.moveTo(33.6 * s, -1 * s);
+    ctx.quadraticCurveTo(28 * s, (-0.2 + 0.6 * gape) * s, 23.5 * s, (1 + 0.5 * gape) * s);
+    ctx.moveTo(35 * s, (4.6 + 3 * gape) * s);
+    ctx.quadraticCurveTo(28.5 * s, (3.9 + 2.2 * gape) * s, 23.5 * s, (2.3 + 0.5 * gape) * s);
+    ctx.stroke();
     // Pectoral fin, fanning to hold it still.
     ctx.fillStyle = 'rgba(120,98,74,0.85)';
     ctx.save();
