@@ -862,19 +862,55 @@ export function createBreachScene(seed: number): Scene {
     ctx.rect(0, 0, w, wy + 1);
     ctx.clip();
     // The shell's top, barely out of the water.
+    const sy = wy + 4 * s - rise * 6 * s;
     ctx.fillStyle = '#4d5a3a';
     ctx.beginPath();
-    ctx.ellipse(x - 14 * s, wy + 4 * s - rise * 6 * s, 18 * s, 7 * s, 0, Math.PI, 0);
+    ctx.ellipse(x - 14 * s, sy, 18 * s, 7 * s, 0, Math.PI, 0);
     ctx.fill();
-    // The head, higher, nose up.
+    // Its plates' seams, and the wet shine along the top.
+    ctx.strokeStyle = 'rgba(24,30,18,0.6)';
+    ctx.lineWidth = 0.6 * s;
+    ctx.beginPath();
+    ctx.ellipse(x - 14 * s, sy, 13 * s, 4 * s, 0, Math.PI * 1.05, Math.PI * 1.95);
+    for (const dx of [-8, -1, 6]) { ctx.moveTo(x + (dx - 14) * s, sy - 4 * s * Math.sqrt(1 - (dx / 13) ** 2)); ctx.lineTo(x + (dx - 14) * s * 1.02, sy - 6.8 * s * Math.sqrt(1 - (dx / 18) ** 2)); }
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(220,235,245,0.35)';
+    ctx.lineWidth = 1 * s;
+    ctx.beginPath();
+    ctx.ellipse(x - 14 * s, sy, 16 * s, 6 * s, 0, Math.PI * 1.25, Math.PI * 1.6);
+    ctx.stroke();
+    // The head, higher, nose up: a hooked beak, a pale throat, a ringed eye.
+    const hx = x + 6 * s, hy = wy - rise * 10 * s;
+    ctx.save();
+    ctx.translate(hx, hy);
+    ctx.rotate(-0.5);
     ctx.fillStyle = '#6a7350';
     ctx.beginPath();
-    ctx.ellipse(x + 6 * s, wy - rise * 10 * s, 6 * s, 4.5 * s, -0.5, 0, Math.PI * 2);
+    ctx.moveTo(-6 * s, 2 * s);
+    ctx.quadraticCurveTo(-5 * s, -4.6 * s, 2 * s, -4 * s);
+    ctx.quadraticCurveTo(6.6 * s, -2.6 * s, 6.4 * s, 0.4 * s);
+    ctx.quadraticCurveTo(3 * s, 4 * s, -6 * s, 4 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = 'rgba(214,206,160,0.5)';
+    ctx.beginPath();
+    ctx.ellipse(0, 2.4 * s, 4.5 * s, 1.1 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(30,36,22,0.7)';
+    ctx.lineWidth = 0.5 * s;
+    ctx.beginPath();
+    ctx.moveTo(6.4 * s, 0.4 * s);
+    ctx.quadraticCurveTo(4.6 * s, 0.4 * s, 3.4 * s, 1.2 * s);
+    ctx.stroke();
+    ctx.fillStyle = '#e0dcc0';
+    ctx.beginPath();
+    ctx.arc(2.4 * s, -1.6 * s, 1.1 * s, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = '#121410';
     ctx.beginPath();
-    ctx.arc(x + 8 * s, wy - rise * 11 * s, 0.9 * s, 0, Math.PI * 2);
+    ctx.arc(2.6 * s, -1.6 * s, 0.65 * s, 0, Math.PI * 2);
     ctx.fill();
+    ctx.restore();
     ctx.restore();
     // A puff of breath at the top of the rise.
     if (u > 0.4 && u < 0.7) glow(ctx, x + 10 * s, wy - 16 * s, 8 * s, '230,235,245', 0.4 * Math.sin(((u - 0.4) / 0.3) * Math.PI));
