@@ -1543,30 +1543,47 @@ export function createSunlitScene(seed: number): Scene {
     g.addColorStop(1, '#e8eef0');
     ctx.fillStyle = g;
     ctx.beginPath();
-    ctx.moveTo(30 * s, 1 * s);
-    ctx.quadraticCurveTo(18 * s, -8 * s, -8 * s, -5 * s);
+    ctx.moveTo(31 * s, 1.4 * s);
+    ctx.bezierCurveTo(28 * s, -5 * s, 16 * s, -7.6 * s, -8 * s, -5 * s);
     ctx.quadraticCurveTo(-20 * s, -3 * s, -26 * s, 0);
-    ctx.quadraticCurveTo(-20 * s, 4 * s, -6 * s, 5 * s);
-    ctx.quadraticCurveTo(18 * s, 7 * s, 30 * s, 1 * s);
+    ctx.quadraticCurveTo(-20 * s, 3.6 * s, -6 * s, 5 * s);
+    ctx.bezierCurveTo(12 * s, 7 * s, 26 * s, 5.4 * s, 31 * s, 1.4 * s);
     ctx.fill();
-    // Fins: dorsal and pectoral with their black tips, and the tail swinging.
-    const fin = (pts: number[][], tip: number[][]) => {
+    // Fins, curved and swept back, the big ones black-tipped; the tail swinging.
+    const fin = (path: (c: CanvasRenderingContext2D) => void, tip: number[][] | null) => {
       ctx.fillStyle = '#8a9ba4';
       ctx.beginPath();
-      pts.forEach(([px, py], i) => (i ? ctx.lineTo(px! * s, py! * s) : ctx.moveTo(px! * s, py! * s)));
+      path(ctx);
       ctx.fill();
+      if (!tip) return;
       ctx.fillStyle = '#16191c';
       ctx.beginPath();
       tip.forEach(([px, py], i) => (i ? ctx.lineTo(px! * s, py! * s) : ctx.moveTo(px! * s, py! * s)));
       ctx.fill();
     };
-    fin([[4, -6], [-4, -16], [-8, -5]], [[-2, -13], [-4, -16], [-5, -12]]);
-    fin([[10, 4], [2, 14], [-2, 5]], [[3, 11], [2, 14], [0, 11]]);
+    fin((c) => { c.moveTo(5 * s, -6 * s); c.quadraticCurveTo(0, -12 * s, -5 * s, -16 * s); c.quadraticCurveTo(-5 * s, -9 * s, -9 * s, -5 * s); c.closePath(); },
+      [[-3.2, -13.4], [-5, -16], [-5.6, -12.6]]);
+    fin((c) => { c.moveTo(11 * s, 4.6 * s); c.quadraticCurveTo(6 * s, 10 * s, 0, 14 * s); c.quadraticCurveTo(1 * s, 8 * s, -2 * s, 5.2 * s); c.closePath(); },
+      [[2.4, 12.2], [0, 14], [0.6, 11.4]]);
+    // The small second dorsal and anal fins by the tail.
+    fin((c) => { c.moveTo(-16 * s, -3.4 * s); c.lineTo(-19 * s, -6.4 * s); c.lineTo(-20 * s, -2.8 * s); c.closePath();
+      c.moveTo(-15 * s, 3.2 * s); c.lineTo(-18.5 * s, 5.8 * s); c.lineTo(-19.5 * s, 2.6 * s); c.closePath(); }, null);
     ctx.save();
     ctx.translate(-25 * s, 0);
     ctx.rotate(sway);
-    fin([[0, 0], [-10, -11], [-6, 0], [-9, 7]], [[-8, -9], [-10, -11], [-7, -6]]);
+    fin((c) => { c.moveTo(0, -1 * s); c.quadraticCurveTo(-5 * s, -6 * s, -11 * s, -12 * s); c.quadraticCurveTo(-7 * s, -3 * s, -6.5 * s, 0); c.quadraticCurveTo(-7 * s, 3 * s, -9 * s, 7 * s); c.quadraticCurveTo(-4 * s, 3 * s, 0, 1 * s); c.closePath(); },
+      [[-8.6, -9.6], [-11, -12], [-7.6, -6.6]]);
     ctx.restore();
+    // Gill slits.
+    ctx.strokeStyle = 'rgba(70,84,94,0.6)';
+    ctx.lineWidth = 0.5 * s;
+    ctx.beginPath();
+    for (let q = 0; q < 5; q++) {
+      const gx = (15 - q * 1.6) * s;
+      ctx.moveTo(gx, -2.6 * s);
+      ctx.quadraticCurveTo(gx - 0.8 * s, 0, gx, 2.6 * s);
+    }
+    ctx.stroke();
     ctx.fillStyle = '#101418';
     ctx.beginPath();
     ctx.arc(22 * s, -1.5 * s, 1 * s, 0, Math.PI * 2);
