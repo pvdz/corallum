@@ -30,18 +30,8 @@ export function drawParrotfish(ctx: CanvasRenderingContext2D, len: number, hue: 
   ctx.lineTo(-L * 0.8, L * 0.12);
   ctx.closePath();
   ctx.fill();
-  ctx.strokeStyle = `hsla(${hue + 50},55%,72%,0.55)`;
-  ctx.lineWidth = 1 * s;
-  ctx.beginPath();
-  ctx.moveTo(-L * 1.34, -L * 0.44 + tail);
-  ctx.quadraticCurveTo(-L * 1.22, tail * 0.6, -L * 1.34, L * 0.44 + tail);
-  ctx.stroke();
   // The body: a blunt brow over the beak, the back arched, a slim wrist before the tail.
-  const body = ctx.createLinearGradient(0, -L * 0.5, 0, L * 0.5);
-  body.addColorStop(0, `hsl(${hue},${36 * sat}%,${40 + lift}%)`);
-  body.addColorStop(0.6, `hsl(${hue + 12},${34 * sat}%,${36 + lift * 0.6}%)`);
-  body.addColorStop(1, `hsl(${hue + 24},${30 * sat}%,${46 - lift * 0.4}%)`);
-  ctx.fillStyle = body;
+  ctx.fillStyle = bodyShade(ctx, L, hue, elder, sat, lift);
   ctx.beginPath();
   ctx.moveTo(L * 0.9, -L * 0.16);
   ctx.bezierCurveTo(L * 0.8, -L * 0.48, L * 0.2, -L * 0.54, -L * 0.3, -L * 0.36);
@@ -55,9 +45,9 @@ export function drawParrotfish(ctx: CanvasRenderingContext2D, len: number, hue: 
   ctx.strokeStyle = elder ? 'rgba(235,240,245,0.28)' : `hsla(${hue + 30},40%,72%,0.16)`;
   ctx.lineWidth = 0.7 * s;
   ctx.beginPath();
-  for (let row = -1; row <= 1; row++) {
-    for (let q = 0; q < 5; q++) {
-      const cx = -L * 0.5 + q * L * 0.22 + (row & 1) * L * 0.11, cy = row * L * 0.17;
+  for (let row = 0; row < 2; row++) {
+    for (let q = 0; q < 4; q++) {
+      const cx = -L * 0.45 + q * L * 0.25 + row * L * 0.12, cy = (row - 0.5) * L * 0.22;
       const r = L * 0.09;
       ctx.moveTo(cx + Math.cos(-1.1) * r, cy + Math.sin(-1.1) * r);
       ctx.arc(cx, cy, r, -1.1, 1.1);
@@ -70,6 +60,8 @@ export function drawParrotfish(ctx: CanvasRenderingContext2D, len: number, hue: 
   ctx.beginPath();
   ctx.moveTo(L * 0.5, -L * 0.3);
   ctx.quadraticCurveTo(L * 0.38, 0, L * 0.5, L * 0.28);
+  // The mouth line between the beak's plates, in the same stroke.
+  if (!elder) { ctx.moveTo(L * 0.86, L * 0.025); ctx.lineTo(L * 1.1, L * 0.025); }
   ctx.stroke();
   const flap = 0.35 + 0.25 * Math.sin(beat * 0.6);
   ctx.fillStyle = `hsla(${hue + 40},45%,70%,0.4)`;
@@ -107,12 +99,6 @@ export function drawParrotfish(ctx: CanvasRenderingContext2D, len: number, hue: 
   ctx.quadraticCurveTo(L * 1.06, L * 0.15, L * 0.86, L * 0.16);
   ctx.closePath();
   ctx.fill();
-  ctx.strokeStyle = 'rgba(60,52,40,0.55)';
-  ctx.lineWidth = 0.6 * s;
-  ctx.beginPath();
-  ctx.moveTo(L * 0.86, L * 0.025);
-  ctx.lineTo(L * 1.1, L * 0.025);
-  ctx.stroke();
   }
   // The eye, ringed.
   ctx.fillStyle = `hsl(${hue + 60},50%,72%)`;
@@ -131,4 +117,21 @@ export function drawParrotfish(ctx: CanvasRenderingContext2D, len: number, hue: 
     ctx.closePath();
     ctx.fill();
   }
+}
+
+// Body shades by size and hue: a gradient is laid out in the fish's own coordinates, so one made
+// for a size serves every fish of that size (the Rasp come in a few sizes and hues).
+const shades = new Map<string, CanvasGradient>();
+function bodyShade(ctx: CanvasRenderingContext2D, L: number, hue: number, elder: boolean, sat: number, lift: number): CanvasGradient {
+  const key = `${Math.round(L * 4)}|${Math.round(hue)}|${elder ? 1 : 0}`;
+  let g = shades.get(key);
+  if (!g) {
+    if (shades.size > 256) shades.clear();
+    g = ctx.createLinearGradient(0, -L * 0.5, 0, L * 0.5);
+    g.addColorStop(0, `hsl(${hue},${36 * sat}%,${40 + lift}%)`);
+    g.addColorStop(0.6, `hsl(${hue + 12},${34 * sat}%,${36 + lift * 0.6}%)`);
+    g.addColorStop(1, `hsl(${hue + 24},${30 * sat}%,${46 - lift * 0.4}%)`);
+    shades.set(key, g);
+  }
+  return g;
 }
