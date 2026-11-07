@@ -1206,22 +1206,43 @@ export function createBreachScene(seed: number): Scene {
       ctx.save();
       ctx.translate(x, y);
       ctx.globalAlpha = 1 - dive * 0.6;
-      ctx.fillStyle = '#3a3a2a';
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 3.6 * s, 2.4 * s, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(4 * s, -0.4 * s, 1.2 * s, 0, Math.PI * 2);
-      ctx.fill();
+      // A hatchling in profile, swimming right: a domed shell with a pale rim, a round head, the big
+      // front flipper sweeping (hatchlings are mostly flipper), a small one behind.
       const paddle = Math.sin(t * 6 + k) * 0.6;
-      ctx.strokeStyle = '#3a3a2a';
-      ctx.lineWidth = 1 * s;
+      ctx.fillStyle = '#3a3a2a';
+      ctx.save();
+      ctx.translate(1.4 * s, 0.6 * s);
+      ctx.rotate(0.6 + paddle);
       ctx.beginPath();
-      ctx.moveTo(1 * s, 1 * s);
-      ctx.lineTo(3 * s, (3 + paddle) * s);
-      ctx.moveTo(-1 * s, 1 * s);
-      ctx.lineTo(-3 * s, (3 - paddle) * s);
+      ctx.moveTo(0, -0.6 * s);
+      ctx.quadraticCurveTo(2.6 * s, 1.6 * s, 0.8 * s, 5 * s);
+      ctx.quadraticCurveTo(-0.6 * s, 2.4 * s, -0.8 * s, 0.2 * s);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+      ctx.beginPath();
+      ctx.ellipse(-2.8 * s, 1 * s, 1.1 * s, 0.6 * s, -0.5 - paddle * 0.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(-3.8 * s, 0.6 * s);
+      ctx.quadraticCurveTo(-3.6 * s, -2.6 * s, 0, -2.6 * s);
+      ctx.quadraticCurveTo(3.4 * s, -2.4 * s, 3.6 * s, 0.4 * s);
+      ctx.quadraticCurveTo(0, 1.4 * s, -3.8 * s, 0.6 * s);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(200,190,150,0.55)';
+      ctx.lineWidth = 0.5 * s;
+      ctx.beginPath();
+      ctx.moveTo(-3.6 * s, 0.5 * s);
+      ctx.quadraticCurveTo(0, 1.2 * s, 3.4 * s, 0.4 * s);
       ctx.stroke();
+      ctx.fillStyle = '#4a4834';
+      ctx.beginPath();
+      ctx.arc(4.6 * s, -0.6 * s, 1.3 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#e8e2c8';
+      ctx.beginPath();
+      ctx.arc(5.1 * s, -0.9 * s, 0.35 * s, 0, Math.PI * 2);
+      ctx.fill();
       ctx.restore();
     }
   }
