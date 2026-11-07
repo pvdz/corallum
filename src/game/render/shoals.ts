@@ -207,6 +207,18 @@ export function createShoals(seed: number) {
     ctx.fillStyle = '#5a6e9c';
     ctx.lineWidth = 2 * s;
     const k = 1.4 * s;
+    // Far seabed under it, so it stands somewhere instead of hanging in the water.
+    if (['gate', 'terraces', 'lamp-hall', 'wells', 'midden', 'harbour', 'sun-gate', 'carcass'].includes(site)) {
+      ctx.save();
+      ctx.globalAlpha = 0.35 * a * 0.6;
+      ctx.fillStyle = '#3e4c70';
+      ctx.beginPath();
+      ctx.moveTo(x - 60 * k, y + 18 * k);
+      ctx.bezierCurveTo(x - 40 * k, y + 11 * k, x + 30 * k, y + 10 * k, x + 60 * k, y + 18 * k);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
     ctx.beginPath();
     if (site === 'gate') {
       // A round gate of fitted blocks standing on two stubs of wall, half sunk in silt.
@@ -223,11 +235,34 @@ export function createShoals(seed: number) {
       ctx.rect(x - 40 * k, y + 24 * k, 80 * k, 4 * k);
       ctx.fill();
     } else if (site === 'terraces') {
-      for (let i = 0; i < 4; i++) ctx.rect(x - 30 * k + i * 12 * k, y + 14 * k - i * 9 * k, 36 * k - i * 6 * k, 6 * k);
+      // Stepped terraces cut into a slope: one stepped silhouette, each tread a little worn.
+      ctx.moveTo(x - 40 * k, y + 18 * k);
+      let px = x - 34 * k, py = y + 18 * k;
+      for (let i = 0; i < 4; i++) {
+        ctx.lineTo(px, py - 8 * k);
+        ctx.quadraticCurveTo(px + 6 * k, py - 9 * k, px + 12 * k - i * k, py - 8 * k);
+        px += 12 * k - i * k;
+        py -= 8 * k;
+      }
+      ctx.lineTo(px + 8 * k, py + 2 * k);
+      ctx.lineTo(x + 40 * k, y + 18 * k);
+      ctx.closePath();
       ctx.fill();
     } else if (site === 'lamp-hall') {
-      for (let i = 0; i < 4; i++) ctx.rect(x - 24 * k + i * 15 * k, y - 18 * k, 4 * k, 36 * k);
-      ctx.rect(x - 28 * k, y - 22 * k, 56 * k, 4 * k);
+      // The hall's broken colonnade: columns of uneven height with flared capitals, a stretch of
+      // roof still lying across the first two, the last column a stump.
+      const tops = [-18, -18, -8, 4];
+      for (let i = 0; i < 4; i++) {
+        const cx = x - 24 * k + i * 15 * k, top = y + tops[i]! * k;
+        ctx.rect(cx, top, 4 * k, y + 18 * k - top);
+        if (i < 3) ctx.rect(cx - 1.5 * k, top - 1.5 * k, 7 * k, 2 * k);
+      }
+      ctx.moveTo(x - 28 * k, y - 22 * k);
+      ctx.lineTo(x - 2 * k, y - 22 * k);
+      ctx.lineTo(x + 1 * k, y - 20.5 * k);
+      ctx.lineTo(x - 3 * k, y - 18.5 * k);
+      ctx.lineTo(x - 28 * k, y - 18.5 * k);
+      ctx.closePath();
       ctx.fill();
     } else if (site === 'wells') {
       // Three well-heads of stacked stone at different heights, each a squat drum with a dark
@@ -248,21 +283,68 @@ export function createShoals(seed: number) {
       }
       ctx.fill();
     } else if (site === 'midden') {
-      ctx.moveTo(x - 34 * k, y + 14 * k);
-      ctx.quadraticCurveTo(x, y - 20 * k, x + 34 * k, y + 14 * k);
+      // A heap of shell and bone: a lumpy mound, broken shells and a curved rib sticking out of it.
+      ctx.moveTo(x - 36 * k, y + 16 * k);
+      for (let i = 1; i < 12; i++) {
+        const u = i / 12, hx = x - 36 * k + u * 72 * k;
+        ctx.lineTo(hx, y + 16 * k - Math.sin(u * Math.PI) * (26 + 4 * Math.sin(i * 2.7)) * k);
+      }
+      ctx.lineTo(x + 36 * k, y + 16 * k);
       ctx.closePath();
       ctx.fillStyle = '#b8b2a2';
       ctx.fill();
+      ctx.strokeStyle = '#d6d0c0';
+      ctx.lineWidth = 2.4 * k;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(x + 6 * k, y - 8 * k);
+      ctx.quadraticCurveTo(x + 14 * k, y - 22 * k, x + 24 * k, y - 20 * k);
+      ctx.moveTo(x - 14 * k, y - 4 * k);
+      ctx.lineTo(x - 20 * k, y - 15 * k);
+      ctx.stroke();
+      ctx.fillStyle = '#d6d0c0';
+      ctx.beginPath();
+      for (const [sx, sy, sr] of [[-22, 6, 4], [-4, -6, 3.5], [16, 4, 4.5], [4, 10, 3]] as const) {
+        ctx.moveTo(x + sx * k, y + sy * k);
+        ctx.arc(x + sx * k, y + sy * k, sr * k, Math.PI, 0);
+        ctx.closePath();
+      }
+      ctx.fill();
     } else if (site === 'harbour') {
-      // The harbour: a ring of worn posts.
-      for (let i = 0; i < 7; i++) ctx.rect(x - 36 * k + i * 12 * k, y - (10 + (i % 3) * 4) * k, 4 * k, (24 + (i % 3) * 4) * k);
+      // The harbour: a curve of worn mooring posts, leaning every way, their tops rotted to points
+      // or snapped short, the nearer ones bigger.
+      for (let i = 0; i < 7; i++) {
+        const u = i / 6, near = 0.75 + 0.35 * Math.sin(u * Math.PI);
+        const px = x - 36 * k + i * 12 * k, base = y + (14 + 4 * Math.sin(u * Math.PI)) * k;
+        const hgt = (18 + ((i * 7) % 5) * 3) * k * near, w = 2.4 * k * near, lean = Math.sin(i * 2.3) * 4 * k;
+        const snapped = i % 3 === 1;
+        ctx.moveTo(px - w, base);
+        ctx.lineTo(px - w * 0.8 + lean, base - hgt);
+        if (snapped) ctx.lineTo(px + lean, base - hgt + 2 * k);
+        else ctx.lineTo(px + lean + w * 0.2, base - hgt - 3 * k);
+        ctx.lineTo(px + w * 0.8 + lean, base - hgt + (snapped ? -1 : 0) * k);
+        ctx.lineTo(px + w, base);
+        ctx.closePath();
+      }
       ctx.fillStyle = '#cfc6b4';
       ctx.fill();
     } else if (site === 'sun-gate') {
-      // A doorway: two posts and a lintel.
-      ctx.rect(x - 22 * k, y - 18 * k, 5 * k, 32 * k);
-      ctx.rect(x + 17 * k, y - 18 * k, 5 * k, 32 * k);
-      ctx.rect(x - 26 * k, y - 22 * k, 52 * k, 6 * k);
+      // A doorway left standing: two weathered posts, one shorter, and the lintel across them
+      // tilted where it has slipped, its far end broken off.
+      ctx.moveTo(x - 22 * k, y + 14 * k);
+      ctx.lineTo(x - 21.5 * k, y - 18 * k);
+      ctx.lineTo(x - 16.5 * k, y - 18.5 * k);
+      ctx.lineTo(x - 17 * k, y + 14 * k);
+      ctx.moveTo(x + 17 * k, y + 14 * k);
+      ctx.lineTo(x + 17.4 * k, y - 14.5 * k);
+      ctx.lineTo(x + 22 * k, y - 15 * k);
+      ctx.lineTo(x + 22.5 * k, y + 14 * k);
+      ctx.moveTo(x - 26 * k, y - 23 * k);
+      ctx.lineTo(x + 18 * k, y - 19.5 * k);
+      ctx.lineTo(x + 20 * k, y - 16.5 * k);
+      ctx.lineTo(x + 16 * k, y - 14 * k);
+      ctx.lineTo(x - 26 * k, y - 17 * k);
+      ctx.closePath();
       ctx.fillStyle = '#d8d0c0';
       ctx.fill();
     } else if (site === 'carcass') {
