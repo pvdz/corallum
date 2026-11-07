@@ -1429,6 +1429,7 @@ export function createTwilightScene(seed: number): Scene {
     ctx.save();
     ctx.globalAlpha = 0.85 * fade;
     ctx.fillStyle = '#5a8a9c';
+    ctx.beginPath();
     for (let i = 0; i < 70; i++) {
       const lag = r() * 0.5, lane = r(), size = 0.6 + r() * 0.6;
       const u = (p / length) * 1.6 - lag;
@@ -1436,17 +1437,20 @@ export function createTwilightScene(seed: number): Scene {
       const x = focus.x + focus.w * (1.05 - u * 1.1);
       const y = focus.y + focus.h * (0.45 + lane * 0.2) + Math.sin(t * 1.3 + i) * 3 * s;
       if (first) { spot('rasp-herd', x, y, 60 * s); first = false; }
-      const len = 11 * s * size;
-      ctx.beginPath();
-      ctx.ellipse(x, y, len, len * 0.42, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.moveTo(x + len * 0.8, y);
-      ctx.lineTo(x + len * 1.4, y - len * 0.4 + Math.sin(t * 6 + i) * len * 0.15);
-      ctx.lineTo(x + len * 1.4, y + len * 0.4 + Math.sin(t * 6 + i) * len * 0.15);
+      const len = 11 * s * size, L = len, tail = Math.sin(t * 6 + i) * len * 0.15;
+      // Far off, each a parrotfish's outline (swimming left): a blunt brow, an arched back, a fan
+      // of a tail; the whole herd in one path.
+      ctx.moveTo(x - L * 0.92, y - L * 0.12);
+      ctx.bezierCurveTo(x - L * 0.8, y - L * 0.5, x - L * 0.1, y - L * 0.54, x + L * 0.35, y - L * 0.32);
+      ctx.quadraticCurveTo(x + L * 0.62, y - L * 0.18, x + L * 0.84, y - L * 0.12);
+      ctx.lineTo(x + L * 1.34, y - L * 0.44 + tail);
+      ctx.quadraticCurveTo(x + L * 1.22, y + tail * 0.6, x + L * 1.34, y + L * 0.44 + tail);
+      ctx.lineTo(x + L * 0.84, y + L * 0.12);
+      ctx.quadraticCurveTo(x + L * 0.5, y + L * 0.26, x + L * 0.1, y + L * 0.42);
+      ctx.bezierCurveTo(x - L * 0.4, y + L * 0.5, x - L * 0.8, y + L * 0.34, x - L * 0.92, y + L * 0.14);
       ctx.closePath();
-      ctx.fill();
     }
+    ctx.fill();
     ctx.restore();
   }
 
