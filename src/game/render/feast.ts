@@ -3,7 +3,7 @@
 
 import { FEAST } from '../content/events.ts';
 import type { Feast, FeastPay } from '../sim/economy.ts';
-import { glow } from './draw.ts';
+import { glow, softRing } from './draw.ts';
 import type { Focus } from './scene.ts';
 
 /** Where the feast is, in device pixels, `age` seconds after it started to fall. */
@@ -55,11 +55,8 @@ export function drawFeast(ctx: CanvasRenderingContext2D, f: Feast, age: number, 
   }
   // A ring that breathes, as a hint that it can be touched.
   const pulse = (t * 0.6) % 1;
-  ctx.strokeStyle = `rgba(255,225,190,${0.35 * (1 - pulse)})`;
-  ctx.lineWidth = 1.2 * dpr;
-  ctx.beginPath();
-  ctx.arc(x, y, feastReach(focus, dpr) * (0.6 + 0.4 * pulse), 0, Math.PI * 2);
-  ctx.stroke();
+  const rr = feastReach(focus, dpr) * (0.6 + 0.4 * pulse);
+  softRing(ctx, x, y, rr, rr, 9 * dpr, '255,225,190', 0.32 * (1 - pulse));
   ctx.restore();
 }
 

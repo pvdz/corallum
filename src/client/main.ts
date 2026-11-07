@@ -45,7 +45,7 @@ import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, LUCKY, giftOf, 
 import { newFeats } from '../game/content/feats.ts';
 import { createPortraits } from './portraits.ts';
 import { createZoom } from './zoom.ts';
-import { drawMoon, glow as glowAt } from '../game/render/draw.ts';
+import { drawMoon, glow as glowAt, softRing } from '../game/render/draw.ts';
 import { ACT5, GAUGE_MOON } from '../game/content/act5.ts';
 import { type Spot, creatureAt, endFrameSpots, hover, poke, spoke, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { HEAT } from '../game/content/act4.ts';
@@ -1213,11 +1213,12 @@ function drawLucky(t: number): void {
     if (p) {
       const r = Math.min(Math.max(p.r, 22 * dpr), 70 * dpr) * (1.1 + 0.08 * Math.sin(t * 1.5));
       glowAt(ctx, p.x, p.y, r * 1.3, '220,230,255', 0.12);
-      ctx.strokeStyle = 'rgba(225,235,255,0.45)';
-      ctx.lineWidth = 1.5 * dpr;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
-      ctx.stroke();
+      // A few silver motes drifting round it, slow (a lucky one's sparks are gold and quick).
+      for (let k = 0; k < 5; k++) {
+        const a = t * 0.6 + k * (Math.PI * 2 / 5);
+        const tw = 0.55 + 0.45 * Math.sin(t * 2.2 + k * 2.3);
+        glowAt(ctx, p.x + Math.cos(a) * r, p.y + Math.sin(a) * r * 0.75, 8 * dpr, '230,238,255', 0.8 * tw);
+      }
     }
   }
   // An intruder, before the line has ever driven one off: rings run outward from it, so the tap is
@@ -1229,11 +1230,8 @@ function drawLucky(t: number): void {
       const r = Math.min(Math.max(p.r, 24 * dpr), 70 * dpr);
       for (let k = 0; k < 2; k++) {
         const u = (t * 0.7 + k * 0.5) % 1;
-        ctx.strokeStyle = `rgba(255,140,120,${0.55 * (1 - u)})`;
-        ctx.lineWidth = 2 * dpr;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, r * (0.9 + 0.7 * u), 0, Math.PI * 2);
-        ctx.stroke();
+        const rr = r * (0.9 + 0.7 * u);
+        softRing(ctx, p.x, p.y, rr, rr, 10 * dpr, '255,140,120', 0.5 * (1 - u));
       }
     }
   }

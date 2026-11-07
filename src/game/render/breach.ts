@@ -15,7 +15,7 @@ import type { DialectId } from '../content/act4.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import type { CoralForm } from './coral.ts';
-import { drawMoon, glow, drawOsselSand, speck, drawSmallFish } from './draw.ts';
+import { drawMoon, glow, drawOsselSand, speck, drawSmallFish, softRing } from './draw.ts';
 import { FIGURES, WISH, type Figure } from '../content/sky.ts';
 import { SWELL } from '../content/events.ts';
 import { drawPetrels, drawSailors, drawSeaSparkle, type Surface } from './surface.ts';
@@ -492,13 +492,8 @@ export function createBreachScene(seed: number): Scene {
     ctx.restore();
     // A glint of wet scales, and a ring: it can be touched.
     const p = (t * 0.6) % 1;
-    ctx.save();
-    ctx.strokeStyle = `rgba(230,240,255,${0.4 * (1 - p)})`;
-    ctx.lineWidth = 1.2 * dpr;
-    ctx.beginPath();
-    ctx.arc(x, y, (16 + 12 * p) * s, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.restore();
+    const rr = (16 + 12 * p) * s;
+    softRing(ctx, x, y, rr, rr, 6 * s, '230,240,255', 0.45 * (1 - p));
   }
 
   /** Where the king tide reached (a moment): a line of dried weed and pale salt along the reef above the water. */
