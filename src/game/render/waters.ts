@@ -33,16 +33,30 @@ export function drawWater(ctx: CanvasRenderingContext2D, id: WaterId, F: Focus, 
       glow(ctx, x, y, (id === 'rich' ? 7 : 8) * s, rgb, a * tw * (light ? 0.6 : 0.85));
     }
   } else if (id === 'carrying') {
-    // Sound carrying: wide faint rings from far points, one after another.
-    ctx.lineWidth = 1.2 * s;
+    // Sound carrying: wide faint swells spreading from far points, one after another, each a soft
+    // band of stirred water brightest at its leading edge (a crisp line read as a target ring).
     for (let k = 0; k < 3; k++) {
       const u = ((t * 0.07 + k / 3) % 1);
       const cx = F.x + F.w * (0.2 + 0.6 * ((k * 0.41 + Math.floor(t * 0.07 + k / 3) * 0.29) % 1));
       const cy = F.y + F.h * 0.45;
-      ctx.strokeStyle = `rgba(200,180,255,${0.22 * a * (1 - u)})`;
+      const R = u * F.w * 0.45;
+      if (R < 4 * s) continue;
+      const band = Math.min(R, (24 + 30 * u) * s);
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.scale(1, 0.4);
+      const g = ctx.createRadialGradient(0, 0, R - band, 0, 0, R);
+      const al = 0.16 * a * (1 - u);
+      g.addColorStop(0, 'rgba(200,180,255,0)');
+      g.addColorStop(0.8, `rgba(200,180,255,${(al * 0.6).toFixed(3)})`);
+      g.addColorStop(0.97, `rgba(215,200,255,${al.toFixed(3)})`);
+      g.addColorStop(1, 'rgba(200,180,255,0)');
+      ctx.fillStyle = g;
       ctx.beginPath();
-      ctx.ellipse(cx, cy, u * F.w * 0.45, u * F.w * 0.18, 0, 0, Math.PI * 2);
-      ctx.stroke();
+      ctx.arc(0, 0, R, 0, Math.PI * 2);
+      ctx.arc(0, 0, R - band, 0, Math.PI * 2, true);
+      ctx.fill();
+      ctx.restore();
     }
   } else if (id === 'gritty') {
     // Fine sand carried sideways in streaks: each a trail of grains, faint at its tail and
