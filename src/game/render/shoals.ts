@@ -33,11 +33,13 @@ export function createShoals(seed: number) {
       return [(F.x + F.w * 0.5) + Math.cos(a) * rx, midY + Math.sin(a) * ry + (i % 2 ? 30 : -30) * s];
     }
     if (job === 'light') {
-      // The shoal pact: a slow spiral over the crown.
+      // The shoal pact: a slow spiral over the crown. Each shoal keeps its own ring (wide or close,
+      // high or low, a little faster or slower), so many of them make a loose turning cloud, not a disc.
       const [crx, cry] = reef.crown(L);
-      const a = t * 0.35 + (i / Math.max(1, n)) * Math.PI * 2;
-      const r = (70 + 40 * Math.sin(t * 0.21 + i)) * s;
-      return [crx + Math.cos(a) * r * 1.5, cry - 60 * s + Math.sin(a) * r * 0.55];
+      const q = (i * 0.618034) % 1, hi = (i * 0.381966 + 0.5) % 1;
+      const a = t * (0.3 + 0.1 * q) + (i / Math.max(1, n)) * Math.PI * 2;
+      const r = (50 + 60 * q + 25 * Math.sin(t * 0.21 + i)) * s;
+      return [crx + Math.cos(a) * r * 1.5, cry - (25 + 80 * hi) * s + Math.sin(a) * r * 0.5];
     }
     if (job === 'guard') {
       // On guard: a tight, quick ring round the crown, some going each way.
