@@ -1277,6 +1277,11 @@ section.shoals > header .level { white-space: normal; text-align: right; margin-
 .panel .stocks .stocks-minor .stock-value { font-size: 13px; text-shadow: none; opacity: 0.85; transform-origin: center; }
 @media (max-width: 599px), (max-width: 799px) and (min-height: 501px) {
   .stocks-minor, .stocks-minor.fill { grid-column: 1 / -1; justify-content: flex-start; }
+  /* Four to a row (three with Larger text): the small line takes what the last row leaves. */
+  .stocks-minor { align-self: end; align-content: flex-end; }
+  html:not(.big) .stocks.many[data-n='5'] .stocks-minor { grid-column: span 3; }
+  html:not(.big) .stocks.many[data-n='6'] .stocks-minor { grid-column: span 2; }
+  html.big .stocks.many[data-n='4'] .stocks-minor, html.big .stocks.many[data-n='7'] .stocks-minor { grid-column: span 2; }
 }
 @media (min-width: 800px) and (max-height: 520px), (min-width: 600px) and (max-height: 500px) {
   .stocks-minor.fill { grid-column: 1 / -1; }
