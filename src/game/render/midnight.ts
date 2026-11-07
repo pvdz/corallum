@@ -86,60 +86,148 @@ export function createMidnightScene(seed: number): Scene {
    * An anglerfish drifting through the dark every few minutes: a black body you can barely see,
    * a mouth of needle teeth, and the lure on its head pulsing like the reef's own light.
    */
-  /** An anglerfish at the origin, facing +x: lumpy body, gaping toothed mouth, small eye, the rod (the lure is the caller's). */
+  /**
+   * An anglerfish at the origin, facing +x: a globular dark body with a high forehead, a huge upturned
+   * mouth (the lower jaw jutting past the upper) set with uneven glassy fangs, a small eye, a fanned
+   * tail and small soft fins, the rod rising from the forehead to a fleshy bulb at (40, −30)·s (its
+   * light is the caller's). Only the forehead catches the lure's light.
+   */
   function anglerBody(ctx: CanvasRenderingContext2D, s: number, t: number): void {
-    // Body: a dark lumpy oval, lit faintly from its own lure.
-    const body = ctx.createRadialGradient(18 * s, -10 * s, 0, 0, 0, 34 * s);
-    body.addColorStop(0, 'rgba(85,95,140,0.7)');
-    body.addColorStop(1, 'rgba(14,16,36,0.92)');
-    ctx.fillStyle = body;
+    const wave = Math.sin(t * 3);
+    // The tail: a rounded fan of rays on a thin stock, sculling.
+    ctx.fillStyle = 'rgba(24,22,36,0.92)';
     ctx.beginPath();
-    ctx.moveTo(26 * s, -4 * s);
-    ctx.bezierCurveTo(24 * s, -22 * s, -14 * s, -24 * s, -24 * s, -6 * s);
-    ctx.lineTo(-38 * s, -14 * s + Math.sin(t * 3) * 3 * s);
-    ctx.lineTo(-36 * s, 10 * s + Math.sin(t * 3) * 3 * s);
-    ctx.lineTo(-22 * s, 8 * s);
-    ctx.bezierCurveTo(-10 * s, 22 * s, 20 * s, 20 * s, 28 * s, 8 * s);
+    ctx.moveTo(-24 * s, -3 * s);
+    ctx.quadraticCurveTo(-34 * s, (-14 + wave * 2) * s, -41 * s, (-12 + wave * 3) * s);
+    ctx.quadraticCurveTo(-45 * s, (wave * 3) * s, -41 * s, (11 + wave * 3) * s);
+    ctx.quadraticCurveTo(-34 * s, (12 + wave * 2) * s, -24 * s, 5 * s);
     ctx.closePath();
     ctx.fill();
-    // The mouth, gaping: a dark wedge cut back into the head, the lower jaw jutting past the upper,
-    // needle teeth along both jaws pointing in.
-    ctx.fillStyle = 'rgba(4,4,12,0.95)';
+    ctx.strokeStyle = 'rgba(90,96,130,0.35)';
+    ctx.lineWidth = 0.6 * s;
     ctx.beginPath();
-    ctx.moveTo(27 * s, -3 * s);
-    ctx.quadraticCurveTo(14 * s, -1 * s, 8 * s, 2.5 * s);
-    ctx.quadraticCurveTo(16 * s, 7 * s, 29.5 * s, 7.5 * s);
-    ctx.closePath();
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(225,230,245,0.75)';
-    ctx.lineWidth = 0.8 * s;
-    ctx.beginPath();
-    for (let k = 0; k < 6; k++) {
-      const u = k / 5;
-      const ux = 26 * s - u * 15 * s, uy = -2.6 * s + u * 4 * s;
-      ctx.moveTo(ux, uy);
-      ctx.lineTo(ux - 0.6 * s, uy + (3.2 - u * 1.4) * s);
-      const lx = 28.5 * s - u * 17 * s, ly = 7.2 * s - u * 4 * s;
-      ctx.moveTo(lx, ly);
-      ctx.lineTo(lx - 0.4 * s, ly - (3 - u * 1.2) * s);
+    for (let k = 0; k < 5; k++) {
+      const v = -1 + k / 2;
+      ctx.moveTo(-25 * s, v * 2.5 * s);
+      ctx.lineTo(-41 * s, (v * 10 + wave * 3) * s);
     }
     ctx.stroke();
-    // A small pale eye above the mouth.
-    ctx.fillStyle = 'rgba(200,210,240,0.7)';
+    // Small soft dorsal and anal fins near the tail.
+    ctx.fillStyle = 'rgba(28,26,42,0.9)';
     ctx.beginPath();
-    ctx.arc(14 * s, -8 * s, 1.8 * s, 0, Math.PI * 2);
+    ctx.moveTo(-10 * s, -17 * s);
+    ctx.quadraticCurveTo(-18 * s, (-24 + wave) * s, -24 * s, -6 * s);
+    ctx.moveTo(-12 * s, 15 * s);
+    ctx.quadraticCurveTo(-20 * s, (20 - wave) * s, -24 * s, 4 * s);
+    ctx.fill();
+    // The body: a high forehead falling to the tail stock, the round belly, the jaws.
+    const body = ctx.createRadialGradient(14 * s, -16 * s, 0, 2 * s, 0, 30 * s);
+    body.addColorStop(0, 'rgba(58,62,92,0.96)');
+    body.addColorStop(0.45, 'rgba(30,28,46,0.96)');
+    body.addColorStop(1, 'rgba(14,12,22,0.96)');
+    ctx.fillStyle = body;
+    ctx.beginPath();
+    ctx.moveTo(25 * s, -10 * s);
+    ctx.bezierCurveTo(22 * s, -20 * s, 10 * s, -25 * s, -2 * s, -22 * s);
+    ctx.bezierCurveTo(-14 * s, -20 * s, -20 * s, -10 * s, -25 * s, -4 * s);
+    ctx.lineTo(-25 * s, 6 * s);
+    ctx.bezierCurveTo(-20 * s, 16 * s, -6 * s, 23 * s, 8 * s, 20 * s);
+    ctx.bezierCurveTo(20 * s, 17 * s, 30 * s, 10 * s, 33 * s, 3 * s);
+    ctx.lineTo(30 * s, 3.5 * s);
+    ctx.lineTo(4 * s, 2 * s);
+    ctx.closePath();
+    ctx.fill();
+    // The mouth: a dark gape from the jaws' tips back to the corner under the eye.
+    ctx.fillStyle = 'rgba(4,3,10,0.97)';
+    ctx.beginPath();
+    ctx.moveTo(25 * s, -10 * s);
+    ctx.quadraticCurveTo(13 * s, -6 * s, 3 * s, 2 * s);
+    ctx.quadraticCurveTo(18 * s, 9 * s, 33 * s, 3 * s);
+    ctx.closePath();
+    ctx.fill();
+    // Glassy fangs of every length: the upper ones hang, the lower ones rise, the longest at the front
+    // and a few of the lower ones standing outside the lip.
+    ctx.fillStyle = 'rgba(214,222,238,0.8)';
+    ctx.beginPath();
+    const up = [4.5, 2.2, 5.5, 2.8, 3.6, 1.8, 2.4];
+    for (let k = 0; k < up.length; k++) {
+      const u = k / (up.length - 1);
+      const x = 24.5 * s - u * 19 * s, y = -9.5 * s + u * 10.5 * s, l = up[k]! * 1.25 * s * (1 - 0.4 * u);
+      ctx.moveTo(x - 0.5 * s, y);
+      ctx.quadraticCurveTo(x + 0.2 * s, y + l * 0.6, x - 0.6 * s, y + l);
+      ctx.lineTo(x + 0.5 * s, y);
+    }
+    const low = [6, 3, 4.8, 2.4, 3.4, 1.8];
+    for (let k = 0; k < low.length; k++) {
+      const u = k / (low.length - 1);
+      const x = 32 * s - u * 25 * s, y = 3.4 * s + u * 1.6 * s - Math.sin(u * Math.PI) * 2.6 * s, l = low[k]! * 1.25 * s * (1 - 0.35 * u);
+      const out = k % 2 === 0 ? 0.9 * s : 0;
+      ctx.moveTo(x - 0.5 * s, y);
+      ctx.quadraticCurveTo(x + out, y - l * 0.6, x + out + 0.4 * s, y - l);
+      ctx.lineTo(x + 0.5 * s, y);
+    }
+    ctx.fill();
+    // The lure's light along the forehead.
+    ctx.strokeStyle = 'rgba(140,215,240,0.22)';
+    ctx.lineWidth = 1.1 * s;
+    ctx.beginPath();
+    ctx.moveTo(24 * s, -12 * s);
+    ctx.bezierCurveTo(20 * s, -20 * s, 10 * s, -24 * s, -2 * s, -21.5 * s);
+    ctx.stroke();
+    // A small pectoral fan behind the gill, and the row of sense pits along the flank.
+    ctx.fillStyle = 'rgba(16,14,26,0.85)';
+    ctx.strokeStyle = 'rgba(80,88,124,0.3)';
+    ctx.lineWidth = 0.6 * s;
+    ctx.beginPath();
+    ctx.moveTo(-1 * s, 5 * s);
+    ctx.quadraticCurveTo(-8 * s, (2 + wave) * s, -12 * s, (5 + wave) * s);
+    ctx.quadraticCurveTo(-13 * s, (9 + wave) * s, -10 * s, (12 + wave) * s);
+    ctx.quadraticCurveTo(-6 * s, (12 + wave * 0.5) * s, -1 * s, 9 * s);
+    ctx.fill();
+    ctx.beginPath();
+    for (let k = 0; k < 4; k++) {
+      ctx.moveTo(-1.5 * s, (5.5 + k) * s);
+      ctx.lineTo(-11.5 * s, (5 + k * 2.3 + wave) * s);
+    }
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(150,170,210,0.12)';
+    ctx.beginPath();
+    for (let k = 0; k < 6; k++) {
+      const x = 10 * s - k * 6 * s, y = -4 * s + k * 0.8 * s + Math.sin(k * 1.7) * 1.2 * s;
+      ctx.moveTo(x + 0.7 * s, y);
+      ctx.arc(x, y, 0.7 * s, 0, Math.PI * 2);
+    }
+    ctx.fill();
+    // A small eye above the corner of the mouth.
+    ctx.fillStyle = 'rgba(150,165,200,0.55)';
+    ctx.beginPath();
+    ctx.arc(12 * s, -12 * s, 1.7 * s, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = '#05050c';
     ctx.beginPath();
-    ctx.arc(14.4 * s, -8 * s, 1 * s, 0, Math.PI * 2);
+    ctx.arc(12.4 * s, -12 * s, 1.1 * s, 0, Math.PI * 2);
     ctx.fill();
-    // The rod and its bulb.
-    ctx.strokeStyle = 'rgba(80,90,130,0.7)';
-    ctx.lineWidth = 1.2 * s;
+    // The rod from the forehead, thick at its root, and the fleshy bulb with two short filaments.
+    ctx.strokeStyle = 'rgba(46,50,74,0.95)';
+    ctx.lineCap = 'round';
+    ctx.lineWidth = 1.8 * s;
     ctx.beginPath();
-    ctx.moveTo(10 * s, -19 * s);
-    ctx.quadraticCurveTo(26 * s, -42 * s, 40 * s, -30 * s);
+    ctx.moveTo(14 * s, -20 * s);
+    ctx.quadraticCurveTo(18 * s, -30 * s, 26 * s, -36 * s);
     ctx.stroke();
+    ctx.lineWidth = 1 * s;
+    ctx.beginPath();
+    ctx.moveTo(26 * s, -36 * s);
+    ctx.quadraticCurveTo(34 * s, -40 * s, 39 * s, -32 * s);
+    ctx.moveTo(40 * s, -28 * s);
+    ctx.quadraticCurveTo((40 + wave * 0.6) * s, -25 * s, (39 + wave) * s, -23 * s);
+    ctx.moveTo(41.5 * s, -28.5 * s);
+    ctx.quadraticCurveTo((43 + wave * 0.6) * s, -26 * s, (43 + wave) * s, -24 * s);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(70,96,118,0.95)';
+    ctx.beginPath();
+    ctx.arc(40 * s, -30 * s, 2.4 * s, 0, Math.PI * 2);
+    ctx.fill();
   }
   function drawAngler(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 170, crossing = 70;
