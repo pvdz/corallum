@@ -1221,54 +1221,55 @@ export function createMidnightScene(seed: number): Scene {
       ctx.save();
       ctx.translate(x, y);
       if (i % 2) ctx.scale(-1, 1);
-      // The blade: deep at the front, a thin tail.
-      const g = ctx.createLinearGradient(0, -4.5 * s, 0, 6 * s);
-      g.addColorStop(0, '#141a2a');
-      g.addColorStop(0.35, '#38455e');
-      g.addColorStop(1, '#4e5e7c');
+      // The blade: a short back, a deep keel curving down to a point under the middle, the mouth
+      // nearly upright at the front, a small forked tail on a thin stalk.
+      const g = ctx.createLinearGradient(0, -4.5 * s, 0, 6.5 * s);
+      g.addColorStop(0, '#10141f');
+      g.addColorStop(0.4, '#2c3548');
+      g.addColorStop(1, '#3e4a64');
       ctx.fillStyle = g;
-      // A hatchet: a short arched back, a deep keel of a belly, then a sudden thin tail stalk
-      // and a small forked tail.
       ctx.beginPath();
-      ctx.moveTo(5 * s, -2 * s);
-      ctx.quadraticCurveTo(3 * s, -4.6 * s, -1 * s, -3.6 * s);
-      ctx.lineTo(-4 * s, -1.2 * s);
+      ctx.moveTo(5.4 * s, -1.2 * s);
+      ctx.quadraticCurveTo(3.6 * s, -4.4 * s, -0.5 * s, -4 * s);
+      ctx.quadraticCurveTo(-3 * s, -3.2 * s, -4.6 * s, -1.4 * s);
       ctx.lineTo(-6 * s, -0.7 * s);
-      ctx.lineTo(-8.5 * s, -2.8 * s);
-      ctx.lineTo(-7.6 * s, 0);
-      ctx.lineTo(-8.5 * s, 2.4 * s);
-      ctx.lineTo(-6 * s, 0.6 * s);
-      ctx.lineTo(-4 * s, 1 * s);
-      ctx.lineTo(-1.2 * s, 6.4 * s);
-      ctx.lineTo(1.8 * s, 5.6 * s);
-      ctx.lineTo(5.2 * s, 2.2 * s);
-      ctx.lineTo(5.6 * s, 0);
-      ctx.closePath();
+      ctx.lineTo(-8.8 * s, -3 * s);
+      ctx.quadraticCurveTo(-7.7 * s, 0, -8.8 * s, 2.6 * s);
+      ctx.lineTo(-6 * s, 0.7 * s);
+      ctx.lineTo(-4.3 * s, 1.1 * s);
+      ctx.quadraticCurveTo(-2.6 * s, 4.4 * s, -0.8 * s, 6.6 * s);
+      ctx.quadraticCurveTo(2.6 * s, 6.3 * s, 4.4 * s, 3 * s);
+      ctx.quadraticCurveTo(5.8 * s, 1.2 * s, 5.4 * s, -1.2 * s);
       ctx.fill();
-      // The mirror of its flank, catching what light there is.
-      ctx.fillStyle = 'rgba(200,215,245,0.16)';
+      // The mirror of its flank, catching what light there is: a band down the deep of the body.
+      ctx.fillStyle = 'rgba(190,205,235,0.14)';
       ctx.beginPath();
-      ctx.moveTo(-2.5 * s, 0.5 * s);
-      ctx.lineTo(3.5 * s, -0.5 * s);
-      ctx.lineTo(3 * s, 3 * s);
-      ctx.lineTo(-0.6 * s, 4.6 * s);
-      ctx.closePath();
+      ctx.moveTo(-3 * s, 0);
+      ctx.quadraticCurveTo(0.5 * s, -1.2 * s, 3.8 * s, -0.4 * s);
+      ctx.quadraticCurveTo(3.2 * s, 3 * s, -0.6 * s, 5 * s);
+      ctx.quadraticCurveTo(-1.6 * s, 2.4 * s, -3 * s, 0);
       ctx.fill();
-      // A big eye turned upward, ringed silver.
-      ctx.fillStyle = '#6a7890';
+      // The mouth's line, nearly upright.
+      ctx.strokeStyle = 'rgba(8,10,16,0.8)';
+      ctx.lineWidth = Math.max(0.6, 0.45 * s);
       ctx.beginPath();
-      ctx.arc(3.3 * s, -1.8 * s, 1.35 * s, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#10131c';
+      ctx.moveTo(5.3 * s, -0.8 * s);
+      ctx.lineTo(4.6 * s, 1.4 * s);
+      ctx.stroke();
+      // A big tubular eye turned upward: dark, rimmed silver.
+      ctx.fillStyle = '#0c0f17';
+      ctx.strokeStyle = 'rgba(150,165,195,0.35)';
+      ctx.lineWidth = Math.max(0.5, 0.35 * s);
       ctx.beginPath();
-      ctx.arc(3.4 * s, -2.1 * s, 1 * s, 0, Math.PI * 2);
+      ctx.ellipse(2.9 * s, -2.5 * s, 1.1 * s, 1.6 * s, -0.15, 0, Math.PI * 2);
       ctx.fill();
+      ctx.stroke();
       // Belly lights in a row along the keel, pointing down.
       ctx.globalCompositeOperation = 'lighter';
       for (let q = 0; q < 5; q++) {
         const u = 0.3 + q * 0.17, v = 1 - u;
-        const bx = -1.2 + (u - 0.3) * 8.5, by = 6.4 - (u - 0.3) * 4;
-        glow(ctx, bx * s, (by - 0.5) * s, (1.6 + flare * 4) * s, '120,170,255', 0.5 + flare * 0.5);
+        const bx = -2.6 + (u - 0.3) * 9, by = 4 + Math.sin((u - 0.3) * 4.6) * 2.4;
+        glow(ctx, bx * s, (by - 0.5) * s, (1.1 + flare * 4) * s, '90,140,255', 0.32 + flare * 0.68);
       }
       ctx.restore();
     }
