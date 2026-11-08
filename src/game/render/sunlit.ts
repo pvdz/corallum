@@ -1360,27 +1360,49 @@ export function createSunlitScene(seed: number): Scene {
     }
   }
 
-  /** A banded sea snake winding up toward the surface to breathe and back down; touched, it turns away. */
+  /**
+   * A banded sea snake: it winds up toward the surface to breathe, loops over at the top and swims
+   * back down beside its own track, the body following the head's path; touched, it turns away.
+   */
   function drawSeaSnake(ctx: CanvasRenderingContext2D, t: number): void {
-    const period = 70;
-    const u = (t % period) / period;
-    if (u > 0.5) return;
+    const period = 70, shown = 35;
+    const age = t % period;
+    if (age > shown) return;
     sight('sea-snake');
     const s = scale() * 1.5;
     const touch = startled('sea-snake', t);
     const away = touch && touch.age < 6 ? Math.sin(Math.min(1, touch.age / 6) * Math.PI) : 0;
-    const k = u / 0.5;
-    const x0 = focus.x + focus.w * (0.78 + away * 0.15);
-    const y0 = focus.y + focus.h * (0.85 - 0.75 * Math.sin(k * Math.PI));
-    spot('sea-snake', x0, y0, 20 * s);
+    // The track: up a straight line, over a half circle at the top, down the other side.
+    const xa = focus.x + focus.w * (0.77 + away * 0.15);
+    const yBottom = focus.y + focus.h * 0.85, yTop = focus.y + focus.h * 0.1;
+    const r = 7 * s, rise = yBottom - yTop;
+    const total = 2 * rise + Math.PI * r;
+    const step = 2.6 * s, N = 26;
+    // The head swims the track and on until the tail has gone back down past where it rose.
+    const head = (age / shown) * (total + N * step);
+    const at = (d: number): [number, number, number] => {
+      if (d < rise) return [xa, yBottom - d, -Math.PI / 2];
+      if (d < rise + Math.PI * r) {
+        const a = Math.PI - (d - rise) / r;
+        return [xa + r + Math.cos(a) * r, yTop - Math.sin(a) * r, Math.PI / 2 - a];
+      }
+      return [xa + 2 * r, yTop + (d - rise - Math.PI * r), Math.PI / 2];
+    };
+    // Its first and last moments fade, where it comes up out of the reef's shade and goes back.
+    const fade = Math.min(1, age / 1.5, (shown - age) / 1.5);
+    const pts: [number, number, number][] = [];
+    for (let i = 0; i <= N; i++) {
+      const [px, py, dir] = at(head - i * step);
+      const w = Math.sin(t * 3 - i * 0.45) * 6 * s * Math.min(1, i / 4 + 0.25);
+      pts.push([px - Math.sin(dir) * w, py + Math.cos(dir) * w, dir]);
+    }
+    spot('sea-snake', pts[8]![0], pts[8]![1], 20 * s);
     ctx.save();
+    ctx.globalAlpha *= fade;
     ctx.lineCap = 'round';
-    // Bands along a wavy body, drawn as short segments.
-    for (let i = 0; i < 26; i++) {
-      const px = x0 + Math.sin(t * 3 - i * 0.45) * 6 * s;
-      const py = y0 + i * 2.6 * s * (k < 0.5 ? 1 : -1);
-      const nx = x0 + Math.sin(t * 3 - (i + 1) * 0.45) * 6 * s;
-      const ny = y0 + (i + 1) * 2.6 * s * (k < 0.5 ? 1 : -1);
+    // Bands along the body, drawn as short segments.
+    for (let i = 0; i < N; i++) {
+      const [px, py] = pts[i]!, [nx, ny] = pts[i + 1]!;
       ctx.strokeStyle = i % 4 < 2 ? '#1c2230' : '#c8d0dc';
       ctx.lineWidth = (3.4 - i * 0.07) * s;
       ctx.beginPath();
@@ -1389,12 +1411,13 @@ export function createSunlitScene(seed: number): Scene {
       ctx.stroke();
     }
     // The paddle of a tail: flattened side-on, banded, sweeping.
-    const sign = k < 0.5 ? 1 : -1;
-    const tx = x0 + Math.sin(t * 3 - 26 * 0.45) * 6 * s, ty = y0 + 26 * 2.6 * s * sign;
-    const sweep = Math.sin(t * 3 - 26 * 0.45 + 0.6) * 0.5;
+    const [tx, ty, tdir] = pts[N]!;
+    const sweep = Math.sin(t * 3 - N * 0.45 + 0.6) * 0.5;
     ctx.save();
     ctx.translate(tx, ty);
-    ctx.rotate(sweep);
+    // The leaf below is drawn trailing along +y: turn it to trail behind the swimming direction.
+    ctx.rotate(tdir - Math.PI / 2 + Math.PI + sweep);
+    const sign = 1;
     // A flat leaf of a paddle, wider than the body, ringed in the same bands.
     const leaf = (c: CanvasRenderingContext2D) => {
       c.beginPath();
@@ -1411,20 +1434,22 @@ export function createSunlitScene(seed: number): Scene {
     leaf(ctx);
     ctx.clip();
     ctx.fillStyle = '#1c2230';
-    ctx.fillRect(-4 * s, sign > 0 ? 2 * s : -4.2 * s, 8 * s, 2.2 * s);
-    ctx.fillRect(-4 * s, sign > 0 ? 6.2 * s : -9 * s, 8 * s, 2.8 * s);
+    ctx.fillRect(-4 * s, 2 * s, 8 * s, 2.2 * s);
+    ctx.fillRect(-4 * s, 6.2 * s, 8 * s, 2.8 * s);
     ctx.restore();
     ctx.restore();
     // The head, a little wider, leading, with its eye and nostril on top.
-    const hx = x0 + Math.sin(t * 3) * 6 * s, hy = y0 - 2 * s * sign;
+    const [hx, hy, hdir] = pts[0]!;
+    ctx.translate(hx, hy);
+    ctx.rotate(hdir + Math.PI / 2);
     ctx.fillStyle = '#1c2230';
     ctx.beginPath();
-    ctx.ellipse(hx, hy, 2.6 * s, 3.6 * s, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, -1 * s, 2.6 * s, 3.6 * s, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = '#e8eef4';
     for (const ex of [-1, 1]) {
       ctx.beginPath();
-      ctx.arc(hx + ex * 1.3 * s, hy - sign * 1 * s, 0.6 * s, 0, Math.PI * 2);
+      ctx.arc(ex * 1.3 * s, -2 * s, 0.6 * s, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.restore();
