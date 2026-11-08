@@ -1150,7 +1150,7 @@ function showJournalNote(kicker: string, name: string, now = false): void {
     // A backlog of the same kind (a new zone shows a dozen creatures at once) is one note, not a
     // minute of them: "Lanternfish, Hatchetfish and 3 more".
     const same = journalQueue.filter((q) => q[0] === n[0]);
-    if (same.length >= 2 && (n[0] === UI.seenFirst || n[0] === JOURNAL_PASSING || n[0] === 'Feat · +1 lineage')) {
+    if (same.length >= 2 && (n[0] === UI.seenFirst || n[0] === JOURNAL_PASSING || n[0] === UI.featOne)) {
       const names = [n[1], ...same.map((q) => q[1])];
       for (let i = journalQueue.length - 1; i >= 0; i--) if (journalQueue[i]![0] === n[0]) journalQueue.splice(i, 1);
       n[1] = UI.namesAndMore(names);
@@ -1562,14 +1562,17 @@ function floatText(x: number, y: number, text: string, cls = ''): void {
   // A haul line rising through a milestone's words (they span the scene): far enough below them
   // that its rise (~45 px) stays clear, near the tap where a creature's label leaves the numbers
   // room; above them only if below runs off the scene.
-  // Ossel's words showing are such a band too.
+  // Ossel's words showing are such a band too, and so is a journal note ("Seen for the first time")
+  // where the line would cross it (a line is taken as up to 300 px wide before it is laid out).
   if (cls) {
     const bands: DOMRect[] = [];
     if (now < milestoneUntil) bands.push(milestoneBox.getBoundingClientRect());
     const say = whisper.querySelector('q');
     if (say && Number(getComputedStyle(whisper).opacity) > 0.15) bands.push(whisper.getBoundingClientRect());
+    if (journalNote.classList.contains('show') && Number(getComputedStyle(journalNote).opacity) > 0.15) bands.push(journalNote.getBoundingClientRect());
     for (const band of bands) {
-      if (band.height > 0 && y + 15 > band.top - 4 && y - 60 < band.bottom + 4) y = band.bottom + 66 <= (focusNow.y + focusNow.h) / dpr - 20 ? band.bottom + 66 : band.top - 24;
+      if (band.height > 0 && x + 150 > band.left && x - 150 < band.right && y + 15 > band.top - 4 && y - 60 < band.bottom + 4)
+        y = band.bottom + 66 <= (focusNow.y + focusNow.h) / dpr - 20 ? band.bottom + 66 : band.top - 24;
     }
   }
   for (let i = 0; i < 4 && recentFloats.some((r) => Math.abs(r.x - x) < Math.max(140, r.w / 2 + 40) && Math.abs(r.y - y) < 30); i++) y += 32;
@@ -2510,7 +2513,7 @@ function frameBody(now: number): void {
     for (const f of newFeats(state)) {
       state.meta.seen.push(`f:${f.id}`);
       state.meta.lineage += 1;
-      showJournalNote('Feat · +1 lineage', f.name);
+      showJournalNote(UI.featOne, f.name);
       buzz(25);
       audio.cue('buy');
     }

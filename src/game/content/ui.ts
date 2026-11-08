@@ -223,6 +223,7 @@ export const UI = {
   readingKicker: 'A Thousandfold band, read',
   raspKicker: 'The Rasp would talk',
   firstSaw: (name: string) => `${name}, as you first saw it`,
+  featOne: 'Feat · +1 lineage',
   featsGained: (n: number) => `Feats · +${n} lineage`,
   featsEarned: (n: number) => `${n} feats already earned`,
   hardPlace: (effect: string, goal: string) => ` A hard place (${effect}): grow to ${goal} m here, and the line learns it.`,
