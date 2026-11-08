@@ -1342,13 +1342,13 @@ section.shoals > header .level { white-space: normal; text-align: right; margin-
   html:not(.big):not(.sci) .stocks.many[data-n='5'] .stocks-minor { grid-column: 1 / -1; }
 }
 /* An upright tablet's sheet (600–799 px wide) has room for every stock in one row: the small line
-   goes under it, right-aligned as on the side panel. */
+   goes under it at the left, under the stocks (at the right it sat on the depth figure). */
 @media (min-width: 600px) and (max-width: 799px) and (min-height: 501px) {
   .stocks.many[data-n='5'], html.big .stocks.many[data-n='5'] { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .stocks.many[data-n='6'] { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   html.big .stocks.many[data-n='6'] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   html:not(.big) .stocks.many[data-n='5'] .stocks-minor, html.big .stocks.many[data-n='5'] .stocks-minor,
-  html:not(.big) .stocks.many[data-n='6'] .stocks-minor { grid-column: 1 / -1; justify-content: flex-end; }
+  html:not(.big) .stocks.many[data-n='6'] .stocks-minor { grid-column: 1 / -1; justify-content: flex-start; }
 }
 @media (min-width: 800px) and (max-height: 520px), (min-width: 560px) and (max-height: 500px) {
   /* Three to a row: the small line takes what the last row leaves. */
