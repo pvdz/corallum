@@ -1494,7 +1494,9 @@ function showCreatureLabel(id: string, x: number, y: number, r = 20, tx = NaN, t
   const lw = creatureLabel.offsetWidth || 220, lh = creatureLabel.offsetHeight || 56;
   // Inside the scene: left of the depth gauge (and the panel), below the corner buttons and any
   // journal note showing up there.
-  const right = (focusNow.x + focusNow.w) / dpr - 52;
+  // Left of the gauge's height label too (on a phone "3780 m" reaches further in than 52 px).
+  const gl = gaugeLabel.getBoundingClientRect();
+  const right = Math.min((focusNow.x + focusNow.w) / dpr - 52, gl.width > 0 ? gl.left - 6 : Infinity);
   const left = Math.min(right - lw, Math.max(8, x - lw / 2));
   const note = journalNote.classList.contains('show') ? journalNote.getBoundingClientRect().bottom + 6 : 0;
   const topMin = Math.max(60, note);
