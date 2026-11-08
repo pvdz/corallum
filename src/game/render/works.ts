@@ -95,8 +95,28 @@ export function drawGarden(ctx: CanvasRenderingContext2D, cx: number, stage: num
       const ph = (t * 0.4 + q * 0.2 + k * 0.17) % 1;
       glow(ctx, x + Math.sin(t + q + k) * 3 * s * ph, y - hgt - 2 * s - ph * 42 * s, (3 + ph * 8) * s, '130,104,140', 0.45 * (1 - ph) * Math.min(1, ph * 6));
     }
+    // Every third grows a small spire off one side, its own little throat at the top.
+    if (k % 3 === 0) {
+      const sd = k % 2 ? 1 : -1, [ex, ey] = edgeAt(2, sd);
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.moveTo(ex - sd * 1 * s, ey + 4 * s);
+      ctx.quadraticCurveTo(ex + sd * 3.5 * s, ey + 1 * s, ex + sd * 4 * s, ey - 7 * s);
+      ctx.lineTo(ex + sd * 1.8 * s, ey - 7.5 * s);
+      ctx.quadraticCurveTo(ex + sd * 1.2 * s, ey - 2 * s, ex - sd * 1.5 * s, ey - 1 * s);
+      ctx.closePath();
+      ctx.fill();
+    }
+    // The throat: a lip of hot mineral round the opening.
+    ctx.strokeStyle = 'rgba(255,150,80,0.55)';
+    ctx.lineWidth = Math.max(0.8, 1 * s);
+    ctx.beginPath();
+    ctx.ellipse(x, y - hgt - 0.6 * s, 4 * s, 1.1 * s, 0, Math.PI, Math.PI * 2);
+    ctx.stroke();
     ctx.globalCompositeOperation = 'lighter';
     glow(ctx, x, y - hgt, 18 * s, '255,140,90', 0.5 + 0.15 * Math.sin(t * 1.3 + k));
+    // A small white-hot core, flickering.
+    glow(ctx, x, y - hgt - 0.5 * s, 2.6 * s, '255,214,160', 0.45 + 0.2 * Math.sin(t * 6 + k * 2.3));
     ctx.globalCompositeOperation = 'source-over';
   }
   ctx.restore();
