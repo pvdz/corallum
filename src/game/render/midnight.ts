@@ -259,10 +259,6 @@ export function createMidnightScene(seed: number): Scene {
   }
 
   /**
-   * The seamount's flank below the reef: a dark shoulder of rock along the bottom of the frame,
-   * sinking away as the reef climbs (it is fully in view only early in the Midnight Water).
-   */
-  /**
    * The flank's rock under the reef's light: a pool of its glow on the shoulder beneath it, and
    * boulders along the ridge, each a dark lump with its top caught by the light, fading with
    * distance from the reef (it is the only light down here).
@@ -300,6 +296,10 @@ export function createMidnightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * The seamount's flank below the reef: a dark shoulder of rock along the bottom of the frame,
+   * sinking away as the reef climbs (it is fully in view only early in the Midnight Water).
+   */
   function drawFlank(ctx: CanvasRenderingContext2D, p: number, t: number): void {
     const sink = p * focus.h * 0.25;
     const base = focus.y + focus.h * 0.9 + sink;

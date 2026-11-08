@@ -114,7 +114,6 @@ export type PanelHooks = {
   exportSave(): string;
   importSave(text: string): boolean;
   reset(): void;
-  /** Replay this zone's growth of the reef in a few seconds. */
   /** Replay the reef's growth: this zone's, or (`whole`) the whole climb from the seafloor. */
   timelapse(whole?: boolean): void;
   /** The soft glow (bloom) pass: read and set; off helps slow phones. */
