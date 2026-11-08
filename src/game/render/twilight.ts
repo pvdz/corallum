@@ -1282,13 +1282,26 @@ export function createTwilightScene(seed: number): Scene {
     const bob = Math.sin(t * 0.8) * 0.4 * s;
     ctx.save();
     ctx.translate(x, base + bob);
-    ctx.rotate(-0.12);
-    // The body rising out of the hole: green, segmented, a little curved, spotted like a leopard.
+    // Leaning well out of the hole toward the open sand, as it does when it watches.
+    ctx.rotate(-0.42);
+    // Small orange walking legs on the side it leans toward, feeling at the sand.
+    ctx.strokeStyle = '#e88a3c';
+    ctx.lineCap = 'round';
+    ctx.lineWidth = Math.max(1, 0.45 * s);
+    ctx.beginPath();
+    for (let k = 0; k < 3; k++) {
+      const ly = -2.2 * s - k * 1.7 * s, kick = Math.sin(t * 2.2 + k * 1.3) * 0.5 * s;
+      ctx.moveTo(-3 * s, ly);
+      ctx.quadraticCurveTo(-5 * s, ly + 0.6 * s, -5.6 * s + kick, ly + 2.4 * s);
+    }
+    ctx.stroke();
+    // The body rising out of the hole: green, tapering to the head, a little curved, spotted like
+    // a leopard, its abdomen a stack of overlapping plates.
     const body = new Path2D();
-    body.moveTo(3.6 * s, 0);
-    body.bezierCurveTo(3.8 * s, -4 * s, 2.6 * s, -8 * s, 1.2 * s, -10.5 * s);
-    body.lineTo(-3.2 * s, -10.2 * s);
-    body.bezierCurveTo(-3.6 * s, -7 * s, -3.8 * s, -3.5 * s, -3.6 * s, 0);
+    body.moveTo(4.2 * s, 0);
+    body.bezierCurveTo(4.4 * s, -4 * s, 3 * s, -8 * s, 1.6 * s, -10.5 * s);
+    body.lineTo(-2.8 * s, -10.2 * s);
+    body.bezierCurveTo(-3.6 * s, -7 * s, -4.2 * s, -3.5 * s, -4 * s, 0);
     body.closePath();
     const g = ctx.createLinearGradient(-4 * s, 0, 4 * s, 0);
     g.addColorStop(0, '#5fd08a');
@@ -1296,15 +1309,32 @@ export function createTwilightScene(seed: number): Scene {
     g.addColorStop(1, '#1d6a40');
     ctx.fillStyle = g;
     ctx.fill(body);
-    ctx.strokeStyle = 'rgba(10,40,24,0.6)';
-    ctx.lineWidth = Math.max(1, 0.5 * s);
-    ctx.beginPath();
-    for (let k = 1; k <= 3; k++) {
-      const yy = -k * 2.4 * s, hw = 3.6 * s - k * 0.4 * s;
-      ctx.moveTo(-hw, yy + 0.4 * s);
-      ctx.quadraticCurveTo(0, yy - 0.8 * s, hw, yy + 0.4 * s);
+    ctx.save();
+    ctx.clip(body);
+    for (let k = 0; k < 4; k++) {
+      const yy = -k * 2.3 * s - 0.6 * s, hw = 4.4 * s - k * 0.5 * s;
+      // Each plate's back edge in shadow, its front edge catching the light.
+      ctx.strokeStyle = 'rgba(10,40,24,0.65)';
+      ctx.lineWidth = Math.max(1, 0.55 * s);
+      ctx.beginPath();
+      ctx.moveTo(-hw, yy + 0.5 * s);
+      ctx.quadraticCurveTo(0, yy - 0.9 * s, hw, yy + 0.5 * s);
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(170,245,190,0.35)';
+      ctx.lineWidth = Math.max(0.8, 0.35 * s);
+      ctx.beginPath();
+      ctx.moveTo(-hw, yy - 0.2 * s);
+      ctx.quadraticCurveTo(0, yy - 1.6 * s, hw, yy - 0.2 * s);
+      ctx.stroke();
     }
+    // A pale ridge down the middle of the back.
+    ctx.strokeStyle = 'rgba(190,255,210,0.3)';
+    ctx.lineWidth = Math.max(0.8, 0.5 * s);
+    ctx.beginPath();
+    ctx.moveTo(-0.6 * s, 0);
+    ctx.quadraticCurveTo(-0.4 * s, -5 * s, -0.9 * s, -10 * s);
     ctx.stroke();
+    ctx.restore();
     ctx.fillStyle = 'rgba(16,50,30,0.55)';
     ctx.beginPath();
     for (const [sx, sy] of [[-1.8, -1.4], [1.4, -3.4], [-0.6, -5.6], [2, -7], [-2.2, -8]] as const) {
@@ -1344,22 +1374,40 @@ export function createTwilightScene(seed: number): Scene {
       const ex = sx - 3.2 * s - reach * (side < 0 ? 1 : 0.7), ey = sy + 2.6 * s;
       const fold = strike >= 0 ? Math.sin(strike * Math.PI) : 0;
       const cx2 = ex + (1 - fold) * 2.4 * s - fold * 3 * s, cy2 = ey - (1 - fold) * 3.2 * s + fold * 0.6 * s;
-      ctx.strokeStyle = side < 0 ? '#e0443a' : '#b8302c';
-      ctx.lineWidth = 1.4 * s;
+      // A dark edge first, so each limb has a solid outline against the green.
+      for (const [w, col, fore] of [[2.3, 'rgba(60,10,14,0.75)', 1.8], [1.7, side < 0 ? '#e0443a' : '#b8302c', 1.3]] as const) {
+        ctx.strokeStyle = col;
+        ctx.lineWidth = w * s;
+        ctx.beginPath();
+        ctx.moveTo(sx, sy);
+        ctx.lineTo(ex, ey);
+        ctx.stroke();
+        ctx.lineWidth = fore * s;
+        if (w < 2) ctx.strokeStyle = side < 0 ? '#ff6a4a' : '#d84a3a';
+        ctx.beginPath();
+        ctx.moveTo(ex, ey);
+        ctx.lineTo(cx2, cy2);
+        ctx.stroke();
+      }
+      // The arm's lit edge.
+      ctx.strokeStyle = 'rgba(255,190,160,0.5)';
+      ctx.lineWidth = 0.4 * s;
       ctx.beginPath();
-      ctx.moveTo(sx, sy);
-      ctx.lineTo(ex, ey);
+      ctx.moveTo(sx, sy - 0.5 * s);
+      ctx.lineTo(ex, ey - 0.5 * s);
       ctx.stroke();
-      ctx.lineWidth = 1.05 * s;
-      ctx.strokeStyle = side < 0 ? '#ff6a4a' : '#d84a3a';
+      // The club at the elbow: a hard pale knob with a shine.
+      ctx.fillStyle = 'rgba(60,10,14,0.75)';
       ctx.beginPath();
-      ctx.moveTo(ex, ey);
-      ctx.lineTo(cx2, cy2);
-      ctx.stroke();
-      // The club at the elbow: a hard pale knob.
+      ctx.arc(ex, ey, 1.35 * s, 0, Math.PI * 2);
+      ctx.fill();
       ctx.fillStyle = side < 0 ? '#ffd0a0' : '#e0a878';
       ctx.beginPath();
-      ctx.arc(ex, ey, 0.8 * s, 0, Math.PI * 2);
+      ctx.arc(ex, ey, 1.05 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
+      ctx.beginPath();
+      ctx.arc(ex - 0.35 * s, ey - 0.35 * s, 0.35 * s, 0, Math.PI * 2);
       ctx.fill();
     }
     // Antennae, long and fine, swept back.
