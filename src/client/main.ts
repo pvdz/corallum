@@ -1516,15 +1516,25 @@ function showCreatureLabel(id: string, x: number, y: number, r = 20, tx = NaN, t
   // A milestone still showing is a band across the scene: the label goes above or below it.
   const band = now < milestoneUntil ? milestoneBox.getBoundingClientRect() : null;
   const offBand = (t: number) => !band || t + lh < band.top - 6 || t > band.bottom + 6;
-  const offFloats = (l: number, t: number) => !(l < tx + half && l + lw > tx - half && t < ty + 40 && t + lh > ty - 110);
+  // And where the lines still showing really are: a line may have been moved off the tap (stacked
+  // under another, stepped below a band, kept inside the scene), and the label hid it there.
+  const showing = recentFloats.filter((f) => now - f.t < 2200 && f.w > 0);
+  const offFloats = (l: number, t: number) => !(l < tx + half && l + lw > tx - half && t < ty + 40 && t + lh > ty - 110) &&
+    showing.every((f) => l > f.x + f.w / 2 + 6 || l + lw < f.x - f.w / 2 - 6 || t > f.y + 34 || t + lh < f.y - 56);
   const fits = (t: number) => t >= topMin && t + lh <= bottom;
-  const tries: [number, number][] = [[left, above], [left, below],
+  // Just under the column the numbers rise in (they only go up): room even when a line spans the scene.
+  const underTap = Number.isFinite(ty) ? Math.max(topMin, ty + 44) : below;
+  const tries: [number, number][] = [[left, above], [left, below], [left, underTap], [left, Math.min(underTap, bottom - lh)],
     [Math.min(right - lw, tx - half - lw), above >= topMin ? above : below], [Math.max(8, tx + half), above >= topMin ? above : below],
     // Over the column the numbers rise in, when the creature is too near the side for beside it.
     [left, ty - 110 - lh - 4]];
   // Clear of both if it can be; else clear of the numbers (the milestone can give way, they cannot).
   const ok = ([l, t]: [number, number]) => l >= 8 && l + lw <= right && fits(t) && offFloats(l, t);
-  const [pl, pt] = tries.find((p) => ok(p) && offBand(p[1])) ?? tries.find(ok) ?? [left, above >= topMin ? above : below];
+  // No room clear of everything (a small scene, a tall label): over the sweep's number (gone in a
+  // second) rather than over a gift's line.
+  const clearOfLines = ([l, t]: [number, number]) => l >= 8 && l + lw <= right && fits(t) &&
+    showing.every((f) => l > f.x + f.w / 2 + 6 || l + lw < f.x - f.w / 2 - 6 || t > f.y + 34 || t + lh < f.y - 56);
+  const [pl, pt] = tries.find((p) => ok(p) && offBand(p[1])) ?? tries.find(ok) ?? tries.find(clearOfLines) ?? [left, above >= topMin ? above : below];
   creatureLabel.style.left = `${Math.max(8, pl)}px`;
   // Never past the scene's bottom (onto the phone's sheet), never above the corner buttons.
   const top = Math.max(topMin, Math.min(pt, bottom - lh));
@@ -1609,6 +1619,12 @@ function floatText(x: number, y: number, text: string, cls = ''): void {
     const cx = Math.min(Math.max(x, half + 8), right - half - 48);
     f.style.left = `${cx}px`;
     rec.x = cx;
+  }
+  // A creature's label still up from an earlier touch, where this line will rise: the newer news
+  // wins and the label steps away (a label placed for this very touch already keeps clear).
+  if (cls && creatureLabel.classList.contains('show')) {
+    const lr = creatureLabel.getBoundingClientRect(), cx = rec.x;
+    if (lr.left < cx + half && lr.right > cx - half && lr.top < y + 34 && lr.bottom > y - 56) creatureLabel.classList.remove('show');
   }
   // A haul line under a story card or the away summary waits there, paused (style.css), and is
   // taken away when its rise has played out; the long timer only clears one that never got to play.
@@ -1960,7 +1976,11 @@ photoBtn.id = 'photo';
 photoBtn.type = 'button';
 photoBtn.title = UI.photo;
 photoBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
-photoBtn.addEventListener('click', () => {
+// The shot is taken from the next frame, drawn without the play's own marks (the ripples of a tap,
+// today's visitor's halo): a picture of the reef, not of the hints.
+let photoPending: (() => void) | null = null;
+photoBtn.addEventListener('click', () => { photoPending = takePhoto; });
+function takePhoto(): void {
   // A copy of the scene with a small caption in the corner: name, height, zone.
   const shot = document.createElement('canvas');
   shot.width = canvas.width;
@@ -2015,7 +2035,7 @@ photoBtn.addEventListener('click', () => {
       });
     } else download();
   }, 'image/png');
-});
+}
 ui.append(photoBtn);
 
 // The back gesture (Android, or a browser's Back) with a card open closes the card, as Escape
@@ -2469,9 +2489,12 @@ function frameBody(now: number): void {
   if (fr) drawFragment(ctx, fr, FRAGMENT.life, tNow, focusNow, dpr);
   if (tg && actAt(state.height) === 1) drawPinned(ctx, tg, TANGLE.life, tNow, focusNow, dpr);
   else if (tg && actAt(state.height) !== 5) drawTangle(ctx, tg, TANGLE.life, tNow, focusNow, dpr);
-  taps.draw(ctx, tNow, scene.crownAt, dpr, (x, y) => actAt(state.height) <= 2 || !!scene.darkAt?.(x, y));
-  drawLucky(tNow);
+  if (!photoPending) {
+    taps.draw(ctx, tNow, scene.crownAt, dpr, (x, y) => actAt(state.height) <= 2 || !!scene.darkAt?.(x, y));
+    drawLucky(tNow);
+  }
   ctx.setTransform(1, 0, 0, 1, 0, 0);
+  if (photoPending) { const take = photoPending; photoPending = null; take(); }
   endFrameSpots();
   if (now - lastPortrait > 1000 && frozenT === null && !fadingFrom && (zoom.k === 1 || zoom.k >= 2)) {
     lastPortrait = now;

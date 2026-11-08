@@ -5,10 +5,13 @@
 // narrowest scene); the corner buttons count by their boxes. Prints the colliding pairs per state.
 // Usage: node --no-warnings tools/overlaps.ts [comma-separated bot seconds; 5 = a fresh reef] [keys to press first, e.g. h]
 // VP=<name> checks one viewport only (desktop, mobile, landscape, small-landscape, tiny, tiny-landscape).
+// TAP=1 taps a tappable spot (a creature, a feast) before each sample, and counts the haul lines
+// the taps raise ("+1.2k glow · a gift of light"), which live only a couple of seconds.
 
 import { VIEWPORTS, withGame } from './browser.ts';
 const IDS = ['title', 'zone-title', 'milestone', 'journal-note', 'whisper', 'sweep-hint', 'creature-label', 'depth-gauge', 'sound', 'view-mode'];
 const keys = process.argv[3] ?? '';
+const tap = process.env.TAP === '1';
 const times = (process.argv[2] ?? '5,300,2000,5000,9000,13000,17000,21000,25000').split(',').map(Number);
 await withGame(async (open) => {
   const small = { name: 'small-landscape', width: 667, height: 375, scale: 2, mobile: true };
@@ -22,10 +25,17 @@ await withGame(async (open) => {
     for (const k of keys) await page.keyboard.press(k);
     await page.waitForTimeout(3000);
     for (let k = 0; k < 12; k++) {
+      if (tap) {
+        const spots = await page.evaluate(() => (window as never as { corallum: { spots: { x: number; y: number }[] } }).corallum.spots);
+        const p = spots[(k * 7) % Math.max(1, spots.length)];
+        if (p) await (vp.mobile ? page.touchscreen.tap(p.x, p.y) : page.mouse.click(p.x, p.y)).catch(() => {});
+        await page.waitForTimeout(250);
+      }
       await page.waitForTimeout(700);
       const hits = await page.evaluate((ids) => {
-        const boxes = ids.map((id) => {
-          const e = document.getElementById(id);
+        const els: [string, Element | null][] = [...ids.map((id) => [id, document.getElementById(id)] as [string, Element | null]),
+          ...[...document.querySelectorAll('.float.feast-float')].map((e) => ['haul', e] as [string, Element])];
+        const boxes = els.map(([id, e]) => {
           if (!e) return null;
           const cs = getComputedStyle(e);
           if (cs.display === 'none' || cs.visibility === 'hidden' || Number(cs.opacity) < 0.3 || (e as HTMLElement).hidden) return null;
