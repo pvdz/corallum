@@ -158,7 +158,12 @@ export function createAbyssScene(seed: number): Scene {
 
   /** The nearest ridge's line at x (device pixels). */
   function floorY(x: number): number {
-    const pts = ridges[2]!.points;
+    return ridgeY(2, x);
+  }
+
+  /** Ridge `k`'s line at x (device pixels): 0 the farthest, 2 the nearest. */
+  function ridgeY(k: number, x: number): number {
+    const pts = ridges[k]!.points;
     const span = Math.max(w, focus.w * 1.6);
     const u = Math.min(1, Math.max(0, (x - (centreX() - span / 2)) / span)) * (pts.length - 1);
     const i = Math.min(pts.length - 2, Math.floor(u));
@@ -253,12 +258,46 @@ export function createAbyssScene(seed: number): Scene {
 
   /** A lonely seamount: one far light on the horizon, another reef too far away to reach. */
   function drawFarLamp(ctx: CanvasRenderingContext2D, t: number): void {
-    const x = focus.x + focus.w * 0.84, y = focus.y + focus.h * 0.36;
+    const s = scale();
+    const x = focus.x + focus.w * 0.84, y = ridgeY(0, x) + 2 * s;
+    const hgt = Math.min(focus.h * 0.14, 70 * s);
     const a = 0.45 + 0.2 * Math.sin(t * 0.4);
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    glow(ctx, x, y, 46 * scale(), '140,180,255', a * 0.6);
-    glow(ctx, x, y, 4 * scale(), '220,235,255', a * 1.6);
+    glow(ctx, x, y - hgt * 0.55, 46 * s, '140,180,255', a * 0.5);
+    ctx.restore();
+    // The other reef itself, a shade paler than the far ridge it stands on: a trunk and a few
+    // branches fanning out, too far off for any detail.
+    ctx.strokeStyle = '#161c40';
+    ctx.lineCap = 'round';
+    const tips: [number, number][] = [];
+    const limb = (x0: number, y0: number, ang: number, len: number, wid: number, depth: number) => {
+      const ex = x0 + Math.sin(ang) * len, ey = y0 - Math.cos(ang) * len;
+      ctx.lineWidth = Math.max(0.8, wid);
+      ctx.beginPath();
+      ctx.moveTo(x0, y0);
+      ctx.quadraticCurveTo(x0 + Math.sin(ang * 0.5) * len * 0.5, y0 - len * 0.55, ex, ey);
+      ctx.stroke();
+      if (depth > 0) {
+        limb(ex, ey, ang - 0.35, len * 0.55, wid * 0.65, depth - 1);
+        limb(ex, ey, ang + 0.3, len * 0.6, wid * 0.65, depth - 1);
+      } else tips.push([ex, ey]);
+    };
+    // A short trunk, then three limbs from it at different heights, each forking twice.
+    limb(x, y + 2 * s, 0.05, hgt * 0.3, 3.4 * s, -1);
+    tips.length = 0;
+    const ty = y - hgt * 0.3;
+    limb(x, ty, -0.55, hgt * 0.32, 2.4 * s, 1);
+    limb(x, ty + 2 * s, 0.1, hgt * 0.38, 2.6 * s, 1);
+    limb(x + 1 * s, ty + 4 * s, 0.65, hgt * 0.28, 2.2 * s, 1);
+    // Its lights, each on a tip, waking and dimming out of step: someone else's reef, alive.
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    tips.forEach(([tx, ty], i) => {
+      const on = 0.5 + 0.5 * Math.sin(t * (0.5 + i * 0.13) + i * 2.1);
+      glow(ctx, tx, ty, 5 * s, '170,205,255', 0.25 + 0.55 * on * a);
+      glow(ctx, tx, ty, 1.6 * s, '230,240,255', 0.4 + 0.8 * on * a);
+    });
     ctx.restore();
   }
 
