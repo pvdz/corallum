@@ -937,11 +937,17 @@ export function createSunlitScene(seed: number): Scene {
       ctx.translate(x, y);
       ctx.rotate(Math.sin(t * 0.8 + k) * 0.12 * (1 - pale));
       ctx.scale(1 - 0.12 * pale, 1 - 0.12 * pale);
-      ctx.strokeStyle = `rgb(${mixc(r0, 235)},${mixc(g0, 220)},${mixc(b0, 185)})`;
-      ctx.fillStyle = ctx.strokeStyle;
+      const cr = mixc(r0, 235), cg = mixc(g0, 220), cb = mixc(b0, 185);
+      ctx.strokeStyle = `rgb(${cr},${cg},${cb})`;
       ctx.lineCap = 'round';
-      // An upright body with a pot belly and a crowned head, a tube of a snout, a curled tail.
+      // An upright body with a pot belly and a crowned head, a tube of a snout, a curled tail;
+      // shaded darker along the back, paler down the belly.
       const P = (x: number, y: number): [number, number] => [x * s, y * s];
+      const shade = ctx.createLinearGradient(-4 * s, 0, 6 * s, 0);
+      shade.addColorStop(0, `rgb(${Math.round(cr * 0.7)},${Math.round(cg * 0.7)},${Math.round(cb * 0.7)})`);
+      shade.addColorStop(0.45, `rgb(${cr},${cg},${cb})`);
+      shade.addColorStop(1, `rgb(${Math.round(cr + (255 - cr) * 0.25)},${Math.round(cg + (255 - cg) * 0.25)},${Math.round(cb + (255 - cb) * 0.25)})`);
+      ctx.fillStyle = shade;
       ctx.beginPath();
       ctx.moveTo(...P(0.5, -12.5));
       ctx.quadraticCurveTo(...P(-1.6, -12.5), ...P(-2.2, -10.5));
@@ -968,7 +974,7 @@ export function createSunlitScene(seed: number): Scene {
       ctx.quadraticCurveTo(...P(-2, 18), ...P(-3.4, 16));
       ctx.quadraticCurveTo(...P(-3.6, 14), ...P(-1.8, 13.8));
       ctx.stroke();
-      // The rings of its armour, the crown's points, and the eye.
+      // The rings of its armour (on the body and down the tail), the crown's points, and the eye.
       ctx.strokeStyle = 'rgba(60,30,20,0.28)';
       ctx.lineWidth = Math.max(0.8, 0.7 * s);
       ctx.beginPath();
@@ -977,7 +983,20 @@ export function createSunlitScene(seed: number): Scene {
         ctx.moveTo(...P(-3.4 + i * 0.25, yy));
         ctx.lineTo(...P(-1 + i * 0.2, yy + 0.8));
       }
+      for (const [tx, ty] of [[0.5, 10], [1, 11.8], [1, 13.6]] as const) {
+        ctx.moveTo(...P(tx - 1.1, ty - 0.2));
+        ctx.lineTo(...P(tx + 1.1, ty + 0.3));
+      }
       ctx.stroke();
+      // Pale freckles over the body.
+      ctx.fillStyle = 'rgba(255,242,222,0.45)';
+      ctx.beginPath();
+      for (const [fx, fy] of [[-1.8, -7.5], [0.4, -5.6], [-2.6, -1.2], [0.2, 0.8], [2.6, 2.4], [-1.2, 4.4], [1.6, 6]] as const) {
+        ctx.moveTo(...P(fx + 0.38, fy));
+        ctx.arc(...P(fx, fy), 0.38 * s, 0, Math.PI * 2);
+      }
+      ctx.fill();
+      ctx.fillStyle = `rgb(${cr},${cg},${cb})`;
       ctx.beginPath();
       ctx.moveTo(...P(-0.6, -12.3));
       ctx.lineTo(...P(-0.2, -14));
