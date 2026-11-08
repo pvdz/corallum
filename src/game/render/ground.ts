@@ -20,6 +20,8 @@ export type GroundStyle = {
    * honeycomb patches of tiny holes (the deep floor's real trace, maker unknown).
    */
   abyssal?: boolean;
+  /** The shelf's own: pale brittle stars lying with their arms curled, and small sponge lumps. */
+  shelf?: boolean;
 };
 
 export function createGround(seed: number) {
@@ -153,6 +155,7 @@ function paint(c: CanvasRenderingContext2D, w: number, h: number, s: number, sur
     c.stroke();
   }
   if (st.abyssal) paintAbyssal(c, w, s, at, st, seed);
+  if (st.shelf) paintShelf(c, w, s, at, st, seed);
   // Nearer floor is in deeper shadow: it is out of the reef's light.
   const g = c.createLinearGradient(0, Math.min(h, surf(w / 2)), 0, h);
   g.addColorStop(0, 'rgba(0,0,0,0)');
@@ -247,6 +250,67 @@ function paintAbyssal(c: CanvasRenderingContext2D, w: number, s: number, at: (x:
         c.ellipse(x, y, q * 0.28, q * 0.12, 0, 0, Math.PI * 2);
         c.fill();
       }
+    }
+  }
+}
+
+/** The shelf floor (its own random stream): brittle stars and sponge lumps, nearer ones bigger. */
+function paintShelf(c: CanvasRenderingContext2D, w: number, s: number, at: (x: number, d: number) => number,
+  st: GroundStyle, seed: number): void {
+  const r = mulberry32(seed ^ 0x5e1f);
+  const A = st.alpha;
+  // Brittle stars: a small disc and five thin arms, each curling a little its own way, flattened by
+  // the low angle of view.
+  c.lineCap = 'round';
+  for (let i = 0; i < 16; i++) {
+    const x = r() * w, d = range(r, 0.2, 0.95), y = at(x, d), q = (3 + 9 * d) * s;
+    const rot = r() * Math.PI * 2;
+    c.strokeStyle = `rgba(${st.dark},${A * 0.45})`;
+    c.lineWidth = Math.max(0.8, q * 0.16);
+    const arms: [number, number, number, number][] = [];
+    for (let k = 0; k < 5; k++) {
+      const a = rot + (k / 5) * Math.PI * 2, curl = range(r, -0.9, 0.9);
+      const mx = Math.cos(a) * q * 0.6, my = Math.sin(a) * q * 0.6 * 0.4;
+      const ex = Math.cos(a + curl) * q * 1.15, ey = Math.sin(a + curl) * q * 1.15 * 0.4;
+      arms.push([mx, my, ex, ey]);
+    }
+    // Shadow first, a little below, then the arms in the zone's light colour.
+    c.beginPath();
+    for (const [mx, my, ex, ey] of arms) { c.moveTo(x, y + q * 0.12); c.quadraticCurveTo(x + mx, y + my + q * 0.12, x + ex, y + ey + q * 0.12); }
+    c.stroke();
+    c.strokeStyle = `rgba(${st.light},${A * 0.55})`;
+    c.lineWidth = Math.max(0.6, q * 0.11);
+    c.beginPath();
+    for (const [mx, my, ex, ey] of arms) { c.moveTo(x, y); c.quadraticCurveTo(x + mx, y + my, x + ex, y + ey); }
+    c.stroke();
+    c.fillStyle = `rgba(${st.light},${A * 0.6})`;
+    c.beginPath();
+    c.ellipse(x, y, q * 0.22, q * 0.11, 0, 0, Math.PI * 2);
+    c.fill();
+  }
+  // Sponge lumps: low rounded masses with a few dark openings, lit on top.
+  for (let i = 0; i < 10; i++) {
+    const x = r() * w, d = range(r, 0.25, 0.95), y = at(x, d), q = (4 + 12 * d) * s * range(r, 0.7, 1.3);
+    c.fillStyle = `rgba(${st.dark},${A * 0.5})`;
+    c.beginPath();
+    c.ellipse(x + q * 0.2, y + q * 0.15, q * 1.2, q * 0.35, 0, 0, Math.PI * 2);
+    c.fill();
+    c.fillStyle = `rgba(${st.light},${A * 0.22})`;
+    c.beginPath();
+    c.ellipse(x, y - q * 0.25, q, q * 0.55, 0, Math.PI, 0);
+    c.lineTo(x + q, y);
+    c.lineTo(x - q, y);
+    c.closePath();
+    c.fill();
+    c.fillStyle = `rgba(${st.light},${A * 0.3})`;
+    c.beginPath();
+    c.ellipse(x - q * 0.15, y - q * 0.62, q * 0.55, q * 0.14, 0, 0, Math.PI * 2);
+    c.fill();
+    c.fillStyle = `rgba(${st.dark},${A * 0.7})`;
+    for (let k = 0; k < 3; k++) {
+      c.beginPath();
+      c.ellipse(x + (k - 1) * q * 0.45, y - q * (0.38 + 0.1 * (k % 2)), q * 0.12, q * 0.07, 0, 0, Math.PI * 2);
+      c.fill();
     }
   }
 }

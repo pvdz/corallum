@@ -360,7 +360,7 @@ export function createTwilightScene(seed: number): Scene {
     ctx.fill();
     const s = scale();
     const surf = (x: number) => slopeY(Math.min(1, Math.max(0, (x - x0) / span)));
-    ground.draw(ctx, w, Math.min(h, focus.y + focus.h), s, surf, { light: '200,212,235', dark: '4,8,22', alpha: 0.75, tracks: false },
+    ground.draw(ctx, w, Math.min(h, focus.y + focus.h), s, surf, { light: '200,212,235', dark: '4,8,22', alpha: 0.75, tracks: false, shelf: true },
       `${w}x${h}:${focus.x},${focus.y},${focus.w},${focus.h}`);
     // Boulders furred with silt.
     for (const b of boulders) {
