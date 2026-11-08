@@ -58,12 +58,12 @@ export const HOLD_HINT_ANY = 'beyond what the reef can hold';
 
 /** Shown once (per browser line) after an update with new things to find; `id` changes per update. */
 export const NEWS = {
-  id: 'news:2026-11-08b',
+  id: 'news:2026-11-08c',
   kicker: 'New in the sea',
-  title: 'What the deep was hiding',
-  text: 'The seamounts show what they are: black smokers on a warm one, old reefs half buried on a crowded one, ' +
-    'another reef’s lights far off from a lonely one. Your sponges, a plating reef’s tables, the sea pens, the glass ' +
-    'shrimp and the mantis shrimp are drawn anew. In view mode (the eye), the camera goes visiting your creatures.',
+  title: 'More to see, and a quieter sea',
+  text: 'The guard crabs, the gobies and the pistol shrimp living in your branches are drawn anew, and so are the ' +
+    'whale shark, the sixgill, the dragonfish, the thorn star and the drill snail. On the shelf, on nights after a full ' +
+    'moon, watch for the fireworms’ rings of light. Music and sounds each have their own slider now (the Reef tab).',
 } as const;
 
 /** The first time the line enters a zone: what is new there, in a few lines (zones 2–5). */
