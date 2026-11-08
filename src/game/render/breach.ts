@@ -1275,52 +1275,73 @@ export function createBreachScene(seed: number): Scene {
     ctx.scale(dir, 1);
     ctx.rotate(plunge * 1.2);
     const fold = plunge;
-    const flap = Math.sin(t * 2.2) * 0.25 * (1 - fold);
-    const span = 30 * s * (1 - fold * 0.75);
-    // Wings: broad and long, bent at the wrist, filled, the far one darker and behind; dark
-    // against the dawn, the flight feathers a shade darker at the trailing edge.
-    const wing = (side: number, shade: string) => {
-      const wx = side * span * 0.45, wyy = (-7 - flap * 6) * s, tx = side * span, ty = (-2 - flap * 10) * s;
+    const flap = Math.sin(t * 2.2) * (1 - fold);
+    // Seen from the side: the wings rise from the shoulders and sweep back, long and broad, the
+    // dark flight feathers fingered at the tips; the far wing a shade darker, a little ahead and
+    // lower. In the plunge they fold back along the body.
+    const wing = (lift: number, dx: number, shade: string, tips: string) => {
+      const reach = (24 - 14 * fold) * s * lift;
+      const ang = -0.95 - 1.95 * fold + flap * 0.35;
+      const wx = dx + Math.cos(ang) * reach * 0.45 - 4 * s, wyy = Math.sin(ang) * reach * 0.45 - 2 * s;
+      const tx = dx + Math.cos(ang - 0.35) * reach - 9 * s * (1 - fold), ty = Math.sin(ang - 0.35) * reach;
       ctx.fillStyle = shade;
       ctx.beginPath();
-      ctx.moveTo(side * 1 * s, -2 * s);
-      ctx.quadraticCurveTo(side * span * 0.2, wyy - 2 * s, wx, wyy);
-      ctx.quadraticCurveTo(side * span * 0.75, wyy - 1 * s, tx, ty);
-      ctx.quadraticCurveTo(side * span * 0.7, ty + 2.6 * s, wx, wyy + 3.6 * s);
-      ctx.quadraticCurveTo(side * span * 0.2, 1 * s, side * 1 * s, 2 * s);
+      ctx.moveTo(dx + 4 * s, -2 * s);
+      ctx.quadraticCurveTo(dx + 3 * s, wyy - 2 * s, wx, wyy);
+      ctx.quadraticCurveTo(wx - 2 * s, (wyy + ty) / 2 - 1.5 * s, tx, ty);
+      ctx.quadraticCurveTo(wx - 11 * s, wyy + 7 * s, dx - 9 * s, -0.5 * s);
       ctx.closePath();
       ctx.fill();
+      // The fingered primaries.
+      ctx.strokeStyle = tips;
+      ctx.lineCap = 'round';
+      ctx.lineWidth = 1.2 * s;
+      ctx.beginPath();
+      for (let f = 0; f < 4; f++) {
+        const fx = tx + (wx - tx) * f * 0.12, fy = ty + (wyy - ty) * f * 0.12;
+        ctx.moveTo(fx + 1.5 * s, fy + 1 * s);
+        ctx.lineTo(fx - (3.5 - f * 0.5) * s, fy - (1.2 - f * 0.8) * s);
+      }
+      ctx.stroke();
     };
-    wing(-1, '#36312f');
+    wing(0.85, 3 * s, '#3c3632', '#1e1a18');
     // Body, a short tail, the neck folded back so the head sits on the shoulders, and the long bill
     // with its pouch hanging under it.
-    ctx.fillStyle = '#5a5450';
+    ctx.fillStyle = '#a8a29a';
     ctx.beginPath();
-    ctx.ellipse(-2 * s, 1 * s, 8 * s, 3 * s, 0, 0, Math.PI * 2);
-    ctx.moveTo(-9 * s, 0);
-    ctx.lineTo(-13 * s, -0.5 * s);
-    ctx.lineTo(-12.5 * s, 2.5 * s);
-    ctx.lineTo(-9 * s, 2.5 * s);
-    ctx.moveTo(9.4 * s, -1 * s);
-    ctx.arc(7 * s, -1 * s, 2.4 * s, 0, Math.PI * 2);
+    ctx.ellipse(-2 * s, 1 * s, 9 * s, 3.4 * s, 0, 0, Math.PI * 2);
+    ctx.moveTo(-10 * s, 0);
+    ctx.lineTo(-14 * s, -0.5 * s);
+    ctx.lineTo(-13.5 * s, 2.5 * s);
+    ctx.lineTo(-10 * s, 2.5 * s);
+    ctx.moveTo(9.6 * s, -1 * s);
+    ctx.arc(7 * s, -1 * s, 2.6 * s, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#e8e2d4';
+    ctx.fillStyle = 'rgba(70,64,60,0.5)';
     ctx.beginPath();
-    ctx.arc(7.2 * s, -2 * s, 1.3 * s, Math.PI, Math.PI * 2);
+    ctx.ellipse(-3 * s, 3 * s, 7 * s, 1.4 * s, 0, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#c09048';
+    // The pouch, then the bill along its top.
+    ctx.fillStyle = '#d08a3c';
     ctx.beginPath();
-    ctx.moveTo(8.5 * s, -2 * s);
-    ctx.lineTo(21 * s, -0.4 * s);
-    ctx.lineTo(20 * s, 0.4 * s);
-    ctx.quadraticCurveTo(14 * s, 4 * s, 9 * s, 2.2 * s);
+    ctx.moveTo(8.6 * s, 0);
+    ctx.quadraticCurveTo(14 * s, 4.2 * s, 20.5 * s, 0.4 * s);
+    ctx.lineTo(9 * s, -0.6 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#b8945c';
+    ctx.beginPath();
+    ctx.moveTo(8.6 * s, -2.2 * s);
+    ctx.lineTo(21 * s, -0.2 * s);
+    ctx.quadraticCurveTo(21.6 * s, 0.3 * s, 20.6 * s, 0.6 * s);
+    ctx.lineTo(8.8 * s, -0.4 * s);
     ctx.closePath();
     ctx.fill();
     ctx.fillStyle = '#1a1614';
     ctx.beginPath();
-    ctx.arc(7.6 * s, -1.6 * s, 0.5 * s, 0, Math.PI * 2);
+    ctx.arc(7.4 * s, -1.8 * s, 0.6 * s, 0, Math.PI * 2);
     ctx.fill();
-    wing(1, '#4a4440');
+    wing(1, 0, '#5a524c', '#24201e');
     ctx.restore();
   }
 
