@@ -1043,6 +1043,10 @@ html.view-mode #zone-title, html.view-mode #whisper, html.view-mode #milestone {
 @media (min-width: 800px), (min-width: 560px) and (max-height: 500px) { #depth-gauge { right: calc(var(--panel-out) + 18px); } }
 @media (max-width: 559px), (max-width: 799px) and (min-height: 501px) { #depth-gauge { top: 14%; bottom: auto; height: 30%; max-height: calc(var(--sheet-top, 100vh) - 14vh - 22px); right: 10px; } }
 html.view-mode #depth-gauge { right: max(18px, env(safe-area-inset-right)); }
+/* Watching, the gauge recedes: the camera drifts in close and the gauge stood on the reef's branches
+   (hovered, it comes back; during a release the finale's own dimming applies). */
+html.view-mode:not(.releasing) #depth-gauge { opacity: 0.4; transition: opacity 0.6s ease; }
+html.view-mode:not(.releasing) #depth-gauge:hover { opacity: 1; }
 #depth-gauge b { flex: 1; display: block; }
 #depth-gauge .gauge-moon { position: absolute; top: -26px; left: 50%; width: 18px; height: 18px; transform: translateX(-50%); pointer-events: auto; }
 #depth-gauge b.zone-1 { background: #121032; border-radius: 0 0 3px 3px; }
