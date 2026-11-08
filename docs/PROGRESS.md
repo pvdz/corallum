@@ -1432,3 +1432,4 @@ date, what landed, what is half-done, what's next.
 - Group visitors tappable where they are: the star march and the far Rasp herd put their one tappable spot on the first member drawn, which can be off the scene (the herd enters from beyond the right edge) or at its rim; it is the member nearest the middle now.
 - Server, for a hosted copy: every file says `x-content-type-options: nosniff` (each is only what its type says; every served type is in the MIME table), and a server error answers "server error" with the details in the log (it sent the error text, which names paths). server.test checks the header; smoke e2e green with it.
 - The growth chart's zone names (Your reef) looked boxed: a 55% fill over a dark edge let the edge show through the letters. A solid dim colour, a lighter, thinner edge.
+- News card (news:2026-11-08c) for players coming back: the residents and the visitors drawn anew, the fireworms' rings, the Music and Sounds sliders.
