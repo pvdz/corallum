@@ -1041,13 +1041,20 @@ export function createBreachScene(seed: number): Scene {
    * A turtle surfacing: every three minutes a head and the top of a shell break the water beside
    * the crown, a puff of breath, and down again. Touched, it ducks under at once.
    */
-  function drawBreathingTurtle(ctx: CanvasRenderingContext2D, t: number, crownX: number): void {
+  function drawBreathingTurtle(ctx: CanvasRenderingContext2D, t: number, crownX: number, beaconX: number | null): void {
     const period = 180, up = 9;
     const touch = startled('breathing-turtle', t);
     const u = (t % period) / up;
     if (u >= 1 || (touch && touch.age < 4)) return;
-    const s = scale() * 1.6;
-    const x = crownX + 160 * s, wy = waterY();
+    const s = scale() * 1.6, wy = waterY();
+    // Beside the crown; with the beacon standing there (drawn over it), just past the tower, or
+    // just short of it where the screen ends first. The turtle spans x − 32s (shell) to x + 12s (head).
+    let x = crownX + 160 * s;
+    if (beaconX !== null) {
+      const clear = 12 * scale();
+      if (x - 32 * s < beaconX + clear && x + 12 * s > beaconX - clear)
+        x = beaconX + clear + 32 * s + 12 * s <= w ? beaconX + clear + 32 * s : beaconX - clear - 12 * s;
+    }
     // It stays down while the man-o'-war drifts over the spot where it would come up.
     if (Math.abs(manOWarX(t) - (x - 14 * s)) < 45 * s) return;
     sight('breathing-turtle');
@@ -1964,7 +1971,7 @@ export function createBreachScene(seed: number): Scene {
       drawBreaching(ctx, t);
       drawFlyingFish(ctx, t);
       const sf: Surface = { focus, wy: waterY(), s: scale(), dpr, dawn };
-      drawBreathingTurtle(ctx, t, this.crownAt[0]);
+      drawBreathingTurtle(ctx, t, this.crownAt[0], v.works.beacon > 0 ? L.cx + L.unit * 0.32 : null);
       drawSeaSparkle(ctx, t, sf, this.crownAt[0]);
       if (v.sinceBreach >= 0) drawHatchlings(ctx, t, v.sinceBreach);
       if (v.sinceBreach >= 60) drawPelican(ctx, t);
