@@ -1181,6 +1181,7 @@ export function createLife(seed: number) {
     ctx.translate(x, y);
     // Head down toward the silt, tail trailing up behind.
     ctx.rotate(0.06);
+    const wave = (f: number) => Math.sin(t * 2 + f * 5) * 3 * s * f;
     const body = ctx.createLinearGradient(0, -10 * s, 0, 10 * s);
     body.addColorStop(0, '#3a3550');
     body.addColorStop(1, '#1d1a2c');
@@ -1200,8 +1201,33 @@ export function createLife(seed: number) {
     }
     ctx.quadraticCurveTo(22 * s, 9 * s, 26 * s, 0);
     ctx.fill();
+    // Inside the body: rows of rough scales over the trunk, fading down the tail, and the
+    // lateral line running from the gill cover to the tip.
+    ctx.save();
+    ctx.clip();
+    const scales = new Path2D();
+    for (let r = -2; r <= 2; r++) {
+      for (let c = 0; c < 9; c++) {
+        const f = c / 14;
+        const cx = 8 * s - c * 3.4 * s - (r & 1) * 1.7 * s, cy = r * 2.8 * s * (1 - f) + wave(f) - 1 * s;
+        scales.moveTo(cx - 1.5 * s * (1 - f * 0.6), cy - 1.3 * s);
+        scales.quadraticCurveTo(cx + 0.6 * s, cy, cx - 1.5 * s * (1 - f * 0.6), cy + 1.3 * s);
+      }
+    }
+    ctx.strokeStyle = 'rgba(14,12,26,0.45)';
+    ctx.lineWidth = 0.5 * s;
+    ctx.stroke(scales);
+    ctx.strokeStyle = 'rgba(120,112,160,0.4)';
+    ctx.lineWidth = 0.6 * s;
+    ctx.beginPath();
+    ctx.moveTo(10 * s, -4 * s);
+    for (let i = 1; i <= 10; i++) {
+      const f = i / 10;
+      ctx.lineTo(6 * s - f * 70 * s, -4 * s * (1 - f) + wave(f) - 0.6 * s * (1 - f));
+    }
+    ctx.stroke();
+    ctx.restore();
     // Fins: the tall first dorsal over the shoulders, and a long low fringe under the whole tail.
-    const wave = (f: number) => Math.sin(t * 2 + f * 5) * 3 * s * f;
     ctx.fillStyle = 'rgba(70,64,96,0.85)';
     ctx.beginPath();
     ctx.moveTo(8 * s, -9.6 * s);
