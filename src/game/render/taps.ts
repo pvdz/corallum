@@ -39,7 +39,7 @@ export function createTaps() {
           const sr = mulberry32(tap.seed ^ 0x5a5a);
           for (let p = 0; p < 18; p++) {
             const a = sr() * Math.PI * 2, d = (10 + sr() * 40) * s * (0.4 + 0.6 * k);
-            glow(ctx, tap.x + Math.cos(a) * d, tap.y + Math.sin(a) * d, 4 * s, '90,200,255', (1 - k) * (0.5 + 0.5 * sr()));
+            glow(ctx, tap.x + Math.cos(a) * d, tap.y + Math.sin(a) * d, 4 * s, '90,200,255', (1 - k) * (0.3 + 0.35 * sr()));
           }
         }
         if (age < RIPPLE) {
@@ -50,6 +50,8 @@ export function createTaps() {
         }
         const rng = mulberry32(tap.seed);
         let arrived = 0;
+        // A combo's many motes are each a little fainter: more of them, not a brighter heap.
+        const each = Math.sqrt(6 / Math.max(6, tap.motes));
         for (let m = 0; m < tap.motes; m++) {
           const delay = rng() * 0.25;
           const bend = (rng() - 0.5) * 0.8;
@@ -65,11 +67,11 @@ export function createTaps() {
           // flare below says so, without their cores piling up to white.
           // They gather out of the stirred water (fading in, or six start as one white spot).
           const fade = Math.min(1, u / 0.2) * (1 - 0.7 * e);
-          glow(ctx, x, y, 10 * s, '255,215,190', 0.8 * fade);
+          glow(ctx, x, y, 10 * s, '255,215,190', 0.8 * fade * each);
           // A short trail back along the path.
           const e2 = Math.max(0, e - 0.08);
           glow(ctx, tap.x + dx * e2 - dy * bend * Math.sin(Math.PI * e2), tap.y + dy * e2 + dx * bend * Math.sin(Math.PI * e2),
-            6 * s, '255,190,160', 0.35 * fade);
+            6 * s, '255,190,160', 0.35 * fade * each);
         }
         if (arrived) {
           const a = 0.45 * Math.max(0, 1 - (age - TRAVEL) / (LIFE - TRAVEL));
