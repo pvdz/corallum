@@ -63,7 +63,8 @@ export const NEWS = {
   title: 'More to see, and a quieter sea',
   text: 'The guard crabs, the gobies and the pistol shrimp living in your branches are drawn anew, and so are the ' +
     'whale shark, the sixgill, the dragonfish, the thorn star and the drill snail. On the shelf, on nights after a full ' +
-    'moon, watch for the fireworms’ rings of light. Music and sounds each have their own slider now (the Reef tab).',
+    'moon, watch for the fireworms’ rings of light. Music and sounds each have their own slider now, and the Reef tab ' +
+    'can replay the whole climb, from the seafloor up (Shift+T).',
 } as const;
 
 /** The first time the line enters a zone: what is new there, in a few lines (zones 2–5). */
