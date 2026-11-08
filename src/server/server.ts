@@ -88,6 +88,8 @@ export function startServer(port: number, host = '127.0.0.1'): Promise<Server> {
       res.writeHead(200, {
         'content-type': MIME[extname(abs)] ?? 'application/octet-stream',
         'cache-control': 'no-cache',
+        // Each file is only what its type says (a hosted copy never runs a mislabelled one).
+        'x-content-type-options': 'nosniff',
         etag,
         vary: 'accept-encoding',
         ...(gz ? { 'content-encoding': 'gzip' } : {}),
@@ -97,8 +99,9 @@ export function startServer(port: number, host = '127.0.0.1'): Promise<Server> {
       const code = (err as NodeJS.ErrnoException).code;
       if (code === 'ENOENT' || code === 'EISDIR') res.writeHead(404).end('not found');
       else {
+        // The details go to the log, not to whoever asked (they name paths on the server).
         console.error(err);
-        res.writeHead(500).end(String(err));
+        res.writeHead(500).end('server error');
       }
     }
   });

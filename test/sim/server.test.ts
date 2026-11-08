@@ -22,6 +22,7 @@ test('an unchanged file revalidates to a bodiless 304', async () => {
     const first = await fetch(url);
     const etag = first.headers.get('etag');
     assert.equal(first.status, 200);
+    assert.equal(first.headers.get('x-content-type-options'), 'nosniff');
     assert.ok(etag && (await first.text()).length > 0);
     const again = await fetch(url, { headers: { 'if-none-match': etag } });
     assert.equal(again.status, 304);
