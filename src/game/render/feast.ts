@@ -162,19 +162,48 @@ function drawJellyFall(ctx: CanvasRenderingContext2D, s: number, t: number): voi
 /** A dead fish: pale body, the ribs showing, a clouded eye. */
 function drawFish(ctx: CanvasRenderingContext2D, s: number): void {
   const L = 34 * s, H = 11 * s;
-  ctx.fillStyle = 'rgba(225,215,200,0.85)';
+  // A dusky back fading to a pale silver belly: a body with a round side, not a cut-out.
+  const body = ctx.createLinearGradient(0, -H * 1.1, 0, H * 1.1);
+  body.addColorStop(0, 'rgba(120,128,142,0.92)');
+  body.addColorStop(0.45, 'rgba(198,196,192,0.9)');
+  body.addColorStop(1, 'rgba(236,230,218,0.9)');
+  ctx.fillStyle = body;
   ctx.beginPath();
   ctx.moveTo(L, 0);
   ctx.bezierCurveTo(L * 0.5, -H * 1.2, -L * 0.5, -H, -L * 0.8, 0);
   ctx.bezierCurveTo(-L * 0.5, H, L * 0.5, H * 1.2, L, 0);
   ctx.fill();
-  // Tail.
+  // A soft sheen along the flank, where the light catches the scales.
+  ctx.strokeStyle = 'rgba(245,248,255,0.35)';
+  ctx.lineWidth = 1.6 * s;
+  ctx.beginPath();
+  ctx.moveTo(L * 0.55, -H * 0.35);
+  ctx.quadraticCurveTo(0, -H * 0.5, -L * 0.55, -H * 0.2);
+  ctx.stroke();
+  // Tail, with its rays.
+  ctx.fillStyle = 'rgba(170,172,178,0.85)';
   ctx.beginPath();
   ctx.moveTo(-L * 0.75, 0);
   ctx.lineTo(-L * 1.15, -H * 0.9);
   ctx.lineTo(-L * 1.05, 0);
   ctx.lineTo(-L * 1.15, H * 0.9);
   ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(110,112,122,0.45)';
+  ctx.lineWidth = 0.7 * s;
+  ctx.beginPath();
+  for (const f of [-0.75, -0.4, 0.4, 0.75]) {
+    ctx.moveTo(-L * 0.78, 0);
+    ctx.lineTo(-L * 1.12, H * 0.9 * f);
+  }
+  ctx.stroke();
+  // A ragged bite out of the belly, where the scavengers began.
+  ctx.fillStyle = 'rgba(150,95,95,0.55)';
+  ctx.beginPath();
+  ctx.moveTo(L * 0.1, H * 0.86);
+  ctx.quadraticCurveTo(-L * 0.02, H * 0.45, -L * 0.18, H * 0.62);
+  ctx.quadraticCurveTo(-L * 0.24, H * 0.7, -L * 0.28, H * 0.72);
+  ctx.quadraticCurveTo(-L * 0.08, H * 0.95, L * 0.1, H * 0.86);
   ctx.fill();
   // A limp dorsal fin.
   ctx.fillStyle = 'rgba(205,192,178,0.7)';
@@ -205,9 +234,18 @@ function drawFish(ctx: CanvasRenderingContext2D, s: number): void {
   ctx.moveTo(L * 0.98, 0.5 * s);
   ctx.lineTo(L * 0.82, H * 0.32);
   ctx.stroke();
-  ctx.fillStyle = 'rgba(200,210,220,0.9)';
+  // The eye, clouded milky white, with its dark rim.
+  ctx.fillStyle = 'rgba(70,72,84,0.8)';
   ctx.beginPath();
-  ctx.arc(L * 0.62, -H * 0.15, 2.6 * s, 0, Math.PI * 2);
+  ctx.arc(L * 0.62, -H * 0.15, 3.2 * s, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(214,220,226,0.95)';
+  ctx.beginPath();
+  ctx.arc(L * 0.62, -H * 0.15, 2.3 * s, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(170,180,195,0.7)';
+  ctx.beginPath();
+  ctx.arc(L * 0.63, -H * 0.12, 1.1 * s, 0, Math.PI * 2);
   ctx.fill();
 }
 
