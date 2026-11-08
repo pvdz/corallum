@@ -23,8 +23,30 @@ export function drawShrimp(ctx: CanvasRenderingContext2D, x: number, y: number, 
   ctx.quadraticCurveTo(-8 * s, 1 * s, -3 * s, 1.5 * s);
   ctx.quadraticCurveTo(6 * s, 3 * s, 13 * s, 0.5 * s);
   ctx.closePath();
+  const glass = ctx.createLinearGradient(0, -6 * s, 0, 5 * s);
+  glass.addColorStop(0, `rgba(${tint},0.16)`);
+  glass.addColorStop(1, `rgba(${tint},0.05)`);
+  ctx.fillStyle = glass;
   ctx.fill();
   ctx.stroke();
+  // Light bending along the curve of the back: a bright line just inside the edge.
+  ctx.strokeStyle = `rgba(${tint},0.5)`;
+  ctx.lineWidth = 0.6 * s;
+  ctx.beginPath();
+  ctx.moveTo(11 * s, -3.6 * s);
+  ctx.quadraticCurveTo(4 * s, -4.4 * s, -1 * s, -4.5 * s);
+  ctx.quadraticCurveTo(-7 * s, -4.6 * s, -9.8 * s, -1.2 * s);
+  ctx.stroke();
+  // The gut, the one thing in it with colour: a thin warm line from the head down the abdomen.
+  ctx.strokeStyle = 'rgba(255,170,110,0.55)';
+  ctx.lineWidth = 0.9 * s;
+  ctx.beginPath();
+  ctx.moveTo(8 * s, -1.6 * s);
+  ctx.quadraticCurveTo(0, -2.6 * s, -6 * s, -1.6 * s);
+  ctx.quadraticCurveTo(-9.5 * s, -0.4 * s, -11 * s, 2.5 * s);
+  ctx.stroke();
+  ctx.strokeStyle = `rgba(${tint},0.28)`;
+  ctx.lineWidth = 0.9 * s;
   // Segment joints across the abdomen.
   ctx.beginPath();
   for (let k = 0; k < 5; k++) {
