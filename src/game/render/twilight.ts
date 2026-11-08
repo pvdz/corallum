@@ -1957,8 +1957,10 @@ export function createTwilightScene(seed: number): Scene {
     ctx.scale(-1, 1);
     const sway = Math.sin(t * 1.3) * 3 * s;
     const g = ctx.createLinearGradient(0, -10 * s, 0, 10 * s);
-    g.addColorStop(0, '#3a4048');
-    g.addColorStop(1, '#6a7078');
+    // Dark, near black above and a dusky grey-brown below, sitting in the blue.
+    g.addColorStop(0, 'rgba(24,28,36,0.94)');
+    g.addColorStop(0.6, 'rgba(40,44,52,0.92)');
+    g.addColorStop(1, 'rgba(78,80,86,0.9)');
     ctx.fillStyle = g;
     // Body: long and heavy, blunt-headed, tapering to a long upper tail lobe with a small lower one.
     ctx.beginPath();
@@ -1987,15 +1989,15 @@ export function createTwilightScene(seed: number): Scene {
     ctx.closePath();
     ctx.fill();
     // A paler belly line along the flank.
-    ctx.strokeStyle = 'rgba(150,158,168,0.16)';
+    ctx.strokeStyle = 'rgba(150,158,168,0.2)';
     ctx.lineWidth = 2 * s;
     ctx.lineCap = 'round';
     ctx.beginPath();
     ctx.moveTo(34 * s, 4 * s);
     ctx.quadraticCurveTo(0, 6.5 * s, -40 * s, 2 * s + sway * 0.8);
     ctx.stroke();
-    // Six gill slits.
-    ctx.strokeStyle = 'rgba(20,24,30,0.7)';
+    // Six gill slits, a shade lighter than the dark hide.
+    ctx.strokeStyle = 'rgba(110,116,128,0.5)';
     ctx.lineWidth = 0.8 * s;
     for (let k = 0; k < 6; k++) {
       ctx.beginPath();

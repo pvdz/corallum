@@ -97,26 +97,54 @@ export function drawDragonfish(ctx: CanvasRenderingContext2D, F: { x: number; y:
   ctx.save();
   ctx.translate(x, y);
   ctx.scale(-side, 1);
-  // A long eel-like body, darker than the water.
+  // A long eel-like body, darker than the water, its jaw hanging open; the dorsal and anal fins
+  // sit far back, one over the other, by a small forked tail.
+  const wag = Math.sin(t * 3 + 1) * 3 * k;
   ctx.fillStyle = '#05060c';
-  ctx.beginPath();
-  ctx.moveTo(18 * k, 0);
-  ctx.quadraticCurveTo(10 * k, -6 * k, -8 * k, -4 * k);
-  ctx.quadraticCurveTo(-30 * k, -2 * k + Math.sin(t * 3) * 2 * k, -44 * k, Math.sin(t * 3 + 1) * 3 * k);
-  ctx.quadraticCurveTo(-30 * k, 3 * k, -8 * k, 4 * k);
-  ctx.quadraticCurveTo(10 * k, 6 * k, 18 * k, 0);
-  ctx.fill();
-  // A faint rim of the shoals' light along its back, so the dark shape reads.
   ctx.strokeStyle = 'rgba(110,150,220,0.35)';
   ctx.lineWidth = 1 * k;
+  for (const f of [-1, 1]) {
+    ctx.beginPath();
+    ctx.moveTo(-30 * k, f * 2.4 * k + wag * 0.6);
+    ctx.quadraticCurveTo(-36 * k, f * 7 * k + wag * 0.8, -40 * k, f * 2 * k + wag * 0.9);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  }
+  ctx.beginPath();
+  ctx.moveTo(-42 * k, wag);
+  ctx.lineTo(-49 * k, -4 * k + wag * 1.2);
+  ctx.quadraticCurveTo(-46 * k, wag, -49 * k, 4 * k + wag * 1.2);
+  ctx.closePath();
+  ctx.fill();
   ctx.stroke();
-  // Fangs.
+  ctx.beginPath();
+  ctx.moveTo(18 * k, -0.5 * k);
+  ctx.quadraticCurveTo(10 * k, -6 * k, -8 * k, -4 * k);
+  ctx.quadraticCurveTo(-30 * k, -2 * k + Math.sin(t * 3) * 2 * k, -44 * k, wag);
+  ctx.quadraticCurveTo(-30 * k, 3 * k, -8 * k, 4 * k);
+  ctx.quadraticCurveTo(6 * k, 5 * k, 9 * k, 3.4 * k);
+  // The lower jaw, dropped open.
+  ctx.lineTo(17 * k, 4.6 * k);
+  ctx.lineTo(9.5 * k, 1.6 * k);
+  ctx.closePath();
+  ctx.fill();
+  // A faint rim of the shoals' light along its edge, so the dark shape reads.
+  ctx.stroke();
+  // Its small eye catches the light.
+  ctx.fillStyle = 'rgba(170,190,220,0.55)';
+  ctx.beginPath();
+  ctx.arc(13 * k, -2.4 * k, 0.9 * k, 0, Math.PI * 2);
+  ctx.fill();
+  // Fangs, long ones on the upper jaw and short on the lower.
   ctx.strokeStyle = 'rgba(230,230,240,0.7)';
   ctx.lineWidth = 0.6 * k;
   ctx.beginPath();
   for (let i = 0; i < 4; i++) {
-    ctx.moveTo(16 * k - i * 2.2 * k, 0.5 * k);
-    ctx.lineTo(15 * k - i * 2.2 * k, 3 * k);
+    ctx.moveTo(16.5 * k - i * 2 * k, -0.2 * k);
+    ctx.lineTo(16 * k - i * 2 * k, 2.4 * k);
+    ctx.moveTo(15.5 * k - i * 1.7 * k, 4.2 * k - i * 0.35 * k);
+    ctx.lineTo(15.2 * k - i * 1.7 * k, 2.8 * k - i * 0.35 * k);
   }
   ctx.stroke();
   ctx.globalCompositeOperation = 'lighter';
