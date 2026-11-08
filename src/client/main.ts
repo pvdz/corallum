@@ -246,7 +246,12 @@ const notify = setting('notify', false, (on, initial) => {
 const big = setting('big', false, (on, initial) => { document.documentElement.classList.toggle('big', on); if (!initial) relayout(); });
 const sci = setting('sci', false, (on) => { setScientific(on); document.documentElement.classList.toggle('sci', on); });
 /** Sounds (cues and the sea) and music, each its own loudness; music starts where the one volume was. */
-const volume = setting('volume', 0.9, (v) => audio.setVolume(v));
+// Moved by hand, the sounds' slider rings a sample at the new loudness (the music is heard anyway).
+let volumeHeard = 0;
+const volume = setting('volume', 0.9, (v, initial) => {
+  audio.setVolume(v);
+  if (!initial && performance.now() - volumeHeard > 180) { volumeHeard = performance.now(); audio.cue('touch'); }
+});
 const music = setting('music', volume.get(), (v) => audio.setMusic(v));
 /** Full resolution: off renders at 1× (a quarter of the pixels on a 2× screen) for slow phones. */
 const sharp = setting('sharp', true, (_, initial) => { if (!initial) relayout(); });
