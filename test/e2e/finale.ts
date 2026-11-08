@@ -68,6 +68,15 @@ await withGame(async (open) => {
       await page.waitForTimeout(1800);
       await page.screenshot({ path: `${shots}/${vp.name}-finale-release.png` });
     }
+    // The ending's words sit low over its shade (not centred over the bright reef): the block
+    // ends where the overlay's padding begins.
+    const low = await page.evaluate(() => {
+      const o = document.querySelector('.ending:not([hidden])') as HTMLElement;
+      const inner = o.querySelector('.finale-inner')!.getBoundingClientRect();
+      const r = o.getBoundingClientRect();
+      return Math.abs(inner.bottom - (r.bottom - parseFloat(getComputedStyle(o).paddingBottom))) < 3;
+    });
+    if (!low) { failed = true; console.log(`FAIL ${vp.name}: the ending's words are not at the foot of the screen`); }
     const pages: string[] = [];
     for (let i = 0; i < 20; i++) {
       const text = (await page.locator('.ending .finale-text').textContent()) ?? '';
