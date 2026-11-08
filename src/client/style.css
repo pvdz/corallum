@@ -587,6 +587,9 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 #zone-title strong { font-weight: 400; font-size: clamp(28px, 5vw, 52px); letter-spacing: 0.12em; text-shadow: 0 0 24px rgba(159, 246, 255, 0.5); }
 #zone-title em { color: var(--ink-dim); font-size: clamp(14px, 1.6vw, 18px); text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8); }
 #zone-title.show { animation: zone-title 7s ease both; }
+/* A story opening while the zone's name still shows (the band that crossed into it): the name gives
+   way at once, instead of fading out under the card's words. */
+#ui:has(> .reader:not([hidden])) #zone-title, #ui:has(> .away:not([hidden])) #zone-title { opacity: 0 !important; transition: opacity 0.3s ease; }
 @keyframes zone-title { 0% { opacity: 0; transform: translateY(8px); } 15%, 70% { opacity: 1; transform: none; } 100% { opacity: 0; } }
 
 #sweep-hint {
