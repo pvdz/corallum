@@ -1409,3 +1409,4 @@ date, what landed, what is half-done, what's next.
 - Flying fish: a small hind wing under the belly, and a ripple and a few drops where each leaves the water and drops back in.
 - The thorn star read as a purple snowflake (spindly arms, pale spine lines): a broad mottled disc, fourteen thick arms tapering and curling, a ridge down each, short rust-red spines with pale tips over arms and disc.
 - The drill snail's shell: a stepped spire of four ribbed whorls with an opening on the body whorl (was a smooth striped cone, near-white at its top, which the Silt Floor's glow turns to glare).
+- The Breach's gull glowed white against the night (body #eef1f4 under the bloom): moonlit greys now, no halo.

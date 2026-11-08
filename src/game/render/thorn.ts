@@ -284,9 +284,10 @@ export function drawGull(ctx: CanvasRenderingContext2D, cx: number, waterY: numb
     ctx.closePath();
     ctx.fill();
   };
-  wing(-1, '#b9c0c8');
-  // Body, a squared tail, the head with its eye and yellow bill.
-  ctx.fillStyle = '#eef1f4';
+  wing(-1, '#7e8794');
+  // Body, a squared tail, the head with its eye and yellow bill; moonlit greys, not white (the
+  // night's glow turns near-white to glare).
+  ctx.fillStyle = '#a6aeb9';
   ctx.beginPath();
   ctx.ellipse(0, 0.5 * k, 5 * k, 1.9 * k, 0, 0, Math.PI * 2);
   ctx.moveTo(-4.5 * k, -0.2 * k);
@@ -306,6 +307,6 @@ export function drawGull(ctx: CanvasRenderingContext2D, cx: number, waterY: numb
   ctx.lineTo(9 * k, 0);
   ctx.lineTo(6.3 * k, 0.5 * k);
   ctx.fill();
-  wing(1, '#d4dae0');
+  wing(1, '#98a1ad');
   ctx.restore();
 }
