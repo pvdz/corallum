@@ -11,10 +11,15 @@ const SIZE = 160;
  * Creatures whose look changed, by art version: an album kept from before a version forgets their
  * portraits (and close-ups), so the journal takes them again at the next good look.
  */
-const REDRAWN: readonly (readonly string[])[] = [
+export const REDRAWN: readonly (readonly string[])[] = [
   [],
-  // 1 (2026-11-08)
-  ['anglerfish', 'gulper', 'barreleye', 'hatchetfish', 'grouper', 'nautilus', 'clownfish', 'shore-bird', 'garden-eel', 'whale'],
+  // 1 (2026-11-07/08: the day's and the night's close-up passes)
+  ['anglerfish', 'gulper', 'barreleye', 'hatchetfish', 'grouper', 'nautilus', 'clownfish', 'shore-bird', 'garden-eel', 'whale',
+    'tree-worms', 'sea-star', 'hermit-crab', 'squat-lobster', 'sailors', 'mola', 'barracuda', 'pyrosome', 'cuttlefish', 'vent-shrimp',
+    'sea-snake', 'octopus', 'giant-clam', 'moray', 'frogfish', 'nudibranch', 'sea-cucumber', 'decorator-crab', 'boxer-crab', 'rasp',
+    'rasp-herd', 'oarfish', 'manta', 'eagle-rays', 'trumpetfish', 'turtle', 'damselfish', 'chimaera', 'rattail', 'larvacean',
+    'giant-squid', 'breaching', 'sardine-run', 'bait-ball', 'moon-jelly', 'hatchlings', 'flashlight-fish', 'man-o-war', 'vampire-squid',
+    'reef-shark', 'petrel'],
 ];
 const ART_VERSION = REDRAWN.length - 1;
 
