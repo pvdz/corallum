@@ -1611,7 +1611,8 @@ function floatText(x: number, y: number, text: string, cls = ''): void {
   const right = focusNow.w / dpr;
   // Clear of the depth gauge's height label too ("3720 m" reaches further in than 48 px on a phone).
   const gl = gaugeLabel.getBoundingClientRect();
-  const rightEdge = Math.min(right - 48, gl.width > 0 ? gl.left - 6 : Infinity);
+  // (A word's width apart: right up against it, "a gift 3720 m" read as one line.)
+  const rightEdge = Math.min(right - 48, gl.width > 0 ? gl.left - 18 : Infinity);
   // A line wider than the scene (a phone on its side, a long haul) a size smaller.
   if (cls && f.offsetWidth > rightEdge - 8) f.style.fontSize = '17px';
   // Still wider (a 320 px phone): smaller again, and at last in two lines across the scene.
