@@ -1311,3 +1311,4 @@ date, what landed, what is half-done, what's next.
 - A buried seamount's silt drifts were smooth pale half-ellipses (bright under the reef's light): each is a drift now, steep on its lee side with a long tail on the other, silt grey and darker, ripples laid along it and a faint light on its crest; a slump lifts a soft cloud (the glow sprite) instead of a solid ellipse.
 - The first screen said "4,000 m down · next band at 0.0 m" until the opening band was read (it lies at the reef's own height): the depth line names the next band still above the reef ("next band at 2.0 m").
 - On the smallest phones (≤360 px wide) the opening title's "C" sat under the eye button (the widely spaced title reaches the corner): there it starts below the corner buttons, as it already did on small phones held sideways.
+- The idle camera goes only to the journal's creatures and sights (so every visit gets its caption): not shells, stars, old stone, Ossel or passing debris.

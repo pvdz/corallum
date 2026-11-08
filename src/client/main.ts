@@ -1852,8 +1852,8 @@ let driftFollow: { id: Spot['id']; x: number; y: number; until: number; named?: 
 let driftNext = 0;
 /** When the idle camera last went to each kind (rare ones are visited once per visit). */
 const driftVisited = new Map<Spot['id'], number>();
-/** Spots the idle camera does not go to: stars, old stone, Ossel's wall and passing debris. */
-const NO_FOLLOW = new Set<Spot['id']>(['star', 'old', 'ossel', 'fragment', 'tangle', 'raft']);
+/** What the idle camera goes to: the journal's creatures (not stars, old stone, Ossel, shells or debris). */
+const FOLLOWABLE = new Set<string>(CREATURES.map((c) => c.id));
 /** When the player last did anything (performance.now): drift waits for a quiet spell. */
 let lastInput = 0;
 let lastPress = 0, panelFrame = 0;
@@ -2151,7 +2151,7 @@ function frameBody(now: number): void {
   // Drift: in view mode, left alone a while, the camera wanders slowly round the reef; now and then
   // it goes to one of the creatures on screen and follows it a while, then wanders on.
   if (viewMode && now - lastInput > 25_000 && !(reducedMotion.matches || calm.get())) {
-    const pool = driftFollow ? [] : tappable().filter((p) => !NO_FOLLOW.has(p.id) && p.r < canvas.width * 0.12 &&
+    const pool = driftFollow ? [] : tappable().filter((p) => FOLLOWABLE.has(p.id) && p.r < canvas.width * 0.12 &&
       p.x > canvas.width * 0.08 && p.x < canvas.width * 0.92 && p.y > canvas.height * 0.08 && p.y < canvas.height * 0.92);
     // A rare visitor on screen is worth going to at once (once per visit), and is picked first.
     const rare = [...new Set(pool.map((q) => q.id))].filter((k) => CREATURES.find((c) => c.id === k)?.note.startsWith('Rare.'));
