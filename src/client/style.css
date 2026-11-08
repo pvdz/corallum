@@ -941,10 +941,10 @@ html.calm *:not(#zone-title):not(#milestone):not(#whisper):not(#journal-note) { 
   /* Clear of the depth gauge and its moon at the right edge (a few names in one note can be long). */
   max-width: calc(100vw - max(12px, env(safe-area-inset-left)) - 100px - 64px);
 }
-/* A soft shade behind the words, so they read over bright water (the Sunlit Crown, the Breach by day). */
+/* A soft shade behind the words, so they read over bright water (the Sunlit Crown, the Breach by day): the zone's own deep colour, as behind the whispers, not a dark smudge. */
 #journal-note::before {
   content: ''; position: absolute; inset: -8px -22px -8px -22px; z-index: -1;
-  background: radial-gradient(farthest-side, rgba(2, 14, 34, 0.62) 62%, rgba(2, 14, 34, 0));
+  background: radial-gradient(farthest-side, rgba(var(--zone-tint), 0.66) 62%, rgba(var(--zone-tint), 0));
 }
 #journal-note span { white-space: nowrap; font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--glowc); text-shadow: 0 1px 5px rgba(0, 0, 0, 0.8); }
 /* A dark shadow under the glow: it reads over the Sunlit Crown's pale water too. */
