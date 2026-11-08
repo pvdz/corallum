@@ -654,7 +654,7 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
     const crowd = 1 - 0.45 * Math.min(1, crowns.length / 90);
     crowns.forEach(([hx, hy], k) => {
       const p = 0.6 + 0.4 * Math.sin(t * 2 + k * 3.2);
-      glow(ctx, hx, hy, 13 * s * (1 + heat * 0.25), '160,250,255', Math.min(1, 0.8 * p * gs * crowd * (1 + heat * 0.4)));
+      glow(ctx, hx, hy, 13 * s * (1 + heat * 0.25), '160,250,255', Math.min(1, 0.55 * p * gs * crowd * (1 + heat * 0.4)));
     });
     if (gs > 0.02) {
       const pts = [new Path2D(), new Path2D(), new Path2D()];
