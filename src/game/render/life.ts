@@ -731,36 +731,70 @@ export function createLife(seed: number) {
       const lean = 0.15 + Math.sin(t * 0.4 + p.phase) * 0.08;
       const len = 52 * s;
       if (k === 0) spot('sea-pen', x0 + Math.sin(lean) * len * 0.6, y0 - len * 0.6, Math.max(18 * s, 22 * st.dpr));
-      // The stalk, then the feather: leaves (polyp rows) on both sides, shorter toward the tip.
+      // The stalk: fleshy, swollen into a bulb where it roots in the silt, tapering to the tip.
       const at = (u: number): [number, number] => [x0 + Math.sin(lean * u) * len * u, y0 - Math.cos(lean * u) * len * u];
-      ctx.strokeStyle = 'rgba(225,175,150,0.75)';
-      ctx.lineWidth = 1.6 * s;
+      const N = 12;
+      const rim: [number, number][] = [], back: [number, number][] = [];
+      for (let i = 0; i <= N; i++) {
+        const u = i / N, [x, y] = at(u), half = (2.1 - 1.5 * u) * s * (u < 0.12 ? 1.35 - u * 2.9 : 1);
+        rim.push([x - half * Math.cos(lean * u), y - half * Math.sin(lean * u)]);
+        back.push([x + half * Math.cos(lean * u), y + half * Math.sin(lean * u)]);
+      }
+      ctx.fillStyle = 'rgba(206,128,104,0.9)';
       ctx.beginPath();
-      ctx.moveTo(x0, y0);
-      for (let i = 1; i <= 10; i++) { const [x, y] = at(i / 10); ctx.lineTo(x, y); }
+      ctx.moveTo(rim[0]![0], rim[0]![1]);
+      for (const [x, y] of rim) ctx.lineTo(x, y);
+      for (let i = back.length - 1; i >= 0; i--) ctx.lineTo(back[i]![0], back[i]![1]);
+      ctx.closePath();
+      ctx.fill();
+      // Its lit side.
+      ctx.strokeStyle = 'rgba(255,200,170,0.45)';
+      ctx.lineWidth = 0.8 * s;
+      ctx.beginPath();
+      for (let i = 1; i < N; i++) { const [x, y] = rim[i]!; if (i === 1) ctx.moveTo(x + 0.6 * s, y); else ctx.lineTo(x + 0.6 * s, y); }
       ctx.stroke();
-      // Touched: the light runs up this pen a little after the one before it.
+      // The feather: leaves (rows of polyps) in pairs up the upper three quarters, each a curved
+      // blade sweeping up from the stalk, shorter toward the tip, fluttering a little, its outer
+      // edge beaded with tiny pale polyps.
+      const leaves = new Path2D(), beads = new Path2D();
       const age = touch ? touch.age - k * 0.4 : Infinity;
-      for (let i = 3; i <= 14; i++) {
-        const u = i / 15;
+      const lit: [number, number, number][] = [];
+      for (let i = 4; i <= 15; i++) {
+        const u = i / 16;
         const [x, y] = at(u);
-        const leaf = (12 - 7 * u) * s;
+        const L = (12 - 7 * u) * s, W = (5.5 - 2.8 * u) * s;
         for (const side of [-1, 1]) {
-          const ang = -Math.PI / 2 + lean * u + side * (1.15 + 0.1 * Math.sin(t * 1.3 + i));
-          ctx.strokeStyle = 'rgba(240,190,160,0.55)';
-          ctx.lineWidth = 1.1 * s;
-          ctx.beginPath();
-          ctx.moveTo(x, y);
-          ctx.lineTo(x + Math.cos(ang) * leaf, y + Math.sin(ang) * leaf + 2 * s);
-          ctx.stroke();
+          const ang = -Math.PI / 2 + lean * u + side * (1.05 + 0.1 * Math.sin(t * 1.3 + i + side));
+          const ca = Math.cos(ang), sa = Math.sin(ang);
+          // Tip a little higher than the blade's line: the leaves curve upward.
+          const tx = x + ca * L, ty = y + sa * L - 2.5 * s * (1 - u * 0.5);
+          const nx = -sa * side, ny = ca * side;
+          leaves.moveTo(x, y + 1 * s);
+          leaves.quadraticCurveTo(x + ca * L * 0.55 + nx * W, y + sa * L * 0.55 + ny * W - 1.2 * s, tx, ty);
+          leaves.quadraticCurveTo(x + ca * L * 0.5 - nx * W * 0.3, y + sa * L * 0.5 - ny * W * 0.3 + 1.5 * s, x, y + 2.2 * s);
+          leaves.closePath();
+          for (let b = 1; b <= 3; b++) {
+            const f = 0.35 + b * 0.2, bx = x + ca * L * f + nx * W * 0.55 * (1 - f * 0.6), by = y + sa * L * f + ny * W * 0.55 * (1 - f * 0.6) - 2 * s * f;
+            beads.moveTo(bx + 0.55 * s, by);
+            beads.arc(bx, by, 0.55 * s, 0, Math.PI * 2);
+          }
         }
         const wave = age >= 0 && age < 3 ? Math.exp(-(((u - age / 1.4) / 0.12) ** 2)) * (1 - age / 3) : 0;
-        if (wave > 0.02) {
-          ctx.save();
-          ctx.globalCompositeOperation = 'lighter';
-          glow(ctx, x, y, 9 * s, '120,255,170', 0.7 * wave);
-          ctx.restore();
-        }
+        if (wave > 0.02) lit.push([x, y, wave]);
+      }
+      ctx.fillStyle = 'rgba(232,150,118,0.7)';
+      ctx.fill(leaves);
+      ctx.strokeStyle = 'rgba(150,80,70,0.35)';
+      ctx.lineWidth = 0.5 * s;
+      ctx.stroke(leaves);
+      ctx.fillStyle = 'rgba(255,232,214,0.55)';
+      ctx.fill(beads);
+      // Touched: the light runs up this pen a little after the one before it.
+      if (lit.length) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        for (const [x, y, wave] of lit) glow(ctx, x, y, 11 * s, '120,255,170', 0.7 * wave);
+        ctx.restore();
       }
     }
     ctx.restore();
