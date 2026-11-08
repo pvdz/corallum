@@ -33,8 +33,8 @@ export const HEAT = {
   next: (wait: string) => `Warm water in ${wait}.`,
   open: 'Close up',
   closed: 'Open to the sun',
-  openWhat: 'open: full sun ·\u00a0in warm water sun ×1.6, bloom fades ×5',
-  closedWhat: 'closed: sun ×0.5 ·\u00a0no bleaching',
+  openWhat: 'open: full sun ·\u00a0in warm water sun\u00a0×1.6, bloom fades\u00a0×5',
+  closedWhat: 'closed: sun\u00a0×0.5 ·\u00a0no bleaching',
   shy: 'sun-shy: closed by itself until the water cools',
 } as const;
 
@@ -100,55 +100,55 @@ export const TIERS: readonly { tier: DialectTier; title: string; band: string; c
 
 export const DIALECTS: readonly Dialect[] = [
   {
-    id: 'branching', tier: 'form', name: 'Branching', effect: 'laying bands costs ×0.6',
+    id: 'branching', tier: 'form', name: 'Branching', effect: 'laying bands costs\u00a0×0.6',
     flavour: 'Antlers of stone, thin and quick, reaching. Breaks easily, grows back faster.',
   },
   {
-    id: 'massive', tier: 'form', name: 'Massive', effect: 'calcite ×1.5 ·\u00a0it dissolves ×0.5 as fast',
+    id: 'massive', tier: 'form', name: 'Massive', effect: 'calcite\u00a0×1.5 ·\u00a0it dissolves\u00a0×0.5 as fast',
     flavour: 'One great dome, slow as a boulder, that the sea cannot get its teeth into.',
   },
   {
-    id: 'plating', tier: 'form', name: 'Plating', effect: 'sunlight ×2',
+    id: 'plating', tier: 'form', name: 'Plating', effect: 'sunlight\u00a0×2',
     flavour: 'Wide flat tables, stacked like shelves, every one of them a hand held up to the sun.',
   },
   {
-    id: 'pillar', tier: 'form', name: 'Pillars', effect: 'calcite ×1.25 ·\u00a0plankton ×1.5',
+    id: 'pillar', tier: 'form', name: 'Pillars', effect: 'calcite\u00a0×1.25 ·\u00a0plankton\u00a0×1.5',
     flavour: 'Columns standing up from one foot like a stand of candles, tentacles out even at noon, eating all day.',
   },
   {
-    id: 'fluorescent', tier: 'craft', name: 'Fluorescent', effect: 'bloom ×1.5 ·\u00a0the lure reaches +2',
+    id: 'fluorescent', tier: 'craft', name: 'Fluorescent', effect: 'bloom\u00a0×1.5 ·\u00a0the lure reaches +2',
     flavour: 'Turn the sun into colours of your own and wear them where everything can see.',
   },
   {
-    id: 'sweepers', tier: 'craft', name: 'Sweeper tentacles', effect: 'plankton ×3',
+    id: 'sweepers', tier: 'craft', name: 'Sweeper tentacles', effect: 'plankton\u00a0×3',
     flavour: 'Long tentacles that come out at dusk and comb the water clean of food.',
   },
   {
-    id: 'mucus', tier: 'craft', name: 'Mucus nets', effect: 'silt swept ×2 ·\u00a0the Rasp eat nothing',
+    id: 'mucus', tier: 'craft', name: 'Mucus nets', effect: 'silt swept\u00a0×2 ·\u00a0the Rasp eat nothing',
     flavour: 'A fine sheet of slime that catches what falls and lets it go, cleanly, when you choose.',
   },
   {
-    id: 'broadcast', tier: 'spawn', name: 'Broadcast', effect: 'spawn ×2',
+    id: 'broadcast', tier: 'spawn', name: 'Broadcast', effect: 'spawn\u00a0×2',
     flavour: 'Everything at once, into the open water, and trust the sea with the rest.',
   },
   {
-    id: 'brooding', tier: 'spawn', name: 'Brooding', effect: 'the Breach needs ×0.6 the spawn',
+    id: 'brooding', tier: 'spawn', name: 'Brooding', effect: 'the Breach needs\u00a0×0.6 the spawn',
     flavour: 'Fewer children, kept close, and only let go when they are ready to swim.',
   },
   {
-    id: 'fragmenting', tier: 'spawn', name: 'Fragmenting', effect: 'Lesser Spawnings give ×1.5 Lineage',
+    id: 'fragmenting', tier: 'spawn', name: 'Fragmenting', effect: 'Lesser Spawnings give\u00a0×1.5 Lineage',
     flavour: 'Let a branch break and drift and take root somewhere else, still remembering you.',
   },
   {
-    id: 'lullaby', tier: 'song', name: 'Lullaby', effect: 'bloom fades ×0.7 as fast',
+    id: 'lullaby', tier: 'song', name: 'Lullaby', effect: 'bloom fades\u00a0×0.7 as fast',
     flavour: 'A low, slow hum at dusk. The symbionts settle into it and keep what they have made.',
   },
   {
-    id: 'chorus', tier: 'song', name: 'Chorus', effect: 'gifts from neighbours ×2',
+    id: 'chorus', tier: 'song', name: 'Chorus', effect: 'gifts from neighbours\u00a0×2',
     flavour: 'Every polyp answering every other. The fish come to listen, and bring something.',
   },
   {
-    id: 'call', tier: 'song', name: 'Call', effect: 'Ossel’s requests pay ×1.5',
+    id: 'call', tier: 'song', name: 'Call', effect: 'Ossel’s requests pay\u00a0×1.5',
     flavour: 'One clear note, again and again, until the old wall answers it.',
   },
 ];

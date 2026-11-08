@@ -1612,7 +1612,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const strain = STRAINS.find((x) => x.id === s.strain), sport = SPORTS.find((x) => x.id === s.sport);
     if (strain) rows.push([`${strain.name} glimmerseed`, strain.effect]);
     if (sport) rows.push([`${sport.name} glimmerseed`, sport.effect]);
-    for (const g of GRAINS) { const n = s.grains.filter((x) => x === g.id).length; if (n) rows.push([`${g.name} bands ×${n}`, g.effect]); }
+    for (const g of GRAINS) { const n = s.grains.filter((x) => x === g.id).length; if (n) rows.push([`${g.name} bands\u00a0×${n}`, g.effect]); }
     for (const id of Object.values(s.dialects)) { const d = DIALECTS.find((x) => x.id === id); if (d) rows.push([d.name, d.effect]); }
     for (const id of s.relics) { const x = site(id); if (x) rows.push([x.relic, x.effect]); }
     if (s.heirloom && !s.relics.includes(s.heirloom)) { const x = site(s.heirloom); if (x) rows.push([UI.heirloom(x.relic), x.effect]); }
@@ -1621,7 +1621,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     // A moment by its title (choice labels repeat across moments: "Take it in", "Let it go"), the choice beside its effect.
     for (const m of MOMENTS) { const c = s.moments[m.id]; if (c) rows.push([m.title, `${m[c].label} · ${m[c].effect}`]); }
     for (const w of WORKS) if (s.works[w.id] > 0) rows.push([`${w.name} (${s.works[w.id]}/${w.stages.length})`, w.effect]);
-    if (s.favours.clear > 0) rows.push([`${FAVOURS[0]!.name} ×${s.favours.clear}`, FAVOURS[0]!.effect]);
+    if (s.favours.clear > 0) rows.push([`${FAVOURS[0]!.name}\u00a0×${s.favours.clear}`, FAVOURS[0]!.effect]);
     for (const m of SEAMOUNTS) if (m.trial && s.meta.seen.includes(`trial:${m.id}`)) rows.push([UI.learnedOn(m.name.toLowerCase()), m.trial.reward.split(': ')[1] ?? m.trial.reward]);
     if (s.meta.carriedEver.length) rows.push([UI.memoriesCarried(s.meta.carriedEver.length), UI.memoriesEffect(s.meta.carriedEver.length)]);
     shapes.hidden = rows.length === 0;
@@ -2032,7 +2032,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       glow.setSub(`${flow(glowNet(s, r), s.glow, glowHold(s, r))} · holds ~${num(glowHold(s, r))}`);
       plankton.row.hidden = !(s.jobs.feed > 0 || s.plankton > 0.05);
       plankton.value.textContent = num(s.plankton);
-      plankton.setSub(`${flow(planktonNet(s, r))} · ×${factor(feeding(s.plankton))} calcite`);
+      plankton.setSub(`${flow(planktonNet(s, r))} ·\u00a0×${factor(feeding(s.plankton))} calcite`);
       // Murmurs pay for Readings and the truce's words; once both are done the stock leaves the panel.
       // Murmurs buy Readings (none on a silent seamount) and the truce's words.
       const murmursWanted = (!seamountDef(s.seamount).noReadings && s.readings.length < READINGS.length) || MEETINGS.some((m) => !s.truce[m.id]);
@@ -2058,14 +2058,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       murmurs.setSub(`${flow(murmurNet(s, r), s.murmurs, s.jobs.scout > 0 ? murmurHold(s, r) : Infinity)} · ${s.jobs.scout > 0 ? `holds ~${num(murmurHold(s, r))}` : UI.murmursUnheard}`);
       silt.row.hidden = !(r.siltP > 0 || s.silt > 0.5);
       silt.value.textContent = num(s.silt);
-      silt.setSub(`${flow(siltNet(s, r))} · polyps ×${smother(s.silt).toFixed(2)}`);
+      silt.setSub(`${flow(siltNet(s, r))} · polyps\u00a0×${smother(s.silt).toFixed(2)}`);
       silt.row.classList.toggle('falling', smother(s.silt) < 0.5);
       sand.row.hidden = !(r.sandP > 0 || s.sand > 0.5);
       sand.value.textContent = num(s.sand);
       sand.setSub(`${flow(sandNet(s, r), s.sand, sandHold(s, r))} · holds ~${num(sandHold(s, r))}`);
       bloom.row.hidden = !(r.bloomP > 0 || s.bloom > 0.5);
       bloom.value.textContent = num(s.bloom);
-      bloom.setSub(`${flow(bloomNet(s, r))} · ×${factor(photo(s.bloom))} calcite`);
+      bloom.setSub(`${flow(bloomNet(s, r))} ·\u00a0×${factor(photo(s.bloom))} calcite`);
       spawn.row.hidden = !(r.spawnP > 0 || s.spawn > 0.5);
       spawn.value.textContent = num(s.spawn);
       // Toward the spawn the moon needs, or (once there) that it is enough; nothing more after the ending.
@@ -2210,7 +2210,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const idle = idleShoals(s);
         const gone = awayShoals(s);
         const sea = seasoned(s);
-        shoalIdle.textContent = (sea > 1 ? `${EXPEDITION.seasonedWord} ×${sea.toFixed(2)} · ` : '') + (idle > 0 ? UI.shoalsIdle(idle) : '') + (gone > 0 ? UI.shoalsAway(gone) : '') + (idle > 0 || gone > 0 ? UI.shoalsOf(shoals) : `${shoals}`);
+        shoalIdle.textContent = (sea > 1 ? `${EXPEDITION.seasonedWord}\u00a0×${sea.toFixed(2)} · ` : '') + (idle > 0 ? UI.shoalsIdle(idle) : '') + (gone > 0 ? UI.shoalsAway(gone) : '') + (idle > 0 || gone > 0 ? UI.shoalsOf(shoals) : `${shoals}`);
         shoalBox.classList.toggle('has-idle', idle > 0);
         const perFeed = s.jobs.feed > 0 ? r.planktonP / s.jobs.feed : 0;
         // What one more feeder or light-swimmer is worth in calcite, and the glow each light-swimmer
@@ -3136,7 +3136,7 @@ function affordableTraitsNow(s: GameState, lineage: number): string[] {
     levels[pick.id]++;
     bought.set(pick.name, (bought.get(pick.name) ?? 0) + 1);
   }
-  return [...bought].map(([name, n]) => (n > 1 ? `${name} ×${n}` : name));
+  return [...bought].map(([name, n]) => (n > 1 ? `${name}\u00a0×${n}` : name));
 }
 
 /** The gain from one more polyp or glimmerseed, with everything that multiplies it. */
@@ -3146,7 +3146,7 @@ function marginalText(s: GameState, id: 'polyp' | 'symbiont'): string {
     ? `+${num(calciteRate(next) - calciteRate(s))} calcite/s`
     : `+${num(rates(next).glowP - rates(s).glowP)} glow/s`;
   const ms = nextMilestone(id, s.levels[id]);
-  return ms ? `${gain} · ×${ACT1.milestoneFactor} at ${ms.level}` : gain;
+  return ms ? `${gain} ·\u00a0×${ACT1.milestoneFactor} at ${ms.level}` : gain;
 }
 
 /** A multiplier with the precision its size needs: 1.24, 39.1, 155. */

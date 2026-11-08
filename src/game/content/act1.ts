@@ -37,9 +37,9 @@ export const GRAIN = {
   sofar: 'In your stone so far',
 } as const;
 export const GRAINS: readonly { id: GrainId; name: string; effect: string; flavour: string; rgb: string; each: number }[] = [
-  { id: 'dense', name: 'Dense', effect: 'calcite dissolves ×0.98 (each)', flavour: 'Packed tight, slow to give anything back to the water.', rgb: '255,250,240', each: 0.98 },
-  { id: 'quick', name: 'Quick', effect: 'the reef rises ×1.05 as fast after a band (each)', flavour: 'Laid loose and fast, so the next can start sooner.', rgb: '150,230,190', each: 1.05 },
-  { id: 'bright', name: 'Bright', effect: 'glow ×1.04 (each)', flavour: 'Glimmerseed sealed into the stone, still faintly lit.', rgb: '140,200,255', each: 1.04 },
+  { id: 'dense', name: 'Dense', effect: 'calcite dissolves\u00a0×0.98 (each)', flavour: 'Packed tight, slow to give anything back to the water.', rgb: '255,250,240', each: 0.98 },
+  { id: 'quick', name: 'Quick', effect: 'the reef rises\u00a0×1.05 as fast after a band (each)', flavour: 'Laid loose and fast, so the next can start sooner.', rgb: '150,230,190', each: 1.05 },
+  { id: 'bright', name: 'Bright', effect: 'glow\u00a0×1.04 (each)', flavour: 'Glimmerseed sealed into the stone, still faintly lit.', rgb: '140,200,255', each: 1.04 },
 ];
 
 /**
@@ -53,12 +53,12 @@ export const SPORT = {
   text: (strain: string) => `Up here, in the first grey light, the ${strain.toLowerCase()} glimmerseed have begun to throw sports: a few of them breed something new. Which do you keep?`,
 } as const;
 export const SPORTS: readonly { id: SportId; strain: StrainId; name: string; effect: string; flavour: string; rgb: string }[] = [
-  { id: 'ice', strain: 'blue', name: 'Ice blue', effect: 'glow ×1.25', flavour: 'Paler and harder, like light through deep ice.', rgb: '190,235,255' },
+  { id: 'ice', strain: 'blue', name: 'Ice blue', effect: 'glow\u00a0×1.25', flavour: 'Paler and harder, like light through deep ice.', rgb: '190,235,255' },
   { id: 'lamp', strain: 'blue', name: 'Lamp blue', effect: 'lure +1', flavour: 'They gather in clusters at the tips, like the lamps of a street.', rgb: '90,150,255' },
-  { id: 'amber', strain: 'gold', name: 'Amber', effect: 'polyps feed ×1.12', flavour: 'Dark gold and slow, all their light turned inward to feeding.', rgb: '230,150,60' },
-  { id: 'sun', strain: 'gold', name: 'Sun gold', effect: 'bloom ×1.2 (in the Sunlit Crown)', flavour: 'They have tasted the grey light above and want more of it.', rgb: '255,230,120' },
-  { id: 'ultraviolet', strain: 'violet', name: 'Ultraviolet', effect: 'murmurs ×1.3', flavour: 'Gone past violet, past seeing. The old stone hears them perfectly.', rgb: '170,110,255' },
-  { id: 'dusk', strain: 'violet', name: 'Dusk', effect: 'Readings and the Rasp’s words cost ×0.8', flavour: 'The colour of the sky at the moment it forgets the sun.', rgb: '210,140,200' },
+  { id: 'amber', strain: 'gold', name: 'Amber', effect: 'polyps feed\u00a0×1.12', flavour: 'Dark gold and slow, all their light turned inward to feeding.', rgb: '230,150,60' },
+  { id: 'sun', strain: 'gold', name: 'Sun gold', effect: 'bloom\u00a0×1.2 (in the Sunlit Crown)', flavour: 'They have tasted the grey light above and want more of it.', rgb: '255,230,120' },
+  { id: 'ultraviolet', strain: 'violet', name: 'Ultraviolet', effect: 'murmurs\u00a0×1.3', flavour: 'Gone past violet, past seeing. The old stone hears them perfectly.', rgb: '170,110,255' },
+  { id: 'dusk', strain: 'violet', name: 'Dusk', effect: 'Readings and the Rasp’s words cost\u00a0×0.8', flavour: 'The colour of the sky at the moment it forgets the sun.', rgb: '210,140,200' },
 ];
 
 export const STRAIN = {
@@ -67,9 +67,9 @@ export const STRAIN = {
   text: 'The little lights in your tissue are beginning to breed true. Which kind will you keep?',
 } as const;
 export const STRAINS: readonly { id: StrainId; name: string; effect: string; flavour: string; rgb: string }[] = [
-  { id: 'blue', name: 'Blue', effect: 'glow ×1.3', flavour: 'Cold and bright, the colour of the deep looking back.', rgb: '120,190,255' },
-  { id: 'gold', name: 'Gold', effect: 'polyps feed ×1.15', flavour: 'Warm and dim; they feed the polyps more than they shine.', rgb: '255,200,110' },
-  { id: 'violet', name: 'Violet', effect: 'scouts hear ×1.4 (later)', flavour: 'A colour almost no one can see. The old bands answer to it.', rgb: '200,150,255' },
+  { id: 'blue', name: 'Blue', effect: 'glow\u00a0×1.3', flavour: 'Cold and bright, the colour of the deep looking back.', rgb: '120,190,255' },
+  { id: 'gold', name: 'Gold', effect: 'polyps feed\u00a0×1.15', flavour: 'Warm and dim; they feed the polyps more than they shine.', rgb: '255,200,110' },
+  { id: 'violet', name: 'Violet', effect: 'scouts hear\u00a0×1.4 (later)', flavour: 'A colour almost no one can see. The old bands answer to it.', rgb: '200,150,255' },
 ];
 
 /**

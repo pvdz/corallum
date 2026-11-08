@@ -47,11 +47,11 @@ export const WATER = {
 
 export const WATERS: readonly Water[] = [
   { id: 'still', name: 'Still water', line: 'nothing stirs', zones: [1, 2, 3, 4, 5], weight: 3, upgrades: [], factor: 1 },
-  { id: 'rich', name: 'Rich water', line: 'polyps and glimmerseed cost ×0.7', zones: [1, 2, 3, 4, 5], weight: 2, upgrades: ['polyp', 'symbiont'], factor: 0.7 },
-  { id: 'slack', name: 'Slack water', line: 'bands cost ×0.8', zones: [1, 2, 3, 4, 5], weight: 2, upgrades: ['skeleton'], factor: 0.8 },
-  { id: 'lamp', name: 'Lamp water', line: 'shoals and lure cost ×0.7', zones: [2, 3], weight: 1.5, upgrades: ['shoal', 'lure'], factor: 0.7 },
-  { id: 'carrying', name: 'Carrying water', line: 'Readings and truce words cost ×0.7', zones: [2, 3], weight: 1.5, upgrades: [], murmurs: true, factor: 0.7 },
-  { id: 'gritty', name: 'A gritty tide', line: 'sand works cost ×0.7', zones: [3, 4], weight: 1.5, upgrades: ['sandbar', 'channel', 'meadow', 'grounds'], factor: 0.7 },
-  { id: 'clear', name: 'Clear water', line: 'pigments, canopy and dialects cost ×0.7', zones: [4, 5], weight: 1.5, upgrades: ['pigment', 'canopy'], dialects: true, factor: 0.7 },
-  { id: 'warm', name: 'Warm water', line: 'ripening costs ×0.7', zones: [5], weight: 2, upgrades: ['ripen'], factor: 0.7 },
+  { id: 'rich', name: 'Rich water', line: 'polyps and glimmerseed cost\u00a0×0.7', zones: [1, 2, 3, 4, 5], weight: 2, upgrades: ['polyp', 'symbiont'], factor: 0.7 },
+  { id: 'slack', name: 'Slack water', line: 'bands cost\u00a0×0.8', zones: [1, 2, 3, 4, 5], weight: 2, upgrades: ['skeleton'], factor: 0.8 },
+  { id: 'lamp', name: 'Lamp water', line: 'shoals and lure cost\u00a0×0.7', zones: [2, 3], weight: 1.5, upgrades: ['shoal', 'lure'], factor: 0.7 },
+  { id: 'carrying', name: 'Carrying water', line: 'Readings and truce words cost\u00a0×0.7', zones: [2, 3], weight: 1.5, upgrades: [], murmurs: true, factor: 0.7 },
+  { id: 'gritty', name: 'A gritty tide', line: 'sand works cost\u00a0×0.7', zones: [3, 4], weight: 1.5, upgrades: ['sandbar', 'channel', 'meadow', 'grounds'], factor: 0.7 },
+  { id: 'clear', name: 'Clear water', line: 'pigments, canopy and dialects cost\u00a0×0.7', zones: [4, 5], weight: 1.5, upgrades: ['pigment', 'canopy'], dialects: true, factor: 0.7 },
+  { id: 'warm', name: 'Warm water', line: 'ripening costs\u00a0×0.7', zones: [5], weight: 2, upgrades: ['ripen'], factor: 0.7 },
 ];

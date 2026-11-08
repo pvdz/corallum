@@ -97,7 +97,7 @@ export const SKY = {
   before: 'named before',
   /** Spawn × this for every figure named. */
   spawnEach: 1.04,
-  effect: 'spawn ×1.04 each',
+  effect: 'spawn\u00a0×1.04 each',
   /** The ending, when any were named ({names}). */
   ending: 'Over the water, the stars you named keep watch: {names}. The spawn rises toward them all night.',
 } as const;

@@ -66,14 +66,14 @@ export const DAILY = { seconds: 600, kicker: 'A new day', text: 'Ossel has been 
 /** The day's sea: one mild boon for each calendar day, the same for every reef that day. */
 export type DayId = 'calm' | 'bright' | 'rich' | 'sandy' | 'clear' | 'long-swell' | 'lucky-day' | 'kind-day';
 export const DAYS: readonly { id: DayId; name: string; effect: string }[] = [
-  { id: 'calm', name: 'A calm day', effect: 'calcite ×1.1' },
-  { id: 'bright', name: 'A bright day', effect: 'glow ×1.2' },
-  { id: 'rich', name: 'A rich day', effect: 'plankton ×1.2' },
-  { id: 'sandy', name: 'A sandy day', effect: 'sand ×1.2' },
-  { id: 'clear', name: 'A clear day', effect: 'bloom ×1.15' },
-  { id: 'long-swell', name: 'A long swell', effect: 'spawn ×1.1' },
-  { id: 'lucky-day', name: 'A lucky day', effect: 'lucky neighbours ×2' },
-  { id: 'kind-day', name: 'A kind day', effect: 'creatures freed pay ×2' },
+  { id: 'calm', name: 'A calm day', effect: 'calcite\u00a0×1.1' },
+  { id: 'bright', name: 'A bright day', effect: 'glow\u00a0×1.2' },
+  { id: 'rich', name: 'A rich day', effect: 'plankton\u00a0×1.2' },
+  { id: 'sandy', name: 'A sandy day', effect: 'sand\u00a0×1.2' },
+  { id: 'clear', name: 'A clear day', effect: 'bloom\u00a0×1.15' },
+  { id: 'long-swell', name: 'A long swell', effect: 'spawn\u00a0×1.1' },
+  { id: 'lucky-day', name: 'A lucky day', effect: 'lucky neighbours\u00a0×2' },
+  { id: 'kind-day', name: 'A kind day', effect: 'creatures freed pay\u00a0×2' },
 ];
 export const TODAY = { label: 'Today', visitor: 'today’s visitor', visitorGift: '+1 lineage at its first touch today', visited: 'visited', float: '· today’s visitor' } as const;
 

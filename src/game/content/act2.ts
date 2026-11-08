@@ -104,53 +104,53 @@ export type Reading = {
 export const READINGS: readonly Reading[] = [
   {
     id: 'city', cost: 40, title: 'A city of walls',
-    effect: 'polyps gather ×1.5 calcite',
+    effect: 'polyps gather\u00a0×1.5 calcite',
     text: 'Thousandfold, the band says, and then says it again, louder. Wall upon wall upon wall, ' +
       'a hundred thousand mouths feeding as one, so wide the fish took days to swim around it. ' +
       'Every polyp knew how to eat the way the city ate. Now, faintly, so do yours.',
   },
   {
     id: 'lattice-songs', cost: 900, title: 'The lattice songs',
-    effect: 'calcite dissolves ×0.7 as fast',
+    effect: 'calcite dissolves\u00a0×0.7 as fast',
     text: 'The old polyps hummed while they laid stone, and the hum set the crystals in rows. ' +
       'The tune is half lost. What is left is enough to make your bands hold.',
   },
   {
     id: 'shoal-pact', cost: 1800, title: 'The shoal pact',
-    effect: 'light shoals make ×2 glow',
+    effect: 'light shoals make\u00a0×2 glow',
     text: 'Lanternfish swam the city’s glow in exchange for shelter in its walls; the band remembers ' +
       'the pattern they swam, a slow spiral with a flicker at each turn. The shoals around you ' +
       'see you remember it, and swim it brighter.',
   },
   {
     id: 'beaked', cost: 3000, title: 'The beaked ones',
-    effect: 'scouts hear ×1.5 murmurs',
+    effect: 'scouts hear\u00a0×1.5 murmurs',
     text: 'A band thick with anger. Grazers with beaks of fused teeth came to the outer walls and ' +
       'ground the dead stone to sand. Thousandfold called them the Rasp and called them thieves, and ' +
       'it built a wall to keep them out. “There,” says Ossel. “Monsters. I told you.”',
   },
   {
     id: 'tidebooks', cost: 4500, title: 'Tidebooks',
-    effect: 'feeding shoals herd ×2 plankton',
+    effect: 'feeding shoals herd\u00a0×2 plankton',
     text: 'The city kept a record of the currents in its bands, season by season: where the ' +
       'plankton ran, where it pooled. The record is a map, and the map still mostly holds.',
   },
   {
     id: 'burning-sea', cost: 5200, title: 'The night the sea burned',
-    effect: 'in a milky sea, sweeps gather ×2 glow',
+    effect: 'in a milky sea, sweeps gather\u00a0×2 glow',
     text: 'One night in the city’s youth the whole sea lit, pale from edge to edge, and every polyp ' +
       'opened at once to drink the light. The band is bright all through. The city called it an omen ' +
       'and argued for a hundred years about what of. You only learn how to drink.',
   },
   {
     id: 'walls', cost: 6000, title: 'Higher walls',
-    effect: 'laying bands costs ×0.75',
+    effect: 'laying bands costs\u00a0×0.75',
     text: 'Year on year the bands grow thicker and the walls grow higher, and the city grows ' +
       'proud of its height. You learn the trick of it: a band laid on a band laid on a band.',
   },
   {
     id: 'slow-currents', cost: 8000, title: 'The water slows',
-    effect: 'plankton is eaten ×0.6 as fast',
+    effect: 'plankton is eaten\u00a0×0.6 as fast',
     text: 'Here the bands change taste. The water inside the walls barely moves. Silt settles on ' +
       'the polyps and does not wash away. The city notices, and builds another wall.',
   },
@@ -163,14 +163,14 @@ export const READINGS: readonly Reading[] = [
   },
   {
     id: 'inside-the-wall', cost: 7500, title: 'Inside the wall',
-    effect: 'calcite ×2',
+    effect: 'calcite\u00a0×2',
     text: 'The deepest band of the outer wall, the one that faced the Rasp. You know the voice in ' +
       'it before it finishes a word. It is Ossel’s. Ossel was the wall. Ossel says nothing for a ' +
       'very long time, and then: “Keep growing. Please.”',
   },
   {
     id: 'rasp-song', cost: 20000, title: 'The Rasp’s own band', after: 'first-words',
-    effect: 'the Rasp grind ×1.3 sand',
+    effect: 'the Rasp grind\u00a0×1.3 sand',
     text: 'Not a Thousandfold band at all. Under the outer wall, pressed into the stone by beaks, a band ' +
       'the Rasp laid down themselves: grit and patience, the sound of grinding kept as carefully as the ' +
       'city kept its glory. They remembered too. They remembered different things. Your Rasp hear you ' +
@@ -178,14 +178,14 @@ export const READINGS: readonly Reading[] = [
   },
   {
     id: 'kept-stone', cost: 26000, title: 'The kept stone', after: 'first-words',
-    effect: 'old stone pays ×1.5 when let go',
+    effect: 'old stone pays\u00a0×1.5 when let go',
     text: 'Grey on every tip of the old city, layer over layer, the tips so heavy the branches bowed to ' +
       'the floor. Thousandfold let nothing go: not a grain, not a day. “It was so heavy,” Ossel says, ' +
       'very quietly, “and I thought that was what it meant to be strong.”',
   },
   {
     id: 'scattered', cost: 36000, title: 'The scattered city', after: 'first-words',
-    effect: 'fragments taken in: calcite ×1.05 each, not ×1.03',
+    effect: 'fragments taken in: calcite\u00a0×1.05 each, not\u00a0×1.03',
     text: 'As the city choked, its outer branches broke off in the storms and drifted, and a few of them took hold ' +
       'somewhere else. Thousandfold never knew. Some of the pieces tumbling past you may be its great-grandchildren, ' +
       'come back. Ossel would like to think so.',
@@ -199,14 +199,14 @@ export const READINGS: readonly Reading[] = [
   },
   {
     id: 'light-walls', cost: 40000, title: 'Light in the old walls', after: 'form',
-    effect: 'bloom ×1.25',
+    effect: 'bloom\u00a0×1.25',
     text: 'A band from when the city was young and shallow, before it walled itself into the dark. ' +
       'There is light in every line of it. Thousandfold was a reef like you once, opening to the sun. ' +
       'Your symbionts drink deeper for knowing it.',
   },
   {
     id: 'last-spawning', cost: 60000, title: 'Thousandfold’s spawning', after: 'air',
-    effect: 'spawn ×1.25',
+    effect: 'spawn\u00a0×1.25',
     text: 'The last band the city laid down before the silt closed over it: a spawning, the only one it ' +
       'ever tried, too late, under a moon it could not see through its own walls. Nothing it let go ' +
       'reached the surface. You are nearly there. What you carry ripens as if to make up the difference.',

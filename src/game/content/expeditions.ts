@@ -34,7 +34,7 @@ export const ENCOUNTERS: readonly Encounter[] = [
     id: 'passage', kicker: 'The shoals have found a passage',
     text: 'Halfway there, a crack in the old wall goes deeper than the shoals have been.',
     ways: [
-      { id: 'press', label: 'Press on', effect: 'the trip ×1.5 ·\u00a0a shard, if any are left', time: 0.5 },
+      { id: 'press', label: 'Press on', effect: 'the trip\u00a0×1.5 ·\u00a0a shard, if any are left', time: 0.5 },
       { id: 'home', label: 'Come straight home', effect: 'as planned', time: 0 },
     ],
   },
@@ -42,15 +42,15 @@ export const ENCOUNTERS: readonly Encounter[] = [
     id: 'squid', kicker: 'Something asleep across the way',
     text: 'A giant squid lies coiled across the old street, arms drifting. The shoals hang back, lamps dimmed.',
     ways: [
-      { id: 'wait', label: 'Wait for it to wake and go', effect: 'the trip ×1.3 ·\u00a0they hear ×1.5 while they wait', time: 0.3 },
-      { id: 'slip', label: 'Slip past, lamps out', effect: 'the trip ×0.75 ·\u00a0they hear ×0.5', time: -0.25 },
+      { id: 'wait', label: 'Wait for it to wake and go', effect: 'the trip\u00a0×1.3 ·\u00a0they hear\u00a0×1.5 while they wait', time: 0.3 },
+      { id: 'slip', label: 'Slip past, lamps out', effect: 'the trip\u00a0×0.75 ·\u00a0they hear\u00a0×0.5', time: -0.25 },
     ],
   },
   {
     id: 'lights', kicker: 'Lights in a side tunnel',
     text: 'Down a side tunnel, a few lamps blink in a rhythm the shoals almost know: stragglers, lost in the ruin.',
     ways: [
-      { id: 'follow', label: 'Go after them', effect: 'the trip ×1.3 ·\u00a0+2 shoals come home', time: 0.3 },
+      { id: 'follow', label: 'Go after them', effect: 'the trip\u00a0×1.3 ·\u00a0+2 shoals come home', time: 0.3 },
       { id: 'carry-on', label: 'Carry on', effect: 'as planned', time: 0 },
     ],
   },
@@ -58,7 +58,7 @@ export const ENCOUNTERS: readonly Encounter[] = [
     id: 'sponges', kicker: 'A garden in the dark',
     text: 'A hall full of glass sponges, grown over the ages into a forest of white lace. Things live in it.',
     ways: [
-      { id: 'gather', label: 'Gather what lives there', effect: 'the trip ×1.2 ·\u00a0a minute of calcite when they are home', time: 0.2 },
+      { id: 'gather', label: 'Gather what lives there', effect: 'the trip\u00a0×1.2 ·\u00a0a minute of calcite when they are home', time: 0.2 },
       { id: 'leave', label: 'Leave it as it is', effect: 'as planned', time: 0 },
     ],
   },
@@ -66,7 +66,7 @@ export const ENCOUNTERS: readonly Encounter[] = [
     id: 'current', kicker: 'A river in the sea',
     text: 'A fast current runs through the old streets the way the shoals are going, cold and strong.',
     ways: [
-      { id: 'ride', label: 'Ride it', effect: 'the trip ×0.7', time: -0.3 },
+      { id: 'ride', label: 'Ride it', effect: 'the trip\u00a0×0.7', time: -0.3 },
       { id: 'around', label: 'Swim around it', effect: 'as planned', time: 0 },
     ],
   },
@@ -74,7 +74,7 @@ export const ENCOUNTERS: readonly Encounter[] = [
     id: 'larvae', kicker: 'A field of small lights',
     text: 'In an open square, a cloud of glowing larvae hangs in the water, too many to count, drifting nowhere.',
     ways: [
-      { id: 'feed', label: 'Stop and feed among them', effect: 'the trip ×1.2 ·\u00a0a chance of a shard', time: 0.2 },
+      { id: 'feed', label: 'Stop and feed among them', effect: 'the trip\u00a0×1.2 ·\u00a0a chance of a shard', time: 0.2 },
       { id: 'pass', label: 'Pass through', effect: 'as planned', time: 0 },
     ],
   },
@@ -82,7 +82,7 @@ export const ENCOUNTERS: readonly Encounter[] = [
     id: 'wall', kicker: 'A wall of bands',
     text: 'A whole wall of the old city laid bare by some slip of the silt: band over band, all of them still speaking.',
     ways: [
-      { id: 'read-wall', label: 'Stop and listen', effect: 'the trip ×1.4 ·\u00a0they hear ×2', time: 0.4 },
+      { id: 'read-wall', label: 'Stop and listen', effect: 'the trip\u00a0×1.4 ·\u00a0they hear\u00a0×2', time: 0.4 },
       { id: 'pass-by', label: 'Pass by', effect: 'as planned', time: 0 },
     ],
   },
@@ -90,15 +90,15 @@ export const ENCOUNTERS: readonly Encounter[] = [
     id: 'hunter', kicker: 'Something is hunting them',
     text: 'A long black fish with a red lamp under its eye has fallen in behind the shoals, and keeps pace.',
     ways: [
-      { id: 'scatter', label: 'Scatter and regroup', effect: 'the trip ×1.1 ·\u00a0they hear ×0.5', time: 0.1 },
-      { id: 'dazzle', label: 'Dazzle it with the reef’s light', effect: 'half your glow now ·\u00a0the trip ×0.8', time: -0.2 },
+      { id: 'scatter', label: 'Scatter and regroup', effect: 'the trip\u00a0×1.1 ·\u00a0they hear\u00a0×0.5', time: 0.1 },
+      { id: 'dazzle', label: 'Dazzle it with the reef’s light', effect: 'half your glow now ·\u00a0the trip\u00a0×0.8', time: -0.2 },
     ],
   },
   {
     id: 'store', kicker: 'A sealed storehouse',
     text: 'Behind a door of stone grown shut, the shoals can feel the cold of something kept: the old city’s stores, never eaten.',
     ways: [
-      { id: 'open', label: 'Break it open', effect: 'the trip ×1.4 ·\u00a0five minutes of calcite when they are home', time: 0.4 },
+      { id: 'open', label: 'Break it open', effect: 'the trip\u00a0×1.4 ·\u00a0five minutes of calcite when they are home', time: 0.4 },
       { id: 'leave-sealed', label: 'Leave it sealed', effect: 'as planned', time: 0 },
     ],
   },
@@ -106,7 +106,7 @@ export const ENCOUNTERS: readonly Encounter[] = [
     id: 'lamp', kicker: 'A lamp still burning',
     text: 'In a niche of the old wall, one of the city’s lamps is still alight: a knot of glimmerseed nobody has fed for four hundred years.',
     ways: [
-      { id: 'carry-lamp', label: 'Carry it home', effect: 'the trip ×1.25 ·\u00a0a minute of glow when they are home', time: 0.25 },
+      { id: 'carry-lamp', label: 'Carry it home', effect: 'the trip\u00a0×1.25 ·\u00a0a minute of glow when they are home', time: 0.25 },
       { id: 'leave-lamp', label: 'Let it burn where it is', effect: 'as planned', time: 0 },
     ],
   },
@@ -114,7 +114,7 @@ export const ENCOUNTERS: readonly Encounter[] = [
     id: 'eggs', kicker: 'A cloud of eggs',
     text: 'Something has spawned in the ruin, and its eggs hang in the old streets like smoke, drifting, uneaten.',
     ways: [
-      { id: 'feast-eggs', label: 'Feed among them', effect: 'the trip ×1.2 ·\u00a0a minute of plankton when they are home', time: 0.2 },
+      { id: 'feast-eggs', label: 'Feed among them', effect: 'the trip\u00a0×1.2 ·\u00a0a minute of plankton when they are home', time: 0.2 },
       { id: 'go-round', label: 'Go round them', effect: 'as planned', time: 0 },
     ],
   },
@@ -146,7 +146,7 @@ export const SITES: readonly Site[] = [
   {
     id: 'gate', name: 'The fallen gate', metres: 150, shoals: 6, seconds: 6 * 60,
     hint: 'A ring of stone out in the black, where the current used to come in.',
-    relic: 'A hinge of white stone', effect: 'bands cost ×0.85',
+    relic: 'A hinge of white stone', effect: 'bands cost\u00a0×0.85',
     text: 'The shoals come back slow, scraping their lights against each other. They found the gate ' +
       'Thousandfold kept for the currents: a ring of stone two hundred polyps wide, shut, by the city ' +
       'itself, when it decided the water should come in only where it said. Wedged in the hinge was a ' +
@@ -156,7 +156,7 @@ export const SITES: readonly Site[] = [
   {
     id: 'terraces', name: 'The nursery terraces', metres: 500, shoals: 10, seconds: 10 * 60,
     hint: 'Steps down a slope, each one lined with little cups.',
-    relic: 'A sealed larva cup', effect: 'plankton is eaten ×0.75 as fast',
+    relic: 'A sealed larva cup', effect: 'plankton is eaten\u00a0×0.75 as fast',
     text: 'Here Thousandfold raised its young, in rows, each larva given the same memories as the one ' +
       'before it. Some cups are still sealed. Inside is nothing, and the smell of plankton gone bad: ' +
       'food laid by for children who never came. The shoals learned there where plankton gathers and ' +
@@ -174,7 +174,7 @@ export const SITES: readonly Site[] = [
   {
     id: 'wells', name: 'The listening wells', metres: 2200, shoals: 18, seconds: 20 * 60,
     hint: 'Shafts sunk deep into the city’s stone, ringed with grooves.',
-    relic: 'Well-stone', effect: 'scouts hear ×1.25, murmurs fade half as fast',
+    relic: 'Well-stone', effect: 'scouts hear\u00a0×1.25, murmurs fade half as fast',
     text: 'The old polyps hung over these shafts to hear the city remember itself, over and over, ' +
       'until they could not hear anything else. The shoals hung there too. They came back quieter, ' +
       'and better at listening, and what they hear now stays with them longer.',
@@ -182,7 +182,7 @@ export const SITES: readonly Site[] = [
   {
     id: 'midden', name: 'The beak midden', metres: 3300, shoals: 24, seconds: 30 * 60,
     hint: 'Behind the outer wall, a long pale slope. The Rasp will not go near it.',
-    relic: 'One beak', effect: 'the Rasp grind ×1.3 sand',
+    relic: 'One beak', effect: 'the Rasp grind\u00a0×1.3 sand',
     text: 'A slope of beaks. Thousands of them, fused teeth every one, heaped where the city threw ' +
       'the Rasp that died at its walls. Ossel says nothing for a long time. Then: I did not know. ' +
       'I was there, and I did not know. The shoals bring back a single beak. The Rasp who see it ' +
@@ -191,7 +191,7 @@ export const SITES: readonly Site[] = [
   {
     id: 'sun-gate', name: 'The sun gate', metres: 3850, shoals: 28, seconds: 30 * 60,
     hint: 'High on the old city’s flank, a doorway that once stood in the light.',
-    relic: 'A sun-bleached lintel', effect: 'bloom ×1.2',
+    relic: 'A sun-bleached lintel', effect: 'bloom\u00a0×1.2',
     text: 'Before the walls, before the dark, Thousandfold grew here in the shallows and kept this door open to the ' +
       'sun. The lintel is bleached white by a light that has not touched it in four hundred years. The shoals bring ' +
       'back a piece of it, and your symbionts turn toward it as if it were still warm.',
@@ -199,7 +199,7 @@ export const SITES: readonly Site[] = [
   {
     id: 'harbour', name: 'The harbour', metres: 3982, shoals: 30, seconds: 20 * 60,
     hint: 'On the city’s highest edge, where it met the open sea: a ring of worn posts.',
-    relic: 'A mooring ring', effect: 'spawn ×1.15',
+    relic: 'A mooring ring', effect: 'spawn\u00a0×1.15',
     text: 'Once the city sent its own spawn out from here, before it decided to keep everything. The posts are ' +
       'worn smooth on their seaward side by a million larvae brushing past on their way out. The shoals bring ' +
       'back a ring of stone that something was once tied to, and then let go.',

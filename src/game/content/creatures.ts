@@ -154,7 +154,7 @@ export function trustLevel(touches: number): number {
 }
 
 /** A companion: one touched creature kept close. Its gifts ×2 and come twice as often. */
-export const COMPANION = { label: 'Keep close', on: 'Your companion', note: 'gifts ×2, twice as often' } as const;
+export const COMPANION = { label: 'Keep close', on: 'Your companion', note: 'gifts\u00a0×2, twice as often' } as const;
 
 /** The float text after a gift's amount. */
 export const GIFT_TEXT: Record<GiftStock, string> = {

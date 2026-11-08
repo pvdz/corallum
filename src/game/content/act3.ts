@@ -73,12 +73,12 @@ export const MEETINGS: readonly Meeting[] = [
       'says, in words your scouts have only half learned: “Dead stone is food. You have dead stone. ' +
       'We have hunger. What do you give?”',
     a: {
-      label: 'The dead wall', effect: '+4 Rasp can graze ·\u00a0sand ×1.25',
+      label: 'The dead wall', effect: '+4 Rasp can graze ·\u00a0sand\u00a0×1.25',
       text: 'You offer them the old dead wall beside you. The Rasp whoop. Ossel says, very ' +
         'quietly, “That is me,” and then nothing else for a long time.',
     },
     b: {
-      label: 'Only the silt', effect: '+2 Rasp can graze ·\u00a0they eat less calcite ·\u00a0clear silt ×1.5',
+      label: 'Only the silt', effect: '+2 Rasp can graze ·\u00a0they eat less calcite ·\u00a0clear silt\u00a0×1.5',
       text: 'You offer them the silt and nothing else. The big Rasp considers this, then shrugs ' +
         'with its whole body. “Thin food. But polite.” They graze around your stone like guests.',
     },
@@ -89,7 +89,7 @@ export const MEETINGS: readonly Meeting[] = [
       'Then it died, and fell, and now it falls on everyone.” They wait. They want to hear how you ' +
       'remember it.',
     a: {
-      label: 'As the bands tell it', effect: 'Rasp clear silt ×2 as fast',
+      label: 'As the bands tell it', effect: 'Rasp clear silt\u00a0×2 as fast',
       text: 'You tell them what the Readings said: the slowing water, the fear bands, the wall. The ' +
         'Rasp are quiet. Then the big one presses its beak to your stone, gently, the way you would ' +
         'touch something you meant to keep.',
@@ -107,13 +107,13 @@ export const MEETINGS: readonly Meeting[] = [
       'says. “I was the wall. I kept them out, and the water stopped, and we all died behind me. ' +
       'I do not know if I want to be kept.”',
     a: {
-      label: 'Let Ossel be ground', effect: 'silt falls ×0.6 ·\u00a0a flood of sand',
+      label: 'Let Ossel be ground', effect: 'silt falls\u00a0×0.6 ·\u00a0a flood of sand',
       text: 'The Rasp are careful, and slow, and almost tender. Ossel talks the whole time, about ' +
         'nothing: the taste of the vent, the first lanternfish, you. Then there is only sand, warm, ' +
         'everywhere, and in it, faint, the shape of a voice that is not afraid any more.',
     },
     b: {
-      label: 'Keep Ossel', effect: 'calcite ×1.25',
+      label: 'Keep Ossel', effect: 'calcite\u00a0×1.25',
       text: '“No,” you say. “Come with me.” You grow a branch around the old wall and carry it up ' +
         'with you, stone in stone. The Rasp clack, disappointed, and graze elsewhere. Ossel does not ' +
         'say thank you. It does not need to.',
@@ -218,7 +218,7 @@ export const RIDDLES: readonly { id: RiddleId; after: string; ask: string; optio
 ];
 export const RIDDLE = { kicker: 'The Rasp elder asks', againKicker: 'The Rasp elder asks again', againFrom: 3800, lineage: 2, right: 'The elder grinds its beak, pleased.', wrong: 'The elder turns away. Not this time.',
   /** Every riddle answered rightly on one reef: the elder's blessing. */
-  blessing: 'The elder bows its old head to you. Its herd grinds ×1.2 sand for the rest of this reef.', blessed: 1.2 } as const;
+  blessing: 'The elder bows its old head to you. Its herd grinds\u00a0×1.2 sand for the rest of this reef.', blessed: 1.2 } as const;
 
 // Favours: once the first meeting is settled, the Rasp can be asked for things, paid in sand.
 // Each is dearer every time it is asked (cost × growth^times).
@@ -258,6 +258,6 @@ export const CURRENT = {
   planktonPerStep: 0.12,
   label: 'The current',
   ends: ['toward the open water', 'toward the shelf'],
-  what: (c: number) => c === 0 ? 'straight along the reef' : c > 0 ? `silt swept +${(0.025 * c).toFixed(3)}/s ·\u00a0plankton ×${(1 - 0.12 * c).toFixed(2)}`
-    : `plankton ×${(1 - 0.12 * c).toFixed(2)} ·\u00a0silt swept −${(0.0125 * -c).toFixed(4)}/s`,
+  what: (c: number) => c === 0 ? 'straight along the reef' : c > 0 ? `silt swept +${(0.025 * c).toFixed(3)}/s ·\u00a0plankton\u00a0×${(1 - 0.12 * c).toFixed(2)}`
+    : `plankton\u00a0×${(1 - 0.12 * c).toFixed(2)} ·\u00a0silt swept −${(0.0125 * -c).toFixed(4)}/s`,
 } as const;
