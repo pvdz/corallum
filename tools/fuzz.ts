@@ -2,7 +2,7 @@
 // flips, for a while, reporting console errors. Mouse and keys mixed on purpose: a button the mouse
 // clicked keeps focus, a key then lands on it (bugs keyboard-only or mouse-only tests never see).
 // Buttons that replace or reset the reef, and the release, are left alone.
-// Usage: node --no-warnings tools/fuzz.ts [--vp desktop|mobile|landscape|small|tiny] [--at <bot secs>] [--secs 120] [--ended] [--big] [--calm]
+// Usage: node --no-warnings tools/fuzz.ts [--vp desktop|mobile|landscape|small|tiny|tiny-landscape] [--at <bot secs>] [--secs 120] [--ended] [--big] [--calm]
 //   --ended starts from a reef past its ending (the garden, the chronicle, Begin again).
 
 import { runBot } from '../src/game/sim/bot.ts';
@@ -18,6 +18,8 @@ function arg(name: string, fallback: string): string {
 const EXTRA: Record<string, { name: string; width: number; height: number; scale: number; mobile: boolean }> = {
   small: { name: 'small', width: 360, height: 640, scale: 2, mobile: true },
   tiny: { name: 'tiny', width: 320, height: 568, scale: 2, mobile: true },
+  // 'tiny-landscape': the same phone on its side (568×320): the side panel beside the narrowest scene.
+  'tiny-landscape': { name: 'tiny-landscape', width: 568, height: 320, scale: 2, mobile: true },
 };
 const vp = EXTRA[arg('vp', 'desktop')] ?? VIEWPORTS.find((v) => v.name === arg('vp', 'desktop'))!;
 const at = Number(arg('at', '10000'));
