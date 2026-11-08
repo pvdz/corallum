@@ -834,10 +834,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     c.shadowBlur = 0;
     // The zones' names over everything, with a dark edge so the line passing behind them does not
     // strike them through.
+    // (Quiet by a dim colour, not by transparency: a see-through fill let the edge show through
+    // and the letters looked boxed.)
     c.lineJoin = 'round';
-    c.lineWidth = 3;
-    c.strokeStyle = 'rgba(6,10,26,0.85)';
-    c.fillStyle = 'rgba(190,210,240,0.55)';
+    c.lineWidth = 2.5;
+    c.strokeStyle = 'rgba(6,10,26,0.7)';
+    c.fillStyle = '#8796b0';
     for (const a of ACTS) {
       const my = (y(a.to) + y(a.from)) / 2, name = a.name.replace(/^The /, '');
       c.strokeText(name, 4, my);
