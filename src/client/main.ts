@@ -2537,21 +2537,24 @@ function frameBody(now: number): void {
       zoomer.apply(ctx);
     }
   }
-  const fe = currentFeast(state);
+  // A replay of the whole climb shows the past: what falls, drifts or is caught in the present (a
+  // feast, a stray, a fragment, a tangle, the others' spawning) is left out of it.
+  const now0 = !lapseScene;
+  const fe = now0 ? currentFeast(state) : null;
   if (fe) drawFeast(ctx, fe, state.t - fe.start, tNow, focusNow, dpr, feastPay(state), hintsShown());
-  const tg = currentTangle(state);
+  const tg = now0 ? currentTangle(state) : null;
   // Under the full moon the other reefs spawn: their bundles rise through the water below the Breach.
-  if (actAt(state.height) <= 4 && state.height >= 1 && moonFull(state.t)) {
+  if (now0 && actAt(state.height) <= 4 && state.height >= 1 && moonFull(state.t)) {
     const strength = Math.min(1, (ACT5.fullWindow - Math.abs(moonPhase(state.t) - 0.5)) / (ACT5.fullWindow * 0.3));
     drawOthersSpawn(ctx, focusNow, tNow, strength, actAt(state.height) <= 2 ? 1 : actAt(state.height) === 3 ? 0.5 : 0, dpr);
   }
-  const sy = currentStray(state);
+  const sy = now0 ? currentStray(state) : null;
   if (sy) drawStray(ctx, sy, STRAY.life, tNow, focusNow, dpr, hintsShown());
-  const fr = currentFragment(state);
+  const fr = now0 ? currentFragment(state) : null;
   if (fr) drawFragment(ctx, fr, FRAGMENT.life, tNow, focusNow, dpr, hintsShown());
   if (tg && actAt(state.height) === 1) drawPinned(ctx, tg, TANGLE.life, tNow, focusNow, dpr, hintsShown());
   else if (tg && actAt(state.height) !== 5) drawTangle(ctx, tg, TANGLE.life, tNow, focusNow, dpr, hintsShown());
-  if (hintsShown()) {
+  if (now0 && hintsShown()) {
     taps.draw(ctx, tNow, scene.crownAt, dpr, (x, y) => actAt(state.height) <= 2 || !!scene.darkAt?.(x, y));
     drawLucky(tNow);
   }
