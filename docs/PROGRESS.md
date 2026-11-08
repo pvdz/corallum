@@ -1312,3 +1312,4 @@ date, what landed, what is half-done, what's next.
 - The first screen said "4,000 m down · next band at 0.0 m" until the opening band was read (it lies at the reef's own height): the depth line names the next band still above the reef ("next band at 2.0 m").
 - On the smallest phones (≤360 px wide) the opening title's "C" sat under the eye button (the widely spaced title reaches the corner): there it starts below the corner buttons, as it already did on small phones held sideways.
 - The idle camera goes only to the journal's creatures and sights (so every visit gets its caption): not shells, stars, old stone, Ossel or passing debris.
+- tools/overlaps.ts now counts the corner buttons (by their boxes; they hold only icons, so they were skipped), runs the 320 px phone too, and compares line by line (a title and its subtitle are not one block). It catches the title-under-the-eye bug with the old CSS; the whole default sweep (9 stages × 5 viewports) is clean.
