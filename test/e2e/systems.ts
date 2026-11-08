@@ -227,4 +227,32 @@ await withGame(async (open) => {
   check(r.tab.startsWith('Bands') && r.inView, 'an ask to read leads to the Bands tab, at the reading');
   check(errors.length === 0, 'no console errors (ask)');
 });
+
+// The night sky on the narrowest phone: every figure can be traced by tapping its stars in order
+// (a real touch: the browser snaps a tap to a button near it, so a star close to a corner button
+// toggled the view and moved the sky away mid-figure).
+await withGame(async (open) => {
+  const { page, errors } = await open({ name: 'tiny', width: 320, height: 568, scale: 2, mobile: true }, '?bot=23500');
+  page.setDefaultTimeout(4000);
+  await page.waitForTimeout(2500);
+  for (let i = 0; i < 12 && (await page.locator('.reader:not([hidden])').count()); i++)
+    await page.locator('.reader:not([hidden]) button').first().click().catch(() => {});
+  const rows = page.locator('.sky-row');
+  const n = await rows.count();
+  const missed: string[] = [];
+  for (let i = 0; i < n; i++) {
+    const name = (await rows.nth(i).locator('strong').textContent()) ?? `figure ${i}`;
+    await rows.nth(i).locator('.sky-trace').click();
+    await page.waitForTimeout(300);
+    const stars = await page.evaluate(() => window.corallum!.spots.filter((p) => p.id === 'star').sort((a, b) => a.n! - b.n!));
+    for (const p of stars) { await page.touchscreen.tap(p.x, p.y); await page.waitForTimeout(80); }
+    const named = await page.evaluate((k) => Object.values(window.corallum!.state.sky).filter(Boolean).length >= k, i + 1);
+    if (!named) missed.push(name);
+    // Whatever happened, back to the panel for the next figure.
+    if (await page.evaluate(() => document.documentElement.classList.contains('view-mode'))) await page.locator('#view-mode').click();
+    await page.waitForTimeout(200);
+  }
+  check(n > 0 && missed.length === 0, `320 px phone: all ${n} figures traced by touch${missed.length ? ` (missed: ${missed.join(', ')})` : ''}`);
+  check(errors.length === 0, 'no console errors (sky, 320 px)');
+});
 process.exitCode = failed ? 1 : 0;
