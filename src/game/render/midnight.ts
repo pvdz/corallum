@@ -1440,45 +1440,60 @@ export function createMidnightScene(seed: number): Scene {
     const touch = startled('siphonophore', t);
     const run = touch && touch.age < 2.5 ? touch.age / 1.8 : -1;
     ctx.save();
-    // The stem the bells hang on, a faint thread.
-    ctx.strokeStyle = 'rgba(200,230,255,0.18)';
+    // The stem: undulating in short waves that grow toward the tail, as it swims.
+    const N = 34;
+    const at = (k: number): [number, number] => {
+      const xu = head - k * 0.018;
+      const amp = (5 + k * 0.45) * s;
+      return [focus.x + xu * focus.w, y0 + Math.sin(xu * 16 - t * 1.1) * amp + Math.sin(xu * 5 + t * 0.4) * 10 * s + k * 0.6 * s];
+    };
+    ctx.strokeStyle = 'rgba(200,230,255,0.2)';
     ctx.lineWidth = 0.8 * s;
     ctx.beginPath();
-    for (let k = 0; k < 34; k++) {
-      const xu = head - k * 0.018;
-      const x = focus.x + xu * focus.w, y = y0 + Math.sin(xu * 7 + t * 0.4) * 18 * s + k * 0.6 * s;
-      if (k === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-    }
+    for (let k = 0; k < N; k++) { const [x, y] = at(k); if (k === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); }
     ctx.stroke();
-    for (let k = 0; k < 34; k++) {
-      const xu = head - k * 0.018;
-      if (xu < -0.1 || xu > 1.1) continue;
-      const x = focus.x + xu * focus.w;
-      const y = y0 + Math.sin(xu * 7 + t * 0.4) * 18 * s + k * 0.6 * s;
-      const pulse = Math.min(1.6, 0.5 + 0.5 * Math.sin(t * 3 - k * 0.5) + (run >= 0 ? 1.5 * Math.exp(-((k / 34 - run) ** 2) / 0.006) : 0));
-      const r = (6 + 2 * pulse) * s * (1 - k / 60);
-      // Each member a clear bell, cupped and tilted along the chain, its rim lit only on the
-      // leading side (full outlines in a row read as a string of letters).
+    const bell = (x: number, y: number, r: number, tilt: number, pulse: number) => {
+      // A clear bell, cupped and tilted, its rim lit only on the leading side.
       ctx.fillStyle = `rgba(170,210,255,${0.12 + 0.1 * pulse})`;
       ctx.strokeStyle = `rgba(210,235,255,${0.3 + 0.25 * pulse})`;
       ctx.lineWidth = 0.8 * s;
       ctx.beginPath();
-      ctx.ellipse(x, y, r * 1.1, r * 0.85, -0.5, 0, Math.PI * 2);
+      ctx.ellipse(x, y, r * 1.1, r * 0.85, tilt, 0, Math.PI * 2);
       ctx.fill();
       ctx.beginPath();
-      ctx.ellipse(x, y, r * 1.1, r * 0.85, -0.5, -Math.PI * 0.9, -Math.PI * 0.2);
+      ctx.ellipse(x, y, r * 1.1, r * 0.85, tilt, -Math.PI * 0.9, -Math.PI * 0.2);
       ctx.stroke();
-      if (k % 3 === 0) {
-        ctx.strokeStyle = 'rgba(200,230,255,0.12)';
+    };
+    for (let k = N - 1; k >= 1; k--) {
+      const [x, y] = at(k);
+      if (x < focus.x - focus.w * 0.1 || x > focus.x + focus.w * 1.1) continue;
+      const pulse = Math.min(1.6, 0.5 + 0.5 * Math.sin(t * 3 - k * 0.5) + (run >= 0 ? 1.5 * Math.exp(-((k / N - run) ** 2) / 0.006) : 0));
+      // Every third member a feeding group (a bigger bell with a fishing tentacle), small bracts between.
+      const group = k % 3 === 0;
+      const r = (group ? 5.5 + 2 * pulse : 3 + pulse) * s * (1 - k / 70);
+      if (group) {
+        // The fishing tentacle: long, curling, with little side threads along it.
+        ctx.strokeStyle = 'rgba(200,230,255,0.16)';
+        ctx.lineWidth = 0.6 * s;
         ctx.beginPath();
-        ctx.moveTo(x, y + r);
-        ctx.quadraticCurveTo(x + Math.sin(t + k) * 8 * s, y + 30 * s, x - 4 * s, y + 55 * s);
+        let px = x, py = y + r;
+        ctx.moveTo(px, py);
+        for (let q = 1; q <= 8; q++) {
+          const nx = x + Math.sin(t * 0.9 + k + q * 0.7) * (2 + q) * s, ny = y + r + q * 8 * s;
+          ctx.lineTo(nx, ny);
+          if (q % 2 === 0) { ctx.moveTo(nx, ny); ctx.quadraticCurveTo(nx + 3 * s, ny + 1 * s, nx + 2.5 * s, ny + 3.5 * s); ctx.moveTo(nx, ny); }
+          px = nx; py = ny;
+        }
         ctx.stroke();
       }
+      bell(x, y, r, -0.5, pulse);
     }
+    // At the head, a cluster of swimming bells, pulsing together.
+    const [hx0, hy0] = at(0);
+    const beat = 0.5 + 0.5 * Math.sin(t * 3);
+    for (const [ox, oy, rr] of [[-3, -5, 6.5], [-3, 5, 6.5], [4, -2.5, 7], [4, 3, 7], [10, 0, 6]] as const) bell(hx0 + ox * s, hy0 + oy * s, rr * s * (0.95 + 0.08 * beat), -0.2, beat);
     ctx.globalCompositeOperation = 'lighter';
-    const hx = focus.x + head * focus.w;
-    glow(ctx, hx, y0 + Math.sin(head * 7 + t * 0.4) * 18 * s, 30 * s, '170,220,255', 0.35);
+    glow(ctx, hx0 + 3 * s, hy0, 30 * s, '170,220,255', 0.35);
     ctx.restore();
   }
 

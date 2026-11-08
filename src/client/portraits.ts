@@ -21,7 +21,7 @@ export const REDRAWN: readonly (readonly string[])[] = [
     'giant-squid', 'breaching', 'sardine-run', 'bait-ball', 'moon-jelly', 'hatchlings', 'flashlight-fish', 'man-o-war', 'vampire-squid',
     'reef-shark', 'petrel', 'dumbo', 'brine-pool', 'smokers'],
   // 2 (2026-11-08: the Silt Floor's first close-up pass, the lantern shark)
-  ['tripod-fish', 'sea-lily', 'brittle-star', 'sea-pig', 'lantern-shark', 'sea-firefly', 'pelican'],
+  ['tripod-fish', 'sea-lily', 'brittle-star', 'sea-pig', 'lantern-shark', 'sea-firefly', 'pelican', 'siphonophore'],
 ];
 const ART_VERSION = REDRAWN.length - 1;
 
