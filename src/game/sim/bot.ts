@@ -7,7 +7,7 @@ import type { ResidentId } from '../content/residents.ts';
 import { WORKS } from '../content/works.ts';
 import { assign, BANDS, maxed, breach, buy, canBreach, memoriesAvailable, nextTier, speak, calciteHold, canAfford, choose, cost, idleShoals, jobOpen, nextMeeting, nextReading, raspMax, read, reassign, setRasp, sweep, advance, timeUntil, readingCost, meetingWords, jobGain, steadyCalciteRate, bestRasp, carryAt, balanceFeedLight, canSend, send, build, homes, house, residentsAsking, nextMoment, meet as meetMoment, skipRequest, boonsOffered, chooseBoon, setCurrent, strainOpen, chooseStrain, sportOpen, chooseSport, grainsWaiting, chooseGrain, currentRiddle, answerRiddle } from './economy.ts';
 import type { Choice, MeetingId } from '../content/act3.ts';
-import type { DialectId, DialectTier } from '../content/act4.ts';
+import { DIALECTS, type DialectId, type DialectTier } from '../content/act4.ts';
 import { newGame, type GameState } from './state.ts';
 import { buyTrait, spawnLesser, traitCost, traitMaxed } from './prestige.ts';
 import { TRAITS, type SeamountId } from '../content/lineage.ts';
@@ -143,6 +143,15 @@ export function runBot(
   opts: BotOptions = {},
 ): { state: GameState; events: BotEvent[]; total: number } {
   const { seed = 1, tick = 1, sweeps = true, split, truce, dialects, spawnAt, seamount = 'plain', ventures = true, saver = false } = opts;
+  // A dialect that is not one of its tier's would never be spoken, and the run would stall at the
+  // spawn gate without a word: refused up front instead.
+  if (dialects) {
+    for (const [tier, id] of Object.entries(dialects)) {
+      if (id !== undefined && !DIALECTS.some((d) => d.id === id && d.tier === tier)) {
+        throw new Error(`bot: no ${tier} dialect "${id}" (one of ${DIALECTS.filter((d) => d.tier === tier).map((d) => d.id).join(', ')})`);
+      }
+    }
+  }
   let s = newGame(seed);
   s.seamount = seamount;
   let t0 = 0;

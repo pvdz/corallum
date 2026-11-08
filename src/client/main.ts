@@ -139,7 +139,7 @@ if (botT !== null) {
   const dl = params.get('dialects')?.split(',');
   state = runBot((s) => s.t >= botT, botT, {
     truce: tr ? { terms: tr[0] === 'b' ? 'b' : 'a', story: tr[1] === 'b' ? 'b' : 'a', wall: tr[2] === 'b' ? 'b' : 'a' } : undefined,
-    dialects: dl ? ({ form: dl[0], craft: dl[1], spawn: dl[2] } as never) : undefined,
+    dialects: dl ? ({ form: dl[0], craft: dl[1], spawn: dl[2], song: dl[3] ?? 'call' } as never) : undefined,
     seamount: (params.get('seamount') ?? undefined) as never,
   }).state;
 }
