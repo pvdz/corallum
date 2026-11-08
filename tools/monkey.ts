@@ -16,7 +16,7 @@ await withGame(async (open) => {
       let total = 0;
       for (let round = 0; round < 4; round++) {
         total += await page.evaluate(async () => {
-          const SKIP = /reset|forget|load|release|begin again|wipe|delete|start over|let go early|clear|copy save|save to a file|import|lesser spawning|notif/i;
+          const SKIP = /reset|forget|load|release|begin again|wipe|delete|erase|start over|let go early|clear|copy save|save to a file|import|lesser spawning|notif/i;
           const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
           let n = 0;
           const tabs = [...document.querySelectorAll<HTMLButtonElement>('.tab')];
