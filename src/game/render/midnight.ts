@@ -408,16 +408,24 @@ export function createMidnightScene(seed: number): Scene {
         ctx.ellipse(wx - 50 * s + k * 19 * s, wy + 3 * s, (8 + (k % 3) * 4) * s, 2.2 * s, 0, 0, Math.PI * 2);
         ctx.fill();
       }
-      // Bone-eating worms: red fuzz along the spine and the rib bases, swaying.
+      // Bone-eating worms: red fuzz along the spine and the rib bases, swaying. Touched, they
+      // pull into the bone at once (a ripple along the spine from the touch), and creep out again.
+      const touch = startled('whale-fall', t);
+      const pullAt = (bx: number) => {
+        if (!touch || touch.age > 6) return 0;
+        const a = touch.age - Math.abs(bx - touch.x) / (120 * s);
+        return a < 0 ? 0 : a < 0.15 ? a / 0.15 : a < 2.5 ? 1 : Math.max(0, 1 - (a - 2.5) / 3);
+      };
       ctx.strokeStyle = 'rgba(230,70,90,0.75)';
       ctx.lineWidth = 0.8 * s;
       for (let k = 0; k < 26; k++) {
         const bx = wx - 56 * s + k * 4.6 * s;
         const by = wy + 1 * s - Math.sin((k / 25) * Math.PI) * 2.5 * s;
-        const sw = Math.sin(t * 1.3 + k * 0.9) * 1.2 * s;
+        const out = 1 - 0.85 * pullAt(bx);
+        const sw = Math.sin(t * 1.3 + k * 0.9) * 1.2 * s * out;
         ctx.beginPath();
         ctx.moveTo(bx, by);
-        ctx.lineTo(bx + sw, by - (2 + (k % 3)) * s);
+        ctx.lineTo(bx + sw, by - (2 + (k % 3)) * s * out);
         ctx.stroke();
       }
       // A hagfish weaving slowly in and out of the ribs.

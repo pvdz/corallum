@@ -1169,22 +1169,30 @@ export function createLife(seed: number) {
 
   /**
    * A rattail: a big-headed deep fish with a long tapering tail, nosing slowly along the silt
-   * and crossing the frame every couple of minutes.
+   * and crossing the frame every couple of minutes. Touched, it darts ahead with a lash of the
+   * tail, lifting off the silt, and settles to its slow pace further on.
    */
   function drawRattail(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
     const period = 150;
     const u = (t % period) / period;
-    if (u > 0.6) return;
-    sight('rattail');
+    const touch = startled('rattail', t);
+    // The dart, for this crossing only: 60 units ahead over a second and a half, eased out.
+    const da = touch && touch.age <= t % period ? Math.min(1, touch.age / 1.5) : 0;
+    const dart = 1 - (1 - da) ** 3;
+    const lash = da > 0 && da < 1 ? Math.sin(da * Math.PI) : 0;
     const s = st.s * 1.2;
-    const x = st.cx - st.w * 0.7 + (u / 0.6) * st.w * 1.4;
-    const y = st.baseY + 2 * s + Math.sin(t * 0.6) * 4 * s;
+    const x = st.cx - st.w * 0.7 + (u / 0.6) * st.w * 1.4 + dart * 60 * s;
+    if (u > 0.6 || x > st.cx + st.w * 0.7 + 30 * s) return;
+    sight('rattail');
+    const y = st.baseY + 2 * s + Math.sin(t * 0.6) * 4 * s - lash * 8 * s;
     spot('rattail', x, y, 30 * s);
     ctx.save();
     ctx.translate(x, y);
     // Head down toward the silt, tail trailing up behind.
     ctx.rotate(0.06);
-    const wave = (f: number) => Math.sin(t * 2 + f * 5) * 3 * s * f;
+    // The lash: the tail's wave hurried along (by the dart's own time, so the phase never jumps) and wider.
+    const hurry = touch && da > 0 ? 12 * Math.min(touch.age, 1.5) : 0;
+    const wave = (f: number) => Math.sin(t * 2 + hurry + f * 5) * 3 * s * f * (1 + lash);
     const body = ctx.createLinearGradient(0, -10 * s, 0, 10 * s);
     body.addColorStop(0, '#3a3550');
     body.addColorStop(1, '#1d1a2c');
@@ -1195,12 +1203,12 @@ export function createLife(seed: number) {
     for (let i = 0; i <= 10; i++) {
       const f = i / 10;
       const tx = 6 * s - f * 70 * s;
-      const ty = -10 * s * (1 - f) + Math.sin(t * 2 + f * 5) * 3 * s * f;
+      const ty = -10 * s * (1 - f) + wave(f);
       ctx.lineTo(tx, ty);
     }
     for (let i = 10; i >= 0; i--) {
       const f = i / 10;
-      ctx.lineTo(6 * s - f * 70 * s, 7 * s * (1 - f) + Math.sin(t * 2 + f * 5) * 3 * s * f);
+      ctx.lineTo(6 * s - f * 70 * s, 7 * s * (1 - f) + wave(f));
     }
     ctx.quadraticCurveTo(22 * s, 9 * s, 26 * s, 0);
     ctx.fill();
