@@ -101,8 +101,35 @@ export function createSunlitScene(seed: number): Scene {
       // Closed against warm water, they are pulled right in.
       polypScale: 1.2 * (0.8 + 0.35 * nightAt(lastT)) * (1 + 0.025 * Math.min(12, v.canopy)) * (v.heat.closed ? 0.3 : 1),
       // Each pigment grown adds colour: more of the reef crusted, in more hues (rose, gold, green…).
-      ...bleached(FORM_LOOK[form].palette, v.heat.bleach, (0.3 + 0.7 * Math.min(1, v.pigments / 6)) * (0.8 + 0.2 * progress(v.height))),
+      ...nightShaded(bleached(FORM_LOOK[form].palette, v.heat.bleach, (0.3 + 0.7 * Math.min(1, v.pigments / 6)) * (0.8 + 0.2 * progress(v.height))), nightAt(lastT)),
     };
+  }
+
+  /** A colour ("#rrggbb" or "rgba(r,g,b,a)") moved toward rgb `to` by q, keeping its alpha. */
+  function mixColour(c: string, to: readonly [number, number, number], q: number): string {
+    let rgb: number[], a = 1;
+    if (c.startsWith('#')) {
+      const n = parseInt(c.slice(1), 16);
+      rgb = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+    } else {
+      const parts = c.slice(c.indexOf('(') + 1, c.indexOf(')')).split(',').map(Number);
+      rgb = parts.slice(0, 3);
+      a = parts[3] ?? 1;
+    }
+    const m = rgb.map((x, i) => Math.round(x + (to[i]! - x) * q));
+    return a === 1 && c.startsWith('#') ? `#${m.map((x) => x.toString(16).padStart(2, '0')).join('')}` : `rgba(${m.join(',')},${a})`;
+  }
+
+  /**
+   * By night the reef's stone (and the grottoes at its foot) sinks into the dark water with
+   * everything else; its own light (glowScale) carries it. In eighths, so the reef's cached picture
+   * repaints a few times through a dusk, not every frame.
+   */
+  function nightShaded(b: { palette: [string, string, string]; encrust: number }, night: number): { palette: [string, string, string]; encrust: number } {
+    const q = (Math.round(night * 8) / 8) * 0.5;
+    if (q === 0) return b;
+    const to: [number, number, number] = [10, 22, 48];
+    return { palette: [mixColour(b.palette[0], to, q), mixColour(b.palette[1], to, q), mixColour(b.palette[2], to, q)], encrust: b.encrust };
   }
 
   /**
@@ -113,12 +140,8 @@ export function createSunlitScene(seed: number): Scene {
     const q = Math.round(b * 6) / 6;
     if (q === 0) return { palette: pal, encrust };
     const bone: [number, number, number][] = [[150, 144, 136], [226, 220, 208], [252, 250, 244]];
-    const mix = (hex: string, to: [number, number, number]) => {
-      const n = parseInt(hex.slice(1), 16);
-      const c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((x, i) => Math.round(x + (to[i]! - x) * q));
-      return `#${c.map((x) => x.toString(16).padStart(2, '0')).join('')}`;
-    };
-    return { palette: [mix(pal[0], bone[0]!), mix(pal[1], bone[1]!), mix(pal[2], bone[2]!)], encrust: encrust * (1 - q) };
+    // (The highlight is an rgba colour: mixed as one, not parsed as hex.)
+    return { palette: [mixColour(pal[0], bone[0]!, q), mixColour(pal[1], bone[1]!, q), mixColour(pal[2], bone[2]!, q)], encrust: encrust * (1 - q) };
   }
 
   function build(): void {
