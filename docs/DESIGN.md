@@ -30,6 +30,7 @@ Prestige: **Lesser Spawning** → new seamount, keep **Lineage** traits and deco
 - DOM panels overlaid: desktop side panel; mobile bottom sheet with tabs.
 - System font stacks only (no network). Display: Iowan/Palatino/Georgia/DejaVu Serif.
 - Reduced-motion and quality tiers.
+- View mode (the eye) gives the reef the whole screen, with zoom; left alone, the camera drifts round the reef and now and then visits a creature on screen (a rare visitor first and at once), follows it and names it, like a documentary. Any input hands the camera back; off under reduced motion and calm.
 - A quiet panel (the user finds the HTML panel heavy beside the canvas): what is already known
   steps aside (owned cards hide their flavour, choices that may wait fold with Later and only one waiting choice is open (the one opened by hand, else the first to arrive; a timed one opens beside it while it lasts), the others are one-line rows, full
   residents and the mid-run spawning fold to one line, finished upgrades fold away); feedback
