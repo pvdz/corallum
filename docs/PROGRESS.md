@@ -1388,3 +1388,4 @@ date, what landed, what is half-done, what's next.
 - The corner buttons (sound, view, photo) were dark navy discs on every water; they take the zone's tint now, like the panel, so in the light they are sea-green glass rather than holes.
 - Creature labels likewise: the zone's tint at 78% (was a fixed navy), readable in the Sunlit Crown (checked on a phone with the seahorses).
 - With Larger text a phone laid four stocks out three and one (murmurs alone beside two empty columns): four go two and two now, the same two rows, balanced and wider. Audits mobile, tiny, small --big clean.
+- With Larger text five stocks are three and two; the passed acts' small line ("GLOW 34.5k") took a row of its own under the empty third cell: it takes that cell now, one row less over the reef.
