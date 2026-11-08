@@ -575,7 +575,7 @@ const finale = createFinale(ui, panel.growPage, {
     document.documentElement.classList.add('releasing');
     // A phone's sheet (the bottom-sheet layout, style.css) would take half the screen through the climax: the reef has all of it until
     // the ending's last page (the eye button still brings the panel back).
-    if (!viewMode && matchMedia('(max-width: 599px), (max-width: 799px) and (min-height: 501px)').matches) {
+    if (!viewMode && matchMedia('(max-width: 559px), (max-width: 799px) and (min-height: 501px)').matches) {
       setViewMode(true);
       releaseView = true;
     }
@@ -828,10 +828,12 @@ function resize(): void {
   // The depth gauge keeps above the phone sheet, wherever its top is (CSS caps its height by it).
   const sheetTop = side || viewMode || r.height === 0 ? '' : `${Math.round(top)}px`;
   if (sheetTop !== lastSheetTop) { lastSheetTop = sheetTop; document.documentElement.style.setProperty('--sheet-top', sheetTop || 'none'); }
-  // With the panel hidden (view mode) the scene frames the whole screen.
+  // With the panel hidden (view mode) the scene frames the whole screen. A sheet that fills a very
+  // short screen (a small phone on its side, 320 px tall) still leaves the scene a third of it to
+  // frame: with no height at all its sizes divide by zero.
   const focus: Focus = viewMode ? { x: 0, y: 0, w, h } : side
     ? { x: 0, y: 0, w: Math.round(r.left * dpr), h }
-    : { x: 0, y: 0, w, h: Math.round(top * dpr) };
+    : { x: 0, y: 0, w, h: Math.round(Math.max(top, window.innerHeight / 3) * dpr) };
   // Nothing moved (the sheet sliding, a panel card growing): the canvases and scenes stay as they are.
   if (canvas.width === w && canvas.height === h && dpr === lastDpr && focus.x === focusNow.x && focus.y === focusNow.y && focus.w === focusNow.w && focus.h === focusNow.h) return;
   lastDpr = dpr;

@@ -181,7 +181,8 @@ export function createRuins(seed: number) {
           const ppm = focus.h / SPAN[d]!;
           for (const tw of layers[d]!) {
             const topY = horizon - (tw.top - hq) * ppm;
-            if (topY > h) continue;
+            // Below the frame, or no frame to place it in (NaN): nothing to draw.
+            if (!(topY <= h)) continue;
             const x = focus.x + (tw.x * 1.3 - 0.15) * focus.w;
             const base = unit * tw.width;
             if (x < -base * 4 || x > w + base * 4) continue;

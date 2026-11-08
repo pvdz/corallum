@@ -1,9 +1,10 @@
 // Overlay texts that collide: the title, zone title, milestone, journal note, whisper, hints and
 // the depth gauge, checked pairwise (and against the panel) by their words' boxes, sampled for
 // 8 s at bot times through the game on every viewport, and a small phone on its side (667×375,
-// the narrow side panel) and the smallest phone (320×568); the corner buttons count by their boxes.
-// Prints the colliding pairs per state.
+// the narrow side panel), the smallest phone (320×568) and the same on its side (568×320, the
+// narrowest scene); the corner buttons count by their boxes. Prints the colliding pairs per state.
 // Usage: node --no-warnings tools/overlaps.ts [comma-separated bot seconds; 5 = a fresh reef] [keys to press first, e.g. h]
+// VP=<name> checks one viewport only (desktop, mobile, landscape, small-landscape, tiny, tiny-landscape).
 
 import { VIEWPORTS, withGame } from './browser.ts';
 const IDS = ['title', 'zone-title', 'milestone', 'journal-note', 'whisper', 'sweep-hint', 'creature-label', 'depth-gauge', 'sound', 'view-mode'];
@@ -12,7 +13,9 @@ const times = (process.argv[2] ?? '5,300,2000,5000,9000,13000,17000,21000,25000'
 await withGame(async (open) => {
   const small = { name: 'small-landscape', width: 667, height: 375, scale: 2, mobile: true };
   const tiny = { name: 'tiny', width: 320, height: 568, scale: 2, mobile: true };
-  for (const vp of [...VIEWPORTS, small, tiny]) for (const at of times) {
+  // The 320 px phone on its side: the side panel, and the narrowest scene beside it.
+  const tinySide = { name: 'tiny-landscape', width: 568, height: 320, scale: 2, mobile: true };
+  for (const vp of [...VIEWPORTS, small, tiny, tinySide].filter((v) => !process.env.VP || v.name === process.env.VP)) for (const at of times) {
     const { page } = await open(vp, at < 20 ? '?fresh' : `?bot=${at}`);
     await page.waitForFunction(() => (window as never as { corallum?: unknown }).corallum, null, { timeout: 90000 });
     const seen = new Set<string>();
