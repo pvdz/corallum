@@ -31,19 +31,27 @@ export function drawCity(c: HTMLCanvasElement, found: readonly string[], roams: 
     }
     g.stroke();
   }
-  // Roams: faint wandering lines out from the reef (bottom centre), one per roam, seeded.
-  g.strokeStyle = 'rgba(140,205,255,0.16)';
+  // Roams: faint dotted trails out from the reef (bottom centre), one per roam, each fanning out on
+  // its own heading, a different length, bending a little as it wanders (seeded).
+  g.strokeStyle = 'rgba(140,205,255,0.2)';
+  g.setLineDash([1.5, 3]);
   for (let k = 0; k < Math.min(24, roams); k++) {
-    let x = W * 0.5, y = H - 4;
+    const f = (k * 0.618 + seed * 0.0001) % 1;
+    const head = -Math.PI / 2 + (f - 0.5) * 2.4;
+    const len = H * (0.45 + 0.45 * ((k * 0.382 + 0.1) % 1));
+    const bend = Math.sin(seed * 0.001 + k * 2.3) * 0.5;
+    let x = W * 0.5, y = H - 4, a = head;
     g.beginPath();
     g.moveTo(x, y);
-    for (let q = 0; q < 6; q++) {
-      x += Math.sin(seed * 0.001 + k * 2.3 + q * 1.7) * W * 0.07;
-      y -= H * 0.12;
+    for (let q = 0; q < 8; q++) {
+      a += bend * 0.15 + Math.sin(k * 1.7 + q * 1.3) * 0.12;
+      x += Math.cos(a) * len / 8 * (W / H) * 0.6;
+      y += Math.sin(a) * len / 8;
       g.lineTo(x, y);
     }
     g.stroke();
   }
+  g.setLineDash([]);
   // The trip under way.
   const where = trip ? (CITY_MAP.where as Record<string, [number, number]>)[trip.site] : undefined;
   if (trip && where) {
