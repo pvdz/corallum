@@ -53,36 +53,47 @@ export function drawGarden(ctx: CanvasRenderingContext2D, cx: number, stage: num
     const x = cx + side * (70 + Math.floor(k / 2) * 34 + (k % 3) * 6) * s;
     const y = floor(x) + 3 * s;
     const hgt = (26 + (k % 3) * 12) * s;
+    // Stacked knobbly mineral narrowing to a lipped throat, each layer bulging its own way (seeded).
+    const layers = 6;
+    const bump = (i: number, side: number) => 1.6 * s * (0.5 + 0.5 * Math.sin(k * 3.7 + i * 2.3 + side * 1.1));
+    const edgeAt = (i: number, side: number): [number, number] => {
+      const f = i / layers;
+      return [x + side * (8 * s * (1 - 0.6 * f) + bump(i, side) * (1 - f * 0.5)), y - hgt * f];
+    };
     const g = ctx.createLinearGradient(x - 8 * s, 0, x + 8 * s, 0);
     g.addColorStop(0, '#1d1622');
     g.addColorStop(0.5, '#4a3640');
     g.addColorStop(1, '#170f1a');
     ctx.fillStyle = g;
     ctx.beginPath();
-    ctx.moveTo(x - 8 * s, y);
-    ctx.quadraticCurveTo(x - 6 * s, y - hgt * 0.6, x - 3 * s, y - hgt);
-    ctx.lineTo(x + 3 * s, y - hgt);
-    ctx.quadraticCurveTo(x + 6 * s, y - hgt * 0.6, x + 8 * s, y);
+    ctx.moveTo(...edgeAt(0, -1));
+    for (let i = 1; i <= layers; i++) {
+      const [px, py] = edgeAt(i - 1, -1), [qx, qy] = edgeAt(i, -1);
+      ctx.quadraticCurveTo(Math.min(px, qx) - 1.2 * s, (py + qy) / 2, qx, qy);
+    }
+    // The lip of the throat.
+    ctx.lineTo(x - 4 * s, y - hgt - 1.2 * s);
+    ctx.lineTo(x + 4 * s, y - hgt - 1.2 * s);
+    for (let i = layers; i >= 1; i--) {
+      const [px, py] = edgeAt(i, 1), [qx, qy] = edgeAt(i - 1, 1);
+      ctx.quadraticCurveTo(Math.max(px, qx) + 1.2 * s, (py + qy) / 2, qx, qy);
+    }
     ctx.closePath();
     ctx.fill();
-    // Mineral bands, rust and pale, where the warm water has laid them down.
-    ctx.strokeStyle = 'rgba(200,120,80,0.35)';
-    ctx.lineWidth = 1.2 * s;
-    for (let b = 1; b < 4; b++) {
-      const by = y - hgt * (b / 4);
-      const hw = 8 * s - 5 * s * (b / 4);
+    // Mineral bands, rust and pale in turn, curving round the stone where the warm water laid them.
+    ctx.lineWidth = 1 * s;
+    for (let b = 1; b < layers; b++) {
+      const [lx, ly] = edgeAt(b, -1), [rx] = edgeAt(b, 1);
+      ctx.strokeStyle = b % 2 ? 'rgba(200,120,80,0.3)' : 'rgba(220,200,170,0.16)';
       ctx.beginPath();
-      ctx.moveTo(x - hw, by);
-      ctx.lineTo(x + hw, by + 1 * s);
+      ctx.moveTo(lx + 0.8 * s, ly);
+      ctx.quadraticCurveTo(x, ly + 1.5 * s, rx - 0.8 * s, ly);
       ctx.stroke();
     }
-    // A thread of warm water above each.
-    for (let q = 0; q < 4; q++) {
-      const ph = (t * 0.4 + q * 0.25 + k * 0.17) % 1;
-      ctx.fillStyle = `rgba(150,120,150,${0.25 * (1 - ph)})`;
-      ctx.beginPath();
-      ctx.arc(x + Math.sin(t + q + k) * 3 * s, y - hgt - ph * 40 * s, (2 + ph * 5) * s, 0, Math.PI * 2);
-      ctx.fill();
+    // A thread of warm water shimmering up from each (soft, drawn over the water, not added).
+    for (let q = 0; q < 5; q++) {
+      const ph = (t * 0.4 + q * 0.2 + k * 0.17) % 1;
+      glow(ctx, x + Math.sin(t + q + k) * 3 * s * ph, y - hgt - 2 * s - ph * 42 * s, (3 + ph * 8) * s, '130,104,140', 0.45 * (1 - ph) * Math.min(1, ph * 6));
     }
     ctx.globalCompositeOperation = 'lighter';
     glow(ctx, x, y - hgt, 18 * s, '255,140,90', 0.5 + 0.15 * Math.sin(t * 1.3 + k));
