@@ -958,11 +958,16 @@ export function createTwilightScene(seed: number): Scene {
   }
 
   /** A frogfish on the slope, lumpy as a sponge, waving a small lure; touched, it gulps. */
-  function drawFrogfish(ctx: CanvasRenderingContext2D, t: number): void {
+  function drawFrogfish(ctx: CanvasRenderingContext2D, t: number, L: ReefLayout): void {
     sight('frogfish');
     const s = scale() * 1.6;
-    const u = 0.4;
-    const x = focus.x - focus.w * 0.1 + u * focus.w * 1.2, y = slopeY(u) - 8 * s;
+    // Clear of the pistol shrimp's burrow by the reef's foot (on the narrowest screens they meet:
+    // it sits reefward of it).
+    const burrow = L.cx - 0.2 * L.unit, gap = 18 * s;
+    let x = focus.x - focus.w * 0.1 + 0.4 * focus.w * 1.2;
+    if (Math.abs(x - burrow) < gap) x = burrow + gap;
+    const u = (x - focus.x + focus.w * 0.1) / (focus.w * 1.2);
+    const y = slopeY(u) - 8 * s;
     const touch = startled('frogfish', t);
     const gulp = touch && touch.age < 0.6 ? Math.sin((touch.age / 0.6) * Math.PI) : 0;
     spot('frogfish', x, y, 16 * s);
@@ -2376,7 +2381,7 @@ export function createTwilightScene(seed: number): Scene {
       drawCurrent(ctx, t, v.current);
       if (v.upwell) drawUpwell(ctx, t, v.upwell);
       drawNautilus(ctx, t);
-      drawFrogfish(ctx, t);
+      drawFrogfish(ctx, t, L);
       drawSardineRun(ctx, t);
       drawOctopus(ctx, t);
       drawCleaningStation(ctx, t);
