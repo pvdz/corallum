@@ -1513,3 +1513,4 @@ date, what landed, what is half-done, what's next.
 - The seahorses: shaded darker along the back and paler down the belly (was one flat colour), pale freckles over the body, armour rings down the tail. In REDRAWN.
 - The storm petrels' white rump (#e8ecf2) glowed like a lamp on the dark bird under the bloom at night (measured 183,200,223 even from a #959daa fill): a smaller patch in #868e9b now reads as a pale rump. In REDRAWN.
 - The rattail (Silt Floor): rows of rough scales over the trunk, fading down the tail, and a lateral line from the gill cover to the tip (it was one flat gradient). In REDRAWN.
+- The giant sea spider (Silt Floor) was near-white cream (236,212,182) and glared yellow under the bloom: rust-coloured now (legs 196,132,104, far legs darker), as the giant ones often are. In REDRAWN.

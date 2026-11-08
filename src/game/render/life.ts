@@ -374,7 +374,10 @@ export function createLife(seed: number) {
     if (nearest.d < Infinity) spot('star-march', nearest.x, nearest.y, 40 * s);
   }
 
-  /** A giant sea spider picking its way across the floor; touched, it freezes and folds its legs in. */
+  /**
+   * A giant sea spider picking its way across the floor, rust-coloured (a pale one glared under the
+   * bloom); touched, it freezes and folds its legs in.
+   */
   function drawSeaSpider(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
     sight('sea-spider');
     const s = st.s * 1.6;
@@ -417,14 +420,14 @@ export function createLife(seed: number) {
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.lineWidth = 0.95 * s;
-    ctx.strokeStyle = 'rgba(170,148,124,0.85)';
+    ctx.strokeStyle = 'rgba(124,82,68,0.9)';
     ctx.stroke(far);
-    ctx.strokeStyle = 'rgba(232,208,176,0.95)';
+    ctx.strokeStyle = 'rgba(196,132,104,0.95)';
     ctx.stroke(near);
-    ctx.fillStyle = 'rgba(240,218,188,0.95)';
+    ctx.fillStyle = 'rgba(206,146,116,0.95)';
     ctx.fill(knees);
     // The trunk: segments, the proboscis ahead, and a short tail stub behind.
-    ctx.fillStyle = 'rgba(236,212,182,0.97)';
+    ctx.fillStyle = 'rgba(204,140,110,0.97)';
     ctx.beginPath();
     for (let j = 0; j < 4; j++) {
       const cx = x - 3.6 * s + j * 2.4 * s;
@@ -437,7 +440,7 @@ export function createLife(seed: number) {
     ctx.closePath();
     ctx.fill();
     ctx.lineWidth = 0.8 * s;
-    ctx.strokeStyle = 'rgba(236,212,182,0.97)';
+    ctx.strokeStyle = 'rgba(204,140,110,0.97)';
     ctx.beginPath();
     ctx.moveTo(x - 4.8 * s, by);
     ctx.lineTo(x - 6.6 * s, by - 0.8 * s);
