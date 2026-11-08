@@ -1624,9 +1624,13 @@ export function createTwilightScene(seed: number): Scene {
     ctx.strokeStyle = `rgb(${rC},${gC},${bC})`;
     ctx.fillStyle = `rgb(${rC},${gC},${bC})`;
     ctx.lineCap = 'round';
-    // Arms: tapering from the base to a fine tip (three strokes, thinner each), the pale suckers
-    // showing along the curl near the tip.
+    // Arms: each a filled ribbon tapering from the base to a fine tip that curls over (alternately
+    // up and under), joined near the body by a web of skin; the pale suckers show along the
+    // underside toward the tip.
     const suckers = new Path2D();
+    const web: [number, number][][] = [[], []];
+    const arms = new Path2D();
+    const L: [number, number][] = [], R: [number, number][] = [];
     for (let a = 0; a < 8; a++) {
       const side = a < 4 ? -1 : 1;
       const k = a % 4;
@@ -1634,20 +1638,56 @@ export function createTwilightScene(seed: number): Scene {
       const wave = Math.sin(t * (moving ? 6 : 0.8) + a * 1.3) * 3 * s;
       const x0 = side * 2 * s, y0 = 2 * s, cx = side * reach * 0.5, cy = 6 * s + wave, x1 = side * reach, y1 = 8 * s - k * 1.5 * s + wave;
       const at = (u: number): [number, number] => [(1 - u) * (1 - u) * x0 + 2 * (1 - u) * u * cx + u * u * x1, (1 - u) * (1 - u) * y0 + 2 * (1 - u) * u * cy + u * u * y1];
-      for (const [u0, u1, lw] of [[0, 0.4, 3], [0.38, 0.72, 2.1], [0.7, 1, 1.2]] as const) {
-        const [ax, ay] = at(u0), [mx, my] = at((u0 + u1) / 2), [bx, by] = at(u1);
-        ctx.lineWidth = lw * s;
-        ctx.beginPath();
-        ctx.moveTo(ax, ay);
-        ctx.quadraticCurveTo(2 * mx - (ax + bx) / 2, 2 * my - (ay + by) / 2, bx, by);
-        ctx.stroke();
+      // The spine: ten steps along the curve, then the curl (the heading turning a little more
+      // each step, which way set by the arm and breathing slowly).
+      const pts: [number, number][] = [];
+      for (let i = 0; i <= 10; i++) pts.push(at(i / 10));
+      let [px, py] = pts[10]!;
+      let ang = Math.atan2(y1 - cy, x1 - cx);
+      const turn = (a % 2 ? 1 : -1) * side * (0.42 + 0.12 * Math.sin(t * 0.7 + a));
+      for (let i = 1; i <= 5; i++) {
+        ang += turn;
+        px += Math.cos(ang) * 1.3 * s;
+        py += Math.sin(ang) * 1.3 * s;
+        pts.push([px, py]);
       }
-      for (const u of [0.55, 0.68, 0.8]) {
-        const [px, py] = at(u);
-        suckers.moveTo(px + 0.55 * s, py + 1 * s);
-        suckers.arc(px, py + 1 * s, 0.55 * s, 0, Math.PI * 2);
+      L.length = 0;
+      R.length = 0;
+      const n = pts.length - 1;
+      for (let i = 0; i <= n; i++) {
+        const [ax, ay] = pts[Math.max(0, i - 1)]!, [bx, by] = pts[Math.min(n, i + 1)]!;
+        const dx = bx - ax, dy = by - ay, d = Math.hypot(dx, dy) || 1;
+        const w = (0.25 + 1.45 * Math.pow(1 - i / n, 1.4)) * s;
+        const [qx, qy] = pts[i]!;
+        L.push([qx - (dy / d) * w, qy + (dx / d) * w]);
+        R.push([qx + (dy / d) * w, qy - (dx / d) * w]);
+      }
+      arms.moveTo(L[0]![0], L[0]![1]);
+      for (const [qx, qy] of L) arms.lineTo(qx, qy);
+      for (let i = n; i >= 0; i--) arms.lineTo(R[i]![0], R[i]![1]);
+      arms.closePath();
+      web[side < 0 ? 0 : 1]!.push(pts[4]!);
+      for (const i of [6, 8, 10, 12]) {
+        const [sx, sy] = pts[i]!;
+        const r = (0.62 - i * 0.025) * s;
+        suckers.moveTo(sx + r, sy + 0.9 * s);
+        suckers.arc(sx, sy + 0.9 * s, r, 0, Math.PI * 2);
       }
     }
+    // The web, a shade darker than the arms, fills between the four arms on each side.
+    ctx.fillStyle = `rgb(${Math.round(rC * 0.82)},${Math.round(gC * 0.82)},${Math.round(bC * 0.82)})`;
+    ctx.beginPath();
+    ctx.moveTo(0, -1 * s);
+    for (const [wx, wy] of web[0]!) ctx.lineTo(wx, wy);
+    ctx.lineTo(0, 5 * s);
+    for (const [wx, wy] of web[1]!.slice().reverse()) ctx.lineTo(wx, wy);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = `rgb(${rC},${gC},${bC})`;
+    ctx.fill(arms);
+    ctx.strokeStyle = `rgba(${Math.round(rC * 0.5)},${Math.round(gC * 0.5)},${Math.round(bC * 0.5)},0.35)`;
+    ctx.lineWidth = 0.5 * s;
+    ctx.stroke(arms);
     ctx.fillStyle = `rgba(${Math.min(255, rC + 70)},${Math.min(255, gC + 60)},${Math.min(255, bC + 50)},0.5)`;
     ctx.fill(suckers);
     // Mantle: lit from above, with darker mottling and a short siphon at its side.
