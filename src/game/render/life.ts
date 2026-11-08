@@ -128,27 +128,50 @@ export function createLife(seed: number) {
     spot('brittle-star', x, y, Math.max(22 * s, 24 * st.dpr));
     // Touched, it curls its arms in over itself.
     const curlIn = shrink('brittle-star', x, y, 40 * s, t);
-    ctx.strokeStyle = 'rgba(170,120,150,0.55)';
-    ctx.fillStyle = 'rgba(190,140,170,0.7)';
+    ctx.save();
     ctx.lineCap = 'round';
+    // Its shadow on the silt.
+    ctx.fillStyle = 'rgba(8,6,20,0.3)';
+    ctx.beginPath();
+    ctx.ellipse(x, y + 1.2 * s, 12 * s * (1 - 0.4 * curlIn), 3 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Five long arms snaking over the silt, thinning to the tips, banded light and dark.
     for (let k = 0; k < 5; k++) {
       const a0 = star.rot + (k / 5) * Math.PI * 2;
-      ctx.lineWidth = 2 * s;
-      ctx.beginPath();
-      ctx.moveTo(x, y);
       let ax = x, ay = y, a = a0;
-      for (let q = 0; q < 6; q++) {
-        a += Math.sin(t * 0.4 + star.phase + k * 1.3 + q * 0.6) * 0.18 + curlIn * 0.55;
-        ax += Math.cos(a) * 4 * s * (1 - 0.45 * curlIn);
-        ay += Math.sin(a) * 4 * s * 0.45 * (1 - 0.45 * curlIn);
-        ctx.lineTo(ax, ay);
-        ctx.lineWidth = (2 - q * 0.28) * s;
+      for (let q = 0; q < 8; q++) {
+        a += Math.sin(t * 0.4 + star.phase + k * 1.3 + q * 0.6) * 0.16 + curlIn * 0.45;
+        const nx = ax + Math.cos(a) * 3.2 * s * (1 - 0.45 * curlIn);
+        const ny = ay + Math.sin(a) * 3.2 * s * 0.45 * (1 - 0.45 * curlIn);
+        ctx.strokeStyle = q % 2 ? 'rgba(150,100,132,0.7)' : 'rgba(196,150,178,0.75)';
+        ctx.lineWidth = (1.9 - q * 0.2) * s;
+        ctx.beginPath();
+        ctx.moveTo(ax, ay);
+        ctx.lineTo(nx, ny);
+        ctx.stroke();
+        ax = nx; ay = ny;
       }
-      ctx.stroke();
     }
+    // The disc: five lobes between the arms, a darker star pattern on it.
+    ctx.fillStyle = 'rgba(190,140,170,0.85)';
     ctx.beginPath();
-    ctx.ellipse(x, y, 3.2 * s, 1.8 * s, 0, 0, Math.PI * 2);
+    for (let k = 0; k <= 10; k++) {
+      const a = star.rot + (k / 10) * Math.PI * 2;
+      const r = (k % 2 ? 3.4 : 2.4) * s;
+      const px = x + Math.cos(a) * r, py = y + Math.sin(a) * r * 0.55;
+      if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
     ctx.fill();
+    ctx.strokeStyle = 'rgba(120,70,110,0.6)';
+    ctx.lineWidth = 0.5 * s;
+    ctx.beginPath();
+    for (let k = 0; k < 5; k++) {
+      const a = star.rot + (k / 5) * Math.PI * 2;
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + Math.cos(a) * 2.2 * s, y + Math.sin(a) * 2.2 * s * 0.55);
+    }
+    ctx.stroke();
+    ctx.restore();
   }
 
   /**
@@ -712,45 +735,67 @@ export function createLife(seed: number) {
     const fold = shrink('sea-lily', tx, ty, 40 * s, t, 5);
     ctx.save();
     ctx.lineCap = 'round';
-    // The stalk, jointed, bending with the current.
+    // The stalk, jointed, bending with the current; whorls of cirri at its nodes.
+    const cx1 = x0 + Math.sin(sway) * len * 0.2, cy1 = y0 - len * 0.55;
     ctx.strokeStyle = 'rgba(190,175,200,0.55)';
     ctx.lineWidth = 1.6 * s;
     ctx.beginPath();
     ctx.moveTo(x0, y0);
-    ctx.quadraticCurveTo(x0 + Math.sin(sway) * len * 0.2, y0 - len * 0.55, tx, ty);
+    ctx.quadraticCurveTo(cx1, cy1, tx, ty);
     ctx.stroke();
-    // The crown: ten feathery arms opening like a hand, pinnules along each.
-    for (let a = 0; a < 10; a++) {
-      const ang = -Math.PI / 2 + sway * 1.5 + (a - 4.5) * 0.19 * (1 - 0.8 * fold);
-      const arm = (16 + (a % 3) * 3) * s * (1 - 0.35 * fold);
-      const curl = Math.sin(t * 0.6 + a + c.phase) * 0.12;
-      const ex = tx + Math.cos(ang + curl) * arm, ey = ty + Math.sin(ang + curl) * arm;
-      ctx.strokeStyle = `rgba(${c.hue},0.6)`;
-      ctx.lineWidth = 1 * s;
-      ctx.beginPath();
-      ctx.moveTo(tx, ty);
-      ctx.quadraticCurveTo(tx + Math.cos(ang) * arm * 0.5, ty + Math.sin(ang) * arm * 0.6, ex, ey);
-      ctx.stroke();
-      ctx.lineWidth = 0.6 * s;
-      for (let p = 1; p < 6; p++) {
-        const u = p / 6;
-        const px = tx + (ex - tx) * u, py = ty + (ey - ty) * u;
-        const n = 3 * s * (1 - u * 0.5);
-        ctx.beginPath();
-        ctx.moveTo(px, py);
-        ctx.lineTo(px + Math.cos(ang + 1.3) * n, py + Math.sin(ang + 1.3) * n);
-        ctx.moveTo(px, py);
-        ctx.lineTo(px + Math.cos(ang - 1.3) * n, py + Math.sin(ang - 1.3) * n);
-        ctx.stroke();
+    ctx.lineWidth = 0.5 * s;
+    ctx.strokeStyle = 'rgba(170,158,186,0.45)';
+    ctx.beginPath();
+    for (let k = 1; k < 5; k++) {
+      const u = k / 5, v = 1 - u;
+      const nx = v * v * x0 + 2 * v * u * cx1 + u * u * tx, ny = v * v * y0 + 2 * v * u * cy1 + u * u * ty;
+      const n = (4.5 - u * 2) * s;
+      for (const d of [-1, 1]) {
+        ctx.moveTo(nx, ny);
+        ctx.quadraticCurveTo(nx + d * n * 0.7, ny - n * 0.1, nx + d * n * 0.9, ny + n * 0.8);
       }
     }
+    ctx.stroke();
+    // The crown: ten arms rising from a small cup and curling outward and downstream into a fan
+    // (curled in to a fist when touched), pinnules along each, finer towards the tips.
+    const seg = 8;
+    for (let a = 0; a < 10; a++) {
+      const off = (a - 4.5) / 4.5;
+      let ang = -Math.PI / 2 + sway * 1.5 + off * 0.32 * (1 - 0.8 * fold);
+      const step = (16 + (a % 3) * 3) * s * (1 - 0.3 * fold) / seg;
+      const curl = (off * 0.3 + 0.05) * (1 - 1.5 * fold) + Math.sin(t * 0.6 + a + c.phase) * 0.025;
+      let px = tx, py = ty;
+      ctx.strokeStyle = `rgba(${c.hue},0.6)`;
+      for (let k = 0; k < seg; k++) {
+        const u = k / seg;
+        const nx = px + Math.cos(ang) * step, ny = py + Math.sin(ang) * step;
+        ctx.lineWidth = (1.3 - u * 0.8) * s;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(nx, ny);
+        ctx.stroke();
+        const n = 3 * s * (1 - u * 0.6) * (1 - 0.5 * fold);
+        if (k > 0) {
+          ctx.lineWidth = 0.45 * s;
+          ctx.beginPath();
+          for (const d of [-1, 1]) {
+            ctx.moveTo(px, py);
+            ctx.lineTo(px + Math.cos(ang + d * 0.9) * n, py + Math.sin(ang + d * 0.9) * n);
+          }
+          ctx.stroke();
+        }
+        px = nx; py = ny;
+        ang += curl * (0.3 + 1.8 * u);
+      }
+    }
+    // The cup the arms rise from.
+    ctx.fillStyle = 'rgba(176,160,190,0.7)';
+    ctx.beginPath();
+    ctx.ellipse(tx, ty + 1 * s, 2.4 * s, 1.8 * s, sway, 0, Math.PI * 2);
+    ctx.fill();
     ctx.restore();
   }
 
-  /**
-   * A rattail: a big-headed deep fish with a long tapering tail, nosing slowly along the silt
-   * and crossing the frame every couple of minutes.
-   */
   /**
    * The tripod fish: standing on the silt on three long fin-rays, facing the current, pectoral
    * fins held up like feelers. Touched, it lifts off, swims a little way and settles again.
@@ -765,38 +810,108 @@ export function createLife(seed: number) {
     const lift = hop * 30 * s;
     const stand = (1 - hop) * 22 * s;
     const y = ground - stand - lift;
+    // The tail sways a little in the current; the stilts flex with it.
+    const sway = Math.sin(t * 0.7) * 0.8 * s;
     spot('tripod-fish', x, y, 24 * s);
     ctx.save();
-    // The three stilts: two pelvic rays and the tail's long lower ray.
-    ctx.strokeStyle = 'rgba(190,190,210,0.7)';
-    ctx.lineWidth = 0.9 * s;
-    ctx.beginPath();
-    if (hop < 0.9) {
-      ctx.moveTo(x + 4 * s, y + 2 * s);
-      ctx.lineTo(x + 6 * s, y + 2 * s + stand);
-      ctx.moveTo(x + 1 * s, y + 2 * s);
-      ctx.lineTo(x - 1 * s, y + 2 * s + stand);
-      ctx.moveTo(x - 16 * s, y);
-      ctx.lineTo(x - 20 * s, y + stand + 1 * s);
+    ctx.lineCap = 'round';
+    const feet = hop < 0.9 ? 1 - hop / 0.9 : 0;
+    if (feet > 0) {
+      // Dents in the silt where the stilts stand.
+      ctx.fillStyle = `rgba(10,10,24,${0.35 * feet})`;
+      for (const fx of [x + 7 * s, x - 1 * s, x - 23 * s + sway]) {
+        ctx.beginPath();
+        ctx.ellipse(fx, ground, 2.6 * s, 0.7 * s, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // The stilts: the far pelvic ray (darker), the near one, and the tail's long lower ray,
+      // each bowed a little and thinning towards the silt.
+      const ray = (x0: number, y0: number, x1: number, bow: number, col: string): void => {
+        const y1 = y0 + (ground - y0) * feet;
+        const mx = (x0 + x1) / 2 + bow, my = (y0 + y1) / 2;
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 1.3 * s;
+        ctx.beginPath();
+        ctx.moveTo(x0, y0);
+        ctx.quadraticCurveTo(mx, my, (x0 + x1) / 2 + bow * 0.5, my + (y1 - y0) * 0.05);
+        ctx.stroke();
+        ctx.lineWidth = 0.7 * s;
+        ctx.beginPath();
+        ctx.moveTo((x0 + x1) / 2 + bow * 0.5, my + (y1 - y0) * 0.05);
+        ctx.quadraticCurveTo((mx + x1) / 2, (my + y1) / 2, x1, y1);
+        ctx.stroke();
+      };
+      ray(x - 1 * s, y + 3 * s, x - 1 * s, -1.5 * s, 'rgba(130,128,156,0.75)');
+      ray(x + 3 * s, y + 3.2 * s, x + 7 * s, 1.5 * s, 'rgba(196,196,214,0.85)');
+      ray(x - 21 * s + sway, y + 1 * s, x - 23 * s + sway, -1 * s, 'rgba(176,176,198,0.8)');
     }
-    // Pectoral feelers raised over the head into the current.
-    ctx.moveTo(x + 3 * s, y - 2 * s);
-    ctx.quadraticCurveTo(x + 10 * s, y - 14 * s, x + 18 * s, y - 16 * s + Math.sin(t * 1.3) * 2 * s);
-    ctx.moveTo(x + 2 * s, y - 2 * s);
-    ctx.quadraticCurveTo(x + 6 * s, y - 16 * s, x + 12 * s, y - 20 * s + Math.cos(t * 1.1) * 2 * s);
-    ctx.stroke();
-    // The body: slim, pale, tapering to the tail.
-    ctx.fillStyle = '#4a4860';
+    // Pectoral feelers: a fan of fine rays on each side, raised over the head into the current.
+    ctx.lineWidth = 0.55 * s;
+    for (let side = 0; side < 2; side++) {
+      ctx.strokeStyle = side ? 'rgba(200,198,220,0.75)' : 'rgba(150,148,176,0.6)';
+      ctx.beginPath();
+      for (let k = 0; k < 3; k++) {
+        const w = Math.sin(t * (1.1 + 0.2 * side) + k * 0.7) * 1.6 * s;
+        const len = 1 - k * 0.12;
+        const bx = x + (4 - side) * s, by = y - 2 * s;
+        ctx.moveTo(bx, by);
+        ctx.quadraticCurveTo(bx + (5 + side * 3 - k) * s * len, by - 13 * s * len, bx + (13 + side * 5 - k * 3) * s * len + w, by - (17 - side * 3 + k) * s * len);
+      }
+      ctx.stroke();
+    }
+    // The body: a blunt head, the back rising behind it, tapering to a thin tail.
+    const tx = x - 22 * s + sway;
+    const body = ctx.createLinearGradient(x, y - 5 * s, x, y + 4 * s);
+    body.addColorStop(0, '#3c3a52');
+    body.addColorStop(0.6, '#55536c');
+    body.addColorStop(1, '#6e6b86');
+    ctx.fillStyle = body;
     ctx.beginPath();
-    ctx.moveTo(10 * s + x, y);
-    ctx.quadraticCurveTo(x + 4 * s, y - 5 * s, x - 6 * s, y - 2.5 * s);
-    ctx.lineTo(x - 18 * s, y);
-    ctx.lineTo(x - 6 * s, y + 2.5 * s);
-    ctx.quadraticCurveTo(x + 4 * s, y + 4 * s, x + 10 * s, y);
+    ctx.moveTo(x + 11 * s, y + 0.5 * s);
+    ctx.bezierCurveTo(x + 11 * s, y - 3.5 * s, x + 6 * s, y - 5 * s, x + 1 * s, y - 4.6 * s);
+    ctx.bezierCurveTo(x - 7 * s, y - 4 * s, x - 15 * s, y - 1.6 * s, tx, y - 0.2 * s);
+    ctx.lineTo(tx, y + 0.8 * s);
+    ctx.bezierCurveTo(x - 15 * s, y + 1.4 * s, x - 7 * s, y + 3.4 * s, x + 1 * s, y + 3.6 * s);
+    ctx.bezierCurveTo(x + 7 * s, y + 3.8 * s, x + 11 * s, y + 3 * s, x + 11 * s, y + 0.5 * s);
     ctx.fill();
-    ctx.fillStyle = '#c8c4d8';
+    // A low dorsal fin along the back (a thin membrane over faint rays), and the tail's fringe.
+    ctx.fillStyle = 'rgba(110,108,140,0.35)';
     ctx.beginPath();
-    ctx.arc(x + 6 * s, y - 1 * s, 0.9 * s, 0, Math.PI * 2);
+    ctx.moveTo(x - 0.5 * s, y - 4.6 * s);
+    ctx.quadraticCurveTo(x - 4 * s, y - 7.4 * s, x - 13 * s, y - 3.6 * s);
+    ctx.lineTo(x - 13 * s, y - 2.2 * s);
+    ctx.quadraticCurveTo(x - 6 * s, y - 4.8 * s, x - 0.5 * s, y - 4.6 * s);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(120,118,148,0.45)';
+    ctx.lineWidth = 0.4 * s;
+    ctx.beginPath();
+    for (let k = 1; k < 6; k++) {
+      const fx = x - 0.5 * s - k * 2.1 * s;
+      ctx.moveTo(fx, y - 4.6 * s + k * 0.5 * s);
+      ctx.lineTo(fx - 0.8 * s, y - 6.6 * s + k * 0.55 * s);
+    }
+    ctx.moveTo(tx, y);
+    ctx.lineTo(tx - 3 * s, y - 2.2 * s);
+    ctx.moveTo(tx, y + 0.3 * s);
+    ctx.lineTo(tx - 3.4 * s, y - 0.8 * s);
+    ctx.stroke();
+    // The gill line and the mouth under the blunt snout.
+    ctx.strokeStyle = 'rgba(30,28,44,0.7)';
+    ctx.lineWidth = 0.5 * s;
+    ctx.beginPath();
+    ctx.moveTo(x + 4 * s, y - 3.6 * s);
+    ctx.quadraticCurveTo(x + 2.6 * s, y, x + 4 * s, y + 3 * s);
+    ctx.moveTo(x + 11 * s, y + 1.4 * s);
+    ctx.lineTo(x + 8.4 * s, y + 1.8 * s);
+    ctx.stroke();
+    // A tiny eye: the tripod fish is nearly blind, it feels the current instead.
+    ctx.fillStyle = '#16141f';
+    ctx.beginPath();
+    ctx.arc(x + 7.6 * s, y - 1.6 * s, 0.9 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(196,200,220,0.8)';
+    ctx.beginPath();
+    ctx.arc(x + 7.9 * s, y - 1.9 * s, 0.3 * s, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }
@@ -900,6 +1015,10 @@ export function createLife(seed: number) {
     ctx.restore();
   }
 
+  /**
+   * A rattail: a big-headed deep fish with a long tapering tail, nosing slowly along the silt
+   * and crossing the frame every couple of minutes.
+   */
   function drawRattail(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
     const period = 150;
     const u = (t % period) / period;
