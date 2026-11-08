@@ -33,7 +33,7 @@ These were written by the agent, not the user; fix them when wrong.
 - `node --no-warnings test/e2e/saves.ts` — save to a file / load save from a file / a photo of the reef
 - `node --no-warnings test/e2e/sound.ts` — every sound cue in every zone (autoplay allowed): each schedules notes, no errors; music vs sounds buses
 - `node --no-warnings test/e2e/systems.ts` — expedition send + call home, a resident, a riddle, the signal by keys, a shell, an upwelling caught with U, an ask leading to its card
-- Browser debug: `?at=<sec>` starts the scene clock there (rare creatures, day/night), `?fps`, `?bot=` (with `&truce=`, `&dialects=`, `&seamount=`), `?t=` (frozen).
+- Browser debug: `?at=<sec>` starts the scene clock there (rare creatures, day/night), `?fps`, `?bot=` (with `&truce=`, `&dialects=`, `&seamount=`), `?t=` (frozen), `?nohints` (frames drawn as for a photo: no touch-me rings, visitor halo or tap ripples; the README and link-preview tools use it).
 - `node tools/bot.ts [--truce aab] [--dialects <form id>,<craft id>,<spawn id>[,<song id>]] [--to <m>]` (ids from DIALECTS in content/act4.ts, e.g. `pillar,mucus,fragmenting`; an unknown one is refused) — headless time-compressed
   playthrough of the whole game; prints milestone times. Browser: `?bot=<sec>&truce=..&dialects=..`
 - `node --no-warnings tools/perf.ts [--vp mobile] [--at 600,5000,...]` — draw/panel ms and browser script/style/layout per frame, per zone

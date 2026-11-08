@@ -10,16 +10,16 @@ const PHONE: Viewport = { name: 'phone', width: 390, height: 844, scale: 3, mobi
 type Shot = { name: string; query: string; vp: Viewport; view: boolean };
 const SHOTS: Shot[] = [
   // A chimaera crossing the Silt Floor.
-  { name: 'silt-floor', query: '?bot=300&t=942', vp: DESKTOP, view: true },
+  { name: 'silt-floor', query: '?bot=300&t=942&nohints', vp: DESKTOP, view: true },
   // The whale far above, whose call carries down.
-  { name: 'midnight-water', query: '?bot=1800&t=1930', vp: DESKTOP, view: true },
+  { name: 'midnight-water', query: '?bot=1800&t=1930&nohints', vp: DESKTOP, view: true },
   // The Rasp grazing the slope, a manta overhead.
-  { name: 'twilight-shelf', query: '?bot=12000&t=11979', vp: DESKTOP, view: true },
-  { name: 'sunlit-crown', query: '?bot=17000&t=17113', vp: DESKTOP, view: true },
+  { name: 'twilight-shelf', query: '?bot=12000&t=11979&nohints', vp: DESKTOP, view: true },
+  { name: 'sunlit-crown', query: '?bot=17000&t=17113&nohints', vp: DESKTOP, view: true },
   // A humpback breaching beside the crown, under the moon.
-  { name: 'breach', query: '?bot=22000&t=22291', vp: DESKTOP, view: true },
+  { name: 'breach', query: '?bot=22000&t=22291.85&nohints', vp: DESKTOP, view: true },
   // The other reefs spawning under the full moon, in the Sunlit Crown.
-  { name: 'full-moon', query: '?bot=17340&t=17340', vp: DESKTOP, view: true },
+  { name: 'full-moon', query: '?bot=17340&t=17340.85&nohints', vp: DESKTOP, view: true },
   { name: 'panel', query: '?bot=11000&t=11000', vp: DESKTOP, view: false },
   { name: 'phone', query: '?bot=17000&t=17000', vp: PHONE, view: false },
 ];

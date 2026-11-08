@@ -3,7 +3,7 @@
 // Frozen at the end of a song cycle (its call ring every 4 s has all but faded): a still caught mid-ring reads as a glass dome.
 import { withGame } from './browser.ts';
 await withGame(async (open) => {
-  const { page } = await open({ name: 'share', width: 1200, height: 630, scale: 1, mobile: false }, '?bot=21500&t=903.85');
+  const { page } = await open({ name: 'share', width: 1200, height: 630, scale: 1, mobile: false }, '?bot=21500&t=903.85&nohints');
   page.setDefaultTimeout(2000);
   await page.waitForTimeout(3000);
   for (let i = 0; i < 10 && (await page.locator('.reader:not([hidden])').count()); i++) await page.locator('.reader:not([hidden]) button').first().click().catch(() => {});

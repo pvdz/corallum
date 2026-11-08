@@ -1034,7 +1034,7 @@ function view(): ReefView {
     sisterLit: state.race.lit > 0,
     grotto: state.levels.grotto,
     blueMoon: blueMoon(state.t),
-    hints: !photoPending,
+    hints: hintsShown(),
     age: state.t,
     combo: state.t - state.lastSweep <= ACT1.comboGap ? state.combo : 1,
     fragments: state.fragments,
@@ -2021,6 +2021,10 @@ photoBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidde
 // The shot is taken from the next frame, drawn without the play's own marks (the ripples of a tap,
 // today's visitor's halo): a picture of the reef, not of the hints.
 let photoPending: (() => void) | null = null;
+/** ?nohints: every frame drawn as for a photo (the README's and the link preview's pictures). */
+const noHints = params.has('nohints');
+/** Whether this frame shows the play's own marks: not in a photo, not with ?nohints. */
+function hintsShown(): boolean { return !photoPending && !noHints; }
 photoBtn.addEventListener('click', () => { photoPending = takePhoto; });
 function takePhoto(): void {
   // A copy of the scene with a small caption in the corner: name, height, zone.
@@ -2532,7 +2536,7 @@ function frameBody(now: number): void {
     }
   }
   const fe = currentFeast(state);
-  if (fe) drawFeast(ctx, fe, state.t - fe.start, tNow, focusNow, dpr, feastPay(state), !photoPending);
+  if (fe) drawFeast(ctx, fe, state.t - fe.start, tNow, focusNow, dpr, feastPay(state), hintsShown());
   const tg = currentTangle(state);
   // Under the full moon the other reefs spawn: their bundles rise through the water below the Breach.
   if (actAt(state.height) <= 4 && state.height >= 1 && moonFull(state.t)) {
@@ -2540,12 +2544,12 @@ function frameBody(now: number): void {
     drawOthersSpawn(ctx, focusNow, tNow, strength, actAt(state.height) <= 2 ? 1 : actAt(state.height) === 3 ? 0.5 : 0, dpr);
   }
   const sy = currentStray(state);
-  if (sy) drawStray(ctx, sy, STRAY.life, tNow, focusNow, dpr, !photoPending);
+  if (sy) drawStray(ctx, sy, STRAY.life, tNow, focusNow, dpr, hintsShown());
   const fr = currentFragment(state);
-  if (fr) drawFragment(ctx, fr, FRAGMENT.life, tNow, focusNow, dpr, !photoPending);
-  if (tg && actAt(state.height) === 1) drawPinned(ctx, tg, TANGLE.life, tNow, focusNow, dpr, !photoPending);
-  else if (tg && actAt(state.height) !== 5) drawTangle(ctx, tg, TANGLE.life, tNow, focusNow, dpr, !photoPending);
-  if (!photoPending) {
+  if (fr) drawFragment(ctx, fr, FRAGMENT.life, tNow, focusNow, dpr, hintsShown());
+  if (tg && actAt(state.height) === 1) drawPinned(ctx, tg, TANGLE.life, tNow, focusNow, dpr, hintsShown());
+  else if (tg && actAt(state.height) !== 5) drawTangle(ctx, tg, TANGLE.life, tNow, focusNow, dpr, hintsShown());
+  if (hintsShown()) {
     taps.draw(ctx, tNow, scene.crownAt, dpr, (x, y) => actAt(state.height) <= 2 || !!scene.darkAt?.(x, y));
     drawLucky(tNow);
   }
