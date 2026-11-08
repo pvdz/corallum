@@ -552,7 +552,7 @@ export function createBreachScene(seed: number): Scene {
   }
 
   /** A small fish stranded on the crown above the water, flapping: tap to toss it back. */
-  function drawStranded(ctx: CanvasRenderingContext2D, L: ReefLayout, st: { k: number; age: number }, t: number): void {
+  function drawStranded(ctx: CanvasRenderingContext2D, L: ReefLayout, st: { k: number; age: number }, t: number, hint = true): void {
     const s = scale() * 1.5;
     const side = st.k % 2 ? 1 : -1;
     const x = L.cx + side * L.unit * 0.12, y = waterY() - 30 * scale();
@@ -564,7 +564,8 @@ export function createBreachScene(seed: number): Scene {
     // A small silver fish.
     drawSmallFish(ctx, s, '#5c7a96', '#b4c8da', '#e8f0f6');
     ctx.restore();
-    // A glint of wet scales, and a ring: it can be touched.
+    // A glint of wet scales, and a ring: it can be touched (not in a photo).
+    if (!hint) return;
     const p = (t * 0.6) % 1;
     const rr = (16 + 12 * p) * s;
     softRing(ctx, x, y, rr, rr, 6 * s, '230,240,255', 0.45 * (1 - p));
@@ -2087,7 +2088,7 @@ export function createBreachScene(seed: number): Scene {
       drawResidents(ctx, reef, L, v.residents, t, seed);
       this.crownAt = reef.crown(L);
       if (v.moments['king-tide']) drawWrack(ctx, L);
-      if (v.stranded) drawStranded(ctx, L, v.stranded, t);
+      if (v.stranded) drawStranded(ctx, L, v.stranded, t, v.hints !== false);
       if (v.raft) drawRaft(ctx, v.raft, t);
       drawSong(ctx, v.song, this.crownAt[0], this.crownAt[1], t, scale());
       reef.drawEffects(ctx, L, v, effects.live(t));

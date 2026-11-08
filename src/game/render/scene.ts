@@ -56,6 +56,8 @@ export type ReefView = {
   age: number;
   /** This cycle's moon is a blue moon. */
   blueMoon: boolean;
+  /** False for a photo of the reef: scenes leave out their "this can be touched" rings. */
+  hints?: boolean;
   /** Grottoes hollowed at the reef's foot (0–2). */
   grotto: number;
   /** Levels of Sweeten the spawn: the bundles turn golden. */

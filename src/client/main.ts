@@ -1033,6 +1033,7 @@ function view(): ReefView {
     sisterLit: state.race.lit > 0,
     grotto: state.levels.grotto,
     blueMoon: blueMoon(state.t),
+    hints: !photoPending,
     age: state.t,
     combo: state.t - state.lastSweep <= ACT1.comboGap ? state.combo : 1,
     fragments: state.fragments,
