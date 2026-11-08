@@ -30,7 +30,8 @@ const RUINS: RuinStyle = {
     { top: 'rgb(15,24,54)', bottom: 'rgb(8,11,32)', rim: 'rgba(150,175,240,0.12)' },
     { top: 'rgb(20,30,66)', bottom: 'rgb(10,13,36)', rim: 'rgba(150,175,240,0.16)' },
   ],
-  bands: '',
+  // Faint: the old stone's bands, its memory, just to be made out in the dark.
+  bands: 'rgba(110,130,200,0.12)',
   lights: '',
 };
 

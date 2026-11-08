@@ -70,7 +70,7 @@ export function createRuins(seed: number) {
   }
 
   function drawTower(ctx: CanvasRenderingContext2D, tw: Tower, d: number, x: number, topY: number, ppm: number, base: number,
-    h: number, style: RuinStyle): void {
+    h: number, style: RuinStyle, lightX: number): void {
     const L = style.layers[d]!;
     const step = Math.max(6, h / 70);
     // The loops below walk down the frame in steps of the stone's scale: none to walk without one.
@@ -98,13 +98,41 @@ export function createRuins(seed: number) {
     }
     else ctx.moveTo(rightPts[0]![0], rightPts[0]![1]);
     for (const [px, py] of rightPts) ctx.lineTo(px, py);
+    const leftPts: [number, number][] = [];
     for (let i = rightPts.length - 1; i >= 0; i--) {
       const py = rightPts[i]![1];
       const m = (py - topY) / ppm;
-      ctx.lineTo(x - halfWidth(tw, base, m) * (1 + 0.05 * Math.sin(m * 0.07 + tw.ph[0])), py);
+      const px = x - halfWidth(tw, base, m) * (1 + 0.05 * Math.sin(m * 0.07 + tw.ph[0]));
+      leftPts.push([px, py]);
+      ctx.lineTo(px, py);
     }
     ctx.closePath();
     ctx.fill();
+    // Round stone, not a cut-out: along the edge facing the reef (the light in this sea) a soft lit
+    // band, along the far edge a wider shade, both kept inside the stone and following its outline.
+    {
+      ctx.save();
+      ctx.clip();
+      const lit = lightX >= x ? rightPts : leftPts, dark = lightX >= x ? leftPts : rightPts;
+      const edge = (pts: readonly [number, number][]) => {
+        ctx.beginPath();
+        pts.forEach(([px, py], i) => (i ? ctx.lineTo(px, py) : ctx.moveTo(px, py)));
+        ctx.stroke();
+      };
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = 'rgba(0,0,8,0.22)';
+      ctx.lineWidth = base * 1.1;
+      edge(dark);
+      // Faint: the stone only half catches the light (each zone's rim is its crown's brighter catch).
+      ctx.strokeStyle = L.rim;
+      ctx.globalAlpha = 0.3;
+      ctx.lineWidth = base * 0.9;
+      edge(lit);
+      ctx.lineWidth = base * 0.4;
+      edge(lit);
+      ctx.globalAlpha = 1;
+      ctx.restore();
+    }
     // Light from above catches the broken top and fades down the stone.
     if (crownVisible) {
       ctx.save();
@@ -201,7 +229,7 @@ export function createRuins(seed: number) {
         }
         const c = cache.getContext('2d') as CanvasRenderingContext2D;
         c.clearRect(0, 0, w, h);
-        each((tw, d, x, topY, ppm, base) => drawTower(c, tw, d, x, topY, ppm, base, h, style));
+        each((tw, d, x, topY, ppm, base) => drawTower(c, tw, d, x, topY, ppm, base, h, style, focus.x + focus.w / 2));
         cacheKey = key;
       }
       ctx.drawImage(cache, 0, 0);
