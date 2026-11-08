@@ -480,6 +480,45 @@ export function drawBeacon(ctx: CanvasRenderingContext2D, x: number, waterY: num
   }
   ctx.stroke();
   ctx.restore();
+  // Narrow windows up the tower, dark until the light is lit, then warm.
+  if (stage >= 2) {
+    const lit = stage >= 3;
+    for (let k = 0; k < (stage >= 3 ? 3 : 2); k++) {
+      const wy = waterY - hgt * (0.3 + k * 0.22), ww = 1.2 * s, wh = 2.6 * s;
+      ctx.fillStyle = lit ? `rgba(255,214,150,${0.75 + 0.2 * Math.sin(t * 0.9 + k * 2)})` : 'rgba(6,8,16,0.8)';
+      ctx.beginPath();
+      ctx.moveTo(x - ww / 2 + (k % 2 ? 1 : -1) * s, wy + wh);
+      ctx.lineTo(x - ww / 2 + (k % 2 ? 1 : -1) * s, wy);
+      ctx.arc(x + (k % 2 ? 1 : -1) * s, wy, ww / 2, Math.PI, 0);
+      ctx.lineTo(x + ww / 2 + (k % 2 ? 1 : -1) * s, wy + wh);
+      ctx.closePath();
+      ctx.fill();
+    }
+  }
+  if (stage >= 3) {
+    // The light's beam turning slowly over the sea, a soft wedge that fades with distance; it
+    // narrows as it swings toward the viewer and away.
+    const turn = t * 0.35, reach = 220 * s, cy = waterY - hgt - 2 * s;
+    const toward = Math.cos(turn);
+    const spread = 0.05 + 0.06 * (1 - Math.abs(toward));
+    const ang = toward > 0 ? 0 : Math.PI;
+    const tilt = -0.08 + 0.05 * Math.sin(turn * 2);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.beginPath();
+    ctx.rect(-1e4, -1e4, 2e4 + x, waterY + 1e4);
+    ctx.clip();
+    const g2 = ctx.createRadialGradient(x, cy, 0, x, cy, reach * (0.4 + 0.6 * Math.abs(Math.sin(turn))));
+    g2.addColorStop(0, `rgba(190,255,235,${0.22 * (0.4 + 0.6 * Math.abs(Math.sin(turn)))})`);
+    g2.addColorStop(1, 'rgba(190,255,235,0)');
+    ctx.fillStyle = g2;
+    ctx.beginPath();
+    ctx.moveTo(x, cy);
+    ctx.arc(x, cy, reach, ang + tilt - spread, ang + tilt + spread);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
   if (stage >= 3) {
     // The cup at the top, a flared lip of stone.
     ctx.fillStyle = '#3a3c54';
