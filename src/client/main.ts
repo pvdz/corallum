@@ -1556,6 +1556,13 @@ function floatText(x: number, y: number, text: string, cls = ''): void {
   // the ask it kept paying out) stacks below it. Sweep numbers only look at the same tap (they fade
   // the older ones instead).
   recentFloats = recentFloats.filter((r) => now - r.t < (cls ? 2000 : 50));
+  // A haul line rising through a milestone's words (they span the scene): far enough below them
+  // that its rise (~45 px) stays clear, near the tap where a creature's label leaves the numbers
+  // room; above them only if below runs off the scene.
+  if (cls && now < milestoneUntil) {
+    const band = milestoneBox.getBoundingClientRect();
+    if (y + 15 > band.top - 4 && y - 60 < band.bottom + 4) y = band.bottom + 66 <= (focusNow.y + focusNow.h) / dpr - 20 ? band.bottom + 66 : band.top - 24;
+  }
   for (let i = 0; i < 4 && recentFloats.some((r) => Math.abs(r.x - x) < Math.max(140, r.w / 2 + 40) && Math.abs(r.y - y) < 30); i++) y += 32;
   const rec = { x, y, t: now, w: 0 };
   recentFloats.push(rec);
