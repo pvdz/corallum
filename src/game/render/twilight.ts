@@ -920,7 +920,10 @@ export function createTwilightScene(seed: number): Scene {
     ctx.restore();
   }
 
-  /** A sardine run (rare): every 30 minutes, for a minute, a dense silver river across the upper water. */
+  /**
+   * A sardine run (rare): every 30 minutes, for a minute, a dense silver river across the upper
+   * water. Touched, it opens a hole around the touch, as a shoal does around a hunter, and closes.
+   */
   function drawSardineRun(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 1800, length = 60;
     const u = ((t + 600) % period) / length;
@@ -928,18 +931,29 @@ export function createTwilightScene(seed: number): Scene {
     sight('sardine-run');
     const s = scale();
     const k = Math.min(1, u * 6, (1 - u) * 6);
-    spot('sardine-run', focus.x + focus.w * 0.5, focus.y + focus.h * 0.25, focus.h * 0.1);
+    // Tapped on the band itself, where it crosses the middle of the frame.
+    const sx = focus.x + focus.w * 0.5;
+    spot('sardine-run', sx, focus.y + focus.h * (0.24 + 0.06 * Math.sin(sx * 0.006 + t * 0.4)), focus.h * 0.1);
     ctx.save();
     ctx.globalAlpha = k;
     // Each a slim silver fish with a forked tail, swimming right; their dark backs in one stroke.
     ctx.fillStyle = '#a9bdd0';
     const fish = new Path2D(), backs = new Path2D();
+    const touch = startled('sardine-run', t);
+    const open = !touch || touch.age > 3.3 ? 0 : touch.age < 0.3 ? touch.age / 0.3 : 1 - (touch.age - 0.3) / 3;
+    const hole = 64 * s;
     for (let i = 0; i < 420; i++) {
       // Packed close around a band that snakes across the water.
       const lane = ((i * 0.618034) % 1) - 0.5;
-      const x = focus.x + (((t * 0.09 + i * 0.0071) % 1.2) - 0.1) * focus.w;
+      let x = focus.x + (((t * 0.09 + i * 0.0071) % 1.2) - 0.1) * focus.w;
       const mid = focus.y + focus.h * (0.24 + 0.06 * Math.sin(x * 0.006 + t * 0.4));
-      const y = mid + lane * focus.h * 0.07 * (1 - lane * lane * 2);
+      let y = mid + lane * focus.h * 0.07 * (1 - lane * lane * 2);
+      if (open > 0) {
+        const dx = x - touch!.x, dy = y - touch!.y, d = Math.hypot(dx, dy) || 1;
+        const push = open * hole * Math.exp(-((d / hole) ** 2));
+        x += (dx / d) * push;
+        y += (dy / d) * push;
+      }
       const wag = Math.sin(t * 9 + i) * 0.5 * s;
       fish.moveTo(x + 5 * s, y);
       fish.quadraticCurveTo(x + 1 * s, y - 1.5 * s, x - 3.8 * s, y - 0.5 * s);
