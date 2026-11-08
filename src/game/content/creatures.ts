@@ -158,8 +158,8 @@ export const COMPANION = { label: 'Keep close', on: 'Your companion', note: 'gif
 
 /** The float text after a gift's amount. */
 export const GIFT_TEXT: Record<GiftStock, string> = {
-  calcite: 'calcite · a gift', glow: 'glow · a gift of light', plankton: 'plankton · they share', sand: 'sand · a gift',
-  bloom: 'bloom · a gift', spawn: 'spawn · they guard it',
+  calcite: 'calcite ·\u00a0a gift', glow: 'glow ·\u00a0a gift of light', plankton: 'plankton ·\u00a0they share', sand: 'sand ·\u00a0a gift',
+  bloom: 'bloom ·\u00a0a gift', spawn: 'spawn ·\u00a0they guard it',
 };
 
 /** The creature label's gift line: what a touch brings. */

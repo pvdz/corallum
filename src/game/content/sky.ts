@@ -84,7 +84,7 @@ export const WISH = {
     { id: 'line', label: 'For the line', effect: '+1 lineage (three times on a reef)' },
   ] as readonly { id: WishId; label: string; effect: string }[],
   float: '· a wish',
-  lineGot: '+1 lineage · a wish for the line',
+  lineGot: '+1 lineage ·\u00a0a wish for the line',
 } as const;
 
 export const SKY = {

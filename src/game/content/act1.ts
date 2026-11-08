@@ -8,7 +8,7 @@ export type StrainId = 'blue' | 'gold' | 'violet';
 /** Flaring the lure: spend half the glow held for a burst of calcite (up to `seconds`, by how full the glow was), once a `cooldown`. */
 export const FLARE = {
   seconds: 30, cooldown: 60, fromHeight: 20,
-  label: 'Flare · ½ glow', short: 'Flare', title: 'Blaze with half your glow: the light draws in a burst of calcite (L)',
+  label: 'Flare ·\u00a0½ glow', short: 'Flare', title: 'Blaze with half your glow: the light draws in a burst of calcite (L)',
   float: 'the lure flared',
 } as const;
 

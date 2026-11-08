@@ -33,8 +33,8 @@ export const HEAT = {
   next: (wait: string) => `Warm water in ${wait}.`,
   open: 'Close up',
   closed: 'Open to the sun',
-  openWhat: 'open: full sun · in warm water sun ×1.6, bloom fades ×5',
-  closedWhat: 'closed: sun ×0.5 · no bleaching',
+  openWhat: 'open: full sun ·\u00a0in warm water sun ×1.6, bloom fades ×5',
+  closedWhat: 'closed: sun ×0.5 ·\u00a0no bleaching',
   shy: 'sun-shy: closed by itself until the water cools',
 } as const;
 
@@ -104,7 +104,7 @@ export const DIALECTS: readonly Dialect[] = [
     flavour: 'Antlers of stone, thin and quick, reaching. Breaks easily, grows back faster.',
   },
   {
-    id: 'massive', tier: 'form', name: 'Massive', effect: 'calcite ×1.5 · it dissolves ×0.5 as fast',
+    id: 'massive', tier: 'form', name: 'Massive', effect: 'calcite ×1.5 ·\u00a0it dissolves ×0.5 as fast',
     flavour: 'One great dome, slow as a boulder, that the sea cannot get its teeth into.',
   },
   {
@@ -112,11 +112,11 @@ export const DIALECTS: readonly Dialect[] = [
     flavour: 'Wide flat tables, stacked like shelves, every one of them a hand held up to the sun.',
   },
   {
-    id: 'pillar', tier: 'form', name: 'Pillars', effect: 'calcite ×1.25 · plankton ×1.5',
+    id: 'pillar', tier: 'form', name: 'Pillars', effect: 'calcite ×1.25 ·\u00a0plankton ×1.5',
     flavour: 'Columns standing up from one foot like a stand of candles, tentacles out even at noon, eating all day.',
   },
   {
-    id: 'fluorescent', tier: 'craft', name: 'Fluorescent', effect: 'bloom ×1.5 · the lure reaches +2',
+    id: 'fluorescent', tier: 'craft', name: 'Fluorescent', effect: 'bloom ×1.5 ·\u00a0the lure reaches +2',
     flavour: 'Turn the sun into colours of your own and wear them where everything can see.',
   },
   {
@@ -124,7 +124,7 @@ export const DIALECTS: readonly Dialect[] = [
     flavour: 'Long tentacles that come out at dusk and comb the water clean of food.',
   },
   {
-    id: 'mucus', tier: 'craft', name: 'Mucus nets', effect: 'silt swept ×2 · the Rasp eat nothing',
+    id: 'mucus', tier: 'craft', name: 'Mucus nets', effect: 'silt swept ×2 ·\u00a0the Rasp eat nothing',
     flavour: 'A fine sheet of slime that catches what falls and lets it go, cleanly, when you choose.',
   },
   {

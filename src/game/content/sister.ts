@@ -19,7 +19,7 @@ export const SISTER = {
   lightSpeed: 1.25, lightLineage: 3,
   lightKicker: 'Your sister is behind you',
   lightText: 'Far off on the next seamount, the sister reef is still climbing through the dark you have left. You could light the way for her.',
-  light: { label: 'Light the way for her', effect: 'she climbs ×1.25 faster from now · +3 lineage at the release' },
+  light: { label: 'Light the way for her', effect: 'she climbs ×1.25 faster from now ·\u00a0+3 lineage at the release' },
   alone: { label: 'Climb on alone', effect: 'the race as it is' },
 } as const;
 

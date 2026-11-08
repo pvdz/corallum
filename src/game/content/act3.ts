@@ -73,12 +73,12 @@ export const MEETINGS: readonly Meeting[] = [
       'says, in words your scouts have only half learned: “Dead stone is food. You have dead stone. ' +
       'We have hunger. What do you give?”',
     a: {
-      label: 'The dead wall', effect: '+4 Rasp can graze · sand ×1.25',
+      label: 'The dead wall', effect: '+4 Rasp can graze ·\u00a0sand ×1.25',
       text: 'You offer them the old dead wall beside you. The Rasp whoop. Ossel says, very ' +
         'quietly, “That is me,” and then nothing else for a long time.',
     },
     b: {
-      label: 'Only the silt', effect: '+2 Rasp can graze · they eat less calcite · clear silt ×1.5',
+      label: 'Only the silt', effect: '+2 Rasp can graze ·\u00a0they eat less calcite ·\u00a0clear silt ×1.5',
       text: 'You offer them the silt and nothing else. The big Rasp considers this, then shrugs ' +
         'with its whole body. “Thin food. But polite.” They graze around your stone like guests.',
     },
@@ -107,7 +107,7 @@ export const MEETINGS: readonly Meeting[] = [
       'says. “I was the wall. I kept them out, and the water stopped, and we all died behind me. ' +
       'I do not know if I want to be kept.”',
     a: {
-      label: 'Let Ossel be ground', effect: 'silt falls ×0.6 · a flood of sand',
+      label: 'Let Ossel be ground', effect: 'silt falls ×0.6 ·\u00a0a flood of sand',
       text: 'The Rasp are careful, and slow, and almost tender. Ossel talks the whole time, about ' +
         'nothing: the taste of the vent, the first lanternfish, you. Then there is only sand, warm, ' +
         'everywhere, and in it, faint, the shape of a voice that is not afraid any more.',
@@ -258,6 +258,6 @@ export const CURRENT = {
   planktonPerStep: 0.12,
   label: 'The current',
   ends: ['toward the open water', 'toward the shelf'],
-  what: (c: number) => c === 0 ? 'straight along the reef' : c > 0 ? `silt swept +${(0.025 * c).toFixed(3)}/s · plankton ×${(1 - 0.12 * c).toFixed(2)}`
-    : `plankton ×${(1 - 0.12 * c).toFixed(2)} · silt swept −${(0.0125 * -c).toFixed(4)}/s`,
+  what: (c: number) => c === 0 ? 'straight along the reef' : c > 0 ? `silt swept +${(0.025 * c).toFixed(3)}/s ·\u00a0plankton ×${(1 - 0.12 * c).toFixed(2)}`
+    : `plankton ×${(1 - 0.12 * c).toFixed(2)} ·\u00a0silt swept −${(0.0125 * -c).toFixed(4)}/s`,
 } as const;
