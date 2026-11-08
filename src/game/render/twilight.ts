@@ -761,13 +761,13 @@ export function createTwilightScene(seed: number): Scene {
     const s = scale() * 1.5;
     const touch = startled('nautilus', t);
     const sink = touch && touch.age < 8 ? Math.sin(Math.min(1, touch.age / 8) * Math.PI) : 0;
-    const x = focus.x + focus.w * (0.7 + 0.05 * Math.sin(t * 0.04)), y = focus.y + focus.h * 0.38 + Math.sin(t * 0.15) * 12 * s + sink * 60 * s;
+    const x = focus.x + focus.w * (0.78 + 0.05 * Math.sin(t * 0.04)), y = focus.y + focus.h * 0.38 + Math.sin(t * 0.15) * 12 * s + sink * 60 * s;
     spot('nautilus', x, y, 18 * s);
     ctx.save();
     ctx.translate(x, y);
     // Tentacles, trailing forward-left from the mouth (pulled in when touched).
     const reach = 1 - sink * 0.8;
-    ctx.strokeStyle = 'rgba(230,200,170,0.7)';
+    ctx.strokeStyle = 'rgba(206,176,146,0.7)';
     ctx.lineWidth = 0.9 * s;
     for (let i = 0; i < 9; i++) {
       ctx.beginPath();
@@ -778,8 +778,8 @@ export function createTwilightScene(seed: number): Scene {
     // The shell: a cream disc (kept below white: it sits in lit water under the bloom), with the
     // tiger stripes as flames curling out from the coil over its older part, the front by the hood plain.
     const g = ctx.createRadialGradient(2 * s, -3 * s, 1 * s, 0, 0, 11 * s);
-    g.addColorStop(0, '#e2d3b6');
-    g.addColorStop(1, '#b49c78');
+    g.addColorStop(0, '#cbb894');
+    g.addColorStop(1, '#957b56');
     ctx.fillStyle = g;
     ctx.beginPath();
     ctx.arc(0, 0, 11 * s, 0, Math.PI * 2);
@@ -788,7 +788,7 @@ export function createTwilightScene(seed: number): Scene {
     ctx.beginPath();
     ctx.arc(0, 0, 11 * s, 0, Math.PI * 2);
     ctx.clip();
-    ctx.fillStyle = 'rgba(140,72,36,0.8)';
+    ctx.fillStyle = 'rgba(120,56,26,0.85)';
     ctx.beginPath();
     for (let k = 0; k < 7; k++) {
       // Each flame: narrow at the coil, widening and curling as it runs out past the rim.
@@ -807,7 +807,7 @@ export function createTwilightScene(seed: number): Scene {
     }
     ctx.fill();
     // The rim catching the light along its top.
-    ctx.strokeStyle = 'rgba(250,238,215,0.45)';
+    ctx.strokeStyle = 'rgba(236,222,196,0.4)';
     ctx.lineWidth = 1 * s;
     ctx.beginPath();
     ctx.arc(0, 0, 10.4 * s, -2.6, -0.5);
