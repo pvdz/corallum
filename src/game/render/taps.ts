@@ -28,6 +28,9 @@ export function createTaps() {
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
       const [cx, cy] = crown;
+      // The crown's flare: one glow at the strongest tap's strength, so quick taps keep it lit
+      // instead of stacking flare on flare into a white blot.
+      let flare = 0, flareR = 0;
       for (const tap of taps) {
         const age = t - tap.start;
         if (age < RIPPLE && dark(tap.x, tap.y)) {
@@ -58,17 +61,22 @@ export function createTaps() {
           const dx = cx - tap.x, dy = cy - tap.y;
           const x = tap.x + dx * e - dy * bend * Math.sin(Math.PI * e);
           const y = tap.y + dy * e + dx * bend * Math.sin(Math.PI * e);
-          glow(ctx, x, y, 10 * s, '255,215,190', 0.95 * (1 - 0.3 * e));
+          // Each mote dims as it sinks into the reef: many arriving together light the crown, the
+          // flare below says so, without their cores piling up to white.
+          // They gather out of the stirred water (fading in, or six start as one white spot).
+          const fade = Math.min(1, u / 0.2) * (1 - 0.7 * e);
+          glow(ctx, x, y, 10 * s, '255,215,190', 0.8 * fade);
           // A short trail back along the path.
           const e2 = Math.max(0, e - 0.08);
           glow(ctx, tap.x + dx * e2 - dy * bend * Math.sin(Math.PI * e2), tap.y + dy * e2 + dx * bend * Math.sin(Math.PI * e2),
-            6 * s, '255,190,160', 0.4 * (1 - 0.3 * e));
+            6 * s, '255,190,160', 0.35 * fade);
         }
         if (arrived) {
-          const since = age - TRAVEL;
-          glow(ctx, cx, cy, (30 + 6 * arrived) * s, '160,250,255', 0.5 * Math.max(0, 1 - since / (LIFE - TRAVEL)));
+          const a = 0.45 * Math.max(0, 1 - (age - TRAVEL) / (LIFE - TRAVEL));
+          if (a > flare) { flare = a; flareR = (30 + 6 * arrived) * s; }
         }
       }
+      if (flare > 0) glow(ctx, cx, cy, flareR, '160,250,255', flare);
       ctx.restore();
     },
   };

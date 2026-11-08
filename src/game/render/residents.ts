@@ -138,31 +138,82 @@ function crabs(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s: numb
     const y = y0 + 2 * s;
     spot('guard-crab', x, y, 9 * s);
     ctx.globalAlpha = 1 - hide * 0.8;
-    ctx.strokeStyle = '#8f1f1f';
-    ctx.lineWidth = 0.9 * s;
+    // A guard crab (the coral's own): a smooth carapace wider at the front, orange-red with
+    // darker spots, stalked eyes on the front edge, jointed legs gripping the branch and two
+    // big pincers held up, opening now and then.
+    const pinch = 0.5 + 0.5 * Math.sin(t * 2.2 + k);
+    ctx.strokeStyle = '#8f2418';
+    ctx.lineCap = 'round';
     for (let l = -1; l <= 1; l += 2)
       for (let q = 0; q < 3; q++) {
-        const a = (q - 1) * 0.5;
+        const kx = x + l * (4.6 + q * 0.5) * s, ky = y + (-0.6 + q * 1.1) * s;
+        ctx.lineWidth = 0.95 * s;
         ctx.beginPath();
-        ctx.moveTo(x + l * 2.5 * s, y);
-        ctx.lineTo(x + l * 5.5 * s, y + (1.5 + a * 3) * s);
+        ctx.moveTo(x + l * 2.6 * s, y + (q - 0.6) * 0.9 * s);
+        ctx.lineTo(kx, ky);
+        ctx.lineWidth = 0.7 * s;
+        ctx.lineTo(kx + l * 0.9 * s, ky + 2.4 * s);
         ctx.stroke();
       }
-    ctx.fillStyle = '#d23b2e';
+    ctx.lineCap = 'butt';
+    const shell = ctx.createLinearGradient(x, y - 2.8 * s, x, y + 2.4 * s);
+    shell.addColorStop(0, '#f07650');
+    shell.addColorStop(1, '#b8321f');
+    ctx.fillStyle = shell;
     ctx.beginPath();
-    ctx.ellipse(x, y, 3.6 * s, 2.6 * s, 0, 0, Math.PI * 2);
+    ctx.moveTo(-3.9 * s + x, y - 1.4 * s);
+    ctx.quadraticCurveTo(x, y - 3.4 * s, x + 3.9 * s, y - 1.4 * s);
+    ctx.quadraticCurveTo(x + 3.6 * s, y + 1.6 * s, x + 1.6 * s, y + 2.4 * s);
+    ctx.lineTo(x - 1.6 * s, y + 2.4 * s);
+    ctx.quadraticCurveTo(x - 3.6 * s, y + 1.6 * s, x - 3.9 * s, y - 1.4 * s);
     ctx.fill();
-    // Claws held up, opening now and then.
-    const pinch = 0.5 + 0.5 * Math.sin(t * 2.2 + k);
-    ctx.fillStyle = '#e8584a';
-    for (let l = -1; l <= 1; l += 2) {
+    ctx.fillStyle = 'rgba(120, 22, 16, 0.7)';
+    for (const [dx, dy, r] of [[-1.8, -0.6, 0.45], [1.6, -0.4, 0.5], [0.1, 0.9, 0.4], [-0.9, 1.6, 0.3], [1, 1.7, 0.3]] as const) {
       ctx.beginPath();
-      ctx.ellipse(x + l * 4.2 * s, y - 2.6 * s, 1.7 * s, (1 + 0.4 * pinch) * s, l * 0.5, 0, Math.PI * 2);
+      ctx.arc(x + dx * s, y + dy * s, r * s, 0, Math.PI * 2);
       ctx.fill();
     }
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(x - 1.4 * s, y - 2.4 * s, 0.9 * s, 0.9 * s);
-    ctx.fillRect(x + 0.6 * s, y - 2.4 * s, 0.9 * s, 0.9 * s);
+    // Pincers: a heavy palm and two fingers, the upper one opening.
+    for (let l = -1; l <= 1; l += 2) {
+      const cx = x + l * 4.4 * s, cy = y - 3 * s;
+      ctx.fillStyle = '#e25a3e';
+      ctx.beginPath();
+      ctx.moveTo(x + l * 2.6 * s, y - 1.6 * s);
+      ctx.lineTo(cx, cy + 0.6 * s);
+      ctx.lineTo(cx - l * 0.4 * s, cy + 1.6 * s);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, 1.5 * s, 1.15 * s, l * -0.4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#5a1410';
+      const open = 0.2 + 0.45 * pinch;
+      for (const f of [-1, 1]) {
+        const ang = -Math.PI / 2 + l * 0.35 + f * open * (f < 0 ? 1 : 0.5);
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(ang + 1.2) * 0.6 * s, cy + Math.sin(ang + 1.2) * 0.6 * s - 0.6 * s);
+        ctx.lineTo(cx + Math.cos(ang) * 2.4 * s, cy + Math.sin(ang) * 2.4 * s - 0.4 * s);
+        ctx.lineTo(cx + Math.cos(ang - 1.2) * 0.6 * s, cy + Math.sin(ang - 1.2) * 0.6 * s - 0.6 * s);
+        ctx.fill();
+      }
+    }
+    // Eyes on short stalks at the front edge, each with a glint.
+    for (let l = -1; l <= 1; l += 2) {
+      ctx.strokeStyle = '#b8321f';
+      ctx.lineWidth = 0.6 * s;
+      ctx.beginPath();
+      ctx.moveTo(x + l * 1 * s, y - 2.2 * s);
+      ctx.lineTo(x + l * 1.3 * s, y - 3.1 * s);
+      ctx.stroke();
+      ctx.fillStyle = '#1a0c0a';
+      ctx.beginPath();
+      ctx.arc(x + l * 1.3 * s, y - 3.3 * s, 0.6 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(255, 236, 220, 0.8)';
+      ctx.beginPath();
+      ctx.arc(x + l * 1.15 * s, y - 3.5 * s, 0.2 * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
     ctx.globalAlpha = 1;
   }
 }
@@ -182,38 +233,55 @@ function gobies(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s: num
     ctx.translate(x, y);
     ctx.scale(dir, 1);
     ctx.rotate(-0.15 - hop * 0.4);
-    // A coral goby: a slim, slightly see-through body, a blunt head, a rounded tail, a little
-    // sail of a dorsal fin, a darker line along the side and a big eye set high.
-    ctx.fillStyle = 'rgba(200, 236, 190, 0.6)';
+    ctx.scale(1.25, 1.25);
+    // A coral goby: a stout citron body with a blunt head, thin red bars across the head and
+    // cheek, a rounded tail and two little sails of dorsal fins, a big eye set high.
+    ctx.fillStyle = 'rgba(214, 220, 70, 0.75)';
     ctx.beginPath();
-    ctx.moveTo(-0.5 * s, -1.6 * s);
-    ctx.quadraticCurveTo(-1.5 * s, -3.6 * s, -3.6 * s, -1.4 * s);
+    ctx.moveTo(0.6 * s, -1.8 * s);
+    ctx.quadraticCurveTo(-0.2 * s, -3.8 * s, -1.6 * s, -1.6 * s);
+    ctx.closePath();
+    ctx.moveTo(-1.8 * s, -1.4 * s);
+    ctx.quadraticCurveTo(-3 * s, -3.2 * s, -4.2 * s, -1 * s);
     ctx.closePath();
     ctx.moveTo(-4.4 * s, 0);
-    ctx.quadraticCurveTo(-7.8 * s, -2.2 * s, -7.6 * s, 0);
-    ctx.quadraticCurveTo(-7.8 * s, 2.2 * s, -4.4 * s, 0);
+    ctx.quadraticCurveTo(-7.6 * s, -2.4 * s, -7.4 * s, 0);
+    ctx.quadraticCurveTo(-7.6 * s, 2.4 * s, -4.4 * s, 0);
     ctx.fill();
-    ctx.fillStyle = 'rgba(200, 236, 190, 0.88)';
+    const body = ctx.createLinearGradient(0, -2 * s, 0, 2 * s);
+    body.addColorStop(0, '#c6d23a');
+    body.addColorStop(1, '#8fa82a');
+    ctx.fillStyle = body;
     ctx.beginPath();
-    ctx.moveTo(5.4 * s, 0.2 * s);
-    ctx.quadraticCurveTo(5.2 * s, -1.9 * s, 2.5 * s, -1.9 * s);
-    ctx.quadraticCurveTo(-3 * s, -1.6 * s, -4.8 * s, 0);
-    ctx.quadraticCurveTo(-3 * s, 1.5 * s, 2.5 * s, 1.8 * s);
-    ctx.quadraticCurveTo(5.2 * s, 1.8 * s, 5.4 * s, 0.2 * s);
+    ctx.moveTo(5.2 * s, 0.3 * s);
+    ctx.quadraticCurveTo(5.2 * s, -2.2 * s, 2.4 * s, -2.2 * s);
+    ctx.quadraticCurveTo(-3 * s, -1.8 * s, -4.8 * s, 0);
+    ctx.quadraticCurveTo(-3 * s, 1.7 * s, 2.4 * s, 2 * s);
+    ctx.quadraticCurveTo(5.2 * s, 2 * s, 5.2 * s, 0.3 * s);
     ctx.fill();
-    ctx.strokeStyle = 'rgba(70, 120, 80, 0.55)';
-    ctx.lineWidth = 0.5 * s;
+    // Red bars over the head, the last one round the gill.
+    ctx.strokeStyle = 'rgba(206, 58, 40, 0.85)';
+    ctx.lineWidth = 0.45 * s;
+    for (const bx of [4.4, 2.6, 1.2]) {
+      ctx.beginPath();
+      ctx.moveTo(bx * s, -1.9 * s);
+      ctx.quadraticCurveTo((bx - 0.5) * s, 0, bx * s, 1.8 * s);
+      ctx.stroke();
+    }
+    // Pectoral fin, a fan behind the gill.
+    ctx.fillStyle = 'rgba(214, 220, 70, 0.6)';
     ctx.beginPath();
-    ctx.moveTo(3 * s, 0.2 * s);
-    ctx.lineTo(-4.2 * s, 0.1 * s);
-    ctx.stroke();
-    ctx.fillStyle = '#f2fae8';
+    ctx.moveTo(0.8 * s, 0.6 * s);
+    ctx.quadraticCurveTo(-1.6 * s, 0.2 * s, -1.2 * s, 2.2 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#e8eec0';
     ctx.beginPath();
-    ctx.arc(3.4 * s, -0.8 * s, 1 * s, 0, Math.PI * 2);
+    ctx.arc(3.5 * s, -0.9 * s, 1 * s, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = '#1b2a22';
     ctx.beginPath();
-    ctx.arc(3.6 * s, -0.8 * s, 0.6 * s, 0, Math.PI * 2);
+    ctx.arc(3.7 * s, -0.9 * s, 0.6 * s, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }
@@ -542,34 +610,56 @@ function shrimp(ctx: CanvasRenderingContext2D, L: ReefLayout, s: number, t: numb
   const touch = startled('pistol-shrimp', t);
   const x = L.cx - 0.2 * L.unit, y = floor(x) + 2 * s;
   spot('pistol-shrimp', x, y - 4 * s, 12 * s);
-  // The burrow: a dark mouth in a little mound.
+  // The burrow: a dark round mouth with a lip of sand, in a little mound.
   ctx.fillStyle = 'rgba(120, 100, 80, 0.75)';
   ctx.beginPath();
   ctx.ellipse(x, y, 13 * s, 5 * s, 0, Math.PI, 0);
   ctx.fill();
-  ctx.fillStyle = 'rgba(15, 12, 10, 0.85)';
+  ctx.fillStyle = 'rgba(160, 138, 108, 0.8)';
   ctx.beginPath();
-  ctx.ellipse(x, y - 0.5 * s, 4.5 * s, 3 * s, 0, Math.PI, 0);
+  ctx.ellipse(x, y - 0.6 * s, 5.6 * s, 3.9 * s, 0, Math.PI, 0);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(12, 9, 8, 0.92)';
+  ctx.beginPath();
+  ctx.ellipse(x, y - 0.4 * s, 4.4 * s, 3.2 * s, 0, Math.PI, 0);
   ctx.fill();
   // The shrimp leans out of it, its big claw first.
   const out = 0.6 + 0.4 * Math.sin(t * 0.5);
   const sx = x + 4 * s * out, sy = y - 2.5 * s;
-  // Its body, segmented and tapering back into the hole, a pair of antennae, an eye, and the one
-  // oversized claw held out in front (the small claw tucked under).
-  ctx.fillStyle = '#e09078';
+  // Its body banded orange-red, tapering back into the hole to a tail fan; little legs under it,
+  // a pair of antennae, an eye under the shell's hood, and the one oversized claw held out in
+  // front: a swollen red palm with a dark snapping finger.
+  ctx.fillStyle = 'rgba(200, 90, 60, 0.8)';
+  ctx.beginPath();
+  ctx.moveTo(sx - 4.8 * s, sy + 0.2 * s);
+  ctx.lineTo(sx - 7.2 * s, sy - 1.6 * s);
+  ctx.quadraticCurveTo(sx - 7.8 * s, sy + 0.2 * s, sx - 7.2 * s, sy + 2 * s);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(170, 70, 50, 0.9)';
+  ctx.lineWidth = 0.45 * s;
+  ctx.beginPath();
+  for (let k = 0; k < 4; k++) { const lx = sx - 2.6 * s + k * 1.5 * s; ctx.moveTo(lx, sy + 1.2 * s); ctx.lineTo(lx + 0.4 * s, sy + 2.6 * s); }
+  ctx.stroke();
+  const body = ctx.createLinearGradient(sx, sy - 2.2 * s, sx, sy + 1.6 * s);
+  body.addColorStop(0, '#ec8a5c');
+  body.addColorStop(1, '#c4553a');
+  ctx.fillStyle = body;
   ctx.beginPath();
   ctx.moveTo(sx + 3.5 * s, sy - 1.6 * s);
-  ctx.quadraticCurveTo(sx - 1 * s, sy - 2.4 * s, sx - 5 * s, sy - 0.6 * s);
+  ctx.quadraticCurveTo(sx - 1 * s, sy - 2.6 * s, sx - 5 * s, sy - 0.6 * s);
   ctx.lineTo(sx - 5 * s, sy + 1 * s);
   ctx.quadraticCurveTo(sx - 1 * s, sy + 1.8 * s, sx + 3.5 * s, sy + 1.2 * s);
   ctx.closePath();
   ctx.fill();
-  ctx.strokeStyle = 'rgba(150,70,60,0.55)';
-  ctx.lineWidth = 0.5 * s;
+  // Pale bands across the tail's segments.
+  ctx.strokeStyle = 'rgba(240, 200, 170, 0.7)';
+  ctx.lineWidth = 0.55 * s;
   ctx.beginPath();
-  for (let k = 0; k < 3; k++) { const jx = sx - 3.6 * s + k * 1.8 * s; ctx.moveTo(jx, sy - 1.6 * s); ctx.lineTo(jx - 0.3 * s, sy + 1.2 * s); }
+  for (let k = 0; k < 3; k++) { const jx = sx - 3.8 * s + k * 1.6 * s; ctx.moveTo(jx, sy - 1.6 * s + k * 0.15 * s); ctx.lineTo(jx - 0.3 * s, sy + 1.2 * s); }
   ctx.stroke();
   ctx.strokeStyle = 'rgba(240,190,170,0.8)';
+  ctx.lineWidth = 0.5 * s;
   ctx.beginPath();
   ctx.moveTo(sx + 3.5 * s, sy - 1.2 * s);
   ctx.quadraticCurveTo(sx + 7 * s, sy - 5 * s + Math.sin(t * 1.7) * 0.6 * s, sx + 11 * s, sy - 4.5 * s);
@@ -578,24 +668,37 @@ function shrimp(ctx: CanvasRenderingContext2D, L: ReefLayout, s: number, t: numb
   ctx.stroke();
   ctx.fillStyle = '#141010';
   ctx.beginPath();
-  ctx.arc(sx + 2.6 * s, sy - 1.6 * s, 0.6 * s, 0, Math.PI * 2);
+  ctx.arc(sx + 2.6 * s, sy - 1.4 * s, 0.6 * s, 0, Math.PI * 2);
   ctx.fill();
-  // The claw: an arm, then a big swollen palm with a short finger.
-  ctx.fillStyle = '#f0b098';
+  // The claw: a short arm, then the big swollen palm and its finger.
+  ctx.fillStyle = '#c84a32';
   ctx.beginPath();
-  ctx.ellipse(sx + 5.8 * s, sy + 0.6 * s, 3.4 * s, 2.1 * s, -0.25, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(sx + 8.6 * s, sy - 0.4 * s);
-  ctx.lineTo(sx + 10.6 * s, sy - 0.9 * s);
-  ctx.lineTo(sx + 8.8 * s, sy + 0.6 * s);
+  ctx.moveTo(sx + 2.6 * s, sy + 0.4 * s);
+  ctx.lineTo(sx + 4 * s, sy - 0.4 * s);
+  ctx.lineTo(sx + 4.2 * s, sy + 1.8 * s);
   ctx.closePath();
   ctx.fill();
-  ctx.strokeStyle = 'rgba(150,70,60,0.5)';
+  const palm = ctx.createLinearGradient(sx + 3 * s, sy - 1.6 * s, sx + 8 * s, sy + 2.6 * s);
+  palm.addColorStop(0, '#f08458');
+  palm.addColorStop(1, '#b8382a');
+  ctx.fillStyle = palm;
   ctx.beginPath();
-  ctx.moveTo(sx + 8.4 * s, sy + 0.1 * s);
-  ctx.lineTo(sx + 10 * s, sy + 0.4 * s);
-  ctx.stroke();
+  ctx.ellipse(sx + 6 * s, sy + 0.6 * s, 3.6 * s, 2.3 * s, -0.25, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#7a2218';
+  ctx.beginPath();
+  ctx.moveTo(sx + 8.8 * s, sy - 0.5 * s);
+  ctx.lineTo(sx + 11 * s, sy - 1 * s);
+  ctx.lineTo(sx + 9 * s, sy + 0.6 * s);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#e8b49a';
+  ctx.beginPath();
+  ctx.moveTo(sx + 8.6 * s, sy + 0.5 * s);
+  ctx.lineTo(sx + 10.4 * s, sy + 0.7 * s);
+  ctx.lineTo(sx + 8.6 * s, sy + 1.5 * s);
+  ctx.closePath();
+  ctx.fill();
   // The snap: every few seconds, or at once when touched, a flash and a bubble.
   const period = 6.5;
   const since = touch && touch.age < 1 ? touch.age : (t % period);

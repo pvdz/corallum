@@ -2177,34 +2177,91 @@ export function createTwilightScene(seed: number): Scene {
     const sweep = Math.sin(t * 1.2);
     ctx.save();
     ctx.translate(x, y);
-    ctx.fillStyle = 'rgba(40,62,92,0.85)';
-    ctx.beginPath();
-    ctx.moveTo(60 * s, 0);
-    ctx.quadraticCurveTo(58 * s, -12 * s, 30 * s, -13 * s);
-    ctx.quadraticCurveTo(-20 * s, -12 * s, -50 * s, -2 * s + sweep * 2 * s);
-    ctx.lineTo(-72 * s, -18 * s + sweep * 6 * s);
-    ctx.lineTo(-64 * s, 0);
-    ctx.lineTo(-70 * s, 12 * s + sweep * 4 * s);
-    ctx.lineTo(-50 * s, 3 * s + sweep * 2 * s);
-    ctx.quadraticCurveTo(-10 * s, 12 * s, 30 * s, 11 * s);
-    ctx.quadraticCurveTo(58 * s, 10 * s, 60 * s, 0);
-    ctx.fill();
-    // Dorsal and pectoral fins.
-    ctx.beginPath();
-    ctx.moveTo(0, -12 * s); ctx.lineTo(-12 * s, -24 * s); ctx.lineTo(-16 * s, -11 * s); ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(26 * s, 9 * s); ctx.lineTo(14 * s, 22 * s); ctx.lineTo(8 * s, 10 * s); ctx.fill();
-    // Pale spots and stripes.
-    ctx.fillStyle = 'rgba(220,235,255,0.55)';
-    const sr = mulberry32(0x5a7c);
-    for (let k = 0; k < 46; k++) {
-      const sx = 52 - sr() * 100, sy = (sr() * 2 - 1) * (10 - Math.abs(sx) * 0.08);
+    // A broad flat head with the mouth across its very front, a long body and a tall tail.
+    const body = () => {
       ctx.beginPath();
-      ctx.arc(sx * s, sy * s, 0.9 * s, 0, Math.PI * 2);
+      ctx.moveTo(61 * s, 1 * s);
+      ctx.quadraticCurveTo(60 * s, -11 * s, 32 * s, -13 * s);
+      ctx.quadraticCurveTo(-20 * s, -12 * s, -50 * s, -2 * s + sweep * 2 * s);
+      ctx.lineTo(-74 * s, -20 * s + sweep * 6 * s);
+      ctx.quadraticCurveTo(-68 * s, -6 * s, -64 * s, 0);
+      ctx.lineTo(-70 * s, 11 * s + sweep * 4 * s);
+      ctx.lineTo(-50 * s, 3 * s + sweep * 2 * s);
+      ctx.quadraticCurveTo(-10 * s, 12 * s, 30 * s, 11 * s);
+      ctx.quadraticCurveTo(58 * s, 10 * s, 61 * s, 1 * s);
+    };
+    // Countershaded: dark above, paler below.
+    const shade = ctx.createLinearGradient(0, -13 * s, 0, 12 * s);
+    shade.addColorStop(0, 'rgba(34,54,84,0.9)');
+    shade.addColorStop(0.55, 'rgba(48,72,104,0.88)');
+    shade.addColorStop(1, 'rgba(104,128,156,0.85)');
+    ctx.fillStyle = 'rgba(34,54,84,0.88)';
+    // Dorsal and pectoral fins (behind the body).
+    ctx.beginPath();
+    ctx.moveTo(2 * s, -12 * s); ctx.quadraticCurveTo(-8 * s, -20 * s, -13 * s, -25 * s); ctx.lineTo(-17 * s, -11 * s); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(-34 * s, -6 * s); ctx.lineTo(-39 * s, -12 * s); ctx.lineTo(-42 * s, -4 * s); ctx.fill();
+    ctx.fillStyle = shade;
+    body();
+    ctx.fill();
+    ctx.save();
+    body();
+    ctx.clip();
+    // The pattern: pale bars down the flank behind the gills and spots between them, finer
+    // spots scattered over the head.
+    ctx.strokeStyle = 'rgba(200,220,245,0.38)';
+    ctx.lineWidth = 0.8 * s;
+    for (let bx = 26; bx > -52; bx -= 7) {
+      ctx.beginPath();
+      ctx.moveTo(bx * s, -14 * s);
+      ctx.quadraticCurveTo((bx - 1.5) * s, 0, bx * s, 6 * s);
+      ctx.stroke();
+    }
+    ctx.fillStyle = 'rgba(214,230,250,0.55)';
+    const sr = mulberry32(0x5a7c);
+    for (let k = 0; k < 70; k++) {
+      const head = k < 22;
+      const sx = head ? 58 - sr() * 26 : 26 - sr() * 78, sy = -12 + sr() * (head ? 14 : 18);
+      ctx.beginPath();
+      ctx.arc(sx * s, sy * s, (head ? 0.6 : 0.95) * s, 0, Math.PI * 2);
       ctx.fill();
     }
-    ctx.fillStyle = 'rgba(10,20,35,0.8)';
-    ctx.fillRect(55 * s, -1 * s, 4 * s, 2 * s);
+    // Ridges along the flank.
+    ctx.strokeStyle = 'rgba(150,175,205,0.35)';
+    ctx.lineWidth = 0.7 * s;
+    for (const ry of [-7, -2.5]) {
+      ctx.beginPath();
+      ctx.moveTo(30 * s, (ry - 1) * s);
+      ctx.quadraticCurveTo(-10 * s, (ry + 1) * s, -50 * s, (ry * 0.2 + 0.5) * s);
+      ctx.stroke();
+    }
+    ctx.restore();
+    // Gill slits, the eye small and far forward, and the wide mouth.
+    ctx.strokeStyle = 'rgba(20,32,52,0.7)';
+    ctx.lineWidth = 0.8 * s;
+    for (let g = 0; g < 5; g++) {
+      const gx = 40 - g * 2.6;
+      ctx.beginPath();
+      ctx.moveTo(gx * s, -6 * s);
+      ctx.quadraticCurveTo((gx - 1.2) * s, 0, gx * s, 6 * s);
+      ctx.stroke();
+    }
+    ctx.fillStyle = 'rgba(12,20,34,0.9)';
+    ctx.beginPath();
+    ctx.arc(51 * s, -4.5 * s, 1.2 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(12,20,34,0.85)';
+    ctx.lineWidth = 1.6 * s;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(60.5 * s, 1.5 * s);
+    ctx.quadraticCurveTo(58 * s, 4.5 * s, 50 * s, 5 * s);
+    ctx.stroke();
+    ctx.lineCap = 'butt';
+    // The pectoral fin below, in front of the body.
+    ctx.fillStyle = 'rgba(40,62,94,0.9)';
+    ctx.beginPath();
+    ctx.moveTo(28 * s, 8 * s); ctx.quadraticCurveTo(20 * s, 18 * s, 12 * s, 23 * s); ctx.lineTo(10 * s, 10 * s); ctx.fill();
     ctx.restore();
   }
 

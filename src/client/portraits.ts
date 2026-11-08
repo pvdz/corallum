@@ -24,6 +24,8 @@ export const REDRAWN: readonly (readonly string[])[] = [
   ['tripod-fish', 'sea-lily', 'brittle-star', 'sea-pig', 'lantern-shark', 'sea-firefly', 'pelican', 'siphonophore', 'firefly-squid', 'isopod', 'star-march', 'cleaner-wrasse', 'host-anemone'],
   // 3 (2026-11-08 day: seamount scenery)
   ['smokers', 'sea-pen', 'glass-shrimp', 'mantis-shrimp', 'dugong'],
+  // 4 (2026-11-08 evening: residents and the never-redrawn)
+  ['guard-crab', 'goby', 'pistol-shrimp', 'whale-shark'],
 ];
 const ART_VERSION = REDRAWN.length - 1;
 
