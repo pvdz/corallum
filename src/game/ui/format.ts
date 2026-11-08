@@ -48,5 +48,6 @@ export function duration(sec: number): string {
 }
 
 export function metres(m: number): string {
-  return m < 10 ? `${m.toFixed(1)} m` : `${Math.floor(m)} m`;
+  // The number and its "m" kept on one line.
+  return m < 10 ? `${m.toFixed(1)}\u00a0m` : `${Math.floor(m)}\u00a0m`;
 }
