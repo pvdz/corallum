@@ -1381,24 +1381,29 @@ export function createSunlitScene(seed: number): Scene {
 
   /**
    * A banded sea snake: it winds up toward the surface to breathe, loops over at the top and swims
-   * back down beside its own track, the body following the head's path; touched, it turns away.
+   * back down beside its own track, the body following the head's path; touched, it bolts: three
+   * times as fast along its track, over the top and away down.
    */
   function drawSeaSnake(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 70, shown = 35;
     const age = t % period;
     if (age > shown) return;
-    sight('sea-snake');
     const s = scale() * 1.5;
-    const touch = startled('sea-snake', t);
-    const away = touch && touch.age < 6 ? Math.sin(Math.min(1, touch.age / 6) * Math.PI) : 0;
     // The track: up a straight line, over a half circle at the top, down the other side.
-    const xa = focus.x + focus.w * (0.77 + away * 0.15);
+    const xa = focus.x + focus.w * 0.77;
     const yBottom = focus.y + focus.h * 0.85, yTop = focus.y + focus.h * 0.1;
     const r = 7 * s, rise = yBottom - yTop;
     const total = 2 * rise + Math.PI * r;
     const step = 2.6 * s, N = 26;
-    // The head swims the track and on until the tail has gone back down past where it rose.
-    const head = (age / shown) * (total + N * step);
+    // The head swims the track and on until the tail has gone back down past where it rose; once
+    // touched (in this visit), it swims three times as fast, ramping up over half a second.
+    const pace = (total + N * step) / shown;
+    const touch = startled('sea-snake', t);
+    const ta = touch && touch.age <= age ? touch.age : 0;
+    const bolt = 2 * pace * (ta < 0.5 ? ta * ta : ta - 0.25);
+    const head = age * pace + bolt;
+    if (head - N * step > total) return;
+    sight('sea-snake');
     const at = (d: number): [number, number, number] => {
       if (d < rise) return [xa, yBottom - d, -Math.PI / 2];
       if (d < rise + Math.PI * r) {
@@ -1408,7 +1413,7 @@ export function createSunlitScene(seed: number): Scene {
       return [xa + 2 * r, yTop + (d - rise - Math.PI * r), Math.PI / 2];
     };
     // Its first and last moments fade, where it comes up out of the reef's shade and goes back.
-    const fade = Math.min(1, age / 1.5, (shown - age) / 1.5);
+    const fade = Math.min(1, age / 1.5, (total + N * step - head) / (1.5 * pace));
     const pts: [number, number, number][] = [];
     for (let i = 0; i <= N; i++) {
       const [px, py, dir] = at(head - i * step);
