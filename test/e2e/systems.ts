@@ -284,11 +284,12 @@ await withGame(async (open) => {
   const b2 = await bright();
   const after = await page.evaluate(() => ({
     seen: window.corallum!.state.meta.seen.length,
-    title: !!document.querySelector('#zone-title.show'),
+    // The replay names the zones it passes; coming back must not title this one as an arrival.
+    title: document.querySelector('#zone-title strong')?.textContent === 'The Twilight Shelf',
     story: !!document.querySelector('.reader:not([hidden])'),
   }));
   check(b1 < b0 * 0.7 && b2 > b0 * 0.8, `the whole climb replays the dark lower zones and a tap ends it (brightness ${b0.toFixed(0)} → ${b1.toFixed(0)} → ${b2.toFixed(0)})`);
-  check(after.seen === seen0 && !after.title && !after.story, `the replay leaves nothing behind (seen ${seen0} → ${after.seen}${after.title ? ', a zone title' : ''}${after.story ? ', a story' : ''})`);
+  check(after.seen === seen0 && !after.title && !after.story, `the replay leaves nothing behind (seen ${seen0} → ${after.seen}${after.title ? ', arrived at the Twilight Shelf again' : ''}${after.story ? ', a story' : ''})`);
   check(errors.length === 0, 'no console errors (the whole climb)');
 });
 process.exitCode = failed ? 1 : 0;
