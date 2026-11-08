@@ -1703,7 +1703,32 @@ export function createMidnightScene(seed: number): Scene {
     const fade = Math.min(1, p / 10, (length - p) / 10);
     const cx = focus.x + focus.w * 0.25;
     spot('firefly-squid', cx, focus.y + focus.h * 0.5, 90 * s);
+    const where = (i: number): [number, number] => {
+      const lane = ((i * 0.618034) % 1) - 0.5;
+      const speed = 0.6 + ((i * 0.3819) % 1) * 0.8;
+      const y = focus.y + focus.h * (1.05 - ((p * 0.012 * speed + (i * 0.137) % 1) % 1.1));
+      return [cx + lane * focus.w * 0.28 + Math.sin(t * 0.8 + i) * 8 * s, y];
+    };
     ctx.save();
+    // The nearest few show their bodies: a mantle pointing up as they rise, the arms trailing to the
+    // lit tips (the spark).
+    ctx.fillStyle = `rgba(110,140,190,${0.3 * fade})`;
+    ctx.strokeStyle = `rgba(120,150,200,${0.35 * fade})`;
+    ctx.lineWidth = 0.7 * s;
+    ctx.lineCap = 'round';
+    for (let i = 0; i < 160; i += 10) {
+      const [x, y] = where(i);
+      const sway = Math.sin(t * 2 + i) * 0.8 * s;
+      ctx.beginPath();
+      ctx.moveTo(x, y - 14 * s);
+      ctx.quadraticCurveTo(x + 2.6 * s, y - 9 * s, x + 1.8 * s, y - 5 * s);
+      ctx.lineTo(x - 1.8 * s, y - 5 * s);
+      ctx.quadraticCurveTo(x - 2.6 * s, y - 9 * s, x, y - 14 * s);
+      ctx.fill();
+      ctx.beginPath();
+      for (const a of [-1.2, -0.4, 0.4, 1.2]) { ctx.moveTo(x + a * 0.8 * s, y - 5 * s); ctx.lineTo(x + a * 1.2 * s + sway, y); }
+      ctx.stroke();
+    }
     ctx.globalCompositeOperation = 'lighter';
     for (let i = 0; i < 160; i++) {
       const lane = ((i * 0.618034) % 1) - 0.5;
