@@ -811,6 +811,8 @@ html.big { --panel-out: calc(var(--panel-w) * 1.15); }
   .tab { font-size: 11px; letter-spacing: 0.06em; padding: 4px 0 6px; }
   .card { padding: 8px 10px; }
   .flavour { display: none; }
+  /* Choices too keep only their name and effect: three stacked options fit the short panel. */
+  .boon-choices .choice > em { display: none; }
   #title h1 { font-size: 30px; }
 }
 
