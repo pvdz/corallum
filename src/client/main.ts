@@ -245,7 +245,9 @@ const notify = setting('notify', false, (on, initial) => {
 /** Larger text: the panel, the reader and Ossel's words a size up. */
 const big = setting('big', false, (on, initial) => { document.documentElement.classList.toggle('big', on); if (!initial) relayout(); });
 const sci = setting('sci', false, (on) => { setScientific(on); document.documentElement.classList.toggle('sci', on); });
+/** Sounds (cues and the sea) and music, each its own loudness; music starts where the one volume was. */
 const volume = setting('volume', 0.9, (v) => audio.setVolume(v));
+const music = setting('music', volume.get(), (v) => audio.setMusic(v));
 /** Full resolution: off renders at 1× (a quarter of the pixels on a 2× screen) for slow phones. */
 const sharp = setting('sharp', true, (_, initial) => { if (!initial) relayout(); });
 /** Vibration on phones: a tick per purchase, a pulse for milestones and feats (on for touch screens). */
@@ -259,7 +261,7 @@ function buzz(ms: number | number[]): void {
 
 const portraits = createPortraits(!ephemeral);
 const panel = createPanel(ui, {
-  sharp, buzz: buzzing, volume, sci, calm, big, quiet, habits, glow, notify,
+  sharp, buzz: buzzing, volume, music, sci, calm, big, quiet, habits, glow, notify,
   rename(name) {
     state.meta.name = name;
     showReefName();

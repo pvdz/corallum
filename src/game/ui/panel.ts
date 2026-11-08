@@ -123,8 +123,10 @@ export type PanelHooks = {
   sharp: { get(): boolean; set(on: boolean): void };
   /** Vibration on purchases and milestones (phones). */
   buzz: { get(): boolean; set(on: boolean): void };
-  /** Sound volume, 0..1. */
+  /** Loudness of the sounds (cues and the sea), 0..1. */
   volume: { get(): number; set(v: number): void };
+  /** Loudness of the music, 0..1. */
+  music: { get(): number; set(v: number): void };
   /** Scientific notation for large numbers. */
   sci: { get(): boolean; set(on: boolean): void };
   /** Calmer motion: the world's ambient animation runs slower. */
@@ -1514,14 +1516,20 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const paletteBox = el('div', 'palette-box');
   paletteBox.hidden = true;
   paletteBox.append(el('span', 'stock-name', PALETTE_TEXT.label), paletteRow);
-  const volRow = el('label', 'toggle');
-  const volInput = el('input') as HTMLInputElement;
-  volInput.type = 'range';
-  volInput.min = '0';
-  volInput.max = '100';
-  volInput.value = String(Math.round(hooks.volume.get() * 100));
-  volInput.addEventListener('input', () => hooks.volume.set(Number(volInput.value) / 100));
-  volRow.append(el('span', '', 'Volume'), volInput);
+  /** A loudness slider, 0..100 on screen and 0..1 in the setting. */
+  const slider = (label: string, value: { get(): number; set(v: number): void }): HTMLElement => {
+    const row = el('label', 'toggle');
+    const input = el('input') as HTMLInputElement;
+    input.type = 'range';
+    input.min = '0';
+    input.max = '100';
+    input.value = String(Math.round(value.get() * 100));
+    input.addEventListener('input', () => value.set(Number(input.value) / 100));
+    row.append(el('span', 'slider-name', label), input);
+    return row;
+  };
+  const musicRow = slider(UI.musicVolume, hooks.music);
+  const volRow = slider(UI.soundsVolume, hooks.volume);
   const buzzToggle = el('label', 'toggle');
   const buzzBox = el('input') as HTMLInputElement;
   buzzBox.type = 'checkbox';
@@ -1625,7 +1633,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     guide,
     group(UI.saves),
     el('p', 'hint', UI.autosave), backupNote, pair(exportBtn, fileBtn), pair(loadFileBtn, importBtn), fileInput,
-    group(UI.sound), volRow, buzzToggle,
+    group(UI.sound), musicRow, volRow, buzzToggle,
     group(UI.display), button('plain', UI.timelapse + (matchMedia('(pointer: coarse) and (hover: none)').matches ? '' : UI.timelapseKey), () => hooks.timelapse()), glowToggle, sharpToggle, calmToggle, bigToggle, sciToggle, quietToggle, notifyToggle, habitToggle,
     el('p', 'hint keys-hint', UI.keys),
     el('p', 'hint touch-hint sheet-only', UI.touchHint),

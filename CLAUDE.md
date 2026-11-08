@@ -31,7 +31,7 @@ These were written by the agent, not the user; fix them when wrong.
 - `node --no-warnings test/e2e/finale.ts` — full moon, release, three memories, ending (SHOTS=<dir> saves screens)
 - `node --no-warnings test/e2e/feast.ts` — tap a falling feast, catch the next with F (`corallum.feast` gives its position)
 - `node --no-warnings test/e2e/saves.ts` — save to a file / load save from a file / a photo of the reef
-- `node --no-warnings test/e2e/sound.ts` — every sound cue in every zone (autoplay allowed): each schedules notes, no errors
+- `node --no-warnings test/e2e/sound.ts` — every sound cue in every zone (autoplay allowed): each schedules notes, no errors; music vs sounds buses
 - `node --no-warnings test/e2e/systems.ts` — expedition send + call home, a resident, a riddle, the signal by keys, a shell, an upwelling caught with U, an ask leading to its card
 - Browser debug: `?at=<sec>` starts the scene clock there (rare creatures, day/night), `?fps`, `?bot=` (with `&truce=`, `&dialects=`, `&seamount=`), `?t=` (frozen).
 - `node tools/bot.ts [--truce aab] [--dialects form,craft,spawn] [--to <m>]` — headless time-compressed

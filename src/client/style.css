@@ -1051,6 +1051,7 @@ html.view-mode #photo { display: grid; }
 .line-chart { display: block; width: 100%; height: 80px; margin: 6px 0 8px; }
 .line-chart[hidden] { display: none; }
 .toggle input[type="range"] { width: auto; flex: 1; height: auto; accent-color: #5fbfb6; }
+.toggle .slider-name { min-width: 4.5em; }
 #depth-gauge[hidden] { display: none; }
 .journal-list { display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; }
 .journal-list .journal-zone { margin-top: 8px; }

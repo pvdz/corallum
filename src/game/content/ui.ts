@@ -67,6 +67,8 @@ export const UI = {
   softGlow: 'Soft glow (turn off if a phone runs slow or warm)',
   namePlaceholder: 'Name your reef',
   vibration: 'Vibration on purchases and milestones (phones)',
+  musicVolume: 'Music',
+  soundsVolume: 'Sounds',
   scientific: 'Scientific numbers (1.23e9 instead of 1.23B)',
   fullRes: 'Full resolution (turn off to make a slow phone faster)',
   calm: 'Calmer motion (everything in the water moves slower)',

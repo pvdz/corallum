@@ -32,11 +32,15 @@ const THEMES: Record<Zone, { scale: number[]; octave: number; beat: number; rest
 export function createAudio() {
   let ctx: AudioContext | null = null;
   let master: GainNode | null = null;
+  /** The score (the pad, the melody, the release's music) and everything else (cues, the sea), each with its own loudness under master. */
+  let music: GainNode | null = null;
+  let sounds: GainNode | null = null;
   let pad: { oscs: OscillatorNode[]; filter: BiquadFilterNode; gain: GainNode } | null = null;
   let surf: { gain: GainNode; filter: BiquadFilterNode } | null = null;
   let zone: Zone = 1;
   let enabled = false;
   let volume = 0.9;
+  let musicVolume = 0.9;
   let noteIndex = 0;
   let lastBuy = -1;
   // The melody: a wandering walk over the zone's scale, scheduled a little ahead of time.
@@ -48,6 +52,12 @@ export function createAudio() {
     ctx = new AudioContext();
     master = ctx.createGain();
     master.gain.value = 0;
+    music = ctx.createGain();
+    music.gain.value = musicVolume;
+    music.connect(master);
+    sounds = ctx.createGain();
+    sounds.gain.value = volume;
+    sounds.connect(master);
     // A gentle room so single notes do not sound dry.
     const delay = ctx.createDelay(1);
     delay.delayTime.value = 0.37;
@@ -67,8 +77,8 @@ export function createAudio() {
     delay.connect(fb).connect(delay);
     delay.connect(wet).connect(limit);
     master.connect(delay);
-    startPad(ctx, master);
-    startSurf(ctx, master);
+    startPad(ctx, music);
+    startSurf(ctx, sounds);
     applyZone(true);
     return ctx;
   }
@@ -155,11 +165,11 @@ export function createAudio() {
         step = Math.max(0, Math.min(th.scale.length - 1, step + move));
         if (Math.random() < 0.15) step = 0;
         const f = ZONES[zone].root * th.octave * 2 ** (th.scale[step]! / 12);
-        bell(f, 0.035, th.length * (song === 'lullaby' ? 1.6 : 1), nextBeat);
+        bell(f, 0.035, th.length * (song === 'lullaby' ? 1.6 : 1), nextBeat, music);
         // The reef's Song in the shallows: a chorus doubles each note a third above; a call answers
         // a phrase now and then with the root, high and clear.
-        if (zone >= 4 && song === 'chorus') bell(f * 2 ** (4 / 12), 0.018, th.length, nextBeat + 0.03);
-        if (zone >= 4 && song === 'call' && step === 0) bell(ZONES[zone].root * th.octave * 2, 0.025, th.length * 1.4, nextBeat + th.beat * 0.5);
+        if (zone >= 4 && song === 'chorus') bell(f * 2 ** (4 / 12), 0.018, th.length, nextBeat + 0.03, music);
+        if (zone >= 4 && song === 'call' && step === 0) bell(ZONES[zone].root * th.octave * 2, 0.025, th.length * 1.4, nextBeat + th.beat * 0.5, music);
       }
       nextBeat += th.beat * (Math.random() < 0.2 ? 1.5 : 1) * (zone >= 4 && song === 'lullaby' ? 1.4 : 1);
     }
@@ -173,7 +183,7 @@ export function createAudio() {
   /** Rain on the water (set by the game while a shower falls at the Breach). */
   let raining = false;
   function crackle(): void {
-    if (!ctx || !master || !enabled || (zone !== 4 && !(zone === 5 && raining))) return;
+    if (!ctx || !sounds || !enabled || (zone !== 4 && !(zone === 5 && raining))) return;
     if (!clickBuf) {
       const len = Math.floor(ctx.sampleRate * 0.004);
       clickBuf = ctx.createBuffer(1, len, ctx.sampleRate);
@@ -191,7 +201,7 @@ export function createAudio() {
       f.frequency.value = raining && zone === 5 ? 900 + Math.random() * 1200 : 2500 + Math.random() * 3000;
       const g = ctx.createGain();
       g.gain.value = raining && zone === 5 ? 0.01 + Math.random() * 0.015 : 0.015 + Math.random() * 0.025;
-      src.connect(f).connect(g).connect(master);
+      src.connect(f).connect(g).connect(sounds);
       src.start(t + Math.random() * 0.1);
     }
   }
@@ -199,7 +209,7 @@ export function createAudio() {
 
   /** Now and then a zone's own small sound: fish grunts on the shelf, a vent's rumble on the floor. */
   function zoneCall(): void {
-    if (!ctx || !master || !enabled) return;
+    if (!ctx || !sounds || !enabled) return;
     if (zone === 3 && Math.random() < 0.35) {
       // Two or three low grunts, a fish talking to its neighbours.
       const n = 2 + Math.floor(Math.random() * 2);
@@ -211,8 +221,8 @@ export function createAudio() {
   setInterval(zoneCall, 9000);
 
   /** A soft bell: a sine and its octave with a quick attack and long tail. */
-  function bell(freq: number, gain: number, length = 1.6, at = 0): void {
-    if (!ctx || !master || !enabled) return;
+  function bell(freq: number, gain: number, length = 1.6, at = 0, out: GainNode | null = sounds): void {
+    if (!ctx || !out || !enabled) return;
     const t = Math.max(at, ctx.currentTime);
     for (const [mult, g] of [[1, 1], [2, 0.3], [3.01, 0.12]] as const) {
       const o = ctx.createOscillator();
@@ -221,15 +231,15 @@ export function createAudio() {
       e.gain.setValueAtTime(0, t);
       e.gain.linearRampToValueAtTime(gain * g, t + 0.01);
       e.gain.exponentialRampToValueAtTime(0.0001, t + length);
-      o.connect(e).connect(master);
+      o.connect(e).connect(out);
       o.start(t);
       o.stop(t + length + 0.1);
     }
   }
 
   /** A chord that swells in over `attack` seconds, holds, and fades over `release`: sines and triangles. */
-  function swell(freqs: readonly number[], gain: number, attack: number, hold: number, release: number): void {
-    if (!ctx || !master || !enabled) return;
+  function swell(freqs: readonly number[], gain: number, attack: number, hold: number, release: number, out: GainNode | null = sounds): void {
+    if (!ctx || !out || !enabled) return;
     const t = ctx.currentTime;
     freqs.forEach((f, i) => {
       const o = ctx!.createOscillator();
@@ -241,7 +251,7 @@ export function createAudio() {
       e.gain.exponentialRampToValueAtTime(gain, t + attack);
       e.gain.setValueAtTime(gain, t + attack + hold);
       e.gain.exponentialRampToValueAtTime(0.0001, t + attack + hold + release);
-      o.connect(e).connect(master!);
+      o.connect(e).connect(out);
       o.start(t);
       o.stop(t + attack + hold + release + 0.1);
     });
@@ -249,7 +259,7 @@ export function createAudio() {
 
   /** A long sliding sine with vibrato: whale song, far off. */
   function glide(from: number, to: number, length: number, delay: number): void {
-    if (!ctx || !master || !enabled) return;
+    if (!ctx || !sounds || !enabled) return;
     const t = ctx.currentTime + delay;
     const o = ctx.createOscillator();
     o.type = 'sine';
@@ -264,7 +274,7 @@ export function createAudio() {
     e.gain.setValueAtTime(0.0001, t);
     e.gain.exponentialRampToValueAtTime(0.05, t + length * 0.3);
     e.gain.exponentialRampToValueAtTime(0.0001, t + length);
-    o.connect(e).connect(master);
+    o.connect(e).connect(sounds);
     o.start(t);
     vib.start(t);
     o.stop(t + length + 0.1);
@@ -273,7 +283,7 @@ export function createAudio() {
 
   /** A short gritty crunch: band-passed white noise with a fast decay (a beak on stone). */
   function crunch(): void {
-    if (!ctx || !master || !enabled) return;
+    if (!ctx || !sounds || !enabled) return;
     const t = ctx.currentTime;
     const len = Math.floor(ctx.sampleRate * 0.12);
     const buf = ctx.createBuffer(1, len, ctx.sampleRate);
@@ -287,13 +297,13 @@ export function createAudio() {
     f.Q.value = 1.2;
     const e = ctx.createGain();
     e.gain.value = 0.12;
-    src.connect(f).connect(e).connect(master);
+    src.connect(f).connect(e).connect(sounds);
     src.start(t);
   }
 
   /** Far thunder: a long low rumble of noise, rolling louder and away. */
   function thunder(): void {
-    if (!ctx || !master || !enabled) return;
+    if (!ctx || !sounds || !enabled) return;
     const t = ctx.currentTime;
     const len = Math.floor(ctx.sampleRate * 3.5);
     const buf = ctx.createBuffer(1, len, ctx.sampleRate);
@@ -312,12 +322,12 @@ export function createAudio() {
     f.frequency.value = 220;
     const e = ctx.createGain();
     e.gain.value = 0.5;
-    src.connect(f).connect(e).connect(master);
+    src.connect(f).connect(e).connect(sounds);
     src.start(t);
   }
 
   function bubble(): void {
-    if (!ctx || !master || !enabled) return;
+    if (!ctx || !sounds || !enabled) return;
     const t = ctx.currentTime;
     const o = ctx.createOscillator();
     o.type = 'sine';
@@ -327,7 +337,7 @@ export function createAudio() {
     e.gain.setValueAtTime(0.0001, t);
     e.gain.exponentialRampToValueAtTime(0.08, t + 0.01);
     e.gain.exponentialRampToValueAtTime(0.0001, t + 0.14);
-    o.connect(e).connect(master);
+    o.connect(e).connect(sounds);
     o.start(t);
     o.stop(t + 0.2);
   }
@@ -343,7 +353,7 @@ export function createAudio() {
         const c = ensure();
         void c.resume();
       }
-      if (ctx && master) master.gain.setTargetAtTime(on ? volume : 0, ctx.currentTime, 0.4);
+      if (ctx && master) master.gain.setTargetAtTime(on ? 1 : 0, ctx.currentTime, 0.4);
       // Off: once faded, the sound stops working altogether (no pad playing at zero volume).
       if (!on && ctx) {
         const c = ctx;
@@ -360,13 +370,18 @@ export function createAudio() {
       if (!visible) void ctx.suspend();
       else if (enabled && ctx.state !== 'running') void ctx.resume();
     },
-    /** Overall loudness, 0..1. */
+    /** Loudness of the sounds (cues and the sea), 0..1. */
     setVolume(v: number): void {
       volume = Math.max(0, Math.min(1, v));
-      if (ctx && master && enabled) master.gain.setTargetAtTime(volume, ctx.currentTime, 0.1);
+      if (ctx && sounds) sounds.gain.setTargetAtTime(volume, ctx.currentTime, 0.1);
     },
     get volume() {
       return volume;
+    },
+    /** Loudness of the music (the pad, the melody, the release's music), 0..1. */
+    setMusic(v: number): void {
+      musicVolume = Math.max(0, Math.min(1, v));
+      if (ctx && music) music.gain.setTargetAtTime(musicVolume, ctx.currentTime, 0.1);
     },
     setSong(s: string): void {
       song = s;
@@ -492,13 +507,13 @@ export function createAudio() {
         case 'release': {
           // The release: a chord swells under everything and slowly fades; over it a long cascade of
           // bells climbs two octaves, softer as it rises, and small bubbles scatter like eggs going up.
-          swell([root / 2, (root / 2) * 1.5, root, root * 1.25], 0.03, 3, 2, 8);
+          swell([root / 2, (root / 2) * 1.5, root, root * 1.25], 0.03, 3, 2, 8, music);
           const t0 = ctx.currentTime;
           for (let i = 0; i < 36; i++) {
             // Up the two-octave scale over the run, each step turning a note up or down around it.
             const idx = Math.max(0, Math.min(PENTATONIC.length - 1, Math.floor((i * PENTATONIC.length) / 36) + [0, 1, -1][i % 3]!));
             const when = t0 + 0.2 + i * 0.25 + Math.sin(i * 2.3) * 0.06;
-            bell(root * 2 ** (PENTATONIC[idx]! / 12), 0.05 * (1 - i / 60), 3.2, when);
+            bell(root * 2 ** (PENTATONIC[idx]! / 12), 0.05 * (1 - i / 60), 3.2, when, music);
           }
           for (let i = 0; i < 24; i++) setTimeout(() => bubble(), 1500 + i * 280 + (i % 3) * 90);
           break;
