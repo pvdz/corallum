@@ -343,13 +343,17 @@ export function createBreachScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** Where the man-o'-war drifts along the surface at `t`. */
+  function manOWarX(t: number): number {
+    return focus.x + focus.w * (0.1 + ((t * 0.004 + 0.3) % 1) * 0.8);
+  }
+
   /** A man-o'-war drifting on the surface, its crest catching the wind; touched, it deflates its sail a moment. */
   function drawManOWar(ctx: CanvasRenderingContext2D, t: number): void {
     sight('man-o-war');
     const s = scale() * 1.6;
     const wy = waterY();
-    const u = (t * 0.004 + 0.3) % 1;
-    const x = focus.x + focus.w * (0.1 + u * 0.8), y = wy - 3 * s + Math.sin(t * 1.4) * 2 * s;
+    const x = manOWarX(t), y = wy - 3 * s + Math.sin(t * 1.4) * 2 * s;
     const touch = startled('man-o-war', t);
     const sag = touch && touch.age < 3 ? Math.sin(Math.min(1, touch.age / 3) * Math.PI) : 0;
     spot('man-o-war', x, y, 26 * s);
@@ -1040,10 +1044,12 @@ export function createBreachScene(seed: number): Scene {
     const touch = startled('breathing-turtle', t);
     const u = (t % period) / up;
     if (u >= 1 || (touch && touch.age < 4)) return;
-    sight('breathing-turtle');
     const s = scale() * 1.6;
-    const rise = Math.sin(u * Math.PI);
     const x = crownX + 160 * s, wy = waterY();
+    // It stays down while the man-o'-war drifts over the spot where it would come up.
+    if (Math.abs(manOWarX(t) - (x - 14 * s)) < 45 * s) return;
+    sight('breathing-turtle');
+    const rise = Math.sin(u * Math.PI);
     spot('breathing-turtle', x, wy - 6 * s, 26 * s);
     ctx.save();
     ctx.beginPath();
