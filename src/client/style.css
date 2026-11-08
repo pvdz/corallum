@@ -200,9 +200,12 @@ html.panel-rest .panel .pages { opacity: 0.6; transition: opacity 4s ease; }
   position: absolute; inset: 0; display: grid; place-items: center; padding: 20px;
   background: radial-gradient(ellipse at center, rgba(4, 6, 20, 0.55), rgba(2, 2, 8, 0.85));
   animation: fade-in 0.6s ease both; z-index: 10;
-  /* A card taller than the screen (a phone on its side) scrolls, from its top, never cut off. */
-  overflow-y: auto; overscroll-behavior: contain; align-items: safe center;
+  /* A card taller than the screen (a phone on its side) scrolls, from its top, never cut off:
+     centred by auto margins, which give way when there is no room (align-items: safe center is
+     newer than some browsers this runs in; where it is missing the card's top was cut off). */
+  overflow-y: auto; overscroll-behavior: contain; align-items: start;
 }
+.reader > *, .finale > * { margin-block: auto; }
 .reader[hidden] { display: none; }
 /* Narrow screens, where a card is as wide as the screen: a card taller than the screen starts below
    the sound and view buttons (they stay on top of it, and usable). */
@@ -716,7 +719,7 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 .finale {
   position: absolute; inset: 0; z-index: 30; display: grid; place-items: center; padding: 20px;
   background: radial-gradient(ellipse at center, rgba(10, 8, 30, 0.72), rgba(2, 2, 10, 0.94)); animation: fade-in 1.2s ease both;
-  overflow-y: auto; overscroll-behavior: contain; align-items: safe center;
+  overflow-y: auto; overscroll-behavior: contain; align-items: start;
 }
 .finale[hidden] { display: none; }
 /* The memory choice: what lies behind is blurred and darker, so no panel text reads through the cards. */
