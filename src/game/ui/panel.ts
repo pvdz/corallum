@@ -939,7 +939,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         row.append(el('div', 'portrait none'));
         const text = el('div', 'journal-text');
         text.append(el('strong', '', UI.notYetSeenCount(unseen.length)),
-          el('span', '', hints.length ? `${hints.join(' · ')}.` : ''));
+          el('span', '', hints.length ? `${hints.join(' ·\u00a0')}.` : ''));
         row.append(text);
         journalList.append(row);
       }
@@ -1081,7 +1081,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     // unmet ones on a single row of depths.
     let waiting: number[] = [];
     const flush = () => {
-      if (waiting.length) momentList.append(el('dt', 'unknown', UI.notYetMet), el('dd', 'unknown', waiting.map(metres).join(' · ')));
+      if (waiting.length) momentList.append(el('dt', 'unknown', UI.notYetMet), el('dd', 'unknown', waiting.map(metres).join(' ·\u00a0')));
       waiting = [];
     };
     for (const m of MOMENTS) {
@@ -1091,7 +1091,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         continue;
       }
       flush();
-      momentList.append(el('dt', '', m.title), el('dd', '', ways.join(' · ')));
+      momentList.append(el('dt', '', m.title), el('dd', '', ways.join(' ·\u00a0')));
     }
     flush();
   }
@@ -1111,7 +1111,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (wrong) codexRow(CODEX.ossel, CODEX.mistakes(wrong, OSSEL_MISTAKES.length));
     if (s.race.decided > 0) codexRow(UI.sisterReef, CODEX.marks(s.race.won, s.race.decided) + (s.meta.endings > 0 ? CODEX.cousin(String(s.race.cousin)) : ''));
     const recs = s.meta.records.map((t, i) => t > 0 ? CODEX.record(metres(SISTER.marks[i]!), duration(t)) : '').filter(Boolean);
-    if (recs.length) codexRow(CODEX.best, recs.join(' · '));
+    if (recs.length) codexRow(CODEX.best, recs.join(' ·\u00a0'));
     const did: string[] = [];
     if (s.feasts) did.push(CODEX.feasts(s.feasts));
     if (s.tally.intruders) did.push(CODEX.intruders(s.tally.intruders));
@@ -1119,19 +1119,19 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (s.relics.length + s.tally.roams) did.push(CODEX.trips(s.relics.length + s.tally.roams));
     if (s.request.done) did.push(CODEX.requests(s.request.done));
     if (s.tally.risings) did.push(CODEX.risings(s.tally.risings));
-    if (did.length) codexRow(UI.doneHere, did.join(' · '));
+    if (did.length) codexRow(UI.doneHere, did.join(' ·\u00a0'));
     const strain = STRAINS.find((x) => x.id === s.strain), sport = SPORTS.find((x) => x.id === s.sport);
     if (strain) codexRow(CODEX.glimmerseed, sport ? CODEX.sported(strain.name, sport.name.toLowerCase(), sport.effect) : CODEX.strain(strain.name, strain.effect));
     const grains = GRAINS.map((g) => [g.name, s.grains.filter((x) => x === g.id).length] as const).filter(([, n]) => n > 0);
-    if (grains.length) codexRow(UI.theGrain, grains.map(([n, c]) => `${c} ${n.toLowerCase()}`).join(' · '));
+    if (grains.length) codexRow(UI.theGrain, grains.map(([n, c]) => `${c} ${n.toLowerCase()}`).join(' ·\u00a0'));
     const stars = FIGURES.filter((f) => s.sky[f.id]).map((f) => f.name);
-    if (stars.length) codexRow(UI.starsNamed, stars.join(' · '));
+    if (stars.length) codexRow(UI.starsNamed, stars.join(' ·\u00a0'));
     codexRow(CODEX.grown, CODEX.grownText(metres(s.height), Math.round(Math.max(0, SURFACE - s.height)).toLocaleString('en-US')));
     codexRow(UI.bandsRead, CODEX.bandsText(s.bands.length, s.readings.length));
     const truce = MEETINGS.filter((m) => s.truce[m.id]).map((m) => `${m.title}: ${m[s.truce[m.id] as Choice].label}`);
-    if (truce.length) codexRow(UI.truceKicker, truce.join(' · '));
+    if (truce.length) codexRow(UI.truceKicker, truce.join(' ·\u00a0'));
     const spoken = TIERS.filter((t) => s.dialects[t.tier]).map((t) => DIALECTS.find((d) => d.id === s.dialects[t.tier])!.name);
-    if (spoken.length) codexRow(CODEX.dialects, spoken.join(' · '));
+    if (spoken.length) codexRow(CODEX.dialects, spoken.join(' ·\u00a0'));
     if (s.meta.name) codexRow(CODEX.name, reefName(s));
     codexRow(UI.thisReef, CODEX.thisReefText(duration(s.t), num(s.earned.calcite)));
     const small = [
@@ -1141,17 +1141,17 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       s.tally.freed ? UI.tallyFreed(s.tally.freed) : '',
       s.lineWishes || s.wished >= 0 ? UI.tallyWished : '',
     ].filter(Boolean);
-    if (small.length) codexRow(UI.smallThings, small.join(' · '));
-    if (s.nursed) codexRow(GARDEN.nursed, GARDEN.kinds.filter((k) => s.nursed.includes(k.id)).map((k) => `${[...s.nursed].filter((c) => c === k.id).length} × ${k.name.toLowerCase().replace(/^a /, '')} (${k.effect.replace(' on the next reef', '')})`).join(' · '));
+    if (small.length) codexRow(UI.smallThings, small.join(' ·\u00a0'));
+    if (s.nursed) codexRow(GARDEN.nursed, GARDEN.kinds.filter((k) => s.nursed.includes(k.id)).map((k) => `${[...s.nursed].filter((c) => c === k.id).length} × ${k.name.toLowerCase().replace(/^a /, '')} (${k.effect.replace(' on the next reef', '')})`).join(' ·\u00a0'));
     // Haste on its way up says how long is left to keep it.
     const vowState = (id: VowId) => {
       if (!vowKept(s, id)) return VOW.broken;
       return id === 'haste' && s.surfacedAt < 0 ? VOW.left(duration(VOW.hasteHours * 3600 - s.t)) : VOW.kept;
     };
-    if (s.vows.length) codexRow(VOW.label, VOWS.filter((v) => s.vows.includes(v.id)).map((v) => `${v.name.toLowerCase()} (${vowState(v.id)})`).join(' · '));
+    if (s.vows.length) codexRow(VOW.label, VOWS.filter((v) => s.vows.includes(v.id)).map((v) => `${v.name.toLowerCase()} (${vowState(v.id)})`).join(' ·\u00a0'));
     if (s.meta.endings > 0) codexRow(UI.theSea, CODEX.healing((0.95 ** Math.min(6, s.meta.endings)).toFixed(2)));
     if (s.meta.endings > 0) codexRow(CODEX.endings, CODEX.endingsText(s.meta.endings, s.meta.carriedEver.length, MEMORIES.length));
-    if (s.carried.length) codexRow(CODEX.carried, s.carried.map((id) => MEMORIES.find((m) => m.id === id)?.title ?? id).join(' · '));
+    if (s.carried.length) codexRow(CODEX.carried, s.carried.map((id) => MEMORIES.find((m) => m.id === id)?.title ?? id).join(' ·\u00a0'));
     if (s.meta.spawnings) codexRow(CODEX.lineage, CODEX.lineageText(s.meta.spawnings, metres(s.meta.best)));
   }
   let currentReading: Reading | undefined;
@@ -2279,7 +2279,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         // A first reef's first minutes leave out the day and its visitor (glow, lineage: words not met yet).
         const firstMinutes = s.meta.spawnings === 0 && s.height < 1;
         const today = firstMinutes ? '' : [day ? `${TODAY.label}: ${day.name.toLowerCase()} · ${day.effect}` : '',
-          visName ? `${TODAY.visitor}: ${visName} (${visited(s) ? TODAY.visited : TODAY.visitorGift})` : ''].filter(Boolean).join(' · ');
+          visName ? `${TODAY.visitor}: ${visName} (${visited(s) ? TODAY.visited : TODAY.visitorGift})` : ''].filter(Boolean).join(' ·\u00a0');
         if (todayLine.textContent !== today) todayLine.textContent = today;
         const usw = untilSwell(s);
         if (usw < 1200) soon.push([usw, SWELL.word]);
@@ -2501,7 +2501,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         homeBox.classList.toggle('calls', s.residents.length < nHomes && asking.some((r) => !s.residents.includes(r.id)));
         // Pairings: the ones living now, else a hint at those within reach.
         const live = PAIRS.filter((p) => s.residents.includes(p.a) && s.residents.includes(p.b));
-        pairLine.textContent = live.length ? live.map((p) => `${p.name}: ${p.effect}`).join(' · ') : nHomes >= 2 ? RESIDENT.pairHint : '';
+        pairLine.textContent = live.length ? live.map((p) => `${p.name}: ${p.effect}`).join(' ·\u00a0') : nHomes >= 2 ? RESIDENT.pairHint : '';
         const full = s.residents.length >= nHomes;
         const waiting = asking.filter((r) => !s.residents.includes(r.id)).length;
         homeMore.hidden = !full || waiting === 0;
