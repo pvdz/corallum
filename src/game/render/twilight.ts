@@ -57,7 +57,7 @@ export function createTwilightScene(seed: number): Scene {
     { u: 0.82, size: 1.3, colour: 'rgba(130,80,190,0.9)' },
   ];
   const eels = Array.from({ length: 22 }, (_, i) => ({
-    u: (i < 11 ? 0.12 : 0.72) + rng() * 0.16, len: range(rng, 22, 36), light: rng() < 0.6,
+    u: i < 11 ? 0.1 + rng() * 0.1 : 0.72 + rng() * 0.16, len: range(rng, 22, 36), light: rng() < 0.6,
   }));
   const water = createLayerCache(0.5);
   const fore = createForeground(seed);
@@ -637,7 +637,7 @@ export function createTwilightScene(seed: number): Scene {
   function drawMoray(ctx: CanvasRenderingContext2D, t: number): void {
     sight('moray');
     const s = scale() * 1.4;
-    const u = 0.21;
+    const u = 0.235;
     const hx = focus.x - focus.w * 0.1 + u * focus.w * 1.2, hy = slopeY(u) - 10 * s;
     const touch = startled('moray', t);
     const back = touch && touch.age < 7 ? Math.max(0, 1 - Math.max(0, touch.age - 0.3) / 6.7) : 0;
@@ -1419,7 +1419,7 @@ export function createTwilightScene(seed: number): Scene {
     // Touched, the whole colony drops into its burrows from the nearest outward, and comes back
     // up slowly, the bravest first.
     const touch = startled('garden-eel', t);
-    for (const u of [0.2, 0.8]) {
+    for (const u of [0.15, 0.8]) {
       if ((which === 'left' && u > 0.5) || (which === 'right' && u < 0.5)) continue;
       spot('garden-eel', focus.x - focus.w * 0.1 + u * focus.w * 1.2, slopeY(u) - 15 * s + (u > 0.5 ? drop : 0), Math.max(36 * s, focus.w * 0.12));
     }
