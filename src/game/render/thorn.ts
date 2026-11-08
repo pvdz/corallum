@@ -28,58 +28,78 @@ export function drawThorn(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayo
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(Math.sin(t * 0.3) * 0.2);
-  const arms = 13;
-  // Thick tapering arms, each curling a little, a darker body showing between them; spines in
-  // pairs along every arm, pointing out to both sides; a small raised disc in the middle.
-  const armTip = (a: number): [number, number] => {
-    const th = (a / arms) * Math.PI * 2;
-    const r = (11 + Math.sin(a * 1.7 + t) * 0.8) * s;
-    return [th + Math.sin(t * 0.5 + a) * 0.06, r];
+  const arms = 14;
+  // A broad disc and thick arms tapering to blunt tips, each curling a little; a raised ridge
+  // down every arm; short rust-red spines with pale tips all over, thickest on the disc.
+  const armAt = (a: number): [number, number, number] => {
+    const th = (a / arms) * Math.PI * 2 + Math.sin(t * 0.5 + a) * 0.05;
+    const r = (11.5 + Math.sin(a * 1.7 + t) * 0.8) * s;
+    const curl = Math.sin(a * 2.3) * 0.22;
+    return [th, r, curl];
   };
-  ctx.fillStyle = '#6a2650';
+  ctx.fillStyle = '#5e2248';
   ctx.beginPath();
-  ctx.arc(0, 0, 6 * s, 0, Math.PI * 2);
+  ctx.arc(0, 0, 7.4 * s, 0, Math.PI * 2);
   ctx.fill();
-  ctx.fillStyle = '#8a3566';
+  ctx.fillStyle = '#7e3060';
   ctx.beginPath();
   for (let a = 0; a < arms; a++) {
-    const [th, r] = armTip(a);
-    const w = 0.2;
-    ctx.moveTo(Math.cos(th - w) * 4 * s, Math.sin(th - w) * 4 * s);
-    ctx.quadraticCurveTo(Math.cos(th - w * 0.5) * r * 0.6, Math.sin(th - w * 0.5) * r * 0.6, Math.cos(th) * r, Math.sin(th) * r);
-    ctx.quadraticCurveTo(Math.cos(th + w * 0.5) * r * 0.6, Math.sin(th + w * 0.5) * r * 0.6, Math.cos(th + w) * 4 * s, Math.sin(th + w) * 4 * s);
+    const [th, r, curl] = armAt(a);
+    const w = 0.2, r0 = 6.4 * s;
+    const tx = Math.cos(th + curl) * r, ty = Math.sin(th + curl) * r;
+    ctx.moveTo(Math.cos(th - w) * r0, Math.sin(th - w) * r0);
+    ctx.quadraticCurveTo(Math.cos(th - w * 0.4 + curl * 0.5) * r * 0.75, Math.sin(th - w * 0.4 + curl * 0.5) * r * 0.75, tx, ty);
+    ctx.quadraticCurveTo(Math.cos(th + w * 0.4 + curl * 0.5) * r * 0.75, Math.sin(th + w * 0.4 + curl * 0.5) * r * 0.75, Math.cos(th + w) * r0, Math.sin(th + w) * r0);
     ctx.closePath();
   }
   ctx.fill();
-  ctx.strokeStyle = '#f0b4d6';
-  ctx.lineWidth = 0.6 * s;
+  // The ridge down each arm.
+  ctx.strokeStyle = 'rgba(176,84,136,0.8)';
+  ctx.lineWidth = 0.9 * s;
   ctx.lineCap = 'round';
   ctx.beginPath();
   for (let a = 0; a < arms; a++) {
-    const [th] = armTip(a);
-    for (const r of [5.2, 7.4, 9.4]) {
-      const px = Math.cos(th) * r * s, py = Math.sin(th) * r * s;
-      const len = (2.4 - r * 0.12) * s;
+    const [th, r, curl] = armAt(a);
+    ctx.moveTo(Math.cos(th) * 5 * s, Math.sin(th) * 5 * s);
+    ctx.quadraticCurveTo(Math.cos(th + curl * 0.5) * r * 0.7, Math.sin(th + curl * 0.5) * r * 0.7, Math.cos(th + curl) * r * 0.92, Math.sin(th + curl) * r * 0.92);
+  }
+  ctx.stroke();
+  // Spines: along both edges of each arm and over the disc, each a short rust stroke with a pale tip.
+  const spines: [number, number, number, number][] = [];
+  for (let a = 0; a < arms; a++) {
+    const [th, r, curl] = armAt(a);
+    for (const f of [0.55, 0.7, 0.85]) {
+      const rr = r * f, at = th + curl * (f - 0.3);
+      const half = 0.2 * (1 - f) * 7.4 * s / rr + 0.04;
       for (const d of [-1, 1]) {
-        const sa = th + d * 1.1;
-        ctx.moveTo(px, py);
-        ctx.lineTo(px + Math.cos(sa) * len, py + Math.sin(sa) * len);
+        const px = Math.cos(at + d * half) * rr, py = Math.sin(at + d * half) * rr;
+        spines.push([px, py, at + d * 1.2, (1.7 - f) * s]);
       }
     }
   }
-  ctx.stroke();
-  ctx.fillStyle = '#b55a8c';
-  ctx.beginPath();
-  ctx.arc(0, 0, 3 * s, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.strokeStyle = 'rgba(240,180,214,0.8)';
-  ctx.beginPath();
-  for (let a = 0; a < 7; a++) {
-    const th = (a / 7) * Math.PI * 2 + 0.3;
-    ctx.moveTo(Math.cos(th) * 1.2 * s, Math.sin(th) * 1.2 * s);
-    ctx.lineTo(Math.cos(th) * 2.6 * s, Math.sin(th) * 2.6 * s);
+  for (let k = 0; k < 18; k++) {
+    const th = k * 2.4, rr = (1.5 + (k % 5) * 1.1) * s;
+    spines.push([Math.cos(th) * rr, Math.sin(th) * rr, th, 1.1 * s]);
   }
+  ctx.strokeStyle = '#b8443e';
+  ctx.lineWidth = 0.55 * s;
+  ctx.beginPath();
+  for (const [px, py, sa, len] of spines) { ctx.moveTo(px, py); ctx.lineTo(px + Math.cos(sa) * len, py + Math.sin(sa) * len); }
   ctx.stroke();
+  ctx.fillStyle = '#eaa4b8';
+  for (const [px, py, sa, len] of spines) {
+    ctx.beginPath();
+    ctx.arc(px + Math.cos(sa) * len, py + Math.sin(sa) * len, 0.3 * s, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  // Mottling on the disc.
+  ctx.fillStyle = 'rgba(150,64,110,0.7)';
+  for (let k = 0; k < 7; k++) {
+    const th = k * 0.9 + 0.4, rr = (2 + (k % 3) * 1.4) * s;
+    ctx.beginPath();
+    ctx.arc(Math.cos(th) * rr, Math.sin(th) * rr, 0.9 * s, 0, Math.PI * 2);
+    ctx.fill();
+  }
   ctx.restore();
 }
 
