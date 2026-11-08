@@ -981,7 +981,7 @@ export function createBreachScene(seed: number): Scene {
         const b = bundles[i % bundles.length]!;
         const x = x0 + b.drift * 3 * s, y = y0 - 1.5 * s;
         const breathe = 0.85 + 0.15 * Math.sin(t * 1.3 + i * 1.7);
-        const r = Math.max((1.5 + 1.9 * ripe) * s * b.size * breathe, 1.1 * dpr);
+        const r = Math.max((1.1 + 1.2 * ripe) * s * b.size * breathe, 1 * dpr);
         glow(ctx, x, y, r * 4, bundle, 0.22 * (0.4 + 0.6 * ripe) * breathe);
         const p = beads[i % BEAD_SHADES]!;
         p.moveTo(x + r, y);
