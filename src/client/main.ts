@@ -1200,8 +1200,8 @@ let lapseScene = false;
 /** From a whole-climb replay until the fade back from it is over: no sightings, no portraits. */
 let replayQuiet = false;
 function startLapse(whole = false): void {
-  // The Breach is a few metres: only the whole climb has anything to show there.
-  if (!whole && actAt(state.height) === 5) return;
+  // The Breach is a few metres: there the replay is the whole climb.
+  if (actAt(state.height) === 5) whole = true;
   lapseWhole = whole && actAt(state.height) > 1;
   lapseStart = animT;
   hint.classList.add('done');
