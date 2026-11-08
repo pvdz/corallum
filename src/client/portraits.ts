@@ -25,7 +25,7 @@ export const REDRAWN: readonly (readonly string[])[] = [
 ];
 const ART_VERSION = REDRAWN.length - 1;
 
-const DARK_TRIES = 12;
+const DARK_TRIES = 12, DARK_REST = 5000;
 
 /** Whether a crop is nearly black: even its brightest few pixels are dim. */
 function tooDark(g: CanvasRenderingContext2D): boolean {
@@ -73,8 +73,10 @@ export function createPortraits(persist: boolean) {
     storeTimer = window.setTimeout(store, 2000);
   }
   if (persist) window.addEventListener('pagehide', () => { if (storeTimer) store(); });
-  /** Crops let go for being too dark, by creature. */
+  /** Crops let go for being too dark, by creature, and when the last was (it rests a few seconds,
+   *  so others on screen are taken meanwhile). */
   const dark = new Map<string, number>();
+  const darkAt = new Map<string, number>();
   /** Crops being encoded (not wanted again meanwhile); a reset bumps the generation and drops them. */
   const pending = new Set<string>();
   let generation = 0;
@@ -86,6 +88,7 @@ export function createPortraits(persist: boolean) {
     /** Whether a portrait is still wanted: any at all, or (zoomed in) a close-up. */
     wants(id: string, closeUp: boolean): boolean {
       if (pending.has(`${id}|${closeUp}`)) return false;
+      if (performance.now() - (darkAt.get(id) ?? -1e9) < DARK_REST) return false;
       return closeUp ? !close.has(id) : !(id in album);
     },
     /** Changes whenever a portrait is taken (the journal redraws). */
@@ -126,6 +129,7 @@ export function createPortraits(persist: boolean) {
           // the creature taken at a later look; one that stays this dark is kept after a dozen tries.
           if (tooDark(g) && (dark.get(id) ?? 0) < DARK_TRIES) {
             dark.set(id, (dark.get(id) ?? 0) + 1);
+            darkAt.set(id, performance.now());
             pending.delete(key);
             return;
           }
@@ -137,6 +141,7 @@ export function createPortraits(persist: boolean) {
       generation++;
       pending.clear();
       dark.clear();
+      darkAt.clear();
       clearTimeout(storeTimer);
       storeTimer = 0;
       album = {};
