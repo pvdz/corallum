@@ -973,6 +973,9 @@ html.view-mode #journal-note { left: calc(max(12px, env(safe-area-inset-left)) +
   html .reader { padding: 10px 12px 10px 76px; }
   html .reader-card { padding: 16px 22px 14px; }
   html .reader-text { font-size: 15px; line-height: 1.5; margin-bottom: 12px; }
+  /* The memory choice: its words a size smaller, so more than one row of memories shows above the foot. */
+  html .finale.choice-screen h2 { font-size: 22px; margin-bottom: 4px; }
+  html .finale.choice-screen .finale-text { font-size: 14px; line-height: 1.45; margin-bottom: 10px; }
 }
 @keyframes journal-note { 0% { opacity: 0; transform: translateY(-4px); } 15%, 75% { opacity: 1; transform: none; } 100% { opacity: 0; } }
 .codex-list .unknown { opacity: 0.45; font-style: italic; }
