@@ -121,24 +121,33 @@ export function createPortraits(persist: boolean) {
         };
         read.readAsDataURL(blob);
       }, 'image/jpeg', 0.78);
-      createImageBitmap(src, Math.round(x - side / 2), Math.round(y - side / 2), Math.round(side), Math.round(side), { resizeWidth: SIZE, resizeHeight: SIZE, resizeQuality: 'medium' })
+      // The crop, sized: kept unless caught in a dark moment (a jelly between pulses, a light out),
+      // when it is let go and the creature taken at a later look; one that stays this dark is kept
+      // after a dozen tries.
+      const sx = Math.round(x - side / 2), sy = Math.round(y - side / 2), sw = Math.round(side);
+      const keep = (img: CanvasImageSource, ix: number, iy: number, iw: number, ih: number) => {
+        const c = document.createElement('canvas');
+        c.width = c.height = SIZE;
+        const g = c.getContext('2d', { willReadFrequently: true })!;
+        g.drawImage(img, ix, iy, iw, ih, 0, 0, SIZE, SIZE);
+        if (tooDark(g) && (dark.get(id) ?? 0) < DARK_TRIES) {
+          dark.set(id, (dark.get(id) ?? 0) + 1);
+          darkAt.set(id, performance.now());
+          pending.delete(key);
+          return;
+        }
+        encode(c);
+      };
+      // Straight from the frame where createImageBitmap is missing or refuses the crop (older Safari):
+      // a little dearer for that frame, but the journal still fills.
+      const direct = () => { try { keep(src, sx, sy, sw, sw); } catch { pending.delete(key); } };
+      if (typeof createImageBitmap !== 'function') { direct(); return; }
+      createImageBitmap(src, sx, sy, sw, sw, { resizeWidth: SIZE, resizeHeight: SIZE, resizeQuality: 'medium' })
         .then((bmp) => {
-          const c = document.createElement('canvas');
-          c.width = c.height = SIZE;
           // Sized here too: a browser that ignores the resize options hands back the full crop.
-          const g = c.getContext('2d', { willReadFrequently: true })!;
-          g.drawImage(bmp, 0, 0, SIZE, SIZE);
+          keep(bmp, 0, 0, bmp.width, bmp.height);
           bmp.close();
-          // Caught in a dark moment (a jelly between pulses, a light out), the crop is let go and
-          // the creature taken at a later look; one that stays this dark is kept after a dozen tries.
-          if (tooDark(g) && (dark.get(id) ?? 0) < DARK_TRIES) {
-            dark.set(id, (dark.get(id) ?? 0) + 1);
-            darkAt.set(id, performance.now());
-            pending.delete(key);
-            return;
-          }
-          encode(c);
-        }, () => pending.delete(key));
+        }, direct);
     },
     /** Forget them all (a full reset). */
     clear(): void {
