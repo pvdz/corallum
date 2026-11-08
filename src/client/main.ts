@@ -1207,6 +1207,12 @@ function startLapse(whole = false): void {
   lapseStart = animT;
   hint.classList.add('done');
   audio.cue('zone');
+  // The whole climb names its zones over the scene: Ossel's words make way, and wait until it is over.
+  if (lapseWhole) {
+    whisper.classList.remove('show');
+    const now = performance.now();
+    lastWhisper = Math.max(lastWhisper, now - 80_000 + LAPSE_ZONE * actAt(state.height) * 1000 + 5000);
+  }
 }
 function lapseHeight(): number | null {
   if (lapseStart < 0) return null;
@@ -2432,6 +2438,8 @@ function frameBody(now: number): void {
     fadingFrom = scene;
     fadeStart = tNow;
     scene = sceneFor(shown);
+    // Each zone it passes through is named as it comes, like the chapters of a film.
+    if (lapsing !== null) showZoneTitle(actAt(lapsing));
   }
   lapseScene = lapsing !== null;
   const want = lapsing !== null ? scene : sceneFor(state.height);
