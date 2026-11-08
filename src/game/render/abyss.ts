@@ -373,6 +373,23 @@ export function createAbyssScene(seed: number): Scene {
         ctx.quadraticCurveTo(x, ly + 1.2 * s, rx2 - 1 * s, ly);
       }
       ctx.stroke();
+      // Sulphide streaks, pale yellow, running down from the throat where the mineral seeps out.
+      ctx.strokeStyle = 'rgba(214,190,120,0.22)';
+      ctx.lineWidth = Math.max(0.6, 0.6 * s);
+      ctx.beginPath();
+      for (let m = 0; m < 2; m++) {
+        const top = right[layers]!, fx = x + (m ? 0.35 : -0.3) * wid * 0.6;
+        ctx.moveTo(fx, top[1] + 1 * s);
+        ctx.quadraticCurveTo(fx + (m ? 1 : -1) * 1.5 * s, base - hgt * 0.7, fx + (m ? 2 : -2) * s, base - hgt * (0.45 + 0.1 * m));
+      }
+      ctx.stroke();
+      // The throat: a lip of hot mineral round the opening.
+      const [tlx, tly] = left[layers]!, [trx] = right[layers]!;
+      ctx.strokeStyle = 'rgba(255,140,70,0.55)';
+      ctx.lineWidth = Math.max(0.8, 1.1 * s);
+      ctx.beginPath();
+      ctx.ellipse(x, tly, (trx - tlx) / 2, 1.2 * s, 0, Math.PI, Math.PI * 2);
+      ctx.stroke();
       // Pale mats of bacteria on the warm ground at its foot.
       ctx.fillStyle = 'rgba(206,200,182,0.32)';
       ctx.beginPath();
@@ -384,10 +401,20 @@ export function createAbyssScene(seed: number): Scene {
       ctx.fill();
       // Smoke: soft dark billows rising from the throat, spreading and thinning as they go (the
       // glow sprite's falloff, drawn dark over the water, not added to it).
+      // A shade lighter than the water, so the plume stands out from it as it spreads.
       for (let p = 0; p < 9; p++) {
         const q = ((t * 0.12 + p / 9 + k * 0.3) % 1);
-        glow(ctx, x + Math.sin(t * 0.8 + p * 1.7 + k) * 5 * s * q, base - hgt - 2 * s - q * 75 * s, (4 + q * 15) * s, '30,24,34', 0.75 * (1 - q) * Math.min(1, q * 6));
+        glow(ctx, x + Math.sin(t * 0.8 + p * 1.7 + k) * 5 * s * q, base - hgt - 2 * s - q * 75 * s, (4 + q * 15) * s, '46,38,48', 0.8 * (1 - q) * Math.min(1, q * 6));
       }
+      // The heat lights the plume's root from below: warm where it leaves the throat.
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      for (let p = 0; p < 9; p++) {
+        const q = ((t * 0.12 + p / 9 + k * 0.3) % 1);
+        if (q > 0.35) continue;
+        glow(ctx, x + Math.sin(t * 0.8 + p * 1.7 + k) * 5 * s * q, base - hgt - 2 * s - q * 75 * s, (4 + q * 15) * s, '255,110,50', 0.16 * (1 - q / 0.35));
+      }
+      ctx.restore();
       const belch = touch && touch.age < 4 && Math.abs(touch.x - x) < focus.w * 0.12 ? touch.age : -1;
       if (belch >= 0) {
         for (let p = 0; p < 6; p++) {
@@ -397,7 +424,10 @@ export function createAbyssScene(seed: number): Scene {
       }
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
-      glow(ctx, x, base - hgt, 10 * s, '255,120,60', 0.3 + 0.1 * Math.sin(t * 2 + k) + (belch >= 0 ? 0.6 * Math.max(0, 1 - belch) : 0));
+      const flare = belch >= 0 ? 0.6 * Math.max(0, 1 - belch) : 0;
+      glow(ctx, x, base - hgt, 12 * s, '255,120,60', 0.34 + 0.1 * Math.sin(t * 2 + k) + flare);
+      // A small white-hot core, flickering.
+      glow(ctx, x, base - hgt - 0.5 * s, 3 * s, '255,210,150', 0.5 + 0.2 * Math.sin(t * 7 + k * 2) + flare);
       ctx.restore();
     }
   }
@@ -501,26 +531,89 @@ export function createAbyssScene(seed: number): Scene {
   function drawBuriedReefs(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
     const r = mulberry32(seed ^ 0xb0b);
+    ctx.lineCap = 'round';
     for (let k = 0; k < 6; k++) {
       const u = k < 3 ? 0.04 + k * 0.1 + r() * 0.04 : 0.68 + (k - 3) * 0.1 + r() * 0.04;
       const x = focus.x + focus.w * u, y = baseY() + (6 + r() * 6) * s;
       const wdt = (40 + r() * 34) * s, hgt = (20 + r() * 18) * s;
-      ctx.fillStyle = '#2c2a46';
-      ctx.beginPath();
-      ctx.ellipse(x, y, wdt, hgt, 0, Math.PI, 0);
-      ctx.fill();
-      // Dead branches poking out of the hump.
-      ctx.strokeStyle = '#3a3858';
-      ctx.lineCap = 'round';
+      // Dead branches first, so the silt mound buries their feet: forked, tapering, bent a little,
+      // some broken off short; the old stone pale grey, dust lying along their upper edges.
+      const twigs: number[] = [];
       for (let b = 0; b < 5; b++) {
-        const bx = x + (b - 2) * wdt * 0.3;
-        const len = (8 + r() * 16) * s;
-        ctx.lineWidth = (2 + r() * 2) * s;
-        ctx.beginPath();
-        ctx.moveTo(bx, y - hgt * 0.6);
-        ctx.lineTo(bx + (r() - 0.5) * 10 * s, y - hgt * 0.6 - len);
-        ctx.stroke();
+        const bx = x + (b - 2) * wdt * 0.3 + (r() - 0.5) * 6 * s;
+        const by = y - hgt * (0.8 - 0.14 * Math.abs(b - 2));
+        const len = (12 + r() * 18) * s, lean = (r() - 0.5) * 0.7, w0 = (1.6 + r() * 1.4) * s;
+        const ex = bx + Math.sin(lean) * len, ey = by - Math.cos(lean) * len;
+        twigs.push(bx, by, (bx + ex) / 2 + (r() - 0.5) * 5 * s, (by + ey) / 2, ex, ey, w0);
+        // A fork two thirds up, splaying away from the lean, shorter and thinner.
+        if (r() < 0.7) {
+          const fx = bx + (ex - bx) * 0.6, fy = by + (ey - by) * 0.6, fl = len * (0.35 + r() * 0.25);
+          const fa = lean + (lean > 0 ? -1 : 1) * (0.5 + r() * 0.4);
+          const gx = fx + Math.sin(fa) * fl, gy = fy - Math.cos(fa) * fl;
+          twigs.push(fx, fy, (fx + gx) / 2, (fy + gy) / 2 - 1 * s, gx, gy, w0 * 0.6);
+        }
       }
+      for (let pass = 0; pass < 3; pass++) {
+        // The dark side, the stone, then dust on top (offset up and to the light).
+        ctx.strokeStyle = pass === 0 ? '#22213a' : pass === 1 ? '#4a4864' : 'rgba(170,168,196,0.35)';
+        for (let i = 0; i < twigs.length; i += 7) {
+          const w = twigs[i + 6]! * (pass === 0 ? 1.35 : pass === 1 ? 1 : 0.45), off = pass === 2 ? -0.5 * twigs[i + 6]! : 0;
+          // Tapered: a thick lower half, a thin upper one.
+          for (const [a, b, ww] of [[0, 0.55, w], [0.45, 1, w * 0.6]] as const) {
+            const P = (f: number, o: number) => { const g = 1 - f; return twigs[i + o]! * g * g + 2 * twigs[i + o + 2]! * g * f + twigs[i + o + 4]! * f * f; };
+            ctx.lineWidth = Math.max(0.6, ww);
+            ctx.beginPath();
+            ctx.moveTo(P(a, 0) + off * 0.3, P(a, 1) + off);
+            ctx.quadraticCurveTo(P((a + b) / 2, 0) + off * 0.3, P((a + b) / 2, 1) + off, P(b, 0) + off * 0.3, P(b, 1) + off);
+            ctx.stroke();
+          }
+        }
+      }
+      // Empty polyp cups along the stone, and the broken ends' paler cores.
+      ctx.fillStyle = '#2a2944';
+      ctx.beginPath();
+      for (let i = 0; i < twigs.length; i += 7) {
+        for (const f of [0.35, 0.7]) {
+          const g = 1 - f, cx = twigs[i]! * g * g + 2 * twigs[i + 2]! * g * f + twigs[i + 4]! * f * f;
+          const cy = twigs[i + 1]! * g * g + 2 * twigs[i + 3]! * g * f + twigs[i + 5]! * f * f, cr = twigs[i + 6]! * 0.3;
+          ctx.moveTo(cx + cr, cy);
+          ctx.arc(cx, cy, cr, 0, Math.PI * 2);
+        }
+      }
+      ctx.fill();
+      ctx.fillStyle = 'rgba(190,186,210,0.45)';
+      ctx.beginPath();
+      for (let i = 0; i < twigs.length; i += 7) {
+        const cr = twigs[i + 6]! * 0.32;
+        ctx.moveTo(twigs[i + 4]! + cr, twigs[i + 5]!);
+        ctx.arc(twigs[i + 4]!, twigs[i + 5]!, cr, 0, Math.PI * 2);
+      }
+      ctx.fill();
+      // The mound: silt heaped over the old reef, uneven along its top, pale where the snow lies.
+      const mound = ctx.createLinearGradient(0, y - hgt, 0, y);
+      mound.addColorStop(0, '#3e3c5a');
+      mound.addColorStop(1, '#23223a');
+      ctx.fillStyle = mound;
+      ctx.beginPath();
+      ctx.moveTo(x - wdt, y);
+      const N = 20;
+      for (let e = 0; e <= N; e++) {
+        const a = Math.PI * (1 - e / N);
+        const bump = 1 + 0.08 * Math.sin(e * 1.15 + k * 1.7);
+        ctx.lineTo(x + Math.cos(a) * wdt, y - Math.sin(a) * hgt * 0.95 * bump);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(160,158,190,0.22)';
+      ctx.lineWidth = Math.max(0.6, 0.9 * s);
+      ctx.beginPath();
+      for (let e = 4; e <= N - 4; e++) {
+        const a = Math.PI * (1 - e / N);
+        const bump = 1 + 0.08 * Math.sin(e * 1.15 + k * 1.7);
+        const px = x + Math.cos(a) * wdt, py = y - Math.sin(a) * hgt * 0.95 * bump + 0.8 * s;
+        if (e === 4) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
       glow(ctx, x + (r() - 0.5) * wdt, y - hgt * 0.5, 6 * s, '170,190,255', 0.25 + 0.15 * Math.sin(t * 0.7 + k));
