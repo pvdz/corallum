@@ -37,11 +37,15 @@ export function createAsk(host: HTMLElement) {
   host.append(box);
 
   let resolve: ((v: string | null) => void) | null = null;
+  /** What had the focus before the card opened (the button that asked): it gets it back. */
+  let before: HTMLElement | null = null;
   function finish(ok: boolean): void {
     if (!resolve) return;
     box.hidden = true;
     const r = resolve;
     resolve = null;
+    if (before?.isConnected) before.focus({ preventScroll: true });
+    before = null;
     r(ok ? field.value : null);
   }
   box.addEventListener('click', (e) => { if (e.target === box) finish(false); });
@@ -54,6 +58,7 @@ export function createAsk(host: HTMLElement) {
 
   function open(o: AskOptions, kind: 'ask' | 'input' | 'show', value = ''): Promise<string | null> {
     finish(false);
+    before = document.activeElement instanceof HTMLElement && document.activeElement !== document.body ? document.activeElement : null;
     title.textContent = o.title;
     text.textContent = o.text;
     yes.textContent = o.yes;
