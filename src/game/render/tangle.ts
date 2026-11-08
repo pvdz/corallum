@@ -5,7 +5,7 @@ import { drawSmallFish, glow, softRing } from './draw.ts';
 import type { Focus } from './scene.ts';
 import { spot } from './sightings.ts';
 
-export function drawTangle(ctx: CanvasRenderingContext2D, tg: { k: number; x: number; age: number }, life: number, t: number, focus: Focus, dpr: number): void {
+export function drawTangle(ctx: CanvasRenderingContext2D, tg: { k: number; x: number; age: number }, life: number, t: number, focus: Focus, dpr: number, hint = true): void {
   const s = Math.min(focus.w, focus.h) / 700 * 1.6;
   const a = Math.min(1, tg.age / 2, (life - tg.age) / 3);
   if (a <= 0) return;
@@ -53,14 +53,14 @@ export function drawTangle(ctx: CanvasRenderingContext2D, tg: { k: number; x: nu
   ctx.restore();
   // A breathing ring, as with feasts: it can be touched.
   const p = (t * 0.6) % 1;
-  softRing(ctx, fx, fy, (18 + 14 * p) * s, (18 + 14 * p) * s, 6 * s, '255,235,200', (0.35 * (1 - p)) * 1.15);
+  if (hint) softRing(ctx, fx, fy, (18 + 14 * p) * s, (18 + 14 * p) * s, 6 * s, '255,235,200', (0.35 * (1 - p)) * 1.15);
   ctx.globalCompositeOperation = 'lighter';
   glow(ctx, fx, fy, 20 * s, '255,220,160', 0.15);
   ctx.restore();
 }
 
 /** On the Silt Floor: a brittle star pinned under a fallen stone, its free arms waving. */
-export function drawPinned(ctx: CanvasRenderingContext2D, tg: { k: number; x: number; age: number }, life: number, t: number, focus: Focus, dpr: number): void {
+export function drawPinned(ctx: CanvasRenderingContext2D, tg: { k: number; x: number; age: number }, life: number, t: number, focus: Focus, dpr: number, hint = true): void {
   const s = Math.min(focus.w, focus.h) / 700 * 1.6;
   const a = Math.min(1, tg.age / 2, (life - tg.age) / 3);
   if (a <= 0) return;
@@ -89,12 +89,12 @@ export function drawPinned(ctx: CanvasRenderingContext2D, tg: { k: number; x: nu
   drawStones(ctx, [{ x: x + 4 * s, y: y + 4 * s, rx: 11 * s, ry: 7 * s, seed: tg.k * 1.7 + 0.4 }, { x: x - 7 * s, y: y + 2 * s, rx: 3.5 * s, ry: 2.4 * s, seed: tg.k + 2.1 }],
     '#3a3d52', 'rgba(160,170,210,0.22)', 'rgba(10,12,22,0.55)', s * 0.6);
   const p = (t * 0.6) % 1;
-  softRing(ctx, x, y - 4 * s, (18 + 14 * p) * s, (18 + 14 * p) * s, 6 * s, '255,235,200', (0.35 * (1 - p)) * 1.15);
+  if (hint) softRing(ctx, x, y - 4 * s, (18 + 14 * p) * s, (18 + 14 * p) * s, 6 * s, '255,235,200', (0.35 * (1 - p)) * 1.15);
   ctx.restore();
 }
 
 /** A fragment of some other reef tumbling past on the current: tap to take it in. */
-export function drawFragment(ctx: CanvasRenderingContext2D, f: { k: number; x: number; age: number }, life: number, t: number, focus: Focus, dpr: number): void {
+export function drawFragment(ctx: CanvasRenderingContext2D, f: { k: number; x: number; age: number }, life: number, t: number, focus: Focus, dpr: number, hint = true): void {
   const s = Math.min(focus.w, focus.h) / 700 * 1.7;
   const a = Math.min(1, f.age / 2, (life - f.age) / 3);
   if (a <= 0) return;
@@ -155,12 +155,12 @@ export function drawFragment(ctx: CanvasRenderingContext2D, f: { k: number; x: n
   ctx.restore();
   const p = (t * 0.6) % 1;
   ctx.save();
-  softRing(ctx, x, y, (22 + 14 * p) * s, (22 + 14 * p) * s, 6 * s, '255,235,200', (0.35 * (1 - p) * a) * 1.15);
+  if (hint) softRing(ctx, x, y, (22 + 14 * p) * s, (22 + 14 * p) * s, 6 * s, '255,235,200', (0.35 * (1 - p) * a) * 1.15);
   ctx.restore();
 }
 
 /** A lost shoal far off in the dark: a small knot of lantern lights, flickering, as if calling. */
-export function drawStray(ctx: CanvasRenderingContext2D, st: { k: number; x: number; age: number }, life: number, t: number, focus: Focus, dpr: number): void {
+export function drawStray(ctx: CanvasRenderingContext2D, st: { k: number; x: number; age: number }, life: number, t: number, focus: Focus, dpr: number, hint = true): void {
   const s = Math.min(focus.w, focus.h) / 700;
   const a = Math.min(1, st.age / 3, (life - st.age) / 4);
   if (a <= 0) return;
@@ -200,6 +200,6 @@ export function drawStray(ctx: CanvasRenderingContext2D, st: { k: number; x: num
   });
   const p = (t * 0.5) % 1;
   ctx.globalCompositeOperation = 'source-over';
-  softRing(ctx, x, y, (20 + 18 * p) * s, (20 + 18 * p) * s, 6 * s, '160,220,255', (0.35 * (1 - p) * a) * 1.15);
+  if (hint) softRing(ctx, x, y, (20 + 18 * p) * s, (20 + 18 * p) * s, 6 * s, '160,220,255', (0.35 * (1 - p) * a) * 1.15);
   ctx.restore();
 }

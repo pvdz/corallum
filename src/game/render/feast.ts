@@ -23,7 +23,7 @@ export function feastReach(focus: Focus, dpr: number): number {
 }
 
 export function drawFeast(ctx: CanvasRenderingContext2D, f: Feast, age: number, t: number, focus: Focus, dpr: number,
-  pay: FeastPay = 'calcite'): void {
+  pay: FeastPay = 'calcite', hint = true): void {
   const [x, y] = feastPos(f, age, focus, pay);
   const s = Math.min(focus.w, focus.h) / 700;
   // Fade in at the top, out as it sinks out of reach.
@@ -53,10 +53,12 @@ export function drawFeast(ctx: CanvasRenderingContext2D, f: Feast, age: number, 
     const rad = (22 + (i % 4) * 9) * s;
     glow(ctx, x + Math.cos(ang) * rad, y + Math.sin(ang) * rad * 0.6, 5 * s, '170,240,255', 0.55);
   }
-  // A ring that breathes, as a hint that it can be touched.
-  const pulse = (t * 0.6) % 1;
-  const rr = feastReach(focus, dpr) * (0.6 + 0.4 * pulse);
-  softRing(ctx, x, y, rr, rr, 9 * dpr, '255,225,190', 0.32 * (1 - pulse));
+  // A ring that breathes, as a hint that it can be touched (not in a photo of the reef).
+  if (hint) {
+    const pulse = (t * 0.6) % 1;
+    const rr = feastReach(focus, dpr) * (0.6 + 0.4 * pulse);
+    softRing(ctx, x, y, rr, rr, 9 * dpr, '255,225,190', 0.32 * (1 - pulse));
+  }
   ctx.restore();
 }
 
