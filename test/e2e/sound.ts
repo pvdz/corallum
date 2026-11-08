@@ -5,10 +5,14 @@
 import { createRequire } from 'node:module';
 import type { AddressInfo } from 'node:net';
 import { startServer } from '../../src/server/server.ts';
+import type { Cue } from '../../src/game/audio/audio.ts';
 
 const pw = createRequire(process.env.PLAYWRIGHT_GLOBAL_ROOT ?? '/usr/lib/node_modules/')('playwright') as typeof import('playwright');
 const CUES = ['buy', 'sweep', 'story', 'choice', 'release', 'spawning', 'whisper', 'feast', 'whale', 'zone', 'touch', 'shimmer', 'crunch',
-  'dolphin', 'water', 'depart', 'shard', 'intruder', 'moment', 'gull', 'rising', 'heat', 'upwell', 'swell', 'thunder'] as const;
+  'dolphin', 'water', 'depart', 'shard', 'intruder', 'moment', 'gull', 'rising', 'heat', 'upwell', 'swell', 'thunder'] as const satisfies readonly Cue[];
+// Every cue the game has, no more and no less: a new cue fails the typecheck until it is listed here.
+const everyCue: [Exclude<Cue, (typeof CUES)[number]>] extends [never] ? true : never = true;
+void everyCue;
 
 const server = await startServer(0);
 const browser = await pw.chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
