@@ -5,10 +5,11 @@
 import type { CreatureId } from '../content/creatures.ts';
 
 const seen = new Set<CreatureId>();
+const drawn = new Set<CreatureId>();
 
-/** A creature was drawn this frame. */
+/** A creature was drawn this frame (it counts as seen once the frame ends with it in view). */
 export function sight(id: CreatureId): void {
-  seen.add(id);
+  drawn.add(id);
 }
 
 /** Everything sighted since the last call. */
@@ -31,10 +32,26 @@ export function spot(id: CreatureId | 'ossel' | 'shell' | 'star' | 'old' | 'tang
   nextSpots.push(n === undefined ? { id, x, y, r } : { id, x, y, r, n });
 }
 
-/** Call once per frame after drawing: the spots of this frame become the tappable ones. */
-export function endFrameSpots(): void {
+/**
+ * Call once per frame after drawing: the spots of this frame become the tappable ones, and the
+ * creatures drawn count as seen. Given the open part of the scene (device pixels), one with spots
+ * counts only once one of them is centred in it, not while it is still off the edge or behind the
+ * panel; one drawn without a spot counts as drawn.
+ */
+export function endFrameSpots(view?: { x: number; y: number; w: number; h: number }): void {
   spots = nextSpots;
   nextSpots = [];
+  for (const id of drawn) {
+    let any = false, inside = !view;
+    for (const p of spots) {
+      if (inside) break;
+      if (p.id !== id) continue;
+      any = true;
+      inside = p.x >= view!.x && p.x <= view!.x + view!.w && p.y >= view!.y && p.y <= view!.y + view!.h;
+    }
+    if (inside || !any) seen.add(id);
+  }
+  drawn.clear();
 }
 
 /** The spots of the last frame. */

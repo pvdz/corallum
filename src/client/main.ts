@@ -2564,7 +2564,7 @@ function frameBody(now: number): void {
   }
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   if (photoPending) { const take = photoPending; photoPending = null; take(); }
-  endFrameSpots();
+  endFrameSpots(focusNow);
   if (now - lastPortrait > 1000 && frozenT === null && !fadingFrom && !replayQuiet && (zoom.k === 1 || zoom.k >= 2)) {
     lastPortrait = now;
     takePortrait();
