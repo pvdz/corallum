@@ -561,7 +561,7 @@ if (frozenT === null && botT === null) {
   if (already.length > 1) {
     for (const f of already) state.meta.seen.push(`f:${f.id}`);
     state.meta.lineage += already.length;
-    setTimeout(() => showJournalNote(`Feats · +${already.length} lineage`, `${already.length} feats already earned`), 1500);
+    setTimeout(() => showJournalNote(UI.featsGained(already.length), UI.featsEarned(already.length)), 1500);
   }
 }
 // A brand-new reef: let the title and the dark water show before the first band's story.
@@ -610,7 +610,7 @@ if (ended(state)) document.documentElement.classList.add('ended');
     const where = SEAMOUNTS.find((m) => m.id === state.seamount);
     panel.story(`Lesser spawning ${n}${where && where.id !== 'plain' ? ` · ${where.name.toLowerCase()}` : ''}`, lb.title,
       `${lb.text}${where && where.id !== 'plain' ? ` ${where.text}` : ''}` +
-      (where?.trial ? ` A hard place (${where.effect}): grow to ${where.trial.goal.toLocaleString('en-US')} m here, and the line learns it.` : ''));
+      (where?.trial ? UI.hardPlace(where.effect, where.trial.goal.toLocaleString('en-US')) : ''));
   }
 }
 const replay = document.createElement('button');
@@ -1490,7 +1490,7 @@ function showCreatureLabel(id: string, x: number, y: number, r = 20, tx = NaN, t
   // What it gives when touched, and when it will give again.
   const g = document.createElement('em');
   const wait = state.gifts[c.id] + GIFT.cooldown - state.t;
-  g.textContent = wait > 0 ? `${GIFT_WORD[giftOf(c.id)]} again in ${duration(wait)}` : `${GIFT_WORD[giftOf(c.id)]} when touched`;
+  g.textContent = wait > 0 ? UI.giftAgain(GIFT_WORD[giftOf(c.id)], duration(wait)) : UI.giftWhen(GIFT_WORD[giftOf(c.id)]);
   creatureLabel.append(n, t, g);
   const reach = Math.min(r, 90);
   const lw = creatureLabel.offsetWidth || 220, lh = creatureLabel.offsetHeight || 56;
@@ -2361,7 +2361,7 @@ function frameBody(now: number): void {
     const zg = ZONE_GUIDE[actAt(state.height)];
     if (zg && frozenT === null && botT === null && !state.meta.seen.includes(`zone:${actAt(state.height)}`)) {
       state.meta.seen.push(`zone:${actAt(state.height)}`);
-      setTimeout(() => panel.story('A new zone', zg.title, zg.text), 5000);
+      setTimeout(() => panel.story(UI.newZone, zg.title, zg.text), 5000);
     }
     audio.cue('zone');
     // Let the new zone arrive (its title is up for about five seconds) before the band that tells it opens.
@@ -2491,7 +2491,7 @@ function frameBody(now: number): void {
       state.meta.seen.push(key);
       if (c) remember(state, 'seen', c.name);
       if (c?.note.startsWith('Rare.')) {
-        showJournalNote('A rare sighting', c.name);
+        showJournalNote(UI.rareSighting, c.name);
         audio.cue('feast');
       } else if (c) showJournalNote(UI.seenFirst, c.name);
     }
@@ -2522,7 +2522,7 @@ function frameBody(now: number): void {
   }
   // The line's record (set by the sim at the exact moment of reaching the surface): announce a new one.
   if (state.meta.fastest !== shownRecord) {
-    if (shownRecord > 0 && frozenT === null) showJournalNote('A new record', `The surface in ${duration(state.meta.fastest)}`);
+    if (shownRecord > 0 && frozenT === null) showJournalNote(UI.newRecord, UI.surfaceIn(duration(state.meta.fastest)));
     shownRecord = state.meta.fastest;
   }
   // Shared table: a feast left to sink is eaten by the scavengers, half for the reef.

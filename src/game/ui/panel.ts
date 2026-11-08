@@ -29,7 +29,7 @@ import { SISTER } from '../content/sister.ts';
 import { DIARY_TEXT, diaryLine } from '../content/diary.ts';
 import { drawShellShape } from '../render/shells.ts';
 import type { WishId } from '../content/sky.ts';
-import { UI } from '../content/ui.ts';
+import { CODEX, UI } from '../content/ui.ts';
 import { OSSEL_MISTAKES } from '../content/ossel.ts';
 import { PALETTES, PALETTE_TEXT } from '../content/palettes.ts';
 import { SHARD, SHARD_LINES } from '../content/shards.ts';
@@ -153,7 +153,7 @@ function bandStory(b: Band, kept = false): Story {
   return { kicker: b.metres === 0 ? UI.bandFirst : UI.bandAt(metres(b.metres)), title: b.title, text: kept && b.kept ? b.kept : b.text };
 }
 function readingStory(r: Reading): Story {
-  return { kicker: 'A Thousandfold band, read', title: r.title, text: r.text };
+  return { kicker: UI.readingKicker, title: r.title, text: r.text };
 }
 function truceStory(m: Meeting, c: Choice): Story {
   const o = m[c];
@@ -239,7 +239,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let minorKey = '';
   stocks.append(minorBox);
   const heightRow = el('div', 'stock height');
-  const heightLabel = el('span', 'stock-name', 'Reef');
+  const heightLabel = el('span', 'stock-name', UI.reefLabel);
   const heightValue = el('span', 'stock-value', '0 m');
   const heightBar = el('div', 'bar');
   const heightFill = el('div', 'bar-fill');
@@ -256,7 +256,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const tabPages = new Map<string, HTMLElement>();
   // Tabs and pages as screen readers know them: a tab list, each tab naming the page it shows.
   tabs.setAttribute('role', 'tablist');
-  for (const [id, label] of [['grow', 'Grow'], ['bands', 'Bands'], ['lineage', 'Lineage'], ['reef', 'Reef']] as const) {
+  for (const [id, label] of Object.entries(UI.tabs) as [keyof typeof UI.tabs, string][]) {
     tabs.append(button('tab', label, () => showTab(id)));
     const tab = tabs.lastElementChild as HTMLButtonElement;
     tab.id = `tab-${id}`;
@@ -346,7 +346,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     truceChoices.append(b);
     return { b, label, effect };
   });
-  truceBox.append(el('p', 'truce-kicker', 'The Rasp would talk'), truceTitle, truceText, truceWords, truceWordsLabel, truceChoices);
+  truceBox.append(el('p', 'truce-kicker', UI.raspKicker), truceTitle, truceText, truceWords, truceWordsLabel, truceChoices);
   grow.append(truceBox);
 
   // ---------- A moment waiting for an answer ----------
@@ -394,7 +394,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   raspBox.hidden = true;
   const raspHead = el('header');
   const raspCount = el('span', 'level');
-  raspHead.append(el('h3', '', 'The Rasp'), raspCount);
+  raspHead.append(el('h3', '', UI.theRasp), raspCount);
   foldable(raspBox, raspHead, 'rasp');
   const raspRow = el('div', 'rasp-row');
   const raspMinus = button('step', '−', () => hooks.setRasp((lastState?.rasp ?? 0) - 1));
@@ -561,7 +561,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const shoalBox = el('section', 'shoals');
   shoalBox.hidden = true;
   const shoalHead = el('header');
-  const shoalTitle = el('h3', '', 'Shoals');
+  const shoalTitle = el('h3', '', UI.shoals);
   const shoalIdle = el('span', 'level');
   shoalHead.append(shoalTitle, shoalIdle);
   foldable(shoalBox, shoalHead, 'shoals');
@@ -618,7 +618,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   tripCard.hidden = true;
   const tripHead = el('header');
   const tripTitle = el('h3');
-  tripHead.append(tripTitle, el('span', 'level', 'Expedition'));
+  tripHead.append(tripTitle, el('span', 'level', UI.expedition));
   const tripHint = el('p', 'flavour');
   const tripEffect = el('p', 'effect');
   const tripBar = el('div', 'milestone-bar trip-bar');
@@ -740,7 +740,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   readingCard.hidden = true;
   const readingHead = el('header');
   const readingTitle = el('h3');
-  readingHead.append(readingTitle, el('span', 'level', 'Reading'));
+  readingHead.append(readingTitle, el('span', 'level', UI.reading));
   const readingHint = el('p', 'flavour', UI.readingHint);
   const readingEffect = el('p', 'effect');
   const readingFoot = el('footer');
@@ -898,7 +898,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         if (pic) {
           const img = el('img', 'portrait');
           img.src = pic;
-          img.alt = `${c.name}, as you first saw it`;
+          img.alt = UI.firstSaw(c.name);
           img.tabIndex = 0;
           const enlarge = () => showPortrait(pic, c.name, c.note, c.zone);
           img.addEventListener('click', enlarge);
@@ -1101,34 +1101,34 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     codexKey = key;
     codexList.innerHTML = '';
     const tr = seamountDef(s.seamount).trial;
-    if (tr) codexRow('Trial', `${seamountDef(s.seamount).name}: grow to ${metres(tr.goal)}${s.meta.seen.includes(`trial:${s.seamount}`) ? ` · ${TRIAL_TEXT.met}` : ''} · ${tr.reward}`);
+    if (tr) codexRow(CODEX.trial, `${CODEX.trialGoal(seamountDef(s.seamount).name, metres(tr.goal))}${s.meta.seen.includes(`trial:${s.seamount}`) ? ` · ${TRIAL_TEXT.met}` : ''} · ${tr.reward}`);
     const wrong = s.meta.seen.filter((k) => k.startsWith('o:')).length;
-    if (wrong) codexRow('Ossel', `${wrong}\u00a0of\u00a0${OSSEL_MISTAKES.length} mistakes found`);
-    if (s.race.decided > 0) codexRow(UI.sisterReef, `first to ${s.race.won}\u00a0of\u00a0${s.race.decided} marks` + (s.meta.endings > 0 ? ` · ahead of the quick cousin at ${s.race.cousin}` : ''));
-    const recs = s.meta.records.map((t, i) => t > 0 ? `${metres(SISTER.marks[i]!)} in ${duration(t)}` : '').filter(Boolean);
-    if (recs.length) codexRow('Line’s best', recs.join(' · '));
+    if (wrong) codexRow(CODEX.ossel, CODEX.mistakes(wrong, OSSEL_MISTAKES.length));
+    if (s.race.decided > 0) codexRow(UI.sisterReef, CODEX.marks(s.race.won, s.race.decided) + (s.meta.endings > 0 ? CODEX.cousin(String(s.race.cousin)) : ''));
+    const recs = s.meta.records.map((t, i) => t > 0 ? CODEX.record(metres(SISTER.marks[i]!), duration(t)) : '').filter(Boolean);
+    if (recs.length) codexRow(CODEX.best, recs.join(' · '));
     const did: string[] = [];
-    if (s.feasts) did.push(`${s.feasts} feast${s.feasts === 1 ? '' : 's'} caught`);
-    if (s.tally.intruders) did.push(`${s.tally.intruders} intruder${s.tally.intruders === 1 ? '' : 's'} driven off`);
-    if (s.signal.answered) did.push(`${s.signal.answered} signal${s.signal.answered === 1 ? '' : 's'} answered`);
-    if (s.relics.length + s.tally.roams) did.push(`${s.relics.length + s.tally.roams} trip${s.relics.length + s.tally.roams === 1 ? '' : 's'}`);
-    if (s.request.done) did.push(`${s.request.done} request${s.request.done === 1 ? '' : 's'} kept`);
-    if (s.tally.risings) did.push(`${s.tally.risings} rising${s.tally.risings === 1 ? '' : 's'} fed on`);
+    if (s.feasts) did.push(CODEX.feasts(s.feasts));
+    if (s.tally.intruders) did.push(CODEX.intruders(s.tally.intruders));
+    if (s.signal.answered) did.push(CODEX.signals(s.signal.answered));
+    if (s.relics.length + s.tally.roams) did.push(CODEX.trips(s.relics.length + s.tally.roams));
+    if (s.request.done) did.push(CODEX.requests(s.request.done));
+    if (s.tally.risings) did.push(CODEX.risings(s.tally.risings));
     if (did.length) codexRow(UI.doneHere, did.join(' · '));
     const strain = STRAINS.find((x) => x.id === s.strain), sport = SPORTS.find((x) => x.id === s.sport);
-    if (strain) codexRow('Glimmerseed', sport ? `${strain.name}, sported ${sport.name.toLowerCase()} (${sport.effect})` : `${strain.name} (${strain.effect})`);
+    if (strain) codexRow(CODEX.glimmerseed, sport ? CODEX.sported(strain.name, sport.name.toLowerCase(), sport.effect) : CODEX.strain(strain.name, strain.effect));
     const grains = GRAINS.map((g) => [g.name, s.grains.filter((x) => x === g.id).length] as const).filter(([, n]) => n > 0);
     if (grains.length) codexRow(UI.theGrain, grains.map(([n, c]) => `${c} ${n.toLowerCase()}`).join(' · '));
     const stars = FIGURES.filter((f) => s.sky[f.id]).map((f) => f.name);
     if (stars.length) codexRow(UI.starsNamed, stars.join(' · '));
-    codexRow('Grown', `${metres(s.height)} up the seamount, ${Math.round(Math.max(0, SURFACE - s.height)).toLocaleString('en-US')} m down`);
-    codexRow(UI.bandsRead, `${s.bands.length} of your own, ${s.readings.length} of Thousandfold’s`);
+    codexRow(CODEX.grown, CODEX.grownText(metres(s.height), Math.round(Math.max(0, SURFACE - s.height)).toLocaleString('en-US')));
+    codexRow(UI.bandsRead, CODEX.bandsText(s.bands.length, s.readings.length));
     const truce = MEETINGS.filter((m) => s.truce[m.id]).map((m) => `${m.title}: ${m[s.truce[m.id] as Choice].label}`);
     if (truce.length) codexRow(UI.truceKicker, truce.join(' · '));
     const spoken = TIERS.filter((t) => s.dialects[t.tier]).map((t) => DIALECTS.find((d) => d.id === s.dialects[t.tier])!.name);
-    if (spoken.length) codexRow('Dialects', spoken.join(' · '));
-    if (s.meta.name) codexRow('Name', reefName(s));
-    codexRow(UI.thisReef, `${duration(s.t)} growing · ${num(s.earned.calcite)} calcite gathered`);
+    if (spoken.length) codexRow(CODEX.dialects, spoken.join(' · '));
+    if (s.meta.name) codexRow(CODEX.name, reefName(s));
+    codexRow(UI.thisReef, CODEX.thisReefText(duration(s.t), num(s.earned.calcite)));
     const small = [
       s.tally.pruned ? UI.tallyPruned(s.tally.pruned) : '',
       s.tally.lucky ? UI.tallyLucky(s.tally.lucky) : '',
@@ -1144,10 +1144,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       return id === 'haste' && s.surfacedAt < 0 ? VOW.left(duration(VOW.hasteHours * 3600 - s.t)) : VOW.kept;
     };
     if (s.vows.length) codexRow(VOW.label, VOWS.filter((v) => s.vows.includes(v.id)).map((v) => `${v.name.toLowerCase()} (${vowState(v.id)})`).join(' · '));
-    if (s.meta.endings > 0) codexRow(UI.theSea, `healing: the Long Silt falls ×${(0.95 ** Math.min(6, s.meta.endings)).toFixed(2)} for the endings your line has reached`);
-    if (s.meta.endings > 0) codexRow('Endings', `${s.meta.endings} · ${s.meta.carriedEver.length}\u00a0of\u00a0${MEMORIES.length} memories carried so far`);
-    if (s.carried.length) codexRow('Carried', s.carried.map((id) => MEMORIES.find((m) => m.id === id)?.title ?? id).join(' · '));
-    if (s.meta.spawnings) codexRow('Lineage', `${s.meta.spawnings} lesser spawning${s.meta.spawnings === 1 ? '' : 's'}, best reef ${metres(s.meta.best)}`);
+    if (s.meta.endings > 0) codexRow(UI.theSea, CODEX.healing((0.95 ** Math.min(6, s.meta.endings)).toFixed(2)));
+    if (s.meta.endings > 0) codexRow(CODEX.endings, CODEX.endingsText(s.meta.endings, s.meta.carriedEver.length, MEMORIES.length));
+    if (s.carried.length) codexRow(CODEX.carried, s.carried.map((id) => MEMORIES.find((m) => m.id === id)?.title ?? id).join(' · '));
+    if (s.meta.spawnings) codexRow(CODEX.lineage, CODEX.lineageText(s.meta.spawnings, metres(s.meta.best)));
   }
   let currentReading: Reading | undefined;
   let lastBandCount = 0;
@@ -1162,7 +1162,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const lineageHead = el('div', 'lineage-head');
   const lineageCount = el('span', 'stock-value lineage-count');
   const lineageSub = el('span', 'stock-sub');
-  lineageHead.append(el('span', 'stock-name', 'Lineage'), lineageCount, lineageSub);
+  lineageHead.append(el('span', 'stock-name', UI.lineage), lineageCount, lineageSub);
   const spawnCard = el('article', 'card spawn-lesser');
   const spawnTitle = el('h3', '', UI.lesserTitle);
   const spawnGain = el('span', 'spawn-gain');
@@ -1179,7 +1179,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const msg = ended(s)
       ? UI.beginAgainSure(lineageFor(s))
       : UI.lesserSure(lineageFor(s));
-    if (window.confirm(`${msg}\nIt will settle on ${seamountDef(whereNext).name.toLowerCase()}.`)) hooks.spawnLesser(whereNext, heirNext, [...vowsNext]);
+    if (window.confirm(`${msg}\n${UI.settlesOn(seamountDef(whereNext).name.toLowerCase())}`)) hooks.spawnLesser(whereNext, heirNext, [...vowsNext]);
   });
   // Where the spawn settles: each seamount bends the next run one way.
   let whereNext: SeamountId = 'plain';
@@ -1190,7 +1190,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       whereNext = m.id;
       for (const x of whereButtons) x.classList.toggle('on', x === b);
       whereNote.textContent = `${m.text} ${m.effect === 'as before' ? '' : `(${m.effect})`}` +
-        (m.trial ? ` Grow to ${metres(m.trial.goal)} there and your line learns it: ${m.trial.reward}.` : '');
+        (m.trial ? UI.trialNote(metres(m.trial.goal), m.trial.reward) : '');
     });
     b.classList.toggle('on', m.id === whereNext);
     if (m.trial) b.classList.add('trial');
@@ -1219,7 +1219,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       const b = button('seamount', x ? x.relic : EXPEDITION.heirNone, () => {
         heirNext = id;
         for (const o of heirBox.children) o.classList.toggle('on', o === b);
-        heirNote.textContent = x ? `${x.relic}: ${x.effect}, from the start of the next reef.` : EXPEDITION.heirNote;
+        heirNote.textContent = x ? UI.heirEffect(x.relic, x.effect) : EXPEDITION.heirNote;
       });
       b.classList.toggle('on', id === heirNext);
       heirBox.append(b);
@@ -1235,14 +1235,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       if (vowsNext.has(v.id)) vowsNext.delete(v.id);
       else vowsNext.add(v.id);
       b.classList.toggle('on', vowsNext.has(v.id));
-      vowNote.textContent = `${v.name}: ${v.effect} · +${v.lineage} lineage at its ending if kept.`;
+      vowNote.textContent = UI.vowEffect(v.name, v.effect, v.lineage);
     });
     vowBox.append(b);
   }
   spawnCard.append(spawnTitle, spawnText, spawnBuys, el('p', 'stock-name', UI.whereItSettles), whereBox, whereNote, heirLabel, heirBox, heirNote, vowLabel, vowBox, vowNote, spawnFoot);
   // Feats: goals across all runs, one lineage each.
   const featCard = el('article', 'card codex feats');
-  const featHead = el('h3', '', 'Feats');
+  const featHead = el('h3', '', UI.feats);
   const featList = el('dl', 'codex-list');
   featCard.append(featHead, featList);
   collapsible(featCard, featHead);
@@ -1253,7 +1253,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const key = done.map((f) => f.id).join() + '|' + FEATS.map((f) => (f.progress && !done.includes(f) ? f.progress(s)[0] : '')).join();
     if (key === featKey) return;
     featKey = key;
-    featHead.textContent = `Feats · ${done.length}\u00a0of\u00a0${FEATS.length} · one lineage each`;
+    featHead.textContent = UI.featsHead(done.length, FEATS.length);
     featList.innerHTML = '';
     for (const f of FEATS) {
       const got = done.includes(f);
@@ -1500,7 +1500,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   nameInput.maxLength = 24;
   nameInput.placeholder = UI.namePlaceholder;
   nameInput.addEventListener('change', () => hooks.rename(nameInput.value.trim()));
-  nameRow.append(el('span', 'stock-name', 'Name'), nameInput);
+  nameRow.append(el('span', 'stock-name', UI.nameLabel), nameInput);
   // The line's colours: a swatch per palette, open once the reef has known pigment.
   const paletteRow = el('div', 'palette-row');
   paletteRow.hidden = true;
@@ -1609,7 +1609,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     for (const g of GRAINS) { const n = s.grains.filter((x) => x === g.id).length; if (n) rows.push([`${g.name} bands ×${n}`, g.effect]); }
     for (const id of Object.values(s.dialects)) { const d = DIALECTS.find((x) => x.id === id); if (d) rows.push([d.name, d.effect]); }
     for (const id of s.relics) { const x = site(id); if (x) rows.push([x.relic, x.effect]); }
-    if (s.heirloom && !s.relics.includes(s.heirloom)) { const x = site(s.heirloom); if (x) rows.push([`${x.relic} (heirloom)`, x.effect]); }
+    if (s.heirloom && !s.relics.includes(s.heirloom)) { const x = site(s.heirloom); if (x) rows.push([UI.heirloom(x.relic), x.effect]); }
     for (const id of s.residents) { const r = RESIDENTS.find((x) => x.id === id); if (r) rows.push([r.name, r.effect]); }
     for (const p of PAIRS) if (s.residents.includes(p.a) && s.residents.includes(p.b)) rows.push([p.name, p.effect]);
     // A moment by its title (choice labels repeat across moments: "Take it in", "Let it go"), the choice beside its effect.
@@ -1617,7 +1617,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     for (const w of WORKS) if (s.works[w.id] > 0) rows.push([`${w.name} (${s.works[w.id]}/${w.stages.length})`, w.effect]);
     if (s.favours.clear > 0) rows.push([`${FAVOURS[0]!.name} ×${s.favours.clear}`, FAVOURS[0]!.effect]);
     for (const m of SEAMOUNTS) if (m.trial && s.meta.seen.includes(`trial:${m.id}`)) rows.push([UI.learnedOn(m.name.toLowerCase()), m.trial.reward.split(': ')[1] ?? m.trial.reward]);
-    if (s.meta.carriedEver.length) rows.push([`${s.meta.carriedEver.length} memories carried by the line`, `calcite +${s.meta.carriedEver.length}%`]);
+    if (s.meta.carriedEver.length) rows.push([UI.memoriesCarried(s.meta.carriedEver.length), UI.memoriesEffect(s.meta.carriedEver.length)]);
     shapes.hidden = rows.length === 0;
     const key = rows.map((r) => r.join(':')).join('|');
     if (key === shapesKey) return;
@@ -2064,13 +2064,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       const tier = nextTier(s);
       dialectBox.hidden = !tier;
       if (tier) {
-        dialectKicker.textContent = `A dialect: ${tier.title}`;
+        dialectKicker.textContent = UI.dialectKicker(tier.title);
         dialectIntro.textContent = tier.intro;
         const tc = tierCost(s, tier);
         const ok = s.bloom >= tc;
         dialectCost.textContent = ok
-          ? `Costs ${num(tc)} bloom. Choosing is permanent.`
-          : `Costs ${num(tc)} bloom · ${num(s.bloom)} gathered · ${etaText(timeUntil(s, 'bloom', tc))}`;
+          ? UI.dialectCost(num(tc))
+          : UI.dialectSaving(num(tc), num(s.bloom), etaText(timeUntil(s, 'bloom', tc)));
         for (const d of DIALECTS) {
           const b = dialectButtons.get(d.id)!;
           b.hidden = d.tier !== tier.tier;
@@ -2177,16 +2177,16 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       }
       heightTarget.style.width = `${frac(r.heightTarget)}%`;
       // Thousands with a comma ("2,149 m down"), without toLocaleString (a formatter made per call: the update's dearest line).
-      const depth = `${String(Math.round(Math.max(0, SURFACE - s.height))).replace(/\B(?=(\d{3})+$)/g, ',')} m down`;
+      const depth = UI.metresDown(String(Math.round(Math.max(0, SURFACE - s.height))).replace(/\B(?=(\d{3})+$)/g, ','));
       // The next band still above the reef (one at the reef's own height is being read already).
       const next = BANDS.find((b) => !s.bands.includes(b.id) && b.metres > s.height + 0.05);
       // Reach: what the height itself does (a taller reef catches more water, more calcite).
       // (No-break spaces inside: it wraps as a whole, never leaving "calcite" on a line of its own.)
-      const reachText = s.height > 60 ? `\u00a0· reach\u00a0×${reach(s.height).toFixed(1)}\u00a0calcite` : '';
+      const reachText = s.height > 60 ? UI.reachNote(reach(s.height).toFixed(1)) : '';
       if (heightSub.title !== UI.reachTitle) heightSub.title = UI.reachTitle;
       heightSub.textContent = r.heightTarget > s.height + 0.05
-        ? `${depth} · rising to ${metres(r.heightTarget)}`
-        : next ? `${depth}\u00a0· next band at ${metres(next.metres)}${reachText}` : `${depth}${reachText}`;
+        ? UI.risingTo(depth, metres(r.heightTarget))
+        : next ? UI.nextBandAt(depth, metres(next.metres)) + reachText : `${depth}${reachText}`;
 
       // Shoals.
       const shoals = s.levels.shoal;
@@ -2195,7 +2195,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const idle = idleShoals(s);
         const gone = awayShoals(s);
         const sea = seasoned(s);
-        shoalIdle.textContent = (sea > 1 ? `${EXPEDITION.seasonedWord} ×${sea.toFixed(2)} · ` : '') + (idle > 0 ? `${idle} idle · ` : '') + (gone > 0 ? `${gone} away · ` : '') + (idle > 0 || gone > 0 ? `of ${shoals}` : `${shoals}`);
+        shoalIdle.textContent = (sea > 1 ? `${EXPEDITION.seasonedWord} ×${sea.toFixed(2)} · ` : '') + (idle > 0 ? UI.shoalsIdle(idle) : '') + (gone > 0 ? UI.shoalsAway(gone) : '') + (idle > 0 || gone > 0 ? UI.shoalsOf(shoals) : `${shoals}`);
         shoalBox.classList.toggle('has-idle', idle > 0);
         const perFeed = s.jobs.feed > 0 ? r.planktonP / s.jobs.feed : 0;
         // What one more feeder or light-swimmer is worth in calcite, and the glow each light-swimmer
@@ -2206,7 +2206,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           jobGains = { feed: jobGain(s, 'feed'), light: jobGain(s, 'light'), perLight: s.jobs.light > 0 ? (r.glowP - noLight) / s.jobs.light : 0 };
         }
         const perLight = s.jobs.light > 0 ? jobGains.perLight : 0;
-        const gainText = (g: number) => g >= 0.0005 ? ` · one more: +${(g * 100).toFixed(g < 0.1 ? 1 : 0)}% calcite` : ' · one more: no gain now';
+        const gainText = (g: number) => g >= 0.0005 ? UI.oneMore((g * 100).toFixed(g < 0.1 ? 1 : 0)) : UI.oneMoreNothing;
         for (const j of JOBS) {
           const row = jobRows.get(j.id)!;
           const open = jobOpen(s, j.id);
@@ -2218,12 +2218,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           row.plus.disabled = !open || idle <= 0;
           const perScout = s.jobs.scout > 0 ? r.murmurP / s.jobs.scout : 0;
           row.row.title = j.verb;
-          row.what.textContent = !open ? (j.id === 'fan' ? FAN.locked : 'they do not yet know how to listen')
+          row.what.textContent = !open ? (j.id === 'fan' ? FAN.locked : UI.scoutLocked)
             : j.id === 'fan' ? FAN.what(FAN.sweep.toFixed(3))
             : j.id === 'guard' ? GUARD.what(s.jobs.guard, GUARD.need)
-            : j.id === 'feed' ? (perFeed ? `${rate(perFeed)} plankton each` : 'herd plankton to the polyps') + gainText(jobGains.feed)
-            : j.id === 'light' ? (perLight ? `${rate(perLight)} glow each` : 'swim the glow pattern') + gainText(jobGains.light)
-            : perScout ? `${rate(perScout)} murmurs each` : 'listen at buried bands';
+            : j.id === 'feed' ? (perFeed ? UI.feedEach(rate(perFeed)) : UI.feedIdle) + gainText(jobGains.feed)
+            : j.id === 'light' ? (perLight ? UI.lightEach(rate(perLight)) : UI.lightIdle) + gainText(jobGains.light)
+            : perScout ? UI.scoutEach(rate(perScout)) : UI.scoutIdle;
         }
       }
 
@@ -2505,7 +2505,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           tripCost.textContent = `↩ ${num(cc)} glow`;
           tripBtn.title = EXPEDITION.call;
           tripBtn.disabled = s.glow < cc;
-          tripEta.textContent = `back in ${duration(left)}`;
+          tripEta.textContent = UI.backIn(duration(left));
           tripCard.classList.remove('ready');
         } else {
           tripEffect.textContent = ahead.relic ? `${duration(tripSeconds(s, ahead))} away · a relic: ${ahead.effect}` : `${duration(tripSeconds(s, ahead))} away · ${ahead.effect}`;
@@ -2513,7 +2513,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           const ok = canSend(s);
           tripBtn.disabled = !ok;
           tripCard.classList.toggle('ready', ok);
-          tripEta.textContent = ok ? 'they stop their work while away' : `you have ${s.levels.shoal}`;
+          tripEta.textContent = ok ? UI.tripStops : UI.youHave(s.levels.shoal);
         }
       }
 
@@ -2594,7 +2594,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const lv = s.levels[u.id];
         if (c.root.classList.contains('known') !== lv > 0) c.root.classList.toggle('known', lv > 0);
         c.level.textContent = u.maxLevel === Infinity ? (lv ? `×${lv}` : '') : `${lv}/${u.maxLevel}`;
-        if (u.id === 'skeleton') c.effect.textContent = `the reef rises ${metres(bandMetres(lv))}`;
+        if (u.id === 'skeleton') c.effect.textContent = UI.bandRises(metres(bandMetres(lv)));
         // What one more would really add, after every multiplier (refreshed on the card's turn).
         if ((u.id === 'polyp' || u.id === 'symbiont') && (etaSlot === etaTurn || !c.effect.dataset.live)) {
           c.effect.textContent = marginalText(s, u.id);
@@ -2611,8 +2611,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         // For multipliers: what the next level is worth to this reef now, once things settle.
         if (GAIN_SHOWN.has(u.id) && (etaSlot === etaTurn || !c.effect.dataset.live) && !maxed(s, u.id)) {
           const g = upgradeGain(s, u.id);
-          const pct = g >= 0.0005 ? `+${(g * 100).toFixed(g < 0.1 ? 1 : 0)}%` : 'no gain';
-          c.effect.textContent = `${effectText(u.id)} · now ${pct}${u.id === 'lattice' ? ' held' : g >= 0.0005 ? ' calcite' : ''}`;
+          const pct = g >= 0.0005 ? `+${(g * 100).toFixed(g < 0.1 ? 1 : 0)}%` : UI.noGain;
+          c.effect.textContent = UI.nowGain(effectText(u.id), pct, u.id === 'lattice' ? UI.held : g >= 0.0005 ? UI.calciteWord : '');
           c.effect.dataset.live = '1';
         }
         if (maxed(s, u.id)) {
@@ -2660,7 +2660,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           if (due && cur === 'calcite' && u.id !== 'lattice') {
             const g = upgradeGain(s, u.id);
             const back = g >= 0.0005 ? price / (g * steadyCalciteRate(s)) : Infinity;
-            c.eta.textContent = Number.isFinite(back) ? `pays back in ${duration(back)}` : '';
+            c.eta.textContent = Number.isFinite(back) ? UI.paysBack(duration(back)) : '';
           } else if (cur !== 'calcite' || u.id === 'lattice') setEta(c.eta, 0);
         } else if (due) setEta(c.eta, timeUntil(s, cur, price), cur);
         if (u.id === pinned) pinnedText = ok ? `${u.name} ready` : `${u.name} ${c.eta.textContent}`;
@@ -2727,7 +2727,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         if (!id || dialectSeen.has(id)) continue;
         dialectSeen.add(id);
         const d = DIALECTS.find((x) => x.id === id)!;
-        const st = { kicker: `A dialect: ${t.title}`, title: d.name, text: `${d.flavour} You will not be the others.` };
+        const st = { kicker: UI.dialectKicker(t.title), title: d.name, text: UI.notTheOthers(d.flavour) };
         addChoice(storyItem('dialect', d.name, st, 'is-dialect'), t.band);
         listed(true);
         if (primed) showStory(st);
@@ -2751,8 +2751,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         for (const line of s.meta.chronicle) for (const id of (line.split('|')[1] ?? '').split(',')) if (id) counts.set(id, (counts.get(id) ?? 0) + 1);
         const top = [...counts].sort((a, b) => b[1] - a[1])[0];
         const title = top ? LINE_TITLES[top[0] as MemoryId] : undefined;
-        lineageSub.textContent = (title ? `${title} · ` : '') + (s.meta.endings ? `${s.meta.endings} ending${s.meta.endings === 1 ? '' : 's'} · ` : '') + (s.meta.spawnings ? `${s.meta.spawnings} lesser spawning${s.meta.spawnings === 1 ? '' : 's'} · ` : '') + `best reef ${metres(Math.max(s.meta.best, s.height))}` +
-          (s.seamount !== 'plain' ? ` · this reef: ${seamountDef(s.seamount).name.toLowerCase()}` : '');
+        lineageSub.textContent = (title ? `${title} · ` : '') + (s.meta.endings ? UI.endingsCount(s.meta.endings) : '') + (s.meta.spawnings ? UI.spawningsCount(s.meta.spawnings) : '') + UI.bestReef(metres(Math.max(s.meta.best, s.height))) +
+          (s.seamount !== 'plain' ? UI.thisReefOn(seamountDef(s.seamount).name.toLowerCase()) : '');
         const can = canSpawnLesser(s);
         const titleText = ended(s) ? UI.beginAgain : UI.lesserTitle;
         // Mid-run it is an option, not the point: folded to its title and what it would bring, until opened.
@@ -2816,7 +2816,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       renderTotals(s);
       habitToggle.hidden = !s.meta.traits['old-habits'] && !s.meta.traits['shoal-sense'] && !s.meta.traits['rasp-sense'] && !s.meta.traits.layering;
       const hidden = UPGRADES.find((u) => !revealed(s, u.id));
-      comingUp.textContent = hidden ? `Coming up: ${hidden.name} — ${revealText(s, hidden)}` : '';
+      comingUp.textContent = hidden ? UI.comingUp(hidden.name, revealText(s, hidden)) : '';
       comingUp.hidden = !hidden;
       if (comingUp !== grow.lastElementChild) grow.append(comingUp);
       if (document.activeElement !== nameInput && nameInput.value !== s.meta.name) nameInput.value = s.meta.name;
@@ -3060,15 +3060,15 @@ function revealText(s: GameState, u: (typeof UPGRADES)[number]): string {
   const r = u.reveal;
   if (r.band) {
     const b = BANDS.find((x) => x.id === r.band);
-    return b ? `when the reef reaches ${metres(b.metres)}` : 'later in the story';
+    return b ? UI.whenReaches(metres(b.metres)) : UI.laterInStory;
   }
-  if (r.height !== undefined) return `when the reef reaches ${metres(r.height)}`;
+  if (r.height !== undefined) return UI.whenReaches(metres(r.height));
   if (r.level) {
     const [id, n] = r.level;
-    return UI.countOf[id]?.(n) ?? `after ${n} × ${UPGRADES.find((x) => x.id === id)?.name.toLowerCase() ?? id}`;
+    return UI.countOf[id]?.(n) ?? UI.afterCount(n, UPGRADES.find((x) => x.id === id)?.name.toLowerCase() ?? id);
   }
-  if (r.earned !== undefined) return `after ${num(r.earned)} calcite gathered`;
-  return 'soon';
+  if (r.earned !== undefined) return UI.afterEarned(num(r.earned));
+  return UI.soon;
 }
 
 /** Names of traits the given lineage would buy, taking the cheapest step each time (kept until the
@@ -3125,7 +3125,7 @@ function flow(net: number, value = 0, hold = Infinity): string {
 }
 
 function etaText(t: number, cur?: string): string {
-  return t <= 0 ? '' : !Number.isFinite(t) ? (cur && HOLD_HINT[cur]) || HOLD_HINT_ANY : t < 1 ? 'any moment' : `in ${duration(t)}`;
+  return t <= 0 ? '' : !Number.isFinite(t) ? (cur && HOLD_HINT[cur]) || HOLD_HINT_ANY : t < 1 ? UI.anyMoment : UI.inTime(duration(t));
 }
 
 /** A countdown; a price no store can reach says what would raise that store (`cur`). */

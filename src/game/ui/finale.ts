@@ -42,7 +42,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
   const iconCtx = icon.getContext('2d')!;
   let iconPhase = -1;
   const words = el('div', 'moon-words');
-  const title = el('h3', '', 'The Spawning Moon');
+  const title = el('h3', '', UI.spawningMoon);
   const status = el('p', 'moon-status');
   words.append(title, status);
   head.append(icon, words);
@@ -217,10 +217,10 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
       const r = rates(s);
       const target = spawnTarget(s);
       const parts: string[] = [];
-      if (s.height < SURFACE) parts.push(`Reach the surface (${Math.ceil(SURFACE - s.height)} m to go).`);
+      if (s.height < SURFACE) parts.push(UI.toSurface(Math.ceil(SURFACE - s.height)));
       if (s.spawn < target) {
         const hold = spawnHold(s, r);
-        parts.push(`Spawn ${num(s.spawn)} / ${num(target)} (${rate(spawnNet(s, r))}${hold < target ? ' — ripen it more: it will not hold enough' : ''}).`);
+        parts.push(UI.spawnNeed(num(s.spawn), num(target), rate(spawnNet(s, r)), hold < target));
       }
       if (!parts.length) {
         parts.push(full ? UI.ready : UI.readyWait);
@@ -229,10 +229,10 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
         const later = relax(s.spawn, r.spawnP, r.spawnK, nextIn);
         const now = endingLineage(s, s.spawn), then = endingLineage(s, later);
         // The next moon is mentioned only when waiting would really be worth it.
-        if (full) parts.push(`Released now: +${now} lineage for the next reef${then - now >= 2 ? `; at the next full moon about +${then}` : ''}.`);
-        else parts.push(`Released at this moon: about +${then} lineage for the next reef.`);
+        if (full) parts.push(UI.releasedNow(now, then - now >= 2 ? then : null));
+        else parts.push(UI.releasedAtMoon(then));
         // The wait-or-go choice: a great tide carries one more memory into the ending.
-        if (!great) { const g = untilGreatTide(s); parts.push(`The next great tide, carrying ${memoryCount(carryAt(s, s.t + g))}, is in ${duration(g)}.`); }
+        if (!great) { const g = untilGreatTide(s); parts.push(UI.nextGreatTide(memoryCount(carryAt(s, s.t + g)), duration(g))); }
       }
       need.textContent = parts.join(' ');
       const key = Math.floor(s.t / 30);
