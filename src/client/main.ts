@@ -1094,6 +1094,8 @@ milestoneBox.setAttribute('role', 'status');
 milestoneBox.setAttribute('aria-live', 'polite');
 ui.append(milestoneBox);
 let zoneTitleUntil = 0;
+/** When the milestone on screen has faded (performance.now()). */
+let milestoneUntil = 0;
 function showMilestone(ms: Milestone, what: string): void {
   // Not on top of a zone title: wait for it to finish.
   const wait = zoneTitleUntil - performance.now();
@@ -1112,6 +1114,7 @@ function showMilestone(ms: Milestone, what: string): void {
   milestoneBox.classList.remove('show');
   void milestoneBox.offsetWidth;
   milestoneBox.classList.add('show');
+  milestoneUntil = performance.now() + 5000;
   audio.cue('choice');
   scene.effect('reading');
   buzz([30, 60, 30]);
@@ -1497,14 +1500,24 @@ function showCreatureLabel(id: string, x: number, y: number, r = 20, tx = NaN, t
   // line already floating from this tap (a gift's "+2.67k glow · a gift of light"), the sweep's at least.
   const now = performance.now();
   const half = Math.max(80, ...recentFloats.filter((f) => now - f.t < 50).map((f) => f.w / 2 + 12));
-  const clear = (l: number, t: number) => !(l < tx + half && l + lw > tx - half && t < ty + 40 && t + lh > ty - 110);
+  // A milestone still showing is a band across the scene: the label goes above or below it.
+  const band = now < milestoneUntil ? milestoneBox.getBoundingClientRect() : null;
+  const offBand = (t: number) => !band || t + lh < band.top - 6 || t > band.bottom + 6;
+  const offFloats = (l: number, t: number) => !(l < tx + half && l + lw > tx - half && t < ty + 40 && t + lh > ty - 110);
   const fits = (t: number) => t >= topMin && t + lh <= bottom;
   const tries: [number, number][] = [[left, above], [left, below],
-    [Math.min(right - lw, tx - half - lw), above >= topMin ? above : below], [Math.max(8, tx + half), above >= topMin ? above : below]];
-  const [pl, pt] = tries.find(([l, t]) => l >= 8 && l + lw <= right && fits(t) && clear(l, t)) ?? [left, above >= topMin ? above : below];
+    [Math.min(right - lw, tx - half - lw), above >= topMin ? above : below], [Math.max(8, tx + half), above >= topMin ? above : below],
+    // Over the column the numbers rise in, when the creature is too near the side for beside it.
+    [left, ty - 110 - lh - 4]];
+  // Clear of both if it can be; else clear of the numbers (the milestone can give way, they cannot).
+  const ok = ([l, t]: [number, number]) => l >= 8 && l + lw <= right && fits(t) && offFloats(l, t);
+  const [pl, pt] = tries.find((p) => ok(p) && offBand(p[1])) ?? tries.find(ok) ?? [left, above >= topMin ? above : below];
   creatureLabel.style.left = `${Math.max(8, pl)}px`;
   // Never past the scene's bottom (onto the phone's sheet), never above the corner buttons.
-  creatureLabel.style.top = `${Math.max(topMin, Math.min(pt, bottom - lh))}px`;
+  const top = Math.max(topMin, Math.min(pt, bottom - lh));
+  creatureLabel.style.top = `${top}px`;
+  // No room clear of the milestone: it gives way while the label shows, as the whisper does.
+  creatureLabel.classList.toggle('over-band', !!band && top + lh > band.top && top < band.bottom);
   creatureLabel.classList.add('show');
   clearTimeout(labelTimer);
   labelTimer = window.setTimeout(() => creatureLabel.classList.remove('show'), 3500);

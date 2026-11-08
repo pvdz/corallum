@@ -289,6 +289,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (!again) tabScroll.set(currentTab, pages.scrollTop);
     for (const [k, b] of tabButtons) b.classList.toggle('on', k === id);
     for (const [k, p] of tabPages) p.hidden = k !== id;
+    if (id !== 'grow' && quick.parentElement !== grow) quick.hidden = true;
     if (id === 'bands') seenStories = storyCount;
     if (id === 'lineage') { traitsReadySeen = -1; lineageDot.hidden = true; }
     // The weather strip's labels were measured while hidden (no widths): laid out again.
@@ -1840,7 +1841,17 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     quick.append(btn);
     return { id, btn, price };
   });
-  grow.prepend(quick);
+  // Above the scrolling list, so nothing passes under it (it would need a backdrop, and no flat
+  // colour matches the panel's tint over the blurred scene). A phone on its side has little
+  // height: there the row is the list's first line and scrolls away with it.
+  const shortScreen = matchMedia('(max-height: 500px)');
+  const placeQuick = () => {
+    if (shortScreen.matches) { if (quick.parentElement !== grow) grow.prepend(quick); }
+    else if (quick.nextElementSibling !== pages) pages.before(quick);
+  };
+  shortScreen.addEventListener('change', placeQuick);
+  placeQuick();
+  // Scrolled, the list fades out at its top edge instead of being cut there.
   pages.addEventListener('scroll', () => { const on = pages.scrollTop > 4; if (pages.classList.contains('scrolled') !== on) pages.classList.toggle('scrolled', on); }, { passive: true });
   let waitKey = '';
   function renderWaitBar(): void {
@@ -2366,7 +2377,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
 
       choices.update(s);
       renderWaitBar();
-      quick.hidden = actAt(s.height) < 2 || ended(s);
+      // Above the list it belongs to the Grow tab only (inside, it hides with its page).
+      quick.hidden = actAt(s.height) < 2 || ended(s) || (quick.parentElement !== grow && currentTab !== 'grow');
       if (!quick.hidden) for (const q of quickBtns) {
         const gone = !revealed(s, q.id) || maxed(s, q.id);
         q.btn.hidden = gone;

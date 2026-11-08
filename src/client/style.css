@@ -108,6 +108,7 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
 /* The list recedes while the player only watches the sea (main.ts sets panel-rest), and is back at once. */
 .panel .pages { transition: opacity 0.3s ease; }
 html.panel-rest .panel .pages { opacity: 0.6; transition: opacity 4s ease; }
+.pages.scrolled { -webkit-mask-image: linear-gradient(180deg, transparent, #000 16px); mask-image: linear-gradient(180deg, transparent, #000 16px); }
 .pages { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding-right: 2px; scrollbar-width: thin; scrollbar-color: rgba(160, 200, 255, 0.25) transparent; }
 .page { display: flex; flex-direction: column; gap: 8px; padding: 4px 0 12px; }
 .page[hidden] { display: none; }
@@ -303,6 +304,8 @@ html.panel-rest .panel .pages { opacity: 0.6; transition: opacity 4s ease; }
      buys), however many stocks and however large the text (a small phone with Larger text kept 20 px). */
   .panel { min-height: min-content; }
   .pages { flex: 1 0 76px; height: 76px; }
+  /* The quick buys stand above the list: a peek of the list under them is enough. */
+  .panel:has(> .quick-buy:not([hidden])) .pages { flex-basis: 30px; height: 30px; }
   .panel.low .stock-sub { display: none; }
   /* The stocks drag the sheet too, so the browser must not take the drag for a pan. */
   .stocks { touch-action: none; }
@@ -1183,13 +1186,7 @@ html.view-mode #photo { display: grid; }
    staying there as the list scrolls under them. */
 .quick-buy { display: none; }
 .quick-buy:not([hidden]) { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 6px;
-  position: sticky; top: -4px; z-index: 3; margin: -4px -2px 0; padding: 6px 2px 6px;
-  background: transparent;
-  border-radius: 0 0 12px 12px; }
-/* The list scrolled under it: a backdrop of the panel's tint (at rest it sits on the panel itself). */
-.pages.scrolled .quick-buy:not([hidden]) { background: rgb(var(--zone-tint)); }
-/* A chip that scrolls to a choice stops below the row. */
-.page-grow:has(> .quick-buy:not([hidden])) > section { scroll-margin-top: 66px; }
+  flex: none; margin: 0 0 2px; padding: 6px 2px 4px; }
 .quick-buy .buy.quick { min-width: 0; padding: 5px 6px; display: flex; flex-direction: column; align-items: center; gap: 1px; line-height: 1.2; }
 .quick-buy .quick-name { font-size: 12px; color: var(--ink); white-space: nowrap; }
 .quick-buy .quick-name .card-icon { width: 14px; height: 14px; margin-right: 4px; vertical-align: -2px; }
@@ -1220,8 +1217,7 @@ html.view-mode #photo { display: grid; }
   background: linear-gradient(180deg, rgba(4, 4, 14, 0), rgb(4, 4, 14) 24%); }
 /* A phone on its side has little height: the quick buys scroll away with the list, one line each. */
 @media (max-height: 500px) {
-  .quick-buy:not([hidden]) { position: static; }
-  .page-grow:has(> .quick-buy:not([hidden])) > section { scroll-margin-top: 0; }
+  .quick-buy:not([hidden]) { margin: -4px -2px 0; padding: 6px 2px; }
   .quick-buy .buy.quick { flex-direction: row; justify-content: center; align-items: center; gap: 4px; padding: 4px 4px; min-height: 30px; }
   /* Name, mark and price on one line fill a third of the panel: the icon steps aside. */
   .quick-buy .quick-name .card-icon { display: none; }
@@ -1232,6 +1228,7 @@ html.view-mode #photo { display: grid; }
 }
 /* A creature's label (asked for by a tap) comes first: a whisper behind it steps back. */
 #ui:has(#creature-label.show) #whisper { opacity: 0 !important; }
+#ui:has(#creature-label.show.over-band) #milestone { opacity: 0 !important; transition: opacity 0.3s ease; }
 
 /* The photo's shutter: a soft flash over everything, gone in half a second. */
 .photo-flash { position: fixed; inset: 0; z-index: 60; pointer-events: none; background: #f4f8ff; animation: photo-flash 0.5s ease-out forwards; }
