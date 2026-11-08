@@ -5,7 +5,18 @@
 
 const KEY = 'corallum.portraits';
 const CLOSE_KEY = 'corallum.portraits.close';
+const ART_KEY = 'corallum.portraits.art';
 const SIZE = 160;
+/**
+ * Creatures whose look changed, by art version: an album kept from before a version forgets their
+ * portraits (and close-ups), so the journal takes them again at the next good look.
+ */
+const REDRAWN: readonly (readonly string[])[] = [
+  [],
+  // 1 (2026-11-08)
+  ['anglerfish', 'gulper', 'barreleye', 'hatchetfish', 'grouper', 'nautilus', 'clownfish', 'shore-bird', 'garden-eel', 'whale'],
+];
+const ART_VERSION = REDRAWN.length - 1;
 
 export function createPortraits(persist: boolean) {
   let album: Record<string, string> = {};
@@ -16,6 +27,16 @@ export function createPortraits(persist: boolean) {
     const rawClose = persist ? localStorage.getItem(CLOSE_KEY) : null;
     if (rawClose) close = new Set(JSON.parse(rawClose) as string[]);
   } catch { album = {}; }
+  // Portraits of creatures drawn anew since this album was kept are let go.
+  try {
+    const art = persist ? Number(localStorage.getItem(ART_KEY) ?? 0) : ART_VERSION;
+    if (art < ART_VERSION) {
+      for (let v = Math.max(0, art) + 1; v <= ART_VERSION; v++) for (const id of REDRAWN[v]!) { delete album[id]; close.delete(id); }
+      localStorage.setItem(KEY, JSON.stringify(album));
+      localStorage.setItem(CLOSE_KEY, JSON.stringify([...close]));
+      localStorage.setItem(ART_KEY, String(ART_VERSION));
+    }
+  } catch { /* no storage */ }
   let count = Object.keys(album).length + close.size;
 
   function store(): void {
@@ -93,6 +114,7 @@ export function createPortraits(persist: boolean) {
       try {
         localStorage.removeItem(KEY);
         localStorage.removeItem(CLOSE_KEY);
+        localStorage.setItem(ART_KEY, String(ART_VERSION));
       } catch { /* ignore */ }
     },
   };

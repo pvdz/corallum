@@ -127,5 +127,25 @@ await withGame(async (open) => {
     console.log(`${ok ? 'ok  ' : 'FAIL'} a tab behind another yields: covered, and P buys nothing`);
     failed ||= !ok;
   }
+  // An album kept from before a creature was drawn anew lets that portrait go, and keeps the rest.
+  {
+    const { page } = await open(VIEWPORTS[0]!, '');
+    await page.waitForFunction(() => window.corallum, null, { timeout: 10000 });
+    await page.evaluate(() => {
+      localStorage.setItem('corallum.portraits', JSON.stringify({ anglerfish: 'data:old', jelly: 'data:keep' }));
+      localStorage.setItem('corallum.portraits.close', JSON.stringify(['anglerfish']));
+      localStorage.removeItem('corallum.portraits.art');
+    });
+    await page.reload();
+    await page.waitForFunction(() => window.corallum, null, { timeout: 10000 });
+    const r = await page.evaluate(() => ({
+      album: JSON.parse(localStorage.getItem('corallum.portraits') ?? '{}') as Record<string, string>,
+      close: JSON.parse(localStorage.getItem('corallum.portraits.close') ?? '[]') as string[],
+      art: Number(localStorage.getItem('corallum.portraits.art')),
+    }));
+    const ok = !('anglerfish' in r.album) && r.album.jelly === 'data:keep' && !r.close.includes('anglerfish') && r.art >= 1;
+    console.log(`${ok ? 'ok  ' : 'FAIL'} a redrawn creature's old portrait is let go, the others kept`);
+    failed ||= !ok;
+  }
 });
 process.exitCode = failed ? 1 : 0;
