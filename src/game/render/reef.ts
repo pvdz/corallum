@@ -349,14 +349,30 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
       const kind = i % 3;
       const cx = x + off;
       if (kind === 0) {
-        // A sponge: a lumpy cushion of three lobes, lit on top, its vents dark pits along the crown.
-        dot(body, cx - 1.4 * s, py + 0.3 * s, 1.7 * s);
-        dot(body, cx + 0.3 * s, py - 0.5 * s, 2 * s);
-        dot(body, cx + 1.9 * s, py + 0.5 * s, 1.4 * s);
-        oval(lit, cx - 1.6 * s, py - 0.4 * s, 0.9 * s, 0.6 * s, -0.3);
-        oval(lit, cx + 0.1 * s, py - 1.5 * s, 1.1 * s, 0.6 * s, -0.2);
-        dot(deep, cx + 0.5 * s, py - 1.6 * s, 0.45 * s);
-        dot(deep, cx + 2.1 * s, py - 0.3 * s, 0.35 * s);
+        // A tube sponge: a low cushion on the stone and two or three short tubes rising from it,
+        // splaying a little, each flared at the top round a dark opening with a pale lip, lit
+        // down the side toward the light.
+        oval(body, cx, py + 0.4 * s, 2.5 * s, 1.1 * s, 0);
+        const tubes = 2 + (i % 2);
+        for (let j = 0; j < tubes; j++) {
+          const u = tubes === 2 ? j - 0.5 : j - 1;
+          const rot = u * 0.38 + side * 0.08;
+          const h = (2.1 + 0.6 * ((i + j * 2) % 3)) * s * (u === 0 ? 1.15 : 1);
+          const w = 0.62 * s, top = w * 1.25;
+          const bx = cx + u * 1.3 * s, by = py + 0.3 * s;
+          const cr = Math.cos(rot), sr = Math.sin(rot);
+          const X = (a: number, b: number) => bx + a * cr - b * sr, Y = (a: number, b: number) => by + a * sr + b * cr;
+          // Up the left side, over the lip, down the right: the same turn as the arcs.
+          body.moveTo(X(-w, 0), Y(-w, 0));
+          body.quadraticCurveTo(X(-w * 0.85, -h * 0.6), Y(-w * 0.85, -h * 0.6), X(-top, -h), Y(-top, -h));
+          body.ellipse(X(0, -h), Y(0, -h), top, top * 0.42, rot, Math.PI, Math.PI * 2);
+          body.quadraticCurveTo(X(w * 0.85, -h * 0.6), Y(w * 0.85, -h * 0.6), X(w, 0), Y(w, 0));
+          body.closePath();
+          oval(lit, X(-w * 0.5, -h * 0.5), Y(-w * 0.5, -h * 0.5), w * 0.28, h * 0.36, rot);
+          oval(deep, X(0, -h), Y(0, -h), top * 0.66, top * 0.24, rot);
+          rim.moveTo(X(top, -h), Y(top, -h));
+          rim.ellipse(X(0, -h), Y(0, -h), top, top * 0.42, rot, 0, Math.PI * 2);
+        }
       } else if (kind === 1) {
         // A tunicate: a small barrel narrow at its foot, its siphon open at the top, a paler lip.
         const h = 3.4 * s;
