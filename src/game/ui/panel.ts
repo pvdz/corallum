@@ -252,10 +252,19 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   const pages = el('div', 'pages');
   const tabButtons = new Map<string, HTMLButtonElement>();
   const tabPages = new Map<string, HTMLElement>();
+  // Tabs and pages as screen readers know them: a tab list, each tab naming the page it shows.
+  tabs.setAttribute('role', 'tablist');
   for (const [id, label] of [['grow', 'Grow'], ['bands', 'Bands'], ['lineage', 'Lineage'], ['reef', 'Reef']] as const) {
     tabs.append(button('tab', label, () => showTab(id)));
-    tabButtons.set(id, tabs.lastElementChild as HTMLButtonElement);
+    const tab = tabs.lastElementChild as HTMLButtonElement;
+    tab.id = `tab-${id}`;
+    tab.setAttribute('role', 'tab');
+    tab.setAttribute('aria-controls', `page-${id}`);
+    tabButtons.set(id, tab);
     const page = el('section', `page page-${id}`);
+    page.id = `page-${id}`;
+    page.setAttribute('role', 'tabpanel');
+    page.setAttribute('aria-labelledby', `tab-${id}`);
     pages.append(page);
     tabPages.set(id, page);
   }
@@ -289,7 +298,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   function showTab(id: string): void {
     const again = id === currentTab;
     if (!again) tabScroll.set(currentTab, pages.scrollTop);
-    for (const [k, b] of tabButtons) b.classList.toggle('on', k === id);
+    for (const [k, b] of tabButtons) { b.classList.toggle('on', k === id); b.setAttribute('aria-selected', String(k === id)); }
     for (const [k, p] of tabPages) p.hidden = k !== id;
     syncQuick(id);
     if (id === 'bands') seenStories = storyCount;
