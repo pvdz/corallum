@@ -36,7 +36,7 @@ export function drawDaughters(ctx: CanvasRenderingContext2D, polyps: number, flo
       ctx.restore();
     }
     const own = style.alt && k % 3 === 1 ? style.alt : style;
-    branch(ctx, r, x, y, -Math.PI / 2 + range(r, -0.2, 0.2), 22 * size, 0, size, t + k, own);
+    colony(ctx, r, x, y, -Math.PI / 2 + range(r, -0.2, 0.2), 22 * size, size, t + k, own);
   }
   ctx.restore();
 }
@@ -45,12 +45,36 @@ export function drawDaughters(ctx: CanvasRenderingContext2D, polyps: number, flo
 export function drawColony(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, t: number, style: DaughterStyle, seed: number): void {
   ctx.save();
   ctx.lineCap = 'round';
-  branch(ctx, mulberry32(seed), x, y, -Math.PI / 2, 22 * size, 0, size, t, style);
+  colony(ctx, mulberry32(seed), x, y, -Math.PI / 2, 22 * size, size, t, style);
   ctx.restore();
 }
 
-function branch(ctx: CanvasRenderingContext2D, r: () => number, x: number, y: number, a: number, len: number, depth: number,
-  s: number, t: number, style: DaughterStyle): void {
+/** One colony's shapes, gathered over all its limbs and filled or stroked once each. */
+type Parts = { body: Path2D; tips: Path2D; lit: Path2D; buds: Path2D; crowns: Path2D; beads: Path2D };
+
+function colony(ctx: CanvasRenderingContext2D, r: () => number, x: number, y: number, a: number, len: number, s: number, t: number,
+  style: DaughterStyle): void {
+  const P: Parts = { body: new Path2D(), tips: new Path2D(), lit: new Path2D(), buds: new Path2D(), crowns: new Path2D(), beads: new Path2D() };
+  branch(P, r, x, y, a, len, 0, s, t);
+  ctx.fillStyle = style.branch;
+  ctx.fill(P.body);
+  ctx.fillStyle = style.tip;
+  ctx.fill(P.tips);
+  // Each limb's lit side, toward the light above.
+  ctx.globalAlpha = 0.45;
+  ctx.strokeStyle = style.tip;
+  ctx.lineWidth = Math.max(0.7, 0.8 * s);
+  ctx.stroke(P.lit);
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = style.polyp;
+  ctx.fill(P.buds);
+  ctx.strokeStyle = style.polyp;
+  ctx.lineWidth = Math.max(0.8, 0.6 * s);
+  ctx.stroke(P.crowns);
+  ctx.fill(P.beads);
+}
+
+function branch(P: Parts, r: () => number, x: number, y: number, a: number, len: number, depth: number, s: number, t: number): void {
   const sway = Math.sin(t * 0.7 + depth) * 0.04;
   const ex = x + Math.cos(a + sway) * len, ey = y + Math.sin(a + sway) * len;
   // A limb tapering from its fork to its tip, a little bent, its joints rounded.
@@ -59,69 +83,50 @@ function branch(ctx: CanvasRenderingContext2D, r: () => number, x: number, y: nu
   // The bend from where it starts, not the seeded draws, so each colony keeps its own shape.
   const bend = Math.sin(x * 0.37 + y * 0.21 + depth * 1.7) * len * 0.09;
   const mx = (x + ex) / 2 + nx * bend, my = (y + ey) / 2 + ny * bend;
-  ctx.fillStyle = depth < 2 ? style.branch : style.tip;
-  ctx.beginPath();
-  ctx.moveTo(x + nx * w0 / 2, y + ny * w0 / 2);
-  ctx.quadraticCurveTo(mx + nx * (w0 + w1) / 4, my + ny * (w0 + w1) / 4, ex + nx * w1 / 2, ey + ny * w1 / 2);
-  ctx.arc(ex, ey, w1 / 2, Math.atan2(ny, nx), Math.atan2(ny, nx) + Math.PI, true);
-  ctx.quadraticCurveTo(mx - nx * (w0 + w1) / 4, my - ny * (w0 + w1) / 4, x - nx * w0 / 2, y - ny * w0 / 2);
-  ctx.arc(x, y, w0 / 2, Math.atan2(-ny, -nx), Math.atan2(-ny, -nx) + Math.PI, true);
-  ctx.fill();
+  const body = depth < 2 ? P.body : P.tips;
+  body.moveTo(x + nx * w0 / 2, y + ny * w0 / 2);
+  body.quadraticCurveTo(mx + nx * (w0 + w1) / 4, my + ny * (w0 + w1) / 4, ex + nx * w1 / 2, ey + ny * w1 / 2);
+  body.arc(ex, ey, w1 / 2, Math.atan2(ny, nx), Math.atan2(ny, nx) + Math.PI, true);
+  body.quadraticCurveTo(mx - nx * (w0 + w1) / 4, my - ny * (w0 + w1) / 4, x - nx * w0 / 2, y - ny * w0 / 2);
+  body.arc(x, y, w0 / 2, Math.atan2(-ny, -nx), Math.atan2(-ny, -nx) + Math.PI, true);
+  body.closePath();
   // Where the trunk grips the sand, a low holdfast spreads.
   if (depth === 0) {
-    ctx.beginPath();
-    ctx.ellipse(x, y + 0.5 * s, w0 * 1.15, w0 * 0.42, 0, Math.PI, Math.PI * 2);
-    ctx.fill();
+    body.moveTo(x - w0 * 1.15, y + 0.5 * s);
+    body.ellipse(x, y + 0.5 * s, w0 * 1.15, w0 * 0.42, 0, Math.PI, Math.PI * 2);
+    body.closePath();
   }
-  // Its lit side, toward the light above: a pale line along the limb, a little in from the edge.
+  // Its lit side: a pale line along the limb, a little in from the edge.
   const lit = nx < 0 ? 1 : -1;
-  ctx.save();
-  ctx.globalAlpha = 0.45;
-  ctx.strokeStyle = style.tip;
-  ctx.lineWidth = Math.max(0.7, (w0 + w1) * 0.12);
-  ctx.beginPath();
-  ctx.moveTo(x + lit * nx * w0 * 0.28, y + lit * ny * w0 * 0.28);
-  ctx.quadraticCurveTo(mx + lit * nx * (w0 + w1) * 0.14, my + lit * ny * (w0 + w1) * 0.14, ex + lit * nx * w1 * 0.28, ey + lit * ny * w1 * 0.28);
-  ctx.stroke();
-  ctx.restore();
+  P.lit.moveTo(x + lit * nx * w0 * 0.28, y + lit * ny * w0 * 0.28);
+  P.lit.quadraticCurveTo(mx + lit * nx * (w0 + w1) * 0.14, my + lit * ny * (w0 + w1) * 0.14, ex + lit * nx * w1 * 0.28, ey + lit * ny * w1 * 0.28);
   // A few polyps along the limb, closed to small pale buds, on alternate sides.
-  ctx.fillStyle = style.polyp;
-  ctx.beginPath();
   for (const [f, side] of [[0.38, 1], [0.72, -1]] as const) {
     const g = 1 - f;
     const px = g * g * x + 2 * g * f * mx + f * f * ex, py = g * g * y + 2 * g * f * my + f * f * ey;
     const half = (w0 + (w1 - w0) * f) / 2, bx = px + side * nx * half * 0.9, by = py + side * ny * half * 0.9, br = Math.max(0.6, 0.75 * s);
-    ctx.moveTo(bx + br, by);
-    ctx.arc(bx, by, br, 0, Math.PI * 2);
+    P.buds.moveTo(bx + br, by);
+    P.buds.arc(bx, by, br, 0, Math.PI * 2);
   }
-  ctx.fill();
   if (depth >= 2) {
     // A polyp at each tip: a crown of tentacles opening and closing slowly, each tipped with a bead.
     const open = 0.7 + 0.3 * Math.sin(t * 1.3 + x * 0.01);
-    ctx.strokeStyle = style.polyp;
-    ctx.lineWidth = Math.max(0.8, 0.6 * s);
-    ctx.beginPath();
-    const beads: [number, number][] = [];
+    const bead = Math.max(0.5, 0.55 * s);
     for (let p = -3; p <= 3; p++) {
       const pa = a + p * 0.34 * (0.6 + 0.4 * open);
       const tx = ex + Math.cos(pa) * 4.2 * s * open, ty = ey + Math.sin(pa) * 4.2 * s * open;
-      ctx.moveTo(ex, ey);
-      ctx.quadraticCurveTo(ex + Math.cos(pa) * 2.4 * s * open, ey + Math.sin(pa) * 2.4 * s * open - 0.6 * s, tx, ty);
-      beads.push([tx, ty]);
+      P.crowns.moveTo(ex, ey);
+      P.crowns.quadraticCurveTo(ex + Math.cos(pa) * 2.4 * s * open, ey + Math.sin(pa) * 2.4 * s * open - 0.6 * s, tx, ty);
+      P.beads.moveTo(tx + bead, ty);
+      P.beads.arc(tx, ty, bead, 0, Math.PI * 2);
     }
-    ctx.stroke();
-    ctx.fillStyle = style.polyp;
-    ctx.beginPath();
-    ctx.moveTo(ex + 1.1 * s, ey);
-    ctx.arc(ex, ey, 1.1 * s, 0, Math.PI * 2);
-    const bead = Math.max(0.5, 0.55 * s);
-    for (const [bx, by] of beads) { ctx.moveTo(bx + bead, by); ctx.arc(bx, by, bead, 0, Math.PI * 2); }
-    ctx.fill();
+    P.beads.moveTo(ex + 1.1 * s, ey);
+    P.beads.arc(ex, ey, 1.1 * s, 0, Math.PI * 2);
     return;
   }
   const kids = 2 + (r() < 0.6 ? 1 : 0);
   for (let i = 0; i < kids; i++) {
     const da = (i - (kids - 1) / 2) * range(r, 0.45, 0.7);
-    branch(ctx, r, ex, ey, a + da, len * range(r, 0.6, 0.8), depth + 1, s, t, style);
+    branch(P, r, ex, ey, a + da, len * range(r, 0.6, 0.8), depth + 1, s, t);
   }
 }
