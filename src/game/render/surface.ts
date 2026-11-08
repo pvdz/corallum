@@ -141,9 +141,9 @@ export function drawPetrels(ctx: CanvasRenderingContext2D, t: number, sf: Surfac
     ctx.lineTo(-3 * z, 0.6 * z);
     ctx.closePath();
     ctx.fill();
-    ctx.fillStyle = '#e8ecf2';
+    ctx.fillStyle = '#868e9b';
     ctx.beginPath();
-    ctx.ellipse(-2.6 * z, -0.3 * z, 0.9 * z, 0.7 * z, 0, 0, Math.PI * 2);
+    ctx.ellipse(-2.7 * z, -0.3 * z, 0.75 * z, 0.55 * z, 0, 0, Math.PI * 2);
     ctx.fill();
     wing('#262934', 0, 1);
     // Legs dangling to the water, feet pattering (little rings where they touch).
