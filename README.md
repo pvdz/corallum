@@ -89,7 +89,8 @@ Under every full moon the other reefs spawn too, and the water fills with slow p
 | C | close up | S | ride a swell |
 | K | break off old stone | W | wish |
 | 7–0 | answer the signal | T | time-lapse |
-| U | turn toward an upwelling | ? | the full list |
+| U | turn toward an upwelling | M | sound on or off |
+| ? | the full list | | |
 
 ## Playing on a phone
 
