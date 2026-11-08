@@ -67,21 +67,55 @@ function branch(ctx: CanvasRenderingContext2D, r: () => number, x: number, y: nu
   ctx.quadraticCurveTo(mx - nx * (w0 + w1) / 4, my - ny * (w0 + w1) / 4, x - nx * w0 / 2, y - ny * w0 / 2);
   ctx.arc(x, y, w0 / 2, Math.atan2(-ny, -nx), Math.atan2(-ny, -nx) + Math.PI, true);
   ctx.fill();
+  // Where the trunk grips the sand, a low holdfast spreads.
+  if (depth === 0) {
+    ctx.beginPath();
+    ctx.ellipse(x, y + 0.5 * s, w0 * 1.15, w0 * 0.42, 0, Math.PI, Math.PI * 2);
+    ctx.fill();
+  }
+  // Its lit side, toward the light above: a pale line along the limb, a little in from the edge.
+  const lit = nx < 0 ? 1 : -1;
+  ctx.save();
+  ctx.globalAlpha = 0.45;
+  ctx.strokeStyle = style.tip;
+  ctx.lineWidth = Math.max(0.7, (w0 + w1) * 0.12);
+  ctx.beginPath();
+  ctx.moveTo(x + lit * nx * w0 * 0.28, y + lit * ny * w0 * 0.28);
+  ctx.quadraticCurveTo(mx + lit * nx * (w0 + w1) * 0.14, my + lit * ny * (w0 + w1) * 0.14, ex + lit * nx * w1 * 0.28, ey + lit * ny * w1 * 0.28);
+  ctx.stroke();
+  ctx.restore();
+  // A few polyps along the limb, closed to small pale buds, on alternate sides.
+  ctx.fillStyle = style.polyp;
+  ctx.beginPath();
+  for (const [f, side] of [[0.38, 1], [0.72, -1]] as const) {
+    const g = 1 - f;
+    const px = g * g * x + 2 * g * f * mx + f * f * ex, py = g * g * y + 2 * g * f * my + f * f * ey;
+    const half = (w0 + (w1 - w0) * f) / 2, bx = px + side * nx * half * 0.9, by = py + side * ny * half * 0.9, br = Math.max(0.6, 0.75 * s);
+    ctx.moveTo(bx + br, by);
+    ctx.arc(bx, by, br, 0, Math.PI * 2);
+  }
+  ctx.fill();
   if (depth >= 2) {
-    // A polyp at each tip: a little crown of tentacles opening and closing slowly.
+    // A polyp at each tip: a crown of tentacles opening and closing slowly, each tipped with a bead.
     const open = 0.7 + 0.3 * Math.sin(t * 1.3 + x * 0.01);
     ctx.strokeStyle = style.polyp;
     ctx.lineWidth = Math.max(0.8, 0.6 * s);
     ctx.beginPath();
+    const beads: [number, number][] = [];
     for (let p = -3; p <= 3; p++) {
-      const pa = a + p * 0.32 * (0.6 + 0.4 * open);
+      const pa = a + p * 0.34 * (0.6 + 0.4 * open);
+      const tx = ex + Math.cos(pa) * 4.2 * s * open, ty = ey + Math.sin(pa) * 4.2 * s * open;
       ctx.moveTo(ex, ey);
-      ctx.lineTo(ex + Math.cos(pa) * 3 * s * open, ey + Math.sin(pa) * 3 * s * open);
+      ctx.quadraticCurveTo(ex + Math.cos(pa) * 2.4 * s * open, ey + Math.sin(pa) * 2.4 * s * open - 0.6 * s, tx, ty);
+      beads.push([tx, ty]);
     }
     ctx.stroke();
     ctx.fillStyle = style.polyp;
     ctx.beginPath();
-    ctx.arc(ex, ey, 0.9 * s, 0, Math.PI * 2);
+    ctx.moveTo(ex + 1.1 * s, ey);
+    ctx.arc(ex, ey, 1.1 * s, 0, Math.PI * 2);
+    const bead = Math.max(0.5, 0.55 * s);
+    for (const [bx, by] of beads) { ctx.moveTo(bx + bead, by); ctx.arc(bx, by, bead, 0, Math.PI * 2); }
     ctx.fill();
     return;
   }
