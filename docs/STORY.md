@@ -237,5 +237,5 @@ is checked against games I know and recorded here. Absence of a known match is n
 | Twilight bands: Other water (3575), Warmth (3775) | this game's own lore | OK |
 | Rule: after the wall truce a ground-down Ossel no longer speaks in band or moment texts (only `kept` variants do); How the Rasp end, Warmth, Dust from far away and First light follow it | consistency | OK |
 | Twilight band: The bars sing (3690) | this game's own lore | OK |
-| Ossel on each seamount's floor (warm chimneys, crowded buried reefs, a lonely seamount's far reef, hungry thin water, cold heavy water and its brine lake, the buried one's falling silt, the dark one's drinking water, the silent one with nothing under it): whispers sm-* | this game's own seamounts | OK |
+| Ossel on each seamount's floor (warm chimneys, crowded buried reefs, a lonely seamount's far reef, hungry thin water, cold heavy water and its brine lake, the buried one's falling silt, the dark one's drinking water, the silent one with nothing under it, and the shallow, thorny, heavy, gleaming and tidal ones by what they do): whispers sm-* | this game's own seamounts | OK |
 | Title "Corallum" (biology term for coral skeleton) | none known | OK; strings centralised for cheap renames |

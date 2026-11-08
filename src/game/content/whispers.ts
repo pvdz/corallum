@@ -55,6 +55,26 @@ export const WHISPERS: readonly Whisper[] = [
     text: 'Nothing under us. No old reef, no bands to listen to. Whatever you remember here, you will have to have lived.',
   },
   {
+    id: 'sm-shallow', when: (s) => s.seamount === 'shallow' && actAt(s.height) === 1 && s.levels.polyp >= 4,
+    text: 'This one’s top lies close under the sun. When the water up there warms, it will stay warm a long time. Remember that when you reach it.',
+  },
+  {
+    id: 'sm-thorny', when: (s) => s.seamount === 'thorny' && actAt(s.height) === 1 && s.levels.polyp >= 4,
+    text: 'Everything here that eats coral has heard about us. They will come often. Be quick to drive them off.',
+  },
+  {
+    id: 'sm-heavy', when: (s) => s.seamount === 'heavy' && actAt(s.height) === 1 && s.levels.polyp >= 4,
+    text: 'Your stone feels old already, does it not? Here it greys fast and weighs on the young. Let it go when it gathers.',
+  },
+  {
+    id: 'sm-gleaming', when: (s) => s.seamount === 'gleaming' && actAt(s.height) === 1 && s.levels.polyp >= 4,
+    text: 'Clear water, and empty above us: nothing will fall for you here. But look how the neighbours shine. Watch for the lucky ones.',
+  },
+  {
+    id: 'sm-tidal', when: (s) => s.seamount === 'tidal' && actAt(s.height) === 1 && s.levels.polyp >= 4,
+    text: 'Two seas meet above this one, and the moon pulls hard on both. The great tides will come more often.',
+  },
+  {
     id: 'two', when: (s) => s.levels.polyp >= 1 && s.levels.polyp <= 3,
     text: 'Good. Now there are two of you eating.',
   },
