@@ -968,10 +968,10 @@ html.view-mode #journal-note { left: calc(max(12px, env(safe-area-inset-left)) +
   html .quick-buy .buy.quick { flex-direction: column; gap: 0; padding: 3px 4px; }
   /* The Lineage tab's line under its count (the line's name, endings, best reef) wraps rather than being cut. */
   html .lineage-head .stock-sub { white-space: normal; }
-  /* The list has ~90 px under the stocks here: the stocks keep their values (a tap on one shows
-     its whole line), the depth row its short note on one line. */
+  /* The list had ~90 px under the stocks here: the stocks keep their values (a tap on one shows its
+     whole line); the depth row's note wraps rather than losing its start. */
   html .stocks:not(.stocks-minor) > .stock:not(.height) .stock-sub { display: none; }
-  html .stock.height .stock-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  html .stock.height .stock-sub { white-space: normal; }
   /* Story cards: right of the corner buttons and inside the 320 px height. */
   html .reader { padding: 10px 12px 10px 76px; }
   html .reader-card { padding: 16px 22px 14px; }
