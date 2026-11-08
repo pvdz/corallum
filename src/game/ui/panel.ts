@@ -2130,7 +2130,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       heightTarget.style.width = `${frac(r.heightTarget)}%`;
       // Thousands with a comma ("2,149 m down"), without toLocaleString (a formatter made per call: the update's dearest line).
       const depth = `${String(Math.round(Math.max(0, SURFACE - s.height))).replace(/\B(?=(\d{3})+$)/g, ',')} m down`;
-      const next = BANDS.find((b) => !s.bands.includes(b.id));
+      // The next band still above the reef (one at the reef's own height is being read already).
+      const next = BANDS.find((b) => !s.bands.includes(b.id) && b.metres > s.height + 0.05);
       // Reach: what the height itself does (a taller reef catches more water, more calcite).
       // (No-break spaces inside: it wraps as a whole, never leaving "calcite" on a line of its own.)
       const reachText = s.height > 60 ? `\u00a0· reach\u00a0×${reach(s.height).toFixed(1)}\u00a0calcite` : '';
