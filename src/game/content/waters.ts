@@ -41,6 +41,8 @@ export const WATER = {
   intruder: { 'thorn-star': 'a thorn star', dragonfish: 'a dragonfish', 'drill-snail': 'a drill snail', gull: 'a gull' } as Record<string, string>,
   moon: 'full moon',
   now: 'now',
+  /** On a card the water makes cheaper (its count marked ≈): what the mark means. */
+  cheaper: 'cheaper in this water',
 } as const;
 
 export const WATERS: readonly Water[] = [

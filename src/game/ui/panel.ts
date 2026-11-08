@@ -2599,7 +2599,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         }
         c.root.classList.remove('maxed');
         const price = cost(s, u.id);
-        c.root.classList.toggle('watered', water.upgrades.includes(u.id));
+        const watered = water.upgrades.includes(u.id);
+        c.root.classList.toggle('watered', watered);
+        // The ≈ before the count says why the card is blue.
+        const why = watered ? WATER.cheaper : '';
+        if (c.level.title !== why) c.level.title = why;
         const cur = upgrade(u.id).currency;
         c.cost.textContent = `${num(price)} ${cur}`;
         const ok = canAfford(s, u.id);
