@@ -1555,7 +1555,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   for (const [term, text] of GUIDE) guideList.append(el('dt', '', term), el('dd', '', text));
   guide.append(guideHead, guideList);
   collapsible(guide, guideHead);
-  // What shapes this reef: every lasting effect from boons, relics, residents, moments, works,
+  // What shapes this reef: the seamount itself, every lasting effect from boons, relics, residents, moments, works,
   // favours and the line's hard places, one line each.
   const shapes = el('article', 'card codex shapes');
   const shapesHead = el('h3', '', UI.shapes);
@@ -1565,6 +1565,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   let shapesKey = '';
   function renderShapes(s: GameState): void {
     const rows: [string, string][] = [];
+    // The seamount itself, unless it is a plain one.
+    if (s.seamount !== 'plain') { const m = seamountDef(s.seamount); rows.push([m.name, m.effect]); }
     const b = BOONS.find((x) => x.id === s.boon);
     if (b) rows.push([b.name, b.effect]);
     for (const id of s.relics) { const x = site(id); if (x) rows.push([x.relic, x.effect]); }
