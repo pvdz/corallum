@@ -859,7 +859,15 @@ export function createAbyssScene(seed: number): Scene {
         glow(ctx, x, y, 4 * s, '255,235,240', 0.95);
         ctx.restore();
       }
-      reef.draw(ctx, L, v, t);
+      // The first polyp is the larva come down: not there before it lands (at 7 s), then opening
+      // over two seconds where it touched the stone.
+      const arriving = v.polyps === 0 && v.age < 9;
+      if (!arriving || v.age >= 7) {
+        ctx.save();
+        if (arriving) ctx.globalAlpha = Math.min(1, (v.age - 7) / 2);
+        reef.draw(ctx, L, v, t);
+        ctx.restore();
+      }
       if (v.thorn?.kind === 'drill-snail') drawThorn(ctx, reef, L, v.thorn.u, v.thorn.side, t, 'drill-snail');
       this.crownAt = reef.crown(L);
       const live = effects.live(t);
