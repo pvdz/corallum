@@ -563,16 +563,16 @@ export function createAbyssScene(seed: number): Scene {
     drawMussels(true);
   }
 
-  /**
-   * A crowded seamount: half-buried old reefs all around, grey humps of dead branches poking out
-   * of the silt, with a few lights still glowing in them.
-   */
   /** The buried reefs never move: drawn once per frame size into a strip along the floor. */
   let buriedCache: HTMLCanvasElement | OffscreenCanvas | null = null;
   let buriedKey = '';
   let buriedTop = 0;
   /** Each mound's old light: x, y, radius. */
   let buriedLights: number[] = [];
+  /**
+   * A crowded seamount: old reefs half buried all around, silt mounds with dead coral breaking out
+   * of them, a few lights still glowing in them (the mounds from a cache, the lights live).
+   */
   function drawBuriedReefs(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
     const key = `${w}x${h} ${focus.x},${focus.y},${focus.w},${focus.h} ${baseY()}`;
