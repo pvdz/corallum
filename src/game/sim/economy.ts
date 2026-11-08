@@ -1435,7 +1435,10 @@ export function timeUntil(s: GameState, cur: Currency | 'murmurs' | 'spawn', amo
   if (cur === 'spawn') return solveRelax(have, r.spawnP, r.spawnK, amount);
   if (calciteHold(s, r) <= amount) return Infinity;
   // Calcite's production drifts with glow and plankton; probe forward in growing exact steps.
-  const probe: GameState = { ...s, earned: { ...s.earned }, bands: [] };
+  // A whole copy: shoals coming home inside the probe add to jobs, tallies, the diary, shards and
+  // lineage, and a shallow copy shares those with the reef itself.
+  const probe: GameState = structuredClone(s);
+  probe.bands = [];
   let t = 0;
   for (let step = 1; t < 1e8; step = Math.min(step * 1.5, 3600)) {
     const before = probe.calcite;

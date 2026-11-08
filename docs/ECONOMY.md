@@ -154,7 +154,7 @@ Height relaxes toward `target + 0.6 × the last band's metres` at `settleRate` a
 target (economy.ts `settleAim`). Plain relaxation to the target crept through the last metre for
 minutes (from 30 m below, 40·ln(30 000) ≈ 7 min to cross 3000 m, most of it showing "2999 m"); with the
 overshoot one band's rise takes ~39 s (40·ln(1.6/0.6)) and ends on the target, still easing in (0.25 took ~64 s and, in real play, held the first zone change a minute after its band was bought). The greedy bot went 7h28 → 7h08 (the
-creeping was dead time); the saver is unchanged at 3h08.
+creeping was dead time); the saver is unchanged at 3h08 (a bug's number: see the correction below).
 
 ## Seamounts, measured (bot, no lineage, 2026-10-31, before the settle overshoot)
 Whole game / 3000 m / 3800 m. Hard seamounts are trials (reach the goal, then spawn early); a full
@@ -180,6 +180,18 @@ ending there is not expected, and a real second reef carries traits.
 Every trial goal is reached; the whole game on silent and lonely is a wall rather than a climb
 (silent has no Readings' multipliers; lonely caps shoals at 8). Fine as trials; revisit if a
 player is expected to finish there.
+
+## Correction (2026-11-08): the saver's 3h08 was a bug
+`timeUntil` (the countdowns on cards; the saver bot's "is the band under ten minutes away?") probed
+ahead on a *shallow* copy of the state. When the probe passed the shoals' homecoming, `homecoming`
+wrote through the shared nested objects: the returning shoals were added to the real `jobs` again
+(12 light shoals per call in one measured case), a roam counted, a diary line written; a visit trip
+would have added lineage. The saver called it every tick, so its shoals multiplied: hence 3h08. Real
+players had the same inflation whenever shoals were away and a card showed a countdown (glow in the
+Twilight measured 2.1M against ~35k). With a whole copy the saver takes **7h08, the same as the
+greedy bot** (test/sim/expedition.test.ts guards it; save.ts clamps jobs inflated by old saves). The
+section below is history: read "saver" there as the bug's number. The game's real length by bot is
+about seven hours either way; sweeping and attention shorten it.
 
 ## How long the game really takes: the greedy bot overstates it (2026-10-31)
 The pacing yardstick (and `pacing: … 6–11 h` in the tests) is the default bot, which always buys the

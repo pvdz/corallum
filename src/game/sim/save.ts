@@ -100,7 +100,9 @@ function known(s: GameState): void {
   for (const w of WORKS) s.works[w.id] = count(s.works[w.id], w.stages.length);
   // The most any reef can hold: a reef that forgot Foster keeps what it took in.
   s.fragments = count(s.fragments, FRAGMENT.fosterMax);
-  let room = s.levels.shoal;
+  // Shoals out on a trip come back into the jobs they left: those jobs and the trip share the room.
+  const away = s.expedition.site ? s.expedition.feed + s.expedition.light + s.expedition.scout + s.expedition.fan + s.expedition.guard : 0;
+  let room = Math.max(0, s.levels.shoal - away);
   for (const j of Object.keys(s.jobs) as (keyof GameState['jobs'])[]) {
     s.jobs[j] = count(s.jobs[j], room);
     room -= s.jobs[j];

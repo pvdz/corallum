@@ -165,3 +165,16 @@ test('shells: one per slot on the Sunlit sand, new kinds first, kept by the line
   assert.deepEqual(s.meta.shells, [sh!.id]);
   assert.ok(knownBonus(s) > before);
 });
+
+test('a countdown that looks past the shoals\' homecoming leaves the reef untouched (roam and visit)', async () => {
+  const { timeUntil, calciteHold } = await import('../../src/game/sim/economy.ts');
+  for (const site of ['roam', 'visit'] as const) {
+    const { state } = runBot((s) => s.t >= 11000, 11000);
+    // Shoals away and due home in 40 s; the countdown below looks thousands of seconds ahead.
+    state.expedition = { site, back: state.t + 40, feed: 0, light: 6, scout: 0, fan: 0, guard: 0, n: 6, fork: '' };
+    const before = JSON.stringify(state);
+    const eta = timeUntil(state, 'calcite', calciteHold(state) * 0.9);
+    assert.ok(eta > 40, `the probe reaches past the homecoming (eta ${eta})`);
+    assert.equal(JSON.stringify(state), before, `${site}: the look-ahead changed the reef`);
+  }
+});

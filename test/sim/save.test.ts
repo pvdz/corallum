@@ -63,3 +63,16 @@ test('counts load whole and within bounds (a damaged save cannot ask for 1e30 sh
   assert.ok(Object.values(s.jobs).reduce((a, b) => a + b, 0) <= s.levels.shoal);
   assert.ok(s.fragments <= 8);
 });
+
+test('jobs load within the shoals at home: those away on a trip come back into theirs', async () => {
+  const { runBot } = await import('../../src/game/sim/bot.ts');
+  const { serialize, deserialize } = await import('../../src/game/sim/save.ts');
+  const { state } = runBot((s) => s.t >= 11000, 11000);
+  const n = state.levels.shoal;
+  state.expedition = { site: 'roam', back: state.t + 40, feed: 0, light: 10, scout: 0, fan: 0, guard: 0, n: 10, fork: '' };
+  // A damaged save: the jobs at home already count every shoal, and more.
+  state.jobs = { feed: n, light: 40, scout: 0, fan: 0, guard: 0 };
+  const loaded = deserialize(serialize(state, 0))!.state;
+  const home = Object.values(loaded.jobs).reduce((a, b) => a + b, 0);
+  assert.ok(home + 10 <= n, `jobs ${home} + 10 away must fit ${n} shoals`);
+});
