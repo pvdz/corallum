@@ -1618,17 +1618,25 @@ export function createBreachScene(seed: number): Scene {
     if (v.bands.includes('waiting-fish')) sight('reef-fish');
   }
 
-  /** Moon jellies drifting under the surface: translucent saucers with a pale four-lobed clover, pulsing. */
+  /**
+   * Moon jellies drifting under the surface: translucent saucers with a pale four-lobed clover,
+   * pulsing. A touched one clenches hard and jets up a little, then drifts back.
+   */
   function drawMoonJellies(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
     const wy = waterY();
     sight('moon-jelly');
+    const touch = startled('moon-jelly', t);
     for (let k = 0; k < 6; k++) {
       const u = ((t * 0.008 + k * 0.17) % 1);
       const x = focus.x + focus.w * (k % 2 ? 0.05 + u * 0.25 : 0.95 - u * 0.25);
-      const y = wy + focus.h * (0.12 + 0.1 * (k % 3)) + Math.sin(t * 0.4 + k) * 10 * s;
+      const y0 = wy + focus.h * (0.12 + 0.1 * (k % 3)) + Math.sin(t * 0.4 + k) * 10 * s;
+      const hit = touch && touch.age < 3 && Math.hypot(touch.x - x, touch.y - y0) < Math.max(26 * s, 30 * dpr) ? touch.age : -1;
+      const clench = hit < 0 ? 0 : hit < 0.2 ? hit / 0.2 : Math.max(0, 1 - (hit - 0.2) / 1.2);
+      const jet = hit < 0 ? 0 : Math.min(1, hit / 0.5) * Math.max(0, Math.min(1, (3 - hit) / 2.2));
+      const y = y0 - jet * 16 * s;
       spot('moon-jelly', x, y, Math.max(20 * s, 24 * dpr));
-      const pulse = 0.85 + 0.15 * Math.sin(t * 1.6 + k);
+      const pulse = (0.85 + 0.15 * Math.sin(t * 1.6 + k)) * (1 - 0.3 * clench);
       const r = (14 + (k % 3) * 4) * s;
       ctx.save();
       ctx.translate(x, y);

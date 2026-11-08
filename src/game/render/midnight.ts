@@ -1744,7 +1744,10 @@ export function createMidnightScene(seed: number): Scene {
     ctx.restore();
   }
 
-  /** Rarely (every sixteen minutes), a rising river of firefly squid, blue sparks drifting up through the dark. */
+  /**
+   * Rarely (every sixteen minutes), a rising river of firefly squid, blue sparks drifting up through
+   * the dark. Touched, a ring of bright flashes spreads through the swarm from the touch.
+   */
   function drawFireflySquid(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 960, length = 80;
     const p = (t + 300) % period;
@@ -1781,13 +1784,17 @@ export function createMidnightScene(seed: number): Scene {
       ctx.stroke();
     }
     ctx.globalCompositeOperation = 'lighter';
+    const touch = startled('firefly-squid', t);
+    const wave = touch && touch.age < 3 ? touch : null;
     for (let i = 0; i < 160; i++) {
       const lane = ((i * 0.618034) % 1) - 0.5;
       const speed = 0.6 + ((i * 0.3819) % 1) * 0.8;
       const y = focus.y + focus.h * (1.05 - ((p * 0.012 * speed + (i * 0.137) % 1) % 1.1));
       const x = cx + lane * focus.w * 0.28 + Math.sin(t * 0.8 + i) * 8 * s;
       const tw = 0.5 + 0.5 * Math.sin(t * 4 + i * 1.7);
-      glow(ctx, x, y, (5 + 4 * tw) * s, '90,170,255', 0.55 * fade * (0.5 + tw));
+      const ring = wave ? (Math.hypot(x - wave.x, y - wave.y) - wave.age * 220 * s) / (28 * s) : 9;
+      const flash = wave ? Math.exp(-ring * ring) * (1 - wave.age / 3) : 0;
+      glow(ctx, x, y, (5 + 4 * tw + 7 * flash) * s, '90,170,255', Math.min(1, 0.55 * fade * (0.5 + tw) + 0.6 * flash));
       glow(ctx, x, y, 1.6 * s, '200,235,255', 0.9 * fade);
     }
     ctx.restore();
