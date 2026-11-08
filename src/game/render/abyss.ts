@@ -155,6 +155,19 @@ export function createAbyssScene(seed: number): Scene {
     ctx.lineTo(w, h);
     ctx.closePath();
     ctx.fill();
+    // The far ridges' crests: silt catching what little light there is, so one ridge stands clear
+    // of the one behind it (the nearest is the floor itself, with its own marks).
+    const k = ridges.indexOf(ridge);
+    if (k === 0 || k === 1) {
+      ctx.strokeStyle = `rgba(140,155,215,${k === 0 ? 0.07 : 0.11})`;
+      ctx.lineWidth = (k === 0 ? 1.2 : 1.8) * scale();
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(0, by + pts[0]! * focus.h);
+      for (let i = 0; i < pts.length; i++) ctx.lineTo(x0 + (i / (pts.length - 1)) * span, by + pts[i]! * focus.h);
+      ctx.lineTo(w, by + pts[pts.length - 1]! * focus.h);
+      ctx.stroke();
+    }
   }
 
   /** The nearest ridge's line at x (device pixels). */
