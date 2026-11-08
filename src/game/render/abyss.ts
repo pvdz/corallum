@@ -7,7 +7,7 @@ import { drawThorn } from './thorn.ts';
 import { drawGarden, drawFence } from './works.ts';
 import { mulberry32, range, type Rng } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
-import { drawDarkness, glow, speck } from './draw.ts';
+import { drawDarkness, glow, speck, cacheCanvas } from './draw.ts';
 import { createLife, type Stage } from './life.ts';
 import { createGround } from './ground.ts';
 import { createLayerCache } from './layer.ts';
@@ -583,7 +583,7 @@ export function createAbyssScene(seed: number): Scene {
       buriedTop = Math.floor(baseY() - 90 * s);
       const ch = Math.max(1, Math.ceil(120 * s));
       if (!buriedCache || buriedCache.width !== w || buriedCache.height !== ch) {
-        buriedCache = typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(Math.max(1, w), ch) : document.createElement('canvas');
+        buriedCache = cacheCanvas(Math.max(1, w), ch);
         buriedCache.width = Math.max(1, w);
         buriedCache.height = ch;
       }

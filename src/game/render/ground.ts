@@ -2,6 +2,7 @@
 // to the bottom of the frame. Ripples, pebbles, shell bits, burrows with their spoil mounds and the
 // wandering tracks of sea cucumbers. Static, so it is painted once per size into a cropped canvas.
 
+import { cacheCanvas } from './draw.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { zoom } from './scene.ts';
 
@@ -38,7 +39,7 @@ export function createGround(seed: number) {
         for (let x = 0; x <= w; x += 8) minY = Math.min(minY, surf(x));
         top = Math.max(0, Math.floor(minY) - 4);
         const ch = Math.max(1, Math.ceil(h - top));
-        canvas = typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(Math.ceil(w), ch) : document.createElement('canvas');
+        canvas = cacheCanvas(Math.ceil(w), ch);
         canvas.width = Math.ceil(w);
         canvas.height = ch;
         const c = canvas.getContext('2d') as CanvasRenderingContext2D;

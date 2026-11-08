@@ -2,6 +2,21 @@
 
 import { zoom } from './scene.ts';
 
+/** Whether an OffscreenCanvas here can draw in 2D (some browsers have the one without the other). */
+let offscreen2d: boolean | null = null;
+
+/** A canvas off the page, for caches and sprites: an OffscreenCanvas where it can draw in 2D, else a plain one. */
+export function cacheCanvas(w: number, h: number): HTMLCanvasElement | OffscreenCanvas {
+  if (offscreen2d === null) {
+    try { offscreen2d = typeof OffscreenCanvas !== 'undefined' && new OffscreenCanvas(1, 1).getContext('2d') !== null; }
+    catch { offscreen2d = false; }
+  }
+  const c = offscreen2d ? new OffscreenCanvas(w, h) : document.createElement('canvas');
+  c.width = w;
+  c.height = h;
+  return c;
+}
+
 // Glows are drawn from small pre-rendered sprites (one per colour) instead of building a radial
 // gradient per call: hundreds of glows a frame cost almost nothing this way.
 const SPRITE = 64;
@@ -10,7 +25,7 @@ const sprites = new Map<string, HTMLCanvasElement | OffscreenCanvas>();
 function sprite(rgb: string): HTMLCanvasElement | OffscreenCanvas {
   let c = sprites.get(rgb);
   if (c) return c;
-  c = typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(SPRITE, SPRITE) : document.createElement('canvas');
+  c = cacheCanvas(SPRITE, SPRITE);
   c.width = c.height = SPRITE;
   const g = c.getContext('2d') as CanvasRenderingContext2D;
   const r = SPRITE / 2;

@@ -101,6 +101,22 @@ await withGame(async (open) => {
   if (!ok || failed.length) process.exitCode = 1;
 });
 
+// A browser with OffscreenCanvas but no 2D context for it (draw.ts cacheCanvas falls back to a
+// plain canvas): the Silt Floor's and the Twilight Shelf's caches draw, no errors.
+await withGame(async (open) => {
+  const failed: string[] = [];
+  for (const at of [300, 12000]) {
+    const { page, errors } = await open(VIEWPORTS[0]!, `?bot=${at}`);
+    await page.addInitScript(() => { OffscreenCanvas.prototype.getContext = (() => null) as never; });
+    await page.reload();
+    await page.waitForSelector('html.live', { state: 'attached', timeout: 30000 });
+    await page.waitForTimeout(1500);
+    if (errors.length) failed.push(`bot=${at}: ${errors[0]}`);
+  }
+  console.log(`${failed.length ? 'FAIL' : 'ok  '} no 2D OffscreenCanvas: the caches fall back to plain canvases${failed.length ? ': ' + failed.join(' | ') : ''}`);
+  if (failed.length) process.exitCode = 1;
+});
+
 // A story that opens while the phone sheet is drawn up shows above it, not under it.
 await withGame(async (open) => {
   const { page, errors } = await open(VIEWPORTS[1]!, '?fresh');

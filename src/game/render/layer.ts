@@ -2,6 +2,8 @@
 // at most every `interval` seconds of scene time, then stretched over the frame each frame.
 // Painting uses scene time snapped to the interval, so a frozen frame (?t) is still exact.
 
+import { cacheCanvas } from './draw.ts';
+
 export function createLayerCache(resolution = 0.5) {
   let canvas: HTMLCanvasElement | OffscreenCanvas | null = null;
   let paintedAt = NaN;
@@ -11,7 +13,7 @@ export function createLayerCache(resolution = 0.5) {
       paint: (c: CanvasRenderingContext2D, t: number) => void): void {
       const cw = Math.max(1, Math.round(w * resolution)), ch = Math.max(1, Math.round(h * resolution));
       if (!canvas || canvas.width !== cw || canvas.height !== ch) {
-        canvas = typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(cw, ch) : document.createElement('canvas');
+        canvas = cacheCanvas(cw, ch);
         canvas.width = cw;
         canvas.height = ch;
         paintedAt = NaN;

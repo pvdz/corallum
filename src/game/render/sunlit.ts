@@ -16,7 +16,7 @@ import type { DialectId } from '../content/act4.ts';
 import { mulberry32, range } from '../sim/rng.ts';
 import { createBloom, type Bloom } from './bloom.ts';
 import type { CoralForm } from './coral.ts';
-import { facing, glow, drawOsselSand, speck, whaleSilhouette } from './draw.ts';
+import { cacheCanvas, facing, glow, drawOsselSand, speck, whaleSilhouette } from './draw.ts';
 import { drawCraft, FLUORESCENT_POLYP } from './craft.ts';
 import { drawColony, drawDaughters } from './daughters.ts';
 import { createLayerCache } from './layer.ts';
@@ -260,7 +260,7 @@ export function createSunlitScene(seed: number): Scene {
     const key = `${w}x${h} ${focus.x},${focus.y},${focus.w},${focus.h} ${dpr}`;
     if (!floorCache || floorCache.key !== key) {
       const bh = Math.max(1, Math.ceil(h - yTop));
-      const canvas = typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(Math.ceil(w), bh) : Object.assign(document.createElement('canvas'), { width: Math.ceil(w), height: bh });
+      const canvas = cacheCanvas(Math.ceil(w), bh);
       paintSand(canvas.getContext('2d') as CanvasRenderingContext2D, yTop);
       floorCache = { canvas, key, y: yTop };
     }

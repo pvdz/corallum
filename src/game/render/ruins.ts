@@ -4,7 +4,7 @@
 // Silt Floor, the Midnight Water and the Twilight Shelf, each with its own colours.
 
 import { mulberry32, range } from '../sim/rng.ts';
-import { glow } from './draw.ts';
+import { cacheCanvas, glow } from './draw.ts';
 import type { Focus } from './scene.ts';
 
 type Stub = { m: number; side: -1 | 1; len: number; lift: number };
@@ -195,7 +195,7 @@ export function createRuins(seed: number) {
       const key = `${w}x${h} ${focus.x},${focus.y},${focus.w},${focus.h} ${which.join()} ${hq}`;
       if (!cache || cacheKey !== key) {
         if (!cache || cache.width !== w || cache.height !== h) {
-          cache = typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(w, h) : document.createElement('canvas');
+          cache = cacheCanvas(w, h);
           cache.width = w;
           cache.height = h;
         }

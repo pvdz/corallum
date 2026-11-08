@@ -3,7 +3,7 @@
 // the reef stands and how much of it has grown.
 
 import { generateCoral, thickness, type CoralForm } from './coral.ts';
-import { glow, ring } from './draw.ts';
+import { glow, ring, cacheCanvas } from './draw.ts';
 import { shy, spot } from './sightings.ts';
 import { zoom, type EffectKind, type ReefView } from './scene.ts';
 
@@ -124,7 +124,7 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
       box.w = Math.max(1, Math.min(w, Math.ceil(x1 + pad)) - box.x);
       box.h = Math.max(1, Math.min(h, Math.ceil(L.baseY + pad)) - box.y);
       if (!branchCache || branchCache.width !== box.w || branchCache.height !== box.h) {
-        branchCache = typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(box.w, box.h) : document.createElement('canvas');
+        branchCache = cacheCanvas(box.w, box.h);
         branchCache.width = box.w;
         branchCache.height = box.h;
       }
