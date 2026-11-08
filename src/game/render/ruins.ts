@@ -108,30 +108,33 @@ export function createRuins(seed: number) {
     }
     ctx.closePath();
     ctx.fill();
-    // Round stone, not a cut-out: along the edge facing the reef (the light in this sea) a soft lit
-    // band, along the far edge a wider shade, both kept inside the stone and following its outline.
+    // Round stone, not a cut-out: along the edge facing the reef (the light in this sea) a faint lit
+    // band, along the far edge a wider shade. Each is a strip filled between the outline and the
+    // same points moved inward (a filled strip, not a clipped wide stroke: this is repainted every
+    // frame while the reef rises).
     {
-      ctx.save();
-      ctx.clip();
       const lit = lightX >= x ? rightPts : leftPts, dark = lightX >= x ? leftPts : rightPts;
-      const edge = (pts: readonly [number, number][]) => {
+      const strip = (all: readonly [number, number][], width: number) => {
+        // Begun under the broken crown (its stumps dip below the top line), so no square end shows.
+        const pts = all.filter(([, py]) => py > topY + base * 0.8);
+        if (pts.length < 2) return;
         ctx.beginPath();
         pts.forEach(([px, py], i) => (i ? ctx.lineTo(px, py) : ctx.moveTo(px, py)));
-        ctx.stroke();
+        for (let i = pts.length - 1; i >= 0; i--) {
+          // Tapered in from nothing over its first few points: no hard end where it begins.
+          const [px, py] = pts[i]!, wi = width * Math.min(1, i / 5);
+          ctx.lineTo(px + (px < x ? wi : -wi), py);
+        }
+        ctx.closePath();
+        ctx.fill();
       };
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = 'rgba(0,0,8,0.22)';
-      ctx.lineWidth = base * 1.1;
-      edge(dark);
-      // Faint: the stone only half catches the light (each zone's rim is its crown's brighter catch).
-      ctx.strokeStyle = L.rim;
+      ctx.fillStyle = 'rgba(0,0,8,0.2)';
+      strip(dark, base * 0.6);
+      ctx.fillStyle = L.rim;
       ctx.globalAlpha = 0.3;
-      ctx.lineWidth = base * 0.9;
-      edge(lit);
-      ctx.lineWidth = base * 0.4;
-      edge(lit);
+      strip(lit, base * 0.45);
+      strip(lit, base * 0.2);
       ctx.globalAlpha = 1;
-      ctx.restore();
     }
     // Light from above catches the broken top and fades down the stone.
     if (crownVisible) {
