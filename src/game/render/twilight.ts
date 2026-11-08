@@ -1917,8 +1917,10 @@ export function createTwilightScene(seed: number): Scene {
     const r = mulberry32(seed ^ 0x4e2d);
     const mid = focus.x + focus.w / 2, nearest = { d: Infinity, x: 0, y: 0 };
     ctx.save();
-    ctx.globalAlpha = 0.85 * fade;
-    ctx.fillStyle = '#5a8a9c';
+    // Far off and, by night, in the dark with everything else: a dimmer, deeper blue.
+    const n = nightAt(t);
+    ctx.globalAlpha = 0.85 * fade * (1 - 0.4 * n);
+    ctx.fillStyle = `rgb(${Math.round(90 - 48 * n)},${Math.round(138 - 66 * n)},${Math.round(156 - 52 * n)})`;
     ctx.beginPath();
     for (let i = 0; i < 70; i++) {
       const lag = r() * 0.5, lane = r(), size = 0.6 + r() * 0.6;
