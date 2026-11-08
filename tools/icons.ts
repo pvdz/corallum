@@ -7,8 +7,11 @@ import { createRequire } from 'node:module';
 
 const pw = createRequire(process.env.PLAYWRIGHT_GLOBAL_ROOT ?? '/usr/lib/node_modules/')('playwright') as typeof import('playwright');
 const svg = readFileSync('src/client/favicon.svg', 'utf8');
-// The mark without the rounded tile, so it can sit on a full-bleed square.
-const mark = svg.replace(/<rect[^>]*\/>/, '');
+// Full-bleed squares (the OS rounds the corners): the tile without its rounding. Maskable: the
+// same sea carried past the edges and the mark drawn smaller, inside the central safe circle.
+const full = svg.replace(' rx="7"', '');
+const maskable = svg.replace(' rx="7"', '').replace('viewBox="0 0 32 32"', 'viewBox="-6 -6 44 44"')
+  .replace('<rect width="32" height="32"', '<rect x="-6" y="-6" width="44" height="44"');
 const BG = '#06081a';
 const OUT = 'src/client/icons';
 mkdirSync(OUT, { recursive: true });
@@ -16,18 +19,17 @@ mkdirSync(OUT, { recursive: true });
 const browser = await pw.chromium.launch();
 try {
   const page = await browser.newPage();
-  const shot = async (size: number, inset: number, file: string) => {
+  const shot = async (size: number, art: string, file: string) => {
     await page.setViewportSize({ width: size, height: size });
-    const pad = Math.round(size * inset);
-    await page.setContent(`<html><body style="margin:0;background:${BG}"><div style="width:${size}px;height:${size}px;box-sizing:border-box;padding:${pad}px">${mark.replace('<svg ', `<svg width="${size - 2 * pad}" height="${size - 2 * pad}" `)}</div></body></html>`);
+    await page.setContent(`<html><body style="margin:0;background:${BG}">${art.replace('<svg ', `<svg width="${size}" height="${size}" style="display:block" `)}</body></html>`);
     writeFileSync(`${OUT}/${file}`, await page.screenshot({ type: 'png' }));
     console.log(`${OUT}/${file}`);
   };
-  await shot(180, 0.08, 'icon-180.png');
-  await shot(192, 0.08, 'icon-192.png');
-  await shot(512, 0.08, 'icon-512.png');
-  // Maskable: the launcher may crop to a circle of 80% of the side; keep the mark inside it.
-  await shot(512, 0.2, 'icon-maskable-512.png');
+  await shot(180, full, 'icon-180.png');
+  await shot(192, full, 'icon-192.png');
+  await shot(512, full, 'icon-512.png');
+  // Maskable: the launcher may crop to a circle of 80% of the side; the mark stays inside it.
+  await shot(512, maskable, 'icon-maskable-512.png');
 } finally {
   await browser.close();
 }
