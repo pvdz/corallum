@@ -90,7 +90,8 @@ export function createBreachScene(seed: number): Scene {
   const effects = createEffects();
   let bloom: Bloom | null = null;
   const galaxy = createLayerCache(1);
-  const fore = createForeground(seed);
+  // Its own fan in the corner, not the deep zones' again.
+  const fore = createForeground(seed ^ 0x5b7e);
   const stars: Star[] = Array.from({ length: 160 }, () => ({ x: rng(), y: rng(), r: range(rng, 0.4, 1.4), tw: rng() * 10 }));
   const bundles: Bundle[] = Array.from({ length: 420 }, () => ({
     x: range(rng, -0.32, 0.32), delay: rng() * 14, speed: range(rng, 0.05, 0.11), drift: range(rng, -1, 1), size: range(rng, 0.6, 1.3),

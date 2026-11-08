@@ -60,7 +60,8 @@ export function createTwilightScene(seed: number): Scene {
     u: i < 11 ? 0.1 + rng() * 0.1 : 0.72 + rng() * 0.16, len: range(rng, 22, 36), light: rng() < 0.6,
   }));
   const water = createLayerCache(0.5);
-  const fore = createForeground(seed);
+  // Its own fan in the corner, not another zone's.
+  const fore = createForeground(seed ^ 0x3c4f);
   const slugs = createSlugs(7);
   const ruins = createRuins(seed);
   const effects = createEffects();

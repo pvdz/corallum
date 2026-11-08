@@ -63,7 +63,8 @@ export function createSunlitScene(seed: number): Scene {
   };
   const shoals = createShoals(seed ^ 0x77);
   const water = createLayerCache(0.5);
-  const fore = createForeground(seed);
+  // Its own fan in the corner, not another zone's.
+  const fore = createForeground(seed ^ 0x4d91);
   const slugs = createSlugs(7);
   let lastT = 0;
   const effects = createEffects();

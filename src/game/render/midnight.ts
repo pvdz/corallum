@@ -54,7 +54,8 @@ export function createMidnightScene(seed: number): Scene {
   const shoals = createShoals(seed);
   const ruins = createRuins(seed);
   const water = createLayerCache(0.5);
-  const fore = createForeground(seed);
+  // Its own fan in the corner, not the Silt Floor's again.
+  const fore = createForeground(seed ^ 0x2b1d);
 
   const combs: Comb[] = Array.from({ length: 3 }, (_, i) => ({
     x: [-0.32, 0.3, 0.05][i]! + range(rng, -0.03, 0.03), y: [0.2, 0.32, 0.08][i]! + range(rng, -0.03, 0.03),
