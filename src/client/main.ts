@@ -1467,6 +1467,7 @@ let labelShown = { id: '', at: -1e9 };
 function showCreatureLabel(id: string, x: number, y: number, r = 20, tx = NaN, ty = NaN): void {
   const c = CREATURES.find((k) => k.id === id);
   if (!c) return;
+  creatureLabel.style.transform = '';
   creatureLabel.innerHTML = '';
   const n = document.createElement('strong');
   n.textContent = c.name;
@@ -1847,7 +1848,7 @@ function updateGauge(): void {
 // View mode: hide the panel and let the reef have the whole screen (button top-left, or H).
 let viewMode = false;
 /** The creature the idle camera is following in view mode (where it was last seen), and when to pick the next. */
-let driftFollow: { id: Spot['id']; x: number; y: number; until: number; named?: boolean } | null = null;
+let driftFollow: { id: Spot['id']; x: number; y: number; until: number; named?: boolean; anchor?: { x: number; y: number; l: number; t: number; r: number; b: number } } | null = null;
 let driftNext = 0;
 /** When the idle camera last went to each kind (rare ones are visited once per visit). */
 const driftVisited = new Map<Spot['id'], number>();
@@ -2180,10 +2181,18 @@ function frameBody(now: number): void {
     if (follow && driftFollow) {
       zoomer.lookAt(2.1, follow.x, follow.y, Math.min(1, dt * 0.45));
       // Once the camera has closed in, the creature's name and note, as a tap would show them.
+      const [sx, sy] = toScreen(follow.x, follow.y);
       if (!driftFollow.named && now > driftFollow.until - 14_000) {
         driftFollow.named = true;
-        const [sx, sy] = toScreen(follow.x, follow.y);
         showCreatureLabel(follow.id, sx / dpr, sy / dpr, (follow.r * zoom.k) / dpr);
+        const box = creatureLabel.getBoundingClientRect();
+        driftFollow.anchor = { x: sx / dpr, y: sy / dpr, l: box.left, t: box.top, r: box.right, b: box.bottom };
+      } else if (driftFollow.anchor && creatureLabel.classList.contains('show')) {
+        // The caption keeps beside the creature while it shows (moved, not laid out again), on screen.
+        const a = driftFollow.anchor;
+        const dx = Math.min(innerWidth - 8 - a.r, Math.max(8 - a.l, sx / dpr - a.x));
+        const dy = Math.min(innerHeight - 8 - a.b, Math.max(60 - a.t, sy / dpr - a.y));
+        creatureLabel.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px)`;
       }
     }
     else {
