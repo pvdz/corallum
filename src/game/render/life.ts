@@ -21,10 +21,10 @@ export function createLife(seed: number) {
     { x: 0.46, size: 0.9 },
   ];
   const lilies: Lily[] = [
-    { x: -0.42, size: 1.0, phase: 0, hue: '230,200,215' },
-    { x: -0.06, size: 0.75, phase: 2.1, hue: '215,215,240' },
-    { x: 0.2, size: 0.9, phase: 4.2, hue: '240,210,190' },
-    { x: 0.4, size: 0.65, phase: 1.3, hue: '220,205,235' },
+    { x: -0.42, size: 1.0, phase: 0, hue: '200,172,188' },
+    { x: -0.06, size: 0.75, phase: 2.1, hue: '186,186,212' },
+    { x: 0.2, size: 0.9, phase: 4.2, hue: '208,180,164' },
+    { x: 0.4, size: 0.65, phase: 1.3, hue: '192,178,206' },
   ];
   const jellies: Jelly[] = Array.from({ length: 3 }, (_, i) => ({
     x: [-0.36, 0.33, -0.2][i]! + range(rng, -0.04, 0.04),
@@ -801,6 +801,8 @@ export function createLife(seed: number) {
       for (let k = 0; k < seg; k++) {
         const u = k / seg;
         const nx = px + Math.cos(ang) * step, ny = py + Math.sin(ang) * step;
+        // Fainter near the cup, where all ten arms overlap.
+        ctx.strokeStyle = `rgba(${c.hue},${k < 2 ? 0.3 + 0.15 * k : 0.6})`;
         ctx.lineWidth = (1.3 - u * 0.8) * s;
         ctx.beginPath();
         ctx.moveTo(px, py);
@@ -820,10 +822,10 @@ export function createLife(seed: number) {
         ang += curl * (0.3 + 1.8 * u);
       }
     }
-    // The cup the arms rise from.
-    ctx.fillStyle = 'rgba(176,160,190,0.7)';
+    // The cup the arms rise from, over their crowded roots (which would bloom white).
+    ctx.fillStyle = 'rgba(120,104,138,0.95)';
     ctx.beginPath();
-    ctx.ellipse(tx, ty + 1 * s, 2.4 * s, 1.8 * s, sway, 0, Math.PI * 2);
+    ctx.ellipse(tx, ty + 0.6 * s, 2.8 * s, 2.2 * s, sway, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }
