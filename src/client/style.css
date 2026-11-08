@@ -1282,9 +1282,9 @@ html.view-mode #photo { display: grid; }
 }
 /* A creature's label (asked for by a tap) comes first: a whisper behind it steps back. */
 #ui:has(#creature-label.show) #whisper { opacity: 0 !important; }
-/* A story card or the away summary over a whisper (or a journal note) that had begun: it waits
+/* A story card or the away summary over a whisper, a journal note or a haul line that had begun: it waits
    unseen where it was, and plays on from there once the card is closed, so its words are read. */
-html:has(.reader:not([hidden]), .away:not([hidden])) :is(#whisper, #journal-note).show { animation-play-state: paused; visibility: hidden; }
+html:has(.reader:not([hidden]), .away:not([hidden])) :is(#whisper.show, #journal-note.show, .float.feast-float) { animation-play-state: paused; visibility: hidden; }
 #ui:has(#creature-label.show.over-band) #milestone { opacity: 0 !important; transition: opacity 0.3s ease; }
 
 /* The photo's shutter: a soft flash over everything, gone in half a second. */
