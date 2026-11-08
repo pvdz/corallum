@@ -2326,14 +2326,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           // runs out, a turn of the water loses its label before something to act on does.
           const W = almanac.clientWidth || 300;
           const labelOf = (w: string) => w.replace(/^(a|an|the) /, '').split(' (')[0]!;
-          // Dots a few pixels apart (things due within a minute or so of each other) share one
+          // Dots under 20 px apart (things due within a minute or two of each other) share one
           // centre for their labels, so the labels stacked under them line up instead of each
           // sitting a little off the one above.
           const dotX = marks.map(([t]) => (Math.max(0, t) / 1200) * W);
           const anchor = dotX.slice();
           for (let i = 0; i < marks.length;) {
             let j = i + 1;
-            while (j < marks.length && dotX[j]! - dotX[j - 1]! < 14) j++;
+            while (j < marks.length && dotX[j]! - dotX[j - 1]! < 20) j++;
             const mid = dotX.slice(i, j).reduce((a, x) => a + x, 0) / (j - i);
             for (let k = i; k < j; k++) anchor[k] = mid;
             i = j;
