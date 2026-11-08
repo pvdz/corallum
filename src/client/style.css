@@ -1002,7 +1002,7 @@ html.view-mode #zone-title, html.view-mode #whisper, html.view-mode #milestone {
 #creature-label {
   position: absolute; z-index: 2; max-width: 220px; pointer-events: none; opacity: 0; transition: opacity 0.4s ease;
   display: flex; flex-direction: column; gap: 2px; padding: 7px 10px; border-radius: 10px;
-  background: rgba(6, 10, 28, 0.72); border: 1px solid var(--edge); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  background: rgba(var(--zone-tint), 0.78); border: 1px solid var(--edge); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
 }
 #creature-label.show { opacity: 1; }
 #creature-label strong { font-family: var(--display); font-weight: 400; font-size: 15px; color: #eaf6ff; }

@@ -1386,3 +1386,4 @@ date, what landed, what is half-done, what's next.
 - Ossel's lonely-seamount line points at the far reef's lights, but on a phone at 40 m they stood in the vent's smoke and shimmer, hard to find. The far reef stands on the ridge left of the reef now, in clear water (desktop and phone). The whole audit sweep (10 viewports × plain, --big, --sci, 8 stages) ran clean before this.
 - The journal note's shade ("Seen for the first time …") was a fixed dark navy: over the Sunlit Crown's bright water a grey smudge. It takes the zone's own deep colour now, as the whispers' halo does (navy in the deep, sea-green in the light).
 - The corner buttons (sound, view, photo) were dark navy discs on every water; they take the zone's tint now, like the panel, so in the light they are sea-green glass rather than holes.
+- Creature labels likewise: the zone's tint at 78% (was a fixed navy), readable in the Sunlit Crown (checked on a phone with the seahorses).
