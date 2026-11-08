@@ -26,7 +26,8 @@ await withGame(async (open) => {
     await page.locator('#view-mode').click();
     const shot = page.waitForEvent('download');
     await page.locator('#photo').click();
-    const flash = await page.locator('.photo-flash').count();
+    // The shot (and its flash) comes on the next frame, drawn without the play's marks.
+    const flash = await page.locator('.photo-flash').waitFor({ state: 'attached', timeout: 3000 }).then(() => 1, () => 0);
     const dl = await shot;
     const ok = /^corallum-\d+m\.png$/.test(dl.suggestedFilename()) && flash === 1 && !errors.length;
     console.log(`${ok ? 'ok  ' : 'FAIL'} a photo of the reef: ${dl.suggestedFilename()}${flash ? ', a flash' : ', no flash'}`);
