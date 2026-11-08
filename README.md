@@ -76,7 +76,8 @@ Under every full moon the other reefs spawn too, and the water fills with slow p
   seamounts that teach the whole line something.
 - **It ends.** A real finale at the surface, then an epilogue garden and a chronicle of the
   line's endings.
-- Desktop, phone portrait and phone landscape. Sound is procedural and off by default.
+- Desktop, phone portrait and phone landscape. Sound is procedural and off by default; music and
+  sounds each have their own slider in the Reef tab.
 
 ## Keys
 
