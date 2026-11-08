@@ -29,6 +29,17 @@ await withGame(async (open) => {
 });
 process.exitCode = failed ? 1 : 0;
 
+// The 320 px phone on its side (568×320) once froze at load: the sheet left the scene no height and
+// a renderer's loop ran on NaN. It loads, draws, and answers.
+await withGame(async (open) => {
+  const { page, errors } = await open({ name: 'tiny-landscape', width: 568, height: 320, scale: 2, mobile: true }, '?bot=2400&t=10');
+  await page.waitForSelector('html[data-ready="1"]', { timeout: 20000 });
+  const r = await page.evaluate(() => ({ h: window.corallum!.state.height, side: document.querySelector('.panel')!.getBoundingClientRect().left > 200 }));
+  const ok = errors.length === 0 && r.h > 0 && r.side;
+  console.log(`${ok ? 'ok  ' : 'FAIL'} 568×320 loads with the side panel${errors.length ? ': ' + errors.join(' | ') : ''}`);
+  if (!ok) process.exitCode = 1;
+});
+
 // Reduced motion keeps the title cards' fade: a milestone announcement must still show.
 await withGame(async (open) => {
   const { page, errors } = await open(VIEWPORTS[0]!, '?bot=200');

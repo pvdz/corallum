@@ -25,7 +25,7 @@ These were written by the agent, not the user; fix them when wrong.
 - `node src/server/server.ts [--port 8080] [--lan]` — run the game at http://localhost:8080/
 - `tsc --noEmit -p tsconfig.json` — typecheck (global tsc; never `npx`)
 - `node --test "test/sim/**/*.test.ts"` — unit tests
-- `node --no-warnings test/e2e/smoke.ts` — desktop + mobile load, no console errors
+- `node --no-warnings test/e2e/smoke.ts` — desktop + mobile (+ 568×320 on its side) load, no console errors
 - `node --no-warnings test/e2e/play.ts` — clicks through: band reader, sweep, buy, reload, offline summary, the welcome gift, a dream, a device asleep, keys after a click, Back closing a card
 - `node --no-warnings test/e2e/prestige.ts` — a lesser spawning from an injected save (harness `open(vp, q, { save })`)
 - `node --no-warnings test/e2e/finale.ts` — full moon, release, three memories, ending (SHOTS=<dir> saves screens)
