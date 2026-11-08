@@ -343,20 +343,68 @@ export function createAbyssScene(seed: number): Scene {
     const rx = 48 * s, ry = 7 * s;
     sight('brine-pool');
     spot('brine-pool', x, y, rx);
+    // An uneven shore, not an ellipse: the edge wanders a little in and out.
+    const N = 36;
+    const edge = (k: number): [number, number] => {
+      const a = (k / N) * Math.PI * 2;
+      const w = 1 + 0.07 * Math.sin(a * 3 + 1.2) + 0.04 * Math.sin(a * 5 + 0.4);
+      return [x + Math.cos(a) * rx * w, y + Math.sin(a) * ry * w];
+    };
+    // Mussels crowd the shore in a dense bank, two staggered rows of dark shells, each with a pale
+    // lip; those on the far shore stand behind the brine, the near ones in front of it.
+    const mr = mulberry32(0xb21e);
+    const mussels: { x: number; y: number; r: number; a: number; front: boolean }[] = [];
+    for (let k = 0; k < 72; k++) {
+      const a = (k / 72) * Math.PI * 2 + range(mr, -0.04, 0.04);
+      const row = k % 2;
+      const out = 1.02 + row * 0.12 + range(mr, 0, 0.06);
+      mussels.push({ x: x + Math.cos(a) * rx * out, y: y + Math.sin(a) * ry * (out + 0.35 * row) - row * 0.8 * s, r: range(mr, 2.6, 4.2) * s * (Math.sin(a) > 0 ? 1.15 : 0.85), a: a + range(mr, -0.6, 0.6), front: Math.sin(a) > 0 });
+    }
+    const drawMussels = (front: boolean) => {
+      const shells = new Path2D(), lips = new Path2D();
+      for (const m of mussels) {
+        if (m.front !== front) continue;
+        shells.moveTo(m.x + Math.cos(m.a) * m.r, m.y + Math.sin(m.a) * m.r * 0.6);
+        shells.ellipse(m.x, m.y, m.r, m.r * 0.52, m.a, 0, Math.PI * 2);
+        lips.moveTo(m.x - Math.cos(m.a) * m.r * 0.8, m.y - Math.sin(m.a) * m.r * 0.8 * 0.52 - 0.6 * s);
+        lips.lineTo(m.x + Math.cos(m.a) * m.r * 0.8, m.y + Math.sin(m.a) * m.r * 0.8 * 0.52 - 0.6 * s);
+      }
+      ctx.fillStyle = '#221e2e';
+      ctx.fill(shells);
+      ctx.strokeStyle = 'rgba(170,160,196,0.35)';
+      ctx.lineWidth = Math.max(0.6, 0.6 * s);
+      ctx.stroke(lips);
+    };
+    drawMussels(false);
+    // The brine: heavier than the sea, so its surface lies flat and sharp, dark below and catching
+    // the reef's light along its far edge, a soft sheen across it.
     const g = ctx.createLinearGradient(0, y - ry, 0, y + ry);
-    g.addColorStop(0, 'rgba(150,180,230,0.55)');
-    g.addColorStop(1, 'rgba(40,60,110,0.75)');
+    g.addColorStop(0, 'rgba(110,140,196,0.62)');
+    g.addColorStop(1, 'rgba(22,34,72,0.88)');
     ctx.fillStyle = g;
     ctx.beginPath();
-    ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+    for (let k = 0; k <= N; k++) { const [px, py] = edge(k); if (k) ctx.lineTo(px, py); else ctx.moveTo(px, py); }
+    ctx.closePath();
     ctx.fill();
+    ctx.strokeStyle = 'rgba(205,224,255,0.5)';
+    ctx.lineWidth = 1.1 * s;
+    ctx.beginPath();
+    for (let k = Math.round(N * 0.53); k <= Math.round(N * 0.97); k++) { const [px, py] = edge(k); if (k > Math.round(N * 0.53)) ctx.lineTo(px, py + 0.6 * s); else ctx.moveTo(px, py + 0.6 * s); }
+    ctx.stroke();
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = 'rgba(150,180,230,0.08)';
+    ctx.beginPath();
+    ctx.ellipse(x - rx * 0.15, y - ry * 0.25, rx * 0.55, ry * 0.25, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
     // The surface: slow ripples of light across the brine.
-    ctx.strokeStyle = 'rgba(210,230,255,0.35)';
+    ctx.strokeStyle = 'rgba(210,230,255,0.3)';
     ctx.lineWidth = 1 * s;
     for (let k = 0; k < 4; k++) {
       const u = ((t * 0.08 + k * 0.25) % 1);
       ctx.beginPath();
-      ctx.ellipse(x, y, rx * (0.2 + 0.75 * u), ry * (0.2 + 0.75 * u), 0, Math.PI * 1.05, Math.PI * 1.95);
+      ctx.ellipse(x, y, rx * (0.2 + 0.7 * u), ry * (0.2 + 0.7 * u), 0, Math.PI * 1.05, Math.PI * 1.95);
       ctx.globalAlpha = 1 - u;
       ctx.stroke();
     }
@@ -374,14 +422,7 @@ export function createAbyssScene(seed: number): Scene {
         ctx.stroke();
       }
     }
-    // Mussels crowding the rim.
-    ctx.fillStyle = '#2a2638';
-    for (let k = 0; k < 30; k++) {
-      const a = (k / 30) * Math.PI * 2;
-      ctx.beginPath();
-      ctx.ellipse(x + Math.cos(a) * rx * 1.04, y + Math.sin(a) * ry * 1.3, 4 * s, 2.2 * s, a, 0, Math.PI * 2);
-      ctx.fill();
-    }
+    drawMussels(true);
   }
 
   /**

@@ -1,6 +1,7 @@
 // Close-ups of the scene's creatures, for art passes: loads a reef the bot grew to a given time,
 // freezes the scene clock, and clips each tappable spot (corallum.spots) at a high device scale.
-// Usage: node --no-warnings tools/closeup.ts [--at <bot secs>] [--t <scene secs>] [--scale 3] [--pad 1.6] [--out <dir>] [id ...]
+// Usage: node --no-warnings tools/closeup.ts [--at <bot secs>] [--t <scene secs>] [--scale 3] [--pad 1.6] [--out <dir>] [--q 'bot=400&seamount=cold'] [id ...]
+// --q adds URL parameters (with bot=… the page grows its own reef and --at is not needed).
 // With no ids it shoots every spot on screen once. Writes <out>/<id>.png (default screenshot/closeup/).
 // A spot that is off screen at that moment is listed; try another --t.
 
@@ -22,13 +23,14 @@ const t = opt('t', '300');
 const scale = Number(opt('scale', '3'));
 const pad = Number(opt('pad', '1.6'));
 const out = opt('out', 'screenshot/closeup');
+const q = opt('q', '');
 const ids = args;
 mkdirSync(out, { recursive: true });
 
 const save = at > 0 ? serialize(runBot((s) => s.t >= at, at).state, Date.now()) : undefined;
 await withGame(async (open) => {
   const W = 1440, H = 900;
-  const { page, errors } = await open({ name: 'closeup', width: W, height: H, scale, mobile: false }, `?t=${t}`, { save });
+  const { page, errors } = await open({ name: 'closeup', width: W, height: H, scale, mobile: false }, `?t=${t}${q ? `&${q}` : ''}`, { save });
   await page.waitForTimeout(2500);
   // Story cards and the away summary close first.
   for (let i = 0; i < 6; i++) {
