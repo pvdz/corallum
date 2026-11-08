@@ -595,21 +595,53 @@ export function createLife(seed: number) {
         ctx.lineTo(lx + kick, 4 * s);
         ctx.stroke();
       }
-      // Body: a translucent pink loaf.
-      const g = ctx.createLinearGradient(0, -6 * s, 0, 3 * s);
-      g.addColorStop(0, 'rgba(255,200,210,0.85)');
-      g.addColorStop(1, 'rgba(210,120,140,0.85)');
+      // Feeding tentacles round the mouth, dabbing at the silt in turn (local +x is forward).
+      ctx.strokeStyle = 'rgba(236,170,186,0.75)';
+      ctx.lineWidth = 0.8 * s;
+      for (let m = 0; m < 4; m++) {
+        const dab = Math.max(0, Math.sin(t * 1.7 + m * 1.6 + k * 2)) * (1 - tuck);
+        const mx = 7.4 * s + m * 0.7 * s;
+        ctx.beginPath();
+        ctx.moveTo(mx, 0.6 * s);
+        ctx.quadraticCurveTo(mx + 1.6 * s, 1.6 * s, mx + (1.4 + dab) * s, (2.4 + dab * 1.4) * s);
+        ctx.stroke();
+      }
+      // Body: a translucent pink loaf, the head end higher and rounder.
+      const by = -1.5 * s + step * 0.3 * s;
+      const g = ctx.createLinearGradient(0, by - 5 * s, 0, by + 4 * s);
+      g.addColorStop(0, 'rgba(255,200,210,0.8)');
+      g.addColorStop(0.55, 'rgba(236,156,174,0.78)');
+      g.addColorStop(1, 'rgba(200,110,132,0.85)');
       ctx.fillStyle = g;
       ctx.beginPath();
-      ctx.ellipse(0, -1.5 * s + step * 0.3 * s, 9 * s, 4.5 * s, 0, 0, Math.PI * 2);
+      ctx.moveTo(-9 * s, by + 1.4 * s);
+      ctx.bezierCurveTo(-9.6 * s, by - 3.2 * s, -4 * s, by - 4.4 * s, 1 * s, by - 4.6 * s);
+      ctx.bezierCurveTo(6 * s, by - 5 * s, 9.6 * s, by - 2.6 * s, 9.4 * s, by + 0.8 * s);
+      ctx.bezierCurveTo(9.2 * s, by + 3.4 * s, 4 * s, by + 3.6 * s, 0, by + 3.4 * s);
+      ctx.bezierCurveTo(-5 * s, by + 3.4 * s, -8.6 * s, by + 3.4 * s, -9 * s, by + 1.4 * s);
       ctx.fill();
-      // Feelers on the back.
+      // The gut showing through, and a pale rim along the back.
+      ctx.strokeStyle = 'rgba(150,60,84,0.45)';
+      ctx.lineWidth = 1.1 * s;
+      ctx.beginPath();
+      ctx.moveTo(-7 * s, by + 0.6 * s);
+      ctx.bezierCurveTo(-3 * s, by - 1.4 * s, 1 * s, by + 1.8 * s, 6.4 * s, by - 0.2 * s);
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(255,222,228,0.5)';
+      ctx.lineWidth = 0.7 * s;
+      ctx.beginPath();
+      ctx.moveTo(-7.4 * s, by - 2.2 * s);
+      ctx.bezierCurveTo(-3 * s, by - 4 * s, 4 * s, by - 4.4 * s, 7.6 * s, by - 2.4 * s);
+      ctx.stroke();
+      // Feelers on the back, the front pair the longest.
       ctx.strokeStyle = 'rgba(255,190,200,0.8)';
       ctx.lineWidth = 1.1 * s;
-      for (const fx of [-2, 1, 4]) {
+      for (const fx of [-3, 0, 3, 5]) {
+        const long = fx === 5 ? 1.4 : 1;
+        const top = by - 3.8 * s - (fx > 0 ? 0.4 * s : 0);
         ctx.beginPath();
-        ctx.moveTo(fx * s, -5 * s);
-        ctx.quadraticCurveTo((fx + 1) * s, (-5 - 4 * (1 - tuck)) * s, (fx + 2 + Math.sin(t + fx) * 1.5 * (1 - tuck)) * s, (-5 - 5 * (1 - tuck)) * s);
+        ctx.moveTo(fx * s, top);
+        ctx.quadraticCurveTo((fx + 1) * s, top - 4 * long * (1 - tuck) * s, (fx + 2 + Math.sin(t + fx) * 1.5 * (1 - tuck)) * s, top - 5 * long * (1 - tuck) * s);
         ctx.stroke();
       }
       ctx.restore();
