@@ -39,6 +39,22 @@ export const WHISPERS: readonly Whisper[] = [
     text: 'Hardly any snow falls here. Thin water. Your mouths will go hungry; eat what you can.',
   },
   {
+    id: 'sm-cold', when: (s) => s.seamount === 'cold' && actAt(s.height) === 1 && s.levels.polyp >= 4,
+    text: 'Slow, heavy water. It hardly takes anything back from you, but it feeds you less. See the lake on the floor? Salt so thick the sea sinks into it.',
+  },
+  {
+    id: 'sm-buried', when: (s) => s.seamount === 'buried' && actAt(s.height) === 1 && s.levels.polyp >= 4,
+    text: 'The Long Silt lies thickest here, and it has not stopped. Keep your mouths clear of it.',
+  },
+  {
+    id: 'sm-dark', when: (s) => s.seamount === 'dark' && actAt(s.height) === 1 && s.levels.polyp >= 4,
+    text: 'Even your glimmerseed burn low here. The water drinks the light. Do not wait for it to get brighter.',
+  },
+  {
+    id: 'sm-silent', when: (s) => s.seamount === 'silent' && actAt(s.height) === 1 && s.levels.polyp >= 4,
+    text: 'Nothing under us. No old reef, no bands to listen to. Whatever you remember here, you will have to have lived.',
+  },
+  {
     id: 'two', when: (s) => s.levels.polyp >= 1 && s.levels.polyp <= 3,
     text: 'Good. Now there are two of you eating.',
   },
