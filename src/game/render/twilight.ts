@@ -2090,7 +2090,7 @@ export function createTwilightScene(seed: number): Scene {
     for (const [x, y] of tips) { ctx.moveTo(x + 0.8 * s, y); ctx.ellipse(x, y, 0.8 * s, 2.4 * s, 0.5, 0, Math.PI * 2); }
     ctx.fill();
     // The two "oars": long pelvic rays from under the head, trailing down the belly side to a paddle.
-    const [px, py] = belly[3]!, [pnx, pny] = nrm[3]!;
+    const [px, py] = belly[3]!, [pnx] = nrm[3]!;
     ctx.strokeStyle = 'rgba(226,90,88,0.8)';
     ctx.lineWidth = 0.9 * s;
     ctx.beginPath();
