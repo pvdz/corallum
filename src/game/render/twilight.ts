@@ -1091,7 +1091,9 @@ export function createTwilightScene(seed: number): Scene {
       ctx.rotate(sway);
       ctx.strokeStyle = f.colour;
       ctx.lineCap = 'round';
-      // A short stem, then branches fanning out and forking twice.
+      // A short stem, then branches fanning out and forking twice; each level's joints and the
+      // tips are kept, left to right, for the web between them.
+      const levels: [number, number, number][][] = [[], [], [], []];
       const branch = (x0: number, y0: number, ang: number, len: number, depth: number) => {
         const x1 = x0 + Math.sin(ang) * len, y1 = y0 - Math.cos(ang) * len;
         ctx.lineWidth = Math.max(0.6, (3 - depth) * 0.9) * s;
@@ -1099,6 +1101,7 @@ export function createTwilightScene(seed: number): Scene {
         ctx.moveTo(x0, y0);
         ctx.lineTo(x1, y1);
         ctx.stroke();
+        levels[depth]!.push([ang, x1, y1]);
         if (depth < 3) {
           branch(x1, y1, ang - 0.32, len * 0.72, depth + 1);
           branch(x1, y1, ang + 0.32, len * 0.72, depth + 1);
@@ -1110,6 +1113,36 @@ export function createTwilightScene(seed: number): Scene {
       ctx.lineTo(0, -hgt * 0.18);
       ctx.stroke();
       for (const a of [-0.7, -0.25, 0.25, 0.7]) branch(0, -hgt * 0.18, a, hgt * 0.32, 0);
+      for (const l of levels) l.sort((p, q) => p[0] - q[0]);
+      // The living tissue: a faint web across the whole fan, behind its branches' lines.
+      const tips = levels[3]!;
+      ctx.globalAlpha = 0.14;
+      ctx.fillStyle = f.colour;
+      ctx.beginPath();
+      ctx.moveTo(0, -hgt * 0.18);
+      for (const [, tx, ty] of tips) ctx.lineTo(tx, ty);
+      ctx.closePath();
+      ctx.fill();
+      // Cross-links: neighbouring branches of each level joined, so the fan is a lattice.
+      ctx.globalAlpha = 0.55;
+      ctx.lineWidth = Math.max(0.5, 0.45 * s);
+      ctx.beginPath();
+      for (const l of levels.slice(1)) {
+        for (let i = 1; i < l.length; i++) {
+          const [, ax, ay] = l[i - 1]!, [, bx, by] = l[i]!;
+          if (Math.hypot(bx - ax, by - ay) > hgt * 0.22) continue;
+          ctx.moveTo(ax, ay);
+          ctx.quadraticCurveTo((ax + bx) / 2, (ay + by) / 2 + 1.5 * s, bx, by);
+        }
+      }
+      ctx.stroke();
+      // Polyps along the outer twigs: tiny pale points.
+      ctx.globalAlpha = 0.7;
+      ctx.fillStyle = 'rgba(255,240,250,0.9)';
+      ctx.beginPath();
+      for (const [, tx, ty] of [...tips, ...levels[2]!]) { ctx.moveTo(tx + 0.7 * s, ty); ctx.arc(tx, ty, 0.7 * s, 0, Math.PI * 2); }
+      ctx.fill();
+      ctx.globalAlpha = 1;
       ctx.restore();
     }
   }
