@@ -314,14 +314,18 @@ export function drawTerrace(ctx: CanvasRenderingContext2D, cx: number, unit: num
       // front shading toward the sand; each slab a little different in tone.
       const n = ((k * 7 + (side > 0 ? 3 : 0)) * 0.618) % 1;
       const r = 2.2 * s;
+      // The sides lean in a little and are not quite straight: laid stone, not a cut box.
+      const lean = 1.2 * s, jog = (n - 0.5) * 1.4 * s;
       ctx.beginPath();
-      ctx.moveTo(x - w / 2, y + h);
+      ctx.moveTo(x - w / 2 - lean, y + h);
+      ctx.lineTo(x - w / 2 + jog * 0.5, y + h * 0.5);
       ctx.lineTo(x - w / 2, y + r);
       ctx.quadraticCurveTo(x - w / 2, y, x - w / 2 + r, y);
       ctx.quadraticCurveTo(x - w * 0.1, y - (0.6 + n) * s, x + w * 0.15, y + 0.4 * s);
       ctx.lineTo(x + w / 2 - r, y);
       ctx.quadraticCurveTo(x + w / 2, y, x + w / 2, y + r);
-      ctx.lineTo(x + w / 2, y + h);
+      ctx.lineTo(x + w / 2 - jog * 0.4, y + h * 0.55);
+      ctx.lineTo(x + w / 2 + lean, y + h);
       ctx.closePath();
       const g = ctx.createLinearGradient(0, y, 0, y + h);
       const tone = Math.round(-10 + n * 20);
@@ -330,17 +334,33 @@ export function drawTerrace(ctx: CanvasRenderingContext2D, cx: number, unit: num
       g.addColorStop(1, `rgb(${168 + tone},${148 + tone},${112 + tone})`);
       ctx.fillStyle = g;
       ctx.fill();
-      // Seams between the set stones, a little askew, and a few pits.
-      ctx.strokeStyle = 'rgba(90,70,50,0.35)';
+      ctx.save();
+      ctx.clip();
+      // Shade under the lip of the top course.
+      ctx.fillStyle = 'rgba(90,70,50,0.18)';
+      ctx.fillRect(x - w, y + 3.2 * s, w * 2, 1.6 * s);
+      // Courses of blocks, each joint a little askew, the joints of one course between the next's.
+      ctx.strokeStyle = 'rgba(90,70,50,0.38)';
       ctx.lineWidth = 0.8 * s;
       ctx.beginPath();
-      ctx.moveTo(x - w * (0.1 + 0.1 * n), y + 3 * s);
-      ctx.lineTo(x - w * 0.12, y + h);
-      ctx.moveTo(x + w * (0.25 + 0.1 * n), y + 3 * s);
-      ctx.lineTo(x + w * 0.3, y + h);
-      ctx.moveTo(x - w / 2, y + h * 0.55 + n * 3 * s);
-      ctx.lineTo(x - w * 0.12, y + h * 0.5 + n * 3 * s);
+      const course = 5.5 * s;
+      for (let c = 0, cy = y + 3 * s; cy < y + h - 1 * s; c++, cy += course) {
+        if (c > 0) { ctx.moveTo(x - w, cy + (c % 2 ? 0.4 : -0.3) * s); ctx.lineTo(x + w, cy + (c % 2 ? -0.3 : 0.4) * s); }
+        const blocks = 2 + ((c + k) % 2);
+        for (let b = 1; b < blocks; b++) {
+          const jx = x - w / 2 + (w * b) / blocks + ((c * 7 + b * 3 + k) % 5 - 2) * 0.7 * s;
+          ctx.moveTo(jx, cy);
+          ctx.lineTo(jx + 0.4 * s, Math.min(y + h, cy + course));
+        }
+      }
       ctx.stroke();
+      // The lit edge of each course, catching the light from above.
+      ctx.strokeStyle = 'rgba(255,240,205,0.22)';
+      ctx.lineWidth = 0.6 * s;
+      ctx.beginPath();
+      for (let cy = y + 3 * s + course + 0.8 * s; cy < y + h - 1 * s; cy += course) { ctx.moveTo(x - w, cy); ctx.lineTo(x + w, cy); }
+      ctx.stroke();
+      ctx.restore();
       ctx.fillStyle = 'rgba(80,62,44,0.35)';
       ctx.beginPath();
       for (let q = 0; q < 3; q++) {
