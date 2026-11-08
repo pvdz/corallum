@@ -1433,6 +1433,25 @@ export function createBreachScene(seed: number): Scene {
       const x = x0 + dir * uk * focus.w * (0.45 + extra * 0.08) + k * 14 * s;
       const y = wy - Math.sin(uk * Math.PI) * (26 + k * 6) * s;
       if (k === 0) spot('flying-fish', x, y, 18 * s);
+      // Where it leaves the water and where it drops back in: a ripple spreading on the surface
+      // and a few drops thrown up, gone in a moment.
+      for (const [at, ux] of [[uk, 0], [1 - uk, 1]] as const) {
+        if (at > 0.14) continue;
+        const f = at / 0.14;
+        const rx = x0 + dir * ux * focus.w * (0.45 + extra * 0.08) + k * 14 * s;
+        ctx.strokeStyle = `rgba(220,235,250,${0.5 * (1 - f)})`;
+        ctx.lineWidth = 0.8 * s;
+        ctx.beginPath();
+        ctx.ellipse(rx, wy, (3 + f * 9) * s, (0.8 + f * 1.6) * s, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = `rgba(225,238,252,${0.75 * (1 - f)})`;
+        for (let d = 0; d < 4; d++) {
+          const dx = (d - 1.5) * 2.4 * s * (0.5 + f), dy = -(Math.sin((d + 1) * 1.7) * 0.5 + 1) * 7 * s * Math.sin(f * Math.PI);
+          ctx.beginPath();
+          ctx.arc(rx + dx, wy + dy, 0.6 * s, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
       ctx.save();
       ctx.translate(x, y);
       ctx.scale(dir, 1);
@@ -1458,7 +1477,16 @@ export function createBreachScene(seed: number): Scene {
       ctx.lineTo(-13.5 * s, 3.5 * s);
       ctx.closePath();
       ctx.fill();
-      // The long wing-fin sweeping back from the shoulder, faintly ribbed.
+      // The small hind wing under the belly, then the long wing-fin sweeping back from the
+      // shoulder, faintly ribbed.
+      ctx.fillStyle = 'rgba(150,185,230,0.45)';
+      ctx.beginPath();
+      ctx.moveTo(-3 * s, 1.2 * s);
+      ctx.quadraticCurveTo(-6 * s, 4.2 * s, -9 * s, 3.6 * s);
+      ctx.quadraticCurveTo(-6 * s, 2 * s, -4.5 * s, 1 * s);
+      ctx.closePath();
+      ctx.fill();
+
       ctx.fillStyle = 'rgba(150,185,230,0.6)';
       ctx.beginPath();
       ctx.moveTo(4 * s, -1 * s);
