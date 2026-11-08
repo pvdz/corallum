@@ -81,8 +81,11 @@ await withGame(async (open) => {
     for (let i = 0; i < 20; i++) {
       const text = (await page.locator('.ending .finale-text').textContent()) ?? '';
       pages.push(text);
-      const btn = page.locator('.ending button');
+      const btn = page.locator('.ending button').first();
       const label = await btn.textContent();
+      // The last page also offers the whole climb, replayed; only the last.
+      const replayShown = await page.locator('.ending button', { hasText: 'Watch the whole climb' }).isVisible();
+      if (replayShown !== (label === 'The reef lives on')) { failed = true; console.log(`FAIL ${vp.name}: the replay offered ${replayShown ? 'before' : 'not on'} the last page`); }
       await btn.click();
       if (label === 'The reef lives on') break;
     }

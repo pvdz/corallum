@@ -601,6 +601,7 @@ const finale = createFinale(ui, panel.growPage, {
     panel.growTop();
     document.documentElement.classList.add('ended');
   },
+  replay() { startLapse(true); },
 });
 if (ended(state)) document.documentElement.classList.add('ended');
 

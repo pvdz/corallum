@@ -23,6 +23,8 @@ export type FinaleHooks = {
   breach(memories: MemoryId[]): boolean;
   /** Called when the ending has been read through. */
   done(): void;
+  /** The whole climb replayed, from the seafloor (offered on the ending's last page). */
+  replay?(): void;
 };
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls = '', text = ''): HTMLElementTagNameMap[K] {
@@ -121,7 +123,13 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
   const endingText = el('p', 'finale-text');
   const endingNext = el('button', 'plain', UI.continue);
   endingNext.type = 'button';
-  endingInner.append(endingText, endingNext);
+  // On the last page, beside "The reef lives on": the whole climb once more, from the seafloor.
+  const endingReplay = el('button', 'plain', UI.timelapseWhole);
+  endingReplay.type = 'button';
+  endingReplay.hidden = true;
+  const endingFoot = el('div', 'finale-foot');
+  endingFoot.append(endingNext, endingReplay);
+  endingInner.append(endingText, endingFoot);
   ending.append(endingInner);
   host.append(ending);
   let pages: string[] = [];
@@ -177,6 +185,7 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
     void endingText.offsetWidth;
     endingText.classList.add('in');
     endingNext.textContent = page < pages.length - 1 ? UI.continue : UI.livesOn;
+    endingReplay.hidden = page < pages.length - 1 || !hooks.replay;
   }
   function playEnding(): void {
     if (!state) return;
@@ -192,6 +201,11 @@ export function createFinale(host: HTMLElement, panelPage: HTMLElement, hooks: F
       ending.hidden = true;
       hooks.done();
     }
+  });
+  endingReplay.addEventListener('click', () => {
+    ending.hidden = true;
+    hooks.done();
+    hooks.replay?.();
   });
 
   let calendarKey = -1;
