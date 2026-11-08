@@ -467,26 +467,74 @@ export function createLife(seed: number) {
     const flap = Math.sin(t * (5 + 10 * bob));
     ctx.save();
     ctx.translate(x, y);
-    ctx.fillStyle = 'rgba(255,205,190,0.85)';
-    // Mantle and its two ear fins.
+    // An umbrella of web between eight arms, its edge scalloped between the arm tips and breathing
+    // as it swims; the arms show darker down the web and curl a little past its edge.
+    const breathe = 0.5 + 0.5 * Math.sin(t * 2.2);
+    const web = ctx.createLinearGradient(0, 0, 0, 9 * s);
+    web.addColorStop(0, 'rgba(160,96,106,0.88)');
+    web.addColorStop(1, 'rgba(120,66,80,0.7)');
+    ctx.fillStyle = web;
     ctx.beginPath();
-    ctx.ellipse(0, -2 * s, 7 * s, 6 * s, 0, 0, Math.PI * 2);
-    ctx.fill();
-    for (const side of [-1, 1]) {
-      ctx.beginPath();
-      ctx.ellipse(side * 7 * s, -5 * s, 4 * s, 2 * s, side * (0.5 + flap * 0.4), 0, Math.PI * 2);
-      ctx.fill();
+    ctx.moveTo(-6.5 * s, 0);
+    const tips: [number, number][] = [];
+    for (let k = 0; k <= 7; k++) {
+      const f = k / 7, ax = (-7.5 + f * 15) * s * (1 + 0.08 * breathe), ay = (7 + Math.sin(f * Math.PI) * 1.5 + breathe * 0.8) * s;
+      tips.push([ax, ay]);
+      if (k === 0) ctx.lineTo(ax, ay);
+      else { const [px, py] = tips[k - 1]!; ctx.quadraticCurveTo((px + ax) / 2, (py + ay) / 2 - (1.6 + breathe) * s, ax, ay); }
     }
-    // A webbed skirt of arms below.
-    ctx.beginPath();
-    ctx.moveTo(-7 * s, 1 * s);
-    for (let k = 0; k <= 8; k++) ctx.lineTo(-7 * s + k * 1.75 * s, (5 + (k % 2) * 2 + Math.sin(t * 3 + k) * 0.6) * s);
-    ctx.lineTo(7 * s, 1 * s);
+    ctx.lineTo(6.5 * s, 0);
+    ctx.closePath();
     ctx.fill();
-    ctx.fillStyle = '#222';
+    ctx.strokeStyle = 'rgba(96,46,60,0.55)';
+    ctx.lineWidth = Math.max(0.6, 0.5 * s);
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    for (const [ax, ay] of tips) {
+      ctx.moveTo(ax * 0.35, 1 * s);
+      ctx.lineTo(ax, ay);
+      ctx.quadraticCurveTo(ax * 1.08, ay + 1.2 * s, ax * 1.02 + Math.sin(t * 3 + ax) * 0.4 * s, ay + 1.8 * s);
+    }
+    ctx.stroke();
+    // The ear fins, rounded paddles at the sides of the head, flapping.
     for (const side of [-1, 1]) {
+      ctx.save();
+      ctx.translate(side * 5.5 * s, -5 * s);
+      ctx.rotate(side * (0.35 + flap * 0.45));
+      ctx.fillStyle = 'rgba(190,124,124,0.9)';
       ctx.beginPath();
-      ctx.arc(side * 2.6 * s, -1.5 * s, 1 * s, 0, Math.PI * 2);
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo(side * 2 * s, -3.5 * s, side * 6 * s, -3 * s, side * 6 * s, 0);
+      ctx.bezierCurveTo(side * 6 * s, 2.2 * s, side * 2 * s, 2.2 * s, 0, 0.8 * s);
+      ctx.fill();
+      ctx.restore();
+    }
+    // The mantle: a soft helmet, lit faintly along its crown.
+    const body = ctx.createLinearGradient(0, -9 * s, 0, 2 * s);
+    body.addColorStop(0, 'rgba(204,140,134,0.95)');
+    body.addColorStop(1, 'rgba(160,96,106,0.95)');
+    ctx.fillStyle = body;
+    ctx.beginPath();
+    ctx.moveTo(-6.5 * s, 1 * s);
+    ctx.bezierCurveTo(-7.5 * s, -6 * s, -4 * s, -9.5 * s, 0, -9.5 * s);
+    ctx.bezierCurveTo(4 * s, -9.5 * s, 7.5 * s, -6 * s, 6.5 * s, 1 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,214,204,0.3)';
+    ctx.lineWidth = Math.max(0.6, 0.6 * s);
+    ctx.beginPath();
+    ctx.moveTo(-4.5 * s, -7 * s);
+    ctx.quadraticCurveTo(0, -10.2 * s, 4.5 * s, -7 * s);
+    ctx.stroke();
+    // Big dark eyes low on the mantle, each with a soft ring.
+    for (const side of [-1, 1]) {
+      ctx.fillStyle = 'rgba(232,190,176,0.45)';
+      ctx.beginPath();
+      ctx.arc(side * 3 * s, -1.6 * s, 1.6 * s, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#1a1014';
+      ctx.beginPath();
+      ctx.arc(side * 3 * s, -1.5 * s, 1.15 * s, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.restore();

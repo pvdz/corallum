@@ -19,7 +19,7 @@ export const REDRAWN: readonly (readonly string[])[] = [
     'sea-snake', 'octopus', 'giant-clam', 'moray', 'frogfish', 'nudibranch', 'sea-cucumber', 'decorator-crab', 'boxer-crab', 'rasp',
     'rasp-herd', 'oarfish', 'manta', 'eagle-rays', 'trumpetfish', 'turtle', 'damselfish', 'chimaera', 'rattail', 'larvacean',
     'giant-squid', 'breaching', 'sardine-run', 'bait-ball', 'moon-jelly', 'hatchlings', 'flashlight-fish', 'man-o-war', 'vampire-squid',
-    'reef-shark', 'petrel'],
+    'reef-shark', 'petrel', 'dumbo'],
 ];
 const ART_VERSION = REDRAWN.length - 1;
 
