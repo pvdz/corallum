@@ -105,6 +105,25 @@ function wrasse(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s: num
     ctx.lineTo(-8.5 * s, 1.8 * s);
     ctx.closePath();
     ctx.fill();
+    // A pale belly line under the stripe, a low dorsal fin, and the eye in the stripe near the snout.
+    ctx.fillStyle = 'rgba(200,232,250,0.8)';
+    ctx.beginPath();
+    ctx.ellipse(-0.5 * s, 1 * s, 4.2 * s, 0.45 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(40,110,190,0.8)';
+    ctx.beginPath();
+    ctx.moveTo(2.5 * s, -1.4 * s);
+    ctx.quadraticCurveTo(-1 * s, -2.6 * s, -4.5 * s, -1.2 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#e8f4ff';
+    ctx.beginPath();
+    ctx.arc(4 * s, -0.2 * s, 0.55 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#05070c';
+    ctx.beginPath();
+    ctx.arc(4.1 * s, -0.2 * s, 0.3 * s, 0, Math.PI * 2);
+    ctx.fill();
     ctx.restore();
   }
 }
@@ -738,6 +757,11 @@ function anemone(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s: nu
     ctx.moveTo(x, y);
     ctx.quadraticCurveTo(x + Math.cos(a + sway) * len * 0.6, y + Math.sin(a + sway) * len * 0.6, x + Math.cos(a + sway * 2) * len, y + Math.sin(a + sway * 2) * len);
     ctx.stroke();
+    // A swollen pale tip on each tentacle.
+    ctx.fillStyle = 'rgba(236,190,214,0.95)';
+    ctx.beginPath();
+    ctx.arc(x + Math.cos(a + sway * 2) * len, y + Math.sin(a + sway * 2) * len, 1.1 * s, 0, Math.PI * 2);
+    ctx.fill();
   }
   // Two clownfish weaving in and out of the tentacles.
   for (let k = 0; k < 2; k++) {
@@ -747,12 +771,34 @@ function anemone(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s: nu
     ctx.save();
     ctx.translate(fx, fy);
     ctx.scale(dir, 1);
+    // Orange, rounded fins edged dark, three white bars edged dark, a round eye.
+    const wag = Math.sin(t * 9 + k) * 0.5 * s;
+    ctx.fillStyle = '#e06a18';
+    ctx.beginPath();
+    ctx.moveTo(-3 * s, 0);
+    ctx.quadraticCurveTo(-5.4 * s, -1.9 * s + wag, -5.2 * s, 0);
+    ctx.quadraticCurveTo(-5.4 * s, 1.9 * s + wag, -3 * s, 0);
+    ctx.moveTo(1.5 * s, -1.5 * s);
+    ctx.quadraticCurveTo(-0.5 * s, -3 * s, -2.5 * s, -1.2 * s);
+    ctx.lineTo(1.5 * s, -1.2 * s);
+    ctx.fill();
     ctx.fillStyle = '#f07a20';
     ctx.beginPath();
     ctx.ellipse(0, 0, 3.4 * s, 1.8 * s, 0, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(-0.6 * s, -1.8 * s, 1 * s, 3.6 * s);
+    ctx.save();
+    ctx.clip();
+    for (const [bx, bw] of [[1.6, 0.9], [-0.4, 1.1], [-2.7, 0.7]] as const) {
+      ctx.fillStyle = '#1a1010';
+      ctx.fillRect((bx - 0.25) * s, -2 * s, (bw + 0.5) * s, 4 * s);
+      ctx.fillStyle = '#f4f0ec';
+      ctx.fillRect(bx * s, -2 * s, bw * s, 4 * s);
+    }
+    ctx.restore();
+    ctx.fillStyle = '#1a1010';
+    ctx.beginPath();
+    ctx.arc(2.5 * s, -0.4 * s, 0.4 * s, 0, Math.PI * 2);
+    ctx.fill();
     ctx.restore();
   }
   ctx.restore();
