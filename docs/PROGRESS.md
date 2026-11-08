@@ -1408,3 +1408,4 @@ date, what landed, what is half-done, what's next.
 - The Breach: the breathing turtle came up behind the beacon (the tower is drawn over it; only a green hump showed). With the beacon standing, the turtle surfaces just past the tower, or just short of it where the screen ends first (phones).
 - Flying fish: a small hind wing under the belly, and a ripple and a few drops where each leaves the water and drops back in.
 - The thorn star read as a purple snowflake (spindly arms, pale spine lines): a broad mottled disc, fourteen thick arms tapering and curling, a ridge down each, short rust-red spines with pale tips over arms and disc.
+- The drill snail's shell: a stepped spire of four ribbed whorls with an opening on the body whorl (was a smooth striped cone, near-white at its top, which the Silt Floor's glow turns to glare).

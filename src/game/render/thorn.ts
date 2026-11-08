@@ -208,25 +208,45 @@ function drawSnail(ctx: CanvasRenderingContext2D, x: number, y: number, s: numbe
   ctx.beginPath();
   ctx.arc(6.6 * s, 2.2 * s, 0.5 * s, 0, Math.PI * 2);
   ctx.fill();
-  const g = ctx.createLinearGradient(-6 * s, -10 * s, 6 * s, 3 * s);
-  g.addColorStop(0, '#e8dcc8');
-  g.addColorStop(1, '#9a7c62');
-  ctx.fillStyle = g;
-  ctx.beginPath();
-  ctx.moveTo(-6 * s, 2 * s);
-  ctx.quadraticCurveTo(-5 * s, -5 * s, 0, -12 * s);
-  ctx.quadraticCurveTo(5 * s, -5 * s, 6 * s, 2 * s);
-  ctx.closePath();
-  ctx.fill();
-  ctx.strokeStyle = 'rgba(90,60,40,0.6)';
-  ctx.lineWidth = 0.8 * s;
-  for (let k = 0; k < 4; k++) {
-    const yy = 1 * s - k * 3 * s, hw = 5.5 * s - k * 1.2 * s;
+  // The shell: a stepped spire of whorls, each bulging over the next, largest at the bottom
+  // with the opening at its front, ribbed across (kept out of near-white: the dark floor's glow
+  // turns pale fills to glare).
+  const whorls = [[0, 6.2, 5], [-4.6, 4.6, 3.6], [-8, 3.2, 2.6], [-10.4, 1.9, 1.8]] as const;
+  for (let k = whorls.length - 1; k >= 0; k--) {
+    const [wy, hw, h] = whorls[k]!;
+    const g = ctx.createLinearGradient(-hw, wy - h, hw, wy + 1 * s);
+    g.addColorStop(0, '#c8b49a');
+    g.addColorStop(1, '#7c624c');
+    ctx.fillStyle = g;
     ctx.beginPath();
-    ctx.moveTo(-hw, yy);
-    ctx.quadraticCurveTo(0, yy - 1.5 * s, hw, yy - 1 * s);
+    ctx.moveTo(-hw * s, (wy + 1.5) * s);
+    ctx.quadraticCurveTo(-hw * 1.05 * s, (wy - h * 0.7) * s, -hw * 0.35 * s, (wy - h) * s);
+    ctx.lineTo(hw * 0.35 * s, (wy - h) * s);
+    ctx.quadraticCurveTo(hw * 1.05 * s, (wy - h * 0.7) * s, hw * s, (wy + 1.5) * s);
+    ctx.closePath();
+    ctx.fill();
+    // Ribs across the whorl, and its seam with the one above.
+    ctx.strokeStyle = 'rgba(80,56,38,0.55)';
+    ctx.lineWidth = 0.55 * s;
+    ctx.beginPath();
+    for (let r = -2; r <= 2; r++) {
+      const rx = r * hw * 0.32 * s;
+      ctx.moveTo(rx, (wy + 1.2) * s);
+      ctx.quadraticCurveTo(rx * 1.1, (wy - h * 0.4) * s, rx * 0.5, (wy - h * 0.9) * s);
+    }
+    ctx.moveTo(-hw * 0.4 * s, (wy - h) * s);
+    ctx.quadraticCurveTo(0, (wy - h - 0.6) * s, hw * 0.4 * s, (wy - h) * s);
     ctx.stroke();
   }
+  // The opening on the body whorl, dark inside a pale lip.
+  ctx.fillStyle = 'rgba(176,150,124,0.9)';
+  ctx.beginPath();
+  ctx.ellipse(3 * s, -0.4 * s, 2.4 * s, 3 * s, 0.35, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#2a1a14';
+  ctx.beginPath();
+  ctx.ellipse(3.2 * s, -0.3 * s, 1.5 * s, 2.2 * s, 0.35, 0, Math.PI * 2);
+  ctx.fill();
   ctx.restore();
 }
 
