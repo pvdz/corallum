@@ -2381,8 +2381,15 @@ function frameBody(now: number): void {
       fadingFrom.draw(fadeCtx, tNow, v);
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.save();
-      ctx.globalAlpha = 1 - k * k * (3 - 2 * k);
-      ctx.drawImage(fadeCanvas, 0, 0);
+      // Rising out of the old zone: it sinks away below as it fades, and the water darkens a
+      // little through the middle of the change, so the two framings of the reef never stand
+      // ghosted over each other.
+      const e = k * k * (3 - 2 * k);
+      ctx.globalAlpha = 1 - e;
+      ctx.drawImage(fadeCanvas, 0, e * canvas.height * 0.3);
+      ctx.globalAlpha = 0.45 * Math.sin(Math.PI * Math.min(1, k * 1.25));
+      ctx.fillStyle = 'rgb(4, 8, 22)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.restore();
       drawAscent(k);
       zoomer.apply(ctx);
