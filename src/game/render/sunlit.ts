@@ -2033,7 +2033,14 @@ export function createSunlitScene(seed: number): Scene {
     ctx.moveTo(-18 * s, 1.2 * s);
     ctx.quadraticCurveTo(0, 4 * s, 16.5 * s, -1.2 * s);
     ctx.stroke();
-    // Plates: a row along the top and a row of side plates under it, their seams dark.
+    // Plates: a row along the top and a row of side plates under it, their seams dark (all kept
+    // inside the shell).
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(-19 * s, 1.5 * s);
+    ctx.bezierCurveTo(-17 * s, -9 * s, 6 * s, -13 * s, 17 * s, -1.5 * s);
+    ctx.quadraticCurveTo(0, 4.5 * s, -19 * s, 1.5 * s);
+    ctx.clip();
     ctx.strokeStyle = 'rgba(40,28,14,0.55)';
     ctx.lineWidth = 0.7 * s;
     ctx.beginPath();
@@ -2048,6 +2055,23 @@ export function createSunlitScene(seed: number): Scene {
       ctx.lineTo(xt * s, -8.6 * s + Math.abs(xt) * 0.16 * s);
     }
     ctx.stroke();
+    // Each plate's streaks, amber and umber, fanning from a point near its rear edge.
+    const dark = new Path2D(), pale = new Path2D();
+    for (const [px, py, pw] of [[-13.5, -6, 2.6], [-6, -8, 3.2], [1.5, -8.6, 3.2], [9, -6.4, 2.8], [-14.5, -1, 2.4], [-6.5, -1.4, 3.4], [1.5, -1.8, 3.4], [9.5, -1.8, 2.8]] as const) {
+      for (let k = 0; k < 5; k++) {
+        const a = -2.4 + k * 0.55, l = pw * (0.75 + 0.25 * ((k * 7) % 3) / 2);
+        const path = k % 2 ? pale : dark;
+        path.moveTo((px - pw * 0.55) * s, (py + 0.6) * s);
+        path.lineTo((px - pw * 0.55 + Math.cos(a) * l) * s, (py + 0.6 + Math.sin(a) * l * 0.6) * s);
+      }
+    }
+    ctx.lineCap = 'round';
+    ctx.lineWidth = 0.9 * s;
+    ctx.strokeStyle = 'rgba(52,34,14,0.3)';
+    ctx.stroke(dark);
+    ctx.strokeStyle = 'rgba(226,178,96,0.22)';
+    ctx.stroke(pale);
+    ctx.restore();
     // A little light on the crown of the shell.
     ctx.fillStyle = 'rgba(255,230,180,0.12)';
     ctx.beginPath();
