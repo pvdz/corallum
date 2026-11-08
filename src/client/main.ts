@@ -824,7 +824,7 @@ let lastDpr = 0;
 /** The phone sheet's top as last given to CSS ('' with a side panel). */
 let lastSheetTop = '-';
 function resize(): void {
-  dpr = sharp.get() && !autoLowRes ? Math.min(window.devicePixelRatio || 1, 2) : 1;
+  dpr = sharp.get() ? Math.min(window.devicePixelRatio || 1, autoRes) : 1;
   const w = Math.round(window.innerWidth * dpr);
   const h = Math.round(window.innerHeight * dpr);
   // No area at all (a collapsed frame, a window shrunk to nothing): the scenes keep the size they
@@ -1810,10 +1810,13 @@ let starsHeard = false;
 let whaleHeard = -1;
 let luckyHeard = -1;
 let tangleHeard = -1;
-/** Slow frames for a while: first the glow pass goes, then (still slow) the resolution drops to 1×. */
-let autoLowRes = false;
+/**
+ * Slow frames for a while: first the glow pass goes, then (still slow) the resolution steps down,
+ * 2× to 1.5× (a little over half the pixels, still sharp) and at last to 1×.
+ */
+let autoRes = 2;
 function qualityCheck(dt: number): void {
-  if (frozenT !== null || autoLowRes) return;
+  if (frozenT !== null || autoRes <= 1) return;
   // Seconds spent in slow frames (fast frames pay it back): the slower the device, the sooner it acts.
   // Slow means well short of the pace asked for (60 fps, or 30 when idle; see frame()).
   slowFrames = dt > frameGap * 1.5 / 1000 && dt < 1 ? slowFrames + dt : Math.max(0, slowFrames - dt);
@@ -1821,7 +1824,7 @@ function qualityCheck(dt: number): void {
   slowFrames = 0;
   if (scene.bloomStrength > 0) scene.bloomStrength = 0;
   else if (sharp.get() && dpr > 1) {
-    autoLowRes = true;
+    autoRes = dpr > 1.5 ? 1.5 : 1;
     relayout();
   }
 }
@@ -2171,7 +2174,7 @@ function fpsTick(now: number, dt: number): void {
   fpsSince += dt;
   if (fpsSince < 0.5) return;
   fpsBox!.textContent = `${Math.round(fpsFrames / fpsSince)} fps · draw ${prof.draw.toFixed(1)} ms · panel ${prof.panel.toFixed(1)} ms` +
-    `${scene.bloomStrength > 0 ? '' : ' · bloom off'}${autoLowRes ? ' · auto 1×' : ''} · ${canvas.width}×${canvas.height}`;
+    `${scene.bloomStrength > 0 ? '' : ' · bloom off'}${autoRes < 2 ? ` · auto ${autoRes}×` : ''} · ${canvas.width}×${canvas.height}`;
   fpsFrames = 0;
   fpsSince = 0;
 }
