@@ -311,8 +311,8 @@ html.panel-rest .panel .pages { opacity: 0.6; transition: opacity 4s ease; }
      buys), however many stocks and however large the text (a small phone with Larger text kept 20 px). */
   .panel { min-height: min-content; }
   .pages { flex: 1 0 76px; height: 76px; }
-  /* The quick buys stand above the list: a peek of the list under them is enough. */
-  .panel:has(> .quick-buy:not([hidden])) .pages { flex-basis: 30px; height: 30px; }
+  /* The quick buys stand above the list and are the row this minimum keeps: the list's top edge under them is enough. */
+  .panel:has(> .quick-buy:not([hidden])) .pages { flex-basis: 12px; height: 12px; }
   .panel.low .stock-sub { display: none; }
   /* The stocks drag the sheet too, so the browser must not take the drag for a pan. */
   .stocks { touch-action: none; }
