@@ -41,7 +41,7 @@ import { ACTS, act, actAt, SURFACE } from '../content/acts.ts';
 import {
   BANDS, bandMetres, ended, steadyCalciteRate, meetingWords, readingCost, bloomHold, spawnHold, spawnNet, spawnTarget, bloomNet, calciteHold, nextMeeting, nextTier, photo, raspMax, sandHold, sandNet, siltHold, siltNet, smother, calciteNet, calciteRate, canAfford, cost, feeding, glowHold, glowNet, idleShoals,
   jobOpen, maxed, murmurHold, murmurNet, nextReading, planktonHold, planktonNet, rates, reach, readingsRevealed,
-  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilSignal, untilUpwelling, untilTangle, untilStray, untilFragment, untilShell, untilThorn, untilFlurry, untilMilky, untilHeat, heatLeft, closedNow, untilRising, untilSwell, currentUpwelling, canFlare, risingLeft, canFeedRising, risingHaul, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, milestoneMult, jobGain, upgradeGain, raspSettings, speaks, vowKept, visitor, visited } from '../sim/economy.ts';
+  revealed, timeUntil, upgrade, nextSite, canSend, awayShoals, tripSite, callHomeCost, seasoned, tripSeconds, workOpen, workCost, canBuild, waterAt, untilWaterTurns, tierCost, nextMoment, currentRequest, canSkipRequest, plantCost, untilFeast, untilSignal, untilUpwelling, untilTangle, untilStray, untilFragment, untilShell, untilThorn, untilFlurry, untilMilky, untilHeat, heatLeft, closedNow, untilRising, untilSwell, currentUpwelling, canFlare, risingLeft, canFeedRising, risingHaul, moonFull, untilFullMoon, favourOpen, favourCost, favourMaxed, homes, residentsAsking, capReason, knownBonus, nextMilestone, jobGain, upgradeGain, raspSettings, speaks, vowKept, visitor, visited } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { duration, metres, num, rate } from './format.ts';
 
@@ -1806,7 +1806,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     e.hidden = !show;
   }
   let etaTurn = 0;
-  let jobGains: { feed: number; light: number } | null = null;
+  let jobGains: { feed: number; light: number; perLight: number } | null = null;
   let raspBest = -1;
   let raspHold = -1;
   let tickZone = -1;
@@ -2141,10 +2141,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         shoalIdle.textContent = (sea > 1 ? `${EXPEDITION.seasonedWord} ×${sea.toFixed(2)} · ` : '') + (idle > 0 ? `${idle} idle · ` : '') + (gone > 0 ? `${gone} away · ` : '') + (idle > 0 || gone > 0 ? `of ${shoals}` : `${shoals}`);
         shoalBox.classList.toggle('has-idle', idle > 0);
         const perFeed = s.jobs.feed > 0 ? r.planktonP / s.jobs.feed : 0;
-        const perLight = s.jobs.light > 0
-          ? (r.glowP - ACT1.symbiontGlow * s.levels.symbiont * milestoneMult('symbiont', s.levels.symbiont)) / s.jobs.light : 0;
-        // What one more feeder or light-swimmer is worth in calcite, refreshed a few times a second.
-        if (etaTurn === 0 || !jobGains) jobGains = { feed: jobGain(s, 'feed'), light: jobGain(s, 'light') };
+        // What one more feeder or light-swimmer is worth in calcite, and the glow each light-swimmer
+        // adds (the glow with them against the glow without: every multiplier counted), refreshed a
+        // few times a second.
+        if (etaTurn === 0 || !jobGains) {
+          const noLight = s.jobs.light > 0 ? rates({ ...s, jobs: { ...s.jobs, light: 0 } }).glowP : r.glowP;
+          jobGains = { feed: jobGain(s, 'feed'), light: jobGain(s, 'light'), perLight: s.jobs.light > 0 ? (r.glowP - noLight) / s.jobs.light : 0 };
+        }
+        const perLight = s.jobs.light > 0 ? jobGains.perLight : 0;
         const gainText = (g: number) => g >= 0.0005 ? ` · one more: +${(g * 100).toFixed(g < 0.1 ? 1 : 0)}% calcite` : ' · one more: no gain now';
         for (const j of JOBS) {
           const row = jobRows.get(j.id)!;
