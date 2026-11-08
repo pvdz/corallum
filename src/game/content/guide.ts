@@ -61,12 +61,9 @@ export const NEWS = {
   id: 'news:2026-11-08b',
   kicker: 'New in the sea',
   title: 'What the deep was hiding',
-  text: 'The seamounts show what they are: a warm one smokes from black chimneys with hot mouths, a crowded one has old ' +
-    'reefs half buried in silt around you, and from a lonely one you can see another reef’s lights, far off on the ridge. ' +
-    'In view mode (the eye), leave the reef a while: the camera goes to one of its creatures, follows it and names it. ' +
-    'Before the Spawning Moon your branches fill with ripe bundles, and the release pours a haze of eggs into the water. ' +
-    'The sponges on your stone, the plates of a plating reef, the sea pens, the glass shrimp and the mantis shrimp have ' +
-    'been looked at closely; the quick buys stand above the list, and a phone on its side gets the side panel.',
+  text: 'The seamounts show what they are: black smokers on a warm one, old reefs half buried on a crowded one, ' +
+    'another reef’s lights far off from a lonely one. Your sponges, a plating reef’s tables, the sea pens, the glass ' +
+    'shrimp and the mantis shrimp are drawn anew. In view mode (the eye), the camera goes visiting your creatures.',
 } as const;
 
 /** The first time the line enters a zone: what is new there, in a few lines (zones 2–5). */
