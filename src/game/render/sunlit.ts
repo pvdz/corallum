@@ -250,7 +250,65 @@ export function createSunlitScene(seed: number): Scene {
       }
       c.stroke();
     }
+    paintSandBits(c, top - dy, h - dy);
     c.restore();
+  }
+
+  /**
+   * What lies on shallow reef sand, painted once with it: soft darker patches, pale coral rubble
+   * (some still faintly pink), shell pieces catching the light, small pebbles with their shadows.
+   * Smaller and fainter toward the far edge.
+   */
+  function paintSandBits(c: CanvasRenderingContext2D, top: number, bottom: number): void {
+    const r = mulberry32(seed ^ 0x5a4d);
+    const sc = Math.min(focus.w, focus.h) / 700;
+    const at = (v: number) => top + (bottom - top) * v * v;
+    for (let i = 0; i < 9; i++) {
+      const v = range(r, 0.15, 1), x = r() * w, y = at(v), rx = range(r, 40, 120) * sc * (0.4 + v);
+      c.fillStyle = 'rgba(150,120,80,0.08)';
+      c.beginPath();
+      c.ellipse(x, y, rx, rx * 0.18, 0, 0, Math.PI * 2);
+      c.fill();
+    }
+    for (let i = 0; i < 46; i++) {
+      const v = range(r, 0.05, 1), x = r() * w, y = at(v), q = (2 + 6 * v) * sc * range(r, 0.6, 1.4);
+      const kind = r();
+      if (kind < 0.4) {
+        // A broken twig of dead coral: a short pale stick with a stub, its shadow under it.
+        const a = range(r, -0.5, 0.5), len = q * 2.4;
+        const dx = Math.cos(a) * len, dy2 = Math.sin(a) * len * 0.3;
+        c.lineCap = 'round';
+        c.strokeStyle = 'rgba(120,96,62,0.25)';
+        c.lineWidth = q * 0.55;
+        c.beginPath(); c.moveTo(x - dx, y - dy2 + q * 0.25); c.lineTo(x + dx, y + dy2 + q * 0.25); c.stroke();
+        c.strokeStyle = r() < 0.3 ? 'rgba(236,196,190,0.9)' : 'rgba(240,232,214,0.9)';
+        c.lineWidth = q * 0.45;
+        c.beginPath(); c.moveTo(x - dx, y - dy2); c.lineTo(x + dx, y + dy2);
+        c.moveTo(x + dx * 0.2, y + dy2 * 0.2); c.lineTo(x + dx * 0.2 + q * 0.5, y - q * 0.6); c.stroke();
+      } else if (kind < 0.7) {
+        // A shell piece: a pale fan, ribbed, lit on its rim.
+        c.fillStyle = 'rgba(120,96,62,0.22)';
+        c.beginPath(); c.ellipse(x + q * 0.2, y + q * 0.2, q, q * 0.35, 0, 0, Math.PI * 2); c.fill();
+        c.fillStyle = 'rgba(246,236,220,0.92)';
+        c.beginPath(); c.moveTo(x, y + q * 0.15); c.arc(x, y + q * 0.15, q * 0.9, Math.PI * 1.05, Math.PI * 1.95); c.closePath(); c.fill();
+        c.strokeStyle = 'rgba(200,170,140,0.6)';
+        c.lineWidth = Math.max(0.5, q * 0.08);
+        c.beginPath();
+        for (let k = 1; k < 4; k++) {
+          const a = Math.PI * (1.05 + 0.9 * k / 4);
+          c.moveTo(x, y + q * 0.15); c.lineTo(x + Math.cos(a) * q * 0.85, y + q * 0.15 + Math.sin(a) * q * 0.85);
+        }
+        c.stroke();
+      } else {
+        // A pebble: its shadow, a grey-brown body, a lit top.
+        c.fillStyle = 'rgba(110,88,58,0.3)';
+        c.beginPath(); c.ellipse(x + q * 0.3, y + q * 0.25, q * 1.1, q * 0.4, 0, 0, Math.PI * 2); c.fill();
+        c.fillStyle = r() < 0.5 ? 'rgba(150,140,128,0.95)' : 'rgba(176,158,130,0.95)';
+        c.beginPath(); c.ellipse(x, y, q * 0.85, q * 0.5, 0, 0, Math.PI * 2); c.fill();
+        c.fillStyle = 'rgba(255,250,235,0.45)';
+        c.beginPath(); c.ellipse(x - q * 0.2, y - q * 0.22, q * 0.4, q * 0.16, 0, 0, Math.PI * 2); c.fill();
+      }
+    }
   }
 
   function drawFloor(ctx: CanvasRenderingContext2D, t: number): void {
