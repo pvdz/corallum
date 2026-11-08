@@ -1436,3 +1436,4 @@ date, what landed, what is half-done, what's next.
 - A slow phone's automatic fallback stepped from 2× straight to 1× (a quarter of the pixels, visibly soft). After the glow goes it steps to 1.5× first (56% of the pixels, still sharp), and only to 1× if frames are still slow (checked at 8× CPU throttle on a 3× phone: canvas 2.00 → 1.50 → 1.00 px per CSS px). The `?fps` readout says "auto 1.5×"/"auto 1×".
 - Upgrade cards said what one more level would add as "now +19% calcite", read as the bonus already had (and it fell as levels were bought: lure 1/6 "now +19%", 4/6 "now +13%", in real-time play). They say "one more: +19% calcite" (or "one more: no gain now"), as the shoal jobs do. Audit (mobile, tiny, tiny-landscape) clean.
 - The game's own cards are described as well as named for screen readers (aria-describedby: the question itself, not only its title).
+- Story cards likewise: described by their text (aria-describedby), not only named by their title.

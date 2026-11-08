@@ -1737,6 +1737,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   reader.setAttribute('role', 'dialog');
   reader.setAttribute('aria-modal', 'true');
   reader.setAttribute('aria-labelledby', 'reader-title');
+  readerText.id = 'reader-text';
+  reader.setAttribute('aria-describedby', 'reader-text');
   // A key press in the first moments after a story opens was meant for something else (Space
   // sweeping as the card came up): it does not close the story unread. A tap or click does.
   let openedAt = 0;
