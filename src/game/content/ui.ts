@@ -135,7 +135,7 @@ export const UI = {
     ['H', 'hide the panel to see the whole reef (+ and − zoom, 0 zooms out)'],
     ['T', 'replay this zone’s growth'],
   ] as const,
-  keysHelp: 'Hold any buy button to keep buying. Tap a creature to learn its name; tap Ossel and it will answer. Left alone, the hidden-panel view drifts on its own.',
+  keysHelp: 'Hold any buy button to keep buying. Tap a creature to learn its name; tap Ossel and it will answer. Left alone, the hidden-panel view drifts on its own and goes to see the creatures.',
   /** The phone sheet's grabber: drawn up for more of the panel, down for more of the reef. */
   sheetUp: 'Show more of the panel',
   sheetDown: 'Show more of the reef',
