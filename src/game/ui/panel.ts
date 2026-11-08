@@ -268,6 +268,17 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     pages.append(page);
     tabPages.set(id, page);
   }
+  // Left and Right on a focused tab move to the next one, as a tab list does.
+  tabs.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const shown = [...tabButtons].filter(([, b]) => !b.hidden);
+    const i = shown.findIndex(([, b]) => b === document.activeElement);
+    if (i < 0) return;
+    e.preventDefault();
+    const [id, b] = shown[(i + (e.key === 'ArrowRight' ? 1 : shown.length - 1)) % shown.length]!;
+    showTab(id);
+    b.focus();
+  });
   // A choice opened while another tab was showing: the Grow tab says so until it is looked at.
   const growDot = el('span', 'dot');
   growDot.hidden = true;
