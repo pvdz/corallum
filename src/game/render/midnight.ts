@@ -83,10 +83,6 @@ export function createMidnightScene(seed: number): Scene {
   }
 
   /**
-   * An anglerfish drifting through the dark every few minutes: a black body you can barely see,
-   * a mouth of needle teeth, and the lure on its head pulsing like the reef's own light.
-   */
-  /**
    * An anglerfish at the origin, facing +x: a globular dark body with a high forehead, a huge upturned
    * mouth (the lower jaw jutting past the upper) set with uneven glassy fangs, a small eye, a fanned
    * tail and small soft fins, the rod rising from the forehead to a fleshy bulb at (40, −30)·s (its
@@ -229,6 +225,10 @@ export function createMidnightScene(seed: number): Scene {
     ctx.arc(40 * s, -30 * s, 2.4 * s, 0, Math.PI * 2);
     ctx.fill();
   }
+  /**
+   * An anglerfish drifting through the dark every few minutes: a dark body you can barely see,
+   * a mouth of glassy fangs, and the lure on its head pulsing like the reef's own light.
+   */
   function drawAngler(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 170, crossing = 70;
     const u = (t % period) / crossing;
@@ -1462,7 +1462,7 @@ export function createMidnightScene(seed: number): Scene {
     spot('gulper', x, y, 30 * s);
     ctx.save();
     // The whip of a body trailing behind (to the right, it swims left): one tapering shape along a
-    // waving spine, a faint rim of light along its back and the low dorsal fin running down it.
+    // waving spine, a faint rim of light along the front of its back.
     const N = 30;
     const top: [number, number][] = [], bot: [number, number][] = [];
     let px = 0, py = 0;

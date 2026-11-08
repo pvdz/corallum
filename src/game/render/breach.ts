@@ -967,7 +967,7 @@ export function createBreachScene(seed: number): Scene {
       glow(ctx, 0, 0, focus.w * (0.15 + 0.5 * spread), '255,160,205', 0.55 * (0.4 + 0.6 * burst));
       ctx.restore();
     } else if (v.spawnLevel > 0) {
-      // The reef sets: pink bundles swelling in the mouths along the branches, more and fuller as
+      // The reef sets: bundles (pink, golden when sweetened) swelling along the branches, more and fuller as
       // the spawn ripens, each breathing slowly; beads like the released ones, a soft light under each.
       const ripe = Math.min(1, v.spawnLevel);
       const coral = reef.coral;
