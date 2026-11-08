@@ -463,10 +463,6 @@ export function createSunlitScene(seed: number): Scene {
   }
 
   /**
-   * Rain (after the band "Rain"): a shower for one minute in every five. Seen from below, drops
-   * make little expanding rings on the surface and the light dims a little.
-   */
-  /**
    * A storm (after the band "Storm"): for fifty seconds in every twelve minutes the surface is
    * torn white, the light shakes, the surge stirs the sand, and broken branches tumble past.
    */
@@ -684,6 +680,10 @@ export function createSunlitScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * Rain (after the band "Rain"): a shower for one minute in every five. Seen from below, drops
+   * make little expanding rings on the surface and the light dims a little.
+   */
   function drawRain(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 300, length = 60;
     const u = (t % period) / length;
@@ -1086,10 +1086,6 @@ export function createSunlitScene(seed: number): Scene {
     }
   }
 
-  /**
-   * A green turtle comes to graze once there are meadows: it paddles slowly over the seagrass,
-   * dips to crop it, and drifts on.
-   */
   /**
    * A cuttlefish hovering beside the reef: waves of colour pulsing down its mantle, fins rippling.
    * Touched, it flashes white and jets backward, then drifts back.
@@ -1829,6 +1825,8 @@ export function createSunlitScene(seed: number): Scene {
   }
 
   /**
+   * A green turtle comes to graze once there are meadows: it paddles slowly over the seagrass,
+   * dips to crop it, and drifts on.
    * The green turtle swims along the meadows; one let sleep in the branches (the moment) rests there
    * at night instead (`rest`: where, drawn after the reef).
    */

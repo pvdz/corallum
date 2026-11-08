@@ -5,10 +5,6 @@ import type { Band, UpgradeDef } from './types.ts';
 
 /** The glimmerseed's strain: chosen once, at 15 m, for the whole run. */
 export type StrainId = 'blue' | 'gold' | 'violet';
-/**
- * The grain of the stone: every tenth band laid, the reef chooses how that band sets. Chosen grains
- * stack for the whole run (and show as coloured rings in the stone).
- */
 /** Flaring the lure: spend half the glow held for a burst of calcite (up to `seconds`, by how full the glow was), once a `cooldown`. */
 export const FLARE = {
   seconds: 30, cooldown: 60, fromHeight: 20,
@@ -28,6 +24,10 @@ export const OLD = {
   heldEvery: 4, held: 'As it fell, it held',
 } as const;
 
+/**
+ * The grain of the stone: every tenth band laid, the reef chooses how that band sets. Chosen grains
+ * stack for the whole run (and show as coloured rings in the stone).
+ */
 export type GrainId = 'dense' | 'quick' | 'bright';
 export const GRAIN = {
   every: 10,

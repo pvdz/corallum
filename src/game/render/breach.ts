@@ -254,10 +254,6 @@ export function createBreachScene(seed: number): Scene {
   }
 
   /**
-   * Rarely, a meteor shower: for forty seconds in every twenty minutes, streaks fall across the
-   * sky from one point, thick for a while, then thinning out. Touched, a big bright fireball.
-   */
-  /**
    * A sargassum raft: a long mat of golden-brown weed drifting across the surface, its float
    * bladders bobbing, small fish and the reef's young sheltering in its shade below.
    */
@@ -586,7 +582,11 @@ export function createBreachScene(seed: number): Scene {
     ctx.restore();
   }
 
-  /** Shooting stars: the shower the reef can wish on (content/sky.ts WISH), on the reef's own clock. */
+  /**
+   * Shooting stars: the shower the reef can wish on (content/sky.ts WISH), on the reef's own clock,
+   * a minute and a half in every twenty minutes: streaks fall across the sky from one point, thick
+   * for a while, then thinning out. Touched, a big bright fireball.
+   */
   function drawMeteors(ctx: CanvasRenderingContext2D, t: number, dawn: number, shower: { k: number; u: number } | null): void {
     const length = WISH.length;
     if (!shower || dawn > 0.6) return;
@@ -1009,10 +1009,6 @@ export function createBreachScene(seed: number): Scene {
   }
 
   /**
-   * A shore bird standing on the crown where it breaks the air ("Birds walk on you"), pecking now
-   * and then. When the spawn is released it lifts off and flies away over the water.
-   */
-  /**
    * Glowing surf: where little waves break against the reef's emerged top, the plankton in the
    * water flashes blue, in pulses that run along the waterline with each wave.
    */
@@ -1035,10 +1031,6 @@ export function createBreachScene(seed: number): Scene {
     ctx.restore();
   }
 
-  /**
-   * Rain (once the reef has read the band): a shower every few minutes, streaks from the sky and
-   * small rings spreading on the surface where the drops land.
-   */
   /**
    * A turtle surfacing: every three minutes a head and the top of a shell break the water beside
    * the crown, a puff of breath, and down again. Touched, it ducks under at once.
@@ -1194,6 +1186,10 @@ export function createBreachScene(seed: number): Scene {
     spot('far-storm', x0, wy - (wy - focus.y) * 0.4, 60 * s);
   }
 
+  /**
+   * Rain (once the reef has read the band): a shower every few minutes, streaks from the sky and
+   * small rings spreading on the surface where the drops land.
+   */
   function drawRain(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 300, length = 70;
     const u = (t % period) / length;
@@ -1724,6 +1720,10 @@ export function createBreachScene(seed: number): Scene {
     ctx.stroke();
   }
 
+  /**
+   * A shore bird standing on the crown where it breaks the air ("Birds walk on you"), pecking now
+   * and then. When the spawn is released it lifts off and flies away over the water.
+   */
   function drawBird(ctx: CanvasRenderingContext2D, t: number, v: ReefView, crown: readonly [number, number]): void {
     if (!v.bands.includes('air')) return;
     sight('shore-bird');

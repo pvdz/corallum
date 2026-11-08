@@ -965,8 +965,8 @@ export function createMidnightScene(seed: number): Scene {
   /**
    * Rarely, a giant squid: once in every twenty minutes a huge dim shape slides through the deep
    * background, arms trailing, one eye the size of a dinner plate catching the reef's light.
+   * `curious`: you held your light when it first passed (a moment), and it comes twice as often.
    */
-  /** `curious`: you held your light when it first passed (a moment), and it comes twice as often. */
   function drawGiantSquid(ctx: CanvasRenderingContext2D, t: number, curious = false): void {
     const period = curious ? 600 : 1200, crossing = 50;
     const u = ((t + 600) % period) / crossing;
@@ -1038,11 +1038,6 @@ export function createMidnightScene(seed: number): Scene {
   }
 
   /**
-   * The migration: every eight minutes, for forty seconds, the deep rises. Hundreds of tiny
-   * lights (krill, fish, shrimp) stream up past the reef from below, the largest journey any
-   * animals make, made every night.
-   */
-  /**
    * A milky sea (rare): once every forty minutes, for two, the whole water glows a soft even blue
    * from countless bacteria, fading in and out. Touching it stirs brighter swirls where the finger was.
    */
@@ -1067,6 +1062,11 @@ export function createMidnightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * The migration: every eight minutes, for forty seconds, the deep rises. Hundreds of tiny
+   * lights (krill, fish, shrimp) stream up past the reef from below, the largest journey any
+   * animals make, made every night.
+   */
   function drawMigration(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 480, length = 40;
     const u = ((t + 150) % period) / length;

@@ -58,16 +58,16 @@ export function spawnLesser(s: GameState, where: SeamountId = 'plain', heirloom:
   return next;
 }
 
-/**
- * Old habits: what the reef would buy on its own right now (a polyp or glimmerseed costing under
- * HABIT_SHARE of the calcite held), or null. Only called while the player watches: never offline.
- */
 /** Grain-sense: a band waiting for its grain sets like the last one chosen (while watching). */
 export function grainSense(s: GameState): boolean {
   const last = s.grains.at(-1);
   return !!s.meta.traits['grain-sense'] && !!last && chooseGrain(s, last);
 }
 
+/**
+ * Old habits: what the reef would buy on its own right now (a polyp or glimmerseed costing under
+ * HABIT_SHARE of the calcite held), or null. Only called while the player watches: never offline.
+ */
 export function habitPurchase(s: GameState): 'polyp' | 'symbiont' | 'skeleton' | null {
   // Layering: a band when it is cheap (and not held by a story gate).
   if (s.meta.traits.layering && revealed(s, 'skeleton') && !maxed(s, 'skeleton') && cost(s, 'skeleton') < HABIT_SHARE * s.calcite) return 'skeleton';

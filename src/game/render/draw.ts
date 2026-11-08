@@ -132,9 +132,11 @@ export function drawMoon(ctx: CanvasRenderingContext2D, x: number, y: number, r:
   }
 }
 
-/** The moon's seas and craters, as offsets and radii in units of its radius. */
-/** The seas of the near side, roughly where they lie: a great ocean down the left, a chain of seas
- *  across the upper half, two small ones apart at the right and lower left. */
+/**
+ * The moon's seas and craters, as offsets and radii in units of its radius. The seas of the near
+ * side, roughly where they lie: a great ocean down the left, a chain of seas across the upper half,
+ * two small ones apart at the right and lower left.
+ */
 const MARIA: readonly [number, number, number][] = [
   [-0.55, 0.05, 0.28], [-0.3, -0.4, 0.23], [0.1, -0.38, 0.15], [0.28, -0.1, 0.18], [0.46, 0.18, 0.12],
   [-0.12, 0.38, 0.15], [0.64, -0.3, 0.08], [-0.42, 0.52, 0.08],

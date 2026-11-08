@@ -531,8 +531,8 @@ export function createAbyssScene(seed: number): Scene {
   /**
    * A flurry of the Long Silt: for half a minute in every four the snow thickens, a dense second
    * fall slanting through the water (the same flakes, drawn again offset and faster).
+   * `on`: a flurry is falling now (the sim's clock, so sweeps and snow agree).
    */
-  /** `on`: a flurry is falling now (the sim's clock, so sweeps and snow agree). */
   function drawFlurry(ctx: CanvasRenderingContext2D, t: number, on: boolean): void {
     // On a buried seamount the Long Silt never stops: the flurry is always falling.
     if (!on && sm !== 'buried') return;

@@ -270,10 +270,6 @@ export function createLife(seed: number) {
     ctx.restore();
   }
 
-  /**
-   * Rarely, a dumbo octopus: once in fifteen minutes a pale little octopus hovers across the
-   * floor, flapping the two ear-like fins on its head.
-   */
   /** Rarely (every thirteen minutes), a march of brittle stars crossing the floor together, arm over arm. */
   function drawStarMarch(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
     const period = 780, length = 70;
@@ -476,6 +472,10 @@ export function createLife(seed: number) {
     ctx.restore();
   }
 
+  /**
+   * Rarely, a dumbo octopus: once in fifteen minutes a pale little octopus hovers across the
+   * floor, flapping the two ear-like fins on its head.
+   */
   function drawDumbo(ctx: CanvasRenderingContext2D, st: Stage, t: number): void {
     const period = 900, crossing = 40;
     const u = ((t + 300) % period) / crossing;

@@ -3,12 +3,6 @@
 import type { Band, UpgradeDef } from './types.ts';
 
 /**
- * The rising: the deep's small life climbs past the reef to feed, for three minutes in every half
- * hour (on the same half-hour clock as the Sunlit Crown's warm water, half a cycle later). While it
- * passes, the feeding shoals can be sent into it once: four minutes of calcite, times the share of
- * shoals that are feeding. Midnight Water and Twilight Shelf only, while watching.
- */
-/**
  * A milky sea in the Midnight Water: now and then, for a minute, the whole water glows pale with
  * countless tiny lights. While it lasts each sweep also gathers `glowSeconds` of glow.
  */
@@ -18,6 +12,12 @@ export const MILKY = {
   float: 'glow',
 } as const;
 
+/**
+ * The rising: the deep's small life climbs past the reef to feed, for three minutes in every half
+ * hour (on the same half-hour clock as the Sunlit Crown's warm water, half a cycle later). While it
+ * passes, the feeding shoals can be sent into it once: four minutes of calcite, times the share of
+ * shoals that are feeding. Midnight Water and Twilight Shelf only, while watching.
+ */
 export const RISING = {
   start: 900, length: 180, seconds: 240,
   word: 'the rising',

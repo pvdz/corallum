@@ -85,7 +85,6 @@ export function createTwilightScene(seed: number): Scene {
     return Math.max(0, Math.min(1, (height - FROM) / (TO - FROM)));
   }
 
-  /** The shelf surface: rises gently from left to right across the lower frame. */
   /**
    * The cold slide (once met, a moment): every seven minutes a river of cold, salt-heavy water pours
    * down the slope for a while, a pale haze hugging the ground with streaks racing down it.
@@ -189,6 +188,7 @@ export function createTwilightScene(seed: number): Scene {
     }
   }
 
+  /** The shelf surface: rises gently from left to right across the lower frame. */
   function slopeY(u: number): number {
     const a = slopePhaseA, b = slopePhaseB;
     return focus.y + focus.h * (0.92 - 0.14 * u + 0.015 * Math.sin(u * 9 + a) + 0.008 * Math.sin(u * 23 + b));
@@ -631,10 +631,6 @@ export function createTwilightScene(seed: number): Scene {
   }
 
   /**
-   * Sea fans on the slope: flat purple gorgonians standing across the current, a lattice of fine
-   * branches swaying together.
-   */
-  /**
    * A moray in a hole in the slope: the head leaning out, mouth opening and shutting as it breathes.
    * Touched, it pulls back into the dark and slowly comes out again.
    */
@@ -849,7 +845,6 @@ export function createTwilightScene(seed: number): Scene {
     ctx.restore();
   }
 
-  /** The current made visible: faint streaks running toward the shelf (+) or the open water (−). */
   /**
    * An upwelling: a column of cold, pale water rising from the deep on one side of the reef,
    * carrying a swirl of plankton motes up with it; brighter while it waits to be caught.
@@ -903,6 +898,7 @@ export function createTwilightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** The current made visible: faint streaks running toward the shelf (+) or the open water (−). */
   function drawCurrent(ctx: CanvasRenderingContext2D, t: number, c: number): void {
     if (c === 0) return;
     const s = scale();
@@ -1074,6 +1070,10 @@ export function createTwilightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * Sea fans on the slope: flat purple gorgonians standing across the current, a lattice of fine
+   * branches swaying together.
+   */
   function drawSeaFans(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
     for (const [k, f] of fans.entries()) {
@@ -1109,10 +1109,6 @@ export function createTwilightScene(seed: number): Scene {
     }
   }
 
-  /**
-   * Garden eels: a colony of thin eels standing out of their burrows in the sand, all leaning into
-   * the current to catch drifting food, and ducking down in waves when something passes.
-   */
   /**
    * The Rasp nursery (a moment): a lip of stone on the slope by the reef's foot, and the young Rasp
    * that hatched there darting in and out of it.
@@ -1412,7 +1408,11 @@ export function createTwilightScene(seed: number): Scene {
     ctx.restore();
   }
 
-  /** `which` colony (the left one is the first eleven eels); `drop` lowers the burrows on the sand. */
+  /**
+   * Garden eels: a colony of thin eels standing out of their burrows in the sand, all leaning into
+   * the current to catch drifting food, and ducking down in waves when something passes.
+   * `which` colony (the left one is the first eleven eels); `drop` lowers the burrows on the sand.
+   */
   function drawGardenEels(ctx: CanvasRenderingContext2D, t: number, which: 'all' | 'left' | 'right' = 'all', drop = 0): void {
     sight('garden-eel');
     const s = scale();
@@ -2239,7 +2239,6 @@ export function createTwilightScene(seed: number): Scene {
     }
   }
 
-  /** The Rasp: blunt-beaked grazers with coin scales, nosing along the slope. */
   /**
    * The Rasp elder, while it asks its riddle: a big old grazer hanging still on the slope left of the
    * reef, scales gone pale, its beak worn down to a stub, fins barely moving.
@@ -2255,6 +2254,7 @@ export function createTwilightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /** The Rasp: blunt-beaked grazers with coin scales, nosing along the slope. */
   function drawRasp(ctx: CanvasRenderingContext2D, t: number, n: number, trust: boolean, polite: boolean): void {
     if (n > 0) sight('rasp');
     const s = scale();
