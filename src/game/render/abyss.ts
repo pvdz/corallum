@@ -567,9 +567,44 @@ export function createAbyssScene(seed: number): Scene {
    * A crowded seamount: half-buried old reefs all around, grey humps of dead branches poking out
    * of the silt, with a few lights still glowing in them.
    */
+  /** The buried reefs never move: drawn once per frame size into a strip along the floor. */
+  let buriedCache: HTMLCanvasElement | OffscreenCanvas | null = null;
+  let buriedKey = '';
+  let buriedTop = 0;
+  /** Each mound's old light: x, y, radius. */
+  let buriedLights: number[] = [];
   function drawBuriedReefs(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
+    const key = `${w}x${h} ${focus.x},${focus.y},${focus.w},${focus.h} ${baseY()}`;
+    if (!buriedCache || key !== buriedKey) {
+      buriedKey = key;
+      buriedTop = Math.floor(baseY() - 90 * s);
+      const ch = Math.max(1, Math.ceil(120 * s));
+      if (!buriedCache || buriedCache.width !== w || buriedCache.height !== ch) {
+        buriedCache = typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(Math.max(1, w), ch) : document.createElement('canvas');
+        buriedCache.width = Math.max(1, w);
+        buriedCache.height = ch;
+      }
+      const c = buriedCache.getContext('2d') as CanvasRenderingContext2D;
+      c.clearRect(0, 0, buriedCache.width, buriedCache.height);
+      c.save();
+      c.translate(0, -buriedTop);
+      buriedLights = drawBuriedStatic(c, s);
+      c.restore();
+    }
+    ctx.drawImage(buriedCache, 0, buriedTop);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0, k = 0; i < buriedLights.length; i += 3, k++) {
+      glow(ctx, buriedLights[i]!, buriedLights[i + 1]!, buriedLights[i + 2]!, '170,190,255', 0.25 + 0.15 * Math.sin(t * 0.7 + k));
+    }
+    ctx.restore();
+  }
+
+  /** The mounds and their dead coral (see drawBuriedReefs); returns each mound's light (x, y, radius). */
+  function drawBuriedStatic(ctx: CanvasRenderingContext2D, s: number): number[] {
     const r = mulberry32(seed ^ 0xb0b);
+    const lights: number[] = [];
     ctx.lineCap = 'round';
     for (let k = 0; k < 6; k++) {
       const u = k < 3 ? 0.04 + k * 0.1 + r() * 0.04 : 0.68 + (k - 3) * 0.1 + r() * 0.04;
@@ -653,11 +688,9 @@ export function createAbyssScene(seed: number): Scene {
         if (e === 4) ctx.moveTo(px, py); else ctx.lineTo(px, py);
       }
       ctx.stroke();
-      ctx.save();
-      ctx.globalCompositeOperation = 'lighter';
-      glow(ctx, x + (r() - 0.5) * wdt, y - hgt * 0.5, 6 * s, '170,190,255', 0.25 + 0.15 * Math.sin(t * 0.7 + k));
-      ctx.restore();
+      lights.push(x + (r() - 0.5) * wdt, y - hgt * 0.5, 6 * s);
     }
+    return lights;
   }
 
   /**
