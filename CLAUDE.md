@@ -68,5 +68,6 @@ These were written by the agent, not the user; fix them when wrong.
 - More than one session may work in this checkout at once: commit by path (`git commit -- <paths>`),
   never `git add -A`; read `git log` and the PROGRESS tail before picking work, so it is not done twice.
 - After visible changes take a screenshot series and commit it (`screenshot/` is tracked).
+- A creature redrawn: add its id to a new entry of `REDRAWN` in `src/client/portraits.ts` (one entry per release of redraws), so players' journals retake its portrait.
 - Test what could really break (offline == stepped online is the key invariant); no tests of the obvious, no slow tests. Pacing/time balance is secondary for now (user, 2026-10-29): features and graphic detail first.
 - Comments describe the current state, not history.
