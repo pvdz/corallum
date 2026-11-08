@@ -15,6 +15,11 @@ export type GroundStyle = {
   alpha: number;
   /** Sea-cucumber tracks (the abyss), or none. */
   tracks: boolean;
+  /**
+   * The abyssal plain's own marks: broad low swells of ooze, fields of manganese nodules and a few
+   * honeycomb patches of tiny holes (the deep floor's real trace, maker unknown).
+   */
+  abyssal?: boolean;
 };
 
 export function createGround(seed: number) {
@@ -147,6 +152,7 @@ function paint(c: CanvasRenderingContext2D, w: number, h: number, s: number, sur
     else c.ellipse(x, y, q, q * 0.55, 0, 0, Math.PI * 2);
     c.stroke();
   }
+  if (st.abyssal) paintAbyssal(c, w, s, at, st, seed);
   // Nearer floor is in deeper shadow: it is out of the reef's light.
   const g = c.createLinearGradient(0, Math.min(h, surf(w / 2)), 0, h);
   g.addColorStop(0, 'rgba(0,0,0,0)');
@@ -154,4 +160,93 @@ function paint(c: CanvasRenderingContext2D, w: number, h: number, s: number, sur
   c.fillStyle = g;
   c.fillRect(0, 0, w, h);
   c.restore();
+}
+
+/**
+ * The abyssal plain (drawn with its own random stream, so the other marks keep their places):
+ * swells of ooze, nodule fields, honeycomb traces.
+ */
+function paintAbyssal(c: CanvasRenderingContext2D, w: number, s: number, at: (x: number, d: number) => number,
+  st: GroundStyle, seed: number): void {
+  const r = mulberry32(seed ^ 0x6a0d);
+  const A = st.alpha;
+  // Lit by the reef: marks near the middle (where it stands) catch its glow, the far sides less.
+  const near = (x: number) => 0.55 + 1.1 * Math.exp(-(((x - w / 2) / (0.22 * w)) ** 2));
+  // Broad swells: a soft lit crest with its shade behind, wide and low, flatter toward the horizon.
+  for (let i = 0; i < 7; i++) {
+    const x = range(r, -0.1, 1.1) * w, d = range(r, 0.15, 0.85), y = at(x, d);
+    const rx = range(r, 0.12, 0.3) * w * (0.5 + 0.5 * d), ry = (6 + 22 * d) * s;
+    const lit = c.createRadialGradient(x, y - ry * 0.3, 0, x, y - ry * 0.3, rx);
+    lit.addColorStop(0, `rgba(${st.light},${A * 0.09 * near(x)})`);
+    lit.addColorStop(1, `rgba(${st.light},0)`);
+    c.save();
+    c.translate(x, y - ry * 0.3);
+    c.scale(1, ry / rx);
+    c.translate(-x, -(y - ry * 0.3));
+    c.fillStyle = lit;
+    c.fillRect(x - rx, y - ry * 0.3 - rx, rx * 2, rx * 2);
+    c.restore();
+    c.fillStyle = `rgba(${st.dark},${A * 0.12})`;
+    c.beginPath();
+    c.ellipse(x + rx * 0.15, y + ry * 0.55, rx * 0.8, ry * 0.45, 0, 0, Math.PI * 2);
+    c.fill();
+  }
+  // Manganese nodules: dark knobbly lumps lying half sunk in the ooze, in loose fields. Each has a
+  // soft shadow, a lumpy body, a dull lit top and a speck of shine.
+  for (let f = 0; f < 4; f++) {
+    const fx = range(r, 0.05, 0.95) * w, fd = range(r, 0.25, 0.9), spread = range(r, 0.06, 0.16) * w;
+    const n = Math.round(range(r, 14, 34));
+    for (let i = 0; i < n; i++) {
+      // Thicker toward the field's middle.
+      const u = (r() + r() + r()) / 3 - 0.5;
+      const x = fx + u * 2 * spread, d = Math.min(0.97, Math.max(0.08, fd + range(r, -0.08, 0.08)));
+      const y = at(x, d), q = (1.4 + 5.5 * d) * s * range(r, 0.6, 1.4), lit = near(x);
+      c.fillStyle = `rgba(${st.dark},${A * 0.6})`;
+      c.beginPath();
+      c.ellipse(x + q * 0.35, y + q * 0.3, q * 1.35, q * 0.42, 0, 0, Math.PI * 2);
+      c.fill();
+      // A lumpy body: seven points round an ellipse, each pushed in or out a little.
+      c.fillStyle = `rgba(28,24,30,${Math.min(1, A * 0.95)})`;
+      c.beginPath();
+      for (let k = 0; k < 7; k++) {
+        const a = (k / 7) * Math.PI * 2, j = range(r, 0.78, 1.15);
+        const px = x + Math.cos(a) * q * j, py = y + Math.sin(a) * q * 0.62 * j;
+        if (k === 0) c.moveTo(px, py);
+        else c.lineTo(px, py);
+      }
+      c.closePath();
+      c.fill();
+      // The lit top: a crescent along the upper edge, the light coming down from the reef.
+      c.strokeStyle = `rgba(${st.light},${Math.min(1, A * 0.28 * lit)})`;
+      c.lineWidth = Math.max(0.6, q * 0.22);
+      c.beginPath();
+      c.ellipse(x, y, q * 0.82, q * 0.5, 0, Math.PI * 1.1, Math.PI * 1.9);
+      c.stroke();
+      c.fillStyle = `rgba(${st.light},${Math.min(1, A * 0.12 * lit)})`;
+      c.beginPath();
+      c.ellipse(x - q * 0.15, y - q * 0.25, q * 0.6, q * 0.24, 0, 0, Math.PI * 2);
+      c.fill();
+      if (q > 3 * s) {
+        c.fillStyle = `rgba(${st.light},${Math.min(1, A * 0.5 * lit)})`;
+        c.beginPath();
+        c.arc(x - q * 0.35, y - q * 0.32, q * 0.12, 0, Math.PI * 2);
+        c.fill();
+      }
+    }
+  }
+  // Honeycomb traces: a small patch of pinholes on a hexagonal grid, foreshortened by the slope.
+  for (let p = 0; p < 2; p++) {
+    const px = range(r, 0.1, 0.9) * w, d = range(r, 0.4, 0.85), q = (2 + 3 * d) * s;
+    c.fillStyle = `rgba(${st.dark},${A * 0.55})`;
+    for (let row = -2; row <= 2; row++) {
+      for (let col = -3; col <= 3; col++) {
+        if (Math.abs(row) + Math.abs(col) * 0.6 > 3.2) continue;
+        const x = px + (col + (row % 2 ? 0.5 : 0)) * q * 1.7;
+        const y = at(px, d) + row * q * 0.55;
+        c.beginPath();
+        c.ellipse(x, y, q * 0.28, q * 0.12, 0, 0, Math.PI * 2);
+        c.fill();
+      }
+    }
+  }
 }

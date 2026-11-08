@@ -826,7 +826,7 @@ export function createAbyssScene(seed: number): Scene {
         ctx.restore();
       }
       drawRidge(ctx, ridges[2]!);
-      ground.draw(ctx, w, Math.min(h, focus.y + focus.h), scale(), floorY, { light: '150,160,215', dark: '0,0,8', alpha: 0.9, tracks: true },
+      ground.draw(ctx, w, Math.min(h, focus.y + focus.h), scale(), floorY, { light: '150,160,215', dark: '0,0,8', alpha: 0.9, tracks: true, abyssal: true },
         `${w}x${h}:${focus.x},${focus.y},${focus.w},${focus.h}`);
       drawLightPool(ctx, v, t);
       if (v.seamount === 'cold') drawBrinePool(ctx, t);
