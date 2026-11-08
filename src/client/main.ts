@@ -1605,7 +1605,13 @@ function floatText(x: number, y: number, text: string, cls = ''): void {
     f.style.left = `${cx}px`;
     rec.x = cx;
   }
-  setTimeout(() => f.remove(), cls ? 2200 : 1200);
+  // A haul line under a story card or the away summary waits there, paused (style.css), and is
+  // taken away when its rise has played out; the long timer only clears one that never got to play.
+  // (With reduced motion it has no animation: then the 2.2 s it would have taken.)
+  if (cls && getComputedStyle(f).animationName !== 'none') {
+    f.addEventListener('animationend', () => f.remove(), { once: true });
+    setTimeout(() => f.remove(), 120_000);
+  } else setTimeout(() => f.remove(), cls ? 2200 : 1200);
 }
 
 /**
@@ -2388,7 +2394,8 @@ function frameBody(now: number): void {
       // ghosted over each other.
       const e = k * k * (3 - 2 * k);
       ctx.globalAlpha = 1 - e;
-      ctx.drawImage(fadeCanvas, 0, e * canvas.height * 0.3);
+      // (Calmer motion: a plain dissolve, the dip only.)
+      ctx.drawImage(fadeCanvas, 0, reducedMotion.matches || calm.get() ? 0 : e * canvas.height * 0.3);
       ctx.globalAlpha = 0.45 * Math.sin(Math.PI * Math.min(1, k * 1.25));
       ctx.fillStyle = 'rgb(4, 8, 22)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
