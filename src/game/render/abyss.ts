@@ -272,21 +272,47 @@ export function createAbyssScene(seed: number): Scene {
       if (Math.abs(x - centreX()) < focus.w * 0.12) continue;
       const y = floorY(x) + 2 * s;
       const rw = (60 + (k % 3) * 30) * s, rh = (16 + (k % 2) * 9) * s;
+      // A drift's shape: steep on its lee side, a long tail on the other (alternating), its foot on
+      // the floor; silt grey, a faint light along its crest and ripples laid along it.
+      const lee = k % 2 ? 1 : -1;
+      const N = 18;
+      const top: [number, number][] = [];
+      for (let i = 0; i <= N; i++) {
+        const f = (i / N) * 2 - 1;
+        const shape = Math.max(0, 1 - f * f) * (f * lee > 0 ? 1 - 0.35 * f * lee : 1 + 0.2 * f * lee);
+        top.push([x + f * rw, y - rh * shape]);
+      }
       const g = ctx.createLinearGradient(0, y - rh, 0, y);
-      g.addColorStop(0, 'rgba(165,170,190,0.8)');
-      g.addColorStop(1, 'rgba(70,72,90,0.7)');
+      g.addColorStop(0, 'rgba(128,132,154,0.85)');
+      g.addColorStop(1, 'rgba(50,52,70,0.8)');
       ctx.fillStyle = g;
       ctx.beginPath();
-      ctx.ellipse(x, y, rw, rh, 0, Math.PI, 0);
+      ctx.moveTo(top[0]![0], y);
+      for (const [px, py] of top) ctx.lineTo(px, py);
+      ctx.lineTo(top[N]![0], y);
+      ctx.closePath();
       ctx.fill();
-      // A slump now and then: a little cloud lifting off the crest.
-      const ph = (t * 0.12 + k * 0.37) % 1;
-      if (ph < 0.3) {
-        ctx.fillStyle = `rgba(170,175,195,${0.18 * Math.sin((ph / 0.3) * Math.PI)})`;
-        ctx.beginPath();
-        ctx.ellipse(x + rw * 0.2, y - rh - ph * 30 * s, rw * (0.3 + ph), rh * (0.6 + ph), 0, 0, Math.PI * 2);
-        ctx.fill();
+      ctx.strokeStyle = 'rgba(40,42,58,0.35)';
+      ctx.lineWidth = Math.max(0.8, 0.8 * s);
+      ctx.beginPath();
+      for (let r = 1; r <= 3; r++) {
+        const h = 1 - r / 4;
+        for (let i = 2; i <= N - 2; i++) {
+          const [px, py] = top[i]!;
+          const yy = y - (y - py) * h + Math.sin(i * 1.3 + r) * 0.6 * s;
+          if (i > 2) ctx.lineTo(px, yy);
+          else ctx.moveTo(px, yy);
+        }
       }
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(190,196,220,0.3)';
+      ctx.lineWidth = Math.max(0.8, 1 * s);
+      ctx.beginPath();
+      for (let i = 3; i <= N - 3; i++) { const [px, py] = top[i]!; if (i > 3) ctx.lineTo(px, py + 0.6 * s); else ctx.moveTo(px, py + 0.6 * s); }
+      ctx.stroke();
+      // A slump now and then: a soft cloud lifting off the crest.
+      const ph = (t * 0.12 + k * 0.37) % 1;
+      if (ph < 0.3) glow(ctx, x + rw * 0.2 * lee, y - rh - ph * 30 * s, rw * (0.35 + ph), '150,155,178', 0.35 * Math.sin((ph / 0.3) * Math.PI));
     }
     ctx.restore();
   }
