@@ -4,6 +4,7 @@
 // spot's radius. A pair in (nearly) every sample is drawn on top of each other for good (a moray in
 // the eel bed, a mantis shrimp on the pistol shrimp's burrow); fish passing over things score low.
 // Usage: node --no-warnings tools/collide.ts [--vp desktop|mobile|landscape|small|tiny] [--at 150,900,9000,19000,21000]
+//   [--q 'seamount=cold'] (URL parameters; each stage then grows its own reef with ?bot=<at>)
 
 import { VIEWPORTS, withGame } from './browser.ts';
 import { runBot } from '../src/game/sim/bot.ts';
@@ -19,14 +20,16 @@ const EXTRA: Record<string, { name: string; width: number; height: number; scale
 };
 const vp = EXTRA[arg('vp', 'desktop')] ?? VIEWPORTS.find((v) => v.name === arg('vp', 'desktop'))!;
 const ats = arg('at', '150,900,9000,19000,21000').split(',').map(Number);
+const q = arg('q', '');
 const SAMPLES = 240;
 // Places, not creatures: Ossel, shells, stars, old stone, debris.
 const SKIP = new Set(['ossel', 'old', 'shell', 'star', 'tangle', 'fragment', 'stray', 'raft']);
 
 await withGame(async (open) => {
   for (const at of ats) {
-    const save = serialize(runBot((s) => s.t >= at, at).state, Date.now());
-    const { page, errors } = await open(vp, '', { save });
+    const { page, errors } = q
+      ? await open(vp, `?bot=${at}&${q}`)
+      : await open(vp, '', { save: serialize(runBot((s) => s.t >= at, at).state, Date.now()) });
     await page.waitForTimeout(2500);
     // Story cards and the away summary close first.
     for (let i = 0; i < 6; i++) {
@@ -50,7 +53,7 @@ await withGame(async (open) => {
     }
     const list = [...hits].sort((a, b) => b[1] - a[1]);
     const stuck = list.filter(([, v]) => v >= SAMPLES * 0.9).map(([k]) => k);
-    console.log(`${vp.name} bot=${at}: ${stuck.length ? `ON TOP OF EACH OTHER: ${stuck.join(' ')}` : 'no pair stuck together'}`);
+    console.log(`${vp.name} bot=${at}${q ? ` ${q}` : ''}: ${stuck.length ? `ON TOP OF EACH OTHER: ${stuck.join(' ')}` : 'no pair stuck together'}`);
     console.log(`  ${list.map(([k, v]) => `${k}:${v}`).join(' ') || '-'}`);
     if (errors.length) console.log(errors.join('\n'));
     await page.context().close();
