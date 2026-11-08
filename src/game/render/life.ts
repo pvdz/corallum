@@ -278,7 +278,7 @@ export function createLife(seed: number) {
     sight('star-march');
     const s = st.s * 1.1;
     const fade = Math.min(1, p / 6, (length - p) / 6);
-    let first = true;
+    const nearest = { d: Infinity, x: 0, y: 0 };
     ctx.save();
     ctx.globalAlpha = fade;
     ctx.strokeStyle = 'rgba(205,160,170,0.9)';
@@ -289,7 +289,8 @@ export function createLife(seed: number) {
       if (u < 0 || u > 1) continue;
       const x = st.cx - st.w * 0.6 + u * st.w * 1.2;
       const y = st.baseY + (2 + ((i * 0.37) % 1) * 14) * st.s;
-      if (first) { spot('star-march', x, y, 40 * s); first = false; }
+      // The tappable one: the marcher nearest the middle (the first drawn may be at an edge).
+      if (Math.abs(x - st.cx) < nearest.d) { nearest.d = Math.abs(x - st.cx); nearest.x = x; nearest.y = y; }
       // Five arms rowing over the silt, thick at the disc and thin at the tips, round a small disc.
       for (let k = 0; k < 5; k++) {
         const a = k * (Math.PI * 2 / 5) + t * 0.8 + i;
@@ -316,6 +317,7 @@ export function createLife(seed: number) {
       ctx.fill();
     }
     ctx.restore();
+    if (nearest.d < Infinity) spot('star-march', nearest.x, nearest.y, 40 * s);
   }
 
   /** A giant sea spider picking its way across the floor; touched, it freezes and folds its legs in. */

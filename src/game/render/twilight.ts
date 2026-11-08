@@ -1915,7 +1915,7 @@ export function createTwilightScene(seed: number): Scene {
     const s = scale();
     const fade = Math.min(1, p / 6, (length - p) / 6);
     const r = mulberry32(seed ^ 0x4e2d);
-    let first = true;
+    const mid = focus.x + focus.w / 2, nearest = { d: Infinity, x: 0, y: 0 };
     ctx.save();
     ctx.globalAlpha = 0.85 * fade;
     ctx.fillStyle = '#5a8a9c';
@@ -1926,7 +1926,8 @@ export function createTwilightScene(seed: number): Scene {
       if (u < -0.1 || u > 1.1) continue;
       const x = focus.x + focus.w * (1.05 - u * 1.1);
       const y = focus.y + focus.h * (0.45 + lane * 0.2) + Math.sin(t * 1.3 + i) * 3 * s;
-      if (first) { spot('rasp-herd', x, y, 60 * s); first = false; }
+      // The tappable one: the fish nearest the middle (the first drawn may be off the scene).
+      if (Math.abs(x - mid) < nearest.d) { nearest.d = Math.abs(x - mid); nearest.x = x; nearest.y = y; }
       const len = 11 * s * size, L = len, tail = Math.sin(t * 6 + i) * len * 0.15;
       // Far off, each a parrotfish's outline (swimming left): a blunt brow, an arched back, a fan
       // of a tail; the whole herd in one path.
@@ -1942,6 +1943,7 @@ export function createTwilightScene(seed: number): Scene {
     }
     ctx.fill();
     ctx.restore();
+    if (nearest.d < Infinity) spot('rasp-herd', nearest.x, nearest.y, 60 * s);
   }
 
   /**
