@@ -25,6 +25,8 @@ export function createAsk(host: HTMLElement) {
   const title = el('h2');
   title.id = 'prompt-title';
   const text = el('p', 'reader-text');
+  text.id = 'prompt-text';
+  box.setAttribute('aria-describedby', 'prompt-text');
   const field = el('textarea', 'prompt-field') as HTMLTextAreaElement;
   field.rows = 4;
   field.spellcheck = false;
