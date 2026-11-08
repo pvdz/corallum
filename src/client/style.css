@@ -828,9 +828,10 @@ html.big { --panel-out: calc(var(--panel-w) * 1.15); }
   html.sci .stock-sub { white-space: normal; }
   html.sci .panel .hold-word { display: none; }
 }
-/* Large screens (a 1440p monitor): the panel, stories and notes are drawn larger, as Larger text does. */
+/* Large screens (a 1440p monitor): the panel, stories and notes are drawn larger, as Larger text does;
+   the corner buttons too (their offsets from the corner grow with them, so they keep their spacing). */
 @media (min-width: 1900px) and (min-height: 1000px) {
-  .panel, .reader-card, #whisper, #journal-note { zoom: 1.25; }
+  .panel, .reader-card, #whisper, #journal-note, #sound, #view-mode, #photo { zoom: 1.25; }
   :root { --panel-out: calc(var(--panel-w) * 1.25); }
   html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-note { zoom: 1.44; }
   html.big { --panel-out: calc(var(--panel-w) * 1.44); }
