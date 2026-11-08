@@ -1003,7 +1003,7 @@ function view(): ReefView {
     polypTier: MILESTONES.polyp.filter((m) => state.levels.polyp >= m.level).length,
     glowTier: MILESTONES.symbiont.filter((m) => state.levels.symbiont >= m.level).length,
     symbionts: state.levels.symbiont,
-    height: lapseHeight() ?? state.height,
+    height: (lapseNow = lapseHeight()) ?? state.height,
     glowLevel: r.lureMax > 0 ? (lure(r, state.glow, state.height) - 1) / r.lureMax : 0,
     sinceFlare: state.t - state.lastFlare,
     calm: reducedMotion.matches || calm.get(),
@@ -1215,6 +1215,8 @@ function startLapse(whole = false): void {
     lastWhisper = Math.max(lastWhisper, now - 80_000 + LAPSE_ZONE * actAt(state.height) * 1000 + 5000);
   }
 }
+/** The height a replay shows this frame (null when none plays): the gauge climbs with it. */
+let lapseNow: number | null = null;
 function lapseHeight(): number | null {
   if (lapseStart < 0) return null;
   const zones = actAt(state.height);
@@ -1946,8 +1948,10 @@ function updateGauge(): void {
   gaugeCousin.style.bottom = `${sisterAt(state.t, COUSIN.schedule) * 100}%`;
   // Redrawn when the label or the marker's place would change (keyed on what is shown: a key
   // rounded otherwise could hold "59 m" on a reef that has settled at 60).
-  const f0 = gaugeAt(state.height);
-  const key = `${metres(state.height)}|${f0.toFixed(4)}|${state.height < 1}`;
+  // During a replay the gauge climbs with the reef it shows.
+  const hShown = lapseNow ?? state.height;
+  const f0 = gaugeAt(hShown);
+  const key = `${metres(hShown)}|${f0.toFixed(4)}|${state.height < 1}`;
   if (key === gaugeShown) return;
   gaugeShown = key;
   // A brand-new reef keeps the opening clear: the gauge appears with the first metre of stone.
@@ -1955,7 +1959,7 @@ function updateGauge(): void {
   const f = f0;
   gaugeMarker.style.bottom = `${f * 100}%`;
   gaugeLabel.style.bottom = `${f * 100}%`;
-  gaugeLabel.textContent = metres(state.height);
+  gaugeLabel.textContent = metres(hShown);
 }
 
 // View mode: hide the panel and let the reef have the whole screen (button top-left, or H).
