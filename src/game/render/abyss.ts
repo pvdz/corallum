@@ -260,7 +260,8 @@ export function createAbyssScene(seed: number): Scene {
   /** A lonely seamount: one far light on the horizon, another reef too far away to reach. */
   function drawFarLamp(ctx: CanvasRenderingContext2D, t: number): void {
     const s = scale();
-    const x = focus.x + focus.w * 0.84, y = ridgeY(0, x) + 2 * s;
+    // Left of the reef: on the right the vent's smoke and shimmer would veil it.
+    const x = focus.x + focus.w * 0.26, y = ridgeY(0, x) + 2 * s;
     const hgt = Math.min(focus.h * 0.14, 70 * s);
     const a = 0.45 + 0.2 * Math.sin(t * 0.4);
     ctx.save();
