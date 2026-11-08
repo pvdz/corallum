@@ -1609,17 +1609,31 @@ function floatText(x: number, y: number, text: string, cls = ''): void {
   }
   // Kept inside the scene, clear of the depth gauge: a long line near the edge would run under the panel or off the screen.
   const right = focusNow.w / dpr;
+  // Clear of the depth gauge's height label too ("3720 m" reaches further in than 48 px on a phone).
+  const gl = gaugeLabel.getBoundingClientRect();
+  const rightEdge = Math.min(right - 48, gl.width > 0 ? gl.left - 6 : Infinity);
   // A line wider than the scene (a phone on its side, a long haul) a size smaller.
-  if (cls && f.offsetWidth > right - 56) f.style.fontSize = '17px';
+  if (cls && f.offsetWidth > rightEdge - 8) f.style.fontSize = '17px';
   // Still wider (a 320 px phone): smaller again, and at last in two lines across the scene.
-  if (cls && f.offsetWidth > right - 56) f.style.fontSize = '14px';
-  if (cls && f.offsetWidth > right - 56) { f.style.whiteSpace = 'normal'; f.style.width = `${right - 64}px`; f.style.textAlign = 'center'; }
+  if (cls && f.offsetWidth > rightEdge - 8) f.style.fontSize = '14px';
+  if (cls && f.offsetWidth > rightEdge - 8) { f.style.whiteSpace = 'normal'; f.style.width = `${rightEdge - 16}px`; f.style.textAlign = 'center'; }
   const half = f.offsetWidth / 2;
   rec.w = f.offsetWidth;
-  if (half > 0 && right > 2 * half + 56) {
-    const cx = Math.min(Math.max(x, half + 8), right - half - 48);
+  if (half > 0 && rightEdge - 8 >= 2 * half) {
+    const cx = Math.min(Math.max(x, half + 8), rightEdge - half);
     f.style.left = `${cx}px`;
     rec.x = cx;
+  }
+  // Under the corner buttons where it would rise into them (a creature touched near the top left;
+  // a line rises about 45 px over its life), and below any line it would then land on.
+  if (cls) {
+    const corner = viewBtn.getBoundingClientRect();
+    if (corner.width > 0 && rec.x - half < corner.right + 6 && y - 50 < corner.bottom + 4) {
+      y = corner.bottom + 54;
+      for (let i = 0; i < 4 && recentFloats.some((r) => r !== rec && Math.abs(r.x - rec.x) < Math.max(140, r.w / 2 + half) && Math.abs(r.y - y) < 30); i++) y += 32;
+      f.style.top = `${y}px`;
+      rec.y = y;
+    }
   }
   // A creature's label still up from an earlier touch, where this line will rise: the newer news
   // wins and the label steps away (a label placed for this very touch already keeps clear).
