@@ -212,13 +212,34 @@ export function drawSeaChart(c: HTMLCanvasElement, chronicle: readonly string[])
     const n = (ids ?? '').split(',').filter(Boolean).length;
     const [x, y] = at(i);
     const r = 3 + n;
-    g.fillStyle = 'rgba(120,220,210,0.25)';
-    g.beginPath();
-    g.arc(x, y, r + 4, 0, Math.PI * 2);
+    // An uneven outline round (x, y): radius rr, wobbling by its own phase.
+    const blob = (rr: number, wob: number, ph: number) => {
+      g.beginPath();
+      for (let k = 0; k <= 20; k++) {
+        const a = (k / 20) * Math.PI * 2;
+        const q = rr * (1 + wob * Math.sin(a * 3 + ph) + wob * 0.6 * Math.sin(a * 5 + ph * 1.7));
+        if (k) g.lineTo(x + Math.cos(a) * q, y + Math.sin(a) * q * 0.85);
+        else g.moveTo(x + Math.cos(a) * q, y + Math.sin(a) * q * 0.85);
+      }
+      g.closePath();
+    };
+    // The shallows: turquoise over sand, a paler rim where the swell breaks, a few patch reefs off it.
+    blob(r + 5, 0.12, i * 1.9);
+    g.fillStyle = 'rgba(110,210,205,0.28)';
     g.fill();
+    g.strokeStyle = 'rgba(200,245,240,0.35)';
+    g.lineWidth = 0.8;
+    g.stroke();
+    g.fillStyle = 'rgba(150,230,215,0.4)';
+    for (let k = 0; k < 3; k++) {
+      const a = i * 2.1 + k * 2.3, d = r + 7 + (k % 2) * 3;
+      g.beginPath();
+      g.arc(x + Math.cos(a) * d, y + Math.sin(a) * d * 0.85, 1 + (k % 2) * 0.6, 0, Math.PI * 2);
+      g.fill();
+    }
+    // The reef itself, its seamount's colour, lumpy.
+    blob(r, 0.16, i * 3.1 + 1);
     g.fillStyle = SEAMOUNT_TINT[sm ?? 'plain'] ?? '#c98a9a';
-    g.beginPath();
-    g.arc(x, y, r, 0, Math.PI * 2);
     g.fill();
     // A blue moon ending wears a blue ring; one with vows kept, a gold one.
     const flags = line.split('|')[3] ?? '';
