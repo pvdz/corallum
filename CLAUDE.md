@@ -45,6 +45,7 @@ These were written by the agent, not the user; fix them when wrong.
 - `node --no-warnings tools/share.ts` — regenerates the link preview image (`src/client/icons/share.jpg`, og:image)
 - `node --no-warnings tools/readme.ts [name ...]` — retakes the README pictures (`docs/readme/*.jpg`) at chosen frozen moments
 - `node --no-warnings tools/closeup.ts [--at <bot secs>] [--t <scene secs>] [--scale 3] [id ...]` — close-ups of creatures (each tappable spot clipped at 3×) for art passes; lists what is on screen if an id is not
+- `node --no-warnings tools/sheet.ts [--vp desktop|mobile|landscape] [--q 'bot=4834'] [--n 16] [--gap 150] [--key t] [--clip x,y,w,h] [--name <n>]` — contact sheet: a live page's frames every few hundred ms on one image (transitions, hints, texts colliding for a moment); writes screenshot/sheets/<n>.png
 - `node --no-warnings tools/screenshot.ts [--t <sec>] --shot <tag>=<url params> ...`
   — writes `screenshot/YYYY-MM-DD-HH-MM/{desktop,mobile,landscape}-<name>.png`. Look at them.
 
