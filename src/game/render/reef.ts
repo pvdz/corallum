@@ -45,6 +45,15 @@ function mixHex(a: string, b: string, k: number): string {
   return `rgb(${[0, 1, 2].map((i) => Math.round(pa[i]! + (pb[i]! - pa[i]!) * k)).join(',')})`;
 }
 
+/** A palette's light (often a faint rgba wash) as a solid tone over `base`: `k` of the way there
+ *  for each unit of its alpha, at most `max`. */
+function solidLight(base: string, light: string, k: number, max: number): string {
+  if (light.startsWith('#')) return mixHex(base, light, max);
+  const [r = 255, g = 255, b = 255, a = 1] = (light.match(/[\d.]+/g) ?? []).map(Number);
+  const hex = `#${[r, g, b].map((v) => Math.round(v).toString(16).padStart(2, '0')).join('')}`;
+  return mixHex(base, hex, Math.min(max, a * k));
+}
+
 /** Pits in a crust's grain, as fractions of its length and width: scattered, never a row. */
 const CRUST_PITS = [[-0.6, 0.25], [-0.15, -0.4], [0.3, 0.35], [0.65, -0.15]] as const;
 /** Old-stone knobs: points round the lump's outline. */
@@ -434,17 +443,76 @@ export function createReef(seed: number, form: CoralForm = 'fan', girth = 1) {
       const mid = (lo + hi) / 2, half = ((hi - lo) / 2 + 0.03) * grown;
       const x = L.cx + mid * L.unit, y = L.baseY - ly * L.unit + Math.sin(t * 0.4 + ly * 9) * L.dpr;
       const rx = half * L.unit, ry = Math.max(3 * L.dpr, rx * 0.09);
+      if (rx < 2) continue;
+      // The plate's edge is lobed and uneven, not a clean ellipse; its rim curls up a little.
+      const N = 40, seed = ly * 13.7;
+      const px: number[] = [], py: number[] = [];
+      const edgeAt = (a: number): [number, number] => {
+        const r = 1 + 0.07 * Math.sin(5 * a + seed) + 0.04 * Math.sin(11 * a + seed * 1.9);
+        return [x + Math.cos(a) * rx * r, y + Math.sin(a) * ry * r - Math.abs(Math.cos(a)) ** 3 * ry * 0.35];
+      };
+      for (let e = 0; e < N; e++) {
+        const [ex, ey] = edgeAt((e / N) * Math.PI * 2);
+        px.push(ex);
+        py.push(ey);
+      }
+      const outline = (dy: number, k: number) => {
+        ctx.beginPath();
+        for (let e = 0; e <= N; e++) {
+          const n = e % N, m = (e + 1) % N;
+          const mx = x + ((px[n]! + px[m]!) / 2 - x) * k, my = y + dy + ((py[n]! + py[m]!) / 2 - y) * k;
+          if (e === 0) ctx.moveTo(mx, my);
+          else ctx.quadraticCurveTo(x + (px[n]! - x) * k, y + dy + (py[n]! - y) * k, mx, my);
+        }
+        ctx.closePath();
+      };
+      // Underneath, in its own shade; the front edge shows the plate's thickness.
+      const thick = Math.max(1.5 * L.dpr, ry * 0.55);
       ctx.fillStyle = shadow;
-      ctx.beginPath();
-      ctx.ellipse(x, y + ry * 0.5, rx * 1.02, ry * 1.1, 0, 0, Math.PI * 2);
+      outline(thick, 1.01);
       ctx.fill();
-      ctx.fillStyle = flesh;
-      ctx.beginPath();
-      ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+      // The top, lit from above and behind, darker toward the front edge.
+      const top = solidLight(flesh, light, 2, 0.6), edge = solidLight(flesh, light, 3, 0.8);
+      const g = ctx.createLinearGradient(0, y - ry, 0, y + ry);
+      g.addColorStop(0, top);
+      g.addColorStop(0.55, flesh);
+      g.addColorStop(1, mixHex(flesh, shadow, 0.35));
+      ctx.fillStyle = g;
+      outline(0, 1);
       ctx.fill();
-      ctx.fillStyle = light;
+      // Growth rings and ridges, faint, running out from where the stem holds it.
+      ctx.strokeStyle = shadow;
+      ctx.lineWidth = Math.max(0.6, 0.5 * L.dpr);
+      ctx.globalAlpha = 0.35;
+      for (const k of [0.45, 0.75]) { outline(0, k); ctx.stroke(); }
       ctx.beginPath();
-      ctx.ellipse(x - rx * 0.1, y - ry * 0.35, rx * 0.8, ry * 0.45, 0, 0, Math.PI * 2);
+      for (let e = 0; e < N; e += 3) {
+        ctx.moveTo(x + (px[e]! - x) * 0.2, y + (py[e]! - y) * 0.2);
+        ctx.lineTo(x + (px[e]! - x) * 0.92, y + (py[e]! - y) * 0.92);
+      }
+      ctx.stroke();
+      // The living rim: a pale growing edge and a row of tiny corallites along the front.
+      ctx.globalAlpha = 0.8;
+      ctx.strokeStyle = edge;
+      ctx.lineWidth = Math.max(1, 1.2 * L.dpr);
+      ctx.beginPath();
+      for (let e = 2; e <= N / 2 - 2; e++) {
+        const mx = (px[e]! + px[e + 1]!) / 2, my = (py[e]! + py[e + 1]!) / 2;
+        if (e === 2) ctx.moveTo(mx, my); else ctx.quadraticCurveTo(px[e]!, py[e]!, mx, my);
+      }
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = edge;
+      ctx.beginPath();
+      // Beads a few pixels apart along the front, every other one smaller.
+      const dot = Math.max(0.8, 0.9 * L.dpr);
+      const beads = Math.min(240, Math.ceil((Math.PI * rx) / (3.5 * L.dpr)));
+      for (let b = 1; b < beads; b++) {
+        const [cx, cy0] = edgeAt(0.04 * Math.PI + (b / beads) * 0.92 * Math.PI);
+        const cy = cy0 + thick * 0.35, r = b % 2 ? dot : dot * 0.65;
+        ctx.moveTo(cx + r, cy);
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      }
       ctx.fill();
     }
   }
