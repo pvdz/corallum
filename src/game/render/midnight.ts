@@ -813,29 +813,75 @@ export function createMidnightScene(seed: number): Scene {
     sight('lantern-shark');
     const s = scale() * 1.6;
     const dir = Math.floor(t / period) % 2 ? -1 : 1;
-    const x = focus.x + focus.w * (dir > 0 ? -0.1 + u * 1.2 : 1.1 - u * 1.2), y = focus.y + focus.h * 0.7 + Math.sin(t * 0.3) * 6 * s;
+    const x = focus.x + focus.w * (dir > 0 ? -0.1 + u * 1.2 : 1.1 - u * 1.2), y = focus.y + focus.h * 0.55 + Math.sin(t * 0.3) * 6 * s;
     spot('lantern-shark', x, y, 26 * s);
     const lit = touch && touch.age < 10 ? 0 : 1;
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(dir, 1);
     const sway = Math.sin(t * 2) * 2 * s;
+    // The body: slender, a rounded snout, tapering into a tail with a long upper lobe.
+    const body = (c: CanvasRenderingContext2D): void => {
+      c.beginPath();
+      c.moveTo(19 * s, 0.6 * s);
+      c.bezierCurveTo(19 * s, -2.2 * s, 14 * s, -4.2 * s, 6 * s, -4.4 * s);
+      c.bezierCurveTo(-2 * s, -4.4 * s, -9 * s, -2.4 * s, -13 * s, -1.2 * s + sway * 0.3);
+      c.lineTo(-22 * s, -6.5 * s + sway);
+      c.quadraticCurveTo(-21 * s, -2 * s + sway * 0.6, -18.5 * s, 0.4 * s + sway * 0.5);
+      c.lineTo(-20 * s, 3.4 * s + sway * 0.7);
+      c.lineTo(-13 * s, 1.4 * s + sway * 0.3);
+      c.bezierCurveTo(-8 * s, 2.8 * s, 0, 4.2 * s, 8 * s, 3.8 * s);
+      c.bezierCurveTo(14 * s, 3.6 * s, 19 * s, 2.8 * s, 19 * s, 0.6 * s);
+    };
     ctx.fillStyle = '#141824';
-    ctx.beginPath();
-    ctx.moveTo(18 * s, 0);
-    ctx.quadraticCurveTo(10 * s, -5 * s, -8 * s, -3 * s);
-    ctx.lineTo(-16 * s, -7 * s + sway);
-    ctx.lineTo(-14 * s, 0);
-    ctx.lineTo(-17 * s, 5 * s + sway);
-    ctx.lineTo(-8 * s, 2 * s);
-    ctx.quadraticCurveTo(8 * s, 5 * s, 18 * s, 0);
+    body(ctx);
     ctx.fill();
+    // Fins: two dorsals, each with its spine, and a pectoral.
     ctx.beginPath();
-    ctx.moveTo(2 * s, -4 * s); ctx.lineTo(-2 * s, -9 * s); ctx.lineTo(-4 * s, -3.5 * s); ctx.fill();
+    ctx.moveTo(5 * s, -4.2 * s); ctx.quadraticCurveTo(2 * s, -8.6 * s, 0.5 * s, -8.6 * s); ctx.lineTo(0, -4.2 * s);
+    ctx.moveTo(-6 * s, -3.4 * s); ctx.quadraticCurveTo(-9 * s, -8.2 * s, -10.5 * s, -8 * s); ctx.lineTo(-10.6 * s, -2.2 * s);
+    ctx.moveTo(9 * s, 3.2 * s); ctx.quadraticCurveTo(5 * s, 7.4 * s, 2.4 * s, 7.6 * s); ctx.lineTo(4 * s, 3.6 * s);
+    ctx.fill();
+    // A faint rim of light along the back, so the dark shape reads against the dark water.
+    ctx.strokeStyle = 'rgba(80,100,140,0.35)';
+    ctx.lineWidth = 0.6 * s;
+    ctx.beginPath();
+    ctx.moveTo(17 * s, -2.2 * s);
+    ctx.bezierCurveTo(14 * s, -4.2 * s, 6 * s, -4.6 * s, -2 * s, -4 * s);
+    ctx.moveTo(1.2 * s, -8.2 * s); ctx.lineTo(0.2 * s, -4.4 * s);
+    ctx.moveTo(-10 * s, -7.6 * s); ctx.lineTo(-10.4 * s, -2.6 * s);
+    ctx.stroke();
+    // Gill slits.
+    ctx.strokeStyle = 'rgba(40,48,70,0.9)';
+    ctx.lineWidth = 0.4 * s;
+    ctx.beginPath();
+    for (let k = 0; k < 4; k++) { ctx.moveTo((11 - k * 1.1) * s, -1.6 * s); ctx.lineTo((10.6 - k * 1.1) * s, 1.4 * s); }
+    ctx.stroke();
+    // The eye: large and green, catching what little light there is.
+    ctx.fillStyle = 'rgba(70,150,120,0.9)';
+    ctx.beginPath();
+    ctx.ellipse(14.4 * s, -1.4 * s, 1.6 * s, 1.2 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#05080c';
+    ctx.beginPath();
+    ctx.arc(14.6 * s, -1.4 * s, 0.7 * s, 0, Math.PI * 2);
+    ctx.fill();
     if (lit) {
       ctx.globalCompositeOperation = 'lighter';
-      for (let k = 0; k < 6; k++) glow(ctx, (12 - k * 4) * s, 2.5 * s, 4 * s, '120,190,255', 0.35);
-      glow(ctx, 14 * s, -1 * s, 2.5 * s, '180,255,220', 0.6);
+      // The belly's light: a soft band along the underside, and the brighter marks on the flank.
+      ctx.save();
+      body(ctx);
+      ctx.clip();
+      const band = ctx.createLinearGradient(0, 0, 0, 4 * s);
+      band.addColorStop(0, 'rgba(90,150,255,0)');
+      band.addColorStop(1, 'rgba(90,150,255,0.45)');
+      ctx.fillStyle = band;
+      ctx.fillRect(-20 * s, 0, 38 * s, 5 * s);
+      ctx.restore();
+      for (let k = 0; k < 6; k++) glow(ctx, (12 - k * 4) * s, 3 * s, 3.4 * s, '120,190,255', 0.28);
+      glow(ctx, -11 * s, 0.8 * s, 3 * s, '140,200,255', 0.5);
+      glow(ctx, -16 * s, 0.4 * s + sway * 0.5, 2.4 * s, '140,200,255', 0.4);
+      glow(ctx, 14.6 * s, -1.4 * s, 2 * s, '160,255,210', 0.45);
     }
     ctx.restore();
   }
@@ -1767,7 +1813,6 @@ export function createMidnightScene(seed: number): Scene {
       drawRising(ctx, t, w, h, focus, dpr, v.rising, true);
       drawGiantSquid(ctx, t, v.moments.squid === 'b');
       drawLarvacean(ctx, t);
-      drawLanternShark(ctx, t);
       // The old stone's lights answer the scouts listening at it.
       // Each Reading of Thousandfold's bands wakes more of the lights in its drowned towers.
       // A Reading just read: every light in the old stone flares, then settles.
@@ -1775,6 +1820,8 @@ export function createMidnightScene(seed: number): Scene {
       const flare = read ? Math.max(0, 1 - read.age / 2.2) : 0;
       ruins.draw(ctx, w, h, focus, v.height, RUINS, t, [0, 1, 2],
         Math.min(1, Math.min(1, v.jobs.scout / 8) + flare), Math.min(1, (1 + v.readings) / 10 + flare));
+      // The lantern shark cruises in front of the old stone, behind the reef.
+      drawLanternShark(ctx, t);
       drawAngler(ctx, t);
       for (const c of combs) drawComb(ctx, c, t);
       drawVampireSquid(ctx, t);
