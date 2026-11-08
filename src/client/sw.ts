@@ -13,13 +13,14 @@ const sw = self as unknown as {
   addEventListener(type: 'install' | 'activate', fn: (e: ExtendableEvt) => void): void;
   addEventListener(type: 'notificationclick', fn: (e: NotificationEvt) => void): void;
   skipWaiting(): Promise<void>;
+  registration: { scope: string };
   clients: { claim(): Promise<void>; matchAll(o: { type: 'window'; includeUncontrolled: boolean }): Promise<WindowClient[]>; openWindow(url: string): Promise<unknown> };
 };
 
 // A tap on one of the reef's notifications (shown through this worker) brings the reef forward.
 sw.addEventListener('notificationclick', (e) => {
   e.notification.close();
-  e.waitUntil(sw.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => list[0] ? list[0].focus() : sw.clients.openWindow('/')));
+  e.waitUntil(sw.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => list[0] ? list[0].focus() : sw.clients.openWindow(sw.registration.scope)));
 });
 
 sw.addEventListener('install', (e) => e.waitUntil(sw.skipWaiting()));
