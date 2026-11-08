@@ -2381,13 +2381,16 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           });
         }
         // What is happening already is told apart from what is coming.
-        const nowList = soon.filter(([t]) => t <= 0).map(([, w]) => w);
-        const later = soon.filter(([t]) => t > 0).map(([t, w]) => `${w} in ${duration(t)}`);
+        // Each thing kept whole on its line ("full moon in 3m 24s" never split after "full"); lines
+        // break before a "·", between things.
+        const whole = (x: string) => x.replace(/ /g, '\u00a0');
+        const nowList = soon.filter(([t]) => t <= 0).map(([, w]) => whole(w));
+        const later = soon.filter(([t]) => t > 0).map(([t, w]) => whole(`${w} in ${duration(t)}`));
         const head = [
-          nowList.length ? `${WATER.happening}: ${nowList.join(' · ')}` : '',
+          nowList.length ? `${WATER.happening}: ${nowList.join(' ·\u00a0')}` : '',
           later.length ? `${WATER.soon}: ${later[0]}` : '',
         ].filter(Boolean).join('. ');
-        const rest = later.slice(1).map((w) => ` · ${w}`).join('');
+        const rest = later.slice(1).map((w) => ` ·\u00a0${w}`).join('');
         if (soonHead.textContent !== head) soonHead.textContent = head;
         if (soonRest.textContent !== rest) soonRest.textContent = rest;
         waterSoon.hidden = !head;
