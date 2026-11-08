@@ -1387,3 +1387,4 @@ date, what landed, what is half-done, what's next.
 - The journal note's shade ("Seen for the first time …") was a fixed dark navy: over the Sunlit Crown's bright water a grey smudge. It takes the zone's own deep colour now, as the whispers' halo does (navy in the deep, sea-green in the light).
 - The corner buttons (sound, view, photo) were dark navy discs on every water; they take the zone's tint now, like the panel, so in the light they are sea-green glass rather than holes.
 - Creature labels likewise: the zone's tint at 78% (was a fixed navy), readable in the Sunlit Crown (checked on a phone with the seahorses).
+- With Larger text a phone laid four stocks out three and one (murmurs alone beside two empty columns): four go two and two now, the same two rows, balanced and wider. Audits mobile, tiny, small --big clean.

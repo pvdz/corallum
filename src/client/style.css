@@ -1185,8 +1185,10 @@ html.view-mode #photo { display: grid; }
   /* Three or more stocks: up to four to a row, rates cut to their column (tap a stock for the whole line). */
   .stocks.many { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 3px 8px; }
   .stocks.many[data-n='3'] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  /* Big text: three to a row, so each rate still says something before it is cut. */
+  /* Big text: three to a row, so each rate still says something before it is cut; four stocks two
+     and two (the same two rows as three and one, without a lone stock and two empty columns). */
   html.big .stocks.many { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  html.big .stocks.many[data-n='4'] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stocks.many .stock-sub { font-size: 9.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   /* Narrow columns: the rate, then what the stock holds (or does), each on its own line. */
   .stocks.many .stock-sep { display: none; }
