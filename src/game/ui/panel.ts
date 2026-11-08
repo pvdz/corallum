@@ -669,6 +669,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const level = el('span', 'level');
     const title = el('h3');
     title.append(upgradeIcon(u.id), u.name);
+    // The best buy's badge (drawn by CSS from this, when the card is marked best).
+    title.dataset.best = UI.bestBuy;
     // A pin: this card's wait shows in the tab title.
     const pin = button('pin', '', () => { pinned = pinned === u.id ? '' : u.id; for (const [id, c] of cards) c.root.classList.toggle('pinned', id === pinned); });
     pin.append(pinIcon());
@@ -1839,9 +1841,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const price = el('span', 'quick-cost');
     btn.append(name, price);
     btn.setAttribute('aria-label', upgrade(id).name);
-    btn.title = `${upgrade(id).name} (${({ polyp: 'P', skeleton: 'B', symbiont: 'G' } as Record<string, string>)[id]})`;
+    const title = `${upgrade(id).name} (${({ polyp: 'P', skeleton: 'B', symbiont: 'G' } as Record<string, string>)[id]})`;
+    btn.title = title;
     quick.append(btn);
-    return { id, btn, price };
+    return { id, btn, price, title };
   });
   // Above the scrolling list, so nothing passes under it (it would need a backdrop, and no flat
   // colour matches the panel's tint over the blurred scene). A phone on its side has little
@@ -2546,7 +2549,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         // With one thing to buy there is nothing to compare: no badge.
         if (rivals < 2) best = null;
         for (const [id, c] of cards) c.root.classList.toggle('best', id === best);
-        for (const q of quickBtns) q.btn.classList.toggle('best', q.id === best);
+        for (const q of quickBtns) {
+          q.btn.classList.toggle('best', q.id === best);
+          const tip = `${q.title}${q.id === best ? ` · ${UI.bestBuy}` : ''}`;
+          if (q.btn.title !== tip) q.btn.title = tip;
+        }
       }
 
       // Upgrade cards.

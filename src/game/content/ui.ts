@@ -8,6 +8,8 @@ export function memoryCount(n: number): string {
 }
 
 export const UI = {
+  /** The badge on the calcite upgrade that pays back soonest (and its quick buy's mark, ✦). */
+  bestBuy: 'best buy',
   truceKicker: 'The truce',
   raspAria: 'Rasp admitted to graze',
   raspFewer: 'Fewer Rasp grazing',
