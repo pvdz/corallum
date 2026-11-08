@@ -191,7 +191,7 @@ calcite (by how full the glow was), once a minute (button in the prep row, or L)
 an active use.
 
 **Sweep combos**: sweeps within 1.2 s of the last build a combo, +10% each up to ×2; a pause resets it.
-It matters early and in flurries; later sweeps fade into noise anyway.
+A sweep pays a quarter second of the reef's calcite (plus 1), so it keeps its weight all game: tapping about once a second with the combo full adds a quarter to a half to the income (the greedy bot sweeping every second ends at 7h08, never sweeping 8h28; ECONOMY.md). Flurries (×3) are when it matters most.
 
 **Flurries** (Silt Floor): every four minutes (the first at 2½ minutes, after the opening card) the Long Silt falls thick for 30 s; sweeps catch ×3 then
 (on the sim clock, so the snow and the pay agree; the Soon line counts down to the next).
