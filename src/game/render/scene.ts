@@ -30,7 +30,6 @@ export type ReefView = {
   vent: number;
   shoals: number;
   jobs: Record<Job, number>;
-  /** Shoals away at a ruin: how many, sim seconds since they left and until they are back, which side they went. */
   /** A flurry of the Long Silt is falling (Silt Floor). */
   flurry: boolean;
   /** A milky sea glows in the Midnight Water now. */

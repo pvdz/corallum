@@ -4,8 +4,10 @@
 import { glow } from './draw.ts';
 import type { Focus } from './scene.ts';
 
-/** `delta`: the sister's gauge place minus yours (0..1 scale); drawn within ±0.06. */
-/** `lit`: the reef lit the way for her: a thread of light runs up from her crown. */
+/**
+ * `delta`: the sister's gauge place minus yours (0..1 scale); drawn within ±0.06.
+ * `lit`: the reef lit the way for her: a thread of light runs up from her crown.
+ */
 export function drawSisterFar(ctx: CanvasRenderingContext2D, F: Focus, delta: number, t: number, s: number, light: boolean, lit = false): void {
   if (Math.abs(delta) > 0.06) return;
   const a = 1 - Math.abs(delta) / 0.06;

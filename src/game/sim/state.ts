@@ -160,8 +160,10 @@ export type GameState = {
   lastFlare: number;
   /** Index of the last feast slot eaten (see content/events.ts). */
   feasted: number;
-  /** The shoals' signals: last slot tried, and how many answered right. */
-  /** `right`: the slot last answered rightly; `streak`: how many slots in a row were. */
+  /**
+   * The shoals' signals: last slot tried, and how many answered right.
+   * `right`: the slot last answered rightly; `streak`: how many slots in a row were.
+   */
   signal: { last: number; answered: number; right: number; streak: number };
   /** Index of the last shell slot picked up. */
   shelled: number;

@@ -206,7 +206,6 @@ export const SITES: readonly Site[] = [
   },
 ];
 
-/** Roaming: when no ruin is in reach, a quarter of the shoals can wander for a while. */
 /** What the shoals bring back from a roam: a tale and a little of something (seeded per roam). */
 export const ROAM_TALES: readonly { text: string; pay: 'calcite' | 'glow' | 'murmurs' | 'shard' }[] = [
   { text: 'They found a wreck full of crabs, and a seam of old stone under it.', pay: 'calcite' },
@@ -233,6 +232,7 @@ export const VISIT = {
   effect: '+1 lineage when they come home',
 } as const;
 
+/** Roaming: when no ruin is in reach, a quarter of the shoals can wander for a while. */
 export const ROAM = {
   from: 150, minShoals: 4, share: 0.25, seconds: 10 * 60,
   name: 'Roam the dark', hint: 'No ruin in reach. The shoals could wander, and listen, and see what turns up.',

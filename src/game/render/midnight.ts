@@ -1234,8 +1234,10 @@ export function createMidnightScene(seed: number): Scene {
     }
   }
 
-  /** Marine snow; above the snowline (that band) the Long Silt thins to a third. */
-  /** Marine snow; flakes near the reef's crown (within `lit`) catch its light and glint blue. */
+  /**
+   * Marine snow; above the snowline (that band) the Long Silt thins to a third. Flakes near the
+   * reef's crown (within `lit`) catch its light and glint blue.
+   */
   function drawSnow(ctx: CanvasRenderingContext2D, t: number, thin: boolean, crown: [number, number], lit: number): void {
     const dim = 'rgba(190,205,240,0.35)';
     for (const [i, f] of flakes.entries()) {

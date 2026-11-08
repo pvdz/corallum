@@ -213,7 +213,6 @@ export const WHISPERS: readonly Whisper[] = [
   },
 ];
 
-/** What Ossel says when you tap it (the Silt Floor, or its wall on the Twilight Shelf), in turn. */
 /** What Ossel says when tapped and something is going on: the first that applies, in order. */
 export const OSSEL_NOW: readonly { when: (s: GameState) => boolean; text: string }[] = [
   { when: (s) => s.carried.length > 0 && s.garden >= 12, text: 'Twelve of them, holding on in the shallows. I never had a garden. I had a wall.' },
@@ -242,6 +241,7 @@ export const OSSEL_LINES_TRUE: readonly string[] = [
   'Grow how you like. Not how we did.',
 ];
 
+/** What Ossel says when you tap it (the Silt Floor, or its wall on the Twilight Shelf), in turn. */
 export const OSSEL_LINES: readonly string[] = [
   'Yes, I am still here. Where else would I be?',
   'Grow. Do not look at me like that. Grow.',

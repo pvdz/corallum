@@ -2935,7 +2935,6 @@ function gaugeFraction(h: number): number {
   return (n - 1 + Math.min(1, Math.max(0, (h - a.from) / (a.to - a.from)))) / ACTS.length;
 }
 
-/** A long card that starts folded: tapping its heading opens and closes it. */
 /** Two buttons side by side, half the width each. */
 function pair(a: HTMLElement, b: HTMLElement): HTMLElement {
   const row = el('div', 'button-pair');
@@ -2957,6 +2956,7 @@ function collapsible(card: HTMLElement, head: HTMLElement): void {
 }
 
 /**
+ * A long card that starts folded: tapping its heading opens and closes it.
  * A Grow-tab section the player can fold to its header (title and count stay), remembered per
  * browser under `corallum.fold.<id>`. Open by default, so nothing is hidden from a new player.
  */

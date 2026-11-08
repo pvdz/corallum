@@ -18,8 +18,10 @@ export function takeSightings(): CreatureId[] {
   return out;
 }
 
-/** Where creatures were drawn this frame, for tapping them (device pixels). */
-/** `n`: which star, for a star of a figure being traced in the night sky. */
+/**
+ * Where creatures were drawn this frame, for tapping them (device pixels).
+ * `n`: which star, for a star of a figure being traced in the night sky.
+ */
 export type Spot = { id: CreatureId | 'ossel' | 'shell' | 'star' | 'old' | 'tangle' | 'fragment' | 'stray' | 'raft'; x: number; y: number; r: number; n?: number };
 let spots: Spot[] = [];
 let nextSpots: Spot[] = [];

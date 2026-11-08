@@ -143,7 +143,6 @@ export function drawPool(ctx: CanvasRenderingContext2D, cx: number, waterY: numb
   ctx.restore();
 }
 
-/** The lantern spire: a rough shaft of stacked stone from the floor, lamps hung along it. */
 /** The listening dome: a pale shell of thin stone on the floor to the right, rising by stages; murmurs ripple off it. */
 export function drawDome(ctx: CanvasRenderingContext2D, F: Focus, stage: number, s: number, t: number, floorY: number): void {
   if (stage <= 0) return;
@@ -200,6 +199,7 @@ export function drawDome(ctx: CanvasRenderingContext2D, F: Focus, stage: number,
   ctx.restore();
 }
 
+/** The lantern spire: a rough shaft of stacked stone from the floor, lamps hung along it. */
 export function drawSpire(ctx: CanvasRenderingContext2D, F: Focus, stage: number, s: number, t: number, floorY: number): void {
   if (stage <= 0) return;
   const x = F.x + F.w * 0.17;

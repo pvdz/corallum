@@ -622,7 +622,6 @@ export function idleShoals(s: GameState): number {
   return s.levels.shoal - s.jobs.feed - s.jobs.light - s.jobs.scout - s.jobs.fan - s.jobs.guard - awayShoals(s);
 }
 
-/** Move one shoal into (delta +1, from the idle pool) or out of (delta -1) a job. */
 /** Enough shoals on guard to drive intruders off on their own. */
 export function guarding(s: GameState): boolean {
   return s.jobs.guard >= GUARD.need && s.height >= GUARD.from;
@@ -634,6 +633,7 @@ export function jobOpen(s: GameState, job: Job): boolean {
   return job !== 'scout' || readingsRevealed(s);
 }
 
+/** Move one shoal into (delta +1, from the idle pool) or out of (delta -1) a job. */
 export function assign(s: GameState, job: Job, delta: 1 | -1): boolean {
   if (delta > 0) {
     if (!jobOpen(s, job)) return false;
@@ -1014,7 +1014,6 @@ export function remember(s: GameState, key: string, arg = '', at = s.t): void {
 
 // ---------- The sister reef ----------
 
-/** Judge the next mark, reached at sim time `at`: won if the sister is still below it then. */
 /** The sister reef's place at sim time t: faster from the moment the reef lit the way for her. */
 export function sisterNow(s: GameState, t: number): number {
   const lit = s.race.lit;
@@ -1196,13 +1195,13 @@ export function dialect(id: DialectId) {
   return DIALECTS.find((d) => d.id === id)!;
 }
 
-/** The tier waiting for a choice: in order, once its band is read. */
 /** Bloom a dialect tier costs now (clear water lowers it). */
 export function tierCost(s: GameState, t: { cost: number }): number {
   const w = waterAt(s);
   return t.cost * (w.dialects ? deep(s, w) : 1);
 }
 
+/** The tier waiting for a choice: in order, once its band is read. */
 export function nextTier(s: GameState) {
   for (const t of TIERS) {
     if (s.dialects[t.tier]) continue;
@@ -1485,7 +1484,6 @@ export function canSweep(s: GameState): boolean {
   return s.t - s.lastSweep >= ACT1.sweepCooldown;
 }
 
-/** Sweep the tentacles by hand: a small burst that matters early and fades into noise later. */
 /** The reef takes in sun (the Sunlit Crown's purchased height): warm spells come there. */
 function heatZone(s: GameState): boolean {
   return heightForBands(s.levels.skeleton) >= ACT4.from;
@@ -1654,6 +1652,7 @@ export function milkyGlow(s: GameState): number {
   return inMilky(s) ? rates(s).glowP * MILKY.glowSeconds * (has(s, 'burning-sea') ? 2 : 1) : 0;
 }
 
+/** Sweep the tentacles by hand: a small burst that matters early and fades into noise later. */
 export function sweep(s: GameState): number {
   if (!canSweep(s) || s.vows.includes('still')) return 0;
   // Quick sweeps one after another build a combo.
@@ -2420,12 +2419,12 @@ export function prune(s: GameState, slot: number): number {
 
 export type Thorn = { k: number; start: number; side: number; kind: Intruder };
 
-/** The intruder now, if any: a thorn star on the shelf and in the light, a dragonfish in the Midnight Water. */
 /** Seconds between intruders here (a thorny seamount's come twice as often). */
 function thornPeriod(s: GameState): number {
   return THORN.period * (seamount(s).thorns ?? 1);
 }
 
+/** The intruder now, if any: a thorn star on the shelf and in the light, a dragonfish in the Midnight Water. */
 export function currentThorn(s: GameState): Thorn | null {
   const kind = intruderOf(actAt(s.height));
   if (!kind || (kind === 'dragonfish' && s.levels.shoal === 0) || (kind === 'drill-snail' && s.height < THORN.snailFrom) || (kind === 'gull' && ended(s))) return null;

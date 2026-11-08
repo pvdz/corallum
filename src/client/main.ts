@@ -1527,11 +1527,11 @@ const SEAMOUNT_TINT: Record<string, [string, GlobalCompositeOperation]> = {
   lonely: ['rgba(80,120,200,0.04)', 'lighter'], buried: ['rgba(150,150,160,0.08)', 'source-over'],
 };
 
-/** A float of text over the water, e.g. "+12". */
 /** Floating lines from the same tap (a gift and the sweep): a new one near them stacks below instead of printing over. */
 let recentFloats: { x: number; y: number; t: number; w: number }[] = [];
 /** Sweep numbers still on screen. */
 let sweepFloats: HTMLElement[] = [];
+/** A float of text over the water, e.g. "+12". */
 function floatText(x: number, y: number, text: string, cls = ''): void {
   const now = performance.now();
   // A haul line stays 2.2 s: one landing near another still showing (a thorn star pried off, then

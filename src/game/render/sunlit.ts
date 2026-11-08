@@ -34,10 +34,10 @@ type Fish = { lane: number; speed: number; phase: number; size: number; hue: num
 type Clump = { u: number; size: number; kind: number; hue: number };
 type Larva = { x: number; y: number; phase: number; speed: number };
 
-/** Each form's reef, its girth and its stone colours (shadow, flesh, highlight). */
 /** Length of a sunlit day, in seconds of scene time. */
 const DAY = 600;
 
+/** Each form's reef, its girth and its stone colours (shadow, flesh, highlight). */
 const FORM_LOOK: Record<CoralForm, { girth: number; palette: [string, string, string]; polyp: [string, string] }> = {
   fan: { girth: 1, palette: ['#3a1d33', '#c25a76', 'rgba(255,225,210,0.35)'], polyp: ['#ffd2c4', 'rgba(255,240,170,0.95)'] },
   branching: { girth: 0.9, palette: ['#3b2a18', '#d99a54', 'rgba(255,240,200,0.4)'], polyp: ['#7fe0c9', 'rgba(220,255,140,0.95)'] },

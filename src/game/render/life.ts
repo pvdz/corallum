@@ -1137,7 +1137,6 @@ export function createLife(seed: number) {
     ctx.restore();
   }
 
-  /** The vent chimney: grows a little with each tier, plume shimmers upward. */
   /** One mineral spire: a knobbly column of sulphide crust, narrowing to a smoking mouth. */
   function drawSpire(ctx: CanvasRenderingContext2D, x: number, base: number, hgt: number, wid: number, k: number, s: number): void {
     const n = 16;
@@ -1424,6 +1423,7 @@ export function createLife(seed: number) {
     ctx.restore();
   }
 
+  /** The vent chimney: grows a little with each tier, plume shimmers upward. */
   function drawVent(ctx: CanvasRenderingContext2D, st: Stage, tier: number, t: number): { x: number; y: number } {
     const s = st.s;
     const x = st.cx + st.w * 0.3;
