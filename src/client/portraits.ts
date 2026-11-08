@@ -25,6 +25,19 @@ export const REDRAWN: readonly (readonly string[])[] = [
 ];
 const ART_VERSION = REDRAWN.length - 1;
 
+const DARK_TRIES = 12;
+
+/** Whether a crop is nearly black: even its brightest few pixels are dim. */
+function tooDark(g: CanvasRenderingContext2D): boolean {
+  const d = g.getImageData(0, 0, SIZE, SIZE).data;
+  const hist = new Uint32Array(256);
+  for (let i = 0; i < d.length; i += 4) hist[Math.max(d[i]!, d[i + 1]!, d[i + 2]!)]!++;
+  // The level the brightest 2% of pixels reach.
+  let left = Math.ceil(SIZE * SIZE * 0.02);
+  for (let v = 255; v >= 0; v--) if ((left -= hist[v]!) <= 0) return v < 40;
+  return true;
+}
+
 export function createPortraits(persist: boolean) {
   let album: Record<string, string> = {};
   let close = new Set<string>();
@@ -60,6 +73,8 @@ export function createPortraits(persist: boolean) {
     storeTimer = window.setTimeout(store, 2000);
   }
   if (persist) window.addEventListener('pagehide', () => { if (storeTimer) store(); });
+  /** Crops let go for being too dark, by creature. */
+  const dark = new Map<string, number>();
   /** Crops being encoded (not wanted again meanwhile); a reset bumps the generation and drops them. */
   const pending = new Set<string>();
   let generation = 0;
@@ -104,8 +119,16 @@ export function createPortraits(persist: boolean) {
           const c = document.createElement('canvas');
           c.width = c.height = SIZE;
           // Sized here too: a browser that ignores the resize options hands back the full crop.
-          c.getContext('2d')!.drawImage(bmp, 0, 0, SIZE, SIZE);
+          const g = c.getContext('2d', { willReadFrequently: true })!;
+          g.drawImage(bmp, 0, 0, SIZE, SIZE);
           bmp.close();
+          // Caught in a dark moment (a jelly between pulses, a light out), the crop is let go and
+          // the creature taken at a later look; one that stays this dark is kept after a dozen tries.
+          if (tooDark(g) && (dark.get(id) ?? 0) < DARK_TRIES) {
+            dark.set(id, (dark.get(id) ?? 0) + 1);
+            pending.delete(key);
+            return;
+          }
           encode(c);
         }, () => pending.delete(key));
     },
@@ -113,6 +136,7 @@ export function createPortraits(persist: boolean) {
     clear(): void {
       generation++;
       pending.clear();
+      dark.clear();
       clearTimeout(storeTimer);
       storeTimer = 0;
       album = {};
