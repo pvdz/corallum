@@ -216,7 +216,8 @@ html.panel-rest .panel .pages { opacity: 0.6; transition: opacity 4s ease; }
 }
 .reader-card {
   max-width: 520px; padding: 28px 30px 24px; border-radius: 18px; text-align: center;
-  background: linear-gradient(180deg, rgba(20, 28, 62, 0.97), rgba(8, 10, 30, 0.98));
+  /* Lit from above in the zone's own water (navy in the deep, teal in the light), dark below. */
+  background: linear-gradient(180deg, rgba(var(--zone-tint), 0.97), rgba(8, 10, 30, 0.98));
   border: 1px solid var(--edge-strong); box-shadow: 0 0 60px rgba(100, 200, 255, 0.15), 0 20px 60px rgba(0, 0, 0, 0.6);
   animation: rise-in 0.8s ease both;
 }
