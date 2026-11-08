@@ -1762,19 +1762,6 @@ export function createTwilightScene(seed: number): Scene {
     }
   }
 
-  /**
-   * Rarely, a whale shark: once in eighteen minutes the biggest fish in the sea glides across the
-   * upper water, broad-headed and spotted, mouth open for plankton.
-   */
-  /**
-   * Rarely, an oarfish: once in about twenty-five minutes a long silver ribbon drifts down through
-   * the open water head-up, its body barely moving while waves run down its red crest. Touched, it
-   * coils away into the blue faster than it came.
-   */
-  /**
-   * A sixgill shark, rarely (once in thirteen minutes): long, dark and slow, gliding low along the
-   * slope from one side to the other, its eye glinting green. Touched, it turns down and away.
-   */
   /** The thermocline: where warm water rides over cold, a faint band that bends the light and wavers. */
   function drawThermocline(ctx: CanvasRenderingContext2D, t: number, night: number): void {
     const s = scale();
@@ -1860,6 +1847,10 @@ export function createTwilightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * A sixgill shark, rarely (once in thirteen minutes): long, dark and slow, gliding low along the
+   * slope from one side to the other, its eye glinting green. Touched, it turns down and away.
+   */
   function drawSixgill(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 780, pass = 90;
     const u = (t % period) / pass;
@@ -1934,6 +1925,11 @@ export function createTwilightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * Rarely, an oarfish: once in about twenty-five minutes a long silver ribbon drifts down through
+   * the open water head-up, its body barely moving while waves run down its red crest. Touched, it
+   * coils away into the blue faster than it came.
+   */
   function drawOarfish(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 1500, pass = 90;
     const touch = startled('oarfish', t);
@@ -2078,6 +2074,10 @@ export function createTwilightScene(seed: number): Scene {
     ctx.restore();
   }
 
+  /**
+   * Rarely, a whale shark: once in eighteen minutes the biggest fish in the sea glides across the
+   * upper water, broad-headed and spotted, mouth open for plankton.
+   */
   function drawWhaleShark(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 1080, crossing = 70;
     const u = ((t + 500) % period) / crossing;
