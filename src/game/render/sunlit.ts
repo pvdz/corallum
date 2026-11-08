@@ -405,7 +405,9 @@ export function createSunlitScene(seed: number): Scene {
       const lap = Math.floor((t + k * 3.1) / period);
       const age = (t + k * 3.1) % period;
       const r = mulberry32(larvaSeed + lap * 131 + k);
-      const x0 = focus.x + focus.w * range(r, 0.2, 0.8), y0 = focus.y + focus.h * range(r, 0.45, 0.8);
+      // In the dark open water either side of the reef, where they show.
+      const side = r() < 0.5 ? range(r, 0.08, 0.3) : range(r, 0.7, 0.92);
+      const x0 = focus.x + focus.w * side, y0 = focus.y + focus.h * range(r, 0.45, 0.8);
       const slant = range(r, -0.5, 0.5);
       // One dot every 0.18 s for 2.5 s, each glowing then fading over 3 s.
       for (let d = 0; d < 14; d++) {
@@ -413,7 +415,10 @@ export function createSunlitScene(seed: number): Scene {
         const a = age - born;
         if (a < 0 || a > 3) continue;
         const fade = (a < 0.2 ? a / 0.2 : 1 - (a - 0.2) / 2.8) * night;
-        glow(ctx, x0 + slant * d * 6 * s, y0 - d * 9 * s, 4 * s * (1 + flare), '90,190,255', Math.min(1, 0.8 * fade + flare * night));
+        // Each dot a blue halo round a bright point.
+        const dx = x0 + slant * d * 6 * s, dy = y0 - d * 9 * s, al = Math.min(1, 0.8 * fade + flare * night);
+        glow(ctx, dx, dy, 7 * s * (1 + flare), '90,190,255', al * 0.8);
+        glow(ctx, dx, dy, 2.2 * s * (1 + flare), '190,235,255', al);
       }
       if (age < 2.5) spot('sea-firefly', x0 + slant * 40 * s, y0 - 60 * s, 50 * s);
     }
