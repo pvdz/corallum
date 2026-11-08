@@ -1295,3 +1295,4 @@ date, what landed, what is half-done, what's next.
 - The anglerfish slid level while it bobbed: it pitches with the bob now (nose down sinking, up rising, up to ~12°), the lure going with it.
 - The Sunlit reef fish pitch with their lane's bob too (up to ~14°), so they swim rather than slide.
 - Panel number scan (scratch): every tab at 10 bot times × 6 variants (plain, dark, cold, heavy, thorny seamounts, the other truce and dialects): no NaN, undefined, Infinity, [object…] or negative "each" rates, no console errors.
+- "New in the sea" (shown once after an update to a reef past its first ten minutes): tonight's changes for the player, the small stock line, the idle camera's visits, the ripe bundles and the release's haze and music, the creatures looked at closely, the glare gone. play, prestige, systems and feast e2e green with it.
