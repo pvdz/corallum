@@ -301,29 +301,72 @@ export function createAbyssScene(seed: number): Scene {
     for (const [k, u] of [0.06, 0.12, 0.62, 0.7, 0.94].entries()) {
       const x = focus.x + focus.w * u, base = baseY() + 6 * s;
       const hgt = (34 + (k % 3) * 12) * s, wid = (7 + (k % 2) * 3) * s;
-      ctx.fillStyle = '#3a2a2e';
+      // The chimney: stacked knobbly mineral, narrowing upward, each layer bulging its own way;
+      // the taller ones with a small spire off one side. Dark grey-black, faintly banded.
+      const cr = mulberry32(0x5e0 + k * 977);
+      const layers = 7;
+      const left: [number, number][] = [], right: [number, number][] = [];
+      for (let i = 0; i <= layers; i++) {
+        const f = i / layers, half = wid * (1 - 0.55 * f), yy = base - hgt * f;
+        left.push([x - half - range(cr, 0, 2.2) * s * (1 - f * 0.5), yy]);
+        right.push([x + half + range(cr, 0, 2.2) * s * (1 - f * 0.5), yy]);
+      }
+      const body = ctx.createLinearGradient(x - wid, 0, x + wid, 0);
+      body.addColorStop(0, '#2c2228');
+      body.addColorStop(0.55, '#40323a');
+      body.addColorStop(1, '#241c22');
+      ctx.fillStyle = body;
       ctx.beginPath();
-      ctx.moveTo(x - wid, base);
-      ctx.lineTo(x - wid * 0.5, base - hgt);
-      ctx.lineTo(x + wid * 0.5, base - hgt);
-      ctx.lineTo(x + wid, base);
+      ctx.moveTo(left[0]![0], left[0]![1]);
+      for (let i = 1; i <= layers; i++) {
+        const [px, py] = left[i - 1]!, [qx, qy] = left[i]!;
+        ctx.quadraticCurveTo(Math.min(px, qx) - 1.4 * s, (py + qy) / 2, qx, qy);
+      }
+      for (let i = layers; i >= 1; i--) {
+        const [px, py] = right[i]!, [qx, qy] = right[i - 1]!;
+        ctx.quadraticCurveTo(Math.max(px, qx) + 1.4 * s, (py + qy) / 2, qx, qy);
+      }
+      ctx.closePath();
       ctx.fill();
-      // Smoke: dark puffs rising and spreading.
-      for (let p = 0; p < 8; p++) {
-        const q = ((t * 0.12 + p / 8 + k * 0.3) % 1);
-        ctx.fillStyle = `rgba(70,60,72,${0.5 * (1 - q)})`;
+      if (k % 3 === 2) {
+        const sy = base - hgt * 0.45, sd = k % 2 ? 1 : -1;
         ctx.beginPath();
-        ctx.arc(x + Math.sin(t + p + k) * 4 * s * q, base - hgt - q * 70 * s, (3 + q * 9) * s, 0, Math.PI * 2);
+        ctx.moveTo(x + sd * wid * 0.55, sy + 4 * s);
+        ctx.quadraticCurveTo(x + sd * wid * 1.3, sy, x + sd * wid * 1.25, sy - 9 * s);
+        ctx.lineTo(x + sd * wid * 0.95, sy - 9 * s);
+        ctx.quadraticCurveTo(x + sd * wid * 0.9, sy - 2 * s, x + sd * wid * 0.4, sy - 2 * s);
+        ctx.closePath();
         ctx.fill();
+      }
+      ctx.strokeStyle = 'rgba(150,120,110,0.16)';
+      ctx.lineWidth = Math.max(0.6, 0.7 * s);
+      ctx.beginPath();
+      for (let i = 1; i < layers; i++) {
+        const [lx, ly] = left[i]!, [rx2] = right[i]!;
+        ctx.moveTo(lx + 1 * s, ly);
+        ctx.quadraticCurveTo(x, ly + 1.2 * s, rx2 - 1 * s, ly);
+      }
+      ctx.stroke();
+      // Pale mats of bacteria on the warm ground at its foot.
+      ctx.fillStyle = 'rgba(206,200,182,0.32)';
+      ctx.beginPath();
+      for (let m = 0; m < 4; m++) {
+        const mx = x + range(cr, -1.6, 1.6) * wid, mw = range(cr, 2, 4.5) * s;
+        ctx.moveTo(mx + mw, base - 0.5 * s);
+        ctx.ellipse(mx, base - 0.5 * s, mw, mw * 0.35, 0, 0, Math.PI * 2);
+      }
+      ctx.fill();
+      // Smoke: soft dark billows rising from the throat, spreading and thinning as they go (the
+      // glow sprite's falloff, drawn dark over the water, not added to it).
+      for (let p = 0; p < 9; p++) {
+        const q = ((t * 0.12 + p / 9 + k * 0.3) % 1);
+        glow(ctx, x + Math.sin(t * 0.8 + p * 1.7 + k) * 5 * s * q, base - hgt - 2 * s - q * 75 * s, (4 + q * 15) * s, '30,24,34', 0.75 * (1 - q) * Math.min(1, q * 6));
       }
       const belch = touch && touch.age < 4 && Math.abs(touch.x - x) < focus.w * 0.12 ? touch.age : -1;
       if (belch >= 0) {
         for (let p = 0; p < 6; p++) {
           const q = Math.min(1, belch / 3 + p * 0.05);
-          ctx.fillStyle = `rgba(40,32,42,${0.7 * (1 - q)})`;
-          ctx.beginPath();
-          ctx.arc(x + Math.sin(p * 2.3) * 8 * s * q, base - hgt - q * 90 * s - p * 4 * s, (6 + q * 18) * s, 0, Math.PI * 2);
-          ctx.fill();
+          glow(ctx, x + Math.sin(p * 2.3) * 8 * s * q, base - hgt - q * 90 * s - p * 4 * s, (9 + q * 26) * s, '24,18,28', 0.9 * (1 - q));
         }
       }
       ctx.save();
