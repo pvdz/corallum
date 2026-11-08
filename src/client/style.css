@@ -775,7 +775,7 @@ html.releasing .panel:not(:focus-within) { opacity: 0.12; }
 
 #sound {
   position: absolute; left: max(12px, env(safe-area-inset-left)); top: max(12px, env(safe-area-inset-top)); z-index: 11;
-  width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--edge); background: rgba(10, 14, 34, 0.55);
+  width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--edge); background: rgba(var(--zone-tint), 0.55);
   color: var(--ink-dim); display: grid; place-items: center; padding: 0; cursor: pointer; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
 }
 #sound[aria-pressed="true"] { color: var(--glow); border-color: var(--edge-strong); }
@@ -991,7 +991,7 @@ html.view-mode #journal-note { left: calc(max(12px, env(safe-area-inset-left)) +
 /* ---------- View mode: the panel hidden, the reef on the whole screen ---------- */
 #view-mode {
   position: absolute; left: calc(max(12px, env(safe-area-inset-left)) + 46px); top: max(12px, env(safe-area-inset-top)); z-index: 11;
-  width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--edge); background: rgba(10, 14, 34, 0.55);
+  width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--edge); background: rgba(var(--zone-tint), 0.55);
   color: var(--ink-dim); display: grid; place-items: center; padding: 0; cursor: pointer; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
 }
 #view-mode[aria-pressed="true"] { color: var(--glowc); border-color: var(--edge-strong); }
@@ -1039,7 +1039,7 @@ html.view-mode #depth-gauge { right: max(18px, env(safe-area-inset-right)); }
 }
 #photo {
   position: absolute; left: calc(max(12px, env(safe-area-inset-left)) + 92px); top: max(12px, env(safe-area-inset-top)); z-index: 11;
-  width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--edge); background: rgba(10, 14, 34, 0.55);
+  width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--edge); background: rgba(var(--zone-tint), 0.55);
   color: var(--ink-dim); display: none; place-items: center; padding: 0; cursor: pointer; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
 }
 html.view-mode #photo { display: grid; }
