@@ -1382,3 +1382,4 @@ date, what landed, what is half-done, what's next.
 - Left and Right on a focused panel tab move to the next tab (wrapping), as a tab list does; 1–4 still switch from anywhere.
 - And for the cold (slow heavy water, the brine lake), buried (the Long Silt still falling), dark (the water drinks the light) and silent (nothing under it to listen to) seamounts: eight seamount lines in all, one each.
 - The shallow, thorny, heavy, gleaming and tidal seamounts show nothing different on the Silt Floor: Ossel says what each will do (warm spells that stay, intruders that come often, stone that greys fast, no feasts but lucky neighbours, great tides more often). Every seamount but the plain one now has its line.
+- The gleaming seamount ("clear as glass and empty above: nothing falls") had nothing of its own on the floor: a sixth of the marine snow falls there now, and a faint clear sea-green light lies low over the floor.

@@ -197,8 +197,9 @@ export function createAbyssScene(seed: number): Scene {
 
   function drawSnow(ctx: CanvasRenderingContext2D, t: number, layer: number): void {
     ctx.fillStyle = ['rgba(170,190,230,0.35)', 'rgba(200,215,245,0.5)', 'rgba(225,235,255,0.6)'][layer]!;
-    // Hungry water carries a third of the snow; buried water half again as much (drawn twice).
-    const thin = sm === 'hungry' ? 3 : 1;
+    // Hungry water carries a third of the snow, gleaming water (clear as glass) a sixth; buried water
+    // half again as much (drawn twice).
+    const thin = sm === 'hungry' ? 3 : sm === 'gleaming' ? 6 : 1;
     for (const [i, f] of flakes.entries()) {
       if (f.layer !== layer || i % thin) continue;
       // Each ending of the line takes away a tenth of the flakes.
@@ -864,7 +865,7 @@ export function createAbyssScene(seed: number): Scene {
       drawGhosts(ctx, focus, v.ancestors, v.height, t, scale(), 'rgba(160,170,220,1)');
       // A warm seamount reddens the water near the floor; a cold one leaves a faint ice-blue.
       // Hungry water is pale and washed out; silent water darker, dark water darker still.
-      const tint = { warm: 'rgba(255,90,40,0.10)', cold: 'rgba(150,210,255,0.09)', hungry: 'rgba(120,130,140,0.10)' }[v.seamount as 'warm'];
+      const tint = { warm: 'rgba(255,90,40,0.10)', cold: 'rgba(150,210,255,0.09)', hungry: 'rgba(120,130,140,0.10)', gleaming: 'rgba(120,255,230,0.07)' }[v.seamount as 'warm'];
       if (v.seamount === 'silent' || v.seamount === 'dark') {
         ctx.fillStyle = v.seamount === 'dark' ? 'rgba(0,0,6,0.4)' : 'rgba(0,0,6,0.22)';
         ctx.fillRect(0, 0, w, h);
