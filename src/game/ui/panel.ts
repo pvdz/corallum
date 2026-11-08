@@ -1555,7 +1555,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   for (const [term, text] of GUIDE) guideList.append(el('dt', '', term), el('dd', '', text));
   guide.append(guideHead, guideList);
   collapsible(guide, guideHead);
-  // What shapes this reef: the seamount itself, every lasting effect from boons, relics, residents, moments, works,
+  // What shapes this reef: the seamount itself, the reef's own choices, every lasting effect from boons, relics, residents, moments, works,
   // favours and the line's hard places, one line each.
   const shapes = el('article', 'card codex shapes');
   const shapesHead = el('h3', '', UI.shapes);
@@ -1569,6 +1569,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     if (s.seamount !== 'plain') { const m = seamountDef(s.seamount); rows.push([m.name, m.effect]); }
     const b = BOONS.find((x) => x.id === s.boon);
     if (b) rows.push([b.name, b.effect]);
+    // The reef's own choices: its glimmerseed and their sport, the grain of its bands, its dialects.
+    const strain = STRAINS.find((x) => x.id === s.strain), sport = SPORTS.find((x) => x.id === s.sport);
+    if (strain) rows.push([`${strain.name} glimmerseed`, strain.effect]);
+    if (sport) rows.push([`${sport.name} glimmerseed`, sport.effect]);
+    for (const g of GRAINS) { const n = s.grains.filter((x) => x === g.id).length; if (n) rows.push([`${g.name} bands ×${n}`, g.effect]); }
+    for (const id of Object.values(s.dialects)) { const d = DIALECTS.find((x) => x.id === id); if (d) rows.push([d.name, d.effect]); }
     for (const id of s.relics) { const x = site(id); if (x) rows.push([x.relic, x.effect]); }
     if (s.heirloom && !s.relics.includes(s.heirloom)) { const x = site(s.heirloom); if (x) rows.push([`${x.relic} (heirloom)`, x.effect]); }
     for (const id of s.residents) { const r = RESIDENTS.find((x) => x.id === id); if (r) rows.push([r.name, r.effect]); }
