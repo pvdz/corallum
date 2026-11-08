@@ -25,6 +25,8 @@ body { font-family: var(--text); -webkit-font-smoothing: antialiased; touch-acti
   font-size: clamp(28px, 6vw, 64px); color: #f3fbff;
   text-shadow: 0 0 18px rgba(159, 246, 255, 0.55), 0 0 60px rgba(120, 200, 255, 0.25);
 }
+/* A narrow phone: the widely spaced title would reach under the corner buttons, so it starts below them. */
+@media (max-width: 360px) { html #title { top: max(58px, env(safe-area-inset-top)); } }
 #title p { margin: 0.6em 0 0; font-family: var(--display); font-style: italic; color: var(--ink-dim); font-size: clamp(13px, 1.6vw, 18px); letter-spacing: 0.08em; padding: 0 16px; text-wrap: balance; }
 /* Reduced motion: no movement; the title cards keep their fade, without which they never appear. */
 @media (prefers-reduced-motion: reduce) { *:not(#zone-title):not(#milestone):not(#whisper):not(#journal-note) { animation: none !important; transition: none !important; } }
