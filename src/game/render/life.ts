@@ -984,7 +984,7 @@ export function createLife(seed: number) {
       }
     } else {
       // Legs, scuttling in waves.
-      ctx.strokeStyle = 'rgba(200,180,170,0.8)';
+      ctx.strokeStyle = 'rgba(170,154,160,0.8)';
       ctx.lineWidth = 0.8 * s;
       for (let k = 0; k < 7; k++) {
         const lx = -8 * s + k * 2.6 * s, ph = Math.sin(t * 8 * walk + k);
@@ -1001,9 +1001,9 @@ export function createLife(seed: number) {
       ctx.lineTo(-10.5 * s, -0.4 * s);
       ctx.closePath();
       const g = ctx.createLinearGradient(0, -5.6 * s, 0, 0);
-      g.addColorStop(0, '#d2c2ba');
-      g.addColorStop(0.6, '#b2a29a');
-      g.addColorStop(1, '#8c7c76');
+      g.addColorStop(0, '#b4a6aa');
+      g.addColorStop(0.6, '#93868c');
+      g.addColorStop(1, '#6c6068');
       ctx.fillStyle = g;
       ctx.fill();
       ctx.save();
@@ -1017,8 +1017,18 @@ export function createLife(seed: number) {
         ctx.quadraticCurveTo(px + 0.9 * s, -3 * s, px - 0.2 * s, 0);
       }
       ctx.stroke();
+      // Each plate's leading rim catches the light: the armour overlaps, front over back.
+      ctx.strokeStyle = 'rgba(214,204,212,0.35)';
+      ctx.lineWidth = 0.5 * s;
+      ctx.beginPath();
+      for (let k = 1; k < 8; k++) {
+        const px = -10.5 * s + k * 2.6 * s - 0.7 * s;
+        ctx.moveTo(px - 0.6 * s, -7 * s);
+        ctx.quadraticCurveTo(px + 0.9 * s, -3 * s, px - 0.2 * s, 0);
+      }
+      ctx.stroke();
       // A sheen along the crest.
-      ctx.strokeStyle = 'rgba(245,235,228,0.35)';
+      ctx.strokeStyle = 'rgba(220,214,222,0.3)';
       ctx.lineWidth = 1.1 * s;
       ctx.beginPath();
       ctx.moveTo(-7 * s, -4.2 * s);
@@ -1026,7 +1036,7 @@ export function createLife(seed: number) {
       ctx.stroke();
       ctx.restore();
       // The tail fan behind.
-      ctx.fillStyle = '#a89890';
+      ctx.fillStyle = '#8e8088';
       ctx.beginPath();
       ctx.moveTo(9.6 * s, -1 * s);
       ctx.lineTo(13 * s, -2 * s);
@@ -1034,11 +1044,11 @@ export function createLife(seed: number) {
       ctx.closePath();
       ctx.fill();
       // Head with antennae, leading the way (to the left).
-      ctx.fillStyle = '#a89890';
+      ctx.fillStyle = '#8e8088';
       ctx.beginPath();
       ctx.ellipse(-11 * s, -2.5 * s, 2.6 * s, 2 * s, 0, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = 'rgba(200,180,170,0.7)';
+      ctx.strokeStyle = 'rgba(170,154,160,0.7)';
       ctx.beginPath();
       ctx.moveTo(-13 * s, -3 * s);
       ctx.quadraticCurveTo(-17 * s, -7 * s, -20 * s, -6 * s + Math.sin(t * 2) * s);
