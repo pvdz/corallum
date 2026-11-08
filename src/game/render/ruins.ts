@@ -73,6 +73,8 @@ export function createRuins(seed: number) {
     h: number, style: RuinStyle): void {
     const L = style.layers[d]!;
     const step = Math.max(6, h / 70);
+    // The loops below walk down the frame in steps of the stone's scale: none to walk without one.
+    if (!(ppm > 0) || !Number.isFinite(topY) || !(h > 0)) return;
     const fill = ctx.createLinearGradient(0, 0, 0, h);
     fill.addColorStop(0, L.top);
     fill.addColorStop(1, L.bottom);

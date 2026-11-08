@@ -821,6 +821,9 @@ function resize(): void {
   dpr = sharp.get() && !autoLowRes ? Math.min(window.devicePixelRatio || 1, 2) : 1;
   const w = Math.round(window.innerWidth * dpr);
   const h = Math.round(window.innerHeight * dpr);
+  // No area at all (a collapsed frame, a window shrunk to nothing): the scenes keep the size they
+  // had; their sizes are fractions of the frame, and loops stepping by them would never end.
+  if (w < 2 || h < 2) return;
   const r = panel.element.getBoundingClientRect();
   const side = r.left > window.innerWidth * 0.3;
   // A phone sheet drawn up tall covers the reef for a while; the scene keeps its usual framing.
