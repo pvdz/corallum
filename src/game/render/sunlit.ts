@@ -831,7 +831,7 @@ export function createSunlitScene(seed: number): Scene {
     }
   }
 
-  /** Seahorses holding on to the seagrass by their tails, swaying with the blades (3+ meadows). */
+  /** Seahorses holding on to the seagrass (or a daughter colony grown there) by their tails, swaying with the blades (3+ meadows). */
   function drawSeahorses(ctx: CanvasRenderingContext2D, t: number, meadows: number): void {
     if (meadows < 3) return;
     const s = scale() * 1.9;
@@ -2215,7 +2215,6 @@ export function createSunlitScene(seed: number): Scene {
       shoals.drawBack(ctx, focus, reef, L, v, t, '#5d7d96');
       drawFloor(ctx, t);
       drawMeadows(ctx, t, v.meadows);
-      drawSeahorses(ctx, t, v.meadows);
       // The turtle let sleep in the branches (a moment) spends the night there instead.
       const turtleRests = v.moments.turtle === 'a' && night > 0.5;
       if (!turtleRests) drawTurtle(ctx, t, v.meadows);
@@ -2251,6 +2250,8 @@ export function createSunlitScene(seed: number): Scene {
       drawDaughters(ctx, v.polyps, (u) => [focus.x - focus.w * 0.1 + u * focus.w * 1.2, floorY(u) + 2 * scale()], scale() * 1.2, t,
         { branch: '#c0703e', tip: '#e8a060', polyp: 'rgba(255,240,190,0.95)',
           alt: { branch: '#8a5bb0', tip: '#b88ad8', polyp: 'rgba(240,220,255,0.95)' } }, larvaSeed, v.nurseries);
+      // Seahorses after the daughter colonies: where one has grown at their place they hold on to it.
+      drawSeahorses(ctx, t, v.meadows);
       drawTerrace(ctx, L.cx, L.unit, v.works.terrace, scale(), (x) => floorY(Math.min(1, Math.max(0, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2)))), t);
       drawClam(ctx, t);
       drawRim(ctx, focus, v.works.rim, scale() * 1.6, floorY);
