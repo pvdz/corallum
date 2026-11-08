@@ -290,15 +290,30 @@ export function createLife(seed: number) {
       const x = st.cx - st.w * 0.6 + u * st.w * 1.2;
       const y = st.baseY + (2 + ((i * 0.37) % 1) * 14) * st.s;
       if (first) { spot('star-march', x, y, 40 * s); first = false; }
-      ctx.lineWidth = 1.3 * s;
+      // Five arms rowing over the silt, thick at the disc and thin at the tips, round a small disc.
       for (let k = 0; k < 5; k++) {
         const a = k * (Math.PI * 2 / 5) + t * 0.8 + i;
         const bend = Math.sin(t * 3 + k + i) * 0.5;
+        const mx = x + Math.cos(a) * 4 * s, my = y + Math.sin(a) * 2 * s;
+        ctx.lineWidth = 1.5 * s;
         ctx.beginPath();
         ctx.moveTo(x, y);
-        ctx.quadraticCurveTo(x + Math.cos(a) * 4 * s, y + Math.sin(a) * 2 * s, x + Math.cos(a + bend) * 8 * s, y + Math.sin(a + bend) * 3.5 * s);
+        ctx.lineTo(mx, my);
+        ctx.stroke();
+        ctx.lineWidth = 0.8 * s;
+        ctx.beginPath();
+        ctx.moveTo(mx, my);
+        ctx.quadraticCurveTo(x + Math.cos(a + bend * 0.5) * 6.5 * s, y + Math.sin(a + bend * 0.5) * 2.9 * s, x + Math.cos(a + bend) * 8.5 * s, y + Math.sin(a + bend) * 3.6 * s);
         ctx.stroke();
       }
+      ctx.fillStyle = 'rgba(196,148,170,0.95)';
+      ctx.beginPath();
+      ctx.ellipse(x, y, 2.4 * s, 1.3 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(120,70,100,0.6)';
+      ctx.beginPath();
+      ctx.ellipse(x, y, 0.9 * s, 0.5 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
     }
     ctx.restore();
   }
