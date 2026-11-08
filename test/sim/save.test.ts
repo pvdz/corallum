@@ -76,3 +76,24 @@ test('jobs load within the shoals at home: those away on a trip come back into t
   const home = Object.values(loaded.jobs).reduce((a, b) => a + b, 0);
   assert.ok(home + 10 <= n, `jobs ${home} + 10 away must fit ${n} shoals`);
 });
+
+// Saves written by the game of 2026-10-29 (commit 2847364, its own bot at 600, 9000 and 22000 s):
+// a player's reef from then must load, keep growing and stay finite through a long time away.
+test('saves from an older version load and play on', async () => {
+  const { readdirSync, readFileSync } = await import('node:fs');
+  const { advance, rates } = await import('../../src/game/sim/economy.ts');
+  const dir = new URL('./old-saves/', import.meta.url);
+  const nonFinite = (o: unknown, path = ''): string[] =>
+    typeof o === 'number' ? (Number.isFinite(o) ? [] : [path])
+      : o && typeof o === 'object' ? Object.entries(o).flatMap(([k, v]) => nonFinite(v, `${path}.${k}`)) : [];
+  const files = readdirSync(dir).filter((f) => f.endsWith('.json'));
+  assert.equal(files.length, 3);
+  for (const f of files) {
+    const loaded = deserialize(readFileSync(new URL(f, dir), 'utf8'));
+    assert.ok(loaded, `${f} loads`);
+    const s = loaded.state, h0 = s.height, earned0 = s.earned.calcite;
+    advance(s, 8 * 3600);
+    assert.deepEqual([...nonFinite(s), ...nonFinite(rates(s))], [], `${f}: every number finite`);
+    assert.ok(s.height >= h0 && s.earned.calcite > earned0, `${f}: the reef keeps growing`);
+  }
+});
