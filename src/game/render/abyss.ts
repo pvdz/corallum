@@ -850,8 +850,8 @@ export function createAbyssScene(seed: number): Scene {
       const L = layout(v);
       if (v.shoals > 0) shoals.drawBack(ctx, focus, reef, L, v, t);
       // A new reef's first seconds: the larva that will become it drifts down and settles.
-      if (v.age < 9 && v.polyps === 0) {
-        const k = Math.min(1, v.age / 7), s = scale();
+      if (v.age < 6.5 && v.polyps === 0) {
+        const k = Math.min(1, v.age / 5), s = scale();
         const x = L.cx + Math.sin(v.age * 1.3) * 30 * s * (1 - k), y = focus.y + focus.h * 0.1 + (L.baseY - focus.y - focus.h * 0.1) * (1 - (1 - k) ** 2);
         ctx.save();
         ctx.globalCompositeOperation = 'lighter';
@@ -859,12 +859,12 @@ export function createAbyssScene(seed: number): Scene {
         glow(ctx, x, y, 4 * s, '255,235,240', 0.95);
         ctx.restore();
       }
-      // The first polyp is the larva come down: not there before it lands (at 7 s), then opening
-      // over two seconds where it touched the stone.
-      const arriving = v.polyps === 0 && v.age < 9;
-      if (!arriving || v.age >= 7) {
+      // The first polyp is the larva come down: not there before it lands (at 5 s), then opening
+      // over a second and a half where it touched the stone (the opening story waits for it).
+      const arriving = v.polyps === 0 && v.age < 6.5;
+      if (!arriving || v.age >= 5) {
         ctx.save();
-        if (arriving) ctx.globalAlpha = Math.min(1, (v.age - 7) / 2);
+        if (arriving) ctx.globalAlpha = Math.min(1, (v.age - 5) / 1.5);
         reef.draw(ctx, L, v, t);
         ctx.restore();
       }

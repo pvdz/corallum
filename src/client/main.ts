@@ -568,8 +568,9 @@ if (frozenT === null && botT === null) {
     setTimeout(() => showJournalNote(UI.featsGained(already.length), UI.featsEarned(already.length)), 1500);
   }
 }
-// A brand-new reef: let the title and the dark water show before the first band's story.
-if (state.bands.length === 0 && state.meta.spawnings === 0 && frozenT === null) panel.holdStories(3500);
+// A brand-new reef: let the title and the dark water show, and the larva come down and open into
+// the first polyp (by 6.5 s, render/abyss.ts), before the first band's story.
+if (state.bands.length === 0 && state.meta.spawnings === 0 && frozenT === null) panel.holdStories(6800);
 
 /** View mode switched on by the release (on a phone), switched off again when the ending closes. */
 let releaseView = false;
