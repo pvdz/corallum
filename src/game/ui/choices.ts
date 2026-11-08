@@ -11,6 +11,7 @@ import { BOON_TEXT } from '../content/lineage.ts';
 import { FIGURES, SKY, WISH } from '../content/sky.ts';
 import { QUESTION, type Question } from '../content/ossel.ts';
 import { SISTER } from '../content/sister.ts';
+import { UI } from '../content/ui.ts';
 import { wishOpen, lightOpen, osselAsks, currentEncounter, grainsWaiting, sportOpen, boonsOffered, figureOpen, skyOpen, currentRiddle, riddleAgain, currentSignal, forkOpen, othersCap, othersSpawning, strainOpen } from '../sim/economy.ts';
 import type { GameState } from '../sim/state.ts';
 import { button, el } from './dom.ts';
@@ -166,7 +167,7 @@ export function createChoices(grow: HTMLElement, hooks: PanelHooks, setShown: (e
     b.style.setProperty('--lamp', `rgb(${rgb})`);
     // Each lamp carries its key, so the pattern does not depend on telling the colours apart.
     b.textContent = ['7', '8', '9', '0'][i]!;
-    b.setAttribute('aria-label', `Lamp ${i + 1}`);
+    b.setAttribute('aria-label', UI.lampAria(i + 1));
     signalLamps.append(b);
     return b;
   });

@@ -10,6 +10,22 @@ export const AWAY_PREP = {
   nothing: 'nothing to change: the reef is ready',
 } as const;
 
+/** The away summary's rows: what was gained, and the stores filling. */
+export const AWAY_ROWS = {
+  calcite: 'Calcite',
+  glow: 'Glow',
+  rose: 'Rose',
+  roamed: 'Roamed',
+  roamedOnce: 'the shoals came home from the dark',
+  roamedTimes: (n: number) => `${n} times`,
+  shards: 'Shards',
+  shardsFound: (n: number) => `${n} found`,
+  full: 'Full',
+  /** `after`: how long the stores took to fill ('' when it was within the first minute). */
+  fullText: (after: string) => `the stores filled${after ? ` after ${after}` : ''}; the rest dissolved back into the sea`,
+  latticeHint: 'A denser lattice holds more while you are away.',
+} as const;
+
 /** The away summary's lines about the half-hour cycles that passed. */
 export const AWAY_CYCLES = {
   heat: 'Warm water',

@@ -10,6 +10,18 @@ export function memoryCount(n: number): string {
 export const UI = {
   /** The badge on the calcite upgrade that pays back soonest (and its quick buy's mark, ✦). */
   bestBuy: 'best buy',
+  /** The panel, named for screen readers. */
+  panelAria: 'Reef',
+  pinTitle: 'Pin: show its wait in the tab title',
+  pinAria: (name: string) => `Pin ${name}`,
+  /** The Copy save button once the save is on the clipboard. */
+  copied: 'Copied ✓',
+  /** A reading waiting on murmurs while no shoal scouts. */
+  scoutHint: 'set shoals to scout',
+  /** A lineage trait bought to its last level. */
+  traitComplete: 'Complete',
+  /** The shoals' signal lamps, named by number for screen readers. */
+  lampAria: (n: number) => `Lamp ${n}`,
   truceKicker: 'The truce',
   raspAria: 'Rasp admitted to graze',
   raspFewer: 'Fewer Rasp grazing',

@@ -21,7 +21,7 @@ import { button, el, quietRepeatedWrites } from './dom.ts';
 import { createChoices } from './choices.ts';
 import { drawCity, drawTablet, drawSeaChart, SEAMOUNT_TINT, drawRings } from './drawings.ts';
 import { FEATS } from '../content/feats.ts';
-import { AWAY_CYCLES, AWAY_PREP, DAYS, DREAM, NOTIFY, SWELL, TODAY, WELCOME, intruderOf } from '../content/events.ts';
+import { AWAY_CYCLES, AWAY_PREP, AWAY_ROWS, DAYS, DREAM, NOTIFY, SWELL, TODAY, WELCOME, intruderOf } from '../content/events.ts';
 import { WATER, WATERS } from '../content/waters.ts';
 import { REQUEST } from '../content/requests.ts';
 import { WORKS, WORK_TEXT, type WorkId } from '../content/works.ts';
@@ -161,7 +161,7 @@ function truceStory(m: Meeting, c: Choice): Story {
 export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   quietRepeatedWrites();
   const panel = el('aside', 'panel');
-  panel.setAttribute('aria-label', 'Reef');
+  panel.setAttribute('aria-label', UI.panelAria);
 
   // ---------- Stocks ----------
   const stocks = el('div', 'stocks');
@@ -674,8 +674,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     // A pin: this card's wait shows in the tab title.
     const pin = button('pin', '', () => { pinned = pinned === u.id ? '' : u.id; for (const [id, c] of cards) c.root.classList.toggle('pinned', id === pinned); });
     pin.append(pinIcon());
-    pin.title = 'Pin: show its wait in the tab title';
-    pin.setAttribute('aria-label', `Pin ${u.name}`);
+    pin.title = UI.pinTitle;
+    pin.setAttribute('aria-label', UI.pinAria(u.name));
     title.append(pin);
     head.append(title, level);
     const flavour = el('p', 'flavour', u.flavour);
@@ -1431,7 +1431,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const text = hooks.exportSave();
     try {
       await navigator.clipboard.writeText(text);
-      exportBtn.textContent = 'Copied ✓';
+      exportBtn.textContent = UI.copied;
     } catch {
       window.prompt(UI.copyPrompt, text);
     }
@@ -2651,7 +2651,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         readingCard.classList.toggle('ready', ok);
         if (ok) setEta(readingEta, 0);
         else if (etaTurn === UPGRADES.length || !readingEta.textContent) setEta(readingEta, timeUntil(s, 'murmurs', rc), 'murmurs');
-        if (!ok && s.jobs.scout === 0) readingEta.textContent = 'set shoals to scout';
+        if (!ok && s.jobs.scout === 0) readingEta.textContent = UI.scoutHint;
       }
 
       // New bands and readings open in the reader and join the list.
@@ -2756,7 +2756,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           c.root.classList.toggle('maxed', traitMaxed(s, tr.id));
           c.level.textContent = tr.max === Infinity ? (lv ? `×${lv}` : '') : `${lv}/${tr.max}`;
           if (traitMaxed(s, tr.id)) {
-            c.cost.textContent = 'Complete';
+            c.cost.textContent = UI.traitComplete;
             c.btn.disabled = true;
             c.root.classList.add('maxed');
             c.root.classList.remove('ready');
@@ -2820,20 +2820,20 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       awayText.textContent = (gained.dreamt ? UI.dreamText : UI.awayText)(duration(seconds));
       awayList.innerHTML = '';
       const row = (term: string, value: string) => awayList.append(el('dt', '', term), el('dd', '', value));
-      row('Calcite', `+${num(gained.calcite)}`);
-      if (gained.glow > 0.5) row('Glow', `+${num(gained.glow)}`);
-      if (gained.metres > 0.05) row('Rose', metres(gained.metres));
+      row(AWAY_ROWS.calcite, `+${num(gained.calcite)}`);
+      if (gained.glow > 0.5) row(AWAY_ROWS.glow, `+${num(gained.glow)}`);
+      if (gained.metres > 0.05) row(AWAY_ROWS.rose, metres(gained.metres));
       const titles = gained.bands.map((id) => BANDS.find((b) => b.id === id)?.title).filter((x): x is string => !!x);
       if (titles.length) row(titles.length === 1 ? UI.newBand : UI.newBands, titles.map((t) => `“${t}”`).join(', '));
       if (gained.relics?.length) row(UI.shoalsBrought, gained.relics.join(', ').toLowerCase());
-      if (gained.roams) row('Roamed', gained.roams === 1 ? 'the shoals came home from the dark' : `${gained.roams} times`);
-      if (gained.shards) row('Shards', `${gained.shards} found`);
+      if (gained.roams) row(AWAY_ROWS.roamed, gained.roams === 1 ? AWAY_ROWS.roamedOnce : AWAY_ROWS.roamedTimes(gained.roams));
+      if (gained.shards) row(AWAY_ROWS.shards, AWAY_ROWS.shardsFound(gained.shards));
       if (gained.heat) row(AWAY_CYCLES.heat, gained.heat);
       if (gained.risings) row(AWAY_CYCLES.rising, gained.risings);
       if (gained.old) row(AWAY_CYCLES.old, gained.old);
       if (gained.full) {
-        row('Full', `the stores filled${gained.fullAfter !== null && gained.fullAfter > 60 ? ` after ${duration(gained.fullAfter)}` : ''}; the rest dissolved back into the sea`);
-        awayHint.textContent = 'A denser lattice holds more while you are away.';
+        row(AWAY_ROWS.full, AWAY_ROWS.fullText(gained.fullAfter !== null && gained.fullAfter > 60 ? duration(gained.fullAfter) : ''));
+        awayHint.textContent = AWAY_ROWS.latticeHint;
       } else awayHint.textContent = '';
       welcomeBox.innerHTML = '';
       welcomeBox.hidden = !gifts?.length;
