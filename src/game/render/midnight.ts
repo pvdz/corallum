@@ -499,7 +499,6 @@ export function createMidnightScene(seed: number): Scene {
     ctx.translate(x, y);
     ctx.scale(dir, 1);
     ctx.rotate(-Math.PI / 2 + 0.3);
-    // The cloak: a web between the arms, wider when it opens.
     // The cloak: a web stretched between eight arms, its edge scalloped between the tips, wider
     // when it opens. Kept dark: it is a deep wine-black animal (the bloom would make it scarlet).
     const tips: [number, number][] = [];
