@@ -2246,7 +2246,6 @@ export function createSunlitScene(seed: number): Scene {
       drawAnemone(ctx, t);
       if (night < 0.5) drawCuttlefish(ctx, t);
       if (night < 0.5) drawReefShark(ctx, t);
-      drawDugong(ctx, t, v.meadows);
       if (v.shell) drawShell(ctx, t, v.shell.x, v.shell.id);
       if (night < 0.5) drawSeaSnake(ctx, t);
       if (night < 0.5) drawBarracuda(ctx, t);
@@ -2258,6 +2257,8 @@ export function createSunlitScene(seed: number): Scene {
       // Seahorses after the daughter colonies: where one has grown at their place they hold on to it.
       drawSeahorses(ctx, t, v.meadows);
       drawTerrace(ctx, L.cx, L.unit, v.works.terrace, scale(), (x) => floorY(Math.min(1, Math.max(0, (x - focus.x + focus.w * 0.1) / (focus.w * 1.2)))), t);
+      // The dugong after the terrace: it wanders the whole floor, and behind the blocks it was hidden.
+      drawDugong(ctx, t, v.meadows);
       drawClam(ctx, t);
       drawRim(ctx, focus, v.works.rim, scale() * 1.6, floorY);
       {
