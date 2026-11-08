@@ -3,7 +3,7 @@
 // the hall (still lit), a grooved well-stone, a mooring ring, a carved lintel and one Rasp beak.
 
 import type { SiteId } from '../content/expeditions.ts';
-import { glow } from './draw.ts';
+import { glow, roundedRect } from './draw.ts';
 import type { Reef, ReefLayout } from './reef.ts';
 
 /** Fixed places on the lower stone, one per relic, as fractions of the grown height. */
@@ -66,11 +66,11 @@ export function drawRelics(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLay
       ctx.rotate(0.4);
       ctx.fillStyle = '#b8b0a0';
       ctx.beginPath();
-      ctx.roundRect(-5 * s, -3.4 * s, 10 * s, 7 * s, 2.6 * s);
+      roundedRect(ctx, -5 * s, -3.4 * s, 10 * s, 7 * s, 2.6 * s);
       ctx.fill();
       ctx.fillStyle = '#ece6d8';
       ctx.beginPath();
-      ctx.roundRect(-5 * s, -3.6 * s, 10 * s, 5.4 * s, 2.6 * s);
+      roundedRect(ctx, -5 * s, -3.6 * s, 10 * s, 5.4 * s, 2.6 * s);
       ctx.fill();
       ctx.fillStyle = 'rgba(255,255,255,0.6)';
       ctx.beginPath();

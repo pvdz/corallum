@@ -33,6 +33,17 @@ export function glow(ctx: CanvasRenderingContext2D, x: number, y: number, r: num
   ctx.globalAlpha = prev;
 }
 
+/** A rounded rectangle added to the current path (ctx.roundRect is missing before Safari 16 and Firefox 112). */
+export function roundedRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  const k = Math.min(r, w / 2, h / 2);
+  ctx.moveTo(x + k, y);
+  ctx.arcTo(x + w, y, x + w, y + h, k);
+  ctx.arcTo(x + w, y + h, x, y + h, k);
+  ctx.arcTo(x, y + h, x, y, k);
+  ctx.arcTo(x, y, x + w, y, k);
+  ctx.closePath();
+}
+
 /** A speck of marine snow: a square is enough at 1×; zoomed in, it is round. */
 export function speck(ctx: CanvasRenderingContext2D, x: number, y: number, d: number): void {
   if (zoom.k === 1) {
