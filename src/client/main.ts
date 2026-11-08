@@ -2476,7 +2476,7 @@ function frameBody(now: number): void {
     }
   }
   const fe = currentFeast(state);
-  if (fe) drawFeast(ctx, fe, state.t - fe.start, tNow, focusNow, dpr, feastPay(state));
+  if (fe) drawFeast(ctx, fe, state.t - fe.start, tNow, focusNow, dpr, feastPay(state), !photoPending);
   const tg = currentTangle(state);
   // Under the full moon the other reefs spawn: their bundles rise through the water below the Breach.
   if (actAt(state.height) <= 4 && state.height >= 1 && moonFull(state.t)) {
@@ -2484,11 +2484,11 @@ function frameBody(now: number): void {
     drawOthersSpawn(ctx, focusNow, tNow, strength, actAt(state.height) <= 2 ? 1 : actAt(state.height) === 3 ? 0.5 : 0, dpr);
   }
   const sy = currentStray(state);
-  if (sy) drawStray(ctx, sy, STRAY.life, tNow, focusNow, dpr);
+  if (sy) drawStray(ctx, sy, STRAY.life, tNow, focusNow, dpr, !photoPending);
   const fr = currentFragment(state);
-  if (fr) drawFragment(ctx, fr, FRAGMENT.life, tNow, focusNow, dpr);
-  if (tg && actAt(state.height) === 1) drawPinned(ctx, tg, TANGLE.life, tNow, focusNow, dpr);
-  else if (tg && actAt(state.height) !== 5) drawTangle(ctx, tg, TANGLE.life, tNow, focusNow, dpr);
+  if (fr) drawFragment(ctx, fr, FRAGMENT.life, tNow, focusNow, dpr, !photoPending);
+  if (tg && actAt(state.height) === 1) drawPinned(ctx, tg, TANGLE.life, tNow, focusNow, dpr, !photoPending);
+  else if (tg && actAt(state.height) !== 5) drawTangle(ctx, tg, TANGLE.life, tNow, focusNow, dpr, !photoPending);
   if (!photoPending) {
     taps.draw(ctx, tNow, scene.crownAt, dpr, (x, y) => actAt(state.height) <= 2 || !!scene.darkAt?.(x, y));
     drawLucky(tNow);
