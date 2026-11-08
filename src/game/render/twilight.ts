@@ -1880,18 +1880,27 @@ export function createTwilightScene(seed: number): Scene {
     const s = scale();
     const a = Math.min(1, (night - 0.5) * 4);
     const x = (u: number) => focus.x - focus.w * 0.1 + u * focus.w * 1.2;
-    let first = true;
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     for (let i = 0; i < 14; i++) {
       const u0 = 0.08 + ((i * 0.618) % 1) * 0.84;
       const rise = (t * 0.05 + i * 0.29) % 1;
       const cx0 = x(u0), cy0 = slopeY(u0) - rise * focus.h * 0.45;
-      if (first) { spot('fireworms', cx0, cy0, 50 * s); first = false; }
+      // Each ring bright enough to see can be tapped (the first one alone sat at the far left,
+      // often off the scene or under the panel).
+      if (Math.sin(rise * Math.PI) > 0.6) spot('fireworms', cx0, cy0, 26 * s);
       const r = (10 + 5 * Math.sin(i)) * s;
+      const b = a * Math.sin(rise * Math.PI);
+      // The worm's ring of light (a yellow-green, which stays green over the blue water where a
+      // pure green turned teal), and the spark of each worm chasing round it, brighter at its head.
+      ctx.strokeStyle = `rgba(170,255,120,${(0.3 * b).toFixed(3)})`;
+      ctx.lineWidth = 1.4 * s;
+      ctx.beginPath();
+      ctx.ellipse(cx0, cy0, r, r * 0.6, 0, 0, Math.PI * 2);
+      ctx.stroke();
       for (let k = 0; k < 8; k++) {
         const ang = t * 4 + i + k * (Math.PI / 4);
-        glow(ctx, cx0 + Math.cos(ang) * r, cy0 + Math.sin(ang) * r * 0.6, 5 * s, '120,255,150', 0.8 * a * Math.sin(rise * Math.PI) * (0.4 + 0.6 * (k / 8)));
+        glow(ctx, cx0 + Math.cos(ang) * r, cy0 + Math.sin(ang) * r * 0.6, 6.5 * s, '170,255,120', b * (0.35 + 0.65 * (k / 8)));
       }
     }
     ctx.restore();
