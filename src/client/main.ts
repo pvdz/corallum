@@ -1561,9 +1561,15 @@ function floatText(x: number, y: number, text: string, cls = ''): void {
   // A haul line rising through a milestone's words (they span the scene): far enough below them
   // that its rise (~45 px) stays clear, near the tap where a creature's label leaves the numbers
   // room; above them only if below runs off the scene.
-  if (cls && now < milestoneUntil) {
-    const band = milestoneBox.getBoundingClientRect();
-    if (y + 15 > band.top - 4 && y - 60 < band.bottom + 4) y = band.bottom + 66 <= (focusNow.y + focusNow.h) / dpr - 20 ? band.bottom + 66 : band.top - 24;
+  // Ossel's words showing are such a band too.
+  if (cls) {
+    const bands: DOMRect[] = [];
+    if (now < milestoneUntil) bands.push(milestoneBox.getBoundingClientRect());
+    const say = whisper.querySelector('q');
+    if (say && Number(getComputedStyle(whisper).opacity) > 0.15) bands.push(whisper.getBoundingClientRect());
+    for (const band of bands) {
+      if (band.height > 0 && y + 15 > band.top - 4 && y - 60 < band.bottom + 4) y = band.bottom + 66 <= (focusNow.y + focusNow.h) / dpr - 20 ? band.bottom + 66 : band.top - 24;
+    }
   }
   for (let i = 0; i < 4 && recentFloats.some((r) => Math.abs(r.x - x) < Math.max(140, r.w / 2 + 40) && Math.abs(r.y - y) < 30); i++) y += 32;
   const rec = { x, y, t: now, w: 0 };
@@ -1585,6 +1591,9 @@ function floatText(x: number, y: number, text: string, cls = ''): void {
   const right = focusNow.w / dpr;
   // A line wider than the scene (a phone on its side, a long haul) a size smaller.
   if (cls && f.offsetWidth > right - 56) f.style.fontSize = '17px';
+  // Still wider (a 320 px phone): smaller again, and at last in two lines across the scene.
+  if (cls && f.offsetWidth > right - 56) f.style.fontSize = '14px';
+  if (cls && f.offsetWidth > right - 56) { f.style.whiteSpace = 'normal'; f.style.width = `${right - 64}px`; f.style.textAlign = 'center'; }
   const half = f.offsetWidth / 2;
   rec.w = f.offsetWidth;
   if (half > 0 && right > 2 * half + 56) {
