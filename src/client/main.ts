@@ -2023,8 +2023,9 @@ photoBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidde
 let photoPending: (() => void) | null = null;
 /** ?nohints: every frame drawn as for a photo (the README's and the link preview's pictures). */
 const noHints = params.has('nohints');
-/** Whether this frame shows the play's own marks: not in a photo, not with ?nohints. */
-function hintsShown(): boolean { return !photoPending && !noHints; }
+/** Whether this frame shows the play's own marks: not in a photo, not with ?nohints, and not while
+ *  the spawn is released (that plays out on its own; nothing there is to be touched). */
+function hintsShown(): boolean { return !photoPending && !noHints && !document.documentElement.classList.contains('releasing'); }
 photoBtn.addEventListener('click', () => { photoPending = takePhoto; });
 function takePhoto(): void {
   // A copy of the scene with a small caption in the corner: name, height, zone.
