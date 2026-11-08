@@ -2557,7 +2557,8 @@ function frameBody(now: number): void {
   }
   replay.hidden = !ended(state);
   title.classList.toggle('faded', state.levels.polyp > 0 || state.t > 25);
-  hint.classList.toggle('show', state.meta.spawnings === 0 && state.earned.calcite < 40 && reader() && state.t > 2);
+  // Not while the opening story is still held back: the hint would be covered as it was taken up.
+  hint.classList.toggle('show', state.meta.spawnings === 0 && state.earned.calcite < 40 && reader() && !panel.storiesWaiting() && state.t > 2);
   if (now - lastSave > 5000) { save(); lastSave = now; }
   // The tab title carries the reef's height, so a background tab still shows progress.
   if (now - lastTitle > 1000) {

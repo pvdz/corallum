@@ -2915,6 +2915,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       };
       setTimeout(release, ms);
     },
+    /** Whether a story is queued to open (held back, or behind the one showing). */
+    storiesWaiting(): boolean {
+      return queue.length > 0;
+    },
     /** Whether a choice waits in the Grow tab that the player has not folded for later. */
     choiceWaiting(): boolean {
       return [...grow.querySelectorAll<HTMLElement>(':scope > section:not([hidden]):not(.later)')].some((sec) => !!sec.querySelector('.truce-kicker'));
