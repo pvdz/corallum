@@ -1633,8 +1633,11 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     shapesList.innerHTML = '';
     for (const [k, v] of rows) shapesList.append(el('dt', '', k), el('dd', '', v));
   }
+  // A replay started here on a phone: the sheet steps down to its low height, so the reef has the
+  // screen (it is a sheet on a phone only; the side panel stays).
+  const watchLapse = () => { if (matchMedia('(max-width: 559px), (max-width: 799px) and (min-height: 501px)').matches) setSheet('low', false); };
   // The whole climb replayed (after the Silt Floor: before it, the zone's replay is the whole climb).
-  const wholeLapse = button('plain', UI.timelapseWhole + (matchMedia('(pointer: coarse) and (hover: none)').matches ? '' : UI.timelapseWholeKey), () => hooks.timelapse(true));
+  const wholeLapse = button('plain', UI.timelapseWhole + (matchMedia('(pointer: coarse) and (hover: none)').matches ? '' : UI.timelapseWholeKey), () => { watchLapse(); hooks.timelapse(true); });
   reefPage.append(
     nameRow,
     paletteBox,
@@ -1643,7 +1646,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     group(UI.saves),
     el('p', 'hint', UI.autosave), backupNote, pair(exportBtn, fileBtn), pair(loadFileBtn, importBtn), fileInput,
     group(UI.sound), musicRow, volRow, buzzToggle,
-    group(UI.display), button('plain', UI.timelapse + (matchMedia('(pointer: coarse) and (hover: none)').matches ? '' : UI.timelapseKey), () => hooks.timelapse()),
+    group(UI.display), button('plain', UI.timelapse + (matchMedia('(pointer: coarse) and (hover: none)').matches ? '' : UI.timelapseKey), () => { watchLapse(); hooks.timelapse(); }),
     wholeLapse, glowToggle, sharpToggle, calmToggle, bigToggle, sciToggle, quietToggle, notifyToggle, habitToggle,
     el('p', 'hint keys-hint', UI.keys),
     el('p', 'hint touch-hint sheet-only', UI.touchHint),
@@ -1669,12 +1672,13 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   function sheetNow(): Sheet {
     return panel.classList.contains('tall') ? 'tall' : panel.classList.contains('low') ? 'low' : 'half';
   }
-  function setSheet(to: Sheet): void {
+  /** `remember` false: for now only (a replay asks for the screen; the player's own height is kept). */
+  function setSheet(to: Sheet, remember = true): void {
     panel.classList.toggle('tall', to === 'tall');
     panel.classList.toggle('low', to === 'low');
     grabber.setAttribute('aria-expanded', String(to === 'tall'));
     grabber.setAttribute('aria-label', to === 'tall' ? UI.sheetDown : UI.sheetUp);
-    if (to !== 'tall') try { localStorage.setItem('corallum.sheet', to); } catch { /* private mode */ }
+    if (to !== 'tall' && remember) try { localStorage.setItem('corallum.sheet', to); } catch { /* private mode */ }
   }
   /** Tall, or back down from it to where the player keeps the sheet. */
   function setTall(on: boolean): void {
