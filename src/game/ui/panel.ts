@@ -2319,10 +2319,22 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           // runs out, a turn of the water loses its label before something to act on does.
           const W = almanac.clientWidth || 300;
           const labelOf = (w: string) => w.replace(/^(a|an|the) /, '').split(' (')[0]!;
-          // Where a label really sits: centred on its dot, kept inside the strip.
-          const span = (t: number, w: string): [number, number] => {
-            const cx = (Math.max(0, t) / 1200) * W, wide = labelOf(w).length * 5.8 + 8;
-            const left = Math.min(Math.max(cx - wide / 2, 0), W - wide);
+          // Dots a few pixels apart (things due within a minute or so of each other) share one
+          // centre for their labels, so the labels stacked under them line up instead of each
+          // sitting a little off the one above.
+          const dotX = marks.map(([t]) => (Math.max(0, t) / 1200) * W);
+          const anchor = dotX.slice();
+          for (let i = 0; i < marks.length;) {
+            let j = i + 1;
+            while (j < marks.length && dotX[j]! - dotX[j - 1]! < 14) j++;
+            const mid = dotX.slice(i, j).reduce((a, x) => a + x, 0) / (j - i);
+            for (let k = i; k < j; k++) anchor[k] = mid;
+            i = j;
+          }
+          // Where a label really sits: centred on its group's centre, kept inside the strip.
+          const span = (i: number): [number, number] => {
+            const wide = labelOf(marks[i]![1]).length * 5.8 + 8;
+            const left = Math.min(Math.max(anchor[i]! - wide / 2, 0), W - wide);
             return [left, left + wide];
           };
           const waterNames = new Set(WATERS.map((x) => x.name.toLowerCase()));
@@ -2330,7 +2342,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           const rows: [number, number][][] = [[], [], []];
           const rowOf = new Map<number, number>();
           for (const i of order) {
-            const [a, b] = span(marks[i]![0], marks[i]![1]);
+            const [a, b] = span(i);
             // No room in any row: the mark keeps its dot and tooltip, without a label.
             const r = rows.findIndex((row) => row.every(([c, d]) => b < c || a > d));
             if (r >= 0) { rows[r]!.push([a, b]); rowOf.set(i, r); }
@@ -2352,11 +2364,12 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
             const lb = row >= 0 ? el('b', '', label) : null;
             if (lb) m.append(lb);
             almanac.append(m);
-            // The dot stays on its time; a label near an end slides inward to keep inside the card.
+            // The dot stays on its time; the label moves to its group's centre, and near an end
+            // slides inward to keep inside the card.
             if (lb) {
-              const bw = lb.offsetWidth;
-              const shift = Math.min(Math.max(cx - bw / 2, 0), W - bw) - (cx - bw / 2);
-              if (shift) lb.style.transform = `translateX(${shift}px)`;
+              const bw = lb.offsetWidth, at = anchor[i]!;
+              const shift = Math.min(Math.max(at - bw / 2, 0), W - bw) - (cx - bw / 2);
+              if (Math.abs(shift) > 0.5) lb.style.transform = `translateX(${shift.toFixed(1)}px)`;
             }
           });
         }
