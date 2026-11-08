@@ -21,6 +21,23 @@ const metNot = (s: GameState, id: string, zones: readonly number[]) =>
 export const WHISPERS: readonly Whisper[] = [
   // Ossel's mistakes, said in passing while they are still believable (content/ossel.ts).
   ...OSSEL_MISTAKES.map((m) => ({ id: `claim-${m.id}`, when: (s: GameState) => s.height >= m.metres && !m.truth(s), text: m.claim })),
+  // A new reef's seamount, said once a few polyps in: what the water here is like, and what to look at.
+  {
+    id: 'sm-warm', when: (s) => s.seamount === 'warm' && actAt(s.height) === 1 && s.levels.polyp >= 4,
+    text: 'Feel the heat off those chimneys? This vent runs hot and sour. It feeds you faster, and it eats your stone faster.',
+  },
+  {
+    id: 'sm-crowded', when: (s) => s.seamount === 'crowded' && actAt(s.height) === 1 && s.levels.polyp >= 4,
+    text: 'All those grey mounds are reefs, under the silt. They still talk a little. The bands will be easy to read here, and the silt falls thick.',
+  },
+  {
+    id: 'sm-lonely', when: (s) => s.seamount === 'lonely' && actAt(s.height) === 1 && s.levels.polyp >= 4,
+    text: 'See the lights, far off on the ridge? Another reef. Too far for either of us. The shoals hardly come out this far.',
+  },
+  {
+    id: 'sm-hungry', when: (s) => s.seamount === 'hungry' && actAt(s.height) === 1 && s.levels.polyp >= 4,
+    text: 'Hardly any snow falls here. Thin water. Your mouths will go hungry; eat what you can.',
+  },
   {
     id: 'two', when: (s) => s.levels.polyp >= 1 && s.levels.polyp <= 3,
     text: 'Good. Now there are two of you eating.',
