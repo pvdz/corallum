@@ -2116,6 +2116,11 @@ window.addEventListener('keydown', (e) => {
     setViewMode(!viewMode);
     return;
   }
+  // Sound on or off, as the corner button does (and remembered the same way).
+  if (e.key.toLowerCase() === 'm') {
+    soundBtn.click();
+    return;
+  }
   if (e.key.toLowerCase() === 'f') {
     eatFeast();
     return;
