@@ -544,6 +544,8 @@ html.big .panel, html.big .reader-card, html.big #whisper, html.big #journal-not
 .signal-lamps.watching .signal-lamp { cursor: default; color: rgba(255,255,255,0.45); }
 .signal-lamps.turn .signal-lamp { border-color: rgba(255,255,255,0.45); box-shadow: 0 0 10px color-mix(in srgb, var(--lamp) 40%, transparent); }
 @keyframes lamp-lit { 0% { background: var(--lamp); box-shadow: 0 0 22px var(--lamp); } 100% { background: color-mix(in srgb, var(--lamp) 22%, transparent); box-shadow: none; } }
+/* Before color-mix (Safari 16.2, Firefox 113) the tinted fill is invalid: each lamp shows its colour in its rim. */
+@supports not (color: color-mix(in srgb, red 50%, transparent)) { .signal-lamp { background: rgba(255, 255, 255, 0.06); border: 2px solid var(--lamp); } }
 .zone-ring { width: 14px; height: 14px; vertical-align: -2px; margin-right: 6px; }
 .shelf[hidden] { display: none; }
 .shelf-row { display: flex; flex-wrap: wrap; gap: 6px; }
