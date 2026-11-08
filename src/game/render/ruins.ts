@@ -160,6 +160,17 @@ export function createRuins(seed: number) {
       ctx.moveTo(sx, sy);
       ctx.quadraticCurveTo(sx + s.side * base * s.len, sy - base * 0.2, sx + s.side * base * s.len * 1.4, sy - base * s.lift * 1.6);
       ctx.stroke();
+      // Round, like the tower: its upper edge catches a little of the light.
+      ctx.save();
+      ctx.strokeStyle = L.rim;
+      ctx.globalAlpha = 0.35;
+      ctx.lineWidth = base * 0.12;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy - base * 0.16);
+      ctx.quadraticCurveTo(sx + s.side * base * s.len, sy - base * 0.36, sx + s.side * base * s.len * 1.4 - s.side * base * 0.08, sy - base * s.lift * 1.6 - base * 0.1);
+      ctx.stroke();
+      ctx.restore();
+      ctx.strokeStyle = fill;
     }
     // Growth bands: the old reef's memory, one line every 40 m of stone.
     if (style.bands && d > 0) {
