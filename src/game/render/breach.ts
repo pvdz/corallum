@@ -709,15 +709,17 @@ export function createBreachScene(seed: number): Scene {
     ctx.globalAlpha = 1 - 0.65 * dawn;
     const r = 26 * scale() * (great ? 1.3 : 1);
     drawMoon(ctx, mx, my, r, phase);
-    // A blue moon: the same moon, washed in cold blue light.
+    // A blue moon: the same moon, its lit part washed in cold blue light (multiplied, so the dark
+    // side stays dark), its halo as bright as its phase.
     if (blue) {
+      const lit = 1 - Math.abs(phase - 0.5) * 2;
       ctx.globalCompositeOperation = 'lighter';
-      glow(ctx, mx, my, r * 2.6, '110,160,255', 0.35);
-      ctx.globalCompositeOperation = 'source-over';
+      glow(ctx, mx, my, r * 2.6, '110,160,255', 0.04 + 0.31 * lit);
+      ctx.globalCompositeOperation = 'multiply';
       ctx.beginPath();
       ctx.arc(mx, my, r, 0, Math.PI * 2);
       ctx.clip();
-      ctx.fillStyle = 'rgba(120,170,255,0.3)';
+      ctx.fillStyle = 'rgb(150,190,255)';
       ctx.fillRect(mx - r, my - r, r * 2, r * 2);
     }
     ctx.restore();
