@@ -1634,7 +1634,7 @@ export function createTwilightScene(seed: number): Scene {
     for (let a = 0; a < 8; a++) {
       const side = a < 4 ? -1 : 1;
       const k = a % 4;
-      const reach = (12 + k * 3) * s * (1 + 0.3 * moving);
+      const reach = (8.5 + k * 2.6) * s * (1 + 0.3 * moving);
       const wave = Math.sin(t * (moving ? 6 : 0.8) + a * 1.3) * 3 * s;
       const x0 = side * 2 * s, y0 = 2 * s, cx = side * reach * 0.5, cy = 6 * s + wave, x1 = side * reach, y1 = 8 * s - k * 1.5 * s + wave;
       const at = (u: number): [number, number] => [(1 - u) * (1 - u) * x0 + 2 * (1 - u) * u * cx + u * u * x1, (1 - u) * (1 - u) * y0 + 2 * (1 - u) * u * cy + u * u * y1];
