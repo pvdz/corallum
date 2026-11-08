@@ -313,7 +313,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   function showTab(id: string): void {
     const again = id === currentTab;
     if (!again) tabScroll.set(currentTab, pages.scrollTop);
-    for (const [k, b] of tabButtons) { b.classList.toggle('on', k === id); b.setAttribute('aria-selected', String(k === id)); }
+    // Only the open tab is a stop for Tab (Left and Right reach the others), as a tab list is.
+    for (const [k, b] of tabButtons) { b.classList.toggle('on', k === id); b.setAttribute('aria-selected', String(k === id)); b.tabIndex = k === id ? 0 : -1; }
     for (const [k, p] of tabPages) p.hidden = k !== id;
     syncQuick(id);
     if (id === 'bands') seenStories = storyCount;
