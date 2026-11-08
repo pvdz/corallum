@@ -2100,6 +2100,9 @@ export function createSunlitScene(seed: number): Scene {
       ctx.save();
       ctx.translate(x, y);
       ctx.scale(dir, 1);
+      // Nose down as it sinks in its lane, up as it rises.
+      const vx = Math.abs(f.speed) * focus.w * 1.3, vy = Math.cos(t * 0.8 + f.phase * 10) * 0.8 * 10 * s;
+      ctx.rotate(Math.atan2(vy, vx) * 0.7);
       // A deep-bodied reef fish: a rounded body with a pointed snout, dorsal and anal fins a shade
       // darker, a darker back and paler belly, a forked tail, a stripe on some, an eye with a light rim.
       const tail = Math.sin(t * 10 + f.phase * 7) * len * 0.2;
