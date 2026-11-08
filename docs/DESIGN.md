@@ -327,7 +327,9 @@ so carrying different ones across endings pays.
   Trust grows at most once a minute per creature (no tapping it up); each new friend of the line
   brings +1 lineage and +2% calcite. One touched creature can be kept close as the line's **companion**
   (☆ in the journal): its gifts ×2, twice as often. The journal keeps a portrait of
-  each, cropped from the world the first time it was in full view (an album that is your own).
+  each, cropped from the world the first time it was in full view (an album that is your own); a
+  near-black crop (a jelly between pulses) is let go and retaken at a later look, and a creature
+  drawn anew since the album was kept is photographed again (art versions, src/client/portraits.ts).
 
 ## Prestige — Lesser Spawnings and Lineage
 - Available once the reef has reached 150 m (the Midnight Water, band *Eyes in the dark*) and
