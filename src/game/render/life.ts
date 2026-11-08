@@ -67,19 +67,44 @@ export function createLife(seed: number) {
     const touch = startled('jelly', t);
     const flash = touch && touch.age < 2.5 && Math.hypot(touch.x - x, touch.y - y) < 160 * s ? 1 - touch.age / 2.5 : 0;
 
-    // Tentacles, trailing and lagging behind the beat.
+    // Fine marginal tentacles from all along the rim, trailing and lagging behind the beat.
     ctx.lineCap = 'round';
-    for (let k = 0; k < 7; k++) {
-      const ox = x + (k - 3) * bw * 0.22;
-      ctx.strokeStyle = `hsla(${j.hue},80%,80%,${0.18 + (k % 2) * 0.1})`;
-      ctx.lineWidth = (k % 3 === 0 ? 1.6 : 0.9) * s;
+    for (let k = 0; k < 12; k++) {
+      const u = k / 11;
+      const ox = x - bw * 0.92 + u * bw * 1.84;
+      ctx.strokeStyle = `hsla(${j.hue},80%,82%,${0.14 + (k % 3 === 0 ? 0.1 : 0)})`;
+      ctx.lineWidth = (k % 4 === 0 ? 1.2 : 0.7) * s;
       ctx.beginPath();
       ctx.moveTo(ox, y);
-      const len = (60 + (k % 3) * 22) * s;
+      const len = (55 + ((k * 7) % 5) * 12) * s;
       for (let q = 1; q <= 8; q++) {
         const f = q / 8;
-        const wav = Math.sin(t * 1.6 + k + f * 5 - beat * 2) * 6 * s * f;
-        ctx.lineTo(ox + wav + (k - 3) * f * 3 * s, y + f * len);
+        const wav = Math.sin(t * 1.6 + k * 0.9 + f * 5 - beat * 2) * 6 * s * f;
+        ctx.lineTo(ox + wav + (u - 0.5) * f * 10 * s, y + f * len);
+      }
+      ctx.stroke();
+    }
+    // Four oral arms: frilled ribbons hanging from the middle, shorter and paler, swaying slowly.
+    for (let k = 0; k < 4; k++) {
+      const ox = x + (k - 1.5) * bw * 0.16;
+      const len = (34 + (k % 2) * 10) * s;
+      ctx.strokeStyle = `hsla(${j.hue},70%,86%,0.2)`;
+      ctx.lineWidth = 3.2 * s;
+      ctx.beginPath();
+      ctx.moveTo(ox, y - 2 * s);
+      for (let q = 1; q <= 10; q++) {
+        const f = q / 10;
+        ctx.lineTo(ox + Math.sin(t * 0.9 + k * 1.7 + f * 4 - beat) * 4 * s * f + (k - 1.5) * f * 4 * s, y + f * len);
+      }
+      ctx.stroke();
+      // The frill along each arm: a fine bright edge wavering beside it.
+      ctx.strokeStyle = `hsla(${j.hue},90%,90%,0.22)`;
+      ctx.lineWidth = 0.7 * s;
+      ctx.beginPath();
+      ctx.moveTo(ox + 1.6 * s, y - 2 * s);
+      for (let q = 1; q <= 10; q++) {
+        const f = q / 10;
+        ctx.lineTo(ox + 1.6 * s + Math.sin(t * 0.9 + k * 1.7 + f * 4 - beat) * 4 * s * f + (k - 1.5) * f * 4 * s + Math.sin(f * 22 + t * 2) * 1.2 * s, y + f * len);
       }
       ctx.stroke();
     }
@@ -99,6 +124,35 @@ export function createLife(seed: number) {
     }
     ctx.closePath();
     ctx.fill();
+    // Inside the bell: four horseshoe gonads seen through it, and the coronal groove ringing it.
+    ctx.strokeStyle = `hsla(${j.hue - 20},80%,78%,0.32)`;
+    ctx.lineWidth = 1.6 * s;
+    for (let k = 0; k < 4; k++) {
+      const gx = x + (k - 1.5) * bw * 0.36;
+      ctx.beginPath();
+      ctx.ellipse(gx, y - bh * 0.42, bw * 0.13, bh * 0.2, 0, Math.PI * 0.15, Math.PI * 0.85, true);
+      ctx.stroke();
+    }
+    ctx.strokeStyle = `hsla(${j.hue},90%,85%,0.22)`;
+    ctx.lineWidth = 0.9 * s;
+    ctx.beginPath();
+    ctx.ellipse(x, y - bh * 0.18, bw * 0.92, bh * 0.16, 0, Math.PI * 1.02, Math.PI * 1.98);
+    ctx.stroke();
+    // A curved sheen across the top of the bell.
+    ctx.strokeStyle = `hsla(${j.hue},60%,96%,0.35)`;
+    ctx.lineWidth = 1.4 * s;
+    ctx.beginPath();
+    ctx.ellipse(x - bw * 0.1, y - bh * 0.62, bw * 0.55, bh * 0.32, 0, Math.PI * 1.15, Math.PI * 1.55);
+    ctx.stroke();
+    // The bell's outline.
+    ctx.beginPath();
+    ctx.moveTo(x - bw, y);
+    ctx.bezierCurveTo(x - bw, y - bh * 1.3, x + bw, y - bh * 1.3, x + bw, y);
+    for (let k = 6; k >= 0; k--) {
+      const rx = x - bw + (k / 6) * bw * 2;
+      ctx.quadraticCurveTo(rx + bw / 6, y + 4 * s, rx, y);
+    }
+    ctx.closePath();
     ctx.strokeStyle = `hsla(${j.hue},100%,88%,0.45)`;
     ctx.lineWidth = 1.1 * s;
     ctx.stroke();
