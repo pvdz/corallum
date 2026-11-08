@@ -197,8 +197,9 @@ export const UI = {
   tripStops: 'they stop their work while away',
   youHave: (n: number) => `you have ${n}`,
   bandRises: (m: string) => `the reef rises ${m}`,
-  noGain: 'no gain',
-  nowGain: (effect: string, pct: string, what: string) => `${effect} · now ${pct}${what}`,
+  noGain: 'no gain now',
+  /** What one more level would add, as the shoal jobs say it ("now" read as the bonus already had). */
+  nowGain: (effect: string, pct: string, what: string) => `${effect} · one more: ${pct}${what}`,
   held: ' held',
   calciteWord: ' calcite',
   paysBack: (t: string) => `pays back in ${t}`,
