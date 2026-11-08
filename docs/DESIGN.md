@@ -34,7 +34,7 @@ Prestige: **Lesser Spawning** → new seamount, keep **Lineage** traits and deco
 - A quiet panel (the user finds the HTML panel heavy beside the canvas): what is already known
   steps aside (owned cards hide their flavour, choices that may wait fold with Later and only one waiting choice is open (the one opened by hand, else the first to arrive; a timed one opens beside it while it lasts), the others are one-line rows, full
   residents and the mid-run spawning fold to one line, finished upgrades fold away); feedback
-  belongs in the world (flourishes that show by day and night, numbers over the water). With a mouse, the list recedes while the player only watches the sea. The weather card's strip folds away by the water's name, and folded choices keep one dim line of what they ask. Stocks of acts two or more behind the reef step aside into one small line (name and number; chosen by zone, not by rate, so the grid never jumps). New UI
+  belongs in the world (flourishes that show by day and night, numbers over the water). With a mouse, the list recedes while the player only watches the sea. The weather card's strip folds away by the water's name, and folded choices keep one dim line of what they ask. Stocks of acts two or more behind the reef step aside into one small line (name and number; chosen by zone, not by rate, so the grid never jumps). The quick buys (Polyp, Band, Glimmer) stand above the scrolling list, so nothing passes under them (on a short screen they are the list's first line and scroll away). New UI
   should earn its room on a phone sheet ~400 px tall.
 
 ## Depth and acts
