@@ -30,6 +30,7 @@ import { DIARY_TEXT, diaryLine } from '../content/diary.ts';
 import { drawShellShape } from '../render/shells.ts';
 import type { WishId } from '../content/sky.ts';
 import { CODEX, UI } from '../content/ui.ts';
+import { createAsk } from './ask.ts';
 import { OSSEL_MISTAKES } from '../content/ossel.ts';
 import { PALETTES, PALETTE_TEXT } from '../content/palettes.ts';
 import { SHARD, SHARD_LINES } from '../content/shards.ts';
@@ -161,6 +162,7 @@ function truceStory(m: Meeting, c: Choice): Story {
 }
 
 export function createPanel(host: HTMLElement, hooks: PanelHooks) {
+  const ask = createAsk(host);
   quietRepeatedWrites();
   const panel = el('aside', 'panel');
   panel.setAttribute('aria-label', UI.panelAria);
@@ -1179,7 +1181,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     const msg = ended(s)
       ? UI.beginAgainSure(lineageFor(s))
       : UI.lesserSure(lineageFor(s));
-    if (window.confirm(`${msg}\n${UI.settlesOn(seamountDef(whereNext).name.toLowerCase())}`)) hooks.spawnLesser(whereNext, heirNext, [...vowsNext]);
+    void ask.confirm({ ...(ended(s) ? UI.askBegin : UI.askLesser), text: `${msg} ${UI.settlesOn(seamountDef(whereNext).name.toLowerCase())}`, danger: true })
+      .then((go) => { if (go) hooks.spawnLesser(whereNext, heirNext, [...vowsNext]); });
   });
   // Where the spawn settles: each seamount bends the next run one way.
   let whereNext: SeamountId = 'plain';
@@ -1455,7 +1458,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       await navigator.clipboard.writeText(text);
       exportBtn.textContent = UI.copied;
     } catch {
-      window.prompt(UI.copyPrompt, text);
+      await ask.show({ ...UI.askCopy }, text);
     }
     setTimeout(() => (exportBtn.textContent = UI.copySave), 2000);
   });
@@ -1474,16 +1477,16 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   fileInput.hidden = true;
   fileInput.addEventListener('change', async () => {
     const f = fileInput.files?.[0];
-    if (f && !hooks.importSave(await f.text())) window.alert(UI.badSave);
+    if (f && !hooks.importSave(await f.text())) void ask.tell({ ...UI.askBad, text: UI.badSave });
     fileInput.value = '';
   });
   const loadFileBtn = button('plain', UI.loadFile, () => fileInput.click());
-  const importBtn = button('plain', UI.loadText, () => {
-    const text = window.prompt(UI.pastePrompt);
-    if (text && !hooks.importSave(text)) window.alert(UI.badSave);
+  const importBtn = button('plain', UI.loadText, async () => {
+    const text = await ask.input({ ...UI.askPaste });
+    if (text && !hooks.importSave(text)) void ask.tell({ ...UI.askBad, text: UI.badSave });
   });
   const resetBtn = button('plain danger', UI.reset, () => {
-    if (window.confirm(UI.resetSure)) hooks.reset();
+    void ask.confirm({ ...UI.askReset, text: UI.resetSure, danger: true }).then((go) => { if (go) hooks.reset(); });
   });
   const backupNote = el('p', 'backup-note',
     UI.backup);
@@ -2923,6 +2926,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     choiceWaiting(): boolean {
       return [...grow.querySelectorAll<HTMLElement>(':scope > section:not([hidden]):not(.later)')].some((sec) => !!sec.querySelector('.truce-kicker'));
     },
+    /** The game's own cards for a yes or no, a line of text, a message (in place of the browser's dialogs). */
+    ask,
     /** Open a story card (or queue it behind the one showing). */
     story(kicker: string, title: string, text: string, rows?: readonly (readonly [string, string])[]): void {
       showStory({ kicker, title, text, rows });

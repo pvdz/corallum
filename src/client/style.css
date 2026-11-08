@@ -207,6 +207,13 @@ html.panel-rest .panel .pages { opacity: 0.6; transition: opacity 4s ease; }
 }
 .reader > *, .finale > * { margin-block: auto; }
 .reader[hidden] { display: none; }
+/* The game's own asks (ui/ask.ts): above any story card, the answers side by side. */
+.reader.prompt { z-index: 40; }
+.prompt .reader-text { margin-bottom: 16px; }
+.prompt-field { display: block; width: 100%; box-sizing: border-box; margin: 0 0 16px; padding: 8px 10px; resize: vertical;
+  font: 12px/1.4 ui-monospace, monospace; color: var(--ink); background: rgba(0, 0, 0, 0.3); border: 1px solid var(--edge-strong); border-radius: 8px; }
+.prompt-field[hidden] { display: none; }
+.prompt-foot { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 /* Narrow screens, where a card is as wide as the screen: a card taller than the screen starts below
    the sound and view buttons (they stay on top of it, and usable). */
 @media (max-width: 559px) { .reader { padding-top: max(62px, calc(env(safe-area-inset-top) + 56px)); } }

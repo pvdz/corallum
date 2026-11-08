@@ -514,10 +514,9 @@ const panel = createPanel(ui, {
     const f = importString(text);
     if (!f) return false;
     // Loading replaces this reef: ask first, once it is more than a few minutes old.
-    if (state.t > 300 && !window.confirm(UI.loadSure(metres(state.height), metres(f.state.height)))) return true;
-    state = f.state;
-    save();
-    location.reload();
+    const load = () => { state = f.state; save(); location.reload(); };
+    if (state.t > 300) void panel.ask.confirm({ ...UI.askLoad, text: UI.loadSure(metres(state.height), metres(f.state.height)), danger: true }).then((go) => { if (go) load(); });
+    else load();
     return true;
   },
   portrait: (id) => portraits.get(id),

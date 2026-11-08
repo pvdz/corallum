@@ -29,7 +29,7 @@ const ended = process.argv.includes('--ended');
 const big = process.argv.includes('--big');
 
 const KEYS = [' ', 'p', 'b', 'g', 'f', 'e', 'l', 'r', 'c', 'k', 's', 'w', 't', '1', '2', '3', '4', '7', '8', '9', '0', 'Escape', 'Tab', 'Enter', '?', '+', '-'];
-const SPARE = /Start over|Load|Paste|Copy save|Save to a file|Release|Begin again/;
+const SPARE = /Start over|Load|Paste|Copy save|Save to a file|Release|Begin again|\(reset\)/;
 
 await withGame(async (open) => {
   const save = ended ? serialize(runBot((s) => s.carried.length > 0, 12 * 3600).state, Date.now()) : undefined;
@@ -53,7 +53,9 @@ await withGame(async (open) => {
       const c = await bs.count();
       if (c) {
         const b = bs.nth(Math.floor(Math.random() * c));
-        if (!SPARE.test((await b.textContent().catch(() => '')) ?? '')) await b.click().catch(() => {});
+        // The lesser spawning's button (its text is only its lineage) asks before it releases; spared too.
+        const spared = SPARE.test((await b.textContent().catch(() => '')) ?? '') || (await b.evaluate((e) => !!e.closest('.spawn-lesser')).catch(() => true));
+        if (!spared) await b.click().catch(() => {});
       }
     } else if (r < 0.95) await page.mouse.click(Math.random() * vp.width, Math.random() * vp.height);
     else await page.keyboard.press('h');

@@ -54,16 +54,19 @@ await withGame(async (open) => {
     for (let i = 0; i < 20 && (await page.locator('.reader:not([hidden]), .away:not([hidden])').count()); i++) await page.keyboard.press('Escape');
     const h0 = await page.evaluate(() => window.corallum!.state.height);
     await page.locator('.tab', { hasText: 'Reef' }).click();
-    let asked = '';
-    page.once('dialog', (d) => { asked = d.message(); void d.dismiss(); });
     const [c1] = await Promise.all([page.waitForEvent('filechooser'), page.locator('button', { hasText: 'Load a file' }).click()]);
     await c1.setFiles({ name: 'save.txt', mimeType: 'text/plain', buffer: Buffer.from(text) });
+    // The game's own card asks (not the browser's confirm); Escape says no.
+    const prompt = page.locator('.prompt:not([hidden])');
+    await prompt.waitFor({ timeout: 3000 });
+    const asked = (await prompt.locator('.reader-text').textContent()) ?? '';
+    await page.keyboard.press('Escape');
     await page.waitForTimeout(800);
     // Kept: the reef is still its own (it may have grown a little meanwhile), not the 20 m one.
     const kept = (await page.evaluate(() => window.corallum!.state.height)) >= h0;
-    page.once('dialog', (d) => void d.accept());
     const [c2] = await Promise.all([page.waitForEvent('filechooser'), page.locator('button', { hasText: 'Load a file' }).click()]);
     await c2.setFiles({ name: 'save.txt', mimeType: 'text/plain', buffer: Buffer.from(text) });
+    await prompt.locator('button', { hasText: 'Load it' }).click();
     await page.waitForFunction((h) => (window.corallum?.state.height ?? h) < h, h0, { timeout: 10000 });
     const ok = /replaces the reef/.test(asked) && kept && !errors.length;
     console.log(`${ok ? "ok  " : "FAIL"} loading over an established reef asks first; declined, it is kept${ok ? "" : ` (asked "${asked}", kept ${kept}, ${errors.join(" | ")})`}`);

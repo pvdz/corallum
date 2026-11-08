@@ -21,12 +21,21 @@ await withGame(async (open) => {
     await page.locator('.tab', { hasText: 'Reef' }).click();
     await page.locator('.backup-note:not([hidden])').waitFor({ timeout: 3000 });
     await page.locator('button', { hasText: 'Copy save' }).click();
+    // Without clipboard access the save is shown in the game's own card, to copy by hand.
+    const copyCard = page.locator('.prompt:not([hidden])');
+    if (await copyCard.waitFor({ timeout: 1500 }).then(() => true, () => false)) {
+      const shown = await copyCard.locator('textarea').inputValue();
+      if (!shown.length) { failed = true; console.log('FAIL the copy card shows no save'); }
+      await copyCard.locator('button', { hasText: 'Done' }).click();
+    }
     await page.locator('.backup-note').waitFor({ state: 'hidden', timeout: 3000 });
     await page.locator('.tab', { hasText: 'Lineage' }).click();
     // Mid-run the card is folded to its title and gain; open it, and send the spawn to a cold seamount.
     await page.locator('.spawn-lesser.folded h3', { hasText: 'lineage' }).click();
     await page.locator('.spawn-lesser button.seamount', { hasText: 'cold' }).click();
     await page.locator('.spawn-lesser button.buy').click();
+    // The game's own card asks first (not the browser's confirm).
+    await page.locator('.prompt:not([hidden]) button', { hasText: 'Release it' }).click();
     await page.waitForLoadState('load');
     await page.locator('.reader:not([hidden]) >> text=Lesser spawning 1').waitFor({ timeout: 10000 });
     const fresh = await page.evaluate(() => ({ h: window.corallum!.state.height, l: window.corallum!.state.meta.lineage, where: window.corallum!.state.seamount }));
@@ -50,6 +59,7 @@ await withGame(async (open) => {
     await page.locator('.tab', { hasText: 'Lineage' }).click();
     for (const vow of ['Stillness', 'Quiet']) await page.locator('button', { hasText: new RegExp(`^${vow}$`) }).click();
     await page.locator('.spawn-lesser button.buy').click();
+    await page.locator('.prompt:not([hidden]) button', { hasText: 'Begin again' }).click();
     await page.waitForLoadState('load');
     await page.waitForFunction(() => window.corallum?.state.t !== undefined && window.corallum.state.height < 1, null, { timeout: 10000 });
     for (let i = 0; i < 20 && (await page.locator('.reader:not([hidden])').count()); i++) await page.keyboard.press('Escape');
