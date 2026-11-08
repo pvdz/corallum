@@ -284,12 +284,14 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   // goes back to its top.
   let currentTab = 'grow';
   const tabScroll = new Map<string, number>();
+  /** Set once the quick buys exist (they are built further down): shows or hides them for a tab. */
+  let syncQuick = (_tab: string): void => {};
   function showTab(id: string): void {
     const again = id === currentTab;
     if (!again) tabScroll.set(currentTab, pages.scrollTop);
     for (const [k, b] of tabButtons) b.classList.toggle('on', k === id);
     for (const [k, p] of tabPages) p.hidden = k !== id;
-    if (id !== 'grow' && quick.parentElement !== grow) quick.hidden = true;
+    syncQuick(id);
     if (id === 'bands') seenStories = storyCount;
     if (id === 'lineage') { traitsReadySeen = -1; lineageDot.hidden = true; }
     // The weather strip's labels were measured while hidden (no widths): laid out again.
@@ -1851,6 +1853,10 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
   };
   shortScreen.addEventListener('change', placeQuick);
   placeQuick();
+  // Above the list, the quick buys belong to the Grow tab: shown again at once on coming back.
+  syncQuick = (tab) => {
+    if (quick.parentElement !== grow) quick.hidden = tab !== 'grow' || !lastState || actAt(lastState.height) < 2 || ended(lastState);
+  };
   // Scrolled, the list fades out at its top edge instead of being cut there.
   pages.addEventListener('scroll', () => { const on = pages.scrollTop > 4; if (pages.classList.contains('scrolled') !== on) pages.classList.toggle('scrolled', on); }, { passive: true });
   let waitKey = '';
