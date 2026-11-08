@@ -248,6 +248,9 @@ export function createMidnightScene(seed: number): Scene {
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(dir, 1);
+    // It pitches with its bob: nose down while it sinks, up while it rises.
+    const vx = (focus.w * 1.2) / crossing, vy = Math.cos(t * 0.4) * 0.4 * 8 * s;
+    ctx.rotate(Math.atan2(vy, vx) * 0.8);
     anglerBody(ctx, s, t);
     ctx.globalCompositeOperation = 'lighter';
     glow(ctx, 40 * s, -30 * s, 18 * s, '150,240,255', Math.min(1, 0.55 * pulse));
