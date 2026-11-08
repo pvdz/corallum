@@ -1258,8 +1258,10 @@ export function createTwilightScene(seed: number): Scene {
   function drawMantis(ctx: CanvasRenderingContext2D, t: number): void {
     sight('mantis-shrimp');
     const s = scale() * 2.2;
-    // On open sand between the left eel bed and the frogfish, clear of the moray and the octopus.
-    const u = 0.34;
+    // On open sand between the left eel bed and the frogfish, clear of the moray and the octopus;
+    // on a narrow screen that slope is full (the reef's floor dwellers stand there too), so it
+    // lives right of the reef, before the right eel bed, in front of the breakwater's rubble.
+    const u = focus.w / dpr < 600 ? 0.66 : 0.34;
     const x = focus.x - focus.w * 0.1 + u * focus.w * 1.2, base = slopeY(u) + 2 * s;
     spot('mantis-shrimp', x, base - 6 * s, Math.max(20 * s, 22 * dpr));
     const touch = startled('mantis-shrimp', t);
@@ -2366,7 +2368,9 @@ export function createTwilightScene(seed: number): Scene {
       // front of it, drawn after it.
       const walled = v.works.breakwater > 0;
       drawGardenEels(ctx, t, walled ? 'left' : 'all');
-      drawMantis(ctx, t);
+      // On a narrow screen the mantis shrimp lives in the breakwater's rubble: drawn after it.
+      const narrow = focus.w / dpr < 600;
+      if (!narrow) drawMantis(ctx, t);
       if (v.seamount === 'thorny') drawSlopeThorns(ctx, t);
       drawMoray(ctx, t);
       drawCurrent(ctx, t, v.current);
@@ -2385,6 +2389,7 @@ export function createTwilightScene(seed: number): Scene {
       drawGhosts(ctx, focus, v.ancestors, v.height, t, scale(), 'rgba(190,210,240,1)');
       drawSisterFar(ctx, focus, v.sister - v.gauge, t, scale(), true, v.sisterLit);
       drawBreakwater(ctx, focus, v.works.breakwater, scale(), slopeY);
+      if (narrow) drawMantis(ctx, t);
       if (walled) drawGardenEels(ctx, t, 'right', 9 * scale());
       drawLawn(ctx, focus, v.works.lawn, scale(), slopeY);
       if (night > 0) drawNight(ctx, t, night, 0.5);

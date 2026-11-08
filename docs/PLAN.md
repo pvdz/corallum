@@ -278,7 +278,7 @@ Tick items as they land; keep this list honest. Add items freely.
   - [x] calcite step made fourth order (decay-weighted Simpson)
   - [x] the night sky at the Breach: name six figures by tracing their stars (spawn ×1.04 each, ending page, feat)
 - [ ] perf on a real phone (unmeasured: headless is software-rendered). Tools ready: `--lan` prints the network address, `?fps` shows a readout; see README "Trying it on a phone"
-- [ ] phones: lay out the Twilight slope's places together (eels, moray, pistol shrimp, octopus, mantis shrimp, frogfish crowd ~90 px left of the reef at 390 px; the mantis shrimp's spot sits on the pistol shrimp's burrow). Slope creatures are placed by fractions of the scene width, residents by reef units; see PROGRESS 2026-11-08
+- [x] phones: the Twilight slope (eels, moray, pistol shrimp, octopus, mantis shrimp, frogfish within ~90 px left of the reef at 390 px; the mantis shrimp's spot on the pistol shrimp's burrow): on a narrow scene (< 600 px) the mantis shrimp lives right of the reef in front of the breakwater's rubble; the spot-collision sweep shows no creature pair sharing a place there (2026-11-08)
 - [x] rebalance pacing after the feature push (bot fell to ~4h): band cost growth 2: 1.18, 3: 1.28, 4: 1.2 → bot 7h28; test bound back to 6–11 h
 
 ### M4 Lesser Spawning prestige + Lineage — landed 2026-10-27
