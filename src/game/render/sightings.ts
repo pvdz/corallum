@@ -35,8 +35,9 @@ export function spot(id: CreatureId | 'ossel' | 'shell' | 'star' | 'old' | 'tang
 /**
  * Call once per frame after drawing: the spots of this frame become the tappable ones, and the
  * creatures drawn count as seen. Given the open part of the scene (device pixels), one with spots
- * counts only once one of them is centred in it, not while it is still off the edge or behind the
- * panel; one drawn without a spot counts as drawn.
+ * counts only once one of them shows there (its centre in it, or within half its radius of its
+ * edge), not while it is still off the screen or behind the panel; one drawn without a spot counts
+ * as drawn.
  */
 export function endFrameSpots(view?: { x: number; y: number; w: number; h: number }): void {
   spots = nextSpots;
@@ -47,7 +48,8 @@ export function endFrameSpots(view?: { x: number; y: number; w: number; h: numbe
       if (inside) break;
       if (p.id !== id) continue;
       any = true;
-      inside = p.x >= view!.x && p.x <= view!.x + view!.w && p.y >= view!.y && p.y <= view!.y + view!.h;
+      const m = p.r / 2;
+      inside = p.x >= view!.x - m && p.x <= view!.x + view!.w + m && p.y >= view!.y - m && p.y <= view!.y + view!.h + m;
     }
     if (inside || !any) seen.add(id);
   }

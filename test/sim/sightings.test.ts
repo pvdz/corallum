@@ -11,6 +11,11 @@ test('a creature counts as seen only once one of its spots is in the open scene'
   spot('chimaera', 1100, 400, 30);
   endFrameSpots(view);
   assert.deepEqual(takeSightings(), []);
+  // Half showing at the edge (its centre within half its radius of the panel): seen.
+  sight('chimaera');
+  spot('chimaera', 1012, 400, 30);
+  endFrameSpots(view);
+  assert.deepEqual(takeSightings(), ['chimaera']);
   // A school with one fish in view is seen.
   sight('lanternfish');
   spot('lanternfish', -50, 300, 10);
