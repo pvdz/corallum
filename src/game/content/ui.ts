@@ -148,7 +148,7 @@ export const UI = {
     ['W', 'make a wish when stars fall'],
     ['H', 'hide the panel to see the whole reef (+ and − zoom, 0 zooms out)'],
     ['M', 'sound on or off'],
-    ['T', 'replay this zone’s growth'],
+    ['T', 'replay this zone’s growth (Shift+T: the whole climb, from the seafloor)'],
   ] as const,
   keysHelp: 'Hold any buy button to keep buying. Tap a creature to learn its name; tap Ossel and it will answer. Left alone, the hidden-panel view drifts on its own and goes to see the creatures.',
   /** The phone sheet's grabber: drawn up for more of the panel, down for more of the reef. */
@@ -257,6 +257,8 @@ export const UI = {
   tallyFreed: (n: number) => `${n} small creature${n === 1 ? '' : 's'} freed`,
   timelapse: 'Watch this reef grow again',
   timelapseKey: ' (T)',
+  timelapseWhole: 'Watch the whole climb',
+  timelapseWholeKey: ' (Shift+T)',
   momentsLabel: 'Moments met',
   momentsIntro: 'Across your line: each moment, and the ways your reefs have met it.',
   notYetMet: 'Not yet met',

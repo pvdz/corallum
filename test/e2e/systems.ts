@@ -255,4 +255,40 @@ await withGame(async (open) => {
   check(n > 0 && missed.length === 0, `320 px phone: all ${n} figures traced by touch${missed.length ? ` (missed: ${missed.join(', ')})` : ''}`);
   check(errors.length === 0, 'no console errors (sky, 320 px)');
 });
+// The whole climb replayed (Shift+T) from the Twilight Shelf: the dark lower zones pass, a tap ends
+// it, and it leaves nothing behind: no arrival (zone title, story), nothing new in the journal (the
+// bot's reef has never seen the Silt Floor's creatures, which the replay shows).
+await withGame(async (open) => {
+  const { page, errors } = await open(VIEWPORTS[0]!, '?bot=12000');
+  await page.waitForFunction(() => window.corallum, null, { timeout: 60000 });
+  for (let i = 0; i < 10 && (await page.locator('.reader:not([hidden])').count()); i++) await page.keyboard.press('Escape');
+  await page.waitForTimeout(6000);
+  const bright = () => page.evaluate(() => {
+    const src = document.querySelector('canvas') as HTMLCanvasElement;
+    const c = document.createElement('canvas');
+    c.width = c.height = 32;
+    const g = c.getContext('2d')!;
+    g.drawImage(src, 0, 0, 32, 32);
+    const d = g.getImageData(0, 0, 32, 32).data;
+    let sum = 0;
+    for (let i = 0; i < d.length; i += 4) sum += d[i]! + d[i + 1]! + d[i + 2]!;
+    return sum / (d.length / 4) / 3;
+  });
+  const seen0 = await page.evaluate(() => window.corallum!.state.meta.seen.length);
+  const b0 = await bright();
+  await page.keyboard.press('Shift+T');
+  await page.waitForTimeout(3500);
+  const b1 = await bright();
+  await page.mouse.click(400, 400);
+  await page.waitForTimeout(4000);
+  const b2 = await bright();
+  const after = await page.evaluate(() => ({
+    seen: window.corallum!.state.meta.seen.length,
+    title: !!document.querySelector('#zone-title.show'),
+    story: !!document.querySelector('.reader:not([hidden])'),
+  }));
+  check(b1 < b0 * 0.7 && b2 > b0 * 0.8, `the whole climb replays the dark lower zones and a tap ends it (brightness ${b0.toFixed(0)} → ${b1.toFixed(0)} → ${b2.toFixed(0)})`);
+  check(after.seen === seen0 && !after.title && !after.story, `the replay leaves nothing behind (seen ${seen0} → ${after.seen}${after.title ? ', a zone title' : ''}${after.story ? ', a story' : ''})`);
+  check(errors.length === 0, 'no console errors (the whole climb)');
+});
 process.exitCode = failed ? 1 : 0;

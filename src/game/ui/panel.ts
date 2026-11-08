@@ -115,7 +115,8 @@ export type PanelHooks = {
   importSave(text: string): boolean;
   reset(): void;
   /** Replay this zone's growth of the reef in a few seconds. */
-  timelapse(): void;
+  /** Replay the reef's growth: this zone's, or (`whole`) the whole climb from the seafloor. */
+  timelapse(whole?: boolean): void;
   /** The soft glow (bloom) pass: read and set; off helps slow phones. */
   glow: { get(): boolean; set(on: boolean): void };
   /** The reef's name changed. */
@@ -1632,6 +1633,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     shapesList.innerHTML = '';
     for (const [k, v] of rows) shapesList.append(el('dt', '', k), el('dd', '', v));
   }
+  // The whole climb replayed (after the Silt Floor: before it, the zone's replay is the whole climb).
+  const wholeLapse = button('plain', UI.timelapseWhole + (matchMedia('(pointer: coarse) and (hover: none)').matches ? '' : UI.timelapseWholeKey), () => hooks.timelapse(true));
   reefPage.append(
     nameRow,
     paletteBox,
@@ -1640,7 +1643,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
     group(UI.saves),
     el('p', 'hint', UI.autosave), backupNote, pair(exportBtn, fileBtn), pair(loadFileBtn, importBtn), fileInput,
     group(UI.sound), musicRow, volRow, buzzToggle,
-    group(UI.display), button('plain', UI.timelapse + (matchMedia('(pointer: coarse) and (hover: none)').matches ? '' : UI.timelapseKey), () => hooks.timelapse()), glowToggle, sharpToggle, calmToggle, bigToggle, sciToggle, quietToggle, notifyToggle, habitToggle,
+    group(UI.display), button('plain', UI.timelapse + (matchMedia('(pointer: coarse) and (hover: none)').matches ? '' : UI.timelapseKey), () => hooks.timelapse()),
+    wholeLapse, glowToggle, sharpToggle, calmToggle, bigToggle, sciToggle, quietToggle, notifyToggle, habitToggle,
     el('p', 'hint keys-hint', UI.keys),
     el('p', 'hint touch-hint sheet-only', UI.touchHint),
     el('p', 'hint touch-hint side-only', UI.touchHintSide),
@@ -2835,6 +2839,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       renderFeats(s);
       renderLine(s);
       renderTotals(s);
+      wholeLapse.hidden = actAt(s.height) <= 1;
       habitToggle.hidden = !s.meta.traits['old-habits'] && !s.meta.traits['shoal-sense'] && !s.meta.traits['rasp-sense'] && !s.meta.traits.layering;
       const hidden = UPGRADES.find((u) => !revealed(s, u.id));
       comingUp.textContent = hidden ? UI.comingUp(hidden.name, revealText(s, hidden)) : '';

@@ -526,7 +526,7 @@ const panel = createPanel(ui, {
   },
   portrait: (id) => portraits.get(id),
   get portraits() { return portraits.count; },
-  timelapse() { startLapse(); },
+  timelapse(whole = false) { startLapse(whole); },
   reset() {
     portraits.clear();
     state = newGame(seed);
@@ -1187,25 +1187,42 @@ function wish(id: WishId): void {
   save();
 }
 
-/** The time-lapse: the reef regrows from the start of this zone to now over LAPSE seconds of scene time. */
-const LAPSE = 8;
+/**
+ * The time-lapse: the reef regrows from the start of this zone to now over LAPSE seconds of scene
+ * time; or, the whole climb, from the seafloor up through every zone it has passed (each zone
+ * an equal share of the time, the scenes changing as it rises).
+ */
+const LAPSE = 8, LAPSE_ZONE = 7;
 let lapseStart = -1;
-function startLapse(): void {
-  if (actAt(state.height) === 5) return;
+let lapseWhole = false;
+/** The replay has the scene of a zone it passes through (its way back is quiet too). */
+let lapseScene = false;
+/** From a whole-climb replay until the fade back from it is over: no sightings, no portraits. */
+let replayQuiet = false;
+function startLapse(whole = false): void {
+  // The Breach is a few metres: only the whole climb has anything to show there.
+  if (!whole && actAt(state.height) === 5) return;
+  lapseWhole = whole && actAt(state.height) > 1;
   lapseStart = animT;
   hint.classList.add('done');
   audio.cue('zone');
 }
 function lapseHeight(): number | null {
   if (lapseStart < 0) return null;
-  const k = (animT - lapseStart) / LAPSE;
+  const zones = actAt(state.height);
+  const k = (animT - lapseStart) / (lapseWhole ? LAPSE_ZONE * zones : LAPSE);
   if (k >= 1 || k < 0) {
     lapseStart = -1;
     return null;
   }
-  const from = act(actAt(state.height)).from;
-  const e = k * k * (3 - 2 * k);
-  return from + (state.height - from) * e;
+  const smooth = (u: number) => u * u * (3 - 2 * u);
+  if (!lapseWhole) {
+    const from = act(zones).from;
+    return from + (state.height - from) * smooth(k);
+  }
+  const seg = k * zones, i = Math.min(zones - 1, Math.floor(seg));
+  const z = act(i + 1), top = i + 1 === zones ? state.height : z.to;
+  return z.from + (top - z.from) * smooth(seg - i);
 }
 
 /** The one of a kind worth marking: inside the open scene, clear of the sound and view buttons
@@ -1680,6 +1697,8 @@ canvas.addEventListener('pointermove', (e) => {
 // Tapping the water sweeps the tentacles: a small burst of calcite. Tapping a falling feast eats it.
 canvas.addEventListener('pointerdown', (e) => {
   if (zoomer.pinchDown(e)) return;
+  // A tap during a replay of the whole climb ends it (the lower zones' creatures are not there).
+  if (lapseWhole && lapseStart >= 0) { lapseStart = -1; return; }
   // The world point under the finger (the view may be zoomed).
   const [wx, wy] = toWorld(e.clientX * dpr, e.clientY * dpr);
   // A star of a figure being traced comes first: a bird or a swell's crest passing over the sky
@@ -2138,7 +2157,8 @@ window.addEventListener('keydown', (e) => {
     return;
   }
   if (e.key === 't' || e.key === 'T') {
-    startLapse();
+    // Shift+T: the whole climb, from the seafloor.
+    startLapse(e.shiftKey);
     return;
   }
   if (e.key === '?') {
@@ -2402,7 +2422,18 @@ function frameBody(now: number): void {
   }
   const tNow = frozenT ?? animT;
   const v = view();
-  const want = sceneFor(state.height);
+  // A whole-climb time-lapse passes through the lower zones: their scenes, crossfading as it
+  // rises, with none of a real arrival's titles, stories or sounds.
+  const lapsing = lapseWhole ? lapseHeight() : null;
+  // Back from the replay (played out, or cut short by a tap) as quietly as it went.
+  const shown = lapsing ?? (lapseScene ? state.height : null);
+  if (shown !== null && sceneFor(shown) !== scene) {
+    fadingFrom = scene;
+    fadeStart = tNow;
+    scene = sceneFor(shown);
+  }
+  lapseScene = lapsing !== null;
+  const want = lapsing !== null ? scene : sceneFor(state.height);
   if (want !== scene) {
     fadingFrom = scene;
     fadeStart = tNow;
@@ -2512,7 +2543,7 @@ function frameBody(now: number): void {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   if (photoPending) { const take = photoPending; photoPending = null; take(); }
   endFrameSpots();
-  if (now - lastPortrait > 1000 && frozenT === null && !fadingFrom && (zoom.k === 1 || zoom.k >= 2)) {
+  if (now - lastPortrait > 1000 && frozenT === null && !fadingFrom && !replayQuiet && (zoom.k === 1 || zoom.k >= 2)) {
     lastPortrait = now;
     takePortrait();
   }
@@ -2539,7 +2570,14 @@ function frameBody(now: number): void {
   updateGauge();
   // The journal: creatures drawn on screen are recorded the first time they are seen.
   // (Not while the title is still showing over a new reef: the note would sit on it.)
-  if (now - lastJournal > 1000 && title.classList.contains('faded')) {
+  // Nor during a replay of the whole climb: the lower zones' creatures seen again are memories, not
+  // sightings (they would fill the journal, and its calcite, from a film).
+  // (Through the fade back from it too: the zone it left is still drawn under the current one.)
+  if (lapseScene || (lapseWhole && lapseStart >= 0)) replayQuiet = true;
+  else if (!fadingFrom) replayQuiet = false;
+  const replaying = replayQuiet;
+  if (replaying) takeSightings();
+  else if (now - lastJournal > 1000 && title.classList.contains('faded')) {
     lastJournal = now;
     for (const id of takeSightings()) {
       const key = `c:${id}`;
