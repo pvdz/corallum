@@ -262,6 +262,44 @@ export function createMidnightScene(seed: number): Scene {
    * The seamount's flank below the reef: a dark shoulder of rock along the bottom of the frame,
    * sinking away as the reef climbs (it is fully in view only early in the Midnight Water).
    */
+  /**
+   * The flank's rock under the reef's light: a pool of its glow on the shoulder beneath it, and
+   * boulders along the ridge, each a dark lump with its top caught by the light, fading with
+   * distance from the reef (it is the only light down here).
+   */
+  function drawFlankRock(ctx: CanvasRenderingContext2D, ridge: readonly [number, number][], bottom: number): void {
+    const s = scale();
+    const ridgeY = (x: number) => {
+      const k = Math.min(ridge.length - 2, Math.max(0, Math.floor(((x - ridge[0]![0]) / (ridge[ridge.length - 1]![0] - ridge[0]![0])) * (ridge.length - 1))));
+      const [x0, y0] = ridge[k]!, [x1, y1] = ridge[k + 1]!;
+      return y0 + (y1 - y0) * Math.min(1, Math.max(0, (x - x0) / (x1 - x0 || 1)));
+    };
+    const cx = focus.x + focus.w * 0.5, top = ridgeY(cx);
+    if (top > bottom) return;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, cx, top + focus.h * 0.02, focus.w * 0.22, '90,120,220', 0.09);
+    ctx.globalCompositeOperation = 'source-over';
+    const r = mulberry32(seed ^ 0xb01d);
+    for (let i = 0; i < 26; i++) {
+      const u = r(), x = focus.x + u * focus.w * 1.05;
+      const y = ridgeY(x) + range(r, 0.2, 1) * focus.h * 0.05;
+      if (y > bottom) continue;
+      const q = range(r, 3, 9) * s * (0.6 + 0.8 * (y - top) / (focus.h * 0.1 + 1));
+      const lit = Math.exp(-(((x - cx) / (focus.w * 0.25)) ** 2));
+      ctx.fillStyle = '#05060f';
+      ctx.beginPath();
+      ctx.ellipse(x, y, q * 1.3, q * 0.7, range(r, -0.2, 0.2), 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = `rgba(130,150,230,${0.08 + 0.32 * lit})`;
+      ctx.lineWidth = Math.max(0.8, q * 0.18);
+      ctx.beginPath();
+      ctx.ellipse(x, y, q * 1.15, q * 0.6, 0, Math.PI * 1.12, Math.PI * 1.88);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
   function drawFlank(ctx: CanvasRenderingContext2D, p: number, t: number): void {
     const sink = p * focus.h * 0.25;
     const base = focus.y + focus.h * 0.9 + sink;
@@ -270,11 +308,13 @@ export function createMidnightScene(seed: number): Scene {
     ctx.beginPath();
     ctx.moveTo(0, h);
     const n = 30;
+    const ridge: [number, number][] = [];
     for (let i = 0; i <= n; i++) {
       const u = i / n;
       // A shoulder that peaks under the reef and falls away to both sides, with rough rock.
       const peak = Math.exp(-((u - 0.5) ** 2) / 0.08);
       const y = base - peak * focus.h * 0.08 + range(r, -1, 1) * focus.h * 0.008;
+      ridge.push([focus.x + u * focus.w * 1.05, y]);
       ctx.lineTo(focus.x + u * focus.w * 1.05, y);
     }
     ctx.lineTo(w, h);
@@ -287,6 +327,7 @@ export function createMidnightScene(seed: number): Scene {
     ctx.strokeStyle = 'rgba(110,130,210,0.18)';
     ctx.lineWidth = 1.2 * dpr;
     ctx.stroke();
+    drawFlankRock(ctx, ridge, h);
     // A whale fall on the flank: an old skeleton, the spine and the arcs of the ribs, pale in the dark.
     const s = scale() * 1.4;
     const wx = focus.x + focus.w * 0.2, wy = base - focus.h * 0.035;
