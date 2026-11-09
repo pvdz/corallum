@@ -221,10 +221,10 @@ export const ENDING = {
   /** The counts on that page, each said only when it is not zero. */
   counts: {
     time: (d: string) => `Four thousand metres in ${d}`,
-    polyps: (n: number) => `${n} polyps`, bands: (n: number) => `${n} bands laid down`,
-    feasts: (n: number) => `${n} feasts caught`, relics: (n: number) => `${n} relics found`,
-    intruders: (n: number) => `${n} intruders driven off`, residents: (n: number) => `${n} residents at home`,
-    shards: (n: number) => `${n} of 12 shards`, pruned: (n: number) => `${n} knobs of old stone let go`,
+    polyps: (n: number) => n === 1 ? 'one polyp' : `${n} polyps`, bands: (n: number) => n === 1 ? 'one band laid down' : `${n} bands laid down`,
+    feasts: (n: number) => n === 1 ? 'one feast caught' : `${n} feasts caught`, relics: (n: number) => n === 1 ? 'one relic found' : `${n} relics found`,
+    intruders: (n: number) => n === 1 ? 'one intruder driven off' : `${n} intruders driven off`, residents: (n: number) => n === 1 ? 'one resident at home' : `${n} residents at home`,
+    shards: (n: number) => `${n} of 12 shards`, pruned: (n: number) => n === 1 ? 'one knob of old stone let go' : `${n} knobs of old stone let go`,
     freed: (n: number) => `${n} small creatures freed`, lucky: (n: number) => `${n} lucky touches`,
   },
   /** The creatures that know you, come to see the spawn off ({names}). */

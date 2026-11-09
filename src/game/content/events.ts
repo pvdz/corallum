@@ -17,7 +17,7 @@ export const AWAY_ROWS = {
   rose: 'Rose',
   roamed: 'Roamed',
   roamedOnce: 'the shoals came home from the dark',
-  roamedTimes: (n: number) => `${n} times`,
+  roamedTimes: (n: number) => n === 1 ? 'once' : n === 2 ? 'twice' : `${n} times`,
   shards: 'Shards',
   shardsFound: (n: number) => `${n} found`,
   full: 'Full',
