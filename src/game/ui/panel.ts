@@ -1360,7 +1360,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       [UI.totReefs, String(m.spawnings + 1)], [UI.totEndings, String(m.endings)],
       [UI.totSeen, `${seen}\u00a0of\u00a0${CREATURES.length}`], [UI.totFriends, String(friends)],
       [UI.totShells, `${m.shells.length}\u00a0of\u00a0${SHELLS.length}`], [UI.totShards, `${m.shards.length}\u00a0of\u00a0${SHARD_LINES.length}`],
-      [UI.totMoments, `${moments}\u00a0of\u00a0${MOMENTS.length}`], [UI.totFeats, String(feats)],
+      [UI.totMoments, `${moments}\u00a0of\u00a0${MOMENTS.length}`], [UI.totFeats, `${feats}\u00a0of\u00a0${FEATS.length}`],
     ];
     const key = rows.map((r) => r[1]).join('|');
     totalsCard.hidden = m.spawnings === 0 && m.endings === 0;
