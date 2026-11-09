@@ -1719,6 +1719,58 @@ canvas.addEventListener('pointermove', (e) => {
 });
 canvas.addEventListener('pointerleave', () => { mouseAt = null; });
 
+/** Tap spots that are not creatures to greet (each has its own action), for N. */
+const NOT_CREATURES = new Set<Spot['id']>(['star', 'shell', 'old', 'tangle', 'fragment', 'stray', 'raft']);
+/** The creature N greeted last: the next press goes on to the one after it. */
+let greeted: Spot['id'] | null = null;
+
+/**
+ * A creature touched (tapped, or greeted with N) at world point (wx, wy), screen point (cx, cy):
+ * it answers, is counted as touched, may give a gift, and is named.
+ */
+function touchCreature(who: Spot & { id: CreatureId | 'ossel' }, wx: number, wy: number, cx: number, cy: number): void {
+  if (who.id === 'ossel') sayOssel();
+  startle(who.id, frozenT ?? animT, wx, wy);
+  if (who.id === 'whale') audio.cue('whale');
+  else if (who.id !== 'ossel') audio.cue(touchCue(who.id));
+  if (frozenT === null && who.id !== 'ossel' && !state.meta.seen.includes(`t:${who.id}`)) state.meta.seen.push(`t:${who.id}`);
+  // Now and then a neighbour gives a little of what it lives by.
+  // A thorn star is pried off the reef, for a burst.
+  if ((who.id === 'thorn-star' || who.id === 'dragonfish' || who.id === 'drill-snail' || who.id === 'gull') && frozenT === null) {
+    const pay = pryThorn(state);
+    if (pay > 0) {
+      floatText(cx, cy - 26, `+${num(pay)} ${feastPay(state)} ${who.id === 'dragonfish' ? THORN.dragon : who.id === 'drill-snail' ? THORN.snail : who.id === 'gull' ? THORN.gull : THORN.pried}`, 'feast-float');
+      audio.cue('crunch');
+      buzz([20, 30, 20]);
+    }
+  }
+  const trustBefore = who.id !== 'ossel' ? state.meta.trust[who.id] ?? 0 : 0;
+  const wasLucky = who.id !== 'ossel' && lucky(state, who.id);
+  const wasVisitor = frozenT === null && who.id !== 'ossel' && who.id === visitor(state) && !visited(state);
+  const g = frozenT === null && who.id !== 'ossel' ? gift(state, who.id) : null;
+  if (g && wasLucky) audio.cue('shimmer');
+  if (wasVisitor && visited(state)) showJournalNote(TODAY.visitor, `${CREATURES.find((c) => c.id === who.id)?.name ?? ''} · +1 lineage`, true);
+  if (who.id !== 'ossel' && trustBefore < TRUST.at[2] && (state.meta.trust[who.id] ?? 0) >= TRUST.at[2]) {
+    showJournalNote(TRUST.friendNote, `${CREATURES.find((c) => c.id === who.id)?.name ?? ''} · +${TRUST.friendLineage} lineage`);
+    audio.cue('shard');
+  }
+  if (g) floatText(cx, cy - 26, `+${num(g.amount)} ${GIFT_TEXT[g.stock]}${wasLucky ? ` ${LUCKY.float}` : ''}`, 'feast-float');
+  // A light tick on phones; a double one when it brought a gift.
+  if (who.id !== 'ossel') buzz(g ? [8, 40, 8] : 8);
+  // Its label, unless it was shown for this creature just now and this touch brought nothing new:
+  // sweeping the crown, where the nudibranchs and gobies live, would otherwise keep a label open
+  // over the reef for as long as the sweeping goes on.
+  if (who.id !== 'ossel') {
+    const now = performance.now();
+    const again = labelShown.id === who.id && now - labelShown.at < 60_000;
+    if (!again || g || wasVisitor) {
+      const [lx, ly] = toScreen(who.x, who.y);
+      showCreatureLabel(who.id, lx / dpr, ly / dpr, (who.r * zoom.k) / dpr, cx, cy);
+      labelShown = { id: who.id, at: now };
+    }
+  }
+}
+
 // Tapping the water sweeps the tentacles: a small burst of calcite. Tapping a falling feast eats it.
 canvas.addEventListener('pointerdown', (e) => {
   if (zoomer.pinchDown(e)) return;
@@ -1816,48 +1868,7 @@ canvas.addEventListener('pointerdown', (e) => {
     return;
   }
   const who = hit as (typeof hit & { id: CreatureId | 'ossel' }) | null;
-  if (who?.id === 'ossel') sayOssel();
-  if (who) {
-    startle(who.id, frozenT ?? animT, wx, wy);
-    if (who.id === 'whale') audio.cue('whale');
-    else if (who.id !== 'ossel') audio.cue(touchCue(who.id));
-    if (frozenT === null && who.id !== 'ossel' && !state.meta.seen.includes(`t:${who.id}`)) state.meta.seen.push(`t:${who.id}`);
-    // Now and then a neighbour gives a little of what it lives by.
-    // A thorn star is pried off the reef, for a burst.
-    if ((who.id === 'thorn-star' || who.id === 'dragonfish' || who.id === 'drill-snail' || who.id === 'gull') && frozenT === null) {
-      const pay = pryThorn(state);
-      if (pay > 0) {
-        floatText(e.clientX, e.clientY - 26, `+${num(pay)} ${feastPay(state)} ${who.id === 'dragonfish' ? THORN.dragon : who.id === 'drill-snail' ? THORN.snail : who.id === 'gull' ? THORN.gull : THORN.pried}`, 'feast-float');
-        audio.cue('crunch');
-        buzz([20, 30, 20]);
-      }
-    }
-    const trustBefore = who.id !== 'ossel' ? state.meta.trust[who.id] ?? 0 : 0;
-    const wasLucky = who.id !== 'ossel' && lucky(state, who.id);
-    const wasVisitor = frozenT === null && who.id !== 'ossel' && who.id === visitor(state) && !visited(state);
-    const g = frozenT === null && who.id !== 'ossel' ? gift(state, who.id) : null;
-    if (g && wasLucky) audio.cue('shimmer');
-    if (wasVisitor && visited(state)) showJournalNote(TODAY.visitor, `${CREATURES.find((c) => c.id === who.id)?.name ?? ''} · +1 lineage`, true);
-    if (who.id !== 'ossel' && trustBefore < TRUST.at[2] && (state.meta.trust[who.id] ?? 0) >= TRUST.at[2]) {
-      showJournalNote(TRUST.friendNote, `${CREATURES.find((c) => c.id === who.id)?.name ?? ''} · +${TRUST.friendLineage} lineage`);
-      audio.cue('shard');
-    }
-    if (g) floatText(e.clientX, e.clientY - 26, `+${num(g.amount)} ${GIFT_TEXT[g.stock]}${wasLucky ? ` ${LUCKY.float}` : ''}`, 'feast-float');
-    // A light tick on phones; a double one when it brought a gift.
-    if (who.id !== 'ossel') buzz(g ? [8, 40, 8] : 8);
-    // Its label, unless it was shown for this creature just now and this touch brought nothing new:
-    // sweeping the crown, where the nudibranchs and gobies live, would otherwise keep a label open
-    // over the reef for as long as the sweeping goes on.
-    if (who.id !== 'ossel') {
-      const now = performance.now();
-      const again = labelShown.id === who.id && now - labelShown.at < 60_000;
-      if (!again || g || wasVisitor) {
-        const [lx, ly] = toScreen(who.x, who.y);
-        showCreatureLabel(who.id, lx / dpr, ly / dpr, (who.r * zoom.k) / dpr, e.clientX, e.clientY);
-        labelShown = { id: who.id, at: now };
-      }
-    }
-  }
+  if (who) touchCreature(who, wx, wy, e.clientX, e.clientY);
   const f = currentFeast(state);
   if (f) {
     const [fx, fy] = feastPos(f, state.t - f.start, focusNow, feastPay(state));
@@ -2167,6 +2178,19 @@ window.addEventListener('keydown', (e) => {
       const [sx, sy] = toScreen(wx, wy);
       floatText(sx / dpr, Math.max(sy / dpr, 96), state.combo > 1 ? `+${num(gain)} ×${(1 + ACT1.comboStep * (state.combo - 1)).toFixed(1)}` : `+${num(gain)}`);
     }
+    return;
+  }
+  if (e.key === 'n' || e.key === 'N') {
+    // Greet the next creature in view (left to right, round again), as a tap on it would.
+    const inView = tappable().filter((p): p is Spot & { id: CreatureId | 'ossel' } =>
+      !NOT_CREATURES.has(p.id) && p.x >= focusNow.x && p.x <= focusNow.x + focusNow.w && p.y >= focusNow.y && p.y <= focusNow.y + focusNow.h);
+    const kinds = [...new Map(inView.map((p) => [p.id, p])).values()].sort((a, b) => a.x - b.x);
+    if (kinds.length === 0) return;
+    const at = kinds.findIndex((p) => p.id === greeted);
+    const who = kinds[(at + 1) % kinds.length]!;
+    greeted = who.id;
+    const [sx, sy] = toScreen(who.x, who.y);
+    touchCreature(who, who.x, who.y, sx / dpr, sy / dpr);
     return;
   }
   if (e.key === 'k' || e.key === 'K') {
