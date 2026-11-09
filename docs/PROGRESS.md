@@ -1522,3 +1522,4 @@ date, what landed, what is half-done, what's next.
 - A touched fireworm ring flares bright and half again as wide, fading over two seconds (the touch followed up as the ring rises). Fuzz after the touch reactions: Twilight 415, Sunlit 341, Breach 318 actions, clean.
 - A touched nudibranch raises its cerata stiff and tall (a warning) and lets them down over a few seconds; a touched glass sponge sends a shimmer of light up its lattice from the silt to the rim.
 - The great Rasp herd, touched, scatters up and down around the touch with hard-beating tails and closes ranks over three seconds.
+- The squat lobsters on the vent, touched, rear up claws high and pincers wide, one a beat after another, and lower them over three seconds.

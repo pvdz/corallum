@@ -1390,7 +1390,11 @@ export function createLife(seed: number) {
   function drawSquatLobsters(ctx: CanvasRenderingContext2D, x: number, base: number, count: number, s: number, t: number): void {
     sight('squat-lobster');
     spot('squat-lobster', x, base - (14 + count * 4.5) * s, Math.max(24 * s, count * 5 * s));
+    // Touched, they rear up claws high and pincers wide (each a beat after the last), and lower them.
+    const touch = startled('squat-lobster', t);
     for (let i = 0; i < count; i++) {
+      const ta = touch ? touch.age - i * 0.12 : -1;
+      const threat = ta < 0 || ta > 3 ? 0 : ta < 0.2 ? ta / 0.2 : 1 - (ta - 0.2) / 2.8;
       const side = i % 2 ? 1 : -1;
       // Clinging to the chimney's sides, at different heights up it.
       const cy = base - (14 + i * 9) * s, cx = x + side * (13 - i * 0.8) * s;
@@ -1411,13 +1415,13 @@ export function createLife(seed: number) {
       // Long claws held out in front, each arm a slim segment and a pincer, opening and closing.
       ctx.strokeStyle = 'rgba(212,200,182,0.95)';
       for (const dy of [-1, 1]) {
-        const ex = -11 * s, ey = (-5 + dy * 1.5 + wave) * s;
+        const ex = -11 * s + threat * 1.5 * s, ey = (-5 + dy * 1.5 + wave * (1 - threat) - threat * (dy < 0 ? 5 : 3)) * s;
         ctx.lineWidth = 1.1 * s;
         ctx.beginPath();
         ctx.moveTo(-3 * s, -2.4 * s);
         ctx.quadraticCurveTo(-7 * s, (-4.5 + dy * 0.6) * s, ex, ey);
         ctx.stroke();
-        const open = 0.25 + 0.2 * Math.max(0, wave);
+        const open = (0.25 + 0.2 * Math.max(0, wave)) * (1 - threat) + 0.85 * threat;
         ctx.lineWidth = 0.8 * s;
         ctx.beginPath();
         ctx.moveTo(ex, ey);
