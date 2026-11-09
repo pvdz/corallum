@@ -1993,7 +1993,8 @@ function requestCount(s: GameState, kind: RequestKind): number {
     case 'glimmer': return s.levels.symbiont;
     case 'bands': return s.levels.skeleton;
     case 'feast': return s.feasts;
-    case 'touch': return s.tally.touches;
+    // Different neighbours touched on this reef (each one's first touch starts its trust clock).
+    case 'neighbours': return CREATURES.reduce((n, c) => n + (s.trusted[c.id] > -1e8 ? 1 : 0), 0);
     case 'sweep': return s.tally.sweeps;
     case 'shoals': return s.levels.shoal;
     case 'sandbar': return s.levels.sandbar;

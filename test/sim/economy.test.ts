@@ -881,3 +881,14 @@ test('the gift a creature promises is the gift it gives: food while the reef mak
   s.t += giftCooldown(s, 'sea-pen') + 0.01;
   assert.equal(gift(s, 'sea-pen')?.stock, 'glow');
 });
+
+test('"Touch n of our neighbours" counts different neighbours, not taps on one', async () => {
+  const { currentRequest } = await import('../../src/game/sim/economy.ts');
+  const s = newGame(1);
+  s.request = { kind: 'neighbours', n: 3, base: 0, done: 1, paid: 0, skipped: -1e9, streak: 0 };
+  for (let i = 0; i < 3; i++) { gift(s, 'goby'); s.t += 61; }
+  assert.equal(currentRequest(s)?.got, 1);
+  gift(s, 'sea-pen');
+  gift(s, 'isopod');
+  assert.equal(currentRequest(s)?.got, 3);
+});

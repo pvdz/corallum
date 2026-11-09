@@ -3,7 +3,7 @@
 // from the reef's seed and the number already done, among the kinds that make sense where the
 // reef is. Never needed: the reef grows the same without them.
 
-export type RequestKind = 'bud' | 'glimmer' | 'bands' | 'feast' | 'touch' | 'sweep' | 'shoals' | 'sandbar' | 'pigment' | 'ripen'
+export type RequestKind = 'bud' | 'glimmer' | 'bands' | 'feast' | 'neighbours' | 'sweep' | 'shoals' | 'sandbar' | 'pigment' | 'ripen'
   | 'roam' | 'work' | 'intruder' | 'read' | 'shell' | 'rising' | 'signal' | 'star' | 'prune' | 'milky' | 'lucky' | 'free' | 'visitor' | 'stray' | 'fragment';
 
 export type RequestDef = {
@@ -43,7 +43,7 @@ export const REQUESTS: readonly RequestDef[] = [
   { kind: 'glimmer', ask: 'Take in {n} more glimmerseed.', n: (d) => Math.min(10, 3 + Math.floor(d / 2)), zones: [1, 2, 3, 4, 5] },
   { kind: 'bands', ask: 'Lay down {n} bands.', one: 'Lay down a band.', n: (d) => Math.min(5, 1 + Math.floor(d / 3)), zones: [1, 2, 3, 4, 5] },
   { kind: 'feast', ask: 'Catch something falling.', n: () => 1, zones: [1, 2, 3, 4, 5] },
-  { kind: 'touch', ask: 'Touch {n} of our neighbours.', n: (d) => Math.min(6, 2 + Math.floor(d / 3)), zones: [1, 2, 3, 4, 5] },
+  { kind: 'neighbours', ask: 'Touch {n} of our neighbours.', n: (d) => Math.min(6, 2 + Math.floor(d / 3)), zones: [1, 2, 3, 4, 5] },
   { kind: 'sweep', ask: 'Sweep the water {n} times with your tentacles.', n: (d) => Math.min(8, 3 + Math.floor(d / 3)), zones: [1, 2] },
   { kind: 'shoals', ask: 'Call {n} more shoals.', one: 'Call one more shoal.', n: (d) => Math.min(4, 1 + Math.floor(d / 4)), zones: [2, 3] },
   { kind: 'sandbar', ask: 'Raise {n} sand bar.', n: () => 1, zones: [3] },
