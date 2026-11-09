@@ -1700,14 +1700,24 @@ function eatFeast(share = 1): boolean {
 
 // Moving over the water (a mouse; touches tap instead): polyps near the pointer pull their tentacles
 // in, and over a creature the pointer becomes a hand (it can be touched: named, and it answers).
+// (Checked again a few times a second while the mouse rests, as creatures swim under it.)
 let handCursor = false;
+let mouseAt: [number, number] | null = null;
+let cursorChecked = 0;
+function checkCursor(): void {
+  if (!mouseAt) return;
+  const [wx, wy] = toWorld(mouseAt[0] * dpr, mouseAt[1] * dpr);
+  const over = creatureAt(wx, wy) !== null;
+  if (over !== handCursor) { handCursor = over; canvas.style.cursor = over ? 'pointer' : ''; }
+}
 canvas.addEventListener('pointermove', (e) => {
   if (e.pointerType !== 'mouse') return;
   const [wx, wy] = toWorld(e.clientX * dpr, e.clientY * dpr);
   hover(wx, wy, frozenT ?? animT);
-  const over = creatureAt(wx, wy) !== null;
-  if (over !== handCursor) { handCursor = over; canvas.style.cursor = over ? 'pointer' : ''; }
+  mouseAt = [e.clientX, e.clientY];
+  checkCursor();
 });
+canvas.addEventListener('pointerleave', () => { mouseAt = null; });
 
 // Tapping the water sweeps the tentacles: a small burst of calcite. Tapping a falling feast eats it.
 canvas.addEventListener('pointerdown', (e) => {
@@ -2570,6 +2580,7 @@ function frameBody(now: number): void {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   if (photoPending) { const take = photoPending; photoPending = null; take(); }
   endFrameSpots(focusNow);
+  if (mouseAt && now - cursorChecked > 200) { cursorChecked = now; checkCursor(); }
   if (now - lastPortrait > 1000 && frozenT === null && !fadingFrom && !replayQuiet && (zoom.k === 1 || zoom.k >= 2)) {
     lastPortrait = now;
     takePortrait();

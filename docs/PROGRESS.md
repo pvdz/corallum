@@ -1527,4 +1527,4 @@ date, what landed, what is half-done, what's next.
 - The shore bird on the crown, touched, hops up with a wing raised and settles (its tap spot stays where it stands).
 - Release check after the evening's creature passes and touch reactions: all eight e2e suites green (smoke, play, prestige, finale, feast, saves, sound, systems), 107 sim tests, tsc clean.
 - The creatures that now dart or bolt when touched (sardine run, barracuda, eagle rays, sea snake, the Rasp herd) answer with the fish's swish instead of the plain touch sound.
-- On a desktop the pointer becomes a hand over a creature (it can be touched: named, and it answers); the open water keeps the plain arrow, though a tap there still sweeps.
+- On a desktop the pointer becomes a hand over a creature (it can be touched: named, and it answers); the open water keeps the plain arrow, though a tap there still sweeps. Rechecked five times a second while the mouse rests, as creatures swim under it.
