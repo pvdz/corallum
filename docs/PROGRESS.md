@@ -1541,3 +1541,4 @@ date, what landed, what is half-done, what's next.
 - The oarfish still glared white in the Twilight's bright water (its silver at #c4cfdc, the agreed ceiling): the silver tops at #a8b4c4 now, the flank streaks are darker and the lateral line softer, so it reads as silver with its markings. In REDRAWN.
 - The bait ball's fish were flat pale flakes: each now has a dark back (one stroked path for all 160), so the ball reads as fish. In REDRAWN.
 - The shark pups (moment: kept in the shallows) had a near-white belly (#e4ecef) that glared; #c6d2da now.
+- Two-column lists (What shapes this reef, moments, feats, the chronicle, totals) gave the name column its full width (auto), so effects wrapped to three lines ("calcite / dissolves ×0.98 / (each)"): the columns split 2:3 now, effects mostly on one line, long names on two. Audit desktop/mobile/tiny at 9000 and 19000: only the two known dim findings.
