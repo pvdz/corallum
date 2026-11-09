@@ -668,7 +668,7 @@ export function createSunlitScene(seed: number): Scene {
       const g = ctx.createLinearGradient(0, -4 * s, 0, 4 * s);
       g.addColorStop(0, '#76889a');
       g.addColorStop(0.55, '#a6b5c0');
-      g.addColorStop(1, '#e4ecef');
+      g.addColorStop(1, '#c6d2da');
       ctx.fillStyle = '#7f8f9e';
       ctx.beginPath();
       // Tail, swinging, and the fins behind the body.
