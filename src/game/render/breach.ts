@@ -1903,7 +1903,9 @@ export function createBreachScene(seed: number): Scene {
 
   /**
    * After the release, your children settle: tiny new reefs appear one by one in the deep below,
-   * more as time passes (dozens within the hour), each a few pale branches and a pink glow.
+   * more as time passes (dozens within the hour), each a few pale branches and a pink glow, on the
+   * top of a far pinnacle of rock (a faint spire fading down into the dark, so none hangs in the
+   * open water).
    */
   function drawChildren(ctx: CanvasRenderingContext2D, v: ReefView, t: number): void {
     if (v.sinceBreach < 30) return;
@@ -1911,12 +1913,32 @@ export function createBreachScene(seed: number): Scene {
     const wy = waterY();
     const n = Math.min(40, Math.floor(6 * Math.log2(1 + (v.sinceBreach - 30) / 30)));
     const r = mulberry32(seed ^ 0xc41d);
+    const kids: { x: number; y: number; depth: number; size: number; born: number }[] = [];
     for (let i = 0; i < n; i++) {
       const x = focus.x + focus.w * range(r, 0.03, 0.97);
       const depth = range(r, 0.55, 1);
       const y = wy + (h - wy) * depth;
       const size = (0.5 + depth) * s * range(r, 0.6, 1.1);
-      const born = Math.min(1, (v.sinceBreach - 30 - i * 20) / 20);
+      kids.push({ x, y, depth, size, born: Math.min(1, (v.sinceBreach - 30 - i * 20) / 20) });
+    }
+    // The pinnacles, all in one path under one fade: dark at the foot, gone toward the surface.
+    const rock = new Path2D();
+    for (const k of kids) {
+      if (k.born <= 0) continue;
+      const { x, y, size } = k;
+      rock.moveTo(x - 4.5 * size, y + 1.2 * size);
+      rock.quadraticCurveTo(x - 8 * size, y + (h - y) * 0.4, x - 16 * size, h);
+      rock.lineTo(x + 15 * size, h);
+      rock.quadraticCurveTo(x + 7 * size, y + (h - y) * 0.45, x + 4.5 * size, y + 1.2 * size);
+      rock.closePath();
+    }
+    const fade = ctx.createLinearGradient(0, wy + (h - wy) * 0.5, 0, h);
+    fade.addColorStop(0, 'rgba(6,8,22,0.35)');
+    fade.addColorStop(1, 'rgba(3,4,14,0.85)');
+    ctx.fillStyle = fade;
+    ctx.fill(rock);
+    for (const [i, k] of kids.entries()) {
+      const { x, y, depth, size, born } = k;
       if (born <= 0) continue;
       ctx.save();
       ctx.globalAlpha = 0.35 + 0.4 * depth * born;

@@ -1545,3 +1545,4 @@ date, what landed, what is half-done, what's next.
 - Moments met (Bands tab) followed the content's order, which lists two later additions first: "A cloud settles" (1300 m) headed the list and a "not yet met · 3985 m" row sat among the Silt Floor's moments. The list is by depth now.
 - The line's totals said feats as a bare count among "x of y" rows: "n of 72" now.
 - Full audit sweep after the night's panel changes (codex-list columns, moments by depth, totals): all 10 viewports × plain/Larger/scientific at 8 stages, only the two known dim findings each.
+- After the release, the children settling "in the deep below" hung in open water in the Breach's side view: each now stands on a far pinnacle, a dark spire fading up from the foot of the screen (one path, one fade for all forty).
