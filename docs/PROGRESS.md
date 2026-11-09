@@ -1550,3 +1550,4 @@ date, what landed, what is half-done, what's next.
 - Shift+N greets the creature before (N the next); on the shortcuts card and in the README.
 - Collide after the sea snake's new track and the creature moves: Sunlit and Breach clean on desktop and phone (Twilight checked earlier).
 - The Sunlit Crown's far whale kept its tap spot (and counted as seen) at night, though its faint blue silhouette vanished in the dark water: a tap on black water named a whale. It fades out with the night now and is neither seen nor tappable after dark.
+- A creature's label promised the wrong gift: early on, a glowing neighbour (the sea pens) said "Shares a little light again" while its gift was paid in calcite (light is not made yet), and the wait ignored the companion's and the cleaner wrasse's halved cooldown. giftStock and giftCooldown (economy.ts) are now the one rule for both the gift and its label; a test in economy.test.ts.

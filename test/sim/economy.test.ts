@@ -866,3 +866,18 @@ test('the until-functions of the water\'s small events count down to them openin
     assert.ok(checked > 5, `${name}: checked ${checked}`);
   }
 });
+
+test('the gift a creature promises is the gift it gives: food while the reef makes none of its own stock', async () => {
+  const { giftStock, giftCooldown } = await import('../../src/game/sim/economy.ts');
+  const s = newGame(1);
+  assert.equal(giftStock(s, 'sea-pen'), 'calcite');
+  const g = gift(s, 'sea-pen');
+  assert.equal(g?.stock, 'calcite');
+  // Once the reef makes light, a glowing neighbour shares light.
+  s.levels.symbiont = 3;
+  assert.equal(giftStock(s, 'sea-pen'), 'glow');
+  // The wait the label shows is the wait gift() keeps.
+  assert.equal(gift(s, 'sea-pen'), null);
+  s.t += giftCooldown(s, 'sea-pen') + 0.01;
+  assert.equal(gift(s, 'sea-pen')?.stock, 'glow');
+});

@@ -34,14 +34,14 @@ import { REQUEST } from '../game/content/requests.ts';
 import { SHELL, SHELLS } from '../game/content/shells.ts';
 import { SHARD, SHARD_LINES } from '../game/content/shards.ts';
 import { drawWater } from '../game/render/waters.ts';
-import { heightForBands, advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, inMilky, milkyGlow, moonlitSpawn, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, currentFragment, takeFragment, currentStray, callStray, currentRaft, shelterRaft, blueMoon, helpTangle, currentTangle, freeTangle, lucky, visitor, visited, meteorShower, makeWish, prune, oldKnobs, oldHeld, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, sisterNow, lightSister, prepareAway, nextMoment, othersSpawning, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
+import { heightForBands, advance, assign, breach, canBreach, buy, timeUntil, currentFeast, feast, feastPay, gift, giftCooldown, giftStock, tableFeast, greatTide, calciteHold, choose, ended, moonFull, moonPhase, untilFullMoon, spawnTarget, feeding, lure, rates, read, send, build, inFlurry, inMilky, milkyGlow, moonlitSpawn, inHeat, untilHeat, closedNow, closeUp, cyclesBetween, dream, flare, elderBlessed, currentRiddle, setDay, currentUpwelling, catchUpwelling, currentSwell, rideSwell, answerOssel, osselAsks, heatLength, feedRising, inRising, canFeedRising, figureOpen, nameFigure, pickShell, currentShell, currentFragment, takeFragment, currentStray, callStray, currentRaft, shelterRaft, blueMoon, helpTangle, currentTangle, freeTangle, lucky, visitor, visited, meteorShower, makeWish, prune, oldKnobs, oldHeld, answerRiddle, dailyGift, forkOpen, strainOpen, takeFork, chooseStrain, chooseGrain, chooseSport, sportOpen, plant, answerSignal, currentSignal, setCurrent, callHome, cousinRaces, sisterNow, lightSister, prepareAway, nextMoment, othersSpawning, chooseBoon, currentThorn, crabThorn, pryThorn, skipRequest, meetOthers, sisterAt, tripSeconds, remember, welcome, welcomeHaul, tripSite, house, meet, askFavour, setRasp, waterAt, untilWaterTurns, smother, speak, sweep } from '../game/sim/economy.ts';
 import { deserialize, exportString, importString, serialize } from '../game/sim/save.ts';
 import { newGame, type GameState } from '../game/sim/state.ts';
 import { duration, metres, num, setScientific } from '../game/ui/format.ts';
 import { createAudio, type Cue } from '../game/audio/audio.ts';
 import { AWAY_CYCLES, AWAY_PREP, DAILY, DREAM, NOTIFY, SWELL, FEAST, SIGNAL, THORN, WELCOME, TODAY, TANGLE, FRAGMENT, STRAY, RAFT } from '../game/content/events.ts';
 import { LINEAGE, LINEAGE_BANDS, SEAMOUNTS, TRIAL_TEXT } from '../game/content/lineage.ts';
-import { CREATURES, JOURNAL_PASSING, GIFT, GIFT_TEXT, GIFT_WORD, LUCKY, giftOf, TRUST, trustLevel, COMPANION, type CreatureId } from '../game/content/creatures.ts';
+import { CREATURES, JOURNAL_PASSING, GIFT_TEXT, GIFT_WORD, LUCKY, giftOf, TRUST, trustLevel, COMPANION, type CreatureId } from '../game/content/creatures.ts';
 import { newFeats } from '../game/content/feats.ts';
 import { createPortraits } from './portraits.ts';
 import { createZoom } from './zoom.ts';
@@ -1523,8 +1523,9 @@ function showCreatureLabel(id: string, x: number, y: number, r = 20, tx = NaN, t
   t.textContent = c.note;
   // What it gives when touched, and when it will give again.
   const g = document.createElement('em');
-  const wait = state.gifts[c.id] + GIFT.cooldown - state.t;
-  g.textContent = wait > 0 ? UI.giftAgain(GIFT_WORD[giftOf(c.id)], duration(wait)) : UI.giftWhen(GIFT_WORD[giftOf(c.id)]);
+  const wait = state.gifts[c.id] + giftCooldown(state, c.id) - state.t;
+  const word = GIFT_WORD[giftStock(state, c.id)];
+  g.textContent = wait > 0 ? UI.giftAgain(word, duration(wait)) : UI.giftWhen(word);
   creatureLabel.append(n, t, g);
   const reach = Math.min(r, 90);
   const lw = creatureLabel.offsetWidth || 220, lh = creatureLabel.offsetHeight || 56;

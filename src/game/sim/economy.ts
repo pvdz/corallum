@@ -1684,6 +1684,24 @@ export function lucky(s: GameState, id: string): boolean {
   return s.luckySpan !== win && mulberry32((h ^ s.seed ^ Math.imul(win, 0x9e3779b1)) >>> 0)() < LUCKY.chance * (trait(s, 'lucky-line') ? 2 : 1) * (seamount(s).lucky ?? 1) * (passed(s, 'gleaming') ? 1.5 : 1) * (lives(s, 'decorator-crab') ? 1.5 : 1) * today(s, 'lucky-day', 2);
 }
 
+/** Seconds between a creature's gifts: halved for the companion, and again with cleaner wrasse. */
+export function giftCooldown(s: GameState, id: CreatureId): number {
+  return GIFT.cooldown * (s.meta.companion === id ? 0.5 : 1) * (lives(s, 'cleaner-wrasse') ? 0.5 : 1);
+}
+
+/**
+ * What a creature's gift is paid in now: its own stock, or calcite while the reef makes none of
+ * that yet; and food feeds what the zone lives by (bloom in the light, the spawn at the surface,
+ * as feasts do).
+ */
+export function giftStock(s: GameState, id: CreatureId, r = rates(s)): GiftStock {
+  const own = giftOf(id);
+  const made = own === 'glow' ? r.glowP : own === 'plankton' ? r.planktonP : own === 'sand' ? r.sandP : 0;
+  const stock: GiftStock = made > 0 ? own : 'calcite';
+  const pay = feastPay(s);
+  return stock === 'calcite' && pay !== 'calcite' ? pay : stock;
+}
+
 /**
  * A touched creature's gift: GIFT.seconds of the reef's production of its stock (calcite when the
  * reef makes none of it yet), once per GIFT.cooldown per creature. Null while it is cooling down.
@@ -1706,15 +1724,12 @@ export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: 
   const close = s.meta.companion === id;
   // A lucky one gives at once, whatever the cooldown, and much more.
   const luck = lucky(s, id);
-  if (!luck && s.t - s.gifts[id] < GIFT.cooldown * (close ? 0.5 : 1) * (lives(s, 'cleaner-wrasse') ? 0.5 : 1)) return null;
+  if (!luck && s.t - s.gifts[id] < giftCooldown(s, id)) return null;
   const r = rates(s);
-  let stock = giftOf(id);
-  const made = stock === 'glow' ? r.glowP : stock === 'plankton' ? r.planktonP : stock === 'sand' ? r.sandP : 0;
-  const k = stock === 'glow' ? r.glowK : stock === 'plankton' ? r.planktonK : r.sandK;
-  if (!(made > 0)) stock = 'calcite';
-  // Food feeds what the zone lives by: bloom in the light, the spawn at the surface (as feasts do).
-  const pay = feastPay(s);
-  if (stock === 'calcite' && pay !== 'calcite') stock = pay;
+  const own = giftOf(id);
+  const made = own === 'glow' ? r.glowP : own === 'plankton' ? r.planktonP : own === 'sand' ? r.sandP : 0;
+  const k = own === 'glow' ? r.glowK : own === 'plankton' ? r.planktonK : r.sandK;
+  const stock = giftStock(s, id, r);
   // Never more than a share of what the reef can hold of it (P/k), or it would only wash away.
   // Rare visitors give more: catching one is luck as well as attention.
   const rare = CREATURES.find((c) => c.id === id)?.note.startsWith('Rare.') ? GIFT.rare : 1;
