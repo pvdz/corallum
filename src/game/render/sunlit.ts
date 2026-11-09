@@ -1324,16 +1324,23 @@ export function createSunlitScene(seed: number): Scene {
     }
   }
 
-  /** Eagle rays (rare): every 25 minutes a line of spotted rays flies across the upper water. */
+  /**
+   * Eagle rays (rare): every 25 minutes a line of spotted rays flies across the upper water.
+   * Touched, the line veers up and away, each ray following the one ahead a moment later.
+   */
   function drawEagleRays(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 1500, length = 40;
     const u = ((t + 400) % period) / length;
     if (u >= 1) return;
     sight('eagle-rays');
     const s = scale() * 1.4;
+    const touch = startled('eagle-rays', t);
+    const since = touch && touch.age <= (t + 400) % period ? touch.age : -1;
     for (let k = 0; k < 6; k++) {
-      const x = focus.x + focus.w * (1.15 - u * 1.4 + k * 0.07);
-      const y = focus.y + focus.h * (0.2 + k * 0.035) + Math.sin(t + k) * 4 * s;
+      const vk = since < 0 ? 0 : Math.min(1, Math.max(0, since - k * 0.25) / 3);
+      const veer = vk * vk * (3 - 2 * vk);
+      const x = focus.x + focus.w * (1.15 - u * 1.4 + k * 0.07 - veer * 0.08);
+      const y = focus.y + focus.h * (0.2 + k * 0.035 - veer * 0.1) + Math.sin(t + k) * 4 * s;
       if (k === 0) spot('eagle-rays', x, y, 40 * s);
       const flap = Math.sin(t * 2.2 + k * 0.6) * 0.3;
       ctx.save();
@@ -1738,12 +1745,18 @@ export function createSunlitScene(seed: number): Scene {
     const fade = Math.min(1, p / 8, (length - p) / 8);
     const cx = focus.x + focus.w * 0.82, cy = focus.y + focus.h * 0.38;
     spot('barracuda', cx, cy, 80 * s);
+    // Touched, the column tightens and spins faster, then loosens again over six seconds (the
+    // extra turn is the spin's integral, so the circling never jumps).
+    const touch = startled('barracuda', t);
+    const ta = touch && touch.age < p ? Math.min(touch.age, 6) : 0;
+    const spin = 1.5 * (ta - (ta * ta) / 12);
+    const tight = 1 - 0.3 * Math.sin((ta / 6) * Math.PI);
     ctx.save();
     ctx.globalAlpha = fade;
     for (let i = 0; i < 90; i++) {
       const lvl = i / 90;
-      const a = t * 0.9 + i * 0.7;
-      const r = (34 + 10 * Math.sin(lvl * 9)) * s;
+      const a = t * 0.9 + spin + i * 0.7;
+      const r = (34 + 10 * Math.sin(lvl * 9)) * s * tight;
       const x = cx + Math.cos(a) * r, y = cy - 90 * s + lvl * 190 * s + Math.sin(a) * r * 0.22;
       const dir = -Math.sin(a) >= 0 ? 1 : -1;
       const len = 11 * s;

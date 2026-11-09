@@ -2234,7 +2234,8 @@ export function createTwilightScene(seed: number): Scene {
 
   /**
    * Rarely, a whale shark: once in eighteen minutes the biggest fish in the sea glides across the
-   * upper water, broad-headed and spotted, mouth open for plankton.
+   * upper water, broad-headed and spotted, mouth open for plankton. Touched, it tips its head down
+   * and sinks a little way, unhurried, then rises back to its line.
    */
   function drawWhaleShark(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 1080, crossing = 70;
@@ -2242,11 +2243,16 @@ export function createTwilightScene(seed: number): Scene {
     if (u >= 1) return;
     sight('whale-shark');
     const s = scale() * 2.4;
-    const x = focus.x + focus.w * (-0.3 + u * 1.6), y = focus.y + focus.h * 0.3 + Math.sin(t * 0.25) * 8 * s;
+    const touch = startled('whale-shark', t);
+    const ta = touch && touch.age < 9 ? touch.age / 9 : 0;
+    const dip = Math.sin(ta * Math.PI);
+    const x = focus.x + focus.w * (-0.3 + u * 1.6), y = focus.y + focus.h * 0.3 + Math.sin(t * 0.25) * 8 * s + dip * 22 * s;
     spot('whale-shark', x, y, 70 * s);
     const sweep = Math.sin(t * 1.2);
     ctx.save();
     ctx.translate(x, y);
+    // Tipping down at the front while it sinks, levelling as it rises (the head leads the dip).
+    ctx.rotate(0.09 * Math.sin(ta * Math.PI * 2));
     // A broad flat head with the mouth across its very front, a long body and a tall tail.
     const body = () => {
       ctx.beginPath();
