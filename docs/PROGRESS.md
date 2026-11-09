@@ -1544,3 +1544,4 @@ date, what landed, what is half-done, what's next.
 - Two-column lists (What shapes this reef, moments, feats, the chronicle, totals) gave the name column its full width (auto), so effects wrapped to three lines ("calcite / dissolves ×0.98 / (each)"): the columns split 2:3 now, effects mostly on one line, long names on two. Audit desktop/mobile/tiny at 9000 and 19000: only the two known dim findings.
 - Moments met (Bands tab) followed the content's order, which lists two later additions first: "A cloud settles" (1300 m) headed the list and a "not yet met · 3985 m" row sat among the Silt Floor's moments. The list is by depth now.
 - The line's totals said feats as a bare count among "x of y" rows: "n of 72" now.
+- Full audit sweep after the night's panel changes (codex-list columns, moments by depth, totals): all 10 viewports × plain/Larger/scientific at 8 stages, only the two known dim findings each.
