@@ -2552,7 +2552,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       if (ended(s)) {
         gardenLevel.textContent = `${s.garden}/${GARDEN.max}`;
         const full = s.garden >= GARDEN.max;
-        gardenCost.textContent = full ? 'Complete' : `${num(plantCost(s))} calcite`;
+        gardenCost.textContent = full ? GARDEN.full : `${num(plantCost(s))} calcite`;
         for (const b of gardenBtns) b.disabled = full || s.calcite < plantCost(s);
       }
 

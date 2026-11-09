@@ -260,6 +260,8 @@ export const GARDEN = {
   text: 'The spawn is gone, and the morning is very quiet. Some of your children did not drift far. Help them take hold here, in the shallows around you.',
   plant: 'Plant a child',
   effect: '+1 lineage when you begin again',
+  /** In place of a price once all twelve are planted. */
+  full: 'Complete',
   /** What kind of child: each kind is a small gift to the next reef of the line, per child. */
   kinds: [
     { id: 'q', name: 'A quick one', effect: 'bands cost\u00a0×0.97 on the next reef', colours: { branch: '#c07a3e', tip: '#f0b070', polyp: 'rgba(255,235,200,0.95)' } },
