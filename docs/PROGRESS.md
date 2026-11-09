@@ -1548,3 +1548,4 @@ date, what landed, what is half-done, what's next.
 - After the release, the children settling "in the deep below" hung in open water in the Breach's side view: each now stands on a far pinnacle, a dark spire fading up from the foot of the screen (one path, one fade for all forty).
 - On a phone the settled children (and their pinnacles) were all under the sheet, never seen: they were placed by the frame's height, the sheet covering its bottom half. They sit in the open scene now (above the sheet; the whole frame on desktop as before).
 - Shift+N greets the creature before (N the next); on the shortcuts card and in the README.
+- Collide after the sea snake's new track and the creature moves: Sunlit and Breach clean on desktop and phone (Twilight checked earlier).
