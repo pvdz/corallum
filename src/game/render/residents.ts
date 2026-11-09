@@ -317,7 +317,7 @@ function dusters(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s: nu
   }
 }
 
-/** An ochre sea star clamped to a branch high on the reef, arms slowly curling. */
+/** An ochre sea star clamped to a branch high on the reef, arms slowly curling; touched, it draws them in, slowly. */
 function seaStar(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s0: number, t: number, seed: number): void {
   const p = perches(reef, L, 0.8, 0.97, seed ^ 0x57a, 1)[0];
   if (p === undefined) return;
@@ -327,9 +327,12 @@ function seaStar(ctx: CanvasRenderingContext2D, reef: Reef, L: ReefLayout, s0: n
   ctx.save();
   // Five soft, tapering arms with rounded tips, each curling a little on its own, shaded from a
   // paler middle, beaded along each arm.
+  const touch = startled('sea-star', t);
+  const ta = touch && touch.age < 6 ? touch.age : -1;
+  const draw = ta < 0 ? 0 : ta < 1 ? ta : Math.max(0, 1 - (ta - 1) / 5);
   const arm = (k: number): [number, number, number] => {
     const a = -Math.PI / 2 + (k / 5) * Math.PI * 2 + Math.sin(t * 0.3) * 0.05;
-    return [a, (7.5 + Math.sin(t * 0.4 + k) * 0.6) * s, Math.sin(t * 0.25 + k * 1.7) * 0.18];
+    return [a, (7.5 + Math.sin(t * 0.4 + k) * 0.6) * s * (1 - 0.3 * draw), Math.sin(t * 0.25 + k * 1.7) * 0.18 + (k % 2 ? 0.45 : -0.45) * draw];
   };
   ctx.beginPath();
   for (let k = 0; k < 5; k++) {

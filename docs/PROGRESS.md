@@ -1523,3 +1523,4 @@ date, what landed, what is half-done, what's next.
 - A touched nudibranch raises its cerata stiff and tall (a warning) and lets them down over a few seconds; a touched glass sponge sends a shimmer of light up its lattice from the silt to the rim.
 - The great Rasp herd, touched, scatters up and down around the touch with hard-beating tails and closes ranks over three seconds.
 - The squat lobsters on the vent, touched, rear up claws high and pincers wide, one a beat after another, and lower them over three seconds.
+- The resident sea star, touched, draws its arms in and curls their tips over a second, and relaxes over five (not seen in the browser: no bot reef houses it; typecheck only).
