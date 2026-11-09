@@ -2181,7 +2181,9 @@ window.addEventListener('keydown', (e) => {
     return;
   }
   if (e.key === 'n' || e.key === 'N') {
-    // Greet the next creature in view (left to right, round again), as a tap on it would.
+    // Greet the next creature in view (left to right, round again), as a tap on it would. Not
+    // during a replay: the creatures there are memories.
+    if (lapseScene || lapseStart >= 0) return;
     // (In view, on screen: zoomed in, much of the world is not.)
     const shown = (p: Spot) => {
       const [sx, sy] = toScreen(p.x, p.y);
