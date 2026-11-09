@@ -2530,8 +2530,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           const left = Math.max(0, s.expedition.back - s.t);
           (tripBar.firstChild as HTMLElement).style.width = `${(1 - left / tripSeconds(s, away)) * 100}%`;
           tripEffect.textContent = away.relic
-            ? `${away.shoals} shoals ${EXPEDITION.away} · bringing ${away.relic.toLowerCase()} (${away.effect})`
-            : `${away.shoals} shoals ${EXPEDITION.away} · ${away.effect}`;
+            ? `${away.shoals} shoal${away.shoals === 1 ? '' : 's'} ${EXPEDITION.away} · bringing ${away.relic.toLowerCase()} (${away.effect})`
+            : `${away.shoals} shoal${away.shoals === 1 ? '' : 's'} ${EXPEDITION.away} · ${away.effect}`;
           // While away: they can be called home early, for glow.
           const cc = callHomeCost(s);
           tripCost.textContent = `↩ ${num(cc)} glow`;
@@ -2541,7 +2541,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           tripCard.classList.remove('ready');
         } else {
           tripEffect.textContent = ahead.relic ? `${duration(tripSeconds(s, ahead))} away · a relic: ${ahead.effect}` : `${duration(tripSeconds(s, ahead))} away · ${ahead.effect}`;
-          tripCost.textContent = `${ahead.shoals} shoals`;
+          tripCost.textContent = `${ahead.shoals} shoal${ahead.shoals === 1 ? '' : 's'}`;
           const ok = canSend(s);
           tripBtn.disabled = !ok;
           tripCard.classList.toggle('ready', ok);
