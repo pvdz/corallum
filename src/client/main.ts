@@ -1579,7 +1579,8 @@ function touchCue(id: string): Cue {
   if (giftOf(id as CreatureId) === 'glow') return 'shimmer';
   if (['shore-bird', 'gull', 'pelican'].includes(id)) return 'gull';
   if (['rasp', 'guard-crab', 'isopod', 'squat-lobster', 'pistol-shrimp', 'drill-snail', 'thorn-star', 'nautilus'].includes(id)) return 'crunch';
-  if (['reef-fish', 'reef-shark', 'grouper', 'goby', 'damselfish', 'hatchetfish', 'flying-fish', 'clownfish', 'rattail', 'tripod-fish', 'moray', 'frogfish'].includes(id)) return 'sweep';
+  if (['reef-fish', 'reef-shark', 'grouper', 'goby', 'damselfish', 'hatchetfish', 'flying-fish', 'clownfish', 'rattail', 'tripod-fish', 'moray', 'frogfish',
+    'sardine-run', 'barracuda', 'eagle-rays', 'sea-snake', 'rasp-herd'].includes(id)) return 'sweep';
   return 'touch';
 }
 
