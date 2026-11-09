@@ -163,8 +163,13 @@ await withGame(async (open) => {
     await page.keyboard.press(' ');
     const f1 = await folded(), sw2 = await page.evaluate(() => window.corallum!.state.tally.sweeps);
     const headerOk = f1 === f0 && sw2 - sw1 === 1;
-    const ok = bought === 1 && sound === 'true' && swept === 1 && numbered && headerOk && !errors.length;
-    console.log(`${ok ? 'ok  ' : 'FAIL'} keys after the mouse: P buys (${bought}), Space sweeps (${swept}${numbered ? ', a number shown' : ', NO number'}), sound stays ${sound === 'true' ? 'on' : 'off'}, a clicked header ${headerOk ? 'keeps its fold' : 'took the Space'}`);
+    // N greets creatures in view one after another, each counted as touched as a tap would.
+    const touchedNow = () => page.evaluate(() => window.corallum!.state.meta.seen.filter((k) => k.startsWith('t:')).length);
+    const t0 = await touchedNow();
+    for (let i = 0; i < 3; i++) await page.keyboard.press('n');
+    const greeted = (await touchedNow()) - t0;
+    const ok = bought === 1 && sound === 'true' && swept === 1 && numbered && headerOk && greeted >= 2 && !errors.length;
+    console.log(`${ok ? 'ok  ' : 'FAIL'} keys after the mouse: P buys (${bought}), Space sweeps (${swept}${numbered ? ', a number shown' : ', NO number'}), sound stays ${sound === 'true' ? 'on' : 'off'}, a clicked header ${headerOk ? 'keeps its fold' : 'took the Space'}, N greets ${greeted} creatures`);
     if (!ok) process.exitCode = 1;
   }
   // The back gesture with a story card open closes the card and stays in the game; a card closed

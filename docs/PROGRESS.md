@@ -1529,3 +1529,4 @@ date, what landed, what is half-done, what's next.
 - The creatures that now dart or bolt when touched (sardine run, barracuda, eagle rays, sea snake, the Rasp herd) answer with the fish's swish instead of the plain touch sound.
 - On a desktop the pointer becomes a hand over a creature (it can be touched: named, and it answers); the open water keeps the plain arrow, though a tap there still sweeps. Rechecked five times a second while the mouse rests, as creatures swim under it.
 - N greets the next creature in view, left to right and round again, exactly as a tap on it would (it answers, counts as touched, may give a gift, is named): touching creatures was the one thing a keyboard could not do. The tap's creature handling is one function now (touchCreature), shared by the tap and N; the key is on the shortcuts card.
+- play e2e: N after a mouse click greets creatures, each counted as touched (2 of 3 presses: one may be Ossel, who speaks instead).
