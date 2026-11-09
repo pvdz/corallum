@@ -1525,3 +1525,4 @@ date, what landed, what is half-done, what's next.
 - The squat lobsters on the vent, touched, rear up claws high and pincers wide, one a beat after another, and lower them over three seconds.
 - The resident sea star, touched, draws its arms in and curls their tips over a second, and relaxes over five (not seen in the browser: no bot reef houses it; typecheck only).
 - The shore bird on the crown, touched, hops up with a wing raised and settles (its tap spot stays where it stands).
+- Release check after the evening's creature passes and touch reactions: all eight e2e suites green (smoke, play, prestige, finale, feast, saves, sound, systems), 108 sim tests, tsc clean.
