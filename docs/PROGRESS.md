@@ -1537,3 +1537,4 @@ date, what landed, what is half-done, what's next.
 - Small reef-dwellers were near untouchable on a phone: gobies, damselfish, guard crabs, feather dusters and the pistol shrimp had tap spots of 6–9 CSS px in radius (12–18 px across). Every spot is now at least 16 CSS px in radius (setMinSpot, set with the frame size); nearest centre still wins among overlapping ones. corallum.spots gives each radius (CSS px). play, feast, systems and finale e2e green.
 - Overlaps on the phone after the larger tap spots (labels sit by the spot's radius): clean at all 8 stages.
 - README pictures and the link preview retaken with the night's redraws (octopus, nautilus, seahorses, turtle, sea spider, petrels, rattail).
+- Fuzz on the smallest screens after N, the hand cursor and the larger tap spots: 568×320 Twilight 486 actions, 320×568 Sunlit 456, clean.
