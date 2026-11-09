@@ -1698,11 +1698,15 @@ function eatFeast(share = 1): boolean {
   return true;
 }
 
-// Moving over the water (a mouse; touches tap instead): polyps near the pointer pull their tentacles in.
+// Moving over the water (a mouse; touches tap instead): polyps near the pointer pull their tentacles
+// in, and over a creature the pointer becomes a hand (it can be touched: named, and it answers).
+let handCursor = false;
 canvas.addEventListener('pointermove', (e) => {
   if (e.pointerType !== 'mouse') return;
   const [wx, wy] = toWorld(e.clientX * dpr, e.clientY * dpr);
   hover(wx, wy, frozenT ?? animT);
+  const over = creatureAt(wx, wy) !== null;
+  if (over !== handCursor) { handCursor = over; canvas.style.cursor = over ? 'pointer' : ''; }
 });
 
 // Tapping the water sweeps the tentacles: a small burst of calcite. Tapping a falling feast eats it.
