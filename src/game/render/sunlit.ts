@@ -2331,20 +2331,25 @@ export function createSunlitScene(seed: number): Scene {
     }
   }
 
-  /** Now and then a whale crosses far off in the haze: a long soft shadow, flukes beating slowly. */
-  function drawWhale(ctx: CanvasRenderingContext2D, t: number): void {
+  /**
+   * Now and then a whale crosses far off in the haze: a long soft shadow, flukes beating slowly.
+   * Only in the light: by night it fades out, and is neither seen nor tappable.
+   */
+  function drawWhale(ctx: CanvasRenderingContext2D, t: number, night: number): void {
     const period = 210, crossing = 80;
     const u = (t % period) / crossing;
-    if (u >= 1) return;
-    sight('whale');
+    if (u >= 1 || night > 0.85) return;
     const lap = Math.floor(t / period);
     const dir = lap % 2 ? -1 : 1;
     const s = Math.min(focus.w, focus.h) / 700 * 1.6;
     const x = focus.x + focus.w * (dir > 0 ? -0.25 + u * 1.5 : 1.25 - u * 1.5);
     const y = focus.y + focus.h * (0.2 + 0.06 * (lap % 3)) + Math.sin(t * 0.15) * 6 * s;
-    const fade = Math.min(1, u * 8, (1 - u) * 8);
+    const fade = Math.min(1, u * 8, (1 - u) * 8) * (1 - night);
     const beat = Math.sin(t * 0.9);
-    spot('whale', x, y, 110 * s);
+    if (night < 0.5) {
+      sight('whale');
+      spot('whale', x, y, 110 * s);
+    }
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(dir, 1);
@@ -2388,7 +2393,7 @@ export function createSunlitScene(seed: number): Scene {
       const nq = Math.round(night * 40) / 40;
       water.draw(ctx, w, h, t, 0.2, `${w}x${h} ${p.toFixed(3)} ${nq}`, (c, tq) => drawWater(c, tq, p, nq));
       if (v.bands.includes('rain')) drawRain(ctx, t);
-      drawWhale(ctx, t);
+      drawWhale(ctx, t, night);
       drawMola(ctx, t);
       drawBaitBall(ctx, t);
       drawLarvae(ctx, t);

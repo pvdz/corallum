@@ -1549,3 +1549,4 @@ date, what landed, what is half-done, what's next.
 - On a phone the settled children (and their pinnacles) were all under the sheet, never seen: they were placed by the frame's height, the sheet covering its bottom half. They sit in the open scene now (above the sheet; the whole frame on desktop as before).
 - Shift+N greets the creature before (N the next); on the shortcuts card and in the README.
 - Collide after the sea snake's new track and the creature moves: Sunlit and Breach clean on desktop and phone (Twilight checked earlier).
+- The Sunlit Crown's far whale kept its tap spot (and counted as seen) at night, though its faint blue silhouette vanished in the dark water: a tap on black water named a whale. It fades out with the night now and is neither seen nor tappable after dark.
