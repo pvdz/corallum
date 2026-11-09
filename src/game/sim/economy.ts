@@ -1704,7 +1704,7 @@ export function giftStock(s: GameState, id: CreatureId, r = rates(s)): GiftStock
 
 /**
  * A touched creature's gift: GIFT.seconds of the reef's production of its stock (calcite when the
- * reef makes none of it yet), once per GIFT.cooldown per creature. Null while it is cooling down.
+ * reef makes none of it yet: giftStock), once per giftCooldown per creature. Null while it is cooling down.
  */
 export function gift(s: GameState, id: CreatureId): { stock: GiftStock; amount: number } | null {
   s.tally.touches++;
