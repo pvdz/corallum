@@ -321,8 +321,8 @@ so carrying different ones across endings pays.
   (Act V wait-or-go: four memories every third moon).
 - **Neighbours**: every creature drawn on screen is tappable: it is named, and nearly all answer
   in their own way (eels duck, octopus inks, lure goes dark, manta rolls, tube worms withdraw,
-  sardines open a hole, fireworm rings flare, the sea snake bolts...); only passing spectacles
-  (a breach, the migration, the sky's events) do not. A creature counts as seen once it shows in
+  sardines open a hole, fireworm rings flare, the sea snake bolts, the migration's lights go out
+  around a touch...); only passing spectacles (a breach, the sky's events) do not. A creature counts as seen once it shows in
   the open scene (not off the edge or behind the panel). Seen creatures add +2% calcite each, touched ones +1% more; a touch now and then brings a gift
   of the creature's own stock (light from glowing ones, sand from the Rasp); touching eight, and twenty-five, are feats. Trust: the line remembers touches per creature (known at 1, familiar
   at 5, a friend at 15); gifts ×1.5 when familiar, ×2 from a friend; feats for one friend and ten.

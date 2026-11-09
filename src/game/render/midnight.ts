@@ -1114,7 +1114,8 @@ export function createMidnightScene(seed: number): Scene {
   /**
    * The migration: every eight minutes, for forty seconds, the deep rises. Hundreds of tiny
    * lights (krill, fish, shrimp) stream up past the reef from below, the largest journey any
-   * animals make, made every night.
+   * animals make, made every night. Touched, the lights near the touch go out (as deep animals do
+   * when disturbed) and come back on over a few seconds.
    */
   function drawMigration(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 480, length = 40;
@@ -1127,14 +1128,20 @@ export function createMidnightScene(seed: number): Scene {
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     const n = Math.round(260 * swell);
+    const touch = startled('migration', t);
+    const out = !touch || touch.age > 4 ? 0 : touch.age < 0.15 ? touch.age / 0.15 : 1 - (touch.age - 0.15) / 3.85;
+    const reach = 90 * s;
     for (let i = 0; i < n; i++) {
       const fx = (i * 0.618) % 1, speed = 0.25 + ((i * 0.37) % 1) * 0.35;
       const y = h - (((u * length * speed * 0.05 + (i * 0.173) % 1) % 1.1) * h * 1.05);
       const x = focus.x + focus.w * fx + Math.sin(t * 0.8 + i) * 6 * s;
+      const dark = out > 0 ? out * Math.exp(-((Math.hypot(x - touch!.x, y - touch!.y) / reach) ** 2)) : 0;
+      if (dark > 0.97) continue;
+      const a = swell * (1 - dark);
       const hue = i % 5 === 0 ? '255,190,140' : i % 3 === 0 ? '170,255,220' : '140,200,255';
-      glow(ctx, x, y, (4 + (i % 3) * 1.5) * s, hue, 0.85 * swell);
-      glow(ctx, x, y + 9 * s, 3 * s, hue, 0.35 * swell);
-      glow(ctx, x, y + 17 * s, 2 * s, hue, 0.15 * swell);
+      glow(ctx, x, y, (4 + (i % 3) * 1.5) * s, hue, 0.85 * a);
+      glow(ctx, x, y + 9 * s, 3 * s, hue, 0.35 * a);
+      glow(ctx, x, y + 17 * s, 2 * s, hue, 0.15 * a);
     }
     ctx.restore();
   }
