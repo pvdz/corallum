@@ -1084,7 +1084,8 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
       if (waiting.length) momentList.append(el('dt', 'unknown', UI.notYetMet), el('dd', 'unknown', waiting.map(metres).join(' ·\u00a0')));
       waiting = [];
     };
-    for (const m of MOMENTS) {
+    // By depth, as the reef meets them (the content lists two late additions first).
+    for (const m of [...MOMENTS].sort((x, y) => x.metres - y.metres)) {
       const ways = (['a', 'b'] as const).filter((c) => s.meta.seen.includes(`m:${m.id}:${c}`)).map((c) => m[c].label);
       if (!ways.length) {
         if (!m.seamount) waiting.push(m.metres);
