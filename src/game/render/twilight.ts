@@ -1929,10 +1929,14 @@ export function createTwilightScene(seed: number): Scene {
     ctx.restore();
   }
 
-  /** Fireworms: on nights after a full moon, small green rings of light spiral up from the sand to spawn. */
+  /**
+   * Fireworms: on nights after a full moon, small green rings of light spiral up from the sand to
+   * spawn. A touched ring flares, bright and wide, and fades back.
+   */
   function drawFireworms(ctx: CanvasRenderingContext2D, t: number, night: number): void {
     sight('fireworms');
     const s = scale();
+    const touch = startled('fireworms', t);
     const a = Math.min(1, (night - 0.5) * 4);
     const x = (u: number) => focus.x - focus.w * 0.1 + u * focus.w * 1.2;
     ctx.save();
@@ -1944,8 +1948,10 @@ export function createTwilightScene(seed: number): Scene {
       // Each ring bright enough to see can be tapped (the first one alone sat at the far left,
       // often off the scene or under the panel).
       if (Math.sin(rise * Math.PI) > 0.6) spot('fireworms', cx0, cy0, 26 * s);
-      const r = (10 + 5 * Math.sin(i)) * s;
-      const b = a * Math.sin(rise * Math.PI);
+      // (the touch followed up as the ring rises: 0.05 of its climb a second)
+      const flare = touch && touch.age < 2.5 && Math.hypot(touch.x - cx0, touch.y - touch.age * 0.05 * focus.h * 0.45 - cy0) < 30 * s ? Math.exp(-touch.age * 1.6) : 0;
+      const r = (10 + 5 * Math.sin(i)) * s * (1 + 0.5 * flare);
+      const b = Math.min(1, a * Math.sin(rise * Math.PI) + 0.7 * flare);
       // The worm's ring of light (a yellow-green, which stays green over the blue water where a
       // pure green turned teal), and the spark of each worm chasing round it, brighter at its head.
       ctx.strokeStyle = `rgba(170,255,120,${(0.3 * b).toFixed(3)})`;
