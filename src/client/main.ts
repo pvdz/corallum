@@ -47,7 +47,7 @@ import { createPortraits } from './portraits.ts';
 import { createZoom } from './zoom.ts';
 import { drawMoon, glow as glowAt, softRing } from '../game/render/draw.ts';
 import { ACT5, GAUGE_MOON } from '../game/content/act5.ts';
-import { type Spot, creatureAt, endFrameSpots, hover, poke, spoke, startle, tappable, takeSightings } from '../game/render/sightings.ts';
+import { type Spot, creatureAt, endFrameSpots, hover, poke, setMinSpot, spoke, startle, tappable, takeSightings } from '../game/render/sightings.ts';
 import { HEAT } from '../game/content/act4.ts';
 import { AGAIN, QUESTION, QUESTIONS, OSSEL_PAST } from '../game/content/ossel.ts';
 import { MILKY, RISING } from '../game/content/act2.ts';
@@ -76,7 +76,7 @@ declare global {
       /** View-mode zoom factor (1 = none). */
       readonly zoom: number;
       /** The tappable creatures on screen, in CSS pixels. */
-      readonly spots: { id: string; x: number; y: number; n?: number }[];
+      readonly spots: { id: string; x: number; y: number; r: number; n?: number }[];
       /** Move the clock to the next time slot with this water (for checking its look). */
       water(id: string): boolean;
       /** Move the clock to the next shell on the sand (for checking it). */
@@ -814,7 +814,7 @@ window.corallum = {
     return false;
   },
   get spots() {
-    return tappable().map((p) => ({ id: p.id, x: p.x / dpr, y: p.y / dpr, n: p.n }));
+    return tappable().map((p) => ({ id: p.id, x: p.x / dpr, y: p.y / dpr, r: p.r / dpr, n: p.n }));
   },
 };
 
@@ -848,6 +848,8 @@ function resize(): void {
   // Nothing moved (the sheet sliding, a panel card growing): the canvases and scenes stay as they are.
   if (canvas.width === w && canvas.height === h && dpr === lastDpr && focus.x === focusNow.x && focus.y === focusNow.y && focus.w === focusNow.w && focus.h === focusNow.h) return;
   lastDpr = dpr;
+  // A spot is at least a fingertip across (16 CSS px in radius).
+  setMinSpot(16 * dpr);
   canvas.width = fadeCanvas.width = w;
   canvas.height = fadeCanvas.height = h;
   for (const sc of scenes) sc.resize(w, h, dpr, focus);

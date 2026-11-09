@@ -27,9 +27,16 @@ export type Spot = { id: CreatureId | 'ossel' | 'shell' | 'star' | 'old' | 'tang
 let spots: Spot[] = [];
 let nextSpots: Spot[] = [];
 
-/** A creature was drawn at (x, y) with roughly radius r (device pixels). */
+/** The smallest spot (device pixels): a fingertip's reach, so small reef-dwellers can be touched. */
+let minSpot = 0;
+export function setMinSpot(r: number): void {
+  minSpot = r;
+}
+
+/** A creature was drawn at (x, y) with roughly radius r (device pixels; at least the minimum). */
 export function spot(id: CreatureId | 'ossel' | 'shell' | 'star' | 'old' | 'tangle' | 'fragment' | 'stray' | 'raft', x: number, y: number, r: number, n?: number): void {
-  nextSpots.push(n === undefined ? { id, x, y, r } : { id, x, y, r, n });
+  const rr = Math.max(r, minSpot);
+  nextSpots.push(n === undefined ? { id, x, y, r: rr } : { id, x, y, r: rr, n });
 }
 
 /**

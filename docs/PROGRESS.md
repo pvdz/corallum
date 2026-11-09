@@ -1534,3 +1534,4 @@ date, what landed, what is half-done, what's next.
 - Sweeps after the touch reactions, N and the hand cursor: desktop and phone clean at all 18 bot times through the ending.
 - N in view mode zoomed in: it chose among creatures in the world frame, so it could greet one off screen (its label off screen too); it chooses by screen position now.
 - N does nothing during a replay (T, Shift+T): the creatures there are memories, and greeting them would count touches the tap path never allows (a tap ends a whole-climb replay first).
+- Small reef-dwellers were near untouchable on a phone: gobies, damselfish, guard crabs, feather dusters and the pistol shrimp had tap spots of 6–9 CSS px in radius (12–18 px across). Every spot is now at least 16 CSS px in radius (setMinSpot, set with the frame size); nearest centre still wins among overlapping ones. corallum.spots gives each radius (CSS px). play, feast, systems and finale e2e green.
