@@ -1137,7 +1137,7 @@ export function createSunlitScene(seed: number): Scene {
     // The ball: fish on rings, swimming round it, the whole thing breathing as the hunters pass.
     const squeeze = 1 - 0.18 * Math.max(0, Math.sin(t * 2.2));
     // Each a small silver fish pointed along its circle, the whole ball in one fill.
-    const ball = new Path2D();
+    const ball = new Path2D(), backs = new Path2D();
     for (let i = 0; i < 160; i++) {
       const ring = Math.sqrt(((i * 0.618) % 1)) * R * squeeze;
       const spin = (i % 2 ? 1 : -1);
@@ -1151,9 +1151,16 @@ export function createSunlitScene(seed: number): Scene {
       ball.moveTo(pts[0]![0], pts[0]![1]);
       for (let q = 1; q < pts.length; q++) ball.lineTo(pts[q]![0], pts[q]![1]);
       ball.closePath();
+      const [b0x, b0y] = P(3.2, -0.5), [bcx, bcy] = P(0.4, -1.1), [b1x, b1y] = P(-2.8, -0.3);
+      backs.moveTo(b0x, b0y);
+      backs.quadraticCurveTo(bcx, bcy, b1x, b1y);
     }
     ctx.fillStyle = `rgba(215,230,240,${0.85 * form})`;
     ctx.fill(ball);
+    // Each one's dark back, so the ball reads as fish, not flakes.
+    ctx.strokeStyle = `rgba(46,78,108,${0.6 * form})`;
+    ctx.lineWidth = 0.8 * s;
+    ctx.stroke(backs);
     // Hunters, jacks cutting through: a dark back over a silver belly, a sickle of a tail.
     for (let k = 0; k < 3; k++) {
       const p = ((t * 0.35 + k * 0.33) % 1);
