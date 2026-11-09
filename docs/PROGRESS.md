@@ -1546,3 +1546,4 @@ date, what landed, what is half-done, what's next.
 - The line's totals said feats as a bare count among "x of y" rows: "n of 72" now.
 - Full audit sweep after the night's panel changes (codex-list columns, moments by depth, totals): all 10 viewports × plain/Larger/scientific at 8 stages, only the two known dim findings each.
 - After the release, the children settling "in the deep below" hung in open water in the Breach's side view: each now stands on a far pinnacle, a dark spire fading up from the foot of the screen (one path, one fade for all forty).
+- On a phone the settled children (and their pinnacles) were all under the sheet, never seen: they were placed by the frame's height, the sheet covering its bottom half. They sit in the open scene now (above the sheet; the whole frame on desktop as before).

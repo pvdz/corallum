@@ -1913,11 +1913,13 @@ export function createBreachScene(seed: number): Scene {
     const wy = waterY();
     const n = Math.min(40, Math.floor(6 * Math.log2(1 + (v.sinceBreach - 30) / 30)));
     const r = mulberry32(seed ^ 0xc41d);
+    // Within the open scene (on a phone the sheet covers the bottom of the frame).
+    const bottom = Math.min(h, focus.y + focus.h);
     const kids: { x: number; y: number; depth: number; size: number; born: number }[] = [];
     for (let i = 0; i < n; i++) {
       const x = focus.x + focus.w * range(r, 0.03, 0.97);
       const depth = range(r, 0.55, 1);
-      const y = wy + (h - wy) * depth;
+      const y = wy + (bottom - wy) * depth;
       const size = (0.5 + depth) * s * range(r, 0.6, 1.1);
       kids.push({ x, y, depth, size, born: Math.min(1, (v.sinceBreach - 30 - i * 20) / 20) });
     }
@@ -1927,12 +1929,12 @@ export function createBreachScene(seed: number): Scene {
       if (k.born <= 0) continue;
       const { x, y, size } = k;
       rock.moveTo(x - 4.5 * size, y + 1.2 * size);
-      rock.quadraticCurveTo(x - 8 * size, y + (h - y) * 0.4, x - 16 * size, h);
-      rock.lineTo(x + 15 * size, h);
-      rock.quadraticCurveTo(x + 7 * size, y + (h - y) * 0.45, x + 4.5 * size, y + 1.2 * size);
+      rock.quadraticCurveTo(x - 8 * size, y + (bottom - y) * 0.4, x - 16 * size, bottom);
+      rock.lineTo(x + 15 * size, bottom);
+      rock.quadraticCurveTo(x + 7 * size, y + (bottom - y) * 0.45, x + 4.5 * size, y + 1.2 * size);
       rock.closePath();
     }
-    const fade = ctx.createLinearGradient(0, wy + (h - wy) * 0.5, 0, h);
+    const fade = ctx.createLinearGradient(0, wy + (bottom - wy) * 0.5, 0, bottom);
     fade.addColorStop(0, 'rgba(6,8,22,0.35)');
     fade.addColorStop(1, 'rgba(3,4,14,0.85)');
     ctx.fillStyle = fade;
