@@ -1555,3 +1555,4 @@ date, what landed, what is half-done, what's next.
 - Ossel's asks read "Raise 1 sand bar.", "Ripen the spawn 1 more time." (n always 1) and, near the end of what can be bought, "Bud 1 polyps." or "Sweep the water 1 times": every counted ask has its singular wording now (a sand bar, once more, one more polyp), the plural ones plural.
 - Counts that could read "1 relics found", "1 feasts caught", "1 memories carried by the line", "1 feats already earned" (the ending's numbers page, the lineage, the away card): each has its singular.
 - The expedition card's lines (shoals away, the plan, the call-home cost) were written in panel.ts: they live in content/expeditions.ts now, singular for one shoal.
+- The truce card's words-learned line and the Rasp card's none-grazing line were written in panel.ts: in content/ui.ts now (wordsLearned, raspNone).

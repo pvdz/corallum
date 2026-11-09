@@ -90,6 +90,10 @@ export const UI = {
   awayClose: 'Return to the reef',
   awayTitle: 'While you drifted',
   wordsReady: 'Your scouts have learned enough of their words.',
+  /** The truce card's words learned so far (the eta when scouts are out). */
+  wordsLearned: (got: string, of: string, eta: string) => `Words learned: ${got} / ${of} murmurs${eta ? ` ·\u00a0${eta}` : ' — set shoals to scout'}`,
+  /** The Rasp card with none grazing. */
+  raspNone: 'No Rasp graze; the silt settles where it falls.',
   beginAgain: 'Begin again',
   /** Several names in one line: "A and B", "A, B and C", "A, B and 3 more". */
   namesAndMore: (all: readonly string[]) => { const names = all.map((n, i) => (i && /^(A|An|The) /.test(n) ? n[0]!.toLowerCase() + n.slice(1) : n)); return names.length > 3 ? `${names[0]}, ${names[1]} and ${names.length - 2} more` : names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}` : names[0] ?? ''; },

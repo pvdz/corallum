@@ -2107,7 +2107,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
         const ready = learned >= 1;
         truceWordsLabel.textContent = ready
           ? UI.wordsReady
-          : `Words learned: ${num(s.murmurs)} / ${num(words)} murmurs${s.jobs.scout ? ` · ${etaText(timeUntil(s, 'murmurs', words))}` : ' — set shoals to scout'}`;
+          : UI.wordsLearned(num(s.murmurs), num(words), s.jobs.scout ? etaText(timeUntil(s, 'murmurs', words)) : '');
         for (const c of ['a', 'b'] as const) {
           const cb = choiceButtons[c === 'a' ? 0 : 1]!;
           cb.label.textContent = m[c].label;
@@ -2160,7 +2160,7 @@ export function createPanel(host: HTMLElement, hooks: PanelHooks) {
           x.b.disabled = done || s.sand < c;
         }
         raspWhat.textContent = s.rasp === 0
-          ? `No Rasp graze; the silt settles where it falls. ${bestNote}`
+          ? `${UI.raspNone} ${bestNote}`
           : `${rate(r.sandP)} sand${eats > 0 ? ` · eat ${rate(eats).slice(1)} calcite` : ''} · holds ~${num(calciteHold(s, r))}\n${bestNote}`;
       }
 
