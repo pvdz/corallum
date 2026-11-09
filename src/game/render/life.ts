@@ -725,6 +725,7 @@ export function createLife(seed: number) {
   /**
    * Glass sponges: tall pale vases of silica lattice standing in the silt, catching the faint
    * light along their seams. They do not move; only a few motes drift through their walls.
+   * Touched, a shimmer of light climbs the lattice from the silt to the rim.
    */
   function drawSponge(ctx: CanvasRenderingContext2D, st: Stage, g: Sponge, t: number): void {
     sight('glass-sponge');
@@ -760,6 +761,17 @@ export function createLife(seed: number) {
       ctx.moveTo(x - wid * 2, y);
       ctx.lineTo(x + wid * 2, y);
       ctx.stroke();
+    }
+    const touch = startled('glass-sponge', t);
+    if (touch && touch.age < 1.6 && Math.abs(touch.x - x) < Math.max(wid * 1.6, 24 * st.dpr) && touch.y > base - hgt * 1.1 && touch.y < base + 10 * s) {
+      const cy = base - hgt * Math.min(1, touch.age / 1.3), band = 9 * s;
+      const a = 0.5 * Math.min(1, (1.6 - touch.age) / 0.4);
+      const sh = ctx.createLinearGradient(0, cy - band, 0, cy + band);
+      sh.addColorStop(0, 'rgba(190,215,255,0)');
+      sh.addColorStop(0.5, `rgba(190,215,255,${a.toFixed(3)})`);
+      sh.addColorStop(1, 'rgba(190,215,255,0)');
+      ctx.fillStyle = sh;
+      ctx.fillRect(x - wid * 2, cy - band, wid * 4, band * 2);
     }
     ctx.restore();
     // The rim, and its seams catching light.

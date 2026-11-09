@@ -2,7 +2,7 @@
 // path from a branch tip toward the trunk and back again. Drawn over the reef.
 
 import type { Reef, ReefLayout } from './reef.ts';
-import { sight, spot } from './sightings.ts';
+import { sight, spot, startled } from './sightings.ts';
 
 /** Halfway between two #rrggbb colours. */
 function mid(a: string, b: string): string {
@@ -75,16 +75,20 @@ export function createSlugs(count: number) {
         ctx.translate(x, y);
         ctx.rotate(ang);
         // Cerata: finger-like plumes in a double row along its back, swaying in a wave, the
-        // body's colour shading to bright tips.
+        // body's colour shading to bright tips. Touched, it raises them stiff and tall (a warning:
+        // they sting), and lets them down again over a few seconds.
+        const touch = startled('nudibranch', t);
+        const near = touch && touch.age < 4 && Math.hypot(touch.x - x, touch.y - y) < Math.max(14 * s, 30 * L.dpr);
+        const raise = near ? Math.min(1, touch!.age / 0.25) * Math.min(1, (4 - touch!.age) / 2.5) : 0;
         ctx.lineCap = 'round';
         ctx.strokeStyle = MIDS[k % COLOURS.length]!;
         ctx.lineWidth = 1.2 * s;
         const ends: number[] = [];
         ctx.beginPath();
         for (let q = 0; q < 7; q++) {
-          const bx0 = (3.2 - q * 1.25) * s, sway = Math.sin(t * 2.4 - q * 0.8) * 0.7 * s;
-          const len = (3.4 - Math.abs(q - 3) * 0.35) * s;
-          const ex = bx0 - 0.8 * s + sway, ey = -1 * s - len;
+          const bx0 = (3.2 - q * 1.25) * s, sway = Math.sin(t * 2.4 - q * 0.8) * 0.7 * s * (1 - 0.8 * raise);
+          const len = (3.4 - Math.abs(q - 3) * 0.35) * s * (1 + 0.45 * raise);
+          const ex = bx0 - 0.8 * s * (1 - raise) + sway, ey = -1 * s - len;
           ctx.moveTo(bx0, -0.8 * s);
           ctx.quadraticCurveTo(bx0 - 0.2 * s, -1.4 * s - len * 0.5, ex, ey);
           ends.push(ex, ey);
