@@ -2194,8 +2194,10 @@ window.addEventListener('keydown', (e) => {
     const inView = tappable().filter((p): p is Spot & { id: CreatureId | 'ossel' } => !NOT_CREATURES.has(p.id) && shown(p));
     const kinds = [...new Map(inView.map((p) => [p.id, p])).values()].sort((a, b) => a.x - b.x);
     if (kinds.length === 0) return;
+    // Shift+N goes back the other way.
     const at = kinds.findIndex((p) => p.id === greeted);
-    const who = kinds[(at + 1) % kinds.length]!;
+    const step = e.shiftKey ? -1 : 1;
+    const who = kinds[((at < 0 && step < 0 ? 0 : at) + step + kinds.length) % kinds.length]!;
     greeted = who.id;
     const [sx, sy] = toScreen(who.x, who.y);
     touchCreature(who, who.x, who.y, sx / dpr, sy / dpr);

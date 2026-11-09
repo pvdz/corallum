@@ -137,7 +137,7 @@ export const UI = {
     ['1–4', 'switch the panel tabs'],
     ['P ·\u00a0B ·\u00a0G', 'bud a polyp ·\u00a0lay a band ·\u00a0host glimmerseed'],
     ['F', 'catch a falling feast'],
-    ['N', 'greet the next creature in view (as a tap on it)'],
+    ['N', 'greet the next creature in view, as a tap on it (Shift+N: the one before)'],
     ['E', 'send the shoals on the next expedition'],
     ['L', 'flare the lure'],
     ['R', 'send the feeders into the rising'],

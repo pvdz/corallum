@@ -91,7 +91,7 @@ Under every full moon the other reefs spawn too, and the water fills with slow p
 | K | break off old stone | W | wish |
 | 7–0 | answer the signal | T | time-lapse (Shift+T: the whole climb) |
 | U | turn toward an upwelling | M | sound on or off |
-| N | greet the next creature | ? | the full list |
+| N | greet the next creature (Shift+N: back) | ? | the full list |
 
 ## Playing on a phone
 
