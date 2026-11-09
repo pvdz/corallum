@@ -2182,8 +2182,12 @@ window.addEventListener('keydown', (e) => {
   }
   if (e.key === 'n' || e.key === 'N') {
     // Greet the next creature in view (left to right, round again), as a tap on it would.
-    const inView = tappable().filter((p): p is Spot & { id: CreatureId | 'ossel' } =>
-      !NOT_CREATURES.has(p.id) && p.x >= focusNow.x && p.x <= focusNow.x + focusNow.w && p.y >= focusNow.y && p.y <= focusNow.y + focusNow.h);
+    // (In view, on screen: zoomed in, much of the world is not.)
+    const shown = (p: Spot) => {
+      const [sx, sy] = toScreen(p.x, p.y);
+      return sx >= focusNow.x && sx <= focusNow.x + focusNow.w && sy >= focusNow.y && sy <= focusNow.y + focusNow.h;
+    };
+    const inView = tappable().filter((p): p is Spot & { id: CreatureId | 'ossel' } => !NOT_CREATURES.has(p.id) && shown(p));
     const kinds = [...new Map(inView.map((p) => [p.id, p])).values()].sort((a, b) => a.x - b.x);
     if (kinds.length === 0) return;
     const at = kinds.findIndex((p) => p.id === greeted);

@@ -1532,3 +1532,4 @@ date, what landed, what is half-done, what's next.
 - play e2e: N after a mouse click greets creatures, each counted as touched (2 of 3 presses: one may be Ossel, who speaks instead).
 - The migration, touched, goes dark around the touch (the deep's animals put their lights out when disturbed) and relights over four seconds.
 - Sweeps after the touch reactions, N and the hand cursor: desktop and phone clean at all 18 bot times through the ending.
+- N in view mode zoomed in: it chose among creatures in the world frame, so it could greet one off screen (its label off screen too); it chooses by screen position now.
