@@ -137,6 +137,11 @@ export const EXPEDITION = {
   intro: 'Send shoals to a ruin. They stop their work while they are away, and come back with what they find.',
   send: 'Send',
   away: 'away',
+  /** The trip card's lines: under way, and before setting out. */
+  shoals: (n: number) => `${n}\u00a0shoal${n === 1 ? '' : 's'}`,
+  outWith: (n: number, effect: string, relic = '') => `${n}\u00a0shoal${n === 1 ? '' : 's'} away ·\u00a0${relic ? `bringing ${relic.toLowerCase()} (${effect})` : effect}`,
+  plan: (time: string, effect: string, relic: boolean) => `${time} away ·\u00a0${relic ? `a relic: ${effect}` : effect}`,
+  callCost: (glow: string) => `↩ ${glow} glow`,
   back: 'The shoals are back',
   kicker: 'An expedition returns',
   done: 'Every ruin the shoals can reach has been searched.',
