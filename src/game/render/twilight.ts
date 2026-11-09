@@ -1967,7 +1967,10 @@ export function createTwilightScene(seed: number): Scene {
     ctx.restore();
   }
 
-  /** Rarely (every fifteen minutes), a great herd of Rasp streams along the shelf from right to left, far off. */
+  /**
+   * Rarely (every fifteen minutes), a great herd of Rasp streams along the shelf from right to
+   * left, far off. Touched, the fish near the touch scatter and close ranks again.
+   */
   function drawRaspHerd(ctx: CanvasRenderingContext2D, t: number): void {
     const period = 900, length = 60;
     const p = (t + 450) % period;
@@ -1982,16 +1985,23 @@ export function createTwilightScene(seed: number): Scene {
     const n = nightAt(t);
     ctx.globalAlpha = 0.85 * fade * (1 - 0.4 * n);
     ctx.fillStyle = `rgb(${Math.round(90 - 48 * n)},${Math.round(138 - 66 * n)},${Math.round(156 - 52 * n)})`;
+    // Touched, the fish near the touch scatter up and down away from it, tails beating hard (the
+    // extra beat is the integral of a fading boost, so the tails never jump), and close ranks.
+    const touch = startled('rasp-herd', t);
+    const ta = touch && touch.age < 3 ? touch.age : 0;
+    const scatter = ta === 0 ? 0 : ta < 0.3 ? ta / 0.3 : 1 - (ta - 0.3) / 2.7;
+    const beat = 12 * (ta - (ta * ta) / 6);
     ctx.beginPath();
     for (let i = 0; i < 70; i++) {
       const lag = r() * 0.5, lane = r(), size = 0.6 + r() * 0.6;
       const u = (p / length) * 1.6 - lag;
       if (u < -0.1 || u > 1.1) continue;
       const x = focus.x + focus.w * (1.05 - u * 1.1);
-      const y = focus.y + focus.h * (0.45 + lane * 0.2) + Math.sin(t * 1.3 + i) * 3 * s;
+      let y = focus.y + focus.h * (0.45 + lane * 0.2) + Math.sin(t * 1.3 + i) * 3 * s;
+      if (scatter > 0) y += Math.sign(y - touch!.y || 1) * scatter * 26 * s * Math.exp(-(((x - touch!.x) / (90 * s)) ** 2));
       // The tappable one: the fish nearest the middle (the first drawn may be off the scene).
       if (Math.abs(x - mid) < nearest.d) { nearest.d = Math.abs(x - mid); nearest.x = x; nearest.y = y; }
-      const len = 11 * s * size, L = len, tail = Math.sin(t * 6 + i) * len * 0.15;
+      const len = 11 * s * size, L = len, tail = Math.sin(t * 6 + beat + i) * len * 0.15;
       // Far off, each a parrotfish's outline (swimming left): a blunt brow, an arched back, a fan
       // of a tail; the whole herd in one path.
       ctx.moveTo(x - L * 0.92, y - L * 0.12);
