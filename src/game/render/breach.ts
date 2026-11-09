@@ -1796,7 +1796,8 @@ export function createBreachScene(seed: number): Scene {
 
   /**
    * A shore bird standing on the crown where it breaks the air ("Birds walk on you"), pecking now
-   * and then. When the spawn is released it lifts off and flies away over the water.
+   * and then; touched, it hops up with a flap and settles again. When the spawn is released it
+   * lifts off and flies away over the water.
    */
   function drawBird(ctx: CanvasRenderingContext2D, t: number, v: ReefView, crown: readonly [number, number]): void {
     if (!v.bands.includes('air')) return;
@@ -1806,8 +1807,10 @@ export function createBreachScene(seed: number): Scene {
     const k = flying ? Math.min(1, v.sinceBreach / 12) : 0;
     if (k >= 1) return;
     const x = hx - hw * 0.35 - k * focus.w * 0.6;
-    const y = wy - hh * 0.9 - 13 * s - k * k * focus.h * 0.35;
-    spot('shore-bird', x, y, Math.max(14 * s, 24 * dpr));
+    const touch = startled('shore-bird', t);
+    const hop = !flying && touch && touch.age < 0.9 ? Math.sin((touch.age / 0.9) * Math.PI) : 0;
+    const y = wy - hh * 0.9 - 13 * s - k * k * focus.h * 0.35 - hop * 7 * s;
+    spot('shore-bird', x, y + hop * 7 * s, Math.max(14 * s, 24 * dpr));
     ctx.save();
     ctx.translate(x, y);
     ctx.fillStyle = '#0b0b1c';
@@ -1834,6 +1837,15 @@ export function createBreachScene(seed: number): Scene {
       ctx.lineTo(-9 * s, -1.4 * s);
       ctx.bezierCurveTo(-6 * s, -4.6 * s, 0, -5.2 * s, 6 * s, -3.5 * s);
       ctx.fill();
+      // The hop's flap: a wing raised over the back.
+      if (hop > 0.05) {
+        ctx.beginPath();
+        ctx.moveTo(2 * s, -3.8 * s);
+        ctx.quadraticCurveTo(-1 * s, (-6 - 9 * hop) * s, -7 * s, (-5 - 11 * hop) * s);
+        ctx.quadraticCurveTo(-5 * s, -4 * s, -6 * s, -2.5 * s);
+        ctx.closePath();
+        ctx.fill();
+      }
       // Neck, head and a long bill curving a little down, dipping when it pecks.
       ctx.save();
       ctx.translate(5 * s, -3 * s);
