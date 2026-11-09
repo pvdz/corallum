@@ -1557,3 +1557,4 @@ date, what landed, what is half-done, what's next.
 - The expedition card's lines (shoals away, the plan, the call-home cost) were written in panel.ts: they live in content/expeditions.ts now, singular for one shoal.
 - The truce card's words-learned line and the Rasp card's none-grazing line were written in panel.ts: in content/ui.ts now (wordsLearned, raspNone).
 - Release check after the gift/ask/wording changes: all eight e2e suites green, 109 sim tests.
+- Sweep on the thorny seamount (desktop): clean at all 18 bot times.
