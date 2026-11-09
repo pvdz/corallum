@@ -2196,9 +2196,9 @@ export function createTwilightScene(seed: number): Scene {
     // The body itself, silver, lit across.
     const body = ctx.createLinearGradient(x0 - 6 * s, 0, x0 + 6 * s, 0);
     // Kept below white: the bloom would wash a white ribbon out to a featureless glare.
-    body.addColorStop(0, '#6f8098');
-    body.addColorStop(0.45, '#c4cfdc');
-    body.addColorStop(1, '#62748c');
+    body.addColorStop(0, '#5f6f88');
+    body.addColorStop(0.45, '#a8b4c4');
+    body.addColorStop(1, '#55667e');
     ctx.fillStyle = body;
     ctx.beginPath();
     ctx.moveTo(back[0]![0], back[0]![1]);
@@ -2209,7 +2209,7 @@ export function createTwilightScene(seed: number): Scene {
     ctx.quadraticCurveTo(h0x, h0y - 3.5 * s, back[0]![0], back[0]![1]);
     ctx.fill();
     // Dark wavy streaks slanting across the flank, uneven in length, and a pale lateral line.
-    ctx.strokeStyle = 'rgba(40,50,70,0.5)';
+    ctx.strokeStyle = 'rgba(34,42,62,0.65)';
     ctx.lineWidth = 0.7 * s;
     ctx.beginPath();
     for (let i = 4; i <= N - 3; i += 2) {
@@ -2220,7 +2220,7 @@ export function createTwilightScene(seed: number): Scene {
       ctx.lineTo(x + nx * hw * (1 - 2 * Math.min(0.95, a1)), y + ny * hw * (1 - 2 * Math.min(0.95, a1)) + 1.6 * s);
     }
     ctx.stroke();
-    ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+    ctx.strokeStyle = 'rgba(225,232,242,0.25)';
     ctx.lineWidth = 0.5 * s;
     ctx.beginPath();
     for (let i = 3; i <= N - 4; i++) {
